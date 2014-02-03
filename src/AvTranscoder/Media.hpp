@@ -66,7 +66,7 @@ struct VideoProperties {
 	bool        asAlpha;
 	bool        isInterlaced;
 	
-	// () frame type / is key frame )
+	// ( frame type / is key frame )
 	std::vector< std::pair< char, bool > > gopStructure;
 	std::vector<Channel> channels;
 };

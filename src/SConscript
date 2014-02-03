@@ -1,29 +1,41 @@
 
+import glob, re
 
 Import( "env" )
 Import( "envJava" )
 Import( "envPy" )
 
-avTranscoder = env.SharedLibrary(
-    'avTranscoder',
-    Glob( 'avTranscoder/*.cpp' ),
+AvTranscoder = env.SharedLibrary(
+    'AvTranscoder',
+    Glob( 'AvTranscoder/*.cpp' ),
     LIBS = [
         'libavcodec'
     ]
 )
 
 jAvTranscoder = envJava.SharedLibrary(
-                'javTranscoder',
+                'jAvTranscoder',
                 [
-                        'avTranscoder/avTranscoder.i'
+                        'AvTranscoder/avTranscoder.i'
                 ],
-                LIBS=[ avTranscoder ],
+                LIBS=[ AvTranscoder ],
         )
-        
+
 pyAvTranscoder = envPy.SharedLibrary(
-                'avTranscoder',
+                'AvTranscoder',
                 [
-                        'avTranscoder/avTranscoder.i'
+                        'AvTranscoder/avTranscoder.i'
                 ],
-                LIBS=[ avTranscoder ],
+                LIBS=[ AvTranscoder ],
         )
+
+env['JARCHDIR'] = env.Dir('#/build/src/jAvTranscoder').get_abspath()
+
+compiled_classes = env.Java(
+    target ='jAvTranscoder',
+    source = Glob( '#/build/src/AvTranscoder' ) )
+
+new_jar = env.Jar( target = "jAvTranscoder.jar", source = 'jAvTranscoder' )
+
+Export( { 'AvTranscoder': AvTranscoder } )
+Export( { 'jAvTranscoder': jAvTranscoder } )

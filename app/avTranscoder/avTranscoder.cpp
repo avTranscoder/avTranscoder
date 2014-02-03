@@ -1,13 +1,13 @@
 #include <iostream>
 
-#include <Media.hpp>
-#include <InputStream.hpp>
-#include <InputStreamAudio.hpp>
-#include <InputStreamVideo.hpp>
-#include <OutputStream.hpp>
-#include <OutputStreamAudio.hpp>
-#include <OutputStreamVideo.hpp>
-#include <OutputFile.hpp>
+#include <AvTranscoder/Media.hpp>
+#include <AvTranscoder/InputStream.hpp>
+#include <AvTranscoder/InputStreamAudio.hpp>
+#include <AvTranscoder/InputStreamVideo.hpp>
+#include <AvTranscoder/OutputStream.hpp>
+#include <AvTranscoder/OutputStreamAudio.hpp>
+#include <AvTranscoder/OutputStreamVideo.hpp>
+#include <AvTranscoder/OutputFile.hpp>
 
 int main( int argc, char** argv )
 {

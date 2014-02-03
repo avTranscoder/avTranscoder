@@ -21,14 +21,14 @@ envPy   = Environment().Clone()
 env.Append(
     CPPPATH = [
         libavInclude,
-        "src",
+        "#src",
     ],
     CXXFLAGS = [
         '-Wall',
     ],
     LIBPATH = [
         libavLibDir,
-        "src",
+        "#src",
     ],
 )
 
@@ -52,7 +52,10 @@ envJava.Replace(
     ],
 )
 
-envJava.Append( SWIGPATH = envJava['CPPPATH'] )
+envJava.Append(
+    SWIGPATH = envJava['CPPPATH'],
+    SWIGFLAGS = [ '-package', 'org.AvTranscoder' ],
+    )
 
 # Python environment
 envPy.Replace(
@@ -82,5 +85,10 @@ Export( "env" )
 Export( "envJava" )
 Export( "envPy" )
 
-VariantDir( 'build/lib', 'src', duplicate = 0 )
-SConscript( 'build/lib/SConscript' )
+VariantDir( 'build/src', 'src', duplicate = 0 )
+VariantDir( 'build/app', 'app', duplicate = 0 )
+
+SConscript( [
+    'build/src/SConscript',
+    'build/app/SConscript',
+] )

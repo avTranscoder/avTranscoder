@@ -1,0 +1,21 @@
+Import( 'AvTranscoder' )
+Import( 'jAvTranscoder' )
+
+env = Environment().Clone()
+
+Import( 'env' )
+
+env.Program(
+        'av++',
+        Glob( 'avTranscoder/*.cpp' ),
+        LIBS = [
+                AvTranscoder,
+                'avutil',
+                'avformat',
+                'avcodec',
+                ]
+        )
+
+#env.Java( 'jTranscoder', 'jTranscoder', LIBS=[ jAvTranscoder ] )
+
+#env.Jar(target = 'jTranscoder.jar', source = 'jTranscoder')
