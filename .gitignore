@@ -11,3 +11,8 @@
 *.lai
 *.la
 *.a
+
+.sconsign.dblite
+scons.cfg
+build
+dist
