@@ -36,6 +36,12 @@ bool InputStreamVideo::setup( const std::string& filename, const size_t streamIn
 		return false;
 	}
 
+	// update format context informations from streams
+	if( avformat_find_stream_info( formatContext, NULL ) < 0 )
+	{
+		return false;
+	}
+
 	size_t videoStreamCount = 0;
 	for( size_t streamId = 0; streamId < formatContext->nb_streams; streamId++ )
 	{
