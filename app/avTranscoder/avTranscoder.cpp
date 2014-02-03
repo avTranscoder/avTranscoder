@@ -48,6 +48,8 @@ int main( int argc, char** argv )
 		                                              input.getProperties().videoStreams.at(videoStreamIndex).sar.den << std::endl;
 		std::cout << "display aspect ratio     : " << input.getProperties().videoStreams.at(videoStreamIndex).dar.num << "/" <<
 		                                              input.getProperties().videoStreams.at(videoStreamIndex).dar.den << std::endl;
+		std::cout << "pixel type               : " << input.getProperties().videoStreams.at(videoStreamIndex).pixelName << std::endl;
+		std::cout << "number of components     : " << input.getProperties().videoStreams.at(videoStreamIndex).componentsCount << std::endl;
 
 		std::cout << "gop                      : ";
 		for( size_t frameIndex = 0; frameIndex < input.getProperties().videoStreams.at(videoStreamIndex).gopStructure.size(); ++frameIndex )
@@ -56,7 +58,18 @@ int main( int argc, char** argv )
 			std::cout << ( input.getProperties().videoStreams.at(videoStreamIndex).gopStructure.at( frameIndex ).second ? "*" : " " );
 		}
 		std::cout << std::endl;
-
+	}
+	for( size_t audioStreamIndex = 0; audioStreamIndex < input.getProperties().audioStreams.size(); ++audioStreamIndex )
+	{
+		std::cout << "---------- Audio stream " << audioStreamIndex << " ----------" << std::endl;
+		std::cout << "codec name               : " << input.getProperties().audioStreams.at(audioStreamIndex).codecName << std::endl;
+		std::cout << "codec long name          : " << input.getProperties().audioStreams.at(audioStreamIndex).codecLongName << std::endl;
+		std::cout << "sample format            : " << input.getProperties().audioStreams.at(audioStreamIndex).sampleFormat << std::endl;
+		std::cout << "codec id                 : " << input.getProperties().audioStreams.at(audioStreamIndex).codecId << std::endl;
+		std::cout << "stream id                : " << input.getProperties().audioStreams.at(audioStreamIndex).streamId << std::endl;
+		std::cout << "sample rate              : " << input.getProperties().audioStreams.at(audioStreamIndex).sampleRate << std::endl;
+		std::cout << "channels                 : " << input.getProperties().audioStreams.at(audioStreamIndex).channels << std::endl;
+		std::cout << "bit rate                 : " << input.getProperties().audioStreams.at(audioStreamIndex).bit_rate << std::endl;
 	}
 
 	// init video decoders
