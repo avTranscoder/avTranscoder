@@ -53,36 +53,26 @@ void ColorTransform::convert( const Image& src, Image& dst )
 {
 
 	SwsContext* m_imageConvertContext = sws_getContext(
-		m_width, m_height, m_inputPixel(),
-		m_width, m_height, m_outputPixel(),
+		m_width, m_height, m_inputPixel.get(),
+		m_width, m_height, m_outputPixel.get(),
 		SWS_POINT, NULL, NULL, NULL);
 
 	// resize dst buffer ? using :
 	// av_image_get_buffer_size(enum AVPixelFormat pix_fmt, int width, int height, int align);
 
-	unsigned char* dataIn     [ AV_NUM_DATA_POINTERS ];
-	unsigned char* dataOut    [ AV_NUM_DATA_POINTERS ];
-	int            linesizeIn [ AV_NUM_DATA_POINTERS ];
-	int            linesizeOut[ AV_NUM_DATA_POINTERS ];
+	std::vector< std::vector< unsigned char > > dataIn ( AV_NUM_DATA_POINTERS );
+	std::vector< std::vector< unsigned char > > dataOut( AV_NUM_DATA_POINTERS );
+	std::vector< int > lineSizeIn ( AV_NUM_DATA_POINTERS, 0 );
+	std::vector< int > lineSizeOut( AV_NUM_DATA_POINTERS, 0 );
 
-	// std::vector< int > lineSizeOut( AV_NUM_DATA_POINTERS, 0 );
-
-	for( size_t i = 0; i < AV_NUM_DATA_POINTERS; ++i )
-	{
-		dataIn [i] = NULL;
-		dataOut[i] = NULL;
-		linesizeIn [i] = 0;
-		linesizeOut[i] = 0;
-	}
-
-	//dataIn [0] = const_cast< unsigned char* >( &src[0] );
+	//dataIn[0] = &src.getPtr();
 	//dataOut[0] = &dst[0];
-	linesizeIn [0] = av_image_get_linesize( m_inputPixel(),  m_width, 3 );
-	linesizeOut[0] = av_image_get_linesize( m_outputPixel(), m_width, 3 );
+	lineSizeIn [0] = av_image_get_linesize( m_inputPixel.get(),  src.getWidth(), 3 );
+	lineSizeOut[0] = av_image_get_linesize( m_outputPixel.get(), src.getWidth(), 3 );
 
-	sws_scale( m_imageConvertContext,
-		dataIn, linesizeIn, 0, m_height,
-		dataOut, linesizeOut );
+	// sws_scale( m_imageConvertContext,
+	// 	dataIn, lineSizeIn, 0, src.getHeight(),
+	// 	dataOut, lineSizeOut );
 }
 
 }
