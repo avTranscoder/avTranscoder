@@ -65,6 +65,7 @@ struct VideoProperties {
 	bool        pseudoPaletted;
 	bool        asAlpha;
 	bool        isInterlaced;
+	bool        topFieldFirst;
 	
 	// ( frame type / is key frame )
 	std::vector< std::pair< char, bool > > gopStructure;

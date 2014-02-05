@@ -6,7 +6,7 @@
 namespace avtranscoder
 {
 
-class OutputStreamAudio : OutputStream
+class OutputStreamAudio : public OutputStream
 {
 public:
 	OutputStreamAudio(){};

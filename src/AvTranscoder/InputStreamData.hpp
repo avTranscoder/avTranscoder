@@ -6,7 +6,7 @@
 namespace avtranscoder
 {
 
-class InputStreamData : InputStream
+class InputStreamData : public InputStream
 {
 public:
 	InputStreamData(){};

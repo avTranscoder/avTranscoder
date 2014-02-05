@@ -6,10 +6,11 @@
 namespace avtranscoder
 {
 
-class InputStreamAudio : InputStream
+class InputStreamAudio : public InputStream
 {
 public:
 	InputStreamAudio( const std::string& filename = "", const size_t streamIndex = 0 )
+		: InputStream( filename, streamIndex )
 	{};
 
 private:

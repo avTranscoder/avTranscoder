@@ -20,7 +20,7 @@ class AVCodecContext;
 namespace avtranscoder
 {
 
-class OutputStreamVideo : OutputStream
+class OutputStreamVideo : public OutputStream
 {
 public:
 	OutputStreamVideo();

@@ -37,6 +37,8 @@ void getGopProperties( VideoProperties& vp, AVFormatContext* formatContext, AVCo
 			if( gotFrame )
 			{
 				vp.gopStructure.push_back( std::pair<char, bool>( av_get_picture_type_char( frame->pict_type ), frame->key_frame ) );
+				vp.isInterlaced  = frame->interlaced_frame;
+				vp.topFieldFirst = frame->top_field_first;
 				++count;
 			}
 		}

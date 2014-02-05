@@ -12,10 +12,10 @@ class AVCodecContext;
 namespace avtranscoder
 {
 
-class InputStreamVideo : InputStream
+class InputStreamVideo : public InputStream
 {
 public:
-	InputStreamVideo( const std::string& filename = "", const size_t streamIndex = 0 );
+	InputStreamVideo();
 
 	bool setup( const std::string& filename, const size_t streamIndex );
 

@@ -45,7 +45,7 @@ bool Media::analyse()
 	properties.formatLongName = formatContext->iformat->long_name;
 	properties.streamsCount = formatContext->nb_streams;
 	properties.programsCount = formatContext->nb_programs;
-	properties.startTime = 1.0 * formatContext->start_time / AV_TIME_BASE;
+	properties.startTime = 1.0 * (uint)formatContext->start_time / AV_TIME_BASE;
 	properties.duration = 1.0 * formatContext->duration / AV_TIME_BASE;
 	properties.bitRate = formatContext->bit_rate;
 	properties.packetSize = formatContext->packet_size;
@@ -72,22 +72,27 @@ bool Media::analyse()
 			}
 			case AVMEDIA_TYPE_UNKNOWN:
 			{
+				std::cout << "unknown stream" << std::endl;
 				break;
 			}
 			case AVMEDIA_TYPE_DATA:
 			{
+				std::cout << "data stream" << std::endl;
 				break;
 			}
 			case AVMEDIA_TYPE_SUBTITLE:
 			{
+				std::cout << "subtitle stream" << std::endl;
 				break;
 			}
 			case AVMEDIA_TYPE_ATTACHMENT:
 			{
+				std::cout << "attachement" << std::endl;
 				break;
 			}
 			case AVMEDIA_TYPE_NB:
 			{
+				std::cout << "NB" << std::endl;
 				break;
 			}
 		}

@@ -1,5 +1,5 @@
 Import( 'AvTranscoder' )
-Import( 'jAvTranscoder' )
+Import( 'AvTranscoder_jar' )
 
 env = Environment().Clone()
 
@@ -13,6 +13,7 @@ env.Program(
                 'avutil',
                 'avformat',
                 'avcodec',
+                'swscale',
                 ]
         )
 

@@ -15,7 +15,7 @@ extern "C" {
 namespace avtranscoder
 {
 
-InputStreamVideo::InputStreamVideo( const std::string& filename, const size_t streamIndex )
+InputStreamVideo::InputStreamVideo()
 	: formatContext( NULL )
 	, codec        ( NULL )
 	, codecContext ( NULL )
@@ -96,7 +96,7 @@ bool InputStreamVideo::setup( const std::string& filename, const size_t streamIn
 std::vector<unsigned char>& InputStreamVideo::readNextFrame( std::vector<unsigned char>& frameBuffer )
 {
 	AVPacket pkt;
-	AVFrame* frame = avcodec_alloc_frame();
+	AVFrame* frame = av_frame_alloc();
 
 	int got_frame = 0;
 
@@ -117,9 +117,10 @@ std::vector<unsigned char>& InputStreamVideo::readNextFrame( std::vector<unsigne
 	frameBuffer.resize( avpicture_get_size( (AVPixelFormat)frame->format, frame->width, frame->height ) );
 	//memcpy( &frameBuffer[0], frame->data, frameBuffer.size() );
 
+	// Copy pixel data from an AVPicture into one contiguous buffer.
 	avpicture_layout( (AVPicture*)frame, (AVPixelFormat)frame->format, frame->width, frame->height, &frameBuffer[0], frameBuffer.size() );
 
-	//av_frame_free( &frame );
+	av_frame_free( &frame );
 
 	return frameBuffer;
 }

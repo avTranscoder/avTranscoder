@@ -69,7 +69,7 @@ bool OutputStreamVideo::encodeFrame( const std::vector<unsigned char>& sourceIma
 	frame->width  = width;
 	frame->height = height;
 	frame->format = pixelFormat;
-	avpicture_fill( (AVPicture*)frame, const_cast<unsigned char *>( &sourceImage[0] ), pixelFormat, width, height );
+	avpicture_fill( (AVPicture*)frame, const_cast< unsigned char * >( &sourceImage[0] ), pixelFormat, width, height );
 
 	AVPacket packet;
 	av_init_packet( &packet );
@@ -84,9 +84,9 @@ bool OutputStreamVideo::encodeFrame( const std::vector<unsigned char>& sourceIma
 		// why need to do that ?
 		packet.pts = av_rescale_q( codecContext->coded_frame->pts, codecContext->time_base, codecContext->time_base );
 
-		std::cout << "pts with rescale " << packet.pts << std::endl;
+		std::cout << "pts with rescale " << (int)packet.pts << std::endl;
 		packet.pts = codecContext->coded_frame->pts;
-		std::cout << "pts without rescale " << packet.pts << std::endl;
+		std::cout << "pts without rescale " << (int)packet.pts << std::endl;
 	}
 
 	if( codecContext->coded_frame &&

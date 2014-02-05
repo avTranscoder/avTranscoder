@@ -9,6 +9,10 @@
 #include <AvTranscoder/OutputStreamVideo.hpp>
 #include <AvTranscoder/OutputFile.hpp>
 
+#include <AvTranscoder/ColorTransform.hpp>
+
+#include <AvTranscoder/DatasStructures/Image.hpp>
+
 int main( int argc, char** argv )
 {
 	using namespace avtranscoder;
@@ -30,9 +34,9 @@ int main( int argc, char** argv )
 	std::cout << "duration                 : " << input.getProperties().duration << std::endl;
 	std::cout << "bitrate                  : " << input.getProperties().bitRate << std::endl;
 	std::cout << "number of streams        : " << input.getProperties().streamsCount << std::endl;
+	std::cout << "number of programs       : " << input.getProperties().programsCount << std::endl;
 	std::cout << "number of video streams  : " << input.getProperties().videoStreams.size() << std::endl;
 	std::cout << "number of audio streams  : " << input.getProperties().audioStreams.size() << std::endl;
-	
 
 	for( size_t videoStreamIndex = 0; videoStreamIndex < input.getProperties().videoStreams.size(); ++videoStreamIndex )
 	{
@@ -50,6 +54,15 @@ int main( int argc, char** argv )
 		                                              input.getProperties().videoStreams.at(videoStreamIndex).dar.den << std::endl;
 		std::cout << "pixel type               : " << input.getProperties().videoStreams.at(videoStreamIndex).pixelName << std::endl;
 		std::cout << "number of components     : " << input.getProperties().videoStreams.at(videoStreamIndex).componentsCount << std::endl;
+
+		std::cout << "color transfert          : " << input.getProperties().videoStreams.at(videoStreamIndex).colorTransfert << std::endl;
+		std::cout << "colorspace               : " << input.getProperties().videoStreams.at(videoStreamIndex).colorspace << std::endl;
+		std::cout << "color range              : " << input.getProperties().videoStreams.at(videoStreamIndex).colorRange << std::endl;
+		std::cout << "color primaries          : " << input.getProperties().videoStreams.at(videoStreamIndex).colorPrimaries << std::endl;
+		std::cout << "chroma sample location   : " << input.getProperties().videoStreams.at(videoStreamIndex).chromaSampleLocation << std::endl;
+		std::cout << "interlaced               : " << ( input.getProperties().videoStreams.at(videoStreamIndex).isInterlaced ? "True" : "False" ) << std::endl;
+		std::cout << "top field first          : " << ( input.getProperties().videoStreams.at(videoStreamIndex).topFieldFirst ? "True" : "False" ) << std::endl;
+		std::cout << "field order              : " << input.getProperties().videoStreams.at(videoStreamIndex).fieldOrder << std::endl;
 
 		std::cout << "gop                      : ";
 		for( size_t frameIndex = 0; frameIndex < input.getProperties().videoStreams.at(videoStreamIndex).gopStructure.size(); ++frameIndex )
@@ -142,6 +155,13 @@ int main( int argc, char** argv )
 
 	wrapper.createAudioEncoder( eAudioLeft, 2 );*/
 
+	ColorTransform ct;
+	ct.setWidth( isVideo.getWidth() );
+	ct.setHeight( isVideo.getHeight() );
+	//ct.setInputPixel( const Pixel& pixel );
+	ct.init();
+	//ct.convert( codedImage, codedImage );
+
 
 	// Encodage/transcodage
 
@@ -153,6 +173,8 @@ int main( int argc, char** argv )
 	for( size_t count = 0; count < 10; ++count )
 	{
 		isVideo.readNextFrame( frameBuffer );
+
+		// ct.convert( codedImage, codedImage );
 
 		osVideo.encodeFrame( frameBuffer, codedImage );
 		//std::cout << "decoded size " << frameBuffer.size() << " encode frame " << count << " size " << codedImage.size() << std::endl;
@@ -193,5 +215,6 @@ int main( int argc, char** argv )
 	// Audio * N // Video -> Audio *N + video
 
 	// Audio * N // Video * N -> Audio *N + video * N
+
 
 }
