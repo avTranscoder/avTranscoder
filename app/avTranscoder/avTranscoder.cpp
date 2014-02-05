@@ -13,20 +13,11 @@
 
 #include <AvTranscoder/DatasStructures/Image.hpp>
 
-int main( int argc, char** argv )
+void displayMetadatas( const char* filename )
 {
 	using namespace avtranscoder;
-	if( argc != 2 )
-	{
-		std::cout << "av++ require a media filename" << std::endl;
-		return( -1 );
-	}
 
-	std::cout << "start ..." << std::endl;
-
-
-	// a simply metadata getter
-	Media input( argv[1] );
+	Media input( filename );
 	input.analyse();
 	std::cout << "format name              : " << input.getProperties().formatName << std::endl;
 	std::cout << "format long name         : " << input.getProperties().formatLongName << std::endl;
@@ -84,20 +75,25 @@ int main( int argc, char** argv )
 		std::cout << "channels                 : " << input.getProperties().audioStreams.at(audioStreamIndex).channels << std::endl;
 		std::cout << "bit rate                 : " << input.getProperties().audioStreams.at(audioStreamIndex).bit_rate << std::endl;
 	}
+}
+
+void transcodeVideo( const char* inputfilename, const char* outputFilename )
+{
+	using namespace avtranscoder;
 
 	// init video decoders
-	InputStreamVideo isVideo; // take the first video stream per default
+	InputStreamVideo inputStreamVideo; // take the first video stream per default
 
-	if( !isVideo.setup( argv[1], 0 ) )
+	if( !inputStreamVideo.setup( inputfilename, 0 ) )
 	{
 		std::cout << "error during initialising video input reader" << std::endl;
-		return( -1 );
+		exit( -1 );
 	}
 
 	std::cout << "Input Video Stream Properties " << std::endl;
-	std::cout << "size 	"      << isVideo.getWidth() << "x" << isVideo.getHeight() << std::endl;
-	std::cout << "components " << isVideo.getComponents() << std::endl;
-	std::cout << "bit depth  " << isVideo.getBitDepth() << std::endl;
+	std::cout << "size 	"      << inputStreamVideo.getWidth() << "x" << inputStreamVideo.getHeight() << std::endl;
+	std::cout << "components " << inputStreamVideo.getComponents() << std::endl;
+	std::cout << "bit depth  " << inputStreamVideo.getBitDepth() << std::endl;
 	//dVideo.set( key, value );
 
 	// same as
@@ -108,18 +104,22 @@ int main( int argc, char** argv )
 	InputStreamAudio isAudioRight( "inputFilename.wav", 2 );
 
 	// init video & audio encoders
-	OutputStreamVideo osVideo;
+	OutputStreamVideo outputStreamVideo;
 
-	osVideo.setWidth( isVideo.getWidth() );
-	osVideo.setHeight( isVideo.getHeight() );
-	osVideo.setComponents( isVideo.getComponents() );
-	osVideo.setBitDepth( isVideo.getBitDepth() );
+	outputStreamVideo.setWidth( inputStreamVideo.getWidth() );
+	outputStreamVideo.setHeight( inputStreamVideo.getHeight() );
+	outputStreamVideo.setComponents( inputStreamVideo.getComponents() );
+	outputStreamVideo.setBitDepth( inputStreamVideo.getBitDepth() );
 	//eVideo.set( "mv_method", "me_hex" );
-	
-	if( !osVideo.setup( ) )
+
+	VideoStream videoStream;
+
+	videoStream.setCodecFromName( "dnxhd" );
+
+	if( !outputStreamVideo.setup( videoStream ) )
 	{
 		std::cout << "error during initialising video output stream" << std::endl;
-		return( -1 );
+		exit( -1 );
 	}
 
 
@@ -128,18 +128,19 @@ int main( int argc, char** argv )
 	OutputStreamAudio osAudioLfe  ( );
 
 	// setup wrapper
-	OutputFile of( "codedFilename.mxf" );  // "Format" ? to keep libav naming
+	OutputFile of( outputFilename );  // "Format" ? to keep libav naming
 
-	if( ! of.setup() )
+
+	if( ! of.setup( ) )
 	{
 		std::cout << "error during setup output file" << std::endl;
-		return( -1 );
+		exit( -1 );
 	}
 
 	if( ! of.addVideoStream() )
 	{
 		std::cout << "error during adding output video stream" << std::endl;
-		return( -1 );
+		exit( -1 );
 	}
 	/*of.addAudioStream();
 	of.addAudioStream();
@@ -156,8 +157,8 @@ int main( int argc, char** argv )
 	wrapper.createAudioEncoder( eAudioLeft, 2 );*/
 
 	ColorTransform ct;
-	ct.setWidth( isVideo.getWidth() );
-	ct.setHeight( isVideo.getHeight() );
+	ct.setWidth( inputStreamVideo.getWidth() );
+	ct.setHeight( inputStreamVideo.getHeight() );
 	//ct.setInputPixel( const Pixel& pixel );
 	ct.init();
 	//ct.convert( codedImage, codedImage );
@@ -165,18 +166,18 @@ int main( int argc, char** argv )
 
 	// Encodage/transcodage
 
-	std::vector<unsigned char> frameBuffer;
-	std::vector<unsigned char> sourceImage( isVideo.getWidth() * isVideo.getHeight() * 3, 120 );
+	Image frameBuffer;
+	std::vector<unsigned char> sourceImage( inputStreamVideo.getWidth() * inputStreamVideo.getHeight() * 3, 120 );
 
-	std::vector<unsigned char> codedImage;
+	Image codedImage;
 
 	for( size_t count = 0; count < 10; ++count )
 	{
-		isVideo.readNextFrame( frameBuffer );
+		inputStreamVideo.readNextFrame( frameBuffer );
 
 		// ct.convert( codedImage, codedImage );
 
-		osVideo.encodeFrame( frameBuffer, codedImage );
+		outputStreamVideo.encodeFrame( frameBuffer, codedImage );
 		//std::cout << "decoded size " << frameBuffer.size() << " encode frame " << count << " size " << codedImage.size() << std::endl;
 
 		of.wrap( codedImage, 0 );
@@ -198,11 +199,29 @@ int main( int argc, char** argv )
 	}
 
 	//eAudioLeft.encode(  );
+}
+
+int main( int argc, char** argv )
+{
+	if( argc != 2 )
+	{
+		std::cout << "av++ require a media filename" << std::endl;
+		return( -1 );
+	}
+
+	std::cout << "start ..." << std::endl;
+
+
+	// a simply metadata getter
+	//displayMetadatas( argv[1] );
+
+	// example of video Transcoding
+	transcodeVideo( argv[1], "transcodedVideo.mxf" );
 
 	std::cout << "end ..." << std::endl;
 
 
-	// TESTS
+	// TESTS TO DO
 
 	// audio -> audio
 
