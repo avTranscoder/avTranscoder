@@ -10,11 +10,13 @@ extern "C" {
 
 #include "OutputStream.hpp"
 
+#include "DatasStructures/Image.hpp"
+#include "DatasStructures/VideoStream.hpp"
+
 #include <string>
 #include <vector>
 
 class AVFormatContext;
-class AVCodec;
 class AVCodecContext;
 
 namespace avtranscoder
@@ -25,7 +27,7 @@ class OutputStreamVideo : public OutputStream
 public:
 	OutputStreamVideo();
 
-	bool setup();
+	bool setup( const VideoStream& videoStream );
 
 	void setWidth     ( const size_t w )  { width = w; }
 	void setHeight    ( const size_t h )  { height = h; }
@@ -35,10 +37,9 @@ public:
 	/**
 	 * @param[out] codecFrame blabla
 	 */
-	bool encodeFrame( const std::vector<unsigned char>& sourceImage, std::vector<unsigned char>& codedFrame );
+	bool encodeFrame( const Image& sourceImage, Image& codedFrame );
 
 private:
-	AVCodec*         codec;
 	AVCodecContext*  codecContext;
 
 	size_t width;

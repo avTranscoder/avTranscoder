@@ -18,21 +18,20 @@ namespace avtranscoder
 {
 
 OutputStreamVideo::OutputStreamVideo()
-	: codec ( NULL )
-	, codecContext( NULL )
+	: codecContext( NULL )
 	, width ( 0 )
 	, height( 0 )
 	, pixelFormat( AV_PIX_FMT_YUV422P )
 {
 }
 
-bool OutputStreamVideo::setup()
+bool OutputStreamVideo::setup( const VideoStream& videoStream )
 {
 	av_register_all();  // Warning: should be called only once
 
 	// av_log_set_level( AV_LOG_DEBUG );
-
-	if( ( codec = avcodec_find_encoder_by_name( "dnxhd" ) ) == NULL )
+	AVCodec* codec;
+	if( ( codec = avcodec_find_encoder( videoStream.getCodecId() ) ) == NULL )
 		return false;
 
 	if( ( codecContext = avcodec_alloc_context3( codec ) ) == NULL )
@@ -59,7 +58,7 @@ bool OutputStreamVideo::setup()
 }
 
 
-bool OutputStreamVideo::encodeFrame( const std::vector<unsigned char>& sourceImage, std::vector<unsigned char>& codedFrame )
+bool OutputStreamVideo::encodeFrame( const Image& sourceImage, Image& codedFrame )
 {
 	AVFrame* frame = avcodec_alloc_frame();
 
@@ -69,7 +68,7 @@ bool OutputStreamVideo::encodeFrame( const std::vector<unsigned char>& sourceIma
 	frame->width  = width;
 	frame->height = height;
 	frame->format = pixelFormat;
-	avpicture_fill( (AVPicture*)frame, const_cast< unsigned char * >( &sourceImage[0] ), pixelFormat, width, height );
+	avpicture_fill( (AVPicture*)frame, const_cast< unsigned char * >( sourceImage.getPtr() ), pixelFormat, width, height );
 
 	AVPacket packet;
 	av_init_packet( &packet );
@@ -100,8 +99,8 @@ bool OutputStreamVideo::encodeFrame( const std::vector<unsigned char>& sourceIma
 
 	if( ret == 0 && gotPacket == 1 )
 	{
-		codedFrame.resize( packet.size );
-		memcpy( &codedFrame[0], packet.data, packet.size );
+		codedFrame.getBuffer().resize( packet.size );
+		memcpy( codedFrame.getPtr(), packet.data, packet.size );
 	}
 
 	av_frame_free( &frame );

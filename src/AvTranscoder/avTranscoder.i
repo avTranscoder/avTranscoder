@@ -6,6 +6,10 @@
 %include "std_map.i"
 
 %{
+#include <AvTranscoder/DatasStructures/Pixel.hpp>
+#include <AvTranscoder/DatasStructures/Image.hpp>
+#include <AvTranscoder/DatasStructures/VideoStream.hpp>
+
 #include <AvTranscoder/Media.hpp>
 
 #include <AvTranscoder/OutputFile.hpp>
@@ -28,6 +32,10 @@ namespace std {
 %template(GopVector)       vector< pair< char, bool > >;
 %template(ChannelVector)   vector< avtranscoder::Channel >;
 }
+
+%include <AvTranscoder/DatasStructures/Pixel.hpp>
+%include <AvTranscoder/DatasStructures/Image.hpp>
+%include <AvTranscoder/DatasStructures/VideoStream.hpp>
 
 %include <AvTranscoder/Media.hpp>
 

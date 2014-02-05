@@ -93,7 +93,7 @@ bool InputStreamVideo::setup( const std::string& filename, const size_t streamIn
 	return true;
 }
 
-std::vector<unsigned char>& InputStreamVideo::readNextFrame( std::vector<unsigned char>& frameBuffer )
+Image& InputStreamVideo::readNextFrame( Image& frameBuffer )
 {
 	AVPacket pkt;
 	AVFrame* frame = av_frame_alloc();
@@ -112,15 +112,13 @@ std::vector<unsigned char>& InputStreamVideo::readNextFrame( std::vector<unsigne
 		av_free_packet( &pkt );
 	}
 
-	//std::cout << "read frame " << frame->width << "x"<< frame->height << " disp time " << frame->display_picture_number << "/" << frame->coded_picture_number << std::endl;
-
-	frameBuffer.resize( avpicture_get_size( (AVPixelFormat)frame->format, frame->width, frame->height ) );
+	frameBuffer.getBuffer().resize( avpicture_get_size( (AVPixelFormat)frame->format, frame->width, frame->height ) );
 	//memcpy( &frameBuffer[0], frame->data, frameBuffer.size() );
 
 	// Copy pixel data from an AVPicture into one contiguous buffer.
-	avpicture_layout( (AVPicture*)frame, (AVPixelFormat)frame->format, frame->width, frame->height, &frameBuffer[0], frameBuffer.size() );
+	avpicture_layout( (AVPicture*)frame, (AVPixelFormat)frame->format, frame->width, frame->height, &frameBuffer.getBuffer()[0], frameBuffer.getBuffer().size() );
 
-	av_frame_free( &frame );
+	//av_frame_free( &frame );
 
 	return frameBuffer;
 }

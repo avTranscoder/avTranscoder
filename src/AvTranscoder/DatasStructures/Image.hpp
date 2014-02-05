@@ -40,8 +40,14 @@ public:
 	void setPixel ( const Pixel& pixel     ) { m_pixel = pixel; }
 
 	DataBuffer&          getBuffer() { return m_dataBuffer; }
-	unsigned char* getPtr() { return &m_dataBuffer[0]; }
+
+	unsigned char*       getPtr()    { return &m_dataBuffer[0]; }
+	
+#ifndef SWIG
 	const unsigned char* getPtr()    const { return &m_dataBuffer[0]; }
+#endif
+
+	size_t               getSize()   const { return m_dataBuffer.size(); }
 
 	size_t               getWidth () const { return m_width;  }
 	size_t               getHeight() const { return m_height; }

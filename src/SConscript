@@ -7,7 +7,7 @@ Import( "envPy" )
 
 AvTranscoder = env.SharedLibrary(
     'cppAvTranscoder',
-    Glob( 'AvTranscoder/*.cpp' ),
+    Glob( 'AvTranscoder/*.cpp' ) + Glob( 'AvTranscoder/DatasStructures/*.cpp' ) ,
     LIBS = [
         'libavcodec'
     ]

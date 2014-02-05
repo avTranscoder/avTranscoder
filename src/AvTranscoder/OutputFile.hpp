@@ -1,6 +1,8 @@
 #ifndef _AV_TRANSCODER_OUTPUT_FILE_HPP_
 #define _AV_TRANSCODER_OUTPUT_FILE_HPP_
 
+#include "DatasStructures/Image.hpp"
+
 #include <string>
 #include <vector>
 
@@ -24,7 +26,7 @@ public:
 	bool addAudioStream( );
 
 
-	bool wrap( const std::vector<unsigned char>& data, const size_t streamId );
+	bool wrap( const Image& data, const size_t streamId );
 
 private:
 	AVOutputFormat*  outputFormat;

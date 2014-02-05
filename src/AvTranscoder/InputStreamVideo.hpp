@@ -2,6 +2,7 @@
 #define _AV_TRANSCODER_INPUT_STREAM_VIDEO_HPP_
 
 #include "InputStream.hpp"
+#include "DatasStructures/Image.hpp"
 
 #include <vector>
 
@@ -24,7 +25,7 @@ public:
 	size_t getComponents() const { return components; }
 	size_t getBitDepth()   const { return bitDepth; }
 
-	std::vector<unsigned char>& readNextFrame( std::vector<unsigned char>& frameBuffer );
+	Image& readNextFrame( Image& frameBuffer );
 
 private:
 	AVFormatContext* formatContext;

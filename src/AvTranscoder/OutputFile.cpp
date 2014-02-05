@@ -109,13 +109,13 @@ bool OutputFile::addAudioStream( )
 	return true;
 }
 
-bool OutputFile::wrap( const std::vector<unsigned char>& data, const size_t streamId )
+bool OutputFile::wrap( const Image& data, const size_t streamId )
 {
 	AVPacket packet;
 	av_init_packet( &packet );
 
-	packet.size = data.size();
-	packet.data = (uint8_t*)&data[0];
+	packet.size = data.getSize();
+	packet.data = (uint8_t*)data.getPtr();
 	packet.stream_index = streamId;
 
 	packet.dts = 0;
