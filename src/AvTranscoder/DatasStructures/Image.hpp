@@ -42,7 +42,7 @@ public:
 	DataBuffer&          getBuffer() { return m_dataBuffer; }
 
 	unsigned char*       getPtr()    { return &m_dataBuffer[0]; }
-	
+
 #ifndef SWIG
 	const unsigned char* getPtr()    const { return &m_dataBuffer[0]; }
 #endif
@@ -52,7 +52,9 @@ public:
 	size_t               getWidth () const { return m_width;  }
 	size_t               getHeight() const { return m_height; }
 	// Ratio                getDar()    const { return m_displayAspectRatio; }
-	Pixel                getPixel()  const { return m_pixel; }
+	Pixel                getPixelDesc() const { return m_pixel; }
+
+	//AVFrame              getEmptyFrame() const;
 
 private:
 	DataBuffer      m_dataBuffer;

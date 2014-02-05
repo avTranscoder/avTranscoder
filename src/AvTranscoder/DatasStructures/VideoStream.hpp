@@ -21,21 +21,26 @@ namespace avtranscoder
 class VideoStream
 {
 public:
-	VideoStream(){};
+	VideoStream( const std::string& codecName = "" );
+	VideoStream( const AVCodecID codecId );
 
-	void setCodecFromName( const std::string& codecName );
-
-	void setCodecFromID( const AVCodecID codecId ) { m_codecId = codecId; }
+	void setVideoCodec( const std::string& codecName );
+	void setVideoCodec( const AVCodecID codecId );
 
 	void setParametersFromImage( const Image& image );
 
-	void setBitrate( const size_t bitRate ) { m_bitRate = bitRate; }
+	void setBitrate( const size_t bitRate );
+	void setTimeBase( const size_t num, const size_t den );
 
-	AVCodecID getCodecId() const { return m_codecId; }
+#ifndef SWIG
+	AVCodec*        getCodec()        const { return m_codec; }
+	AVCodecContext* getCodecContext() const { return m_codecContext; }
+#endif
 
 private:
-	AVCodecID m_codecId;
-	size_t    m_bitRate;
+	void initCodecContext( );
+	AVCodec*        m_codec;
+	AVCodecContext* m_codecContext;
 };
 
 }

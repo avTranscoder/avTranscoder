@@ -18,40 +18,29 @@ namespace avtranscoder
 {
 
 OutputStreamVideo::OutputStreamVideo()
-	: codecContext( NULL )
-	, width ( 0 )
-	, height( 0 )
-	, pixelFormat( AV_PIX_FMT_YUV422P )
 {
 }
 
-bool OutputStreamVideo::setup( const VideoStream& videoStream )
+bool OutputStreamVideo::setup( )
 {
 	av_register_all();  // Warning: should be called only once
 
-	// av_log_set_level( AV_LOG_DEBUG );
-	AVCodec* codec;
-	if( ( codec = avcodec_find_encoder( videoStream.getCodecId() ) ) == NULL )
-		return false;
+	AVCodecContext* codecContext;
+	codecContext = m_videoDesc.getCodecContext();
 
-	if( ( codecContext = avcodec_alloc_context3( codec ) ) == NULL )
-		return false;
-
-	// Set default codec parameters
-	if( avcodec_get_context_defaults3( codecContext, codec ) != 0 )
+	if( codecContext == NULL )
 		return false;
 
 	// set codec parameters
-	codecContext->codec_type = AVMEDIA_TYPE_VIDEO;
-	codecContext->width  = width;
-	codecContext->height = height;
-	codecContext->bit_rate = 120000000;
-	codecContext->time_base.num = 1;
-	codecContext->time_base.den = 25;
-	codecContext->pix_fmt = pixelFormat;
+	// codecContext->width  = width;
+	// codecContext->height = height;
+	// codecContext->bit_rate = 120000000;
+	// codecContext->time_base.num = 1;
+	// codecContext->time_base.den = 25;
+	// codecContext->pix_fmt = pixelFormat;
 
 	// try to open encoder with parameters.
-	if( avcodec_open2( codecContext, codec, NULL ) < 0 )
+	if( avcodec_open2( m_videoDesc.getCodecContext(), m_videoDesc.getCodec(), NULL ) < 0 )
 		return false;
 
 	return true;
@@ -62,13 +51,15 @@ bool OutputStreamVideo::encodeFrame( const Image& sourceImage, Image& codedFrame
 {
 	AVFrame* frame = avcodec_alloc_frame();
 
+	AVCodecContext* codecContext = m_videoDesc.getCodecContext();
+
 	// Set default frame parameters
 	avcodec_get_frame_defaults( frame );
 
-	frame->width  = width;
-	frame->height = height;
-	frame->format = pixelFormat;
-	avpicture_fill( (AVPicture*)frame, const_cast< unsigned char * >( sourceImage.getPtr() ), pixelFormat, width, height );
+	frame->width  = codecContext->width;
+	frame->height = codecContext->height;
+	frame->format = codecContext->pix_fmt;
+	avpicture_fill( (AVPicture*)frame, const_cast< unsigned char * >( sourceImage.getPtr() ), codecContext->pix_fmt, codecContext->width, codecContext->height );
 
 	AVPacket packet;
 	av_init_packet( &packet );
@@ -81,11 +72,11 @@ bool OutputStreamVideo::encodeFrame( const Image& sourceImage, Image& codedFrame
 		( codecContext->coded_frame->pts != (int)AV_NOPTS_VALUE ) )
 	{
 		// why need to do that ?
-		packet.pts = av_rescale_q( codecContext->coded_frame->pts, codecContext->time_base, codecContext->time_base );
+		//packet.pts = av_rescale_q( codecContext->coded_frame->pts, codecContext->time_base, codecContext->time_base );
 
-		std::cout << "pts with rescale " << (int)packet.pts << std::endl;
+		//std::cout << "pts with rescale " << (int)packet.pts << std::endl;
 		packet.pts = codecContext->coded_frame->pts;
-		std::cout << "pts without rescale " << (int)packet.pts << std::endl;
+		//std::cout << "pts without rescale " << (int)packet.pts << std::endl;
 	}
 
 	if( codecContext->coded_frame &&

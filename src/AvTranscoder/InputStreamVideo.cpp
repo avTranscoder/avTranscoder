@@ -30,6 +30,7 @@ bool InputStreamVideo::setup( const std::string& filename, const size_t streamIn
 {
 	av_register_all();
 	//av_log_set_level( AV_LOG_FATAL );
+	av_log_set_level( AV_LOG_DEBUG );
 	
 	if( avformat_open_input( &formatContext, filename.c_str(), NULL, NULL ) < 0 )
 	{

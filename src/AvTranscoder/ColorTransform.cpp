@@ -53,8 +53,8 @@ void ColorTransform::convert( const Image& src, Image& dst )
 {
 
 	SwsContext* m_imageConvertContext = sws_getContext(
-		m_width, m_height, m_inputPixel.get(),
-		m_width, m_height, m_outputPixel.get(),
+		m_width, m_height, m_inputPixel.findPixel(),
+		m_width, m_height, m_outputPixel.findPixel(),
 		SWS_POINT, NULL, NULL, NULL);
 
 	// resize dst buffer ? using :
@@ -67,8 +67,8 @@ void ColorTransform::convert( const Image& src, Image& dst )
 
 	//dataIn[0] = &src.getPtr();
 	//dataOut[0] = &dst[0];
-	lineSizeIn [0] = av_image_get_linesize( m_inputPixel.get(),  src.getWidth(), 3 );
-	lineSizeOut[0] = av_image_get_linesize( m_outputPixel.get(), src.getWidth(), 3 );
+	lineSizeIn [0] = av_image_get_linesize( m_inputPixel.findPixel(),  src.getWidth(), 3 );
+	lineSizeOut[0] = av_image_get_linesize( m_outputPixel.findPixel(), src.getWidth(), 3 );
 
 	// sws_scale( m_imageConvertContext,
 	// 	dataIn, lineSizeIn, 0, src.getHeight(),

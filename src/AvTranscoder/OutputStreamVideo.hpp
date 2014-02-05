@@ -27,26 +27,19 @@ class OutputStreamVideo : public OutputStream
 public:
 	OutputStreamVideo();
 
-	bool setup( const VideoStream& videoStream );
+	bool setup();
 
-	void setWidth     ( const size_t w )  { width = w; }
-	void setHeight    ( const size_t h )  { height = h; }
-	void setComponents( const size_t c )  { components = c; }
-	void setBitDepth  ( const size_t bd ) { bitDepth = bd; }
+	void setVideoDesc( const VideoStream& videoStream );
 
 	/**
 	 * @param[out] codecFrame blabla
 	 */
 	bool encodeFrame( const Image& sourceImage, Image& codedFrame );
 
-private:
-	AVCodecContext*  codecContext;
+	VideoStream& getVideoDesc() { return m_videoDesc; }
 
-	size_t width;
-	size_t height;
-	size_t components;
-	size_t bitDepth;
-	PixelFormat pixelFormat;
+private:
+	VideoStream m_videoDesc;
 };
 
 }

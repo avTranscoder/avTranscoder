@@ -11,6 +11,7 @@
 
 #include <AvTranscoder/ColorTransform.hpp>
 
+#include <AvTranscoder/DatasStructures/VideoStream.hpp>
 #include <AvTranscoder/DatasStructures/Image.hpp>
 
 void displayMetadatas( const char* filename )
@@ -90,10 +91,6 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 		exit( -1 );
 	}
 
-	std::cout << "Input Video Stream Properties " << std::endl;
-	std::cout << "size 	"      << inputStreamVideo.getWidth() << "x" << inputStreamVideo.getHeight() << std::endl;
-	std::cout << "components " << inputStreamVideo.getComponents() << std::endl;
-	std::cout << "bit depth  " << inputStreamVideo.getBitDepth() << std::endl;
 	//dVideo.set( key, value );
 
 	// same as
@@ -106,17 +103,28 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 	// init video & audio encoders
 	OutputStreamVideo outputStreamVideo;
 
-	outputStreamVideo.setWidth( inputStreamVideo.getWidth() );
-	outputStreamVideo.setHeight( inputStreamVideo.getHeight() );
-	outputStreamVideo.setComponents( inputStreamVideo.getComponents() );
-	outputStreamVideo.setBitDepth( inputStreamVideo.getBitDepth() );
-	//eVideo.set( "mv_method", "me_hex" );
+	VideoStream& videoStream = outputStreamVideo.getVideoDesc();
 
-	VideoStream videoStream;
+	Pixel oPixel;
 
-	videoStream.setCodecFromName( "dnxhd" );
+	oPixel.setSubsampling( eSubsampling422 );
+	oPixel.setBitsPerPixel( 16 );
+	//std::cout << oPixel.findPixel() << std::endl;
 
-	if( !outputStreamVideo.setup( videoStream ) )
+	Image image;
+	image.setWidth ( inputStreamVideo.getWidth() );
+	image.setHeight( inputStreamVideo.getHeight() );
+	image.setPixel( oPixel );
+
+	videoStream.setVideoCodec( "dnxhd" );
+	videoStream.setBitrate( 120000000 );
+	videoStream.setTimeBase( 1, 25 ); // 25 fps
+
+	videoStream.setParametersFromImage( image );
+
+	//videoStream.initCodecContext();
+
+	if( !outputStreamVideo.setup( ) )
 	{
 		std::cout << "error during initialising video output stream" << std::endl;
 		exit( -1 );
@@ -170,6 +178,8 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 	std::vector<unsigned char> sourceImage( inputStreamVideo.getWidth() * inputStreamVideo.getHeight() * 3, 120 );
 
 	Image codedImage;
+
+	std::cout << "start transcoding" << std::endl;
 
 	for( size_t count = 0; count < 10; ++count )
 	{

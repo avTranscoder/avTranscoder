@@ -33,39 +33,37 @@ class Pixel
 {
 public:
 	Pixel()
-	: m_bitDepth ( 8 )
+	: m_pixelSize  ( 24 )
 	, m_components ( 3 )
 	, m_componentType ( eComponentYuv )
 	, m_subsamplingType ( eSubsamplingNone )
-	, m_endianess ( true )
-	, m_outWithAlpha ( false )
+	, m_endianess  ( false )
+	, m_withAlpha  ( false )
+	, m_planar     ( true )
 	{ }
 
-	void setBitsPerPixel   ( const size_t bitDepth ) { m_bitDepth = bitDepth; }
+	void setBitsPerPixel   ( const size_t pixelSize ) { m_pixelSize = pixelSize; }
 	void setBigEndian      ( const bool endianess ) { m_endianess = endianess; }
 	void setComponents     ( const size_t components ) { m_components = components; }
 	void setColorComponents( const EComponentType componentType ) { m_componentType = componentType; }
 	void setSubsampling    ( const ESubsamplingType subsamplingType = eSubsamplingNone ) { m_subsamplingType = subsamplingType; }
-	void setAlpha          ( const bool outWithAlpha = true ) { m_outWithAlpha = outWithAlpha; }
+	void setAlpha          ( const bool withAlpha = true ) { m_withAlpha = withAlpha; }
+	void setPlanar         ( const bool isPlanar ) { m_planar = isPlanar; }
 
-	bool asCorrectColorComponents( const AVPixFmtDescriptor* pix_desc, const EComponentType componentType );
-
-	bool asCorrectSubsampling( const AVPixFmtDescriptor* pix_desc, const ESubsamplingType subsamplingType );
-
-	void findMatchingPixel();
-
-	AVPixelFormat get(){ return m_pixel; }
+	AVPixelFormat findPixel();
 
 private:
-	AVPixelFormat    m_pixel;
+	bool asCorrectColorComponents( const AVPixFmtDescriptor* pix_desc, const EComponentType componentType );
+	bool asCorrectSubsampling( const AVPixFmtDescriptor* pix_desc, const ESubsamplingType subsamplingType );
 
-	size_t           m_bitDepth;
+	size_t           m_pixelSize;
 	size_t           m_components;
 	double           m_gamma;
 	EComponentType   m_componentType;
 	ESubsamplingType m_subsamplingType;
 	bool             m_endianess;
-	bool             m_outWithAlpha;
+	bool             m_withAlpha;
+	bool             m_planar;
 
 	//AVChromaLocation
 };
