@@ -6,17 +6,23 @@ Import( "envJava" )
 Import( "envPy" )
 
 AvTranscoder = env.SharedLibrary(
-    'cppAvTranscoder',
+    'AvTranscoder',
     Glob( 'AvTranscoder/*.cpp' ) + Glob( 'AvTranscoder/DatasStructures/*.cpp' ) ,
     LIBS = [
-        'libavcodec'
+        'libavutil',
+        'libavcodec',
+        'libavformat',
+        'libswscale',
+        'pthread',
     ]
 )
 
 jAvTranscoder = envJava.SharedLibrary(
         'jAvTranscoder',
-        source='AvTranscoder/avTranscoder.i',
-        LIBS=[ AvTranscoder ],
+        source=['AvTranscoder/avTranscoder.i'],
+        LIBS=[ 
+            AvTranscoder
+        ],
     )
 
 pyAvTranscoder = envPy.SharedLibrary(

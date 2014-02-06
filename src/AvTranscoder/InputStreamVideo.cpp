@@ -20,18 +20,12 @@ InputStreamVideo::InputStreamVideo()
 	, codec        ( NULL )
 	, codecContext ( NULL )
 	, selectedStream( -1 )
-	, width  ( 0 )
-	, height ( 0 )
-	, components ( 0 )
-	, bitDepth ( 0 )
 {}
 
 bool InputStreamVideo::setup( const std::string& filename, const size_t streamIndex )
 {
 	av_register_all();
-	//av_log_set_level( AV_LOG_FATAL );
-	av_log_set_level( AV_LOG_DEBUG );
-	
+
 	if( avformat_open_input( &formatContext, filename.c_str(), NULL, NULL ) < 0 )
 	{
 		return false;
@@ -72,8 +66,8 @@ bool InputStreamVideo::setup( const std::string& filename, const size_t streamIn
 		return false;
 	}
 
-	if( codec->capabilities & CODEC_CAP_TRUNCATED )
-		codecContext->flags|= CODEC_FLAG_TRUNCATED;
+	// if( codec->capabilities & CODEC_CAP_TRUNCATED )
+	// 	codecContext->flags|= CODEC_FLAG_TRUNCATED;
 
 	avcodec_open2( codecContext, codec, NULL );
 
@@ -81,15 +75,6 @@ bool InputStreamVideo::setup( const std::string& filename, const size_t streamIn
 	{
 		return false;
 	}
-
-	const AVPixFmtDescriptor* pixFmt = av_pix_fmt_desc_get( codecContext->pix_fmt );
-	if( pixFmt )
-	{
-		components = pixFmt->nb_components;
-		bitDepth = pixFmt->comp[0].depth_minus1 + 1;
-	}
-	width  = formatContext->streams[selectedStream]->codec->width;
-	height = formatContext->streams[selectedStream]->codec->height;
 
 	return true;
 }
@@ -104,7 +89,10 @@ Image& InputStreamVideo::readNextFrame( Image& frameBuffer )
 	while( ! got_frame )
 	{
 		av_init_packet( &pkt );
-		av_read_frame( formatContext, &pkt );
+		int ret = av_read_frame( formatContext, &pkt );
+		if( ret < 0 ) // error or end of file
+			return frameBuffer;
+
 		// We only read one stream and skip others
 		if( pkt.stream_index == selectedStream )
 		{
@@ -114,12 +102,11 @@ Image& InputStreamVideo::readNextFrame( Image& frameBuffer )
 	}
 
 	frameBuffer.getBuffer().resize( avpicture_get_size( (AVPixelFormat)frame->format, frame->width, frame->height ) );
-	//memcpy( &frameBuffer[0], frame->data, frameBuffer.size() );
 
 	// Copy pixel data from an AVPicture into one contiguous buffer.
 	avpicture_layout( (AVPicture*)frame, (AVPixelFormat)frame->format, frame->width, frame->height, &frameBuffer.getBuffer()[0], frameBuffer.getBuffer().size() );
 
-	//av_frame_free( &frame );
+	//av_frame_free( &frame ); // desallocate all memory ...
 
 	return frameBuffer;
 }

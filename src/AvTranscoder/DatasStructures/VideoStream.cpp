@@ -10,8 +10,11 @@ extern "C" {
 #include <libavutil/pixdesc.h>
 #include <libavutil/imgutils.h>
 #include <libavutil/mathematics.h>
+#include <libavutil/opt.h>
 }
 #include <iostream>
+#include <stdexcept>
+#include <sstream>
 
 namespace avtranscoder
 {
@@ -47,15 +50,15 @@ void VideoStream::setVideoCodec( const AVCodecID codecId )
 
 void VideoStream::setParametersFromImage( const Image& image )
 {
-	m_codecContext->width   = image.getWidth();
-	m_codecContext->height  = image.getHeight();
-	m_codecContext->pix_fmt = image.getPixelDesc().findPixel();
-	std::cout << image.getPixelDesc().findPixel() << std::endl;
+	m_codecContext->width   = image.desc().getWidth();
+	m_codecContext->height  = image.desc().getHeight();
+	m_codecContext->pix_fmt = image.desc().getPixelDesc().findPixel();
 }
 
 void VideoStream::setBitrate( const size_t bitRate )
 {
-	m_codecContext->bit_rate = bitRate;
+	set( "b", (int)bitRate );
+	//m_codecContext->bit_rate = bitRate;
 }
 
 void VideoStream::setTimeBase( const size_t num, const size_t den )
@@ -77,6 +80,60 @@ void VideoStream::initCodecContext( )
 	{
 		m_codecContext = NULL;
 		return;
+	}
+}
+
+void VideoStream::set( const std::string& key, const bool value )
+{
+	int error = av_opt_set_int( m_codecContext, key.c_str(), value, 0 );
+	if( error != 0 )
+	{
+		throw std::runtime_error( "setting " + key + " parameter to " + ( value ? "true" : "false" ) + ": " + std::string( av_err2str( error ) ) );
+	}
+}
+
+void VideoStream::set( const std::string& key, const int value )
+{
+	int error = av_opt_set_int( m_codecContext, key.c_str(), value, 0 );
+	if( error != 0 )
+	{
+		std::ostringstream os;
+		os << value;
+		throw std::runtime_error( "setting " + key + " parameter to " + os.str() + ": " + std::string( av_err2str( error ) ) );
+	}
+}
+
+void VideoStream::set( const std::string& key, const int num, const int den )
+{
+	AVRational ratio;
+	ratio.num = num;
+	ratio.den = den;
+	int error = av_opt_set_q( m_codecContext, key.c_str(), ratio, 0 );
+	if( error != 0 )
+	{
+		std::ostringstream os;
+		os << num << "/" << den;
+		throw std::runtime_error( "setting " + key + " parameter to " + os.str() + ": " + std::string( av_err2str( error ) ) );
+	}
+}
+
+void VideoStream::set( const std::string& key, const double value )
+{
+	int error = av_opt_set_double( m_codecContext, key.c_str(), value, 0 );
+	if( error != 0 )
+	{
+		std::ostringstream os;
+		os << value;
+		throw std::runtime_error( "setting " + key + " parameter to " + os.str() + ": " + std::string( av_err2str( error ) ) );
+	}
+}
+
+void VideoStream::set( const std::string& key, const std::string& value )
+{
+	int error = av_opt_set( m_codecContext, key.c_str(), value.c_str(), 0 );
+	if( error != 0 )
+	{
+		throw std::runtime_error( "setting " + key + " parameter to " + value + ": " + std::string( av_err2str( error ) ) );
 	}
 }
 

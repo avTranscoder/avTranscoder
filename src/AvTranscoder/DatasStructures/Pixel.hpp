@@ -50,11 +50,19 @@ public:
 	void setAlpha          ( const bool withAlpha = true ) { m_withAlpha = withAlpha; }
 	void setPlanar         ( const bool isPlanar ) { m_planar = isPlanar; }
 
-	AVPixelFormat findPixel();
+	size_t           getBitsPerPixel   () const { return m_pixelSize; }
+	bool             getBigEndian      () const { return m_endianess; }
+	size_t           getComponents     () const { return m_components; }
+	EComponentType   getColorComponents() const { return m_componentType; }
+	ESubsamplingType getSubsampling    () const { return m_subsamplingType; }
+	bool             getAlpha          () const { return m_withAlpha; }
+	bool             getPlanar         () const { return m_planar; }
+
+	AVPixelFormat findPixel() const;
 
 private:
-	bool asCorrectColorComponents( const AVPixFmtDescriptor* pix_desc, const EComponentType componentType );
-	bool asCorrectSubsampling( const AVPixFmtDescriptor* pix_desc, const ESubsamplingType subsamplingType );
+	bool asCorrectColorComponents( const AVPixFmtDescriptor* pix_desc, const EComponentType componentType ) const;
+	bool asCorrectSubsampling( const AVPixFmtDescriptor* pix_desc, const ESubsamplingType subsamplingType ) const;
 
 	size_t           m_pixelSize;
 	size_t           m_components;

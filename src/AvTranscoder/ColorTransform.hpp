@@ -7,31 +7,32 @@
 #include <vector>
 #include <string>
 
+class SwsContext;
+
 namespace avtranscoder
 {
 
 class ColorTransform
 {
+	#define MAX_SWS_PLANE 4
 public:
 	ColorTransform();
 
-	void setWidth ( const size_t width  );
-	void setHeight( const size_t height );
-
-	void setInputPixel ( const Pixel& pixel ); // ColorProfile
-	void setOutputPixel( const Pixel& pixel );
-
-	bool init();
-
 	void convert( const Image& src, Image& dst );
 
-
 private:
-	size_t m_width;
-	size_t m_height;
+	bool init( const Image& src, const Image& dst );
 
-	Pixel m_inputPixel;
-	Pixel m_outputPixel;
+	SwsContext* m_imageConvertContext;
+
+	std::vector<uint8_t *> srcData;
+	std::vector<uint8_t *> dstData;
+	std::vector<int>       srcLineSize;
+	std::vector<int>       dstLineSize;
+	std::vector<size_t>    srcOffsets;
+	std::vector<size_t>    dstOffsets;
+
+	bool m_isInit;
 };
 
 }

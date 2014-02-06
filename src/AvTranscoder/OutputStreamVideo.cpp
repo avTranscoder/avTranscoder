@@ -31,14 +31,6 @@ bool OutputStreamVideo::setup( )
 	if( codecContext == NULL )
 		return false;
 
-	// set codec parameters
-	// codecContext->width  = width;
-	// codecContext->height = height;
-	// codecContext->bit_rate = 120000000;
-	// codecContext->time_base.num = 1;
-	// codecContext->time_base.den = 25;
-	// codecContext->pix_fmt = pixelFormat;
-
 	// try to open encoder with parameters.
 	if( avcodec_open2( m_videoDesc.getCodecContext(), m_videoDesc.getCodec(), NULL ) < 0 )
 		return false;

@@ -11,12 +11,10 @@ extern "C" {
 #include <libavutil/pixdesc.h>
 }
 
-#include <iostream>
-
 namespace avtranscoder
 {
 
-AVPixelFormat Pixel::findPixel()
+AVPixelFormat Pixel::findPixel() const
 {
 	//av_register_all();
 	const AVPixFmtDescriptor *pix_desc = NULL;
@@ -36,7 +34,7 @@ AVPixelFormat Pixel::findPixel()
 	return AV_PIX_FMT_NONE;
 }
 
-bool Pixel::asCorrectColorComponents( const AVPixFmtDescriptor* pix_desc, const EComponentType componentType )
+bool Pixel::asCorrectColorComponents( const AVPixFmtDescriptor* pix_desc, const EComponentType componentType ) const 
 {
 	if( componentType == eComponentRgb && pix_desc->flags & PIX_FMT_RGB )
 		return true;
@@ -45,7 +43,7 @@ bool Pixel::asCorrectColorComponents( const AVPixFmtDescriptor* pix_desc, const 
 	return false;
 }
 
-bool Pixel::asCorrectSubsampling( const AVPixFmtDescriptor* pix_desc, const ESubsamplingType subsamplingType )
+bool Pixel::asCorrectSubsampling( const AVPixFmtDescriptor* pix_desc, const ESubsamplingType subsamplingType ) const
 {
 	switch( subsamplingType )
 	{

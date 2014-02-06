@@ -26,7 +26,6 @@ OutputFile::OutputFile( const std::string& file )
 	, packetCount   ( 0 )
 {
 	av_register_all();  // Warning: should be called only once
-	av_log_set_level( AV_LOG_DEBUG );
 }
 
 bool OutputFile::setup()

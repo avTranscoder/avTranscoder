@@ -32,6 +32,12 @@ public:
 	void setBitrate( const size_t bitRate );
 	void setTimeBase( const size_t num, const size_t den );
 
+	void set( const std::string& key, const bool value );
+	void set( const std::string& key, const int value );
+	void set( const std::string& key, const int num, const int den );
+	void set( const std::string& key, const double value );
+	void set( const std::string& key, const std::string& value );
+
 #ifndef SWIG
 	AVCodec*        getCodec()        const { return m_codec; }
 	AVCodecContext* getCodecContext() const { return m_codecContext; }
@@ -39,6 +45,9 @@ public:
 
 private:
 	void initCodecContext( );
+
+	void checkError( int error );
+
 	AVCodec*        m_codec;
 	AVCodecContext* m_codecContext;
 };

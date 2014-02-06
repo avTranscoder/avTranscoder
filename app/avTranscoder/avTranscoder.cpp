@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 
 #include <AvTranscoder/Media.hpp>
 #include <AvTranscoder/InputStream.hpp>
@@ -29,6 +30,13 @@ void displayMetadatas( const char* filename )
 	std::cout << "number of programs       : " << input.getProperties().programsCount << std::endl;
 	std::cout << "number of video streams  : " << input.getProperties().videoStreams.size() << std::endl;
 	std::cout << "number of audio streams  : " << input.getProperties().audioStreams.size() << std::endl;
+
+	// std::vector< std::pair< std::string, std::string > > metadatas
+	std::cout << "---------- Metadatas ----------" << std::endl;
+	for( size_t metadataIndex = 0; metadataIndex < input.getProperties().metadatas.size(); ++metadataIndex )
+	{
+		std::cout << std::left << std::setw( 24 ) << input.getProperties().metadatas.at(metadataIndex).first <<" : " << input.getProperties().metadatas.at(metadataIndex).second << std::endl;
+	}
 
 	for( size_t videoStreamIndex = 0; videoStreamIndex < input.getProperties().videoStreams.size(); ++videoStreamIndex )
 	{
@@ -82,8 +90,15 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 {
 	using namespace avtranscoder;
 
+	Media input( inputfilename );
+	input.analyse();
+
 	// init video decoders
 	InputStreamVideo inputStreamVideo; // take the first video stream per default
+
+	av_log_set_level( AV_LOG_FATAL );
+	//av_log_set_level( AV_LOG_DEBUG );
+	
 
 	if( !inputStreamVideo.setup( inputfilename, 0 ) )
 	{
@@ -109,18 +124,28 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 
 	oPixel.setSubsampling( eSubsampling422 );
 	oPixel.setBitsPerPixel( 16 );
-	//std::cout << oPixel.findPixel() << std::endl;
 
-	Image image;
-	image.setWidth ( inputStreamVideo.getWidth() );
-	image.setHeight( inputStreamVideo.getHeight() );
-	image.setPixel( oPixel );
+	ImageDesc imageDesc;
+	imageDesc.setWidth ( input.getProperties().videoStreams.at(0).width );
+	imageDesc.setHeight( input.getProperties().videoStreams.at(0).height );
+	imageDesc.setPixel ( oPixel );
+
+	Image sourceImage( imageDesc );
 
 	videoStream.setVideoCodec( "dnxhd" );
-	videoStream.setBitrate( 120000000 );
+	videoStream.set( "b", 120000000 );
+	try
+	{
+		videoStream.set( "unknownParameter", 120000000 );
+	}
+	catch( const std::exception& e )
+	{
+		std::cout << "[ERROR] " << e.what() << std::endl;
+	}
+
 	videoStream.setTimeBase( 1, 25 ); // 25 fps
 
-	videoStream.setParametersFromImage( image );
+	videoStream.setParametersFromImage( sourceImage );
 
 	//videoStream.initCodecContext();
 
@@ -129,6 +154,9 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 		std::cout << "error during initialising video output stream" << std::endl;
 		exit( -1 );
 	}
+
+	Image imageToEncode( sourceImage );
+	Image codedImage( sourceImage );
 
 
 	OutputStreamAudio osAudioLeft ( );  // "AudioStreamEncoder" / "AudioOutputStream" ?
@@ -165,31 +193,20 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 	wrapper.createAudioEncoder( eAudioLeft, 2 );*/
 
 	ColorTransform ct;
-	ct.setWidth( inputStreamVideo.getWidth() );
-	ct.setHeight( inputStreamVideo.getHeight() );
-	//ct.setInputPixel( const Pixel& pixel );
-	ct.init();
-	//ct.convert( codedImage, codedImage );
 
 
 	// Encodage/transcodage
-
-	Image frameBuffer;
-	std::vector<unsigned char> sourceImage( inputStreamVideo.getWidth() * inputStreamVideo.getHeight() * 3, 120 );
-
-	Image codedImage;
-
 	std::cout << "start transcoding" << std::endl;
 
 	for( size_t count = 0; count < 10; ++count )
 	{
-		inputStreamVideo.readNextFrame( frameBuffer );
+		inputStreamVideo.readNextFrame( sourceImage );
 
-		// ct.convert( codedImage, codedImage );
-
-		outputStreamVideo.encodeFrame( frameBuffer, codedImage );
+		ct.convert( sourceImage, imageToEncode );
+		std::cout << "encode" << std::endl;
+		outputStreamVideo.encodeFrame( imageToEncode, codedImage );
 		//std::cout << "decoded size " << frameBuffer.size() << " encode frame " << count << " size " << codedImage.size() << std::endl;
-
+		std::cout << "wrap" << std::endl;
 		of.wrap( codedImage, 0 );
 	}
 
@@ -223,7 +240,7 @@ int main( int argc, char** argv )
 
 
 	// a simply metadata getter
-	//displayMetadatas( argv[1] );
+	displayMetadatas( argv[1] );
 
 	// example of video Transcoding
 	transcodeVideo( argv[1], "transcodedVideo.mxf" );

@@ -26,7 +26,6 @@ Media::Media( const std::string& inputFile )
 bool Media::analyse()
 {
 	av_register_all();
-	//av_log_set_level( AV_LOG_DEBUG );
 	
 	if( avformat_open_input( &formatContext, filename.c_str(), NULL, NULL ) < 0 )
 	{

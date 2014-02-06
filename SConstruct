@@ -50,6 +50,10 @@ envJava.Replace(
     ],
     LINKFLAGS = [
     ],
+    LIBPATH = [
+        libavLibDir,
+        "#src",
+    ],
 )
 
 envJava.Append(
@@ -76,6 +80,10 @@ envPy.Replace(
         '-fcompact',
     ],
     LINKFLAGS = [
+    ],
+    LIBPATH = [
+        libavLibDir,
+        "#src",
     ],
 )
 
