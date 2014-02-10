@@ -1,6 +1,8 @@
 #ifndef _AV_TRANSCODER_MEDIA_HPP_
 #define _AV_TRANSCODER_MEDIA_HPP_
 
+#include "common.hpp"
+
 #include <string>
 #include <vector>
 
@@ -8,12 +10,6 @@ class AVFormatContext;
 
 namespace avtranscoder
 {
-
-
-struct Ratio {
-	size_t num;
-	size_t den;
-};
 
 struct Channel {
 	size_t id;

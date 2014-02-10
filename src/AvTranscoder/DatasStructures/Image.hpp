@@ -1,6 +1,8 @@
 #ifndef _AV_TRANSCODER_DATA_IMAGE_HPP_
 #define _AV_TRANSCODER_DATA_IMAGE_HPP_
 
+#include <AvTranscoder/common.hpp>
+
 extern "C" {
 #ifndef __STDC_CONSTANT_MACROS
 	#define __STDC_CONSTANT_MACROS
@@ -39,14 +41,13 @@ public:
 	void setWidth ( const size_t width     ) { m_width = width; }
 	void setHeight( const size_t height    ) { m_height = height; }
 	void setPixel ( const Pixel& pixel     ) { m_pixel = pixel; }
-	void setDar   ( const size_t num, const size_t den ) { m_displayAspectRatioNum = num; m_displayAspectRatioDen = den; }
+	void setDar   ( const size_t num, const size_t den ) { m_displayAspectRatio.num = num; m_displayAspectRatio.den = den; }
+	void setDar   ( const Ratio ratio ) { m_displayAspectRatio = ratio; }
 
-	size_t               getWidth () const { return m_width;  }
-	size_t               getHeight() const { return m_height; }
-	// Ratio                getDar()    const { return m_displayAspectRatio; }
+	size_t               getWidth ()    const { return m_width;  }
+	size_t               getHeight()    const { return m_height; }
+	Ratio                getDar()       const { return m_displayAspectRatio; }
 	Pixel                getPixelDesc() const { return m_pixel; }
-
-	//AVFrame              getEmptyFrame() const;
 
 	size_t getDataSize() const
 	{
@@ -57,9 +58,7 @@ private:
 
 	size_t          m_width;
 	size_t          m_height;
-	size_t          m_displayAspectRatioNum;
-	size_t          m_displayAspectRatioDen;
-	// Ratio           m_displayAspectRatio;
+	Ratio           m_displayAspectRatio;
 	Pixel           m_pixel;
 	// ColorProperties m_color;
 
@@ -82,16 +81,6 @@ public:
 	const unsigned char* getPtr()  const { return &m_dataBuffer[0]; }
 #endif
 	size_t               getSize() const { return m_dataBuffer.size(); }
-
-	//void alloc() { m_dataBuffer = data; }
-
-	// for overloading get_buffer2
-	// int alloc( struct AVCodecContext* s,
-	//            AVFrame* frame,
-	//            int flags )
-	// {
-
-	// }
 
 private:
 	DataBuffer m_dataBuffer;

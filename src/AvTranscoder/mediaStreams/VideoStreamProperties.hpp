@@ -50,6 +50,8 @@ void getGopProperties( VideoProperties& vp, AVFormatContext* formatContext, AVCo
 			break;
 		}
 	}
+
+	av_frame_free( &frame );
 }
 
 }

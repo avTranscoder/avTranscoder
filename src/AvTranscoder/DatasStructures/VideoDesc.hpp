@@ -1,5 +1,5 @@
-#ifndef _AV_TRANSCODER_DATA_VIDEO_STREAM_HPP_
-#define _AV_TRANSCODER_DATA_VIDEO_STREAM_HPP_
+#ifndef _AV_TRANSCODER_DATA_VIDEO_DESC_HPP_
+#define _AV_TRANSCODER_DATA_VIDEO_DESC_HPP_
 
 #include "Image.hpp"
 #include <string>
@@ -18,20 +18,22 @@ extern "C" {
 namespace avtranscoder
 {
 
-class VideoStream
+class VideoDesc
 {
 public:
-	VideoStream( const std::string& codecName = "" );
-	VideoStream( const AVCodecID codecId );
+	VideoDesc( const std::string& codecName = "" );
+	VideoDesc( const AVCodecID codecId );
 
 	void setVideoCodec( const std::string& codecName );
 	void setVideoCodec( const AVCodecID codecId );
 
-	void setParametersFromImage( const Image& image );
+	void setImageParameters( const Image& image );
+	void setImageParameters( const size_t width, const size_t height, const Pixel& pixel );
+	void setImageParameters( const size_t width, const size_t height, const AVPixelFormat& pixel );
 
-	void setBitrate( const size_t bitRate );
 	void setTimeBase( const size_t num, const size_t den );
 
+	void set( const std::string& key, const std::string& flag, const bool enable );
 	void set( const std::string& key, const bool value );
 	void set( const std::string& key, const int value );
 	void set( const std::string& key, const int num, const int den );

@@ -11,7 +11,7 @@ extern "C" {
 #include "OutputStream.hpp"
 
 #include "DatasStructures/Image.hpp"
-#include "DatasStructures/VideoStream.hpp"
+#include "DatasStructures/VideoDesc.hpp"
 
 #include <string>
 #include <vector>
@@ -29,17 +29,17 @@ public:
 
 	bool setup();
 
-	void setVideoDesc( const VideoStream& videoStream );
+	void setVideoDesc( const VideoDesc& videoDesc );
 
 	/**
 	 * @param[out] codecFrame blabla
 	 */
 	bool encodeFrame( const Image& sourceImage, Image& codedFrame );
 
-	VideoStream& getVideoDesc() { return m_videoDesc; }
+	VideoDesc& getVideoDesc() { return m_videoDesc; }
 
 private:
-	VideoStream m_videoDesc;
+	VideoDesc m_videoDesc;
 };
 
 }

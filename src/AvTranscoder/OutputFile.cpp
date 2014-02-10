@@ -54,29 +54,24 @@ bool OutputFile::setup()
 	return formatContext != NULL;
 }
 
-bool OutputFile::addVideoStream( )
+bool OutputFile::addVideoStream( const VideoDesc& videoDesc )
 {
 	if( formatContext == NULL )
 		return false; // throw not return ...
 
-	if( ( codec = avcodec_find_encoder_by_name( "dnxhd" ) ) == NULL )
-		return false;
-	
-	if( ( stream = avformat_new_stream( formatContext, codec ) ) == NULL )
+	if( ( stream = avformat_new_stream( formatContext, videoDesc.getCodec() ) ) == NULL )
 		return false;
 
-	// already set codec id
-	//stream->codec->codec_id = codec->id;
-	
-	stream->codec->width  = 1920;
-	stream->codec->height = 1080;
-	stream->codec->bit_rate = 120000000;
+	// need to set the time_base on the AVCodecContext and the AVStream...
+	stream->codec->time_base = videoDesc.getCodecContext()->time_base;
+	stream->time_base = stream->codec->time_base;
+
+	stream->codec->width  = videoDesc.getCodecContext()->width;
+	stream->codec->height = videoDesc.getCodecContext()->height;
+	stream->codec->bit_rate = 50000000;
 	stream->codec->time_base.num = 1;
 	stream->codec->time_base.den = 25;
 	stream->codec->pix_fmt = AV_PIX_FMT_YUV422P;
-
-	// need to set the time_base on the AVCodecContext and the AVStream...
-	stream->time_base = stream->codec->time_base;
 
 	// to move in endSetup
 	if( avformat_write_header( formatContext, NULL ) != 0 )
@@ -126,7 +121,31 @@ bool OutputFile::wrap( const Image& data, const size_t streamId )
 		return false;
 	}
 
-	av_free_packet(&packet);
+	av_free_packet( &packet );
+
+	packetCount++;
+	return true;
+}
+
+bool OutputFile::wrap( const DataStream& data, const size_t streamId )
+{
+	AVPacket packet;
+	av_init_packet( &packet );
+
+	packet.size = data.getSize();
+	packet.data = (uint8_t*)data.getPtr();
+	packet.stream_index = streamId;
+
+	packet.dts = 0;
+	packet.pts = packetCount;
+
+	if( av_interleaved_write_frame( formatContext, &packet ) != 0 )
+	{
+		std::cout << "error when writting packet in stream" << std::endl;
+		return false;
+	}
+
+	av_free_packet( &packet );
 
 	packetCount++;
 	return true;

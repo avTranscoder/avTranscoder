@@ -2,6 +2,8 @@
 #define _AV_TRANSCODER_OUTPUT_FILE_HPP_
 
 #include "DatasStructures/Image.hpp"
+#include "DatasStructures/DataStreamDesc.hpp"
+#include "DatasStructures/VideoDesc.hpp"
 
 #include <string>
 #include <vector>
@@ -22,11 +24,17 @@ public:
 
 	bool setup();
 
-	bool addVideoStream( );
+	bool addVideoStream( const VideoDesc& videoDesc );
+
+
+	bool addVideoStream( const std::string& codecName );
+
 	bool addAudioStream( );
 
 
 	bool wrap( const Image& data, const size_t streamId );
+
+	bool wrap( const DataStream& data, const size_t streamId );
 
 private:
 	AVOutputFormat*  outputFormat;

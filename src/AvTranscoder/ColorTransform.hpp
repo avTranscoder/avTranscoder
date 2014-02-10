@@ -14,7 +14,6 @@ namespace avtranscoder
 
 class ColorTransform
 {
-	#define MAX_SWS_PLANE 4
 public:
 	ColorTransform();
 

@@ -1,4 +1,5 @@
 #include "ColorTransform.hpp"
+#include "common.hpp"
 
 extern "C" {
 #ifndef __STDC_CONSTANT_MACROS
@@ -13,7 +14,7 @@ extern "C" {
 
 #include <iostream>
 #include <iomanip>
-#include <assert.h>
+#include <cassert>
 #include <stdexcept>
 
 namespace avtranscoder

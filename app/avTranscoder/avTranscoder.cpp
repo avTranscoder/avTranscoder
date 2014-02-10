@@ -8,11 +8,12 @@
 #include <AvTranscoder/OutputStream.hpp>
 #include <AvTranscoder/OutputStreamAudio.hpp>
 #include <AvTranscoder/OutputStreamVideo.hpp>
+#include <AvTranscoder/InputFile.hpp>
 #include <AvTranscoder/OutputFile.hpp>
 
 #include <AvTranscoder/ColorTransform.hpp>
 
-#include <AvTranscoder/DatasStructures/VideoStream.hpp>
+#include <AvTranscoder/DatasStructures/VideoDesc.hpp>
 #include <AvTranscoder/DatasStructures/Image.hpp>
 
 void displayMetadatas( const char* filename )
@@ -53,7 +54,8 @@ void displayMetadatas( const char* filename )
 		std::cout << "display aspect ratio     : " << input.getProperties().videoStreams.at(videoStreamIndex).dar.num << "/" <<
 		                                              input.getProperties().videoStreams.at(videoStreamIndex).dar.den << std::endl;
 		std::cout << "pixel type               : " << input.getProperties().videoStreams.at(videoStreamIndex).pixelName << std::endl;
-		std::cout << "number of components     : " << input.getProperties().videoStreams.at(videoStreamIndex).componentsCount << std::endl;
+		
+		std::cout << "bit rate                 : " << input.getProperties().videoStreams.at(videoStreamIndex).bitRate << std::endl;
 
 		std::cout << "color transfert          : " << input.getProperties().videoStreams.at(videoStreamIndex).colorTransfert << std::endl;
 		std::cout << "colorspace               : " << input.getProperties().videoStreams.at(videoStreamIndex).colorspace << std::endl;
@@ -118,7 +120,7 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 	// init video & audio encoders
 	OutputStreamVideo outputStreamVideo;
 
-	VideoStream& videoStream = outputStreamVideo.getVideoDesc();
+	VideoDesc& videoDesc = outputStreamVideo.getVideoDesc();
 
 	Pixel oPixel;
 
@@ -132,22 +134,22 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 
 	Image sourceImage( imageDesc );
 
-	videoStream.setVideoCodec( "dnxhd" );
-	videoStream.set( "b", 120000000 );
+	videoDesc.setVideoCodec( "dnxhd" );
+	videoDesc.set( "b", 120000000 );
 	try
 	{
-		videoStream.set( "unknownParameter", 120000000 );
+		videoDesc.set( "unknownParameter", 120000000 );
 	}
 	catch( const std::exception& e )
 	{
 		std::cout << "[ERROR] " << e.what() << std::endl;
 	}
 
-	videoStream.setTimeBase( 1, 25 ); // 25 fps
+	videoDesc.setTimeBase( 1, 25 ); // 25 fps
 
-	videoStream.setParametersFromImage( sourceImage );
+	videoDesc.setImageParameters( sourceImage );
 
-	//videoStream.initCodecContext();
+	//videoDesc.initCodecContext();
 
 	if( !outputStreamVideo.setup( ) )
 	{
@@ -173,7 +175,10 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 		exit( -1 );
 	}
 
-	if( ! of.addVideoStream() )
+	InputFile inputFile( inputfilename );
+	inputFile.setup();
+
+	if( ! of.addVideoStream( inputFile.getVideoDesc( 0 ) ) )
 	{
 		std::cout << "error during adding output video stream" << std::endl;
 		exit( -1 );
@@ -198,34 +203,21 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 	// Encodage/transcodage
 	std::cout << "start transcoding" << std::endl;
 
-	for( size_t count = 0; count < 10; ++count )
+	size_t frame = 0;
+
+	while( inputStreamVideo.readNextFrame( sourceImage ) )
 	{
-		inputStreamVideo.readNextFrame( sourceImage );
+		std::cout << "\rprocess frame " << frame << std::flush;
 
 		ct.convert( sourceImage, imageToEncode );
-		std::cout << "encode" << std::endl;
+
 		outputStreamVideo.encodeFrame( imageToEncode, codedImage );
-		//std::cout << "decoded size " << frameBuffer.size() << " encode frame " << count << " size " << codedImage.size() << std::endl;
-		std::cout << "wrap" << std::endl;
+
 		of.wrap( codedImage, 0 );
+
+		++frame;
 	}
-
-
-	//for( size_t frame : dVideo.framesCount() )
-	{
-		// read & decode source image,
-		// send it to encoder which wraps it automatically
-		//eVideo.encode( /* raw data */ dVideo.readNextFrame() );
-		//eVideo.write()
-
-		// also to access to decoded data image
-		//dVideo.getDataFrame();
-
-
-		//wrapper.write( /* char */ myRawData, streamIndex );
-	}
-
-	//eAudioLeft.encode(  );
+	std::cout << std::endl;
 }
 
 int main( int argc, char** argv )
@@ -237,7 +229,6 @@ int main( int argc, char** argv )
 	}
 
 	std::cout << "start ..." << std::endl;
-
 
 	// a simply metadata getter
 	displayMetadatas( argv[1] );

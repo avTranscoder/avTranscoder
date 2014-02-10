@@ -86,6 +86,7 @@ bool OutputStreamVideo::encodeFrame( const Image& sourceImage, Image& codedFrame
 		memcpy( codedFrame.getPtr(), packet.data, packet.size );
 	}
 
+	av_free_packet( &packet );
 	av_frame_free( &frame );
 	return ret < 0;
 }

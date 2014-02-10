@@ -3,12 +3,14 @@
 
 #include "InputStream.hpp"
 #include "DatasStructures/Image.hpp"
+#include "DatasStructures/DataStreamDesc.hpp"
 
 #include <vector>
 
 class AVFormatContext;
 class AVCodec;
 class AVCodecContext;
+class AVFrame;
 
 namespace avtranscoder
 {
@@ -17,17 +19,21 @@ class InputStreamVideo : public InputStream
 {
 public:
 	InputStreamVideo();
+	~InputStreamVideo();
 
 	bool setup( const std::string& filename, const size_t streamIndex );
 
-	Image& readNextFrame( Image& frameBuffer );
+	bool readNextCodedFrame( DataStream& frameBuffer );
+
+	bool readNextFrame( Image& frameBuffer );
 
 private:
-	AVFormatContext* formatContext;
-	AVCodec*         codec;
-	AVCodecContext*  codecContext;
+	AVFormatContext* m_formatContext;
+	AVCodec*         m_codec;
+	AVCodecContext*  m_codecContext;
+	AVFrame*         m_frame;
 
-	int    selectedStream;
+	int              m_selectedStream;
 };
 
 }

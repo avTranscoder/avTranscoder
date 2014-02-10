@@ -6,9 +6,12 @@
 %include "std_map.i"
 
 %{
+#include <AvTranscoder/common.hpp>
+
 #include <AvTranscoder/DatasStructures/Pixel.hpp>
 #include <AvTranscoder/DatasStructures/Image.hpp>
-#include <AvTranscoder/DatasStructures/VideoStream.hpp>
+#include <AvTranscoder/DatasStructures/VideoDesc.hpp>
+#include <AvTranscoder/DatasStructures/DataStreamDesc.hpp>
 
 #include <AvTranscoder/Media.hpp>
 
@@ -33,9 +36,12 @@ namespace std {
 %template(ChannelVector)   vector< avtranscoder::Channel >;
 }
 
+%include <AvTranscoder/common.hpp>
+
 %include <AvTranscoder/DatasStructures/Pixel.hpp>
 %include <AvTranscoder/DatasStructures/Image.hpp>
-%include <AvTranscoder/DatasStructures/VideoStream.hpp>
+%include <AvTranscoder/DatasStructures/VideoDesc.hpp>
+%include <AvTranscoder/DatasStructures/DataStreamDesc.hpp>
 
 %include <AvTranscoder/Media.hpp>
 
