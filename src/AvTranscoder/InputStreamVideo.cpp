@@ -47,16 +47,7 @@ bool InputStreamVideo::setup( const std::string& filename, const size_t streamIn
 {
 	av_register_all();
 
-	if( avformat_open_input( &m_formatContext, filename.c_str(), NULL, NULL ) < 0 )
-	{
-		return false;
-	}
-
-	// update format context informations from streams
-	if( avformat_find_stream_info( m_formatContext, NULL ) < 0 )
-	{
-		return false;
-	}
+	InputFile::setup( filename );
 
 	size_t videoStreamCount = 0;
 	for( size_t streamId = 0; streamId < m_formatContext->nb_streams; streamId++ )
@@ -106,58 +97,24 @@ bool InputStreamVideo::setup( const std::string& filename, const size_t streamIn
 	return true;
 }
 
-bool InputStreamVideo::readNextCodedFrame( DataStream& frameBuffer )
-{
-	bool gotData = false;
-
-	AVPacket pkt;
-	av_init_packet( &pkt );
-	
-	while( ! gotData )
-	{
-		int ret = av_read_frame( m_formatContext, &pkt );
-		if( ret < 0 ) // error or end of file
-		{
-			av_free_packet( &pkt );
-			return false;
-		}
-
-		// We only read one stream and skip others
-		if( pkt.stream_index == m_selectedStream )
-		{
-			gotData = true;
-		}
-	}
-
-	frameBuffer.getBuffer().resize( pkt.size );
-	memcpy( frameBuffer.getPtr(), pkt.data, pkt.size );
-
-	av_free_packet( &pkt );
-
-	return true;
-}
-
 bool InputStreamVideo::readNextFrame( Image& frameBuffer )
 {
 	int got_frame = 0;
 
 	while( ! got_frame )
 	{
-		AVPacket pkt;
-		av_init_packet( &pkt );
-		int ret = av_read_frame( m_formatContext, &pkt );
-		if( ret < 0 ) // error or end of file
+		AVPacket packet;
+		av_init_packet( &packet );
+
+		if( ! readNextPacket( packet, m_selectedStream ) ) // error or end of file
 		{
-			av_free_packet( &pkt );
+			av_free_packet( &packet );
 			return false;
 		}
 
-		// We only read one stream and skip others
-		if( pkt.stream_index == m_selectedStream )
-		{
-			avcodec_decode_video2( m_codecContext, m_frame, &got_frame, &pkt );
-		}
-		av_free_packet( &pkt );
+		avcodec_decode_video2( m_codecContext, m_frame, &got_frame, &packet );
+
+		av_free_packet( &packet );
 	}
 
 	size_t decodedSize = avpicture_get_size( (AVPixelFormat)m_frame->format, m_frame->width, m_frame->height );

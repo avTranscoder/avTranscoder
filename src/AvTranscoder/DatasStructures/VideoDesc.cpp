@@ -11,6 +11,7 @@ extern "C" {
 #include <libavutil/imgutils.h>
 #include <libavutil/mathematics.h>
 #include <libavutil/opt.h>
+#include <libavutil/error.h>
 }
 #include <iostream>
 #include <stdexcept>
@@ -104,7 +105,9 @@ void VideoDesc::set( const std::string& key, const std::string& flag, const bool
 	error = av_opt_get_int( m_codecContext, key.c_str(), AV_OPT_SEARCH_CHILDREN, &optVal );
 	if( error != 0 )
 	{
-		throw std::runtime_error( "unknown key " + key + ": " + std::string( av_err2str( error ) ) );
+		std::string err( "", AV_ERROR_MAX_STRING_SIZE );
+		av_make_error_string( const_cast<char*>(err.c_str()), err.size(), error );
+		throw std::runtime_error( "unknown key " + key + ": " + err );
 	}
 
 	if( enable )
@@ -115,7 +118,9 @@ void VideoDesc::set( const std::string& key, const std::string& flag, const bool
 	error = av_opt_set_int( m_codecContext, key.c_str(), optVal, AV_OPT_SEARCH_CHILDREN );
 	if( error != 0 )
 	{
-		throw std::runtime_error( "setting " + key + " parameter to " + flag + ": " + std::string( av_err2str( error ) ) );
+		std::string err( "", AV_ERROR_MAX_STRING_SIZE );
+		av_make_error_string( const_cast<char*>(err.c_str()), err.size(), error );
+		throw std::runtime_error( "setting " + key + " parameter to " + flag + ": " + err );
 	}
 }
 
@@ -124,7 +129,9 @@ void VideoDesc::set( const std::string& key, const bool value )
 	int error = av_opt_set_int( m_codecContext, key.c_str(), value, AV_OPT_SEARCH_CHILDREN );
 	if( error != 0 )
 	{
-		throw std::runtime_error( "setting " + key + " parameter to " + ( value ? "true" : "false" ) + ": " + std::string( av_err2str( error ) ) );
+		std::string err( "", AV_ERROR_MAX_STRING_SIZE );
+		av_make_error_string( const_cast<char*>(err.c_str()), err.size(), error );
+		throw std::runtime_error( "setting " + key + " parameter to " + ( value ? "true" : "false" ) + ": " + err );
 	}
 }
 
@@ -137,7 +144,9 @@ void VideoDesc::set( const std::string& key, const int value )
 	{
 		std::ostringstream os;
 		os << value;
-		throw std::runtime_error( "setting " + key + " parameter to " + os.str() + ": " + std::string( av_err2str( error ) ) );
+		std::string err( "", AV_ERROR_MAX_STRING_SIZE );
+		av_make_error_string( const_cast<char*>(err.c_str()), err.size(), error );
+		throw std::runtime_error( "setting " + key + " parameter to " + os.str() + ": " + err );
 	}
 }
 
@@ -151,7 +160,9 @@ void VideoDesc::set( const std::string& key, const int num, const int den )
 	{
 		std::ostringstream os;
 		os << num << "/" << den;
-		throw std::runtime_error( "setting " + key + " parameter to " + os.str() + ": " + std::string( av_err2str( error ) ) );
+		std::string err( "", AV_ERROR_MAX_STRING_SIZE );
+		av_make_error_string( const_cast<char*>(err.c_str()), err.size(), error );
+		throw std::runtime_error( "setting " + key + " parameter to " + os.str() + ": " + err );
 	}
 }
 
@@ -162,7 +173,9 @@ void VideoDesc::set( const std::string& key, const double value )
 	{
 		std::ostringstream os;
 		os << value;
-		throw std::runtime_error( "setting " + key + " parameter to " + os.str() + ": " + std::string( av_err2str( error ) ) );
+		std::string err( "", AV_ERROR_MAX_STRING_SIZE );
+		av_make_error_string( const_cast<char*>(err.c_str()), err.size(), error );
+		throw std::runtime_error( "setting " + key + " parameter to " + os.str() + ": " + err );
 	}
 }
 
@@ -171,7 +184,9 @@ void VideoDesc::set( const std::string& key, const std::string& value )
 	int error = av_opt_set( m_codecContext, key.c_str(), value.c_str(), AV_OPT_SEARCH_CHILDREN );
 	if( error != 0 )
 	{
-		throw std::runtime_error( "setting " + key + " parameter to " + value + ": " + std::string( av_err2str( error ) ) );
+		std::string err( "", AV_ERROR_MAX_STRING_SIZE );
+		av_make_error_string( const_cast<char*>(err.c_str()), err.size(), error );
+		throw std::runtime_error( "setting " + key + " parameter to " + value + ": " + err );
 	}
 }
 

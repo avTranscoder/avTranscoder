@@ -1,7 +1,7 @@
 #ifndef _AV_TRANSCODER_INPUT_STREAM_VIDEO_HPP_
 #define _AV_TRANSCODER_INPUT_STREAM_VIDEO_HPP_
 
-#include "InputStream.hpp"
+#include "InputFile.hpp"
 #include "DatasStructures/Image.hpp"
 #include "DatasStructures/DataStreamDesc.hpp"
 
@@ -15,15 +15,13 @@ class AVFrame;
 namespace avtranscoder
 {
 
-class InputStreamVideo : public InputStream
+class InputStreamVideo : public InputFile
 {
 public:
 	InputStreamVideo();
 	~InputStreamVideo();
 
 	bool setup( const std::string& filename, const size_t streamIndex );
-
-	bool readNextCodedFrame( DataStream& frameBuffer );
 
 	bool readNextFrame( Image& frameBuffer );
 

@@ -175,8 +175,8 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 		exit( -1 );
 	}
 
-	InputFile inputFile( inputfilename );
-	inputFile.setup();
+	InputFile inputFile;
+	inputFile.setup( inputfilename );
 
 	if( ! of.addVideoStream( inputFile.getVideoDesc( 0 ) ) )
 	{

@@ -2,6 +2,7 @@
 #define _AV_TRANSCODER_DATA_DATA_STREAM_DESC_HPP_
 
 #include <string>
+#include <vector>
 
 extern "C" {
 #ifndef __STDC_CONSTANT_MACROS
@@ -30,6 +31,9 @@ private:
 class DataStream
 {
 public:
+	typedef std::vector< unsigned char > DataBuffer;
+
+
 	DataStream( const DataStreamDesc& ref )
 		: m_dataBuffer( 0, 0 )
 		, m_dataStreamDesc( ref )

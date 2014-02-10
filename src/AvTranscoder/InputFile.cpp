@@ -17,34 +17,48 @@ extern "C" {
 namespace avtranscoder
 {
 
-InputFile::InputFile( const std::string& file )
-	: m_inputFormat   ( NULL )
-	, m_formatContext ( NULL )
+InputFile::InputFile()
+	: m_formatContext ( NULL )
 	, m_codec         ( NULL )
 	, m_codecContext  ( NULL )
 	, m_stream        ( NULL )
-	, m_filename      ( file )
+	, m_filename      ( "" )
 	, m_packetCount   ( 0 )
 {
 	av_register_all();  // Warning: should be called only once
 }
 
-bool InputFile::setup()
+InputFile::~InputFile()
 {
-	av_register_all();
+	if( m_formatContext )
+	{
+		avformat_close_input( &m_formatContext );
+		m_formatContext = NULL;
+	}
+	if( m_codecContext )
+	{
+		avcodec_close( m_codecContext );
+		m_codecContext = NULL;
+	}
+}
 
+InputFile& InputFile::setup( const std::string& filename )
+{
+	m_filename = filename;
 	if( avformat_open_input( &m_formatContext, m_filename.c_str(), NULL, NULL ) < 0 )
 	{
-		return false;
+		throw std::runtime_error( "unable to open file" );
 	}
 
 	// update format context informations from streams
 	if( avformat_find_stream_info( m_formatContext, NULL ) < 0 )
 	{
-		return false;
+		avformat_close_input( &m_formatContext );
+		m_formatContext = NULL;
+		throw std::runtime_error( "unable to find stream informations" );
 	}
 
-	return m_formatContext != NULL;
+	return *this;
 }
 
 VideoDesc InputFile::getVideoDesc( size_t videoStreamId )
@@ -77,9 +91,37 @@ VideoDesc InputFile::getVideoDesc( size_t videoStreamId )
 	return desc;
 }
 
-bool unwrap( const Image& data, const size_t streamId )
+bool InputFile::unwrap( DataStream& data, const size_t streamIndex )
 {
-	
+	AVPacket packet;
+	av_init_packet( &packet );
+
+	readNextPacket( packet, streamIndex );
+
+	data.getBuffer().resize( packet.size );
+	memcpy( data.getPtr(), packet.data, packet.size );
+
+	av_free_packet( &packet );
+
+	return true;
+}
+
+bool InputFile::readNextPacket( AVPacket& packet, const size_t streamIndex )
+{
+	while( 1 )
+	{
+		int ret = av_read_frame( m_formatContext, &packet );
+		if( ret < 0 ) // error or end of file
+		{
+			return false;
+		}
+
+		// We only read one stream and skip others
+		if( packet.stream_index == (int)streamIndex )
+		{
+			return true;
+		}
+	}
 }
 
 }

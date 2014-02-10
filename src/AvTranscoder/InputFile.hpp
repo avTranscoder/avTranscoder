@@ -1,7 +1,7 @@
 #ifndef _AV_TRANSCODER_INPUT_FILE_HPP_
 #define _AV_TRANSCODER_INPUT_FILE_HPP_
 
-#include "DatasStructures/Image.hpp"
+#include "DatasStructures/DataStreamDesc.hpp"
 #include "DatasStructures/VideoDesc.hpp"
 
 #include <string>
@@ -19,18 +19,21 @@ namespace avtranscoder
 class InputFile
 {
 public:
-	InputFile( const std::string& file = "" );
+	InputFile();
+	~InputFile();
 
-	bool setup();
+	InputFile& setup( const std::string& file );
 
 	VideoDesc getVideoDesc( size_t videoStreamId );
 	bool getAudioStream( );
 
 
-	bool unwrap( const Image& data, const size_t streamId );
+	bool unwrap( DataStream& data, const size_t streamIndex );
+
+protected:
+	bool readNextPacket( AVPacket& packet, const size_t streamIndex );
 
 private:
-	AVInputFormat*   m_inputFormat;
 	AVFormatContext* m_formatContext;
 
 	AVCodec*         m_codec;
