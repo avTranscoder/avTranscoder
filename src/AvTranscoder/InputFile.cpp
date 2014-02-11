@@ -1,4 +1,11 @@
 #include "InputFile.hpp"
+#include "Metadatas/VideoStreamProperties.hpp"
+#include "Metadatas/AudioStreamProperties.hpp"
+#include "Metadatas/DataStreamProperties.hpp"
+#include "Metadatas/SubtitleStreamProperties.hpp"
+#include "Metadatas/AttachementStreamProperties.hpp"
+#include "Metadatas/UnknownStreamProperties.hpp"
+
 
 extern "C" {
 #ifndef __STDC_CONSTANT_MACROS
@@ -49,6 +56,69 @@ InputFile& InputFile::setup( const std::string& filename )
 		avformat_close_input( &m_formatContext );
 		m_formatContext = NULL;
 		throw std::runtime_error( "unable to find stream informations" );
+	}
+
+	return *this;
+}
+
+InputFile& InputFile::analyse()
+{
+	properties.filename = m_formatContext->filename;
+	properties.formatName = m_formatContext->iformat->name;
+	properties.formatLongName = m_formatContext->iformat->long_name;
+	properties.streamsCount = m_formatContext->nb_streams;
+	properties.programsCount = m_formatContext->nb_programs;
+	properties.startTime = 1.0 * (uint)m_formatContext->start_time / AV_TIME_BASE;
+	properties.duration = 1.0 * m_formatContext->duration / AV_TIME_BASE;
+	properties.bitRate = m_formatContext->bit_rate;
+	properties.packetSize = m_formatContext->packet_size;
+
+	AVDictionaryEntry *tag = NULL;
+	while( ( tag = av_dict_get( m_formatContext->metadata, "", tag, AV_DICT_IGNORE_SUFFIX ) ) )
+	{
+		properties.metadatas.push_back( std::pair<std::string, std::string>( tag->key, tag->value ) );
+	}
+
+	for( size_t streamId = 0; streamId < m_formatContext->nb_streams; streamId++ )
+	{
+		switch( m_formatContext->streams[streamId]->codec->codec_type )
+		{
+			case AVMEDIA_TYPE_VIDEO:
+			{
+				properties.videoStreams.push_back( videoStreamInfo( m_formatContext, streamId ) );
+				break;
+			}
+			case AVMEDIA_TYPE_AUDIO:
+			{
+				properties.audioStreams.push_back( audioStreamInfo( m_formatContext, streamId ) );
+				break;
+			}
+			case AVMEDIA_TYPE_DATA:
+			{
+				properties.dataStreams.push_back( dataStreamInfo( m_formatContext, streamId ) );
+				break;
+			}
+			case AVMEDIA_TYPE_SUBTITLE:
+			{
+				properties.subtitleStreams.push_back( subtitleStreamInfo( m_formatContext, streamId ) );
+				break;
+			}
+			case AVMEDIA_TYPE_ATTACHMENT:
+			{
+				properties.attachementStreams.push_back( attachementStreamInfo( m_formatContext, streamId ) );
+				break;
+			}
+			case AVMEDIA_TYPE_UNKNOWN:
+			{
+				properties.unknownStreams.push_back( unknownStreamInfo( m_formatContext, streamId ) );
+				break;
+			}
+			case AVMEDIA_TYPE_NB:
+			{
+				// std::cout << "NB" << std::endl;
+				break;
+			}
+		}
 	}
 
 	return *this;

@@ -3,6 +3,7 @@
 
 #include "DatasStructures/DataStreamDesc.hpp"
 #include "DatasStructures/VideoDesc.hpp"
+#include "Metadatas/MediaMetadatasStructures.hpp"
 
 #include <string>
 #include <vector>
@@ -24,6 +25,13 @@ public:
 
 	InputFile& setup( const std::string& file );
 
+	// *** Metadatas section ***
+	// run the analyse on the file after a setup.
+	InputFile& analyse();
+	// get properties on the file
+	const Properties& getProperties() const { return properties; }
+
+
 	VideoDesc getVideoDesc( size_t videoStreamId );
 	bool getAudioStream( );
 
@@ -35,11 +43,11 @@ protected:
 
 protected:
 	AVFormatContext* m_formatContext;
-	
 	AVStream*        m_stream;
 
-	std::string      m_filename;
+	Properties       properties;
 
+	std::string      m_filename;
 	size_t           m_packetCount;
 };
 

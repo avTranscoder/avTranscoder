@@ -13,8 +13,6 @@
 #include <AvTranscoder/DatasStructures/VideoDesc.hpp>
 #include <AvTranscoder/DatasStructures/DataStreamDesc.hpp>
 
-#include <AvTranscoder/Media.hpp>
-
 #include <AvTranscoder/OutputFile.hpp>
 
 #include <AvTranscoder/OutputStream.hpp>
@@ -42,8 +40,6 @@ namespace std {
 %include <AvTranscoder/DatasStructures/Image.hpp>
 %include <AvTranscoder/DatasStructures/VideoDesc.hpp>
 %include <AvTranscoder/DatasStructures/DataStreamDesc.hpp>
-
-%include <AvTranscoder/Media.hpp>
 
 %include <AvTranscoder/OutputFile.hpp>
 

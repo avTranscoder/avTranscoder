@@ -1,7 +1,6 @@
 #include <iostream>
 #include <iomanip>
 
-#include <AvTranscoder/Media.hpp>
 #include <AvTranscoder/InputStream.hpp>
 #include <AvTranscoder/InputStreamAudio.hpp>
 #include <AvTranscoder/InputStreamVideo.hpp>
@@ -20,8 +19,8 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 {
 	using namespace avtranscoder;
 
-	Media input( inputfilename );
-	input.analyse();
+	InputFile input;
+	input.setup( inputfilename ).analyse();
 
 	// init video decoders
 	InputStreamVideo inputStreamVideo; // take the first video stream per default

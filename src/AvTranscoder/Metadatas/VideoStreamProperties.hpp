@@ -27,7 +27,7 @@ void getGopProperties( VideoProperties& vp, AVFormatContext* formatContext, AVCo
 	avcodec_open2( codecContext, codec, NULL );
 
 	int count = 0;
-	int ret = 0, gotFrame = 0;
+	int gotFrame = 0;
 	
 	while( ! av_read_frame( formatContext, &pkt ) )
 	{
@@ -62,6 +62,8 @@ VideoProperties videoStreamInfo( AVFormatContext* formatContext, const size_t in
 	AVCodecContext* codec_context = formatContext->streams[index]->codec;
 	
 	codec_context->skip_frame = AVDISCARD_NONE;
+
+	vp.streamId         = index;
 
 	vp.codecName        = codec_context->codec_name;
 	vp.codecLongName    = codec_context->codec_name;

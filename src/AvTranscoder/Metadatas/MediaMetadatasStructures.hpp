@@ -1,7 +1,7 @@
 #ifndef _AV_TRANSCODER_MEDIA_HPP_
 #define _AV_TRANSCODER_MEDIA_HPP_
 
-#include "common.hpp"
+#include <AvTranscoder/common.hpp>
 
 #include <string>
 #include <vector>
@@ -79,6 +79,22 @@ struct AudioProperties {
 	size_t      bit_rate;
 };
 
+struct DataProperties {
+	size_t      streamId;
+};
+
+struct SubtitleProperties {
+	size_t      streamId;
+};
+
+struct AttachementProperties {
+	size_t      streamId;
+};
+
+struct UnknownProperties {
+	size_t      streamId;
+};
+
 struct Properties {
 	std::string filename;
 	std::string formatName;
@@ -89,25 +105,15 @@ struct Properties {
 	double      duration;
 	size_t      bitRate;
 	size_t      packetSize;
-	std::vector< VideoProperties > videoStreams;
-	std::vector< AudioProperties > audioStreams;
+	
+	std::vector< VideoProperties >       videoStreams;
+	std::vector< AudioProperties >       audioStreams;
+	std::vector< DataProperties >        dataStreams;
+	std::vector< SubtitleProperties >    subtitleStreams;
+	std::vector< AttachementProperties > attachementStreams;
+	std::vector< UnknownProperties >     unknownStreams;
+
 	std::vector< std::pair< std::string, std::string > > metadatas; // ( key, value )
-};
-
-class Media
-{
-public:
-	Media( const std::string& inputFile = "" );
-
-	// return true if analyse was done with success
-	bool analyse();
-
-	const Properties& getProperties() const { return properties; }
-
-private:
-	std::string filename;
-	AVFormatContext* formatContext;
-	Properties properties;
 };
 
 }
