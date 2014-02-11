@@ -16,78 +16,6 @@
 #include <AvTranscoder/DatasStructures/VideoDesc.hpp>
 #include <AvTranscoder/DatasStructures/Image.hpp>
 
-void displayMetadatas( const char* filename )
-{
-	using namespace avtranscoder;
-
-	Media input( filename );
-	input.analyse();
-	std::cout << "format name              : " << input.getProperties().formatName << std::endl;
-	std::cout << "format long name         : " << input.getProperties().formatLongName << std::endl;
-	std::cout << "start time               : " << input.getProperties().startTime << std::endl;
-	std::cout << "duration                 : " << input.getProperties().duration << std::endl;
-	std::cout << "bitrate                  : " << input.getProperties().bitRate << std::endl;
-	std::cout << "number of streams        : " << input.getProperties().streamsCount << std::endl;
-	std::cout << "number of programs       : " << input.getProperties().programsCount << std::endl;
-	std::cout << "number of video streams  : " << input.getProperties().videoStreams.size() << std::endl;
-	std::cout << "number of audio streams  : " << input.getProperties().audioStreams.size() << std::endl;
-
-	// std::vector< std::pair< std::string, std::string > > metadatas
-	std::cout << "---------- Metadatas ----------" << std::endl;
-	for( size_t metadataIndex = 0; metadataIndex < input.getProperties().metadatas.size(); ++metadataIndex )
-	{
-		std::cout << std::left << std::setw( 24 ) << input.getProperties().metadatas.at(metadataIndex).first <<" : " << input.getProperties().metadatas.at(metadataIndex).second << std::endl;
-	}
-
-	for( size_t videoStreamIndex = 0; videoStreamIndex < input.getProperties().videoStreams.size(); ++videoStreamIndex )
-	{
-		std::cout << "---------- Video stream " << videoStreamIndex << " ----------" << std::endl;
-		std::cout << "codec name               : " << input.getProperties().videoStreams.at(videoStreamIndex).codecName << std::endl;
-		std::cout << "codec long name          : " << input.getProperties().videoStreams.at(videoStreamIndex).codecLongName << std::endl;
-		std::cout << "profile name             : " << input.getProperties().videoStreams.at(videoStreamIndex).profileName << std::endl;
-		std::cout << "profile                  : " << input.getProperties().videoStreams.at(videoStreamIndex).profile << std::endl;
-		std::cout << "level                    : " << input.getProperties().videoStreams.at(videoStreamIndex).level << std::endl;
-		std::cout << "width                    : " << input.getProperties().videoStreams.at(videoStreamIndex).width << std::endl;
-		std::cout << "height                   : " << input.getProperties().videoStreams.at(videoStreamIndex).height << std::endl;
-		std::cout << "pixel aspect ratio       : " << input.getProperties().videoStreams.at(videoStreamIndex).sar.num << "/" <<
-		                                              input.getProperties().videoStreams.at(videoStreamIndex).sar.den << std::endl;
-		std::cout << "display aspect ratio     : " << input.getProperties().videoStreams.at(videoStreamIndex).dar.num << "/" <<
-		                                              input.getProperties().videoStreams.at(videoStreamIndex).dar.den << std::endl;
-		std::cout << "pixel type               : " << input.getProperties().videoStreams.at(videoStreamIndex).pixelName << std::endl;
-		
-		std::cout << "bit rate                 : " << input.getProperties().videoStreams.at(videoStreamIndex).bitRate << std::endl;
-
-		std::cout << "color transfert          : " << input.getProperties().videoStreams.at(videoStreamIndex).colorTransfert << std::endl;
-		std::cout << "colorspace               : " << input.getProperties().videoStreams.at(videoStreamIndex).colorspace << std::endl;
-		std::cout << "color range              : " << input.getProperties().videoStreams.at(videoStreamIndex).colorRange << std::endl;
-		std::cout << "color primaries          : " << input.getProperties().videoStreams.at(videoStreamIndex).colorPrimaries << std::endl;
-		std::cout << "chroma sample location   : " << input.getProperties().videoStreams.at(videoStreamIndex).chromaSampleLocation << std::endl;
-		std::cout << "interlaced               : " << ( input.getProperties().videoStreams.at(videoStreamIndex).isInterlaced ? "True" : "False" ) << std::endl;
-		std::cout << "top field first          : " << ( input.getProperties().videoStreams.at(videoStreamIndex).topFieldFirst ? "True" : "False" ) << std::endl;
-		std::cout << "field order              : " << input.getProperties().videoStreams.at(videoStreamIndex).fieldOrder << std::endl;
-
-		std::cout << "gop                      : ";
-		for( size_t frameIndex = 0; frameIndex < input.getProperties().videoStreams.at(videoStreamIndex).gopStructure.size(); ++frameIndex )
-		{
-			std::cout << input.getProperties().videoStreams.at(videoStreamIndex).gopStructure.at( frameIndex ).first;
-			std::cout << ( input.getProperties().videoStreams.at(videoStreamIndex).gopStructure.at( frameIndex ).second ? "*" : " " );
-		}
-		std::cout << std::endl;
-	}
-	for( size_t audioStreamIndex = 0; audioStreamIndex < input.getProperties().audioStreams.size(); ++audioStreamIndex )
-	{
-		std::cout << "---------- Audio stream " << audioStreamIndex << " ----------" << std::endl;
-		std::cout << "codec name               : " << input.getProperties().audioStreams.at(audioStreamIndex).codecName << std::endl;
-		std::cout << "codec long name          : " << input.getProperties().audioStreams.at(audioStreamIndex).codecLongName << std::endl;
-		std::cout << "sample format            : " << input.getProperties().audioStreams.at(audioStreamIndex).sampleFormat << std::endl;
-		std::cout << "codec id                 : " << input.getProperties().audioStreams.at(audioStreamIndex).codecId << std::endl;
-		std::cout << "stream id                : " << input.getProperties().audioStreams.at(audioStreamIndex).streamId << std::endl;
-		std::cout << "sample rate              : " << input.getProperties().audioStreams.at(audioStreamIndex).sampleRate << std::endl;
-		std::cout << "channels                 : " << input.getProperties().audioStreams.at(audioStreamIndex).channels << std::endl;
-		std::cout << "bit rate                 : " << input.getProperties().audioStreams.at(audioStreamIndex).bit_rate << std::endl;
-	}
-}
-
 void transcodeVideo( const char* inputfilename, const char* outputFilename )
 {
 	using namespace avtranscoder;
@@ -224,28 +152,8 @@ int main( int argc, char** argv )
 
 	std::cout << "start ..." << std::endl;
 
-	// a simply metadata getter
-	displayMetadatas( argv[1] );
-
 	// example of video Transcoding
 	transcodeVideo( argv[1], "transcodedVideo.mxf" );
 
 	std::cout << "end ..." << std::endl;
-
-
-	// TESTS TO DO
-
-	// audio -> audio
-
-	// video -> video
-
-	// Audio + video -> Audio + video
-
-	// Audio // Video -> Audio + video
-
-	// Audio * N // Video -> Audio *N + video
-
-	// Audio * N // Video * N -> Audio *N + video * N
-
-
 }
