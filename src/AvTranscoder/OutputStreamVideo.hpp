@@ -12,6 +12,7 @@ extern "C" {
 
 #include "DatasStructures/Image.hpp"
 #include "DatasStructures/VideoDesc.hpp"
+#include "DatasStructures/DataStreamDesc.hpp"
 
 #include <string>
 #include <vector>
@@ -34,7 +35,7 @@ public:
 	/**
 	 * @param[out] codecFrame blabla
 	 */
-	bool encodeFrame( const Image& sourceImage, Image& codedFrame );
+	bool encodeFrame( const Image& sourceImage, DataStream& codedFrame );
 
 	VideoDesc& getVideoDesc() { return m_videoDesc; }
 

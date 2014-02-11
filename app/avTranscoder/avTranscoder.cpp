@@ -99,14 +99,10 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 	InputStreamVideo inputStreamVideo; // take the first video stream per default
 
 	av_log_set_level( AV_LOG_FATAL );
-	//av_log_set_level( AV_LOG_DEBUG );
+	av_log_set_level( AV_LOG_DEBUG );
 	
 
-	if( !inputStreamVideo.setup( inputfilename, 0 ) )
-	{
-		std::cout << "error during initialising video input reader" << std::endl;
-		exit( -1 );
-	}
+	inputStreamVideo.setup( inputfilename, 0 );
 
 	//dVideo.set( key, value );
 
@@ -134,8 +130,8 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 
 	Image sourceImage( imageDesc );
 
-	videoDesc.setVideoCodec( "dnxhd" );
-	videoDesc.set( "b", 120000000 );
+	videoDesc.setVideoCodec( "mpeg2video" );
+	videoDesc.set( "b",50000000 );
 	try
 	{
 		videoDesc.set( "unknownParameter", 120000000 );
@@ -157,8 +153,10 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 		exit( -1 );
 	}
 
+	DataStreamDesc dataStreamDesc;
+
 	Image imageToEncode( sourceImage );
-	Image codedImage( sourceImage );
+	DataStream codedImage( dataStreamDesc );
 
 
 	OutputStreamAudio osAudioLeft ( );  // "AudioStreamEncoder" / "AudioOutputStream" ?
@@ -178,11 +176,7 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 	InputFile inputFile;
 	inputFile.setup( inputfilename );
 
-	if( ! of.addVideoStream( inputFile.getVideoDesc( 0 ) ) )
-	{
-		std::cout << "error during adding output video stream" << std::endl;
-		exit( -1 );
-	}
+	of.addVideoStream( inputFile.getVideoDesc( 0 ) );
 	/*of.addAudioStream();
 	of.addAudioStream();
 	of.addAudioStream();

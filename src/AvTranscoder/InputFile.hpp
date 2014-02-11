@@ -33,11 +33,9 @@ public:
 protected:
 	bool readNextPacket( AVPacket& packet, const size_t streamIndex );
 
-private:
+protected:
 	AVFormatContext* m_formatContext;
-
-	AVCodec*         m_codec;
-	AVCodecContext*  m_codecContext;
+	
 	AVStream*        m_stream;
 
 	std::string      m_filename;

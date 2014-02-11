@@ -12,30 +12,25 @@ extern "C" {
 }
 
 #include <iostream>
+#include <stdexcept>
 
 namespace avtranscoder
 {
 
 InputStreamVideo::InputStreamVideo()
-	: m_formatContext( NULL )
-	, m_codec        ( NULL )
-	, m_codecContext ( NULL )
-	, m_frame        ( NULL )
+	: m_codec         ( NULL )
+	, m_codecContext  ( NULL )
+	, m_frame         ( NULL )
 	, m_selectedStream( -1 )
 {}
 
 InputStreamVideo::~InputStreamVideo()
 {
-	if( m_formatContext )
-	{
-		avformat_close_input( &m_formatContext );
-		m_formatContext = NULL;
-	}
-	if( m_codecContext )
+	/*if( m_codecContext != NULL )
 	{
 		avcodec_close( m_codecContext );
 		m_codecContext = NULL;
-	}
+	}*/
 	if( m_frame != NULL )
 	{
 		av_frame_free( &m_frame );
@@ -43,7 +38,7 @@ InputStreamVideo::~InputStreamVideo()
 	}
 }
 
-bool InputStreamVideo::setup( const std::string& filename, const size_t streamIndex )
+void InputStreamVideo::setup( const std::string& filename, const size_t streamIndex )
 {
 	av_register_all();
 
@@ -63,19 +58,21 @@ bool InputStreamVideo::setup( const std::string& filename, const size_t streamIn
 	}
 
 	if( m_selectedStream == -1 )
-		return false;
-
+	{
+		throw std::runtime_error( "unable to find video stream" );
+	}
+	
 	m_codec = avcodec_find_decoder( m_formatContext->streams[m_selectedStream]->codec->codec_id );
 	if( m_codec == NULL )
 	{
-		return false;
+		throw std::runtime_error( "codec not supported" );
 	}
 
 	m_codecContext = avcodec_alloc_context3( m_codec );
 
 	if( m_codecContext == NULL )
 	{
-		return false;
+		throw std::runtime_error( "unable to find context for codec" );
 	}
 
 	// if( codec->capabilities & CODEC_CAP_TRUNCATED )
@@ -85,16 +82,14 @@ bool InputStreamVideo::setup( const std::string& filename, const size_t streamIn
 
 	if( m_codecContext == NULL || m_codec == NULL )
 	{
-		return false;
+		throw std::runtime_error( "unable open codec" );
 	}
 
 	m_frame = avcodec_alloc_frame();
 	if( m_frame == NULL )
 	{
-		return false;
+		throw std::runtime_error( "unable to setup frame buffer" );
 	}
-
-	return true;
 }
 
 bool InputStreamVideo::readNextFrame( Image& frameBuffer )

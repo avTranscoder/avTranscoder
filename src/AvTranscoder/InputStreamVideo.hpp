@@ -21,12 +21,11 @@ public:
 	InputStreamVideo();
 	~InputStreamVideo();
 
-	bool setup( const std::string& filename, const size_t streamIndex );
+	void setup( const std::string& filename, const size_t streamIndex );
 
 	bool readNextFrame( Image& frameBuffer );
 
 private:
-	AVFormatContext* m_formatContext;
 	AVCodec*         m_codec;
 	AVCodecContext*  m_codecContext;
 	AVFrame*         m_frame;

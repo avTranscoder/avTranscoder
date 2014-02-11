@@ -24,15 +24,12 @@ public:
 
 	bool setup();
 
-	bool addVideoStream( const VideoDesc& videoDesc );
+	void addVideoStream( const VideoDesc& videoDesc );
 
 
-	bool addVideoStream( const std::string& codecName );
+	void addVideoStream( const std::string& codecName );
 
 	bool addAudioStream( );
-
-
-	bool wrap( const Image& data, const size_t streamId );
 
 	bool wrap( const DataStream& data, const size_t streamId );
 

@@ -19,8 +19,6 @@ namespace avtranscoder
 
 InputFile::InputFile()
 	: m_formatContext ( NULL )
-	, m_codec         ( NULL )
-	, m_codecContext  ( NULL )
 	, m_stream        ( NULL )
 	, m_filename      ( "" )
 	, m_packetCount   ( 0 )
@@ -30,15 +28,10 @@ InputFile::InputFile()
 
 InputFile::~InputFile()
 {
-	if( m_formatContext )
+	if( m_formatContext != NULL )
 	{
 		avformat_close_input( &m_formatContext );
 		m_formatContext = NULL;
-	}
-	if( m_codecContext )
-	{
-		avcodec_close( m_codecContext );
-		m_codecContext = NULL;
 	}
 }
 

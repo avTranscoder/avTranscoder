@@ -39,7 +39,7 @@ bool OutputStreamVideo::setup( )
 }
 
 
-bool OutputStreamVideo::encodeFrame( const Image& sourceImage, Image& codedFrame )
+bool OutputStreamVideo::encodeFrame( const Image& sourceImage, DataStream& codedFrame )
 {
 	AVFrame* frame = avcodec_alloc_frame();
 

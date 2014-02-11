@@ -12,6 +12,8 @@ extern "C" {
 }
 
 #include <iostream>
+#include <stdexcept>
+#include <cassert>
 
 namespace avtranscoder
 {
@@ -33,11 +35,13 @@ bool OutputFile::setup()
 	outputFormat = av_guess_format( NULL, filename.c_str(), NULL);
 
 	if( !outputFormat )
-		return false;
+	{
+		throw std::runtime_error( "unable to find format" );
+	}
 
 	if( ( formatContext = avformat_alloc_context() ) == NULL )
 	{
-		return false;
+		throw std::runtime_error( "unable to create format context" );
 	}
 
 	formatContext->oformat = outputFormat;
@@ -46,41 +50,40 @@ bool OutputFile::setup()
 	{
 		if( avio_open2( &formatContext->pb, filename.c_str(), AVIO_FLAG_WRITE, NULL, NULL ) < 0 )
 		{
-			// @TODO free format here
-			return false;
+			avformat_close_input( &formatContext );
+			formatContext = NULL;
+			throw std::runtime_error( "error when opening output format" );
 		}
 	}
 
 	return formatContext != NULL;
 }
 
-bool OutputFile::addVideoStream( const VideoDesc& videoDesc )
+void OutputFile::addVideoStream( const VideoDesc& videoDesc )
 {
-	if( formatContext == NULL )
-		return false; // throw not return ...
+	assert( formatContext != NULL );
 
 	if( ( stream = avformat_new_stream( formatContext, videoDesc.getCodec() ) ) == NULL )
-		return false;
+	{
+		throw std::runtime_error( "unable to add new video stream" );
+	}
 
 	// need to set the time_base on the AVCodecContext and the AVStream...
-	stream->codec->time_base = videoDesc.getCodecContext()->time_base;
-	stream->time_base = stream->codec->time_base;
-
 	stream->codec->width  = videoDesc.getCodecContext()->width;
 	stream->codec->height = videoDesc.getCodecContext()->height;
-	stream->codec->bit_rate = 50000000;
-	stream->codec->time_base.num = 1;
-	stream->codec->time_base.den = 25;
-	stream->codec->pix_fmt = AV_PIX_FMT_YUV422P;
+	stream->codec->bit_rate = videoDesc.getCodecContext()->bit_rate;
+	stream->codec->time_base = videoDesc.getCodecContext()->time_base;
+	stream->codec->pix_fmt = videoDesc.getCodecContext()->pix_fmt;
+	stream->codec->profile = videoDesc.getCodecContext()->profile;
+	stream->codec->level = videoDesc.getCodecContext()->level;
+
+	stream->time_base = stream->codec->time_base;
 
 	// to move in endSetup
 	if( avformat_write_header( formatContext, NULL ) != 0 )
 	{
-		std::cout << "could not write header" << std::endl;
-		return false;
+		throw std::runtime_error( "could not write header" );
 	}
-
-	return true;
 }
 
 bool OutputFile::addAudioStream( )
@@ -100,30 +103,6 @@ bool OutputFile::addAudioStream( )
 
 	//stream->codec->flags |= CODEC_FLAG_GLOBAL_HEADER;
 
-	return true;
-}
-
-bool OutputFile::wrap( const Image& data, const size_t streamId )
-{
-	AVPacket packet;
-	av_init_packet( &packet );
-
-	packet.size = data.getSize();
-	packet.data = (uint8_t*)data.getPtr();
-	packet.stream_index = streamId;
-
-	packet.dts = 0;
-	packet.pts = packetCount;
-
-	if( av_interleaved_write_frame( formatContext, &packet ) != 0 )
-	{
-		std::cout << "error when writting packet in stream" << std::endl;
-		return false;
-	}
-
-	av_free_packet( &packet );
-
-	packetCount++;
 	return true;
 }
 
