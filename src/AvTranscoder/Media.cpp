@@ -71,27 +71,27 @@ bool Media::analyse()
 			}
 			case AVMEDIA_TYPE_UNKNOWN:
 			{
-				std::cout << "unknown stream" << std::endl;
+				// std::cout << "unknown stream" << std::endl;
 				break;
 			}
 			case AVMEDIA_TYPE_DATA:
 			{
-				std::cout << "data stream" << std::endl;
+				// std::cout << "data stream" << std::endl;
 				break;
 			}
 			case AVMEDIA_TYPE_SUBTITLE:
 			{
-				std::cout << "subtitle stream" << std::endl;
+				// std::cout << "subtitle stream" << std::endl;
 				break;
 			}
 			case AVMEDIA_TYPE_ATTACHMENT:
 			{
-				std::cout << "attachement" << std::endl;
+				// std::cout << "attachement" << std::endl;
 				break;
 			}
 			case AVMEDIA_TYPE_NB:
 			{
-				std::cout << "NB" << std::endl;
+				// std::cout << "NB" << std::endl;
 				break;
 			}
 		}
