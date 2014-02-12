@@ -91,7 +91,7 @@ void ColorTransform::convert( const Image& src, Image& dst )
 		&srcData[0], &srcLineSize[0], 0, src.desc().getHeight(),
 		&dstData[0], &dstLineSize[0] );
 
-	if( ret != src.desc().getHeight() )
+	if( ret != (int) src.desc().getHeight() )
 		throw std::runtime_error( "error in color converter" );
 }
 

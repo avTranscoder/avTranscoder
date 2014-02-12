@@ -88,6 +88,7 @@ std::pair< size_t, size_t > VideoDesc::getTimeBase() const
 	std::pair< size_t, size_t > timeBase;
 	timeBase.first = m_codecContext->time_base.num;
 	timeBase.second = m_codecContext->time_base.den;
+	return timeBase;
 }
 
 void VideoDesc::initCodecContext( )
@@ -154,7 +155,7 @@ void VideoDesc::set( const std::string& key, const bool value )
 
 void VideoDesc::set( const std::string& key, const int value )
 {
-	const AVOption* flagOpt = av_opt_find( m_codecContext, key.c_str(), NULL, 0, AV_OPT_SEARCH_CHILDREN );
+	//const AVOption* flagOpt = av_opt_find( m_codecContext, key.c_str(), NULL, 0, AV_OPT_SEARCH_CHILDREN );
 
 	int error = av_opt_set_int( m_codecContext, key.c_str(), value, AV_OPT_SEARCH_CHILDREN );
 	if( error != 0 )

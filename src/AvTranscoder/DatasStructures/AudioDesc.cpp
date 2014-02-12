@@ -113,7 +113,7 @@ void AudioDesc::set( const std::string& key, const bool value )
 
 void AudioDesc::set( const std::string& key, const int value )
 {
-	const AVOption* flagOpt = av_opt_find( m_codecContext, key.c_str(), NULL, 0, AV_OPT_SEARCH_CHILDREN );
+	//const AVOption* flagOpt = av_opt_find( m_codecContext, key.c_str(), NULL, 0, AV_OPT_SEARCH_CHILDREN );
 
 	int error = av_opt_set_int( m_codecContext, key.c_str(), value, AV_OPT_SEARCH_CHILDREN );
 	if( error != 0 )
