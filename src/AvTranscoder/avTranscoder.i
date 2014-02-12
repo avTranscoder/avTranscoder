@@ -25,6 +25,7 @@
 %}
 
 namespace std {
+%template(IntPair)         pair< size_t, size_t >;
 %template(VideoVector)     vector< avtranscoder::VideoProperties >;
 %template(AudioVector)     vector< avtranscoder::AudioProperties >;
 %template(MetadataPair)    pair< string, string >;

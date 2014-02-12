@@ -20,6 +20,7 @@ extern "C" {
 
 #include <iostream>
 #include <stdexcept>
+#include <cassert>
 
 namespace avtranscoder
 {
@@ -45,6 +46,8 @@ InputFile::~InputFile()
 InputFile& InputFile::setup( const std::string& filename )
 {
 	m_filename = filename;
+	assert( m_formatContext == NULL );
+
 	if( avformat_open_input( &m_formatContext, m_filename.c_str(), NULL, NULL ) < 0 )
 	{
 		throw std::runtime_error( "unable to open file" );
@@ -142,7 +145,9 @@ VideoDesc InputFile::getVideoDesc( size_t videoStreamId )
 	}
 
 	if( selectedStream == -1 )
-		throw std::runtime_error( "unable to find video stream" );
+	{
+		throw std::runtime_error( "unable to find video stream " );
+	}
 
 	AVCodecContext* codecContext = m_formatContext->streams[selectedStream]->codec;
 
@@ -150,6 +155,35 @@ VideoDesc InputFile::getVideoDesc( size_t videoStreamId )
 
 	desc.setImageParameters( codecContext->width, codecContext->height, codecContext->pix_fmt );
 	desc.setTimeBase( codecContext->time_base.num, codecContext->time_base.den );
+
+	return desc;
+}
+
+AudioDesc InputFile::getAudioDesc( size_t audioStreamId )
+{
+	int selectedStream = -1;
+	size_t audioStreamCount = 0;
+
+	for( size_t streamId = 0; streamId < m_formatContext->nb_streams; streamId++ )
+	{
+		if( m_formatContext->streams[streamId]->codec->codec_type == AVMEDIA_TYPE_AUDIO )
+		{
+			if( audioStreamCount == audioStreamId )
+			{
+				selectedStream = streamId;
+			}
+			audioStreamCount++;
+		}
+	}
+
+	if( selectedStream == -1 )
+	{
+		throw std::runtime_error( "unable to find audio stream " );
+	}
+
+	AVCodecContext* codecContext = m_formatContext->streams[selectedStream]->codec;
+
+	AudioDesc desc( codecContext->codec_id );
 
 	return desc;
 }

@@ -2,6 +2,7 @@
 #define _AV_TRANSCODER_INPUT_FILE_HPP_
 
 #include "DatasStructures/DataStreamDesc.hpp"
+#include "DatasStructures/AudioDesc.hpp"
 #include "DatasStructures/VideoDesc.hpp"
 #include "Metadatas/MediaMetadatasStructures.hpp"
 
@@ -33,7 +34,7 @@ public:
 
 
 	VideoDesc getVideoDesc( size_t videoStreamId );
-	bool getAudioStream( );
+	AudioDesc getAudioDesc( size_t audioStreamId );
 
 
 	bool unwrap( DataStream& data, const size_t streamIndex );

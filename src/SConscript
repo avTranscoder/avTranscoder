@@ -31,21 +31,21 @@ pyAvTranscoder = envPy.SharedLibrary(
         LIBS=[ AvTranscoder ],
     )
 
-envJava['JARCHDIR']=env.Dir('#build/src/').get_abspath()
+# envJava['JARCHDIR']=env.Dir('#build/src/').get_abspath()
 
-avTranscoder_class = env.Java(
-     target='AvTranscoderClass',
-     #source='AvTranscoder/avTranscoder.i' )
-     source= Glob( '#build/src/AvTranscoder' ) )
+# avTranscoder_class = env.Java(
+#      target='AvTranscoderClass',
+#      #source='AvTranscoder/avTranscoder.i' )
+#      source= Glob( '#build/src/AvTranscoder' ) )
 
-avTranscoder_jar = env.Jar(
-     target='jAvTranscoder.jar',
-     source=avTranscoder_class )
-     #source= Glob( '#build/src/AvTranscoderClass' ) )
+# avTranscoder_jar = env.Jar(
+#      target='jAvTranscoder.jar',
+#      source=avTranscoder_class )
+#      #source= Glob( '#build/src/AvTranscoderClass' ) )
 
 
-env.Depends( avTranscoder_class, jAvTranscoder )
-env.Depends( avTranscoder_jar, avTranscoder_class )
+# env.Depends( avTranscoder_class, jAvTranscoder )
+# env.Depends( avTranscoder_jar, avTranscoder_class )
 
 Export( { 'AvTranscoder': AvTranscoder } )
-Export( { 'AvTranscoder_jar': avTranscoder_class } )
+# Export( { 'AvTranscoder_jar': avTranscoder_class } )

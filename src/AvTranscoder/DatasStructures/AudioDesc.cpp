@@ -1,4 +1,4 @@
-#include "VideoDesc.hpp"
+#include "AudioDesc.hpp"
 
 extern "C" {
 #ifndef __STDC_CONSTANT_MACROS
@@ -20,77 +20,36 @@ extern "C" {
 namespace avtranscoder
 {
 
-VideoDesc::VideoDesc( const std::string& codecName )
+AudioDesc::AudioDesc( const std::string& codecName )
 	: m_codec( NULL )
 	, m_codecContext( NULL )
 {
 	if( codecName.size() )
-		setVideoCodec( codecName );
+		setAudioCodec( codecName );
 }
 
-VideoDesc::VideoDesc( const AVCodecID codecId )
+AudioDesc::AudioDesc( const AVCodecID codecId )
 	: m_codec( NULL )
 	, m_codecContext( NULL )
 {
-	setVideoCodec( codecId );
+	setAudioCodec( codecId );
 }
 
-void VideoDesc::setVideoCodec( const std::string& codecName )
+void AudioDesc::setAudioCodec( const std::string& codecName )
 {
 	avcodec_register_all();  // Warning: should be called only once
 	m_codec = avcodec_find_encoder_by_name( codecName.c_str() );
 	initCodecContext();
 }
 
-void VideoDesc::setVideoCodec( const AVCodecID codecId )
+void AudioDesc::setAudioCodec( const AVCodecID codecId )
 {
 	avcodec_register_all();  // Warning: should be called only once
 	m_codec = avcodec_find_encoder( codecId );
 	initCodecContext();
 }
 
-void VideoDesc::setImageParameters( const Image& image )
-{
-	setImageParameters( image.desc().getWidth(), image.desc().getHeight(), image.desc().getPixelDesc() );
-}
-
-
-void VideoDesc::setImageParameters( const size_t width, const size_t height, const Pixel& pixel )
-{
-	setImageParameters( width, height, pixel.findPixel() );
-}
-
-void VideoDesc::setImageParameters( const size_t width, const size_t height, const AVPixelFormat& pixel )
-{
-	m_codecContext->width   = width;
-	m_codecContext->height  = height;
-	m_codecContext->pix_fmt = pixel;
-}
-
-void VideoDesc::setTimeBase( const size_t num, const size_t den )
-{
-	m_codecContext->time_base.num = num;
-	m_codecContext->time_base.den = den;
-}
-
-std::string VideoDesc::getVideoCodec() const
-{
-	return m_codecContext->codec_name;
-}
-
-AVCodecID VideoDesc::getVideoCodecId() const
-{
-	return m_codecContext->codec_id;
-}
-
-std::pair< size_t, size_t > VideoDesc::getTimeBase() const
-{
-	std::pair< size_t, size_t > timeBase;
-	timeBase.first = m_codecContext->time_base.num;
-	timeBase.second = m_codecContext->time_base.den;
-}
-
-void VideoDesc::initCodecContext( )
+void AudioDesc::initCodecContext( )
 {
 	if( m_codec == NULL )
 		return;
@@ -106,7 +65,7 @@ void VideoDesc::initCodecContext( )
 	}
 }
 
-void VideoDesc::set( const std::string& key, const std::string& flag, const bool enable )
+void AudioDesc::set( const std::string& key, const std::string& flag, const bool enable )
 {
 	int error = 0;
 	int64_t optVal;
@@ -141,7 +100,7 @@ void VideoDesc::set( const std::string& key, const std::string& flag, const bool
 	}
 }
 
-void VideoDesc::set( const std::string& key, const bool value )
+void AudioDesc::set( const std::string& key, const bool value )
 {
 	int error = av_opt_set_int( m_codecContext, key.c_str(), value, AV_OPT_SEARCH_CHILDREN );
 	if( error != 0 )
@@ -152,7 +111,7 @@ void VideoDesc::set( const std::string& key, const bool value )
 	}
 }
 
-void VideoDesc::set( const std::string& key, const int value )
+void AudioDesc::set( const std::string& key, const int value )
 {
 	const AVOption* flagOpt = av_opt_find( m_codecContext, key.c_str(), NULL, 0, AV_OPT_SEARCH_CHILDREN );
 
@@ -167,7 +126,7 @@ void VideoDesc::set( const std::string& key, const int value )
 	}
 }
 
-void VideoDesc::set( const std::string& key, const int num, const int den )
+void AudioDesc::set( const std::string& key, const int num, const int den )
 {
 	AVRational ratio;
 	ratio.num = num;
@@ -183,7 +142,7 @@ void VideoDesc::set( const std::string& key, const int num, const int den )
 	}
 }
 
-void VideoDesc::set( const std::string& key, const double value )
+void AudioDesc::set( const std::string& key, const double value )
 {
 	int error = av_opt_set_double( m_codecContext, key.c_str(), value, AV_OPT_SEARCH_CHILDREN );
 	if( error != 0 )
@@ -196,7 +155,7 @@ void VideoDesc::set( const std::string& key, const double value )
 	}
 }
 
-void VideoDesc::set( const std::string& key, const std::string& value )
+void AudioDesc::set( const std::string& key, const std::string& value )
 {
 	int error = av_opt_set( m_codecContext, key.c_str(), value.c_str(), AV_OPT_SEARCH_CHILDREN );
 	if( error != 0 )
@@ -205,6 +164,16 @@ void VideoDesc::set( const std::string& key, const std::string& value )
 		av_make_error_string( const_cast<char*>(err.c_str()), err.size(), error );
 		throw std::runtime_error( "setting " + key + " parameter to " + value + ": " + err );
 	}
+}
+
+std::string AudioDesc::getAudioCodec() const
+{
+	return m_codecContext->codec_name;
+}
+
+AVCodecID AudioDesc::getAudioCodecId() const
+{
+	return m_codecContext->codec_id;
 }
 
 }
