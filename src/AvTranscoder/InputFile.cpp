@@ -210,6 +210,7 @@ bool InputFile::readNextPacket( AVPacket& packet, const size_t streamIndex )
 		int ret = av_read_frame( m_formatContext, &packet );
 		if( ret < 0 ) // error or end of file
 		{
+			av_free_packet( &packet );
 			return false;
 		}
 
@@ -218,6 +219,10 @@ bool InputFile::readNextPacket( AVPacket& packet, const size_t streamIndex )
 		{
 			return true;
 		}
+
+		// unused packet, require to delete and re-init to read the next one
+		av_free_packet( &packet );
+		av_init_packet( &packet );
 	}
 }
 
