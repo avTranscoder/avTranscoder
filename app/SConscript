@@ -1,5 +1,6 @@
 Import( 'AvTranscoder' )
-Import( 'AvTranscoder_jar' )
+Import( 'sAvTranscoder' )
+#Import( 'AvTranscoder_jar' )
 
 env = Environment().Clone()
 
@@ -9,7 +10,7 @@ env.Program(
         'avmeta',
         Glob( 'avMeta/*.cpp' ),
         LIBS = [
-                AvTranscoder,
+                sAvTranscoder,
                 'avutil',
                 'avformat',
                 'avcodec',
@@ -21,7 +22,7 @@ env.Program(
         'av++',
         Glob( 'avTranscoder/*.cpp' ),
         LIBS = [
-                AvTranscoder,
+                sAvTranscoder,
                 'avutil',
                 'avformat',
                 'avcodec',

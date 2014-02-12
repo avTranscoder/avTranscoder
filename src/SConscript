@@ -5,6 +5,18 @@ Import( "env" )
 Import( "envJava" )
 Import( "envPy" )
 
+sAvTranscoder = env.StaticLibrary(
+    'AvTranscoder',
+    Glob( 'AvTranscoder/*.cpp' ) + Glob( 'AvTranscoder/DatasStructures/*.cpp' ) ,
+    LIBS = [
+        'libavutil',
+        'libavcodec',
+        'libavformat',
+        'libswscale',
+        'pthread',
+    ]
+)
+
 AvTranscoder = env.SharedLibrary(
     'AvTranscoder',
     Glob( 'AvTranscoder/*.cpp' ) + Glob( 'AvTranscoder/DatasStructures/*.cpp' ) ,
@@ -47,5 +59,6 @@ pyAvTranscoder = envPy.SharedLibrary(
 # env.Depends( avTranscoder_class, jAvTranscoder )
 # env.Depends( avTranscoder_jar, avTranscoder_class )
 
-Export( { 'AvTranscoder': AvTranscoder } )
+Export( { 'sAvTranscoder' : sAvTranscoder } )
+Export( { 'AvTranscoder'  : AvTranscoder } )
 # Export( { 'AvTranscoder_jar': avTranscoder_class } )
