@@ -130,18 +130,10 @@ InputFile& InputFile::analyse()
 VideoDesc InputFile::getVideoDesc( size_t videoStreamId )
 {
 	int selectedStream = -1;
-	size_t videoStreamCount = 0;
 
-	for( size_t streamId = 0; streamId < m_formatContext->nb_streams; streamId++ )
+	if( m_formatContext->streams[videoStreamId]->codec->codec_type == AVMEDIA_TYPE_VIDEO )
 	{
-		if( m_formatContext->streams[streamId]->codec->codec_type == AVMEDIA_TYPE_VIDEO )
-		{
-			if( videoStreamCount == videoStreamId )
-			{
-				selectedStream = streamId;
-			}
-			videoStreamCount++;
-		}
+		selectedStream = videoStreamId;
 	}
 
 	if( selectedStream == -1 )
@@ -162,18 +154,10 @@ VideoDesc InputFile::getVideoDesc( size_t videoStreamId )
 AudioDesc InputFile::getAudioDesc( size_t audioStreamId )
 {
 	int selectedStream = -1;
-	size_t audioStreamCount = 0;
-
-	for( size_t streamId = 0; streamId < m_formatContext->nb_streams; streamId++ )
+	
+	if( m_formatContext->streams[audioStreamId]->codec->codec_type == AVMEDIA_TYPE_AUDIO )
 	{
-		if( m_formatContext->streams[streamId]->codec->codec_type == AVMEDIA_TYPE_AUDIO )
-		{
-			if( audioStreamCount == audioStreamId )
-			{
-				selectedStream = streamId;
-			}
-			audioStreamCount++;
-		}
+		selectedStream = audioStreamId;
 	}
 
 	if( selectedStream == -1 )
