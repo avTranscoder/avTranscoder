@@ -28,6 +28,7 @@ ColorTransform::ColorTransform()
 	, dstLineSize ( MAX_SWS_PLANE, 0 )
 	, srcOffsets  ( MAX_SWS_PLANE, 0 )
 	, dstOffsets  ( MAX_SWS_PLANE, 0 )
+	, m_isInit    ( false )
 {
 }
 
@@ -42,6 +43,11 @@ bool ColorTransform::init( const Image& src, const Image& dst )
 		src.desc().getWidth(), src.desc().getHeight(), src.desc().getPixelDesc().findPixel(),
 		dst.desc().getWidth(), dst.desc().getHeight(), dst.desc().getPixelDesc().findPixel(),
 		SWS_POINT, NULL, NULL, NULL);
+
+	if( !m_imageConvertContext )
+	{
+		throw std::runtime_error( "unable to create color convert context" );
+	}
 
 	av_image_fill_linesizes( &srcLineSize[0], src.desc().getPixelDesc().findPixel(), src.desc().getWidth() );
 	av_image_fill_linesizes( &dstLineSize[0], dst.desc().getPixelDesc().findPixel(), dst.desc().getWidth() );
@@ -84,14 +90,14 @@ void ColorTransform::convert( const Image& src, Image& dst )
 	
 	if( !m_imageConvertContext )
 	{
-		throw std::runtime_error( "unknown convert context" );
+		throw std::runtime_error( "unknown color convert context" );
 	}
 
 	int ret = sws_scale( m_imageConvertContext,
 		&srcData[0], &srcLineSize[0], 0, src.desc().getHeight(),
 		&dstData[0], &dstLineSize[0] );
 
-	if( ret != src.desc().getHeight() )
+	if( ret != (int) src.desc().getHeight() )
 		throw std::runtime_error( "error in color converter" );
 }
 

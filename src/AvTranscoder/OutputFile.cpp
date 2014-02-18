@@ -118,7 +118,7 @@ bool OutputFile::wrap( const DataStream& data, const size_t streamId )
 	packet.dts = 0;
 	packet.pts = packetCount;
 
-	if( av_interleaved_write_frame( formatContext, &packet ) != 0 )
+	if( 	( formatContext, &packet ) != 0 )
 	{
 		std::cout << "error when writting packet in stream" << std::endl;
 		return false;
