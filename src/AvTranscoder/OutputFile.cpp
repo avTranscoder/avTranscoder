@@ -111,8 +111,8 @@ bool OutputFile::wrap( const DataStream& data, const size_t streamId )
 	AVPacket packet;
 	av_init_packet( &packet );
 
-	packet.size = data.getSize();
-	packet.data = (uint8_t*)data.getPtr();
+	av_packet_from_data( &packet, (uint8_t*)data.getPtr(), data.getSize() );
+
 	packet.stream_index = streamId;
 
 	packet.dts = 0;

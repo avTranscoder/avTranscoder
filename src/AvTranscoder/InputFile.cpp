@@ -25,29 +25,11 @@ extern "C" {
 namespace avtranscoder
 {
 
-InputFile::InputFile()
+InputFile::InputFile( const std::string& filename )
 	: m_formatContext ( NULL )
-	, m_stream        ( NULL )
-	, m_filename      ( "" )
-	, m_packetCount   ( 0 )
+	, m_filename      ( filename )
 {
 	av_register_all();  // Warning: should be called only once
-}
-
-InputFile::~InputFile()
-{
-	if( m_formatContext != NULL )
-	{
-		avformat_close_input( &m_formatContext );
-		m_formatContext = NULL;
-	}
-}
-
-InputFile& InputFile::setup( const std::string& filename )
-{
-	m_filename = filename;
-	assert( m_formatContext == NULL );
-
 	if( avformat_open_input( &m_formatContext, m_filename.c_str(), NULL, NULL ) < 0 )
 	{
 		throw std::runtime_error( "unable to open file" );
@@ -60,26 +42,35 @@ InputFile& InputFile::setup( const std::string& filename )
 		m_formatContext = NULL;
 		throw std::runtime_error( "unable to find stream informations" );
 	}
+}
 
-	return *this;
+InputFile::~InputFile()
+{
+	if( m_formatContext != NULL )
+	{
+		avformat_close_input( &m_formatContext );
+		m_formatContext = NULL;
+	}
 }
 
 InputFile& InputFile::analyse()
 {
-	properties.filename = m_formatContext->filename;
-	properties.formatName = m_formatContext->iformat->name;
-	properties.formatLongName = m_formatContext->iformat->long_name;
-	properties.streamsCount = m_formatContext->nb_streams;
-	properties.programsCount = m_formatContext->nb_programs;
-	properties.startTime = 1.0 * (uint)m_formatContext->start_time / AV_TIME_BASE;
-	properties.duration = 1.0 * m_formatContext->duration / AV_TIME_BASE;
-	properties.bitRate = m_formatContext->bit_rate;
-	properties.packetSize = m_formatContext->packet_size;
+	assert( m_formatContext != NULL );
+
+	m_properties.filename = m_formatContext->filename;
+	m_properties.formatName = m_formatContext->iformat->name;
+	m_properties.formatLongName = m_formatContext->iformat->long_name;
+	m_properties.streamsCount = m_formatContext->nb_streams;
+	m_properties.programsCount = m_formatContext->nb_programs;
+	m_properties.startTime = 1.0 * (uint)m_formatContext->start_time / AV_TIME_BASE;
+	m_properties.duration = 1.0 * m_formatContext->duration / AV_TIME_BASE;
+	m_properties.bitRate = m_formatContext->bit_rate;
+	m_properties.packetSize = m_formatContext->packet_size;
 
 	AVDictionaryEntry *tag = NULL;
 	while( ( tag = av_dict_get( m_formatContext->metadata, "", tag, AV_DICT_IGNORE_SUFFIX ) ) )
 	{
-		properties.metadatas.push_back( std::pair<std::string, std::string>( tag->key, tag->value ) );
+		m_properties.metadatas.push_back( std::pair<std::string, std::string>( tag->key, tag->value ) );
 	}
 
 	for( size_t streamId = 0; streamId < m_formatContext->nb_streams; streamId++ )
@@ -88,32 +79,32 @@ InputFile& InputFile::analyse()
 		{
 			case AVMEDIA_TYPE_VIDEO:
 			{
-				properties.videoStreams.push_back( videoStreamInfo( m_formatContext, streamId ) );
+				m_properties.videoStreams.push_back( videoStreamInfo( m_formatContext, streamId ) );
 				break;
 			}
 			case AVMEDIA_TYPE_AUDIO:
 			{
-				properties.audioStreams.push_back( audioStreamInfo( m_formatContext, streamId ) );
+				m_properties.audioStreams.push_back( audioStreamInfo( m_formatContext, streamId ) );
 				break;
 			}
 			case AVMEDIA_TYPE_DATA:
 			{
-				properties.dataStreams.push_back( dataStreamInfo( m_formatContext, streamId ) );
+				m_properties.dataStreams.push_back( dataStreamInfo( m_formatContext, streamId ) );
 				break;
 			}
 			case AVMEDIA_TYPE_SUBTITLE:
 			{
-				properties.subtitleStreams.push_back( subtitleStreamInfo( m_formatContext, streamId ) );
+				m_properties.subtitleStreams.push_back( subtitleStreamInfo( m_formatContext, streamId ) );
 				break;
 			}
 			case AVMEDIA_TYPE_ATTACHMENT:
 			{
-				properties.attachementStreams.push_back( attachementStreamInfo( m_formatContext, streamId ) );
+				m_properties.attachementStreams.push_back( attachementStreamInfo( m_formatContext, streamId ) );
 				break;
 			}
 			case AVMEDIA_TYPE_UNKNOWN:
 			{
-				properties.unknownStreams.push_back( unknownStreamInfo( m_formatContext, streamId ) );
+				m_properties.unknownStreams.push_back( unknownStreamInfo( m_formatContext, streamId ) );
 				break;
 			}
 			case AVMEDIA_TYPE_NB:
@@ -127,98 +118,9 @@ InputFile& InputFile::analyse()
 	return *this;
 }
 
-VideoDesc InputFile::getVideoDesc( size_t videoStreamId )
+InputStream InputFile::getStream( size_t index )
 {
-	int selectedStream = -1;
-	size_t videoStreamCount = 0;
-
-	for( size_t streamId = 0; streamId < m_formatContext->nb_streams; streamId++ )
-	{
-		if( m_formatContext->streams[streamId]->codec->codec_type == AVMEDIA_TYPE_VIDEO )
-		{
-			if( videoStreamCount == videoStreamId )
-			{
-				selectedStream = streamId;
-			}
-			videoStreamCount++;
-		}
-	}
-
-	if( selectedStream == -1 )
-	{
-		throw std::runtime_error( "unable to find video stream " );
-	}
-
-	AVCodecContext* codecContext = m_formatContext->streams[selectedStream]->codec;
-
-	VideoDesc desc( codecContext->codec_id );
-
-	desc.setImageParameters( codecContext->width, codecContext->height, codecContext->pix_fmt );
-	desc.setTimeBase( codecContext->time_base.num, codecContext->time_base.den );
-
-	return desc;
-}
-
-AudioDesc InputFile::getAudioDesc( size_t audioStreamId )
-{
-	int selectedStream = -1;
-	size_t audioStreamCount = 0;
-
-	for( size_t streamId = 0; streamId < m_formatContext->nb_streams; streamId++ )
-	{
-		if( m_formatContext->streams[streamId]->codec->codec_type == AVMEDIA_TYPE_AUDIO )
-		{
-			if( audioStreamCount == audioStreamId )
-			{
-				selectedStream = streamId;
-			}
-			audioStreamCount++;
-		}
-	}
-
-	if( selectedStream == -1 )
-	{
-		throw std::runtime_error( "unable to find audio stream " );
-	}
-
-	AVCodecContext* codecContext = m_formatContext->streams[selectedStream]->codec;
-
-	AudioDesc desc( codecContext->codec_id );
-
-	return desc;
-}
-
-bool InputFile::unwrap( DataStream& data, const size_t streamIndex )
-{
-	AVPacket packet;
-	av_init_packet( &packet );
-
-	readNextPacket( packet, streamIndex );
-
-	data.getBuffer().resize( packet.size );
-	memcpy( data.getPtr(), packet.data, packet.size );
-
-	av_free_packet( &packet );
-
-	return true;
-}
-
-bool InputFile::readNextPacket( AVPacket& packet, const size_t streamIndex )
-{
-	while( 1 )
-	{
-		int ret = av_read_frame( m_formatContext, &packet );
-		if( ret < 0 ) // error or end of file
-		{
-			return false;
-		}
-
-		// We only read one stream and skip others
-		if( packet.stream_index == (int)streamIndex )
-		{
-			return true;
-		}
-	}
+	InputStream inputStream( m_filename, index );
 }
 
 }

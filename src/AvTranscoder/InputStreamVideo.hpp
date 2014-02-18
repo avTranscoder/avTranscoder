@@ -15,22 +15,21 @@ class AVFrame;
 namespace avtranscoder
 {
 
-class InputStreamVideo : public InputFile
+class InputStreamVideo
 {
 public:
-	InputStreamVideo();
+	InputStreamVideo( const InputStream& inputStream );
 	~InputStreamVideo();
-
-	void setup( const std::string& filename, const size_t streamIndex );
 
 	bool readNextFrame( Image& frameBuffer );
 
 private:
-	AVCodec*         m_codec;
-	AVCodecContext*  m_codecContext;
-	AVFrame*         m_frame;
+	const InputStream& m_inputStream;
+	AVCodec*           m_codec;
+	AVCodecContext*    m_codecContext;
+	AVFrame*           m_frame;
 
-	int              m_selectedStream;
+	int                m_selectedStream;
 };
 
 }

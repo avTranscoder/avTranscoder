@@ -19,17 +19,14 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 {
 	using namespace avtranscoder;
 
-	InputFile input;
-	input.setup( inputfilename ).analyse();
-
-	// init video decoders
-	InputStreamVideo inputStreamVideo; // take the first video stream per default
-
 	av_log_set_level( AV_LOG_FATAL );
 	av_log_set_level( AV_LOG_DEBUG );
-	
 
-	inputStreamVideo.setup( inputfilename, 0 );
+	InputFile inputFile( inputfilename );
+	inputFile.analyse();
+
+	// init video decoders
+	InputStreamVideo inputStreamVideo( inputFile.getStream( 0 ) );
 
 	//dVideo.set( key, value );
 
@@ -51,8 +48,8 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 	oPixel.setBitsPerPixel( 16 );
 
 	ImageDesc imageDesc;
-	imageDesc.setWidth ( input.getProperties().videoStreams.at(0).width );
-	imageDesc.setHeight( input.getProperties().videoStreams.at(0).height );
+	imageDesc.setWidth ( inputFile.getProperties().videoStreams.at(0).width );
+	imageDesc.setHeight( inputFile.getProperties().videoStreams.at(0).height );
 	imageDesc.setPixel ( oPixel );
 
 	Image sourceImage( imageDesc );
@@ -100,10 +97,7 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 		exit( -1 );
 	}
 
-	InputFile inputFile;
-	inputFile.setup( inputfilename );
-
-	of.addVideoStream( inputFile.getVideoDesc( 0 ) );
+	of.addVideoStream( inputFile.getStream( 0 ).getVideoDesc() );
 	/*of.addAudioStream();
 	of.addAudioStream();
 	of.addAudioStream();

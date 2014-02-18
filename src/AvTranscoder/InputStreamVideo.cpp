@@ -17,69 +17,31 @@ extern "C" {
 namespace avtranscoder
 {
 
-InputStreamVideo::InputStreamVideo()
-	: m_codec         ( NULL )
+InputStreamVideo::InputStreamVideo( const InputStream& inputStream )
+	: m_inputStream   ( inputStream )
+	, m_codec         ( NULL )
 	, m_codecContext  ( NULL )
 	, m_frame         ( NULL )
 	, m_selectedStream( -1 )
-{}
-
-InputStreamVideo::~InputStreamVideo()
-{
-	/*if( m_codecContext != NULL )
-	{
-		avcodec_close( m_codecContext );
-		m_codecContext = NULL;
-	}*/
-	if( m_frame != NULL )
-	{
-		av_frame_free( &m_frame );
-		m_frame = NULL;
-	}
-}
-
-void InputStreamVideo::setup( const std::string& filename, const size_t streamIndex )
 {
 	av_register_all();
 
-	InputFile::setup( filename );
-
-	size_t videoStreamCount = 0;
-	for( size_t streamId = 0; streamId < m_formatContext->nb_streams; streamId++ )
-	{
-		if( m_formatContext->streams[streamId]->codec->codec_type == AVMEDIA_TYPE_VIDEO )
-		{
-			if( videoStreamCount == streamIndex )
-			{
-				m_selectedStream = streamId;
-			}
-			videoStreamCount++;
-		}
-	}
-
-	if( m_selectedStream == -1 )
-	{
-		throw std::runtime_error( "unable to find video stream" );
-	}
-	
-	m_codec = avcodec_find_decoder( m_formatContext->streams[m_selectedStream]->codec->codec_id );
+	m_codec = avcodec_find_decoder( m_inputStream.getVideoDesc().getVideoCodecId() );
 	if( m_codec == NULL )
 	{
 		throw std::runtime_error( "codec not supported" );
 	}
 
 	m_codecContext = avcodec_alloc_context3( m_codec );
-
 	if( m_codecContext == NULL )
 	{
 		throw std::runtime_error( "unable to find context for codec" );
 	}
 
 	// if( codec->capabilities & CODEC_CAP_TRUNCATED )
-	// 	codecContext->flags|= CODEC_FLAG_TRUNCATED;
+	// 	codecContext->flags |= CODEC_FLAG_TRUNCATED;
 
 	avcodec_open2( m_codecContext, m_codec, NULL );
-
 	if( m_codecContext == NULL || m_codec == NULL )
 	{
 		throw std::runtime_error( "unable open codec" );
@@ -92,6 +54,21 @@ void InputStreamVideo::setup( const std::string& filename, const size_t streamIn
 	}
 }
 
+InputStreamVideo::~InputStreamVideo()
+{
+	if( m_codecContext != NULL )
+	{
+		avcodec_close( m_codecContext );
+		av_free( m_codecContext );
+		m_codecContext = NULL;
+	}
+	if( m_frame != NULL )
+	{
+		av_frame_free( &m_frame );
+		m_frame = NULL;
+	}
+}
+
 bool InputStreamVideo::readNextFrame( Image& frameBuffer )
 {
 	int got_frame = 0;
@@ -101,7 +78,7 @@ bool InputStreamVideo::readNextFrame( Image& frameBuffer )
 		AVPacket packet;
 		av_init_packet( &packet );
 
-		if( ! readNextPacket( packet, m_selectedStream ) ) // error or end of file
+		if( ! m_inputStream.readNextPacket( packet ) ) // error or end of file
 		{
 			av_free_packet( &packet );
 			return false;

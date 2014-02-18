@@ -23,8 +23,8 @@ void displayMetadatas( const char* filename )
 	size_t keyWidth = 32;
 
 
-	InputFile input;
-	input.setup( filename ).analyse();
+	InputFile input( filename );
+	input.analyse();
 	std::cout << std::left;
 	std::cout << separator << " Wrapper " << separator << std::endl;
 	std::cout << std::setw( keyWidth ) << "filename"                      << ": " << input.getProperties().filename << std::endl;

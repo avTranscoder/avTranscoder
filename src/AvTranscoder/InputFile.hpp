@@ -5,6 +5,8 @@
 #include "DatasStructures/AudioDesc.hpp"
 #include "DatasStructures/VideoDesc.hpp"
 #include "Metadatas/MediaMetadatasStructures.hpp"
+#include "InputStream.hpp"
+
 
 #include <string>
 #include <vector>
@@ -21,35 +23,21 @@ namespace avtranscoder
 class InputFile
 {
 public:
-	InputFile();
+	InputFile( const std::string& filename );
 	~InputFile();
-
-	InputFile& setup( const std::string& file );
 
 	// *** Metadatas section ***
 	// run the analyse on the file after a setup.
 	InputFile& analyse();
 	// get properties on the file
-	const Properties& getProperties() const { return properties; }
+	const Properties& getProperties() const { return m_properties; }
 
-
-	VideoDesc getVideoDesc( size_t videoStreamId );
-	AudioDesc getAudioDesc( size_t audioStreamId );
-
-
-	bool unwrap( DataStream& data, const size_t streamIndex );
-
-protected:
-	bool readNextPacket( AVPacket& packet, const size_t streamIndex );
+	InputStream getStream( size_t index );
 
 protected:
 	AVFormatContext* m_formatContext;
-	AVStream*        m_stream;
-
-	Properties       properties;
-
+	Properties       m_properties;
 	std::string      m_filename;
-	size_t           m_packetCount;
 };
 
 }
