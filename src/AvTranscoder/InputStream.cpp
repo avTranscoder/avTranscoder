@@ -52,6 +52,7 @@ bool InputStream::readNextPacket( DataStream& data ) const
 
 bool InputStream::readNextPacket( AVPacket& packet ) const
 {
+	assert( m_formatContext != NULL );
 	while( 1 )
 	{
 		int ret = av_read_frame( m_formatContext, &packet );
@@ -70,7 +71,6 @@ bool InputStream::readNextPacket( AVPacket& packet ) const
 
 VideoDesc InputStream::getVideoDesc() const
 {
-	std::cout << "get video desc on " << m_formatContext << " / " << m_streamIndex << std::endl;
 	assert( m_formatContext != NULL );
 	assert( m_streamIndex <= m_formatContext->nb_streams );
 
@@ -80,8 +80,6 @@ VideoDesc InputStream::getVideoDesc() const
 	}
 
 	AVCodecContext* codecContext = m_formatContext->streams[m_streamIndex]->codec;
-
-	std::cout << "get video desc with codec id " << codecContext << std::endl;
 
 	VideoDesc desc( codecContext->codec_id );
 
@@ -93,7 +91,9 @@ VideoDesc InputStream::getVideoDesc() const
 
 AudioDesc InputStream::getAudioDesc() const
 {
+	assert( m_formatContext != NULL );
 	assert( m_streamIndex <= m_formatContext->nb_streams );
+
 	if( m_formatContext->streams[m_streamIndex]->codec->codec_type != AVMEDIA_TYPE_AUDIO )
 	{
 		return AudioDesc( AV_CODEC_ID_NONE );

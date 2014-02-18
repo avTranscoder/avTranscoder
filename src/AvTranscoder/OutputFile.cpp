@@ -111,14 +111,16 @@ bool OutputFile::wrap( const DataStream& data, const size_t streamId )
 	AVPacket packet;
 	av_init_packet( &packet );
 
-	av_packet_from_data( &packet, (uint8_t*)data.getPtr(), data.getSize() );
+	//av_packet_from_data( &packet, (uint8_t*)data.getPtr(), data.getSize() );
 
 	packet.stream_index = streamId;
 
+	packet.data = (uint8_t*)data.getPtr();
+	packet.size = data.getSize();
 	packet.dts = 0;
 	packet.pts = packetCount;
 
-	if( 	( formatContext, &packet ) != 0 )
+	if( av_interleaved_write_frame( formatContext, &packet ) != 0 )
 	{
 		std::cout << "error when writting packet in stream" << std::endl;
 		return false;

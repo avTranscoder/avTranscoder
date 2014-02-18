@@ -120,7 +120,7 @@ InputFile& InputFile::analyse()
 
 InputStream InputFile::getStream( size_t index )
 {
-	InputStream inputStream( m_filename, index );
+	return InputStream( m_filename, index );
 }
 
 }

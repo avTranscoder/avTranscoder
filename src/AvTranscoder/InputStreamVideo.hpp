@@ -3,7 +3,6 @@
 
 #include "InputFile.hpp"
 #include "DatasStructures/Image.hpp"
-#include "DatasStructures/DataStreamDesc.hpp"
 
 #include <vector>
 
@@ -24,7 +23,7 @@ public:
 	bool readNextFrame( Image& frameBuffer );
 
 private:
-	const InputStream& m_inputStream;
+	const InputStream  m_inputStream;
 	AVCodec*           m_codec;
 	AVCodecContext*    m_codecContext;
 	AVFrame*           m_frame;

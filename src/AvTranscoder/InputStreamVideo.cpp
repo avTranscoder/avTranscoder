@@ -64,7 +64,7 @@ InputStreamVideo::~InputStreamVideo()
 	}
 	if( m_frame != NULL )
 	{
-		av_frame_free( &m_frame );
+		//av_frame_free( &m_frame );
 		m_frame = NULL;
 	}
 }

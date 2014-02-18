@@ -29,7 +29,7 @@ env.Append(
     LIBPATH = [
         libavLibDir,
         "#src",
-	"#build/src"
+        "#build/src"
     ],
 )
 
@@ -72,7 +72,6 @@ envPy.Replace(
     SWIGCXXFILESUFFIX= '_wrapPython$CXXFILESUFFIX',
     SHLIBPREFIX= '_',
     CXXFLAGS = [
-        '-std=gnu++0x',
         '-Wall',
     ],
     SWIGFLAGS = [

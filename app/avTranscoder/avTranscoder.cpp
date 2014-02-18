@@ -20,7 +20,7 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 	using namespace avtranscoder;
 
 	av_log_set_level( AV_LOG_FATAL );
-	av_log_set_level( AV_LOG_DEBUG );
+	//av_log_set_level( AV_LOG_DEBUG );
 
 	InputFile inputFile( inputfilename );
 	inputFile.analyse();
@@ -28,14 +28,9 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 	// init video decoders
 	InputStreamVideo inputStreamVideo( inputFile.getStream( 0 ) );
 
-	//dVideo.set( key, value );
-
-	// same as
-	//DecoderVideo dVideo( "inputFilename.mov", 1 );
-
 	// init audio decoders
-	InputStreamAudio isAudioLeft ( "inputFilename.wav" ); // take the first audio stream per default
-	InputStreamAudio isAudioRight( "inputFilename.wav", 2 );
+	InputStreamAudio inputStreamAudio( inputFile.getStream( 1 ) );
+	//InputStreamAudio inputStreamAudioRight( inputFile.getStream( 2 ) );
 
 	// init video & audio encoders
 	OutputStreamVideo outputStreamVideo;
@@ -55,7 +50,8 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 	Image sourceImage( imageDesc );
 
 	videoDesc.setVideoCodec( "mpeg2video" );
-	videoDesc.set( "b",50000000 );
+	videoDesc.set( "b", 5000 );
+
 	try
 	{
 		videoDesc.set( "unknownParameter", 120000000 );
@@ -112,6 +108,11 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 
 	wrapper.createAudioEncoder( eAudioLeft, 2 );*/
 
+	AudioFrameDesc audioFrameDesc;
+	AudioFrame sourceAudio( audioFrameDesc );
+
+
+
 	ColorTransform ct;
 
 
@@ -120,7 +121,7 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 
 	size_t frame = 0;
 
-	while( inputStreamVideo.readNextFrame( sourceImage ) )
+	while( inputStreamVideo.readNextFrame( sourceImage ) && inputStreamAudio.readNextFrame( sourceAudio ) )
 	{
 		std::cout << "\rprocess frame " << frame << std::flush;
 
@@ -146,7 +147,7 @@ int main( int argc, char** argv )
 	std::cout << "start ..." << std::endl;
 
 	// example of video Transcoding
-	transcodeVideo( argv[1], "transcodedVideo.mxf" );
+	transcodeVideo( argv[1], "transcodedVideo.avi" );
 
 	std::cout << "end ..." << std::endl;
 }

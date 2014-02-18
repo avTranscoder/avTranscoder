@@ -17,6 +17,8 @@ extern "C" {
 #include <iostream>
 #include <string>
 #include <vector>
+#include <stdexcept>
+
 #include "Pixel.hpp"
 
 namespace avtranscoder
@@ -51,7 +53,17 @@ public:
 
 	size_t getDataSize() const
 	{
-		return avpicture_get_size( m_pixel.findPixel(), m_width, m_height );
+		AVPixelFormat pixelFormat = m_pixel.findPixel();
+		if( pixelFormat == AV_PIX_FMT_NONE )
+		{
+			throw std::runtime_error( "incorrect pixel description" );
+		}
+		size_t size = avpicture_get_size( pixelFormat, m_width, m_height );
+		if( size == 0 )
+		{
+			throw std::runtime_error( "unable to determine image buffer size" );
+		}
+		return size;
 	}
 
 private:

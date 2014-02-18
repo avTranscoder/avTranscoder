@@ -13,6 +13,7 @@ extern "C" {
 }
 
 #include <string>
+#include <iostream>
 
 namespace avtranscoder
 {
@@ -23,11 +24,18 @@ public:
 	InputStream( const std::string& filename, const size_t streamIndex );
 	~InputStream( );
 
-	InputStream( InputStream& inputStream )
-		: m_streamIndex( inputStream.m_streamIndex )
+	InputStream( const InputStream& inputStream )
+		: m_formatContext( NULL )
+		, m_streamIndex( inputStream.m_streamIndex )
 	{
 		init( inputStream.m_formatContext->filename );
-		//m_streamIndex   = inputStream.m_streamIndex;
+	}
+
+	InputStream( InputStream& inputStream )
+		: m_formatContext( NULL )
+		, m_streamIndex( inputStream.m_streamIndex )
+	{
+		init( inputStream.m_formatContext->filename );
 	}
 
 	size_t getStreamIndex() const { return m_streamIndex; }
