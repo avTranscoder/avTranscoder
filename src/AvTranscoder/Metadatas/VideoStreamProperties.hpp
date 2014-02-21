@@ -11,6 +11,11 @@ extern "C" {
 #include <libavutil/pixdesc.h>
 }
 #include <iostream>
+#ifdef _MSC_VER
+#include <float.h>
+#define isnan _isnan
+#define isinf(x) (!_finite(x))
+#endif
 
 namespace avtranscoder
 {
