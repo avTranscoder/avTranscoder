@@ -30,8 +30,6 @@ public:
 
 	bool setup();
 
-	void setVideoDesc( const VideoDesc& videoDesc );
-
 	/**
 	 * @param[out] codecFrame blabla
 	 */

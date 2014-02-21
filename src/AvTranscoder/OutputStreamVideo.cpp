@@ -17,7 +17,8 @@ extern "C" {
 namespace avtranscoder
 {
 
-OutputStreamVideo::OutputStreamVideo()
+OutputStreamVideo::OutputStreamVideo( )
+	: m_videoDesc( "mpeg2video" )
 {
 }
 
