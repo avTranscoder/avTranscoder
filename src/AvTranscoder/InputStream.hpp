@@ -54,7 +54,7 @@ private:
 
 private:
 	AVFormatContext* m_formatContext;
-	const size_t     m_streamIndex;
+	size_t           m_streamIndex;
 };
 
 }

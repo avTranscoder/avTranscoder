@@ -42,6 +42,11 @@ InputFile::InputFile( const std::string& filename )
 		m_formatContext = NULL;
 		throw std::runtime_error( "unable to find stream informations" );
 	}
+
+	for( size_t streamIndex = 0; streamIndex < m_formatContext->nb_streams; ++streamIndex )
+	{
+		m_inputStreams.push_back( InputStream( m_filename, streamIndex ) );
+	}
 }
 
 InputFile::~InputFile()
@@ -118,9 +123,9 @@ InputFile& InputFile::analyse()
 	return *this;
 }
 
-InputStream InputFile::getStream( size_t index )
+InputStream& InputFile::getStream( size_t index )
 {
-	return InputStream( m_filename, index );
+	return m_inputStreams.at( index );
 }
 
 }

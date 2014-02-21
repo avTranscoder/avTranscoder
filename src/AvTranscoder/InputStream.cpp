@@ -38,16 +38,22 @@ bool InputStream::readNextPacket( DataStream& data ) const
 	AVPacket packet;
 	av_init_packet( &packet );
 
-	readNextPacket( packet );
-
-	// is it possible to remove this copy ?
-	// using : av_packet_unref ?
-	data.getBuffer().resize( packet.size );
-	memcpy( data.getPtr(), packet.data, packet.size );
+	if( readNextPacket( packet ) )
+	{
+		// is it possible to remove this copy ?
+		// using : av_packet_unref ?
+		data.getBuffer().resize( packet.size );
+		if( packet.size != 0 )
+			memcpy( data.getPtr(), packet.data, packet.size );
+	}
+	else
+	{
+		data.getBuffer().resize( 0 );
+	}
 
 	av_free_packet( &packet );
 
-	return true;
+	return data.getBuffer().size() != 0;
 }
 
 bool InputStream::readNextPacket( AVPacket& packet ) const
@@ -66,6 +72,11 @@ bool InputStream::readNextPacket( AVPacket& packet ) const
 		{
 			return true;
 		}
+
+		// do not delete these 2 lines
+		// need to skip packet, delete this one and re-init for reading the next one
+		av_free_packet( &packet );
+		av_init_packet( &packet );
 	}
 }
 

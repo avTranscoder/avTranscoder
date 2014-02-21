@@ -29,15 +29,16 @@ public:
 	// *** Metadatas section ***
 	// run the analyse on the file after a setup.
 	InputFile& analyse();
-	// get properties on the file
+	/// get file properties
 	const Properties& getProperties() const { return m_properties; }
 
-	InputStream getStream( size_t index );
+	InputStream& getStream( size_t index );
 
 protected:
-	AVFormatContext* m_formatContext;
-	Properties       m_properties;
-	std::string      m_filename;
+	AVFormatContext*         m_formatContext;
+	Properties               m_properties;
+	std::string              m_filename;
+	std::vector<InputStream> m_inputStreams;
 };
 
 }
