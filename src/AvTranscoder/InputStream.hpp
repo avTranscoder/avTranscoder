@@ -31,13 +31,6 @@ public:
 		init( inputStream.m_formatContext->filename );
 	}
 
-	InputStream( InputStream& inputStream )
-		: m_formatContext( NULL )
-		, m_streamIndex( inputStream.m_streamIndex )
-	{
-		init( inputStream.m_formatContext->filename );
-	}
-
 	size_t getStreamIndex() const { return m_streamIndex; }
 
 	bool readNextPacket( DataStream& data ) const;
@@ -54,7 +47,7 @@ private:
 
 private:
 	AVFormatContext* m_formatContext;
-	const size_t     m_streamIndex;
+	size_t           m_streamIndex;
 };
 
 }
