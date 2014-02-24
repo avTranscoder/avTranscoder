@@ -38,7 +38,10 @@ bool InputStream::readNextPacket( DataStream& data ) const
 	AVPacket packet;
 	av_init_packet( &packet );
 
-	readNextPacket( packet );
+	if( ! readNextPacket( packet ) )
+	{
+		return false;
+	}
 
 	// is it possible to remove this copy ?
 	// using : av_packet_unref ?
@@ -66,6 +69,8 @@ bool InputStream::readNextPacket( AVPacket& packet ) const
 		{
 			return true;
 		}
+		av_free_packet( &packet );
+		av_init_packet( &packet );
 	}
 }
 
