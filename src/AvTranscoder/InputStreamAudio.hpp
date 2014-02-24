@@ -7,7 +7,7 @@
 namespace avtranscoder
 {
 
-class InputStreamAudio
+class AvExport InputStreamAudio
 {
 public:
 	InputStreamAudio( const InputStream& inputStream );

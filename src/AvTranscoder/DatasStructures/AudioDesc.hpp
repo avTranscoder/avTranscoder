@@ -18,7 +18,7 @@ extern "C" {
 namespace avtranscoder
 {
 
-class AudioDesc
+class AvExport AudioDesc
 {
 public:
 	AudioDesc( const std::string& codecName = "" );

@@ -18,20 +18,13 @@ extern "C" {
 namespace avtranscoder
 {
 
-class InputStream
+class AvExport InputStream
 {
 public:
 	InputStream( const std::string& filename, const size_t streamIndex );
 	~InputStream( );
 
 	InputStream( const InputStream& inputStream )
-		: m_formatContext( NULL )
-		, m_streamIndex( inputStream.m_streamIndex )
-	{
-		init( inputStream.m_formatContext->filename );
-	}
-
-	InputStream( InputStream& inputStream )
 		: m_formatContext( NULL )
 		, m_streamIndex( inputStream.m_streamIndex )
 	{

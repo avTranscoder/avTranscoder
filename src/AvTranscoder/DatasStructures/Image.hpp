@@ -34,7 +34,7 @@ typedef std::vector< unsigned char > DataBuffer;
 // 	//EColorRange     eColorRange;
 // };
 
-class ImageDesc
+class AvExport ImageDesc
 {
 public:
 	ImageDesc()
@@ -42,9 +42,9 @@ public:
 
 	void setWidth ( const size_t width     ) { m_width = width; }
 	void setHeight( const size_t height    ) { m_height = height; }
-	void setPixel ( const Pixel& pixel     ) { m_pixel = pixel; }
+	void setPixel ( const Pixel  pixel     ) { m_pixel = pixel; }
 	void setDar   ( const size_t num, const size_t den ) { m_displayAspectRatio.num = num; m_displayAspectRatio.den = den; }
-	void setDar   ( const Ratio ratio ) { m_displayAspectRatio = ratio; }
+	void setDar   ( const Ratio  ratio     ) { m_displayAspectRatio = ratio; }
 
 	size_t               getWidth ()    const { return m_width;  }
 	size_t               getHeight()    const { return m_height; }
@@ -78,7 +78,7 @@ private:
 	bool            m_topFieldFirst;
 };
 
-class Image
+class AvExport Image
 {
 public:
 	Image( const ImageDesc& ref )

@@ -14,7 +14,7 @@ class AVFrame;
 namespace avtranscoder
 {
 
-class InputStreamVideo
+class AvExport InputStreamVideo
 {
 public:
 	InputStreamVideo( const InputStream& inputStream );
