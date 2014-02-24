@@ -17,7 +17,7 @@ class AVCodecContext;
 namespace avtranscoder
 {
 
-class OutputFile
+class AvExport OutputFile
 {
 public:
 	OutputFile( const std::string& file = "" );
@@ -25,9 +25,6 @@ public:
 	bool setup();
 
 	void addVideoStream( const VideoDesc& videoDesc );
-
-
-	void addVideoStream( const std::string& codecName );
 
 	bool addAudioStream( );
 

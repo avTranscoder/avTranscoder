@@ -18,7 +18,7 @@ extern "C" {
 namespace avtranscoder
 {
 
-class VideoDesc
+class AvExport VideoDesc
 {
 public:
 	VideoDesc( const std::string& codecName = "" );

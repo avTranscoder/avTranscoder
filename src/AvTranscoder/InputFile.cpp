@@ -62,7 +62,7 @@ InputFile& InputFile::analyse()
 	m_properties.formatLongName = m_formatContext->iformat->long_name;
 	m_properties.streamsCount = m_formatContext->nb_streams;
 	m_properties.programsCount = m_formatContext->nb_programs;
-	m_properties.startTime = 1.0 * (uint)m_formatContext->start_time / AV_TIME_BASE;
+	m_properties.startTime = 1.0 * (unsigned int)m_formatContext->start_time / AV_TIME_BASE;
 	m_properties.duration = 1.0 * m_formatContext->duration / AV_TIME_BASE;
 	m_properties.bitRate = m_formatContext->bit_rate;
 	m_properties.packetSize = m_formatContext->packet_size;

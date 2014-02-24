@@ -6,7 +6,7 @@ env = Environment().Clone()
 
 Import( 'env' )
 
-env.Program(
+avmeta = env.Program(
         'avmeta',
         Glob( 'avMeta/*.cpp' ),
         LIBS = [
@@ -29,3 +29,5 @@ env.Program(
                 'swscale',
                 ]
         )
+
+env.Depends( avmeta, sAvTranscoder )

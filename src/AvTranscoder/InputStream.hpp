@@ -18,7 +18,7 @@ extern "C" {
 namespace avtranscoder
 {
 
-class InputStream
+class AvExport InputStream
 {
 public:
 	InputStream( const std::string& filename, const size_t streamIndex );

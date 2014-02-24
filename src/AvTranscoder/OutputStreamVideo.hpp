@@ -23,14 +23,14 @@ class AVCodecContext;
 namespace avtranscoder
 {
 
-class OutputStreamVideo : public OutputStream
+class AvExport OutputStreamVideo : public OutputStream
 {
 public:
 	OutputStreamVideo();
 
 	bool setup();
 
-	void setVideoDesc( const VideoDesc& videoDesc );
+	//void setVideoDesc( const VideoDesc& videoDesc );
 
 	/**
 	 * @param[out] codecFrame blabla

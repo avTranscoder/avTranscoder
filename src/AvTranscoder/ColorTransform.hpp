@@ -12,7 +12,7 @@ class SwsContext;
 namespace avtranscoder
 {
 
-class ColorTransform
+AvExport class ColorTransform
 {
 public:
 	ColorTransform();

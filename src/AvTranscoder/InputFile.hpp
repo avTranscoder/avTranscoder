@@ -20,7 +20,7 @@ class AVCodecContext;
 namespace avtranscoder
 {
 
-class InputFile
+class AvExport InputFile
 {
 public:
 	InputFile( const std::string& filename );
