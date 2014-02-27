@@ -32,7 +32,7 @@ public:
 	/// get file properties
 	const Properties& getProperties() const { return m_properties; }
 
-	InputStream& getStream( size_t index );
+	::avtranscoder::InputStream& getStream( size_t index );
 
 protected:
 	AVFormatContext*         m_formatContext;
