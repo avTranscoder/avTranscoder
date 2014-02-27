@@ -15,6 +15,9 @@
 #include <AvTranscoder/DatasStructures/AudioDesc.hpp>
 #include <AvTranscoder/DatasStructures/DataStreamDesc.hpp>
 
+#include <AvTranscoder/Metadatas/MediaMetadatasStructures.hpp>
+
+#include <AvTranscoder/InputFile.hpp>
 #include <AvTranscoder/OutputFile.hpp>
 
 #include <AvTranscoder/OutputStream.hpp>
@@ -46,6 +49,9 @@ namespace std {
 %include <AvTranscoder/DatasStructures/AudioDesc.hpp>
 %include <AvTranscoder/DatasStructures/DataStreamDesc.hpp>
 
+%include <AvTranscoder/Metadatas/MediaMetadatasStructures.hpp>
+
+%include <AvTranscoder/InputFile.hpp>
 %include <AvTranscoder/OutputFile.hpp>
 
 %include <AvTranscoder/OutputStream.hpp>
