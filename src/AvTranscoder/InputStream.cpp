@@ -132,7 +132,14 @@ void InputStream::init( const std::string& filename )
 		m_formatContext = NULL;
 		throw std::runtime_error( "unable to find stream informations" );
 	}
+
 	assert( m_formatContext != NULL );
+
+	if( m_formatContext->streams[m_streamIndex]->codec->codec_type == AVMEDIA_TYPE_AUDIO )
+	{
+		// TODO: get dynamic buffer size in relation with video stream
+		m_formatContext->streams[m_streamIndex]->codec->block_align = 3 * 1920; // 24 bits per audio sample at 25fps
+	}
 }
 
 }
