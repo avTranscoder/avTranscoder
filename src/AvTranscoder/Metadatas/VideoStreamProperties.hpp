@@ -60,11 +60,14 @@ void getGopProperties( VideoProperties& vp, AVFormatContext* formatContext, AVCo
 			break;
 		}
 	}
-
 #if LIBAVCODEC_VERSION_MAJOR > 54
 	av_frame_free( &frame );
 #else
+ #if LIBAVCODEC_VERSION_MAJOR > 53
 	avcodec_free_frame( &frame );
+ #else
+	av_free( frame );
+ #endif
 #endif
 }
 
@@ -150,7 +153,11 @@ VideoProperties videoStreamInfo( AVFormatContext* formatContext, const size_t in
 		case AVCOL_SPC_BT470BG:     vp.colorspace = "BT470 (PAL - 625)"; break;
 		case AVCOL_SPC_SMPTE170M:   vp.colorspace = "Smpte 170M (NTSC)"; break;
 		case AVCOL_SPC_SMPTE240M:   vp.colorspace = "Smpte 240M"; break;
+#if LIBAVCODEC_VERSION_MAJOR > 54
 		case AVCOL_SPC_YCOCG:       vp.colorspace = "Y Co Cg"; break;
+#else
+		case AVCOL_SPC_YCGCO:       vp.colorspace = "Y Co Cg"; break;
+#endif
 #if LIBAVCODEC_VERSION_MAJOR > 54
 		case AVCOL_SPC_BT2020_NCL:  vp.colorspace = "ITU-R BT2020 non-constant luminance system"; break;
 		case AVCOL_SPC_BT2020_CL:   vp.colorspace = "ITU-R BT2020 constant luminance system"; break;
@@ -198,22 +205,31 @@ VideoProperties videoStreamInfo( AVFormatContext* formatContext, const size_t in
 		case AV_FIELD_TB:          vp.fieldOrder = "top bottom"; break;
 		case AV_FIELD_BT:          vp.fieldOrder = "bottom top"; break;
 	}
-	
+#if LIBAVUTIL_VERSION_MAJOR > 51
 	const AVPixFmtDescriptor* pixFmt = av_pix_fmt_desc_get( codec_context->pix_fmt );
+#else
+	const AVPixFmtDescriptor* pixFmt = NULL;
+	if( codec_context->pix_fmt > 0 && codec_context->pix_fmt < PIX_FMT_NB )
+		pixFmt = &av_pix_fmt_descriptors[ codec_context->pix_fmt ];
+#endif
+
 	if( pixFmt != NULL )
 	{
-		vp.pixelName       = pixFmt->name;
-		vp.componentsCount = pixFmt->nb_components;
-		vp.chromaWidth     = pixFmt->log2_chroma_w;
-		vp.chromaHeight    = pixFmt->log2_chroma_h;
-		vp.endianess       = ( pixFmt->flags & PIX_FMT_BE ) ? "big" : "little";
+		vp.pixelName            = pixFmt->name;
+		vp.componentsCount      = pixFmt->nb_components;
+		vp.chromaWidth          = pixFmt->log2_chroma_w;
+		vp.chromaHeight         = pixFmt->log2_chroma_h;
+		vp.endianess            = ( pixFmt->flags & PIX_FMT_BE ) ? "big" : "little";
 		vp.indexedColors        = (bool) pixFmt->flags & PIX_FMT_PAL;
 		vp.bitWisePacked        = (bool) pixFmt->flags & PIX_FMT_BITSTREAM;
 		vp.hardwareAcceleration = (bool) pixFmt->flags & PIX_FMT_HWACCEL;
 		vp.notFirstPlane        = (bool) pixFmt->flags & PIX_FMT_PLANAR;
 		vp.rgbPixelData         = (bool) pixFmt->flags & PIX_FMT_RGB;
+#if LIBAVCODEC_VERSION_MAJOR > 53
 		vp.pseudoPaletted       = (bool) pixFmt->flags & PIX_FMT_PSEUDOPAL;
 		vp.asAlpha              = (bool) pixFmt->flags & PIX_FMT_ALPHA;
+#else
+#endif
 
 		for( size_t channel = 0; channel < (size_t)pixFmt->nb_components; ++channel )
 		{

@@ -24,8 +24,11 @@
  #define AV_ERROR_MAX_STRING_SIZE 64
 #endif
 
-#ifndef AvPixelFormat
- #define AvPixelFormat PixelFormat
+#if LIBAVCODEC_VERSION_MAJOR < 54
+ #define AVPixelFormat PixelFormat
+ #define AV_PIX_FMT_NONE PIX_FMT_NONE
+ #define AVCodecID CodecID
+ #define AV_CODEC_ID_NONE CODEC_ID_NONE
 #endif
 
 namespace avtranscoder

@@ -17,18 +17,31 @@ namespace avtranscoder
 AVPixelFormat Pixel::findPixel() const
 {
 	//av_register_all();
+#if LIBAVUTIL_VERSION_MAJOR > 51
 	const AVPixFmtDescriptor *pix_desc = NULL;
 	while( ( pix_desc = av_pix_fmt_desc_next( pix_desc ) ) )
 	{
+#else
+	for( size_t pixFmtIndex = PIX_FMT_NONE; pixFmtIndex < PIX_FMT_NB; ++pixFmtIndex )
+	{
+		const AVPixFmtDescriptor *pix_desc = &av_pix_fmt_descriptors[ pixFmtIndex ];
+#endif
 		if( m_components   == (size_t) pix_desc->nb_components &&
 			m_pixelSize    == (size_t) av_get_bits_per_pixel( pix_desc ) &&
 			m_endianess    == ( pix_desc->flags & PIX_FMT_BE ) &&
+#if LIBAVUTIL_VERSION_MAJOR > 51
 			m_withAlpha    == ( pix_desc->flags & PIX_FMT_ALPHA ) &&
+			// TODO: what need todo if libavutil <= 51 ?
+#endif
 			m_planar       == ( ( pix_desc->flags & PIX_FMT_PLANAR ) != 0 ) &&
 			asCorrectColorComponents( pix_desc, m_componentType ) &&
 			asCorrectSubsampling( pix_desc, m_subsamplingType ) )
 		{
+#if LIBAVUTIL_VERSION_MAJOR > 51
 			return av_pix_fmt_desc_get_id( pix_desc );
+#else
+			return (AVPixelFormat)pixFmtIndex;
+#endif
 		}
 	}
 	return AV_PIX_FMT_NONE;

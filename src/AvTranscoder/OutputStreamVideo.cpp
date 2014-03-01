@@ -86,20 +86,33 @@ bool OutputStreamVideo::encodeFrame( const Image& sourceImage, DataStream& coded
 		packet.flags |= AV_PKT_FLAG_KEY;
 	}
 
+#if LIBAVCODEC_VERSION_MAJOR > 53
 	int gotPacket = 0;
 	int ret = avcodec_encode_video2( codecContext, &packet, frame, &gotPacket );
-
 	if( ret == 0 && gotPacket == 1 )
 	{
 		codedFrame.getBuffer().resize( packet.size );
 		memcpy( codedFrame.getPtr(), packet.data, packet.size );
 	}
+#else
+	int ret = avcodec_encode_video( codecContext, packet.data, packet.size, frame );
+	if( ret > 0 )
+	{
+		codedFrame.getBuffer().resize( packet.size );
+		memcpy( codedFrame.getPtr(), packet.data, packet.size );
+	}
+#endif
+
 
 	av_free_packet( &packet );
 #if LIBAVCODEC_VERSION_MAJOR > 54
-		av_frame_free( &frame );
+	av_frame_free( &frame );
 #else
-		avcodec_free_frame( &frame );
+ #if LIBAVCODEC_VERSION_MAJOR > 53
+	avcodec_free_frame( &frame );
+ #else
+	av_free( frame );
+ #endif
 #endif
 	return ret < 0;
 }

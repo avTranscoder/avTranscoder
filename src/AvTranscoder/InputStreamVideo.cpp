@@ -69,9 +69,13 @@ InputStreamVideo::~InputStreamVideo()
 	if( m_frame != NULL )
 	{
 #if LIBAVCODEC_VERSION_MAJOR > 54
-		av_frame_free( &m_frame );
+	av_frame_free( &m_frame );
 #else
-		avcodec_free_frame( &m_frame );
+ #if LIBAVCODEC_VERSION_MAJOR > 53
+	avcodec_free_frame( &m_frame );
+ #else
+	av_free( m_frame );
+ #endif
 #endif
 		m_frame = NULL;
 	}

@@ -10,6 +10,8 @@ extern "C" {
 #include <libavutil/pixfmt.h>
 }
 
+#include <AvTranscoder/common.hpp>
+
 class AVPixFmtDescriptor;
 
 namespace avtranscoder
