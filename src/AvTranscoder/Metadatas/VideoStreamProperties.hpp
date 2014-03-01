@@ -171,10 +171,10 @@ VideoProperties videoStreamInfo( AVFormatContext* formatContext, const size_t in
 		case AVCOL_SPC_BT470BG:     vp.colorspace = "BT470 (PAL - 625)"; break;
 		case AVCOL_SPC_SMPTE170M:   vp.colorspace = "Smpte 170M (NTSC)"; break;
 		case AVCOL_SPC_SMPTE240M:   vp.colorspace = "Smpte 240M"; break;
-#if LIBAVCODEC_VERSION_MAJOR > 54
+#if LIBAVCODEC_VERSION_MAJOR > 53
 		case AVCOL_SPC_YCOCG:       vp.colorspace = "Y Co Cg"; break;
 #else
-		case AVCOL_SPC_YCGCO:       vp.colorspace = "Y Co Cg"; break;
+		case AVCOL_SPC_YCGCO:       vp.colorspace = "Y Cg Co"; break;
 #endif
 #if LIBAVCODEC_VERSION_MAJOR > 54
  #ifdef AVCOL_TRC_BT2020_12
