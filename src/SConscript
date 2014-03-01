@@ -1,9 +1,14 @@
-
 import glob, re
+import os
 
 Import( "env" )
 Import( "envJava" )
 Import( "envPy" )
+Import( "installPrefix" )
+
+env.Replace(SHLIBSUFFIX = '.so.$SHLIB_VERSION')
+
+AvTranscoderVersion = '0.0.1'
 
 sAvTranscoder = env.StaticLibrary(
     'sAvTranscoder',
@@ -26,7 +31,8 @@ SharedAvTranscoder = env.SharedLibrary(
         'libavformat',
         'libswscale',
         #'pthread',
-    ]
+    ],
+    SHLIB_VERSION = AvTranscoderVersion,
 )
 
 jAvTranscoder = envJava.SharedLibrary(
@@ -65,3 +71,13 @@ avTranscoder_jar = env.Jar(
 Export( { 'sAvTranscoder' : sAvTranscoder } )
 Export( { 'AvTranscoder'  : 'AvTranscoder' } )
 # Export( { 'AvTranscoder_jar': avTranscoder_class } )
+
+installSharedLib = env.InstallVersionedLib( os.path.join( installPrefix, "lib" ), SharedAvTranscoder, SHLIBVERSION=AvTranscoderVersion )
+
+env.Alias( "install", env.Install(os.path.join( installPrefix, "lib" ), sAvTranscoder ) )
+env.Alias( "install", installSharedLib )
+env.Alias( "install", env.Install(os.path.join( installPrefix, "lib" ), jAvTranscoder ) )
+
+env.Alias( "install", env.Install(os.path.join( installPrefix, "include/AvTranscoder" ), Glob( 'AvTranscoder/*.hpp' ) ) )
+env.Alias( "install", env.Install(os.path.join( installPrefix, "include/AvTranscoder/Metadatas" ), Glob( 'AvTranscoder/Metadatas/MediaMetadatasStructures.hpp' ) ) )
+env.Alias( "install", env.Install(os.path.join( installPrefix, "include/AvTranscoder/DatasStructures" ), Glob( 'AvTranscoder/DatasStructures/*.hpp' ) ) )

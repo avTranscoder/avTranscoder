@@ -1,6 +1,9 @@
+import os
+
 Import( 'AvTranscoder' )
 Import( 'sAvTranscoder' )
 #Import( 'AvTranscoder_jar' )
+Import( 'installPrefix' )
 
 env = Environment().Clone()
 
@@ -18,7 +21,7 @@ avmeta = env.Program(
                 ]
         )
 
-env.Program(
+avtransform = env.Program(
         'av++',
         Glob( 'avTranscoder/*.cpp' ),
         LIBS = [
@@ -31,3 +34,6 @@ env.Program(
         )
 
 env.Depends( avmeta, sAvTranscoder )
+
+env.Alias( "install", env.Install(os.path.join( installPrefix, "bin" ), avmeta ) )
+env.Alias( "install", env.Install(os.path.join( installPrefix, "bin" ), avtransform ) )
