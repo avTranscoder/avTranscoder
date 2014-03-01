@@ -132,15 +132,33 @@ VideoProperties videoStreamInfo( AVFormatContext* formatContext, const size_t in
 		case AVCOL_TRC_GAMMA28:      vp.colorTransfert = "Gamma 2.8"; break;
 		case AVCOL_TRC_SMPTE240M:    vp.colorTransfert = "Smpte 240M"; break;
 #if LIBAVCODEC_VERSION_MAJOR > 54
+ #ifdef AVCOL_TRC_SMPTE170M
 		case AVCOL_TRC_SMPTE170M:    vp.colorTransfert = "Rec 601 / ITU-R BT601-6 525 or 625 / ITU-R BT1358 525 or 625 / ITU-R BT1700 NTSC"; break;
+ #endif
+ #ifdef AVCOL_TRC_LINEAR
 		case AVCOL_TRC_LINEAR:       vp.colorTransfert = "Linear transfer characteristics"; break;
+ #endif
+ #ifdef AVCOL_TRC_LOG
 		case AVCOL_TRC_LOG:          vp.colorTransfert = "Logarithmic transfer characteristic (100:1 range)"; break;
+ #endif
+ #ifdef AVCOL_TRC_LOG_SQRT
 		case AVCOL_TRC_LOG_SQRT:     vp.colorTransfert = "Logarithmic transfer characteristic (100 * Sqrt( 10 ) : 1 range)"; break;
+ #endif
+ #ifdef AVCOL_TRC_IEC61966_2_4
 		case AVCOL_TRC_IEC61966_2_4: vp.colorTransfert = "IEC 61966-2-4"; break;
+ #endif
+ #ifdef AVCOL_TRC_BT1361_ECG
 		case AVCOL_TRC_BT1361_ECG:   vp.colorTransfert = "ITU-R BT1361 Extended Colour Gamut"; break;
+ #endif
+ #ifdef AVCOL_TRC_IEC61966_2_1
 		case AVCOL_TRC_IEC61966_2_1: vp.colorTransfert = "IEC 61966-2-1 (sRGB or sYCC)"; break;
+ #endif
+ #ifdef AVCOL_TRC_BT2020_10
 		case AVCOL_TRC_BT2020_10:    vp.colorTransfert = "ITU-R BT2020 for 10 bit system"; break;
+ #endif
+ #ifdef AVCOL_TRC_BT2020_12
 		case AVCOL_TRC_BT2020_12:    vp.colorTransfert = "ITU-R BT2020 for 12 bit system"; break;	
+ #endif
 #endif
 		case AVCOL_TRC_NB:           vp.colorTransfert = "Not ABI"; break;
 	}
@@ -159,8 +177,12 @@ VideoProperties videoStreamInfo( AVFormatContext* formatContext, const size_t in
 		case AVCOL_SPC_YCGCO:       vp.colorspace = "Y Co Cg"; break;
 #endif
 #if LIBAVCODEC_VERSION_MAJOR > 54
+ #ifdef AVCOL_TRC_BT2020_12
 		case AVCOL_SPC_BT2020_NCL:  vp.colorspace = "ITU-R BT2020 non-constant luminance system"; break;
+ #endif
+ #ifdef AVCOL_TRC_BT2020_CL
 		case AVCOL_SPC_BT2020_CL:   vp.colorspace = "ITU-R BT2020 constant luminance system"; break;
+ #endif
 #endif
 		case AVCOL_SPC_NB:          vp.colorspace = "Not ABI"; break;
 	}
@@ -181,7 +203,9 @@ VideoProperties videoStreamInfo( AVFormatContext* formatContext, const size_t in
 		case AVCOL_PRI_SMPTE240M:   vp.colorPrimaries = "Smpte 240 (NTSC)"; break;
 		case AVCOL_PRI_FILM:        vp.colorPrimaries = "Film"; break;
 #if LIBAVCODEC_VERSION_MAJOR > 54
+ #ifdef AVCOL_TRC_BT2020_CL
 		case AVCOL_PRI_BT2020:      vp.colorPrimaries = "ITU-R BT2020"; break;
+ #endif
 #endif
 		case AVCOL_PRI_NB:          vp.colorPrimaries = "Not ABI"; break;
 	}

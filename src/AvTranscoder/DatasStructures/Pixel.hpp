@@ -60,7 +60,7 @@ public:
 	bool             getAlpha          () const { return m_withAlpha; }
 	bool             getPlanar         () const { return m_planar; }
 
-	AVPixelFormat findPixel() const;
+	AVPixelFormat    findPixel() const;
 
 private:
 	bool asCorrectColorComponents( const AVPixFmtDescriptor* pix_desc, const EComponentType componentType ) const;

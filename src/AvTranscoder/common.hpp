@@ -1,6 +1,15 @@
 #ifndef _AV_TRANSCODER_COMMON_HPP_
 #define _AV_TRANSCODER_COMMON_HPP_
 
+extern "C" {
+#ifndef __STDC_CONSTANT_MACROS
+    #define __STDC_CONSTANT_MACROS
+#endif
+#include <libavutil/version.h>
+#include <libavformat/version.h>
+#include <libavcodec/version.h>
+}
+
 #include <string>
 
 #ifdef SWIG
@@ -24,11 +33,13 @@
  #define AV_ERROR_MAX_STRING_SIZE 64
 #endif
 
+#ifndef SWIG
 #if LIBAVCODEC_VERSION_MAJOR < 54
  #define AVPixelFormat PixelFormat
  #define AV_PIX_FMT_NONE PIX_FMT_NONE
  #define AVCodecID CodecID
  #define AV_CODEC_ID_NONE CODEC_ID_NONE
+#endif
 #endif
 
 namespace avtranscoder

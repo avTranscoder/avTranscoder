@@ -1,6 +1,7 @@
 #ifndef _AV_TRANSCODER_DATA_VIDEO_DESC_HPP_
 #define _AV_TRANSCODER_DATA_VIDEO_DESC_HPP_
 
+
 #include "Image.hpp"
 #include <string>
 
