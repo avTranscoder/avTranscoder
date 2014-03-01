@@ -127,7 +127,8 @@ void VideoDesc::set( const std::string& key, const std::string& flag, const bool
 	if( error != 0 )
 	{
 		std::string err( "", AV_ERROR_MAX_STRING_SIZE );
-		av_make_error_string( const_cast<char*>(err.c_str()), err.size(), error );
+		//av_make_error_string( const_cast<char*>(err.c_str()), err.size(), error );
+		av_strerror( error, const_cast<char*>(err.c_str()), err.size() );
 		throw std::runtime_error( "unknown key " + key + ": " + err );
 	}
 
@@ -140,7 +141,8 @@ void VideoDesc::set( const std::string& key, const std::string& flag, const bool
 	if( error != 0 )
 	{
 		std::string err( "", AV_ERROR_MAX_STRING_SIZE );
-		av_make_error_string( const_cast<char*>(err.c_str()), err.size(), error );
+		//av_make_error_string( const_cast<char*>(err.c_str()), err.size(), error );
+		av_strerror( error, const_cast<char*>(err.c_str()), err.size() );
 		throw std::runtime_error( "setting " + key + " parameter to " + flag + ": " + err );
 	}
 }
@@ -151,7 +153,8 @@ void VideoDesc::set( const std::string& key, const bool value )
 	if( error != 0 )
 	{
 		std::string err( "", AV_ERROR_MAX_STRING_SIZE );
-		av_make_error_string( const_cast<char*>(err.c_str()), err.size(), error );
+		//av_make_error_string( const_cast<char*>(err.c_str()), err.size(), error );
+		av_strerror( error, const_cast<char*>(err.c_str()), err.size() );
 		throw std::runtime_error( "setting " + key + " parameter to " + ( value ? "true" : "false" ) + ": " + err );
 	}
 }
@@ -166,7 +169,8 @@ void VideoDesc::set( const std::string& key, const int value )
 		std::ostringstream os;
 		os << value;
 		std::string err( "", AV_ERROR_MAX_STRING_SIZE );
-		av_make_error_string( const_cast<char*>(err.c_str()), err.size(), error );
+		//av_make_error_string( const_cast<char*>(err.c_str()), err.size(), error );
+		av_strerror( error, const_cast<char*>(err.c_str()), err.size() );
 		throw std::runtime_error( "setting " + key + " parameter to " + os.str() + ": " + err );
 	}
 }
@@ -182,7 +186,8 @@ void VideoDesc::set( const std::string& key, const int num, const int den )
 		std::ostringstream os;
 		os << num << "/" << den;
 		std::string err( "", AV_ERROR_MAX_STRING_SIZE );
-		av_make_error_string( const_cast<char*>(err.c_str()), err.size(), error );
+		//av_make_error_string( const_cast<char*>(err.c_str()), err.size(), error );
+		av_strerror( error, const_cast<char*>(err.c_str()), err.size() );
 		throw std::runtime_error( "setting " + key + " parameter to " + os.str() + ": " + err );
 	}
 }
@@ -195,7 +200,8 @@ void VideoDesc::set( const std::string& key, const double value )
 		std::ostringstream os;
 		os << value;
 		std::string err( "", AV_ERROR_MAX_STRING_SIZE );
-		av_make_error_string( const_cast<char*>(err.c_str()), err.size(), error );
+		//av_make_error_string( const_cast<char*>(err.c_str()), err.size(), error );
+		av_strerror( error, const_cast<char*>(err.c_str()), err.size() );
 		throw std::runtime_error( "setting " + key + " parameter to " + os.str() + ": " + err );
 	}
 }
@@ -206,7 +212,8 @@ void VideoDesc::set( const std::string& key, const std::string& value )
 	if( error != 0 )
 	{
 		std::string err( "", AV_ERROR_MAX_STRING_SIZE );
-		av_make_error_string( const_cast<char*>(err.c_str()), err.size(), error );
+		//av_make_error_string( const_cast<char*>(err.c_str()), err.size(), error );
+		av_strerror( error, const_cast<char*>(err.c_str()), err.size() );
 		throw std::runtime_error( "setting " + key + " parameter to " + value + ": " + err );
 	}
 }

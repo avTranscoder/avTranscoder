@@ -42,12 +42,20 @@ bool OutputStreamVideo::setup( )
 
 bool OutputStreamVideo::encodeFrame( const Image& sourceImage, DataStream& codedFrame )
 {
+#if LIBAVCODEC_VERSION_MAJOR > 54
+	AVFrame* frame = av_frame_alloc();
+#else
 	AVFrame* frame = avcodec_alloc_frame();
+#endif
 
 	AVCodecContext* codecContext = m_videoDesc.getCodecContext();
 
 	// Set default frame parameters
+#if LIBAVCODEC_VERSION_MAJOR > 54
+	av_frame_unref( frame );
+#else
 	avcodec_get_frame_defaults( frame );
+#endif
 
 	frame->width  = codecContext->width;
 	frame->height = codecContext->height;
@@ -88,7 +96,11 @@ bool OutputStreamVideo::encodeFrame( const Image& sourceImage, DataStream& coded
 	}
 
 	av_free_packet( &packet );
-	av_frame_free( &frame );
+#if LIBAVCODEC_VERSION_MAJOR > 54
+		av_frame_free( &frame );
+#else
+		avcodec_free_frame( &frame );
+#endif
 	return ret < 0;
 }
 

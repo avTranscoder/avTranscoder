@@ -20,6 +20,14 @@
 #endif
 #endif
 
+#ifndef AV_ERROR_MAX_STRING_SIZE
+ #define AV_ERROR_MAX_STRING_SIZE 64
+#endif
+
+#ifndef AvPixelFormat
+ #define AvPixelFormat PixelFormat
+#endif
+
 namespace avtranscoder
 {
 

@@ -25,6 +25,7 @@ env.Append(
     ],
     CXXFLAGS = [
         '-Wall',
+	'-fPIC',
     ],
     LIBPATH = [
         libavLibDir,

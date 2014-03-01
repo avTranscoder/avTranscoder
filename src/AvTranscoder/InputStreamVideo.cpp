@@ -47,7 +47,11 @@ InputStreamVideo::InputStreamVideo( const InputStream& inputStream )
 		throw std::runtime_error( "unable open codec" );
 	}
 
+#if LIBAVCODEC_VERSION_MAJOR > 54
+	m_frame = av_frame_alloc();
+#else
 	m_frame = avcodec_alloc_frame();
+#endif
 	if( m_frame == NULL )
 	{
 		throw std::runtime_error( "unable to setup frame buffer" );
@@ -64,7 +68,11 @@ InputStreamVideo::~InputStreamVideo()
 	}
 	if( m_frame != NULL )
 	{
+#if LIBAVCODEC_VERSION_MAJOR > 54
 		av_frame_free( &m_frame );
+#else
+		avcodec_free_frame( &m_frame );
+#endif
 		m_frame = NULL;
 	}
 }

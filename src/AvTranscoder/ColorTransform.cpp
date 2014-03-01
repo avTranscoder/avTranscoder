@@ -9,7 +9,9 @@ extern "C" {
 #include <libswscale/swscale.h>
 #include <libavutil/imgutils.h>
 #include <libavutil/pixdesc.h>
-#include <libavutil/frame.h>
+#if LIBAVCODEC_VERSION_MAJOR > 54
+	#include <libavutil/frame.h>
+#endif
 }
 
 #include <iostream>
@@ -57,9 +59,13 @@ bool ColorTransform::init( const Image& src, const Image& dst )
 
 	for( size_t plane = 0; plane < MAX_SWS_PLANE; ++plane )
 	{
+#ifdef FFALIGN
 		srcLineSize.at( plane ) = FFALIGN( srcLineSize.at( plane ), 16 );
 		dstLineSize.at( plane ) = FFALIGN( dstLineSize.at( plane ), 16 );
-
+#else
+		srcLineSize.at( plane ) = srcLineSize.at( plane );
+		dstLineSize.at( plane ) = dstLineSize.at( plane );
+#endif
 		srcOffsets.at( plane ) = cumulSrcOffset;
 		dstOffsets.at( plane ) = cumulDstOffset;
 

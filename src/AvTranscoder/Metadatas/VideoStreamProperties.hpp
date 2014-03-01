@@ -26,8 +26,13 @@ namespace details
 void getGopProperties( VideoProperties& vp, AVFormatContext* formatContext, AVCodecContext* codecContext, AVCodec* codec, const int index )
 {
 	AVPacket pkt;
+
+#if LIBAVCODEC_VERSION_MAJOR > 54
+	AVFrame* frame = av_frame_alloc();
+#else
 	AVFrame* frame = avcodec_alloc_frame();
-	
+#endif
+
 	av_init_packet( &pkt );
 	avcodec_open2( codecContext, codec, NULL );
 
@@ -56,7 +61,11 @@ void getGopProperties( VideoProperties& vp, AVFormatContext* formatContext, AVCo
 		}
 	}
 
+#if LIBAVCODEC_VERSION_MAJOR > 54
 	av_frame_free( &frame );
+#else
+	avcodec_free_frame( &frame );
+#endif
 }
 
 }
@@ -114,12 +123,23 @@ VideoProperties videoStreamInfo( AVFormatContext* formatContext, const size_t in
 	
 	switch( codec_context->color_trc )
 	{
-		case AVCOL_TRC_BT709:       vp.colorTransfert = "Rec 709"; break;
-		case AVCOL_TRC_UNSPECIFIED: vp.colorTransfert = "unspecified"; break;
-		case AVCOL_TRC_GAMMA22:     vp.colorTransfert = "Gamma 2.2"; break;
-		case AVCOL_TRC_GAMMA28:     vp.colorTransfert = "Gamma 2.8"; break;
-		case AVCOL_TRC_SMPTE240M:   vp.colorTransfert = "Smpte 240M"; break;
-		case AVCOL_TRC_NB:          vp.colorTransfert = "Not ABI"; break;
+		case AVCOL_TRC_BT709:        vp.colorTransfert = "Rec 709 / ITU-R BT1361"; break;
+		case AVCOL_TRC_UNSPECIFIED:  vp.colorTransfert = "unspecified"; break;
+		case AVCOL_TRC_GAMMA22:      vp.colorTransfert = "Gamma 2.2"; break;
+		case AVCOL_TRC_GAMMA28:      vp.colorTransfert = "Gamma 2.8"; break;
+		case AVCOL_TRC_SMPTE240M:    vp.colorTransfert = "Smpte 240M"; break;
+#if LIBAVCODEC_VERSION_MAJOR > 54
+		case AVCOL_TRC_SMPTE170M:    vp.colorTransfert = "Rec 601 / ITU-R BT601-6 525 or 625 / ITU-R BT1358 525 or 625 / ITU-R BT1700 NTSC"; break;
+		case AVCOL_TRC_LINEAR:       vp.colorTransfert = "Linear transfer characteristics"; break;
+		case AVCOL_TRC_LOG:          vp.colorTransfert = "Logarithmic transfer characteristic (100:1 range)"; break;
+		case AVCOL_TRC_LOG_SQRT:     vp.colorTransfert = "Logarithmic transfer characteristic (100 * Sqrt( 10 ) : 1 range)"; break;
+		case AVCOL_TRC_IEC61966_2_4: vp.colorTransfert = "IEC 61966-2-4"; break;
+		case AVCOL_TRC_BT1361_ECG:   vp.colorTransfert = "ITU-R BT1361 Extended Colour Gamut"; break;
+		case AVCOL_TRC_IEC61966_2_1: vp.colorTransfert = "IEC 61966-2-1 (sRGB or sYCC)"; break;
+		case AVCOL_TRC_BT2020_10:    vp.colorTransfert = "ITU-R BT2020 for 10 bit system"; break;
+		case AVCOL_TRC_BT2020_12:    vp.colorTransfert = "ITU-R BT2020 for 12 bit system"; break;	
+#endif
+		case AVCOL_TRC_NB:           vp.colorTransfert = "Not ABI"; break;
 	}
 	switch( codec_context->colorspace )
 	{
@@ -131,6 +151,10 @@ VideoProperties videoStreamInfo( AVFormatContext* formatContext, const size_t in
 		case AVCOL_SPC_SMPTE170M:   vp.colorspace = "Smpte 170M (NTSC)"; break;
 		case AVCOL_SPC_SMPTE240M:   vp.colorspace = "Smpte 240M"; break;
 		case AVCOL_SPC_YCOCG:       vp.colorspace = "Y Co Cg"; break;
+#if LIBAVCODEC_VERSION_MAJOR > 54
+		case AVCOL_SPC_BT2020_NCL:  vp.colorspace = "ITU-R BT2020 non-constant luminance system"; break;
+		case AVCOL_SPC_BT2020_CL:   vp.colorspace = "ITU-R BT2020 constant luminance system"; break;
+#endif
 		case AVCOL_SPC_NB:          vp.colorspace = "Not ABI"; break;
 	}
 	switch( codec_context->color_range )
@@ -149,6 +173,9 @@ VideoProperties videoStreamInfo( AVFormatContext* formatContext, const size_t in
 		case AVCOL_PRI_SMPTE170M:   vp.colorPrimaries = "Rec 601 (NTSC)"; break;
 		case AVCOL_PRI_SMPTE240M:   vp.colorPrimaries = "Smpte 240 (NTSC)"; break;
 		case AVCOL_PRI_FILM:        vp.colorPrimaries = "Film"; break;
+#if LIBAVCODEC_VERSION_MAJOR > 54
+		case AVCOL_PRI_BT2020:      vp.colorPrimaries = "ITU-R BT2020"; break;
+#endif
 		case AVCOL_PRI_NB:          vp.colorPrimaries = "Not ABI"; break;
 	}
 	switch( codec_context->chroma_sample_location )
