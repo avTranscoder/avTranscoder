@@ -38,6 +38,7 @@ struct VideoProperties {
 	size_t      streamId;
 	size_t      codecId;
 	size_t      bitRate;
+	size_t      maxBitRate;
 	size_t      ticksPerFrame;
 	size_t      width;
 	size_t      height;

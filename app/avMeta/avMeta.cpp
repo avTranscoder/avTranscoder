@@ -80,6 +80,7 @@ void displayMetadatas( const char* filename )
 		std::cout << std::setw( keyWidth ) << "endianess"        << ": " << input.getProperties().videoStreams.at(videoStreamIndex).endianess << std::endl;
 		
 		std::cout << std::setw( keyWidth ) << "bit rate"         << ": " << input.getProperties().videoStreams.at(videoStreamIndex).bitRate << std::endl;
+		std::cout << std::setw( keyWidth ) << "max bit rate"     << ": " << input.getProperties().videoStreams.at(videoStreamIndex).maxBitRate << std::endl;
 
 		std::cout << std::setw( keyWidth ) << "color transfert"  << ": " << input.getProperties().videoStreams.at(videoStreamIndex).colorTransfert << std::endl;
 		std::cout << std::setw( keyWidth ) << "colorspace"       << ": " << input.getProperties().videoStreams.at(videoStreamIndex).colorspace << std::endl;

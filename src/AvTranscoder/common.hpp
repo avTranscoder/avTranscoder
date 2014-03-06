@@ -8,6 +8,7 @@ extern "C" {
 #include <libavutil/version.h>
 #include <libavformat/version.h>
 #include <libavcodec/version.h>
+#include <libavcodec/avcodec.h>
 }
 
 #include <string>
