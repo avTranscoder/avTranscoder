@@ -123,6 +123,13 @@ InputFile& InputFile::analyse()
 	return *this;
 }
 
+AVMediaType InputFile::getStreamType( size_t index )
+{
+	if( index >= m_formatContext->nb_streams )
+		return AVMEDIA_TYPE_UNKNOWN;
+	return m_formatContext->streams[index]->codec->codec_type;
+}
+
 InputStream& InputFile::getStream( size_t index )
 {
 	return m_inputStreams.at( index );
