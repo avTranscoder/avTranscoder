@@ -132,7 +132,9 @@ VideoProperties videoStreamInfo( AVFormatContext* formatContext, const size_t in
 		case AVCOL_TRC_UNSPECIFIED:  vp.colorTransfert = "unspecified"; break;
 		case AVCOL_TRC_GAMMA22:      vp.colorTransfert = "Gamma 2.2"; break;
 		case AVCOL_TRC_GAMMA28:      vp.colorTransfert = "Gamma 2.8"; break;
+#if LIBAVCODEC_VERSION_MAJOR > 53
 		case AVCOL_TRC_SMPTE240M:    vp.colorTransfert = "Smpte 240M"; break;
+#endif
 #if LIBAVCODEC_VERSION_MAJOR > 54
  #ifdef AVCOL_TRC_SMPTE170M
 		case AVCOL_TRC_SMPTE170M:    vp.colorTransfert = "Rec 601 / ITU-R BT601-6 525 or 625 / ITU-R BT1358 525 or 625 / ITU-R BT1700 NTSC"; break;
@@ -175,8 +177,8 @@ VideoProperties videoStreamInfo( AVFormatContext* formatContext, const size_t in
 		case AVCOL_SPC_SMPTE240M:   vp.colorspace = "Smpte 240M"; break;
 #if LIBAVCODEC_VERSION_MAJOR > 53
 		case AVCOL_SPC_YCOCG:       vp.colorspace = "Y Co Cg"; break;
-#else
-		case AVCOL_SPC_YCGCO:       vp.colorspace = "Y Cg Co"; break;
+//#else
+//		case AVCOL_SPC_YCGCO:       vp.colorspace = "Y Cg Co"; break;
 #endif
 #if LIBAVCODEC_VERSION_MAJOR > 54
  #ifdef AVCOL_TRC_BT2020_12
