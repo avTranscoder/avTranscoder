@@ -4,6 +4,7 @@
 #include "DatasStructures/Image.hpp"
 #include "DatasStructures/DataStreamDesc.hpp"
 #include "DatasStructures/VideoDesc.hpp"
+#include "DatasStructures/AudioDesc.hpp"
 
 #include <string>
 #include <vector>
@@ -25,8 +26,7 @@ public:
 	bool setup();
 
 	void addVideoStream( const VideoDesc& videoDesc );
-
-	bool addAudioStream( );
+	void addAudioStream( const AudioDesc& audioDesc );
 
 	bool wrap( const DataStream& data, const size_t streamId );
 

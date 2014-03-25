@@ -86,24 +86,25 @@ void OutputFile::addVideoStream( const VideoDesc& videoDesc )
 	}
 }
 
-bool OutputFile::addAudioStream( )
+void OutputFile::addAudioStream( const AudioDesc& audioDesc )
 {
-	if( formatContext == NULL )
-		return false;
+	assert( formatContext != NULL );
 
-	av_register_all();  // Warning: should be called only once
-	AVCodec*  codec  = NULL;
-	AVStream* stream = NULL;
+	if( ( stream = avformat_new_stream( formatContext, audioDesc.getCodec() ) ) == NULL )
+	{
+		throw std::runtime_error( "unable to add new audio stream" );
+	}
 
-	if( ( codec = avcodec_find_encoder_by_name( "wav" ) ) == NULL )
-		return false;
+	stream->codec->sample_rate = audioDesc.getCodecContext()->sample_rate;
+	stream->codec->channels = audioDesc.getCodecContext()->channels;
+	stream->codec->bit_rate = audioDesc.getCodecContext()->bit_rate;
+	stream->codec->sample_fmt = audioDesc.getCodecContext()->sample_fmt;
 
-	if( ( stream = avformat_new_stream( formatContext, codec ) ) == NULL )
-		return false;
-
-	//stream->codec->flags |= CODEC_FLAG_GLOBAL_HEADER;
-
-	return true;
+	// to move in endSetup
+	if( avformat_write_header( formatContext, NULL ) != 0 )
+	{
+		throw std::runtime_error( "could not write header" );
+	}
 }
 
 bool OutputFile::wrap( const DataStream& data, const size_t streamId )
