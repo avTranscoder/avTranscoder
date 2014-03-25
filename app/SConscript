@@ -33,7 +33,21 @@ avtransform = env.Program(
                 ]
         )
 
+audioRewrapper = env.Program(
+        'audioWrap',
+        Glob( 'audioRewrapper/*.cpp' ),
+        LIBS = [
+                sAvTranscoder,
+                'avutil',
+                'avformat',
+                'avcodec',
+                'swscale',
+                ]
+        )
+
 env.Depends( avmeta, sAvTranscoder )
+env.Depends( audioRewrapper, sAvTranscoder )
 
 env.Alias( "install", env.Install(os.path.join( installPrefix, "bin" ), avmeta ) )
 env.Alias( "install", env.Install(os.path.join( installPrefix, "bin" ), avtransform ) )
+env.Alias( "install", env.Install(os.path.join( installPrefix, "bin" ), audioRewrapper ) )
