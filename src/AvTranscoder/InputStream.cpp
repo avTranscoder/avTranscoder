@@ -114,6 +114,8 @@ AudioDesc InputStream::getAudioDesc() const
 
 	AudioDesc desc( codecContext->codec_id );
 
+	desc.setAudioParameters( codecContext->sample_rate, codecContext->channels, codecContext->sample_fmt );
+
 	return desc;
 }
 
