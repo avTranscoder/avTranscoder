@@ -31,6 +31,8 @@ struct VideoProperties {
 	std::string pixelName;
 	std::string endianess;
 	
+	std::string startTimecode;
+
 	Ratio       timeBase;
 	Ratio       sar; // sample/pixel aspect ratio
 	Ratio       dar; // display aspect ratio
@@ -39,6 +41,7 @@ struct VideoProperties {
 	size_t      codecId;
 	size_t      bitRate;
 	size_t      maxBitRate;
+	size_t      minBitRate;
 	size_t      ticksPerFrame;
 	size_t      width;
 	size_t      height;
