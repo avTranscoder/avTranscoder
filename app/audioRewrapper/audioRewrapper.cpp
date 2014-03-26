@@ -19,16 +19,13 @@ void transcodeAudio( const char* inputfilename, const char* outputFilename )
 
 
 	// init audio decoders
-	InputStreamAudio inputStreamAudio( inputFile.getStream( 0 ) );
+	//InputStreamAudio inputStreamAudio( inputFile.getStream( 0 ) );
 
 	OutputFile outputFile( outputFilename );
 
 	outputFile.setup();
 
-
-	AudioDesc audioDesc = inputFile.getStream( 0 ).getAudioDesc();
-
-	outputFile.addAudioStream( audioDesc );
+	outputFile.addAudioStream( inputFile.getStream( 0 ).getAudioDesc() );
 
 	AudioFrameDesc audioFrameDesc;
 	AudioFrame sourceAudio( audioFrameDesc );
