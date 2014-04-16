@@ -33,7 +33,20 @@ avtransform = env.Program(
                 ]
         )
 
+avinfo = env.Program(
+        'avinfo',
+        Glob( 'avInfo/*.cpp' ),
+        LIBS = [
+                sAvTranscoder,
+                'avutil',
+                'avformat',
+                'avcodec',
+                'swscale',
+                ]
+        )
+
 env.Depends( avmeta, sAvTranscoder )
+env.Depends( avinfo, sAvTranscoder )
 
 env.Alias( "install", env.Install(os.path.join( installPrefix, "bin" ), avmeta ) )
 env.Alias( "install", env.Install(os.path.join( installPrefix, "bin" ), avtransform ) )
