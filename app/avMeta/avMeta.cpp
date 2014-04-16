@@ -64,15 +64,17 @@ void displayMetadatas( const char* filename )
 		std::cout << std::setw( keyWidth ) << "height"           << ": " << input.getProperties().videoStreams.at(videoStreamIndex).height << std::endl;
 		std::cout << std::setw( keyWidth ) << "dtgActiveFormat"  << ": " << input.getProperties().videoStreams.at(videoStreamIndex).dtgActiveFormat << std::endl;
 		
+		
+		std::cout << std::setw( keyWidth ) << "start timecode"   << ": " << input.getProperties().videoStreams.at(videoStreamIndex).startTimecode << std::endl;
 		std::cout << std::setw( keyWidth ) << "timeBase"         << ": " << input.getProperties().videoStreams.at(videoStreamIndex).timeBase.num << "/" <<
-		                                                                       input.getProperties().videoStreams.at(videoStreamIndex).timeBase.den << std::endl;
+		                                                                    input.getProperties().videoStreams.at(videoStreamIndex).timeBase.den << std::endl;
 		std::cout << std::setw( keyWidth ) << "fps"              << ": " << input.getProperties().videoStreams.at(videoStreamIndex).fps << std::endl;
 		std::cout << std::setw( keyWidth ) << "ticksPerFrame"    << ": " << input.getProperties().videoStreams.at(videoStreamIndex).ticksPerFrame << std::endl;
 
 		std::cout << std::setw( keyWidth ) << "pixel aspect ratio" << ": " << input.getProperties().videoStreams.at(videoStreamIndex).sar.num << "/" <<
-		                                              input.getProperties().videoStreams.at(videoStreamIndex).sar.den << std::endl;
+		                                                                      input.getProperties().videoStreams.at(videoStreamIndex).sar.den << std::endl;
 		std::cout << std::setw( keyWidth ) << "display aspect ratio" << ": " << input.getProperties().videoStreams.at(videoStreamIndex).dar.num << "/" <<
-		                                              input.getProperties().videoStreams.at(videoStreamIndex).dar.den << std::endl;
+		                                                                        input.getProperties().videoStreams.at(videoStreamIndex).dar.den << std::endl;
 		std::cout << std::setw( keyWidth ) << "pixel type"       << ": " << input.getProperties().videoStreams.at(videoStreamIndex).pixelName << std::endl;
 		std::cout << std::setw( keyWidth ) << "bit wise acked"   << ": " << ( input.getProperties().videoStreams.at(videoStreamIndex).bitWisePacked ? "True" : "False" ) << std::endl;
 		std::cout << std::setw( keyWidth ) << "rgb pixel"        << ": " << ( input.getProperties().videoStreams.at(videoStreamIndex).rgbPixelData ? "True" : "False" ) << std::endl;
@@ -81,6 +83,7 @@ void displayMetadatas( const char* filename )
 		
 		std::cout << std::setw( keyWidth ) << "bit rate"         << ": " << input.getProperties().videoStreams.at(videoStreamIndex).bitRate << std::endl;
 		std::cout << std::setw( keyWidth ) << "max bit rate"     << ": " << input.getProperties().videoStreams.at(videoStreamIndex).maxBitRate << std::endl;
+		std::cout << std::setw( keyWidth ) << "min bit rate"     << ": " << input.getProperties().videoStreams.at(videoStreamIndex).minBitRate << std::endl;
 
 		std::cout << std::setw( keyWidth ) << "color transfert"  << ": " << input.getProperties().videoStreams.at(videoStreamIndex).colorTransfert << std::endl;
 		std::cout << std::setw( keyWidth ) << "colorspace"       << ": " << input.getProperties().videoStreams.at(videoStreamIndex).colorspace << std::endl;

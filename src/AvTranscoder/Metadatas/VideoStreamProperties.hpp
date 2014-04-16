@@ -87,6 +87,7 @@ VideoProperties videoStreamInfo( AVFormatContext* formatContext, const size_t in
 	vp.codecId          = codec_context->codec_id;
 	vp.bitRate          = codec_context->bit_rate;
 	vp.maxBitRate       = codec_context->rc_max_rate;
+	vp.minBitRate       = codec_context->rc_min_rate;
 	vp.isInterlaced     = false;
 
 	vp.ticksPerFrame    = codec_context->ticks_per_frame,
@@ -103,6 +104,12 @@ VideoProperties videoStreamInfo( AVFormatContext* formatContext, const size_t in
 	vp.sar.num          = codec_context->sample_aspect_ratio.num;
 	vp.sar.den          = codec_context->sample_aspect_ratio.den;
 	
+
+	//char tcbuf[AV_TIMECODE_STR_SIZE];
+	//av_timecode_make_mpeg_tc_string( tcbuf, codec_context->timecode_frame_start );
+	//std::string videoTimecode( tcbuf );
+	//vp.startTimecode    = videoTimecode;
+
 	int darNum, darDen;
 	av_reduce( &darNum, &darDen,
 			   codec_context->width * codec_context->sample_aspect_ratio.num,

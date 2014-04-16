@@ -9,6 +9,18 @@ env = Environment().Clone()
 
 Import( 'env' )
 
+avinfo = env.Program(
+        'avinfo',
+        Glob( 'avInfo/*.cpp' ),
+        LIBS = [
+                sAvTranscoder,
+                'avutil',
+                'avformat',
+                'avcodec',
+                'swscale',
+                ]
+        )
+
 avmeta = env.Program(
         'avmeta',
         Glob( 'avMeta/*.cpp' ),
@@ -45,6 +57,7 @@ audioRewrapper = env.Program(
                 ]
         )
 
+env.Depends( avinfo, sAvTranscoder )
 env.Depends( avmeta, sAvTranscoder )
 env.Depends( audioRewrapper, sAvTranscoder )
 
