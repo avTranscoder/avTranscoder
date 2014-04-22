@@ -97,7 +97,6 @@ void OutputFile::addAudioStream( const AudioDesc& audioDesc )
 
 	stream->codec->sample_rate = audioDesc.getCodecContext()->sample_rate;
 	stream->codec->channels = audioDesc.getCodecContext()->channels;
-	stream->codec->bit_rate = audioDesc.getCodecContext()->bit_rate;
 	stream->codec->sample_fmt = audioDesc.getCodecContext()->sample_fmt;
 
 	// to move in endSetup
