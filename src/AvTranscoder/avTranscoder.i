@@ -27,6 +27,9 @@
 #include <AvTranscoder/InputStream.hpp>
 #include <AvTranscoder/InputStreamAudio.hpp>
 #include <AvTranscoder/InputStreamVideo.hpp>
+
+#include <AvTranscoder/Transcoder.hpp>
+
 %}
 
 namespace std {
@@ -61,3 +64,5 @@ namespace std {
 %include <AvTranscoder/InputStream.hpp>
 %include <AvTranscoder/InputStreamAudio.hpp>
 %include <AvTranscoder/InputStreamVideo.hpp>
+
+%include <AvTranscoder/Transcoder.hpp>

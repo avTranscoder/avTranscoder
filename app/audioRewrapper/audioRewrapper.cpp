@@ -12,14 +12,10 @@ void rewrapAudio( const char* inputfilename, const char* outputFilename )
 	using namespace avtranscoder;
 
 	av_log_set_level( AV_LOG_FATAL );
-	//av_log_set_level( AV_LOG_DEBUG );
+	av_log_set_level( AV_LOG_DEBUG );
 
 	InputFile inputFile( inputfilename );
 	inputFile.analyse();
-
-
-	// init audio decoders
-	InputStreamAudio inputStreamAudio( inputFile.getStream( 0 ) );
 
 	OutputFile outputFile( outputFilename );
 
@@ -27,8 +23,7 @@ void rewrapAudio( const char* inputfilename, const char* outputFilename )
 
 	outputFile.addAudioStream( inputFile.getStream( 0 ).getAudioDesc() );
 
-	DataStreamDesc dataDesc;
-	DataStream data( dataDesc );
+	DataStream data;
 
 	// Encodage/transcodage
 	std::cout << "start re-wrapping" << std::endl;
@@ -65,8 +60,7 @@ void transcodeAudio( const char* inputfilename, const char* outputFilename )
 
 	outputFile.addAudioStream( inputFile.getStream( 0 ).getAudioDesc() );
 
-	DataStreamDesc dataDesc;
-	DataStream data( dataDesc );
+	DataStream data;
 
 	// Transcoding
 	std::cout << "start transcoding" << std::endl;
@@ -98,9 +92,15 @@ int main( int argc, char** argv )
 	}
 
 	std::cout << "start ..." << std::endl;
- 
-	rewrapAudio( argv[1], argv[2] );
-	transcodeAudio( argv[1], argv[2] );
 
+	try
+	{
+		//rewrapAudio( argv[1], argv[2] );
+		transcodeAudio( argv[1], argv[2] );
+	}
+	catch( std::exception &e )
+	{
+		std::cout << "[ERROR] " << e.what() << std::endl;
+	}
 	std::cout << "end ..." << std::endl;
 }
