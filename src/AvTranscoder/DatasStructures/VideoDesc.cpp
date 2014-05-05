@@ -95,7 +95,7 @@ void VideoDesc::initCodecContext( )
 {
 	if( m_codec == NULL )
 	{
-		throw std::runtime_error( "unknown audio codec" );
+		throw std::runtime_error( "unknown video codec" );
 	}
 
 	if( ( m_codecContext = avcodec_alloc_context3( m_codec ) ) == NULL )

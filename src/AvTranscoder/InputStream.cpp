@@ -87,7 +87,7 @@ VideoDesc InputStream::getVideoDesc() const
 
 	if( m_formatContext->streams[m_streamIndex]->codec->codec_type != AVMEDIA_TYPE_VIDEO )
 	{
-		return VideoDesc( AV_CODEC_ID_NONE );
+		throw std::runtime_error( "unable to get video descriptor on non-video stream" );
 	}
 
 	AVCodecContext* codecContext = m_formatContext->streams[m_streamIndex]->codec;
@@ -107,12 +107,14 @@ AudioDesc InputStream::getAudioDesc() const
 
 	if( m_formatContext->streams[m_streamIndex]->codec->codec_type != AVMEDIA_TYPE_AUDIO )
 	{
-		return AudioDesc( AV_CODEC_ID_NONE );
+		throw std::runtime_error( "unable to get audio descriptor on non-audio stream" );
 	}
 
 	AVCodecContext* codecContext = m_formatContext->streams[m_streamIndex]->codec;
 
 	AudioDesc desc( codecContext->codec_id );
+
+	desc.setAudioParameters( codecContext->sample_rate, codecContext->channels, codecContext->sample_fmt );
 
 	return desc;
 }

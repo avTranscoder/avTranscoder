@@ -29,7 +29,7 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 	InputStreamVideo inputStreamVideo( inputFile.getStream( 0 ) );
 
 	// init audio decoders
-	InputStreamAudio inputStreamAudio( inputFile.getStream( 1 ) );
+	//InputStreamAudio inputStreamAudio( inputFile.getStream( 1 ) );
 	//InputStreamAudio inputStreamAudioRight( inputFile.getStream( 2 ) );
 
 	// init video & audio encoders
@@ -73,15 +73,13 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 		exit( -1 );
 	}
 
-	DataStreamDesc dataStreamDesc;
-
 	Image imageToEncode( sourceImage );
-	DataStream codedImage( dataStreamDesc );
+	DataStream codedImage;
 
 
-	OutputStreamAudio osAudioLeft ( );  // "AudioStreamEncoder" / "AudioOutputStream" ?
-	OutputStreamAudio osAudioRight( );
-	OutputStreamAudio osAudioLfe  ( );
+	// OutputStreamAudio osAudioLeft ( );  // "AudioStreamEncoder" / "AudioOutputStream" ?
+	// OutputStreamAudio osAudioRight( );
+	// OutputStreamAudio osAudioLfe  ( );
 
 	// setup wrapper
 	OutputFile of( outputFilename );  // "Format" ? to keep libav naming
@@ -108,8 +106,8 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 
 	wrapper.createAudioEncoder( eAudioLeft, 2 );*/
 
-	AudioFrameDesc audioFrameDesc;
-	AudioFrame sourceAudio( audioFrameDesc );
+	// AudioFrameDesc audioFrameDesc;
+	// AudioFrame sourceAudio( audioFrameDesc );
 
 
 
@@ -121,7 +119,7 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 
 	size_t frame = 0;
 
-	while( inputStreamVideo.readNextFrame( sourceImage ) && inputStreamAudio.readNextFrame( sourceAudio ) )
+	while( inputStreamVideo.readNextFrame( sourceImage ) )
 	{
 		std::cout << "\rprocess frame " << frame << std::flush;
 

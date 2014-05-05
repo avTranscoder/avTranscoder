@@ -83,7 +83,7 @@ envJava.Replace(
 		libavLibDir,
 		"#src",
 	],
-	JARCHDIR = env.Dir('#build/src').get_abspath(),
+	JARCHDIR = env.Dir('#build/src/AvTranscoder').get_abspath(),
 )
 
 envJava.Append(
