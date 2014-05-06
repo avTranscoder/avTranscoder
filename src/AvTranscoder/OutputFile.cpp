@@ -82,7 +82,7 @@ void OutputFile::addVideoStream( const VideoDesc& videoDesc )
 	// to move in endSetup
 	if( avformat_write_header( formatContext, NULL ) != 0 )
 	{
-		throw std::runtime_error( "could not write header" );
+		throw std::runtime_error( "add video stream: could not write header" );
 	}
 }
 
@@ -102,7 +102,7 @@ void OutputFile::addAudioStream( const AudioDesc& audioDesc )
 	// to move in endSetup
 	if( avformat_write_header( formatContext, NULL ) != 0 )
 	{
-		throw std::runtime_error( "could not write header" );
+		throw std::runtime_error( "add audio stream: could not write header" );
 	}
 }
 

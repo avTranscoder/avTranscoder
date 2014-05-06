@@ -32,7 +32,9 @@ InputFile::InputFile( const std::string& filename )
 	av_register_all();  // Warning: should be called only once
 	if( avformat_open_input( &m_formatContext, m_filename.c_str(), NULL, NULL ) < 0 )
 	{
-		throw std::runtime_error( "unable to open file" );
+		std::string msg = "unable to open file: ";
+		msg += m_filename;
+		throw std::runtime_error( msg );
 	}
 
 	// update format context informations from streams

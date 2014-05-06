@@ -18,28 +18,15 @@ extern "C" {
 namespace avtranscoder
 {
 
-class DataStreamDesc
-{
-public:
-	DataStreamDesc()
-	{};
-
-private:
-};
-
-
 class DataStream
 {
 public:
 	typedef std::vector< unsigned char > DataBuffer;
 
-
-	DataStream( const DataStreamDesc& ref )
+	DataStream( )
 		: m_dataBuffer( 0, 0 )
-		, m_dataStreamDesc( ref )
 	{ }
 
-	const DataStreamDesc& desc() const    { return m_dataStreamDesc; }
 	DataBuffer&           getBuffer()     { return m_dataBuffer; }
 	unsigned char*        getPtr()        { return &m_dataBuffer[0]; }
 #ifndef SWIG
@@ -49,7 +36,6 @@ public:
 
 private:
 	DataBuffer m_dataBuffer;
-	const DataStreamDesc m_dataStreamDesc;
 };
 
 }

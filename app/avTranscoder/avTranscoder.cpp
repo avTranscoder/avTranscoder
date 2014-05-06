@@ -73,10 +73,8 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 		exit( -1 );
 	}
 
-	DataStreamDesc dataStreamDesc;
-
 	Image imageToEncode( sourceImage );
-	DataStream codedImage( dataStreamDesc );
+	DataStream codedImage;
 
 
 	// OutputStreamAudio osAudioLeft ( );  // "AudioStreamEncoder" / "AudioOutputStream" ?

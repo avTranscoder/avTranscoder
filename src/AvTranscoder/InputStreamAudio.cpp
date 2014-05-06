@@ -24,7 +24,7 @@ InputStreamAudio::InputStreamAudio( const InputStream& inputStream )
 	, m_frame         ( NULL )
 	, m_selectedStream( -1 )
 {
-	av_register_all();
+	avcodec_register_all();
 
 	m_codec = avcodec_find_decoder( m_inputStream.getAudioDesc().getAudioCodecId() );
 	if( m_codec == NULL )
@@ -42,7 +42,10 @@ InputStreamAudio::InputStreamAudio( const InputStream& inputStream )
 
 	if( ret < 0 || m_codecContext == NULL || m_codec == NULL )
 	{
-		throw std::runtime_error( "unable open audio codec" );
+		avcodec_close( m_codecContext );
+		std::string msg = "unable open audio codec: ";
+		msg +=  m_codecContext->codec_name;
+		throw std::runtime_error( msg );
 	}
 
 #if LIBAVCODEC_VERSION_MAJOR > 54
