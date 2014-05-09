@@ -19,6 +19,7 @@ namespace avtranscoder
 
 InputStream::InputStream( const std::string& filename, const size_t streamIndex )
 		: m_formatContext( NULL )
+		, m_packetDuration( 0 )
 		, m_streamIndex( streamIndex )
 {
 	init( filename );
@@ -33,13 +34,15 @@ InputStream::~InputStream( )
 	}
 }
 
-bool InputStream::readNextPacket( DataStream& data ) const
+bool InputStream::readNextPacket( DataStream& data )
 {
 	AVPacket packet;
 	av_init_packet( &packet );
 
 	if( readNextPacket( packet ) )
 	{
+		m_packetDuration = packet.duration;
+
 		// is it possible to remove this copy ?
 		// using : av_packet_unref ?
 		data.getBuffer().resize( packet.size );
@@ -117,6 +120,17 @@ AudioDesc InputStream::getAudioDesc() const
 	desc.setAudioParameters( codecContext->sample_rate, codecContext->channels, codecContext->sample_fmt );
 
 	return desc;
+}
+
+
+double InputStream::getDuration() const
+{
+	return 1.0 * m_formatContext->duration / AV_TIME_BASE;
+}
+
+double InputStream::getPacketDuration() const
+{
+	return m_packetDuration * av_q2d( m_formatContext->streams[m_streamIndex]->time_base );
 }
 
 void InputStream::init( const std::string& filename )

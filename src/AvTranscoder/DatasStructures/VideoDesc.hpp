@@ -42,7 +42,7 @@ public:
 	void set( const std::string& key, const std::string& value );
 
 	std::string getVideoCodec()  const;
-	AVCodecID   getVideoCodecId()  const;
+	AVCodecID   getVideoCodecId() const;
 	std::pair< size_t, size_t > getTimeBase() const;
 
 #ifndef SWIG

@@ -43,6 +43,7 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex )
 			return;
 		}
 	}
+	return;
 }
 
 void Transcoder::add( const StreamsDefinition& streams )
@@ -51,9 +52,10 @@ void Transcoder::add( const StreamsDefinition& streams )
 	{
 		add( streams.at( streamIndex ).first, streams.at( streamIndex ).second );
 	}
+	return;
 }
 
-void Transcoder::process()
+void Transcoder::process( EJobStatus (*callback)(double, double) )
 {
 	size_t frame = 0;
 
@@ -83,7 +85,21 @@ void Transcoder::process()
 		if( ! continueProcess )
 			break;
 
-		std::cout << "\rprocess frame " << frame + 1 << std::flush;
+		switch( callback( _inputStreams.at( 0 ).getPacketDuration() * ( frame + 1 ), _inputStreams.at( 0 ).getDuration() ) )
+		{
+			case eJobStatusContinue:
+			{
+				break;
+			}
+			case eJobStatusCancel:
+			{
+				continueProcess = false;
+				break;
+			}
+		}
+
+		if( ! continueProcess )
+			break;
 
 		for( size_t streamIndex = 0; streamIndex < _inputStreams.size(); ++streamIndex )
 		{

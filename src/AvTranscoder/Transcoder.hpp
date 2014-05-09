@@ -10,6 +10,12 @@
 namespace avtranscoder
 {
 
+enum EJobStatus
+{
+	eJobStatusContinue = 0,
+	eJobStatusCancel
+};
+
 class Transcoder
 {
 public:
@@ -22,7 +28,7 @@ public:
 
 	void add( const StreamsDefinition& streams );
 
-	void process();
+	void process( EJobStatus (*callback)(double, double) );
 
 private:
 	OutputFile _outputFile;

@@ -33,20 +33,25 @@ public:
 
 	size_t getStreamIndex() const { return m_streamIndex; }
 
-	bool readNextPacket( DataStream& data ) const;
-
-// protected:
-	bool readNextPacket( AVPacket& packet ) const;
+	bool readNextPacket( DataStream& data );
 
 	// Stream propeerties
 	VideoDesc getVideoDesc() const;
 	AudioDesc getAudioDesc() const;
+
+	double getDuration() const;
+	double getPacketDuration() const;
+
+// protected:
+	bool readNextPacket( AVPacket& packet ) const;
+
 
 private:
 	void init( const std::string& filename );
 
 private:
 	AVFormatContext* m_formatContext;
+	int              m_packetDuration;
 	size_t           m_streamIndex;
 };
 

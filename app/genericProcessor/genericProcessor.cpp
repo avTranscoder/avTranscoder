@@ -2,6 +2,7 @@
 #include <AvTranscoder/Transcoder.hpp>
 
 #include <iostream>
+#include <iomanip>
 #include <vector>
 #include <fstream>
 #include <sstream>
@@ -31,6 +32,20 @@ void parseConfigFile( const std::string& configFilename, avtranscoder::Transcode
 	configFile.close();
 }
 
+avtranscoder::EJobStatus callBackProgress( const double processedDuration, const double programDuration )
+{
+	std::string progress( 80, '-' );
+	std::string done( 80.0 * processedDuration / programDuration, '#' );
+	progress.replace( 0, done.size(), done );
+
+	std::cout  << std::setprecision(2) << std::fixed << "\r[" << progress << "] " << processedDuration << "/" << programDuration << std::flush;
+
+	// if( processedFrames >= 100 )
+	// 	return avtranscoder::eJobStatusCancel;
+
+	return avtranscoder::eJobStatusContinue;
+}
+
 int main( int argc, char** argv )
 {
 	if( argc != 3 )
@@ -56,10 +71,12 @@ int main( int argc, char** argv )
 
 		transcoder.add( streams );
 
-		// video re-wrapping or transcoding if necessary
-		transcoder.process();
+		std::cout << "start Transcode" << std::endl;
 
-		std::cout << "end ..." << std::endl;
+		// video re-wrapping or transcoding if necessary
+		transcoder.process( callBackProgress );
+
+		std::cout << std::endl << "end ..." << std::endl;
 	}
 	catch( std::exception& e )
 	{
