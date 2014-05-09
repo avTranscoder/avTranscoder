@@ -27,11 +27,11 @@ OutputFile::OutputFile( const std::string& file )
 	, filename      ( file )
 	, packetCount   ( 0 )
 {
-	av_register_all();  // Warning: should be called only once
 }
 
 bool OutputFile::setup()
 {
+	av_register_all();
 	outputFormat = av_guess_format( NULL, filename.c_str(), NULL);
 
 	if( !outputFormat )

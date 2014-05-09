@@ -23,12 +23,12 @@ class AvExport OutputFile
 public:
 	OutputFile( const std::string& file = "" );
 
-	bool setup();
+	virtual bool setup();
 
-	void addVideoStream( const VideoDesc& videoDesc );
-	void addAudioStream( const AudioDesc& audioDesc );
+	virtual void addVideoStream( const VideoDesc& videoDesc );
+	virtual void addAudioStream( const AudioDesc& audioDesc );
 
-	bool wrap( const DataStream& data, const size_t streamId );
+	virtual bool wrap( const DataStream& data, const size_t streamId );
 
 private:
 	AVOutputFormat*  outputFormat;
