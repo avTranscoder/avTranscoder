@@ -28,7 +28,11 @@ public:
 	virtual void addVideoStream( const VideoDesc& videoDesc );
 	virtual void addAudioStream( const AudioDesc& audioDesc );
 
+	virtual bool beginWrap( );
+
 	virtual bool wrap( const DataStream& data, const size_t streamId );
+
+	virtual bool endWrap( );
 
 private:
 	AVOutputFormat*  outputFormat;

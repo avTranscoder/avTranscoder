@@ -69,6 +69,8 @@ void Transcoder::process( EJobStatus (*callback)(double, double) )
 		dataStreams.push_back( dataStream );
 	}
 
+	_outputFile.beginWrap();
+
 	bool continueProcess( true );
 
 	while( 1 )
@@ -108,6 +110,9 @@ void Transcoder::process( EJobStatus (*callback)(double, double) )
 
 		++frame;
 	}
+
+	_outputFile.endWrap();
+
 }
 
 }

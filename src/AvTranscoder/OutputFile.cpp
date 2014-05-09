@@ -106,6 +106,11 @@ void OutputFile::addAudioStream( const AudioDesc& audioDesc )
 	}
 }
 
+bool OutputFile::beginWrap( )
+{
+	return true;
+}
+
 bool OutputFile::wrap( const DataStream& data, const size_t streamId )
 {
 	AVPacket packet;
@@ -129,6 +134,11 @@ bool OutputFile::wrap( const DataStream& data, const size_t streamId )
 	av_free_packet( &packet );
 
 	packetCount++;
+	return true;
+}
+
+bool OutputFile::endWrap( )
+{
 	return true;
 }
 
