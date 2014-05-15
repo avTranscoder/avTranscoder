@@ -50,7 +50,13 @@ jAvTranscoder = envJava.SharedLibrary(
 pyAvTranscoder = envPy.SharedLibrary(
         'pyAvTranscoder',
         source='AvTranscoder/avTranscoder.i',
-        LIBS=[ sAvTranscoder ],
+        LIBS=[
+            sAvTranscoder,
+            'libavutil',
+            'libavcodec',
+            'libavformat',
+            'libswscale',
+        ],
     )
 
 avTranscoder_class = env.Java(
