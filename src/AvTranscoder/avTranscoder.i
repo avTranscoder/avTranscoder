@@ -5,7 +5,7 @@
 %include "std_pair.i"
 %include "std_map.i"
 
-%include "exception.i"
+%include "AvTranscoder/avException.i"
 
 %{
 #include <AvTranscoder/common.hpp>

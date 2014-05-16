@@ -14,7 +14,7 @@ Transcoder::Transcoder( const std::string& filename )
 Transcoder::Transcoder( OutputFile& outputFile )
 	: _outputFile( outputFile )
 {
-	outputFile.setup();
+	_outputFile.setup();
 }
 
 void Transcoder::add( const std::string& filename, const size_t streamIndex )

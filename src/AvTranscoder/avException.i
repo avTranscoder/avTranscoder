@@ -1,5 +1,7 @@
 %include <std_except.i>
 
+%include <exception.i> 
+
 /*
 All swig exception types:
 SWIG_MemoryError
