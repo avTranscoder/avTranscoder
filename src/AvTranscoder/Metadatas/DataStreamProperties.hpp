@@ -70,7 +70,7 @@ DataProperties dataStreamInfo( AVFormatContext* formatContext, const size_t inde
 	DataProperties dp;
 	dp.streamId = index;
 
-	AVCodecContext* codec_context = formatContext->streams[index]->codec;
+	// AVCodecContext* codec_context = formatContext->streams[index]->codec;
 	
 	// dp.codecName     = codec_context->codec_name;
 	// dp.codecLongName = codec_context->codec_name;

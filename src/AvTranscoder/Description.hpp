@@ -10,6 +10,7 @@ extern "C" {
 }
 
 #include <vector>
+#include <cstring>
 
 std::vector<size_t> getVersion()
 {
@@ -24,26 +25,22 @@ std::vector<size_t> getVersion()
 
 std::vector<std::string> getInputExtensions()
 {
-	av_register_all();  // Warning: should be called only once
+	av_register_all();
 	std::vector<std::string> extensions;
-	AVInputFormat* iFormat = av_iformat_next( NULL );
-	while( iFormat != NULL )
+	AVInputFormat* iFormat = NULL;
+
+	while( ( iFormat = av_iformat_next( iFormat ) ) )
 	{
 		if( iFormat->extensions != NULL )
 		{
-			const char* exts = iFormat->extensions;
-			while( 1 )
+			char* ext = const_cast<char*>( iFormat->extensions );
+
+			while( ext != NULL )
 			{
-				char* saveptr = NULL;
-				char* ext = av_strtok( const_cast<char*>( exts ), ",", &saveptr );
-				if( ! ext || ! saveptr )
-				{
-					break;
-				}
 				extensions.push_back( std::string( ext ) );
+				ext = strtok( NULL, "," );
 			}
 		}
-		iFormat = av_iformat_next( iFormat );
 	}
 	return extensions;
 }
