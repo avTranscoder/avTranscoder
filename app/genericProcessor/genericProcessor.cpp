@@ -73,8 +73,10 @@ int main( int argc, char** argv )
 
 		std::cout << "start Transcode" << std::endl;
 
+		avtranscoder::ProgressListener progress;
+
 		// video re-wrapping or transcoding if necessary
-		transcoder.process( callBackProgress );
+		transcoder.process( progress );
 
 		std::cout << std::endl << "end ..." << std::endl;
 	}

@@ -30,6 +30,8 @@
 #include <AvTranscoder/InputStreamAudio.hpp>
 #include <AvTranscoder/InputStreamVideo.hpp>
 
+
+#include <AvTranscoder/ProgressListener.hpp>
 #include <AvTranscoder/Transcoder.hpp>
 
 %}
@@ -67,4 +69,5 @@ namespace std {
 %include <AvTranscoder/InputStreamAudio.hpp>
 %include <AvTranscoder/InputStreamVideo.hpp>
 
+%include <AvTranscoder/ProgressListener.hpp>
 %include <AvTranscoder/Transcoder.hpp>

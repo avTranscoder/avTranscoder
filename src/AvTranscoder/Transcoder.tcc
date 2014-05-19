@@ -1,20 +1,26 @@
-#include "Transcoder.hpp"
-
 #include <AvTranscoder/InputFile.hpp>
 
 namespace avtranscoder
 {
 
 Transcoder::Transcoder( const std::string& filename )
-	: _outputFile( filename )
+	: _outputFile( NULL )
 {
-	_outputFile.setup();
+	_outputFile = new OutputFile( filename );
+	_outputFile->setup();
 }
 
-Transcoder::Transcoder( OutputFile& outputFile )
-	: _outputFile( outputFile )
+Transcoder::Transcoder( OutputFile* outputFile )
+	: _outputFile( NULL )
 {
-	_outputFile.setup();
+	_outputFile = outputFile;
+	_outputFile->setup();
+}
+
+Transcoder::~Transcoder()
+{
+	delete _outputFile;
+	_outputFile = NULL;
 }
 
 void Transcoder::add( const std::string& filename, const size_t streamIndex )
@@ -26,13 +32,13 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex )
 		case AVMEDIA_TYPE_VIDEO:
 		{
 			_inputStreams.push_back( avtranscoder::InputStream( filename, streamIndex ) );
-			_outputFile.addVideoStream( _inputStreams.back().getVideoDesc() );
+			_outputFile->addVideoStream( _inputStreams.back().getVideoDesc() );
 			break;
 		}
 		case AVMEDIA_TYPE_AUDIO:
 		{
 			_inputStreams.push_back( avtranscoder::InputStream( filename, streamIndex ) );
-			_outputFile.addAudioStream( _inputStreams.back().getAudioDesc() );
+			_outputFile->addAudioStream( _inputStreams.back().getAudioDesc() );
 			break;
 		}
 		case AVMEDIA_TYPE_DATA:
@@ -55,7 +61,7 @@ void Transcoder::add( const StreamsDefinition& streams )
 	return;
 }
 
-void Transcoder::process( EJobStatus (*callback)(double, double) )
+void Transcoder::process( ProgressListener& progress )
 {
 	size_t frame = 0;
 
@@ -69,7 +75,7 @@ void Transcoder::process( EJobStatus (*callback)(double, double) )
 		dataStreams.push_back( dataStream );
 	}
 
-	_outputFile.beginWrap();
+	_outputFile->beginWrap();
 
 	bool continueProcess( true );
 
@@ -87,7 +93,7 @@ void Transcoder::process( EJobStatus (*callback)(double, double) )
 		if( ! continueProcess )
 			break;
 
-		switch( callback( _inputStreams.at( 0 ).getPacketDuration() * ( frame + 1 ), _inputStreams.at( 0 ).getDuration() ) )
+		switch( progress.progress( _inputStreams.at( 0 ).getPacketDuration() * ( frame + 1 ), _inputStreams.at( 0 ).getDuration() ) )
 		{
 			case eJobStatusContinue:
 			{
@@ -105,13 +111,13 @@ void Transcoder::process( EJobStatus (*callback)(double, double) )
 
 		for( size_t streamIndex = 0; streamIndex < _inputStreams.size(); ++streamIndex )
 		{
-			_outputFile.wrap( dataStreams.at( streamIndex ), streamIndex );
+			_outputFile->wrap( dataStreams.at( streamIndex ), streamIndex );
 		}
 
 		++frame;
 	}
 
-	_outputFile.endWrap();
+	_outputFile->endWrap();
 
 }
 
