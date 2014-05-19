@@ -3,24 +3,14 @@
 namespace avtranscoder
 {
 
-Transcoder::Transcoder( const std::string& filename )
-	: _outputFile( NULL )
+Transcoder::Transcoder( OutputFile& outputFile )
+	: _outputFile( outputFile )
 {
-	_outputFile = new OutputFile( filename );
-	_outputFile->setup();
-}
-
-Transcoder::Transcoder( OutputFile* outputFile )
-	: _outputFile( NULL )
-{
-	_outputFile = outputFile;
-	_outputFile->setup();
+	_outputFile.setup();
 }
 
 Transcoder::~Transcoder()
 {
-	delete _outputFile;
-	_outputFile = NULL;
 }
 
 void Transcoder::add( const std::string& filename, const size_t streamIndex )
@@ -32,13 +22,13 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex )
 		case AVMEDIA_TYPE_VIDEO:
 		{
 			_inputStreams.push_back( avtranscoder::InputStream( filename, streamIndex ) );
-			_outputFile->addVideoStream( _inputStreams.back().getVideoDesc() );
+			_outputFile.addVideoStream( _inputStreams.back().getVideoDesc() );
 			break;
 		}
 		case AVMEDIA_TYPE_AUDIO:
 		{
 			_inputStreams.push_back( avtranscoder::InputStream( filename, streamIndex ) );
-			_outputFile->addAudioStream( _inputStreams.back().getAudioDesc() );
+			_outputFile.addAudioStream( _inputStreams.back().getAudioDesc() );
 			break;
 		}
 		case AVMEDIA_TYPE_DATA:
@@ -75,7 +65,7 @@ void Transcoder::process( ProgressListener& progress )
 		dataStreams.push_back( dataStream );
 	}
 
-	_outputFile->beginWrap();
+	_outputFile.beginWrap();
 
 	bool continueProcess( true );
 
@@ -111,13 +101,13 @@ void Transcoder::process( ProgressListener& progress )
 
 		for( size_t streamIndex = 0; streamIndex < _inputStreams.size(); ++streamIndex )
 		{
-			_outputFile->wrap( dataStreams.at( streamIndex ), streamIndex );
+			_outputFile.wrap( dataStreams.at( streamIndex ), streamIndex );
 		}
 
 		++frame;
 	}
 
-	_outputFile->endWrap();
+	_outputFile.endWrap();
 
 }
 
