@@ -8,7 +8,7 @@ Import( "installPrefix" )
 
 env.Replace(SHLIBSUFFIX = '.so.$SHLIB_VERSION')
 
-AvTranscoderVersion = '0.0.1'
+AvTranscoderVersion = "0.0.1"
 
 sAvTranscoder = env.StaticLibrary(
     'sAvTranscoder',
@@ -59,13 +59,13 @@ pyAvTranscoder = envPy.SharedLibrary(
         ],
     )
 
-avTranscoder_class = env.Java(
-      target='AvTranscoderClass',
-      source= Glob( envJava['JARCHDIR'] ) )
+# avTranscoder_class = env.Java(
+#       target='AvTranscoderClass',
+#       source= Glob( envJava['JARCHDIR'] ) )
 
-avTranscoder_jar = env.Jar(
-    target='jAvTranscoder.jar',
-    source=avTranscoder_class )
+# avTranscoder_jar = env.Jar(
+#     target='jAvTranscoder.jar',
+#     source=avTranscoder_class )
     #source= Glob( '#build/src/AvTranscoderClass' ) )
 
 
