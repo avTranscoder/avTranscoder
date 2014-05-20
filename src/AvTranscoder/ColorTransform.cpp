@@ -24,8 +24,8 @@ namespace avtranscoder
 
 ColorTransform::ColorTransform()
 	: m_imageConvertContext( NULL )
-	, srcData     ( MAX_SWS_PLANE, NULL )
-	, dstData     ( MAX_SWS_PLANE, NULL )
+	, srcData     ( (uint8_t)MAX_SWS_PLANE, NULL )
+	, dstData     ( (uint8_t)MAX_SWS_PLANE, NULL )
 	, srcLineSize ( MAX_SWS_PLANE, 0 )
 	, dstLineSize ( MAX_SWS_PLANE, 0 )
 	, srcOffsets  ( MAX_SWS_PLANE, 0 )
