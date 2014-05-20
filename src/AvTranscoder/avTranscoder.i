@@ -5,6 +5,7 @@
 %include "std_pair.i"
 %include "std_map.i"
 
+
 %include "AvTranscoder/avException.i"
 
 %{
@@ -30,11 +31,11 @@
 #include <AvTranscoder/InputStreamAudio.hpp>
 #include <AvTranscoder/InputStreamVideo.hpp>
 
-
-#include <AvTranscoder/ProgressListener.hpp>
 #include <AvTranscoder/Transcoder.hpp>
 
 %}
+
+%include "AvTranscoder/ProgressListener.i"
 
 namespace std {
 %template(IntPair)         pair< size_t, size_t >;
@@ -69,5 +70,4 @@ namespace std {
 %include <AvTranscoder/InputStreamAudio.hpp>
 %include <AvTranscoder/InputStreamVideo.hpp>
 
-%include <AvTranscoder/ProgressListener.hpp>
 %include <AvTranscoder/Transcoder.hpp>
