@@ -1,3 +1,5 @@
+EnsureSConsVersion(2, 3, 0)
+
 import os
 import ConfigParser
 
