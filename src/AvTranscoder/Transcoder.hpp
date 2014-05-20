@@ -17,8 +17,7 @@ class Transcoder
 public:
 	typedef std::vector< std::pair< std::string, size_t > > StreamsDefinition;
 
-	Transcoder( const std::string& filename );
-	Transcoder( OutputFile* outputFile );
+	Transcoder( OutputFile& outputFile );
 
 	~Transcoder();
 
@@ -29,7 +28,7 @@ public:
 	void process( ProgressListener& progress );
 
 private:
-	OutputFile*                _outputFile;
+	OutputFile&                _outputFile;
 	std::vector< InputStream > _inputStreams;
 };
 

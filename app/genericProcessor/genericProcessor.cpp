@@ -32,20 +32,6 @@ void parseConfigFile( const std::string& configFilename, avtranscoder::Transcode
 	configFile.close();
 }
 
-avtranscoder::EJobStatus callBackProgress( const double processedDuration, const double programDuration )
-{
-	std::string progress( 80, '-' );
-	std::string done( 80.0 * processedDuration / programDuration, '#' );
-	progress.replace( 0, done.size(), done );
-
-	std::cout  << std::setprecision(2) << std::fixed << "\r[" << progress << "] " << processedDuration << "/" << programDuration << std::flush;
-
-	// if( processedFrames >= 100 )
-	// 	return avtranscoder::eJobStatusCancel;
-
-	return avtranscoder::eJobStatusContinue;
-}
-
 int main( int argc, char** argv )
 {
 	if( argc != 3 )
@@ -61,7 +47,7 @@ int main( int argc, char** argv )
 		std::cout << "start ..." << std::endl;
 
 		std::string inputConfigFile( argv[1] );
-		std::string outputFile( argv[2] );
+		avtranscoder::OutputFile outputFile( argv[2] );
 
 		avtranscoder::Transcoder::StreamsDefinition streams;
 
