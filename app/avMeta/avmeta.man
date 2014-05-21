@@ -1,0 +1,19 @@
+.\" Manpage for avmeta.
+.\" Contact arnaud.marcantoine@gmail.com to correct errors or typos.
+.TH man 1 "21 May 2014" "1.0" "avmeta man page"
+.SH NOM
+avmeta - display media metadatas
+.SH SYNOPSIS
+.B avmeta [
+.I FILE
+]
+.SH DESCRIPTION
+Display metadatas extracted from file.
+.SH BUGS
+Only display Format, Audio and Video Metadatas
+.SH AUTHOR
+Written by Marc-Antoine ARNAUD <arnaud.marcantoine@gmail.com>
+.SH COPYRIGHT
+Licence GPL-v3.0+
+.SH SEE ALSO
+ffprobe
