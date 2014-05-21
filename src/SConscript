@@ -6,8 +6,6 @@ Import( "envJava" )
 Import( "envPy" )
 Import( "installPrefix" )
 
-env.Replace(SHLIBSUFFIX = '.so.$SHLIB_VERSION')
-
 AvTranscoderVersion = "0.0.1"
 
 sAvTranscoder = env.StaticLibrary(
@@ -32,7 +30,7 @@ SharedAvTranscoder = env.SharedLibrary(
         'libswscale',
         #'pthread',
     ],
-    SHLIB_VERSION = AvTranscoderVersion,
+    SHLIBVERSION = AvTranscoderVersion,
 )
 
 jAvTranscoder = envJava.SharedLibrary(
@@ -76,7 +74,7 @@ Export( { 'sAvTranscoder' : sAvTranscoder } )
 Export( { 'AvTranscoder'  : 'AvTranscoder' } )
 # Export( { 'AvTranscoder_jar': avTranscoder_class } )
 
-installSharedLib = env.InstallVersionedLib( os.path.join( installPrefix, "lib" ), SharedAvTranscoder, SHLIBVERSION=AvTranscoderVersion )
+installSharedLib = env.InstallVersionedLib( os.path.join( installPrefix, "lib" ), SharedAvTranscoder)
 
 env.Alias( "install", env.Install(os.path.join( installPrefix, "lib" ), sAvTranscoder ) )
 env.Alias( "install", installSharedLib )
