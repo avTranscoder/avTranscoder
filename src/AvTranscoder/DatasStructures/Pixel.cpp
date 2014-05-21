@@ -14,6 +14,44 @@ extern "C" {
 namespace avtranscoder
 {
 
+Pixel::Pixel( const AVPixelFormat avpixelFormat )
+	: m_pixelSize  ( 24 )
+	, m_components ( 3 )
+	, m_componentType ( eComponentYuv )
+	, m_subsamplingType ( eSubsamplingNone )
+	, m_endianess  ( false )
+	, m_withAlpha  ( false )
+	, m_planar     ( true )
+{
+	const AVPixFmtDescriptor *pix_desc = av_pix_fmt_desc_get( avpixelFormat );
+	setBitsPerPixel   ( av_get_bits_per_pixel( pix_desc ) );
+	setBigEndian      ( pix_desc->flags & PIX_FMT_BE );
+	setComponents     ( pix_desc->nb_components );
+	setAlpha          ( pix_desc->flags & PIX_FMT_ALPHA );
+	setPlanar         ( ( pix_desc->flags & PIX_FMT_PLANAR ) != 0 );
+
+	if( pix_desc->nb_components == 1 )
+		setColorComponents( eComponentGray );
+
+	if( pix_desc->flags & PIX_FMT_RGB )
+		setColorComponents( eComponentRgb );
+	else
+		setColorComponents( eComponentYuv );
+
+	setSubsampling( eSubsamplingNone );
+
+	if( ( pix_desc->log2_chroma_w == true ) &&
+		( pix_desc->log2_chroma_h == false ) )
+	{
+		setSubsampling( eSubsampling422 );
+	}
+	if( ( pix_desc->log2_chroma_w == true ) &&
+		( pix_desc->log2_chroma_h == true ) )
+	{
+		setSubsampling( eSubsampling420 );
+	}
+}
+
 AVPixelFormat Pixel::findPixel() const
 {
 	//av_register_all();

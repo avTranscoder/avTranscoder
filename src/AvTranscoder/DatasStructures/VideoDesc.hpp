@@ -16,6 +16,8 @@ extern "C" {
 #include <libavcodec/avcodec.h>
 }
 
+#include <AvTranscoder/DatasStructures/Image.hpp>
+
 namespace avtranscoder
 {
 
@@ -49,6 +51,8 @@ public:
 	AVCodec*        getCodec()        const { return m_codec; }
 	AVCodecContext* getCodecContext() const { return m_codecContext; }
 #endif
+
+	ImageDesc getImageDesc() const;
 
 private:
 	void initCodecContext( );

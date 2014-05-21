@@ -44,6 +44,8 @@ public:
 	, m_planar     ( true )
 	{ }
 
+	Pixel( const AVPixelFormat avpixelFormat );
+
 	void setBitsPerPixel   ( const size_t pixelSize ) { m_pixelSize = pixelSize; }
 	void setBigEndian      ( const bool endianess ) { m_endianess = endianess; }
 	void setComponents     ( const size_t components ) { m_components = components; }

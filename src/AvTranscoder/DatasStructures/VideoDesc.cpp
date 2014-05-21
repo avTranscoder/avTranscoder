@@ -218,4 +218,16 @@ void VideoDesc::set( const std::string& key, const std::string& value )
 	}
 }
 
+ImageDesc VideoDesc::getImageDesc() const
+{
+	ImageDesc imageDesc;
+	Pixel pixel( m_codecContext->pix_fmt );
+
+	imageDesc.setWidth ( m_codecContext->width  );
+	imageDesc.setHeight( m_codecContext->height );
+	imageDesc.setPixel ( pixel );
+	imageDesc.setDar   ( m_codecContext->height, m_codecContext->width );
+	return imageDesc;
+}
+
 }
