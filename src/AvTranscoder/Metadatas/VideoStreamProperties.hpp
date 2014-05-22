@@ -10,7 +10,11 @@ extern "C" {
 #include <libavutil/avutil.h>
 #include <libavutil/pixdesc.h>
 }
+
 #include <iostream>
+#include <iomanip>
+#include <sstream>
+
 #ifdef _MSC_VER
 #include <float.h>
 #define isnan _isnan
@@ -73,6 +77,19 @@ void getGopProperties( VideoProperties& vp, AVFormatContext* formatContext, AVCo
 
 }
 
+std::string makeTimecodeMpegToString( uint32_t tc25bit )
+{
+	std::ostringstream os;
+	os << std::setfill( '0' );
+	os << std::setw(2) << ( tc25bit >> 19 & 0x1f ) << ":";   // 5-bit hours
+	os << std::setw(2) << ( tc25bit >> 13 & 0x3f ) << ":";   // 6-bit minutes
+	os << std::setw(2) << ( tc25bit >>  6 & 0x3f ) ;         // 6-bit seconds
+	os << ( tc25bit & 1 << 24 ? ';' : ':' ); // 1-bit drop flag
+	os << std::setw(2) << ( tc25bit       & 0x3f );   // 6-bit frames
+	return os.str();
+}
+
+
 VideoProperties videoStreamInfo( AVFormatContext* formatContext, const size_t index )
 {
 	VideoProperties vp;
@@ -104,11 +121,7 @@ VideoProperties videoStreamInfo( AVFormatContext* formatContext, const size_t in
 	vp.sar.num          = codec_context->sample_aspect_ratio.num;
 	vp.sar.den          = codec_context->sample_aspect_ratio.den;
 	
-
-	//char tcbuf[AV_TIMECODE_STR_SIZE];
-	//av_timecode_make_mpeg_tc_string( tcbuf, codec_context->timecode_frame_start );
-	//std::string videoTimecode( tcbuf );
-	//vp.startTimecode    = videoTimecode;
+	vp.startTimecode    = makeTimecodeMpegToString( codec_context->timecode_frame_start );
 
 	int darNum, darDen;
 	av_reduce( &darNum, &darDen,
@@ -285,7 +298,7 @@ VideoProperties videoStreamInfo( AVFormatContext* formatContext, const size_t in
 		vp.codecName     = codec->name;
 		vp.codecLongName = codec->long_name;
 
-		if( codec_context->profile == -99 )
+		if( codec_context->profile != -99 )
 		{
 			const char* profile;
 			if( ( profile = av_get_profile_name( codec, codec_context->profile ) ) != NULL )
