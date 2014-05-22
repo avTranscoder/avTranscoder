@@ -72,6 +72,20 @@ audioRewrapper = env.Program(
                 ]
         )
 
+avplayer = env.Program(
+        'avplayer',
+        Glob( 'avplay/*.cpp' ),
+        LIBS = [
+                sAvTranscoder,
+                'avutil',
+                'avformat',
+                'avcodec',
+                'swscale',
+                'GL',
+                'glut',
+                ]
+        )
+
 env.Depends( avinfo, sAvTranscoder )
 env.Depends( avmeta, sAvTranscoder )
 env.Depends( audioRewrapper, sAvTranscoder )
