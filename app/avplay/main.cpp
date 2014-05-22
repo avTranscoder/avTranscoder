@@ -3,6 +3,7 @@
 #include <AvTranscoder/InputStreamAudio.hpp>
 #include <AvTranscoder/InputStreamVideo.hpp>
 #include <AvTranscoder/InputFile.hpp>
+#include <AvTranscoder/Metadatas/Print.hpp>
 
 #include <AvTranscoder/ColorTransform.hpp>
 
@@ -73,6 +74,7 @@ bool showAlphaChannel = false;
 
 bool play = false;
 
+avtranscoder::InputFile* pInputFile = NULL;
 avtranscoder::InputStreamVideo* pInputStreamVideo = NULL;
 avtranscoder::ColorTransform ct;
 avtranscoder::Image* pSourceImage = NULL;
@@ -282,10 +284,19 @@ void display()
 	glutSwapBuffers();
 }
 
+void loopPlaying( int value )
+{
+	if( play )
+		glutTimerFunc( 40, &loopPlaying, 0 );
+	readAndLoadNextFrame();
+}
+
 void idle()
 {
 	if( play )
-		readAndLoadNextFrame();
+	{
+		//loopPlaying(0);
+	}
 }
 
 void displayInformations()
@@ -397,6 +408,7 @@ void keyboard(unsigned char k, int x, int y)
 			break;
 		case SPACEBAR:
 			play = !play;
+			loopPlaying(0);
 			break;
 
 		case 'r':
@@ -410,6 +422,10 @@ void keyboard(unsigned char k, int x, int y)
 			break;
 		case 'a':
 			showAlphaChannelTexture();
+			break;
+
+		case 'm':
+			avtranscoder::displayMetadatas( *pInputFile );
 			break;
 
 		case 'H':
@@ -587,6 +603,7 @@ int main( int argc, char** argv )
 
 
 	avtranscoder::InputFile inputFile( argv[1] );
+	pInputFile = &inputFile;
 
 	inputFile.analyse();
 	img.width = inputFile.getProperties().videoStreams.at(0).width;
