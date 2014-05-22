@@ -71,6 +71,14 @@ bool showGreenChannel = false;
 bool showBlueChannel = false;
 bool showAlphaChannel = false;
 
+bool play = false;
+
+avtranscoder::InputStreamVideo* pInputStreamVideo = NULL;
+avtranscoder::ColorTransform ct;
+avtranscoder::Image* pSourceImage = NULL;
+avtranscoder::Image* pImageToDisplay = NULL;
+
+
 void reshape(int width, int height)
 {
 	float w, h, xPos, yPos;
@@ -131,6 +139,13 @@ void loadNewTexture( const char* data, GLint internalFormat, size_t width, size_
 	loadNewTexture( img );
 }
 
+
+void readAndLoadNextFrame()
+{
+	pInputStreamVideo->readNextFrame( *pSourceImage );
+	ct.convert( *pSourceImage, *pImageToDisplay );
+	loadNewTexture( (const char*)( pImageToDisplay->getPtr() ), img.component, img.width, img.height, img.format, img.type );
+}
 
 void reloadTexture( )
 {
@@ -269,6 +284,8 @@ void display()
 
 void idle()
 {
+	if( play )
+		readAndLoadNextFrame();
 }
 
 void displayInformations()
@@ -294,6 +311,7 @@ void displayHelp()
 	static const std::string kViewerHelp =
 	"Av Player Viewer Help\n" \
 	"i                  : information about image (dimensions, bit depth, channels)\n"\
+	"m                  : full metadatas of media\n"\
 	"z                  : zoom view to 1:1\n"\
 	"h, F1              : print help\n" \
 	"SHIFT + V          : flip\n" \
@@ -356,9 +374,11 @@ void keyboard(unsigned char k, int x, int y)
 	{
 		case '\r':
 			glutDestroyWindow(windowID);
+			windowID = 0;
 			break;
 		case 27: // ESCAPE key
 			glutDestroyWindow(windowID);
+			windowID = 0;
 			break;
 		case 'i':
 			displayInformations();
@@ -368,15 +388,15 @@ void keyboard(unsigned char k, int x, int y)
 			currentZoom = 1.0;
 			x1Quad = -1.0;
 			x2Quad = 1.0;
-			y1Quad = -1.0;
-			y2Quad = 1.0;
+			y1Quad = 1.0;
+			y2Quad = -1.0;
 			glutPostRedisplay();
 			break;
 		case 'h':
 			displayHelp();
 			break;
 		case SPACEBAR:
-			glutDestroyWindow(windowID);
+			play = !play;
 			break;
 
 		case 'r':
@@ -425,6 +445,7 @@ void specialKeyboard( int k, int x, int y)
 			break;
 		case GLUT_KEY_RIGHT:
 			// cursor move
+			readAndLoadNextFrame();
 			break;
 		case GLUT_KEY_F1:
 			displayHelp();
@@ -547,8 +568,8 @@ void openGLWindow( const size_t& width, const size_t& height )
 
 	x1Quad = -1.0;
 	x2Quad = 1.0;
-	y1Quad = -1.0;
-	y2Quad = 1.0;
+	y1Quad = 1.0;
+	y2Quad = -1.0;
 
 	glutDisplayFunc (display);
 
@@ -568,29 +589,42 @@ int main( int argc, char** argv )
 	avtranscoder::InputFile inputFile( argv[1] );
 
 	inputFile.analyse();
-	size_t width = inputFile.getProperties().videoStreams.at(0).width;
-	size_t height = inputFile.getProperties().videoStreams.at(0).height;
-	size_t components = 3;
-	GLenum format = GL_RGB;
-	GLenum type = GL_UNSIGNED_BYTE;
+	img.width = inputFile.getProperties().videoStreams.at(0).width;
+	img.height = inputFile.getProperties().videoStreams.at(0).height;
+	img.component = 3;
+	img.format = GL_RGB;
+	img.type = GL_UNSIGNED_BYTE;
 	//GLenum type = GL_UNSIGNED_SHORT;
 
 	avtranscoder::InputStreamVideo inputStreamVideo( inputFile.getStream( 0 ) );
+	pInputStreamVideo = &inputStreamVideo;
 	avtranscoder::Image sourceImage( inputFile.getStream( 0 ).getVideoDesc().getImageDesc() );
 
-	avtranscoder::Image imageToDisplay( sourceImage );
+	avtranscoder::Pixel pixel;
+	pixel.setBitsPerPixel( img.component * 8 );
+	pixel.setComponents( img.component );
+	pixel.setColorComponents( avtranscoder::eComponentRgb );
+	pixel.setSubsampling( avtranscoder::eSubsamplingNone );
+	pixel.setAlpha( false );
+	pixel.setPlanar( false );
 
-	inputStreamVideo.readNextFrame( sourceImage );
+	avtranscoder::ImageDesc imageDescToDisplay;
 
-	avtranscoder::ColorTransform ct;
-	ct.convert( sourceImage, imageToDisplay );
+	imageDescToDisplay.setWidth ( sourceImage.desc().getWidth() );
+	imageDescToDisplay.setHeight( sourceImage.desc().getHeight() );
+	imageDescToDisplay.setDar   ( sourceImage.desc().getDar() );
+	imageDescToDisplay.setPixel ( pixel.findPixel() );
 
-	openGLWindow( width, height );
+	avtranscoder::Image imageToDisplay( imageDescToDisplay );
 
+	pSourceImage = &sourceImage;
+	pImageToDisplay = &imageToDisplay;
 
-	loadNewTexture( (const char*)( imageToDisplay.getPtr() ), components, width, height, format, type );
+	openGLWindow( img.width, img.height );
 
-	glutIdleFunc(idle);
+	readAndLoadNextFrame();
+
+	glutIdleFunc( idle );
 	glutMainLoop();
 
 	std::cout << "avplay end ..." << std::endl;

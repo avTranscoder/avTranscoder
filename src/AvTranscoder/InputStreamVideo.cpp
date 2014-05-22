@@ -63,7 +63,7 @@ InputStreamVideo::~InputStreamVideo()
 {
 	if( m_codecContext != NULL )
 	{
-		avcodec_close( m_codecContext );
+		//avcodec_close( m_codecContext );
 		av_free( m_codecContext );
 		m_codecContext = NULL;
 	}
