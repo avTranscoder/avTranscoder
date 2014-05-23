@@ -42,6 +42,8 @@ public:
 	double getDuration() const;
 	double getPacketDuration() const;
 
+	AVCodecID getVideoCodecId() const { return m_formatContext->streams[m_streamIndex]->codec->codec_id; }
+	
 // protected:
 	bool readNextPacket( AVPacket& packet ) const;
 

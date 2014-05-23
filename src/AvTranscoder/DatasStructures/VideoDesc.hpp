@@ -24,7 +24,7 @@ namespace avtranscoder
 class AvExport VideoDesc
 {
 public:
-	VideoDesc( const std::string& codecName = "" );
+	VideoDesc( const std::string& codecName );
 	VideoDesc( const AVCodecID codecId );
 
 	void setVideoCodec( const std::string& codecName );
