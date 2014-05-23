@@ -21,13 +21,13 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex )
 	{
 		case AVMEDIA_TYPE_VIDEO:
 		{
-			_inputStreams.push_back( avtranscoder::InputStream( filename, streamIndex ) );
+			_inputStreams.push_back( inputFile.getStream( streamIndex ) );
 			_outputFile.addVideoStream( _inputStreams.back().getVideoDesc() );
 			break;
 		}
 		case AVMEDIA_TYPE_AUDIO:
 		{
-			_inputStreams.push_back( avtranscoder::InputStream( filename, streamIndex ) );
+			_inputStreams.push_back( inputFile.getStream( streamIndex ) );
 			_outputFile.addAudioStream( _inputStreams.back().getAudioDesc() );
 			break;
 		}

@@ -26,6 +26,8 @@ InputStreamAudio::InputStreamAudio( const InputStream& inputStream )
 {
 	avcodec_register_all();
 
+	std::cout << "Audio codec Id : " << m_inputStream.getAudioDesc().getAudioCodecId() << std::endl;
+
 	m_codec = avcodec_find_decoder( m_inputStream.getAudioDesc().getAudioCodecId() );
 	if( m_codec == NULL )
 	{
@@ -38,13 +40,26 @@ InputStreamAudio::InputStreamAudio( const InputStream& inputStream )
 		throw std::runtime_error( "unable to find context for codec" );
 	}
 
+	std::cout << "Audio codec Id : " << m_codecContext->codec_id << std::endl;
+	std::cout << "Audio codec Id : " << m_codec->long_name << std::endl;
+
 	int ret = avcodec_open2( m_codecContext, m_codec, NULL );
+
+	std::cout << "ret value : " << ret << std::endl;
 
 	if( ret < 0 || m_codecContext == NULL || m_codec == NULL )
 	{
-		avcodec_close( m_codecContext );
 		std::string msg = "unable open audio codec: ";
-		msg +=  m_codecContext->codec_name;
+		msg +=  m_codec->long_name;
+		msg += " (";
+		msg += m_codec->name;
+		msg += ")";
+		avcodec_close( m_codecContext );
+
+		char err[250];
+
+		av_make_error_string( err, 250, ret );
+		std::cout << err << std::endl;
 		throw std::runtime_error( msg );
 	}
 

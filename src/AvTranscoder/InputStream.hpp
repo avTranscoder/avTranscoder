@@ -15,20 +15,21 @@ extern "C" {
 #include <string>
 #include <iostream>
 
+#include "InputFile.hpp"
+
 namespace avtranscoder
 {
 
 class AvExport InputStream
 {
 public:
-	InputStream( const std::string& filename, const size_t streamIndex );
+	InputStream( const InputFile* inputFile, const size_t streamIndex );
 	~InputStream( );
 
 	InputStream( const InputStream& inputStream )
-		: m_formatContext( NULL )
+		: m_inputFile( inputStream.m_inputFile )
 		, m_streamIndex( inputStream.m_streamIndex )
 	{
-		init( inputStream.m_formatContext->filename );
 	}
 
 	size_t getStreamIndex() const { return m_streamIndex; }
@@ -45,12 +46,10 @@ public:
 // protected:
 	bool readNextPacket( AVPacket& packet ) const;
 
-
 private:
-	void init( const std::string& filename );
+	const InputFile* m_inputFile;
+	std::vector<DataStream> m_streamCache;
 
-private:
-	AVFormatContext* m_formatContext;
 	int              m_packetDuration;
 	size_t           m_streamIndex;
 };

@@ -17,21 +17,15 @@ extern "C" {
 namespace avtranscoder
 {
 
-InputStream::InputStream( const std::string& filename, const size_t streamIndex )
-		: m_formatContext( NULL )
+InputStream::InputStream( const InputFile* inputFile, const size_t streamIndex )
+		: m_inputFile( inputFile )
 		, m_packetDuration( 0 )
 		, m_streamIndex( streamIndex )
 {
-	init( filename );
 };
 
 InputStream::~InputStream( )
 {
-	if( m_formatContext != NULL )
-	{
-		avformat_close_input( &m_formatContext );
-		m_formatContext = NULL;
-	}
 }
 
 bool InputStream::readNextPacket( DataStream& data )
@@ -61,10 +55,10 @@ bool InputStream::readNextPacket( DataStream& data )
 
 bool InputStream::readNextPacket( AVPacket& packet ) const
 {
-	assert( m_formatContext != NULL );
+	assert( m_inputFile->getFormatContext() != NULL );
 	while( 1 )
 	{
-		int ret = av_read_frame( m_formatContext, &packet );
+		int ret = av_read_frame( m_inputFile->getFormatContext(), &packet );
 		if( ret < 0 ) // error or end of file
 		{
 			return false;
@@ -85,15 +79,15 @@ bool InputStream::readNextPacket( AVPacket& packet ) const
 
 VideoDesc InputStream::getVideoDesc() const
 {
-	assert( m_formatContext != NULL );
-	assert( m_streamIndex <= m_formatContext->nb_streams );
+	assert( m_inputFile->getFormatContext() != NULL );
+	assert( m_streamIndex <= m_inputFile->getFormatContext()->nb_streams );
 
-	if( m_formatContext->streams[m_streamIndex]->codec->codec_type != AVMEDIA_TYPE_VIDEO )
+	if( m_inputFile->getFormatContext()->streams[m_streamIndex]->codec->codec_type != AVMEDIA_TYPE_VIDEO )
 	{
 		throw std::runtime_error( "unable to get video descriptor on non-video stream" );
 	}
 
-	AVCodecContext* codecContext = m_formatContext->streams[m_streamIndex]->codec;
+	AVCodecContext* codecContext = m_inputFile->getFormatContext()->streams[m_streamIndex]->codec;
 
 	VideoDesc desc( codecContext->codec_id );
 
@@ -105,15 +99,15 @@ VideoDesc InputStream::getVideoDesc() const
 
 AudioDesc InputStream::getAudioDesc() const
 {
-	assert( m_formatContext != NULL );
-	assert( m_streamIndex <= m_formatContext->nb_streams );
+	assert( m_inputFile->getFormatContext() != NULL );
+	assert( m_streamIndex <= m_inputFile->getFormatContext()->nb_streams );
 
-	if( m_formatContext->streams[m_streamIndex]->codec->codec_type != AVMEDIA_TYPE_AUDIO )
+	if( m_inputFile->getFormatContext()->streams[m_streamIndex]->codec->codec_type != AVMEDIA_TYPE_AUDIO )
 	{
 		throw std::runtime_error( "unable to get audio descriptor on non-audio stream" );
 	}
 
-	AVCodecContext* codecContext = m_formatContext->streams[m_streamIndex]->codec;
+	AVCodecContext* codecContext = m_inputFile->getFormatContext()->streams[m_streamIndex]->codec;
 
 	AudioDesc desc( codecContext->codec_id );
 
@@ -125,37 +119,12 @@ AudioDesc InputStream::getAudioDesc() const
 
 double InputStream::getDuration() const
 {
-	return 1.0 * m_formatContext->duration / AV_TIME_BASE;
+	return 1.0 * m_inputFile->getFormatContext()->duration / AV_TIME_BASE;
 }
 
 double InputStream::getPacketDuration() const
 {
-	return m_packetDuration * av_q2d( m_formatContext->streams[m_streamIndex]->time_base );
-}
-
-void InputStream::init( const std::string& filename )
-{
-	av_register_all();  // Warning: should be called only once
-	if( avformat_open_input( &m_formatContext, filename.c_str(), NULL, NULL ) < 0 )
-	{
-		throw std::runtime_error( "unable to open file" );
-	}
-
-	// update format context informations from streams
-	if( avformat_find_stream_info( m_formatContext, NULL ) < 0 )
-	{
-		avformat_close_input( &m_formatContext );
-		m_formatContext = NULL;
-		throw std::runtime_error( "unable to find stream informations" );
-	}
-
-	assert( m_formatContext != NULL );
-
-	if( m_formatContext->streams[m_streamIndex]->codec->codec_type == AVMEDIA_TYPE_AUDIO )
-	{
-		// TODO: get dynamic buffer size in relation with video stream
-		m_formatContext->streams[m_streamIndex]->codec->block_align = 3 * 1920; // 24 bits per audio sample at 25fps
-	}
+	return m_packetDuration * av_q2d( m_inputFile->getFormatContext()->streams[m_streamIndex]->time_base );
 }
 
 }

@@ -45,7 +45,13 @@ InputStreamVideo::InputStreamVideo( const InputStream& inputStream )
 
 	if( ret < 0 || m_codecContext == NULL || m_codec == NULL )
 	{
-		throw std::runtime_error( "unable open video codec" );
+		std::string msg = "unable open video codec: ";
+		msg +=  m_codec->long_name;
+		msg += " (";
+		msg += m_codec->name;
+		msg += ")";
+		avcodec_close( m_codecContext );
+		throw std::runtime_error( msg );
 	}
 
 #if LIBAVCODEC_VERSION_MAJOR > 54

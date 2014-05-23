@@ -5,8 +5,6 @@
 #include "DatasStructures/AudioDesc.hpp"
 #include "DatasStructures/VideoDesc.hpp"
 #include "Metadatas/MediaMetadatasStructures.hpp"
-#include "InputStream.hpp"
-
 
 #include <string>
 #include <vector>
@@ -19,6 +17,8 @@ class AVCodecContext;
 
 namespace avtranscoder
 {
+
+class InputStream;
 
 class AvExport InputFile
 {
@@ -36,6 +36,8 @@ public:
 
 	::avtranscoder::InputStream& getStream( size_t index );
 
+	AVFormatContext* getFormatContext() const { return m_formatContext; }
+
 protected:
 	AVFormatContext*         m_formatContext;
 	Properties               m_properties;
@@ -44,5 +46,7 @@ protected:
 };
 
 }
+
+#include "InputStream.hpp"
 
 #endif

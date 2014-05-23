@@ -47,7 +47,7 @@ InputFile::InputFile( const std::string& filename )
 
 	for( size_t streamIndex = 0; streamIndex < m_formatContext->nb_streams; ++streamIndex )
 	{
-		m_inputStreams.push_back( InputStream( m_filename, streamIndex ) );
+		m_inputStreams.push_back( InputStream( this, streamIndex ) );
 	}
 }
 
