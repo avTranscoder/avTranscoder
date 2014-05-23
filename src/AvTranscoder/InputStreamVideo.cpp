@@ -25,8 +25,8 @@ InputStreamVideo::InputStreamVideo( const InputStream& inputStream )
 	, m_selectedStream( -1 )
 {
 	av_register_all();
-
-	m_codec = avcodec_find_decoder( m_inputStream.getVideoDesc().getVideoCodecId() );
+	m_codec = avcodec_find_decoder( inputStream.getVideoCodecId() );
+	
 	if( m_codec == NULL )
 	{
 		throw std::runtime_error( "codec not supported" );
