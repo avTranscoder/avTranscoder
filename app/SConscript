@@ -86,7 +86,6 @@ avplayer = env.Program(
                 ]
         )
 
-env.Depends( avinfo, sAvTranscoder )
 env.Depends( avmeta, sAvTranscoder )
 env.Depends( audioRewrapper, sAvTranscoder )
 
