@@ -32,6 +32,8 @@ public:
 	/// get file properties
 	const Properties& getProperties() const { return m_properties; }
 
+	AVMediaType getStreamType( size_t index );
+
 	::avtranscoder::InputStream& getStream( size_t index );
 
 protected:

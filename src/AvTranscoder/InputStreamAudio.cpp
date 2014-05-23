@@ -24,7 +24,7 @@ InputStreamAudio::InputStreamAudio( const InputStream& inputStream )
 	, m_frame         ( NULL )
 	, m_selectedStream( -1 )
 {
-	av_register_all();
+	avcodec_register_all();
 
 	m_codec = avcodec_find_decoder( m_inputStream.getAudioDesc().getAudioCodecId() );
 	if( m_codec == NULL )
@@ -38,10 +38,14 @@ InputStreamAudio::InputStreamAudio( const InputStream& inputStream )
 		throw std::runtime_error( "unable to find context for codec" );
 	}
 
-	avcodec_open2( m_codecContext, m_codec, NULL );
-	if( m_codecContext == NULL || m_codec == NULL )
+	int ret = avcodec_open2( m_codecContext, m_codec, NULL );
+
+	if( ret < 0 || m_codecContext == NULL || m_codec == NULL )
 	{
-		throw std::runtime_error( "unable open codec" );
+		avcodec_close( m_codecContext );
+		std::string msg = "unable open audio codec: ";
+		msg +=  m_codecContext->codec_name;
+		throw std::runtime_error( msg );
 	}
 
 #if LIBAVCODEC_VERSION_MAJOR > 54
@@ -66,12 +70,12 @@ InputStreamAudio::~InputStreamAudio()
 	if( m_frame != NULL )
 	{
 #if LIBAVCODEC_VERSION_MAJOR > 54
-	av_frame_free( &m_frame );
+		av_frame_free( &m_frame );
 #else
  #if LIBAVCODEC_VERSION_MAJOR > 53
-	avcodec_free_frame( &m_frame );
+		avcodec_free_frame( &m_frame );
  #else
-	av_free( m_frame );
+		av_free( m_frame );
  #endif
 #endif
 		m_frame = NULL;
@@ -80,7 +84,7 @@ InputStreamAudio::~InputStreamAudio()
 
 bool InputStreamAudio::readNextFrame( AudioFrame& audioFrameBuffer )
 {
-/*	int got_frame = 0;
+	int got_frame = 0;
 
 	while( ! got_frame )
 	{
@@ -93,18 +97,25 @@ bool InputStreamAudio::readNextFrame( AudioFrame& audioFrameBuffer )
 			return false;
 		}
 
-		//avcodec_decode_audio2( m_codecContext, m_frame, &got_frame, &packet );
+		int ret = avcodec_decode_audio4( m_codecContext, m_frame, &got_frame, &packet );
+
+		if( ret < 0 )
+		{
+			throw std::runtime_error( "an error occured during audio decoding" );
+		}
 
 		av_free_packet( &packet );
 	}
 
-	size_t decodedSize = avpicture_get_size( (AVPixelFormat)m_frame->format, m_frame->width, m_frame->height );
-	if( frameBuffer.getBuffer().size() != decodedSize )
-		frameBuffer.getBuffer().resize( avpicture_get_size( (AVPixelFormat)m_frame->format, m_frame->width, m_frame->height ) );
+	//size_t unpadded_linesize = m_frame->nb_samples * av_get_bytes_per_sample( m_frame->format );
 
-	// Copy pixel data from an AVPicture into one contiguous buffer.
-	avpicture_layout( (AVPicture*)m_frame, (AVPixelFormat)m_frame->format, m_frame->width, m_frame->height, &frameBuffer.getBuffer()[0], frameBuffer.getBuffer().size() );
-*/
+	// size_t decodedSize = avpicture_get_size( (AVPixelFormat)m_frame->format, m_frame->width, m_frame->height );
+	// if( frameBuffer.getBuffer().size() != decodedSize )
+	// 	frameBuffer.getBuffer().resize( avpicture_get_size( (AVPixelFormat)m_frame->format, m_frame->width, m_frame->height ) );
+
+	// // Copy pixel data from an AVPicture into one contiguous buffer.
+	// avpicture_layout( (AVPicture*)m_frame, (AVPixelFormat)m_frame->format, m_frame->width, m_frame->height, &frameBuffer.getBuffer()[0], frameBuffer.getBuffer().size() );
+
 	return true;
 }
 

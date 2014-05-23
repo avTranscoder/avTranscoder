@@ -32,7 +32,9 @@ InputFile::InputFile( const std::string& filename )
 	av_register_all();  // Warning: should be called only once
 	if( avformat_open_input( &m_formatContext, m_filename.c_str(), NULL, NULL ) < 0 )
 	{
-		throw std::runtime_error( "unable to open file" );
+		std::string msg = "unable to open file: ";
+		msg += m_filename;
+		throw std::runtime_error( msg );
 	}
 
 	// update format context informations from streams
@@ -121,6 +123,13 @@ InputFile& InputFile::analyse()
 	}
 
 	return *this;
+}
+
+AVMediaType InputFile::getStreamType( size_t index )
+{
+	if( index >= m_formatContext->nb_streams )
+		return AVMEDIA_TYPE_UNKNOWN;
+	return m_formatContext->streams[index]->codec->codec_type;
 }
 
 InputStream& InputFile::getStream( size_t index )

@@ -41,10 +41,11 @@ InputStreamVideo::InputStreamVideo( const InputStream& inputStream )
 	// if( codec->capabilities & CODEC_CAP_TRUNCATED )
 	// 	codecContext->flags |= CODEC_FLAG_TRUNCATED;
 
-	avcodec_open2( m_codecContext, m_codec, NULL );
-	if( m_codecContext == NULL || m_codec == NULL )
+	int ret = avcodec_open2( m_codecContext, m_codec, NULL );
+
+	if( ret < 0 || m_codecContext == NULL || m_codec == NULL )
 	{
-		throw std::runtime_error( "unable open codec" );
+		throw std::runtime_error( "unable open video codec" );
 	}
 
 #if LIBAVCODEC_VERSION_MAJOR > 54
@@ -69,12 +70,12 @@ InputStreamVideo::~InputStreamVideo()
 	if( m_frame != NULL )
 	{
 #if LIBAVCODEC_VERSION_MAJOR > 54
-	av_frame_free( &m_frame );
+		av_frame_free( &m_frame );
 #else
  #if LIBAVCODEC_VERSION_MAJOR > 53
-	avcodec_free_frame( &m_frame );
+		avcodec_free_frame( &m_frame );
  #else
-	av_free( m_frame );
+		av_free( m_frame );
  #endif
 #endif
 		m_frame = NULL;
