@@ -38,6 +38,10 @@ public:
 
 	AVFormatContext* getFormatContext() const { return m_formatContext; }
 
+	bool readNextPacket( const size_t streamIndex );
+
+	void readStream( const size_t streamIndex, const bool readStream = true );
+
 protected:
 	AVFormatContext*         m_formatContext;
 	Properties               m_properties;

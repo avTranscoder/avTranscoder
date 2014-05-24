@@ -58,7 +58,7 @@ InputStreamAudio::InputStreamAudio( const InputStream& inputStream )
 
 		char err[250];
 
-		av_make_error_string( err, 250, ret );
+		av_strerror( ret, err, 250 );
 		std::cout << err << std::endl;
 		throw std::runtime_error( msg );
 	}
@@ -99,8 +99,8 @@ InputStreamAudio::~InputStreamAudio()
 
 bool InputStreamAudio::readNextFrame( AudioFrame& audioFrameBuffer )
 {
+/*
 	int got_frame = 0;
-
 	while( ! got_frame )
 	{
 		AVPacket packet;
@@ -120,7 +120,7 @@ bool InputStreamAudio::readNextFrame( AudioFrame& audioFrameBuffer )
 		}
 
 		av_free_packet( &packet );
-	}
+	}*/
 
 	//size_t unpadded_linesize = m_frame->nb_samples * av_get_bytes_per_sample( m_frame->format );
 

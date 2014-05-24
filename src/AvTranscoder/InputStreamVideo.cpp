@@ -17,7 +17,7 @@ extern "C" {
 namespace avtranscoder
 {
 
-InputStreamVideo::InputStreamVideo( const InputStream& inputStream )
+InputStreamVideo::InputStreamVideo( InputStream& inputStream )
 	: m_inputStream   ( inputStream )
 	, m_codec         ( NULL )
 	, m_codecContext  ( NULL )
@@ -90,18 +90,21 @@ InputStreamVideo::~InputStreamVideo()
 
 bool InputStreamVideo::readNextFrame( Image& frameBuffer )
 {
+	
 	int got_frame = 0;
 
 	while( ! got_frame )
 	{
+		DataStream data;
+		if( ! m_inputStream.readNextPacket( data ) )
+			return false;
+
 		AVPacket packet;
 		av_init_packet( &packet );
 
-		if( ! m_inputStream.readNextPacket( packet ) ) // error or end of file
-		{
-			av_free_packet( &packet );
-			return false;
-		}
+		packet.stream_index = m_selectedStream;
+        packet.data         = data.getPtr();
+        packet.size         = data.getSize();
 
 		avcodec_decode_video2( m_codecContext, m_frame, &got_frame, &packet );
 

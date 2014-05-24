@@ -613,9 +613,13 @@ int main( int argc, char** argv )
 	img.type = GL_UNSIGNED_BYTE;
 	//GLenum type = GL_UNSIGNED_SHORT;
 
-	avtranscoder::InputStreamVideo inputStreamVideo( inputFile.getStream( 0 ) );
+	size_t videoStream = inputFile.getProperties().videoStreams.at(0).streamId;
+
+	inputFile.readStream( videoStream );
+
+	avtranscoder::InputStreamVideo inputStreamVideo( inputFile.getStream( videoStream ) );
 	pInputStreamVideo = &inputStreamVideo;
-	avtranscoder::Image sourceImage( inputFile.getStream( 0 ).getVideoDesc().getImageDesc() );
+	avtranscoder::Image sourceImage( inputFile.getStream( videoStream ).getVideoDesc().getImageDesc() );
 
 	avtranscoder::Pixel pixel;
 	pixel.setBitsPerPixel( img.component * 8 );

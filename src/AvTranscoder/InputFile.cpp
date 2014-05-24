@@ -137,4 +137,39 @@ InputStream& InputFile::getStream( size_t index )
 	return m_inputStreams.at( index );
 }
 
+bool InputFile::readNextPacket( const size_t streamIndex )
+{
+	AVPacket packet;
+	av_init_packet( &packet );
+	while( 1 )
+	{
+		int ret = av_read_frame( m_formatContext, &packet );
+		if( ret < 0 ) // error or end of file
+		{
+			av_free_packet( &packet );
+			return false;
+		}
+
+		// send packet to stream buffer
+		m_inputStreams.at( packet.stream_index ).addPacket( packet );
+
+		// We only read one stream and skip others
+		if( packet.stream_index == (int)streamIndex )
+		{
+			av_free_packet( &packet );
+			return true;
+		}
+
+		// do not delete these 2 lines
+		// need to skip packet, delete this one and re-init for reading the next one
+		av_free_packet( &packet );
+		av_init_packet( &packet );
+	}
+}
+
+void InputFile::readStream( const size_t streamIndex, bool readStream )
+{
+	m_inputStreams.at( streamIndex ).setBufferred( readStream );	
+}
+
 }

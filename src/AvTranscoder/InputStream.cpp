@@ -17,10 +17,11 @@ extern "C" {
 namespace avtranscoder
 {
 
-InputStream::InputStream( const InputFile* inputFile, const size_t streamIndex )
+InputStream::InputStream( InputFile* inputFile, const size_t streamIndex )
 		: m_inputFile( inputFile )
 		, m_packetDuration( 0 )
 		, m_streamIndex( streamIndex )
+		, m_bufferized( false )
 {
 };
 
@@ -30,51 +31,44 @@ InputStream::~InputStream( )
 
 bool InputStream::readNextPacket( DataStream& data )
 {
-	AVPacket packet;
-	av_init_packet( &packet );
+	if( m_streamCache.empty() )
+		m_inputFile->readNextPacket( m_streamIndex );
 
-	if( readNextPacket( packet ) )
-	{
-		m_packetDuration = packet.duration;
+	if( m_streamCache.empty() )
+		return false;
 
-		// is it possible to remove this copy ?
-		// using : av_packet_unref ?
-		data.getBuffer().resize( packet.size );
-		if( packet.size != 0 )
-			memcpy( data.getPtr(), packet.data, packet.size );
-	}
-	else
-	{
-		data.getBuffer().resize( 0 );
-	}
+	m_streamCache.front().getBuffer().swap( data.getBuffer() );
 
-	av_free_packet( &packet );
+	m_streamCache.erase( m_streamCache.begin() );
 
-	return data.getBuffer().size() != 0;
+	return true;
 }
 
-bool InputStream::readNextPacket( AVPacket& packet ) const
+void InputStream::addPacket( AVPacket& packet )
 {
-	assert( m_inputFile->getFormatContext() != NULL );
-	while( 1 )
-	{
-		int ret = av_read_frame( m_inputFile->getFormatContext(), &packet );
-		if( ret < 0 ) // error or end of file
-		{
-			return false;
-		}
+	//std::cout << "add packet for stream " << m_streamIndex << std::endl;
+	DataStream data;
+	m_streamCache.push_back( data );
+	m_packetDuration = packet.duration;
 
-		// We only read one stream and skip others
-		if( packet.stream_index == (int)m_streamIndex )
-		{
-			return true;
-		}
+	if( ! m_bufferized )
+		return;
 
-		// do not delete these 2 lines
-		// need to skip packet, delete this one and re-init for reading the next one
-		av_free_packet( &packet );
-		av_init_packet( &packet );
-	}
+	// is it possible to remove this copy ?
+	// using : av_packet_unref ?
+	m_streamCache.back().getBuffer().resize( packet.size );
+	if( packet.size != 0 )
+		memcpy( m_streamCache.back().getPtr(), packet.data, packet.size );
+
+	// std::vector<unsigned char> tmpData( 0,0 );
+	// &tmpData[0] = packet.data;
+	// tmpData.size( packet.size );
+
+	// remove reference on packet because it's passed to DataStream
+	// packet.data = NULL;
+ 	// packet.size = 0;
+
+	// std::cout << this << " buffer size " << m_streamCache.size() << std::endl;
 }
 
 VideoDesc InputStream::getVideoDesc() const

@@ -17,13 +17,13 @@ namespace avtranscoder
 class AvExport InputStreamVideo
 {
 public:
-	InputStreamVideo( const InputStream& inputStream );
+	InputStreamVideo( InputStream& inputStream );
 	~InputStreamVideo();
 
 	bool readNextFrame( Image& frameBuffer );
 
 private:
-	const InputStream  m_inputStream;
+	InputStream&       m_inputStream;
 	AVCodec*           m_codec;
 	AVCodecContext*    m_codecContext;
 	AVFrame*           m_frame;

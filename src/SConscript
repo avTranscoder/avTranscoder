@@ -8,6 +8,10 @@ Import( "installPrefix" )
 
 AvTranscoderVersion = "0.0.1"
 
+env.Append(
+    SHLIBVERSION = AvTranscoderVersion
+)
+
 sAvTranscoder = env.StaticLibrary(
     'sAvTranscoder',
     Glob( 'AvTranscoder/*.cpp' ) + Glob( 'AvTranscoder/DatasStructures/*.cpp' ) ,
