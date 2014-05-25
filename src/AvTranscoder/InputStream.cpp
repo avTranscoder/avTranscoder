@@ -121,4 +121,9 @@ double InputStream::getPacketDuration() const
 	return m_packetDuration * av_q2d( m_inputFile->getFormatContext()->streams[m_streamIndex]->time_base );
 }
 
+void InputStream::clearBuffering()
+{
+	m_streamCache.clear();
+}
+
 }

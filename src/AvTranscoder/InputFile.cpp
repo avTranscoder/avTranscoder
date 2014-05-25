@@ -167,6 +167,24 @@ bool InputFile::readNextPacket( const size_t streamIndex )
 	}
 }
 
+void InputFile::seekAtFrame( const size_t frame )
+{
+	uint64_t pos = frame / 25 * AV_TIME_BASE; 
+
+	if( (int)m_formatContext->start_time != AV_NOPTS_VALUE )
+        pos += m_formatContext->start_time;
+
+	if( av_seek_frame( m_formatContext, -1, pos, AVSEEK_FLAG_BACKWARD ) < 0 )
+	{
+		std::cerr << "Error during seek in file" << std::endl;
+	}
+
+	for( std::vector<InputStream>::iterator it = m_inputStreams.begin(); it != m_inputStreams.end(); ++it )
+	{
+		(*it).clearBuffering();
+	}
+}
+
 void InputFile::readStream( const size_t streamIndex, bool readStream )
 {
 	m_inputStreams.at( streamIndex ).setBufferred( readStream );	

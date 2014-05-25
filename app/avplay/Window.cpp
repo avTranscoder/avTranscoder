@@ -12,6 +12,7 @@
 
 #include <iostream>
 #include <iomanip>
+#include <cstring>
 
 Reader* Window::m_reader = NULL;
 
@@ -165,6 +166,7 @@ void Window::display()
 	glVertex2f  ( x2, y1 );
 
 	glEnd();
+
 	glutSwapBuffers();
 }
 
@@ -242,6 +244,7 @@ void Window::keyboard( unsigned char k, int x, int y )
 
 void Window::specialKeyboard( int k, int x, int y )
 {
+	//std::cout << "k=" << k << " x=" << x << " y=" << y << std::endl; 
 	switch (k)
 	{
 		case GLUT_KEY_UP:
@@ -252,10 +255,15 @@ void Window::specialKeyboard( int k, int x, int y )
 			break;
 		case GLUT_KEY_LEFT:
 			// cursor move
+			displayPrevFrame();
 			break;
 		case GLUT_KEY_RIGHT:
 			// cursor move
 			displayNextFrame();
+			break;
+		case GLUT_KEY_HOME:
+			displayFirstFrame();
+		case GLUT_KEY_END:
 			break;
 		case GLUT_KEY_F1:
 			displayHelp();
@@ -525,6 +533,23 @@ void Window::showAlphaChannelTexture( )
 void Window::displayNextFrame()
 {
 	const char* buffer = m_reader->readNextFrame();
+	loadNewTexture( buffer, m_reader->getComponents(), m_reader->getWidth(), m_reader->getHeight(), GL_RGB, GL_UNSIGNED_BYTE );
+}
+
+void Window::displayPrevFrame()
+{
+	const char* buffer = m_reader->readPrevFrame();
+	loadNewTexture( buffer, m_reader->getComponents(), m_reader->getWidth(), m_reader->getHeight(), GL_RGB, GL_UNSIGNED_BYTE );
+}
+
+void Window::displayFirstFrame()
+{
+	displayAtFrame( 0 );
+}
+
+void Window::displayAtFrame( const size_t frame )
+{
+	const char* buffer = m_reader->readFrameAt( frame );
 	loadNewTexture( buffer, m_reader->getComponents(), m_reader->getWidth(), m_reader->getHeight(), GL_RGB, GL_UNSIGNED_BYTE );
 }
 

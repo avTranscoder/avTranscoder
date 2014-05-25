@@ -49,6 +49,8 @@ public:
 
 	void setBufferred( const bool bufferized ){ m_bufferized = bufferized; }
 
+	void clearBuffering();
+
 private:
 	InputFile*       m_inputFile;
 	std::vector<DataStream> m_streamCache;

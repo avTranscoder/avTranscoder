@@ -40,6 +40,8 @@ public:
 
 	bool readNextPacket( const size_t streamIndex );
 
+	void seekAtFrame( const size_t frame );
+
 	void readStream( const size_t streamIndex, const bool readStream = true );
 
 protected:

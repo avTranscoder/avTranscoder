@@ -37,6 +37,9 @@ private:
 	static void showAlphaChannelTexture();
 
 	static void displayNextFrame();
+	static void displayPrevFrame();
+	static void displayFirstFrame();
+	static void displayAtFrame( const size_t frame );
 
 	static void loopPlaying( int value );
 

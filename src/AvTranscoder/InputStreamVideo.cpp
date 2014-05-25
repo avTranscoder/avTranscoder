@@ -121,4 +121,9 @@ bool InputStreamVideo::readNextFrame( Image& frameBuffer )
 	return true;
 }
 
+void InputStreamVideo::flushDecoder()
+{
+	avcodec_flush_buffers( m_codecContext );
+}
+
 }

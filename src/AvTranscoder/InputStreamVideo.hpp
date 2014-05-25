@@ -22,6 +22,8 @@ public:
 
 	bool readNextFrame( Image& frameBuffer );
 
+	void flushDecoder();
+
 private:
 	InputStream&       m_inputStream;
 	AVCodec*           m_codec;
