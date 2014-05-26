@@ -103,8 +103,8 @@ bool InputStreamVideo::readNextFrame( Image& frameBuffer )
 		av_init_packet( &packet );
 
 		packet.stream_index = m_selectedStream;
-        packet.data         = data.getPtr();
-        packet.size         = data.getSize();
+		packet.data         = data.getPtr();
+		packet.size         = data.getSize();
 
 		avcodec_decode_video2( m_codecContext, m_frame, &got_frame, &packet );
 

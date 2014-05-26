@@ -26,8 +26,7 @@ bool OutputStreamVideo::setup( )
 {
 	av_register_all();  // Warning: should be called only once
 
-	AVCodecContext* codecContext;
-	codecContext = m_videoDesc.getCodecContext();
+	AVCodecContext* codecContext( m_videoDesc.getCodecContext() );
 
 	if( codecContext == NULL )
 		return false;

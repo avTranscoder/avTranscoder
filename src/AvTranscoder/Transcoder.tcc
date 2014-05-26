@@ -11,24 +11,45 @@ Transcoder::Transcoder( OutputFile& outputFile )
 
 Transcoder::~Transcoder()
 {
+	for( std::vector< InputFile* >::iterator it = _inputFiles.begin(); it != _inputFiles.end(); ++it )
+	{
+		delete (*it);
+	}
 }
 
 void Transcoder::add( const std::string& filename, const size_t streamIndex )
 {
-	InputFile inputFile( filename );
+	InputFile* referenceFile = NULL;
 
-	switch( inputFile.getStreamType( streamIndex ) )
+	for( std::vector< InputFile* >::iterator it = _inputFiles.begin(); it != _inputFiles.end(); ++it )
+	{
+		if( (*it)->getFilename() == filename )
+		{
+			referenceFile = (*it);
+			break;
+		}
+	}
+
+	if( ! referenceFile )
+	{
+		_inputFiles.push_back( new InputFile( filename ) );
+		referenceFile = _inputFiles.back();
+	}
+
+	referenceFile->readStream( streamIndex );
+
+	switch( referenceFile->getStreamType( streamIndex ) )
 	{
 		case AVMEDIA_TYPE_VIDEO:
 		{
-			_inputStreams.push_back( inputFile.getStream( streamIndex ) );
-			_outputFile.addVideoStream( _inputStreams.back().getVideoDesc() );
+			_inputStreams.push_back( &referenceFile->getStream( streamIndex ) );
+			_outputFile.addVideoStream( _inputStreams.back()->getVideoDesc() );
 			break;
 		}
 		case AVMEDIA_TYPE_AUDIO:
 		{
-			_inputStreams.push_back( inputFile.getStream( streamIndex ) );
-			_outputFile.addAudioStream( _inputStreams.back().getAudioDesc() );
+			_inputStreams.push_back( &referenceFile->getStream( streamIndex ) );
+			_outputFile.addAudioStream( _inputStreams.back()->getAudioDesc() );
 			break;
 		}
 		case AVMEDIA_TYPE_DATA:
@@ -74,16 +95,18 @@ void Transcoder::process( ProgressListener& progress )
 		// read one frame for each streamIndex
 		for( size_t streamIndex = 0; streamIndex < _inputStreams.size(); ++streamIndex )
 		{
-			bool ret = _inputStreams.at( streamIndex ).readNextPacket( dataStreams.at( streamIndex ) );
+			bool ret = _inputStreams.at( streamIndex )->readNextPacket( dataStreams.at( streamIndex ) );
 
 			if( ! ret || ( dataStreams.at( streamIndex ).getBuffer().size() == 0 ) )
+			{
 				continueProcess = false;
+			}
 		}
 
 		if( ! continueProcess )
 			break;
 
-		switch( progress.progress( _inputStreams.at( 0 ).getPacketDuration() * ( frame + 1 ), _inputStreams.at( 0 ).getDuration() ) )
+		switch( progress.progress( _inputStreams.at( 0 )->getPacketDuration() * ( frame + 1 ), _inputStreams.at( 0 )->getDuration() ) )
 		{
 			case eJobStatusContinue:
 			{

@@ -1,6 +1,7 @@
 #ifndef _AV_TRANSCODER_TRANSCODER_HPP_
 #define _AV_TRANSCODER_TRANSCODER_HPP_
 
+#include <AvTranscoder/InputFile.hpp>
 #include <AvTranscoder/InputStream.hpp>
 #include <AvTranscoder/OutputFile.hpp>
 #include <AvTranscoder/ProgressListener.hpp>
@@ -28,8 +29,9 @@ public:
 	void process( ProgressListener& progress );
 
 private:
-	OutputFile&                _outputFile;
-	std::vector< InputStream > _inputStreams;
+	OutputFile&                 _outputFile;
+	std::vector< InputFile* >   _inputFiles;
+	std::vector< InputStream* > _inputStreams;
 };
 
 }

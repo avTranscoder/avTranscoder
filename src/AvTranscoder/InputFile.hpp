@@ -26,6 +26,8 @@ public:
 	InputFile( const std::string& filename );
 	~InputFile();
 
+	std::string getFilename() const { return m_filename; }
+
 	// *** Metadatas section ***
 	// run the analyse on the file after a setup.
 	InputFile& analyse();
