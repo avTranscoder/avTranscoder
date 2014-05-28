@@ -17,7 +17,7 @@ extern "C" {
 namespace avtranscoder
 {
 
-InputStreamAudio::InputStreamAudio( const InputStream& inputStream )
+InputStreamAudio::InputStreamAudio( const InputStream* inputStream )
 	: m_inputStream   ( inputStream )
 	, m_codec         ( NULL )
 	, m_codecContext  ( NULL )
@@ -26,9 +26,9 @@ InputStreamAudio::InputStreamAudio( const InputStream& inputStream )
 {
 	avcodec_register_all();
 
-	std::cout << "Audio codec Id : " << m_inputStream.getAudioDesc().getAudioCodecId() << std::endl;
+	std::cout << "Audio codec Id : " << m_inputStream->getAudioDesc().getAudioCodecId() << std::endl;
 
-	m_codec = avcodec_find_decoder( m_inputStream.getAudioDesc().getAudioCodecId() );
+	m_codec = avcodec_find_decoder( m_inputStream->getAudioDesc().getAudioCodecId() );
 	if( m_codec == NULL )
 	{
 		throw std::runtime_error( "codec not supported" );

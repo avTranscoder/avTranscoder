@@ -1,5 +1,7 @@
 #include <AvTranscoder/InputFile.hpp>
 
+#include <AvTranscoder/AvInputStream.hpp>
+
 namespace avtranscoder
 {
 
@@ -15,10 +17,32 @@ Transcoder::~Transcoder()
 	{
 		delete (*it);
 	}
+
+	for( std::vector< DummyInputStream* >::iterator it = _dummyInputStreams.begin(); it != _dummyInputStreams.end(); ++it )
+	{
+		delete (*it);
+	}
 }
 
 void Transcoder::add( const std::string& filename, const size_t streamIndex )
 {
+	if( ! filename.length() )
+	{
+		_dummyInputStreams.push_back( new DummyInputStream() );
+		
+		_inputStreams.push_back( _dummyInputStreams.back() );
+		
+		if( _inputStreams.at( 1 ) )
+		{
+			_dummyInputStreams.back()->setAudioDesc( _inputStreams.at( 1 )->getAudioDesc() );
+			_outputFile.addAudioStream( _inputStreams.back()->getAudioDesc() );
+		}
+		else
+			std::cout << "dummy can't be the first audio channel" << std::endl;
+
+		return;
+	}
+
 	InputFile* referenceFile = NULL;
 
 	for( std::vector< InputFile* >::iterator it = _inputFiles.begin(); it != _inputFiles.end(); ++it )
@@ -42,13 +66,13 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex )
 	{
 		case AVMEDIA_TYPE_VIDEO:
 		{
-			_inputStreams.push_back( &referenceFile->getStream( streamIndex ) );
+			_inputStreams.push_back( referenceFile->getStream( streamIndex ) );
 			_outputFile.addVideoStream( _inputStreams.back()->getVideoDesc() );
 			break;
 		}
 		case AVMEDIA_TYPE_AUDIO:
 		{
-			_inputStreams.push_back( &referenceFile->getStream( streamIndex ) );
+			_inputStreams.push_back( referenceFile->getStream( streamIndex ) );
 			_outputFile.addAudioStream( _inputStreams.back()->getAudioDesc() );
 			break;
 		}

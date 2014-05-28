@@ -14,10 +14,12 @@ class AVFrame;
 namespace avtranscoder
 {
 
+class AvInputStream;
+
 class AvExport InputStreamVideo
 {
 public:
-	InputStreamVideo( InputStream& inputStream );
+	InputStreamVideo( AvInputStream* inputStream );
 	~InputStreamVideo();
 
 	bool readNextFrame( Image& frameBuffer );
@@ -25,7 +27,7 @@ public:
 	void flushDecoder();
 
 private:
-	InputStream&       m_inputStream;
+	AvInputStream*     m_inputStream;
 	AVCodec*           m_codec;
 	AVCodecContext*    m_codecContext;
 	AVFrame*           m_frame;

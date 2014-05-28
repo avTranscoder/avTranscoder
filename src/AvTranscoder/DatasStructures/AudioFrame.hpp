@@ -30,15 +30,33 @@ class AudioFrameDesc
 {
 public:
 	AudioFrameDesc()
+		: m_sampleRate( 0 )
+		, m_channels( 0 )
+		, m_fps( 1.0 )
+		, m_sampleFormat( AV_SAMPLE_FMT_NONE )
 	{};
+
+	void setSampleRate  ( const size_t sampleRate ){ m_sampleRate = sampleRate; }
+	void setChannels    ( const size_t channels   ){ m_channels   = channels;   }
+	void setFps         ( const size_t fps        ){ m_fps        = fps;        }
+	void setSampleFormat( const AVSampleFormat sampleFormat ){ m_sampleFormat = sampleFormat; }
 
 	size_t getDataSize() const
 	{
-		size_t size = 0;
-		return size;
+		return ( m_sampleRate / m_fps ) * m_channels * av_get_bytes_per_sample( m_sampleFormat );
 	}
 
+	size_t getSampleRate() const { return m_sampleRate; }
+	size_t getChannels  () const { return m_channels; }
+	size_t getFps       () const { return m_fps; }
+	AVSampleFormat getSampleFormat() const { return m_sampleFormat; }
+
 private:
+	size_t m_sampleRate;
+	size_t m_channels;
+	double m_fps;
+
+	AVSampleFormat m_sampleFormat;
 };
 
 class AudioFrame

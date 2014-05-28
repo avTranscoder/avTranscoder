@@ -1,10 +1,11 @@
 #ifndef _AV_TRANSCODER_INPUT_FILE_HPP_
 #define _AV_TRANSCODER_INPUT_FILE_HPP_
 
-#include "DatasStructures/DataStreamDesc.hpp"
-#include "DatasStructures/AudioDesc.hpp"
-#include "DatasStructures/VideoDesc.hpp"
-#include "Metadatas/MediaMetadatasStructures.hpp"
+#include <AvTranscoder/DatasStructures/DataStreamDesc.hpp>
+#include <AvTranscoder/DatasStructures/AudioDesc.hpp>
+#include <AvTranscoder/DatasStructures/VideoDesc.hpp>
+#include <AvTranscoder/Metadatas/MediaMetadatasStructures.hpp>
+
 
 #include <string>
 #include <vector>
@@ -18,7 +19,7 @@ class AVCodecContext;
 namespace avtranscoder
 {
 
-class InputStream;
+class AvInputStream;
 
 class AvExport InputFile
 {
@@ -31,12 +32,13 @@ public:
 	// *** Metadatas section ***
 	// run the analyse on the file after a setup.
 	InputFile& analyse();
+	
 	/// get file properties
 	const Properties& getProperties() const { return m_properties; }
 
 	AVMediaType getStreamType( size_t index );
 
-	::avtranscoder::InputStream& getStream( size_t index );
+	::avtranscoder::AvInputStream* getStream( size_t index );
 
 	AVFormatContext* getFormatContext() const { return m_formatContext; }
 
@@ -47,14 +49,12 @@ public:
 	void readStream( const size_t streamIndex, const bool readStream = true );
 
 protected:
-	AVFormatContext*         m_formatContext;
-	Properties               m_properties;
-	std::string              m_filename;
-	std::vector<InputStream> m_inputStreams;
+	AVFormatContext*            m_formatContext;
+	Properties                  m_properties;
+	std::string                 m_filename;
+	std::vector<AvInputStream*> m_inputStreams;
 };
 
 }
-
-#include "InputStream.hpp"
 
 #endif

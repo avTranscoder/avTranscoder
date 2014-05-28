@@ -1,9 +1,12 @@
-#include "InputStream.hpp"
+#include "AvInputStream.hpp"
+
+#include <AvTranscoder/InputFile.hpp>
 
 extern "C" {
 #ifndef __STDC_CONSTANT_MACROS
-    #define __STDC_CONSTANT_MACROS
+ #define __STDC_CONSTANT_MACROS
 #endif
+
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
 #include <libavutil/avutil.h>
@@ -17,19 +20,29 @@ extern "C" {
 namespace avtranscoder
 {
 
-InputStream::InputStream( InputFile* inputFile, const size_t streamIndex )
-		: m_inputFile( inputFile )
+AvInputStream::AvInputStream( )
+	: InputStream( )
+	, m_inputFile( NULL )
+	, m_packetDuration( 0 )
+	, m_streamIndex( 0 )
+	, m_bufferized( false )
+{
+}
+
+AvInputStream::AvInputStream( InputFile* inputFile, const size_t streamIndex )
+		: InputStream( )
+		, m_inputFile( inputFile )
 		, m_packetDuration( 0 )
 		, m_streamIndex( streamIndex )
 		, m_bufferized( false )
 {
-};
+}
 
-InputStream::~InputStream( )
+AvInputStream::~AvInputStream( )
 {
 }
 
-bool InputStream::readNextPacket( DataStream& data )
+bool AvInputStream::readNextPacket( DataStream& data )
 {
 	if( m_streamCache.empty() )
 		m_inputFile->readNextPacket( m_streamIndex );
@@ -44,7 +57,7 @@ bool InputStream::readNextPacket( DataStream& data )
 	return true;
 }
 
-void InputStream::addPacket( AVPacket& packet )
+void AvInputStream::addPacket( AVPacket& packet )
 {
 	//std::cout << "add packet for stream " << m_streamIndex << std::endl;
 	DataStream data;
@@ -71,7 +84,7 @@ void InputStream::addPacket( AVPacket& packet )
 	// std::cout << this << " buffer size " << m_streamCache.size() << std::endl;
 }
 
-VideoDesc InputStream::getVideoDesc() const
+VideoDesc AvInputStream::getVideoDesc() const
 {
 	assert( m_inputFile->getFormatContext() != NULL );
 	assert( m_streamIndex <= m_inputFile->getFormatContext()->nb_streams );
@@ -91,7 +104,7 @@ VideoDesc InputStream::getVideoDesc() const
 	return desc;
 }
 
-AudioDesc InputStream::getAudioDesc() const
+AudioDesc AvInputStream::getAudioDesc() const
 {
 	assert( m_inputFile->getFormatContext() != NULL );
 	assert( m_streamIndex <= m_inputFile->getFormatContext()->nb_streams );
@@ -111,17 +124,17 @@ AudioDesc InputStream::getAudioDesc() const
 }
 
 
-double InputStream::getDuration() const
+double AvInputStream::getDuration() const
 {
 	return 1.0 * m_inputFile->getFormatContext()->duration / AV_TIME_BASE;
 }
 
-double InputStream::getPacketDuration() const
+double AvInputStream::getPacketDuration() const
 {
 	return m_packetDuration * av_q2d( m_inputFile->getFormatContext()->streams[m_streamIndex]->time_base );
 }
 
-void InputStream::clearBuffering()
+void AvInputStream::clearBuffering()
 {
 	m_streamCache.clear();
 }

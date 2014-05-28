@@ -78,12 +78,6 @@ void OutputFile::addVideoStream( const VideoDesc& videoDesc )
 	stream->codec->level = videoDesc.getCodecContext()->level;
 
 	stream->time_base = stream->codec->time_base;
-
-	// to move in endSetup
-	if( avformat_write_header( formatContext, NULL ) != 0 )
-	{
-		throw std::runtime_error( "add video stream: could not write header" );
-	}
 }
 
 void OutputFile::addAudioStream( const AudioDesc& audioDesc )
@@ -98,16 +92,14 @@ void OutputFile::addAudioStream( const AudioDesc& audioDesc )
 	stream->codec->sample_rate = audioDesc.getCodecContext()->sample_rate;
 	stream->codec->channels = audioDesc.getCodecContext()->channels;
 	stream->codec->sample_fmt = audioDesc.getCodecContext()->sample_fmt;
-
-	// to move in endSetup
-	if( avformat_write_header( formatContext, NULL ) != 0 )
-	{
-		throw std::runtime_error( "add audio stream: could not write header" );
-	}
 }
 
 bool OutputFile::beginWrap( )
 {
+	if( avformat_write_header( formatContext, NULL ) != 0 )
+	{
+		throw std::runtime_error( "could not write header" );
+	}
 	return true;
 }
 

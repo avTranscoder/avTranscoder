@@ -5,7 +5,7 @@
 #include <AvTranscoder/InputStream.hpp>
 #include <AvTranscoder/OutputFile.hpp>
 #include <AvTranscoder/ProgressListener.hpp>
-
+#include <AvTranscoder/DummyInputStream.hpp>
 
 #include <string>
 #include <vector>
@@ -29,9 +29,11 @@ public:
 	void process( ProgressListener& progress );
 
 private:
-	OutputFile&                 _outputFile;
-	std::vector< InputFile* >   _inputFiles;
-	std::vector< InputStream* > _inputStreams;
+	OutputFile&                      _outputFile;
+	std::vector< InputFile* >        _inputFiles;
+	std::vector< InputStream* >      _inputStreams;
+
+	std::vector< DummyInputStream* > _dummyInputStreams;
 };
 
 }
