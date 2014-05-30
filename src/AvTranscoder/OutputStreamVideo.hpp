@@ -37,7 +37,14 @@ public:
 	 */
 	bool encodeFrame( const Image& sourceImage, DataStream& codedFrame );
 
+	/**
+	 * get delayed encoded frames
+	 */
+	bool encodeFrame( DataStream& codedFrame );
+
 	VideoDesc& getVideoDesc() { return m_videoDesc; }
+
+	void setProfile( const std::string& profile );
 
 private:
 	VideoDesc m_videoDesc;
