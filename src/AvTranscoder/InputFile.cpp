@@ -71,6 +71,8 @@ InputFile& InputFile::analyse()
 {
 	assert( m_formatContext != NULL );
 
+	seekAtFrame( 0 );
+
 	m_properties.filename = m_formatContext->filename;
 	m_properties.formatName = m_formatContext->iformat->name;
 	m_properties.formatLongName = m_formatContext->iformat->long_name;
@@ -128,6 +130,8 @@ InputFile& InputFile::analyse()
 			}
 		}
 	}
+
+	seekAtFrame( 0 );
 
 	return *this;
 }
