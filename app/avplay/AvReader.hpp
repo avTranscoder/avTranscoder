@@ -93,9 +93,7 @@ public:
 		// /std::cout << "seek at " << frame << std::endl;
 		m_inputFile.seekAtFrame( frame );
 		m_inputStreamVideo->flushDecoder();
-		m_inputStreamVideo->readNextFrame( *m_sourceImage );
-		m_colorTransform.convert( *m_sourceImage, *m_imageToDisplay );
-		return (const char*)m_imageToDisplay->getPtr();
+		return readNextFrame();
 	}
 
 	void printMetadatas()
