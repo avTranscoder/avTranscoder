@@ -1,4 +1,6 @@
 #include "InputFile.hpp"
+#include "AvInputStream.hpp"
+
 #include "Metadatas/VideoStreamProperties.hpp"
 #include "Metadatas/AudioStreamProperties.hpp"
 #include "Metadatas/DataStreamProperties.hpp"
@@ -29,8 +31,6 @@ InputFile::InputFile( const std::string& filename )
 	: m_formatContext ( NULL )
 	, m_filename      ( filename )
 {
-	std::cout << "opening file " << m_filename << std::endl;
-
 	av_register_all();  // Warning: should be called only once
 	if( avformat_open_input( &m_formatContext, m_filename.c_str(), NULL, NULL ) < 0 )
 	{
@@ -49,12 +49,17 @@ InputFile::InputFile( const std::string& filename )
 
 	for( size_t streamIndex = 0; streamIndex < m_formatContext->nb_streams; ++streamIndex )
 	{
-		m_inputStreams.push_back( InputStream( this, streamIndex ) );
+		m_inputStreams.push_back( new AvInputStream( this, streamIndex ) );
 	}
 }
 
 InputFile::~InputFile()
 {
+	for( std::vector< AvInputStream* >::iterator it = m_inputStreams.begin(); it != m_inputStreams.end(); ++it )
+	{
+		delete (*it);
+	}
+
 	if( m_formatContext != NULL )
 	{
 		avformat_close_input( &m_formatContext );
@@ -65,6 +70,8 @@ InputFile::~InputFile()
 InputFile& InputFile::analyse()
 {
 	assert( m_formatContext != NULL );
+
+	seekAtFrame( 0 );
 
 	m_properties.filename = m_formatContext->filename;
 	m_properties.formatName = m_formatContext->iformat->name;
@@ -124,6 +131,8 @@ InputFile& InputFile::analyse()
 		}
 	}
 
+	seekAtFrame( 0 );
+
 	return *this;
 }
 
@@ -134,7 +143,7 @@ AVMediaType InputFile::getStreamType( size_t index )
 	return m_formatContext->streams[index]->codec->codec_type;
 }
 
-InputStream& InputFile::getStream( size_t index )
+AvInputStream* InputFile::getStream( size_t index )
 {
 	return m_inputStreams.at( index );
 }
@@ -153,7 +162,7 @@ bool InputFile::readNextPacket( const size_t streamIndex )
 		}
 
 		// send packet to stream buffer
-		m_inputStreams.at( packet.stream_index ).addPacket( packet );
+		m_inputStreams.at( packet.stream_index )->addPacket( packet );
 
 		// We only read one stream and skip others
 		if( packet.stream_index == (int)streamIndex )
@@ -174,22 +183,22 @@ void InputFile::seekAtFrame( const size_t frame )
 	uint64_t pos = frame / 25 * AV_TIME_BASE; 
 
 	if( (int)m_formatContext->start_time != AV_NOPTS_VALUE )
-        pos += m_formatContext->start_time;
+		pos += m_formatContext->start_time;
 
 	if( av_seek_frame( m_formatContext, -1, pos, AVSEEK_FLAG_BACKWARD ) < 0 )
 	{
 		std::cerr << "Error during seek in file" << std::endl;
 	}
 
-	for( std::vector<InputStream>::iterator it = m_inputStreams.begin(); it != m_inputStreams.end(); ++it )
+	for( std::vector<AvInputStream*>::iterator it = m_inputStreams.begin(); it != m_inputStreams.end(); ++it )
 	{
-		(*it).clearBuffering();
+		(*it)->clearBuffering();
 	}
 }
 
 void InputFile::readStream( const size_t streamIndex, bool readStream )
 {
-	m_inputStreams.at( streamIndex ).setBufferred( readStream );	
+	m_inputStreams.at( streamIndex )->setBufferred( readStream );
 }
 
 }

@@ -5,59 +5,31 @@
 #include "DatasStructures/AudioDesc.hpp"
 #include "DatasStructures/VideoDesc.hpp"
 
-extern "C" {
-#ifndef __STDC_CONSTANT_MACROS
-    #define __STDC_CONSTANT_MACROS
-#endif
-#include <libavformat/avformat.h>
-}
-
-#include <string>
-#include <iostream>
-#include <queue>
-
-#include "InputFile.hpp"
-
 namespace avtranscoder
 {
 
-class AvExport InputStream
+class InputStream
 {
 public:
-	InputStream( InputFile* inputFile, const size_t streamIndex );
-	~InputStream( );
+	InputStream( )
+	{}
 
-	InputStream( const InputStream& inputStream )
-		: m_inputFile( inputStream.m_inputFile )
-		, m_streamIndex( inputStream.m_streamIndex )
-		, m_bufferized( inputStream.m_bufferized )
-	{
-	}
+	virtual size_t getStreamIndex() const = 0;
 
-	size_t getStreamIndex() const { return m_streamIndex; }
-
-	bool readNextPacket( DataStream& data );
+	virtual bool readNextPacket( DataStream& data ) = 0;
 
 	// Stream propeerties
-	VideoDesc getVideoDesc() const;
-	AudioDesc getAudioDesc() const;
+	virtual VideoDesc getVideoDesc() const = 0;
+	virtual AudioDesc getAudioDesc() const = 0;
 
-	double getDuration() const;
-	double getPacketDuration() const;
+	virtual double getDuration() const = 0;
+	virtual double getPacketDuration() const = 0;
 
-	void addPacket( AVPacket& packet );
+	virtual void setBufferred( const bool bufferized ) = 0;
 
-	void setBufferred( const bool bufferized ){ m_bufferized = bufferized; }
-
-	void clearBuffering();
+	virtual void clearBuffering() = 0;
 
 private:
-	InputFile*       m_inputFile;
-	std::vector<DataStream> m_streamCache;
-
-	int              m_packetDuration;
-	size_t           m_streamIndex;
-	bool             m_bufferized;
 };
 
 }

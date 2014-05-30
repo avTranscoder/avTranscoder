@@ -11,13 +11,15 @@ extern "C" {
 #include <libavutil/pixdesc.h>
 }
 
+#include "AvInputStream.hpp"
+
 #include <iostream>
 #include <stdexcept>
 
 namespace avtranscoder
 {
 
-InputStreamVideo::InputStreamVideo( InputStream& inputStream )
+InputStreamVideo::InputStreamVideo( AvInputStream* inputStream )
 	: m_inputStream   ( inputStream )
 	, m_codec         ( NULL )
 	, m_codecContext  ( NULL )
@@ -26,7 +28,7 @@ InputStreamVideo::InputStreamVideo( InputStream& inputStream )
 {
 	av_register_all();
 
-	m_codec = avcodec_find_decoder( m_inputStream.getVideoDesc().getVideoCodecId() );
+	m_codec = avcodec_find_decoder( m_inputStream->getVideoDesc().getVideoCodecId() );
 	if( m_codec == NULL )
 	{
 		throw std::runtime_error( "codec not supported" );
@@ -96,7 +98,7 @@ bool InputStreamVideo::readNextFrame( Image& frameBuffer )
 	while( ! got_frame )
 	{
 		DataStream data;
-		if( ! m_inputStream.readNextPacket( data ) )
+		if( ! m_inputStream->readNextPacket( data ) )
 			return false;
 
 		AVPacket packet;
