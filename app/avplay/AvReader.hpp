@@ -29,7 +29,7 @@ public:
 
 		m_inputStreamVideo = new avtranscoder::InputStreamVideo( m_inputFile.getStream( m_videoStream ) );
 		
-		m_sourceImage = new avtranscoder::Image( m_inputFile.getStream( m_videoStream )->getVideoDesc().getImageDesc() );
+		m_sourceImage = new avtranscoder::Image( m_inputFile.getStream( m_videoStream ).getVideoDesc().getImageDesc() );
 
 		pixel.setBitsPerPixel( getComponents() * getBitDepth() );
 		pixel.setComponents( getComponents() );

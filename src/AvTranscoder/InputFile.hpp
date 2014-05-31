@@ -38,9 +38,9 @@ public:
 
 	AVMediaType getStreamType( size_t index );
 
-	::avtranscoder::AvInputStream* getStream( size_t index );
+	::avtranscoder::AvInputStream& getStream( size_t index );
 
-	AVFormatContext* getFormatContext() const { return m_formatContext; }
+	AVFormatContext& getFormatContext() const { return *m_formatContext; }
 
 	bool readNextPacket( const size_t streamIndex );
 

@@ -14,6 +14,8 @@ public:
 	InputStream( )
 	{}
 
+	virtual ~InputStream(){};
+
 	virtual size_t getStreamIndex() const = 0;
 
 	virtual bool readNextPacket( DataStream& data ) = 0;

@@ -48,7 +48,6 @@ Profile::ProfileDesc& Profile::getProfile( const std::string& searchProfile )
 		{
 			return (*it);
 		}
-		
 	}
 }
 
