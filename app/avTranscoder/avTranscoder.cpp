@@ -91,7 +91,7 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 		exit( -1 );
 	}
 
-	of.addVideoStream( inputFile.getStream( 0 )->getVideoDesc() );
+	of.addVideoStream( inputFile.getStream( 0 ).getVideoDesc() );
 	/*of.addAudioStream();
 	of.addAudioStream();
 	of.addAudioStream();

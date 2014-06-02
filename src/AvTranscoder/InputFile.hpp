@@ -38,14 +38,15 @@ public:
 
 	AVMediaType getStreamType( size_t index );
 
-	::avtranscoder::AvInputStream* getStream( size_t index );
+	AvInputStream& getStream( size_t index );
 
-	AVFormatContext* getFormatContext() const { return m_formatContext; }
+	AVFormatContext& getFormatContext() const { return *m_formatContext; }
 
 	bool readNextPacket( const size_t streamIndex );
 
 	void seekAtFrame( const size_t frame );
 
+	/// @brief Indicate that the stream should be bufferized
 	void readStream( const size_t streamIndex, const bool readStream = true );
 
 protected:

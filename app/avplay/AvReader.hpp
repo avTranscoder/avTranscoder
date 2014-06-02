@@ -16,7 +16,7 @@
 class AvReader : public Reader
 {
 public:
-	AvReader( std::string filename )
+	AvReader( const std::string& filename )
 		: m_inputFile( filename )
 		, m_inputStreamVideo( NULL )
 		, m_sourceImage( NULL )
@@ -29,7 +29,7 @@ public:
 
 		m_inputStreamVideo = new avtranscoder::InputStreamVideo( m_inputFile.getStream( m_videoStream ) );
 		
-		m_sourceImage = new avtranscoder::Image( m_inputFile.getStream( m_videoStream )->getVideoDesc().getImageDesc() );
+		m_sourceImage = new avtranscoder::Image( m_inputFile.getStream( m_videoStream ).getVideoDesc().getImageDesc() );
 
 		pixel.setBitsPerPixel( getComponents() * getBitDepth() );
 		pixel.setComponents( getComponents() );
@@ -38,11 +38,11 @@ public:
 		pixel.setAlpha( false );
 		pixel.setPlanar( false );
 
-		imageDescToDisplay.setWidth ( m_sourceImage->desc().getWidth() );
+		imageDescToDisplay.setWidth( m_sourceImage->desc().getWidth() );
 		imageDescToDisplay.setHeight( m_sourceImage->desc().getHeight() );
-		imageDescToDisplay.setDar   ( m_sourceImage->desc().getDar() );
-
-		imageDescToDisplay.setPixel ( pixel.findPixel() );
+		imageDescToDisplay.setDar( m_sourceImage->desc().getDar() );
+		
+		imageDescToDisplay.setPixel( pixel.findPixel() );
 		
 		m_imageToDisplay = new avtranscoder::Image( imageDescToDisplay );
 	}
@@ -105,6 +105,7 @@ public:
 
 private:
 	avtranscoder::InputFile m_inputFile;
+	
 	avtranscoder::InputStreamVideo* m_inputStreamVideo;
 
 	avtranscoder::Image* m_sourceImage;

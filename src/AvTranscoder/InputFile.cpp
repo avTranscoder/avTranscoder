@@ -139,9 +139,9 @@ AVMediaType InputFile::getStreamType( size_t index )
 	return m_formatContext->streams[index]->codec->codec_type;
 }
 
-AvInputStream* InputFile::getStream( size_t index )
+AvInputStream& InputFile::getStream( size_t index )
 {
-	return m_inputStreams.at( index );
+	return *m_inputStreams.at( index );
 }
 
 bool InputFile::readNextPacket( const size_t streamIndex )

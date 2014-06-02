@@ -21,7 +21,7 @@ void rewrapAudio( const char* inputfilename, const char* outputFilename )
 
 	outputFile.setup();
 
-	outputFile.addAudioStream( inputFile.getStream( 0 )->getAudioDesc() );
+	outputFile.addAudioStream( inputFile.getStream( 0 ).getAudioDesc() );
 
 	DataStream data;
 
@@ -30,7 +30,7 @@ void rewrapAudio( const char* inputfilename, const char* outputFilename )
 
 	size_t frame = 0;
 
-	while( inputFile.getStream( 0 )->readNextPacket( data ) )
+	while( inputFile.getStream( 0 ).readNextPacket( data ) )
 	{
 		std::cout << "\rprocess frame " << (int)frame - 1 << std::flush;
 
@@ -58,7 +58,7 @@ void transcodeAudio( const char* inputfilename, const char* outputFilename )
 
 	outputFile.setup();
 
-	outputFile.addAudioStream( inputFile.getStream( 0 )->getAudioDesc() );
+	outputFile.addAudioStream( inputFile.getStream( 0 ).getAudioDesc() );
 
 	DataStream data;
 
