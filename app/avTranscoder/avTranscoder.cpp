@@ -64,7 +64,7 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 
 	videoDesc.setTimeBase( 1, 25 ); // 25 fps
 
-	videoDesc.setImageParameters( sourceImage );
+	videoDesc.setImageParameters( sourceImage.desc() );
 
 	//videoDesc.initCodecContext();
 

@@ -92,7 +92,6 @@ InputStreamVideo::~InputStreamVideo()
 
 bool InputStreamVideo::readNextFrame( Image& frameBuffer )
 {
-	
 	int got_frame = 0;
 
 	while( ! got_frame )

@@ -49,7 +49,7 @@ InputFile::InputFile( const std::string& filename )
 
 	for( size_t streamIndex = 0; streamIndex < m_formatContext->nb_streams; ++streamIndex )
 	{
-		m_inputStreams.push_back( new AvInputStream( this, streamIndex ) );
+		m_inputStreams.push_back( new AvInputStream( *this, streamIndex ) );
 	}
 }
 
@@ -180,7 +180,7 @@ bool InputFile::readNextPacket( const size_t streamIndex )
 
 void InputFile::seekAtFrame( const size_t frame )
 {
-	uint64_t pos = frame / 25 * AV_TIME_BASE; 
+	uint64_t pos = frame / 25 * AV_TIME_BASE;  // WARNING: hardcoded fps
 
 	if( (int)m_formatContext->start_time != AV_NOPTS_VALUE )
 		pos += m_formatContext->start_time;

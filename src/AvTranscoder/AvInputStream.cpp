@@ -29,9 +29,9 @@ AvInputStream::AvInputStream( )
 {
 }
 
-AvInputStream::AvInputStream( InputFile* inputFile, const size_t streamIndex )
+AvInputStream::AvInputStream( InputFile& inputFile, const size_t streamIndex )
 		: InputStream( )
-		, m_inputFile( inputFile )
+		, m_inputFile( &inputFile )
 		, m_packetDuration( 0 )
 		, m_streamIndex( streamIndex )
 		, m_bufferized( false )
@@ -44,6 +44,9 @@ AvInputStream::~AvInputStream( )
 
 bool AvInputStream::readNextPacket( DataStream& data )
 {
+	if( ! m_bufferized )
+		throw std::runtime_error( "Can't read packet on non-bufferized input stream." );
+
 	if( m_streamCache.empty() )
 		m_inputFile->readNextPacket( m_streamIndex );
 
