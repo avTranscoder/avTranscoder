@@ -182,7 +182,9 @@ void OutputStreamVideo::setProfile( const std::string& profile )
 
 	m_videoDesc.setVideoCodec( prof["codec"] );
 	m_videoDesc.setTimeBase( 1, 25 ); // 25 fps
-	// m_videoDesc.set( "pix_fmt", prof["pix_fmt"] );
+	m_videoDesc.setImageParameters( 1920, 1080, av_get_pix_fmt( prof["pix_fmt"].c_str() ) );
+
+	m_videoDesc.set( "b", prof["b"] );
 
 	setup();
 
@@ -194,8 +196,12 @@ void OutputStreamVideo::setProfile( const std::string& profile )
 			continue;
 		if( (*it).first == "codec" )
 			continue;
-		// if( (*it).first == "pix_fmt" )
-		// 	continue;
+		if( (*it).first == "pix_fmt" )
+			continue;
+		if( (*it).first == "width" )
+			continue;
+		if( (*it).first == "height" )
+			continue;
 
 		m_videoDesc.set( (*it).first, (*it).second );
 	}
