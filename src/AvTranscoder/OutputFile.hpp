@@ -23,6 +23,8 @@ class AvExport OutputFile
 public:
 	OutputFile( const std::string& file = "" );
 
+	virtual ~OutputFile(){};
+
 	virtual bool setup();
 
 	virtual void addVideoStream( const VideoDesc& videoDesc );

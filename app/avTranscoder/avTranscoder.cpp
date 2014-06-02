@@ -1,5 +1,6 @@
 #include <iostream>
 #include <iomanip>
+#include <cstdlib>
 
 #include <AvTranscoder/AvInputStream.hpp>
 #include <AvTranscoder/InputStreamAudio.hpp>

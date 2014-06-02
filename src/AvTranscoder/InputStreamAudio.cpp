@@ -43,6 +43,8 @@ InputStreamAudio::InputStreamAudio( const InputStream& inputStream )
 	std::cout << "Audio codec Id : " << m_codecContext->codec_id << std::endl;
 	std::cout << "Audio codec Id : " << m_codec->long_name << std::endl;
 
+	m_codecContext->channels = m_inputStream->getAudioDesc().getCodecContext()->channels;
+	
 	int ret = avcodec_open2( m_codecContext, m_codec, NULL );
 
 	std::cout << "ret value : " << ret << std::endl;
@@ -99,8 +101,7 @@ InputStreamAudio::~InputStreamAudio()
 
 bool InputStreamAudio::readNextFrame( AudioFrame& audioFrameBuffer )
 {
-/*
-	int got_frame = 0;
+	/*int got_frame = 0;
 	while( ! got_frame )
 	{
 		AVPacket packet;
@@ -112,6 +113,10 @@ bool InputStreamAudio::readNextFrame( AudioFrame& audioFrameBuffer )
 			return false;
 		}
 
+		packet.stream_index = m_selectedStream;
+		packet.data         = audioFrameBuffer.getPtr();
+		packet.size         = audioFrameBuffer.getSize();
+		
 		int ret = avcodec_decode_audio4( m_codecContext, m_frame, &got_frame, &packet );
 
 		if( ret < 0 )
@@ -120,8 +125,8 @@ bool InputStreamAudio::readNextFrame( AudioFrame& audioFrameBuffer )
 		}
 
 		av_free_packet( &packet );
-	}*/
-
+	}
+*/
 	//size_t unpadded_linesize = m_frame->nb_samples * av_get_bytes_per_sample( m_frame->format );
 
 	// size_t decodedSize = avpicture_get_size( (AVPixelFormat)m_frame->format, m_frame->width, m_frame->height );

@@ -1,6 +1,7 @@
 #include "DummyInputStream.hpp"
 
 #include <cassert>
+#include <cstring>
 
 namespace avtranscoder
 {
