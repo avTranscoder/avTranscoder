@@ -20,16 +20,17 @@
 
 #include <AvTranscoder/Metadatas/MediaMetadatasStructures.hpp>
 
-#include <AvTranscoder/InputFile.hpp>
-#include <AvTranscoder/OutputFile.hpp>
-
 #include <AvTranscoder/OutputStream.hpp>
 #include <AvTranscoder/OutputStreamAudio.hpp>
 #include <AvTranscoder/OutputStreamVideo.hpp>
 
 #include <AvTranscoder/InputStream.hpp>
+#include <AvTranscoder/AvInputStream.hpp>
 #include <AvTranscoder/InputStreamAudio.hpp>
 #include <AvTranscoder/InputStreamVideo.hpp>
+
+#include <AvTranscoder/InputFile.hpp>
+#include <AvTranscoder/OutputFile.hpp>
 
 #include <AvTranscoder/Transcoder.hpp>
 
@@ -59,15 +60,16 @@ namespace std {
 
 %include <AvTranscoder/Metadatas/MediaMetadatasStructures.hpp>
 
-%include <AvTranscoder/InputFile.hpp>
-%include <AvTranscoder/OutputFile.hpp>
-
 %include <AvTranscoder/OutputStream.hpp>
 %include <AvTranscoder/OutputStreamAudio.hpp>
 %include <AvTranscoder/OutputStreamVideo.hpp>
 
 %include <AvTranscoder/InputStream.hpp>
+%include <AvTranscoder/AvInputStream.hpp>
 %include <AvTranscoder/InputStreamAudio.hpp>
 %include <AvTranscoder/InputStreamVideo.hpp>
+
+%include <AvTranscoder/InputFile.hpp>
+%include <AvTranscoder/OutputFile.hpp>
 
 %include <AvTranscoder/Transcoder.hpp>
