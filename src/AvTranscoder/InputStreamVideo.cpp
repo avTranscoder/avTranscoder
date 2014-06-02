@@ -19,8 +19,8 @@ extern "C" {
 namespace avtranscoder
 {
 
-InputStreamVideo::InputStreamVideo( AvInputStream* inputStream )
-	: m_inputStream   ( inputStream )
+InputStreamVideo::InputStreamVideo( AvInputStream& inputStream )
+	: m_inputStream   ( &inputStream )
 	, m_codec         ( NULL )
 	, m_codecContext  ( NULL )
 	, m_frame         ( NULL )
@@ -92,7 +92,6 @@ InputStreamVideo::~InputStreamVideo()
 
 bool InputStreamVideo::readNextFrame( Image& frameBuffer )
 {
-	
 	int got_frame = 0;
 
 	while( ! got_frame )

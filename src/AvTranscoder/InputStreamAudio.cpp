@@ -17,8 +17,8 @@ extern "C" {
 namespace avtranscoder
 {
 
-InputStreamAudio::InputStreamAudio( const InputStream* inputStream )
-	: m_inputStream   ( inputStream )
+InputStreamAudio::InputStreamAudio( const InputStream& inputStream )
+	: m_inputStream   ( &inputStream )
 	, m_codec         ( NULL )
 	, m_codecContext  ( NULL )
 	, m_frame         ( NULL )

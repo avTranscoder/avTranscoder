@@ -10,7 +10,7 @@ namespace avtranscoder
 class AvExport InputStreamAudio
 {
 public:
-	InputStreamAudio( const InputStream* inputStream );
+	InputStreamAudio( const InputStream& inputStream );
 	~InputStreamAudio();
 
 	bool readNextFrame( AudioFrame& audioFrameBuffer );
