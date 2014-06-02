@@ -18,7 +18,7 @@ public:
 
 	virtual bool readNextPacket( DataStream& data ) = 0;
 
-	// Stream propeerties
+	// Stream properties
 	virtual VideoDesc getVideoDesc() const = 0;
 	virtual AudioDesc getAudioDesc() const = 0;
 
@@ -28,8 +28,6 @@ public:
 	virtual void setBufferred( const bool bufferized ) = 0;
 
 	virtual void clearBuffering() = 0;
-
-private:
 };
 
 }
