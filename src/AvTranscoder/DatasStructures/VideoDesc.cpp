@@ -49,9 +49,9 @@ void VideoDesc::setVideoCodec( const AVCodecID codecId )
 	initCodecContext();
 }
 
-void VideoDesc::setImageParameters( const Image& image )
+void VideoDesc::setImageParameters( const ImageDesc& imageDesc )
 {
-	setImageParameters( image.desc().getWidth(), image.desc().getHeight(), image.desc().getPixelDesc() );
+	setImageParameters( imageDesc.getWidth(), imageDesc.getHeight(), imageDesc.getPixelDesc() );
 }
 
 
