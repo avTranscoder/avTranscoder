@@ -49,7 +49,7 @@ void AudioDesc::setAudioCodec( const AVCodecID codecId )
 	initCodecContext();
 }
 
-void AudioDesc::setAudioParameters( const size_t sampleRate, const size_t channels, const AVSampleFormat& sampleFormat )
+void AudioDesc::setAudioParameters( const size_t sampleRate, const size_t channels, const AVSampleFormat sampleFormat )
 {
 	m_codecContext->sample_rate = sampleRate;
 	m_codecContext->channels    = channels;

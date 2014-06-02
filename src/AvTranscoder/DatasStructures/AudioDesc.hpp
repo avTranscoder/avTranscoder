@@ -27,7 +27,7 @@ public:
 	void setAudioCodec( const std::string& codecName );
 	void setAudioCodec( const AVCodecID codecId );
 
-	void setAudioParameters( const size_t sampleRate, const size_t channels, const AVSampleFormat& sampleFormat );
+	void setAudioParameters( const size_t sampleRate, const size_t channels, const AVSampleFormat sampleFormat );
 
 	void set( const std::string& key, const std::string& flag, const bool enable );
 	void set( const std::string& key, const bool value );
