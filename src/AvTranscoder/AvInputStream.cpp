@@ -29,9 +29,9 @@ AvInputStream::AvInputStream( )
 {
 }
 
-AvInputStream::AvInputStream( InputFile* inputFile, const size_t streamIndex )
+AvInputStream::AvInputStream( InputFile& inputFile, const size_t streamIndex )
 		: InputStream( )
-		, m_inputFile( inputFile )
+		, m_inputFile( &inputFile )
 		, m_packetDuration( 0 )
 		, m_streamIndex( streamIndex )
 		, m_bufferized( false )

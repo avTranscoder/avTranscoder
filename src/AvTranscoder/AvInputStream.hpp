@@ -13,7 +13,7 @@ class AvExport AvInputStream : public InputStream
 public:
 	AvInputStream( );
 
-	AvInputStream( InputFile* inputFile, const size_t streamIndex );
+	AvInputStream( InputFile& inputFile, const size_t streamIndex );
 	~AvInputStream( );
 
 	AvInputStream( const AvInputStream& inputStream )
