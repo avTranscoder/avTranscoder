@@ -39,6 +39,8 @@ InputStreamAudio::InputStreamAudio( const InputStream& inputStream )
 	{
 		throw std::runtime_error( "unable to find context for codec" );
 	}
+	
+	m_codecContext->channels = m_inputStream->getAudioDesc().getChannels();
 
 	std::cout << "Audio codec Id : " << m_codecContext->codec_id << std::endl;
 	std::cout << "Audio codec Id : " << m_codec->long_name << std::endl;

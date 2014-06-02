@@ -27,7 +27,7 @@ public:
 	void setAudioCodec( const std::string& codecName );
 	void setAudioCodec( const AVCodecID codecId );
 
-	void setAudioParameters( const size_t sampleRate, const size_t channels, const AVSampleFormat& sampleFormat );
+	void setAudioParameters( const size_t sampleRate, const size_t channels, const AVSampleFormat sampleFormat );
 
 	void set( const std::string& key, const std::string& flag, const bool enable );
 	void set( const std::string& key, const bool value );
@@ -38,6 +38,10 @@ public:
 
 	std::string getAudioCodec()  const;
 	AVCodecID   getAudioCodecId()  const;
+	
+	const size_t getSampleRate() const;
+	const size_t getChannels() const;
+	const AVSampleFormat getSampleFormat() const;
 
 #ifndef SWIG
 	AVCodec*        getCodec()        const { return m_codec; }
