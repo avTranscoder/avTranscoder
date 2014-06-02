@@ -193,4 +193,21 @@ AVCodecID AudioDesc::getAudioCodecId() const
 	return m_codecContext->codec_id;
 }
 
+
+const size_t AudioDesc::getSampleRate() const
+{
+	return m_codecContext->sample_rate;
+}
+
+const size_t AudioDesc::getChannels() const
+{
+	return m_codecContext->channels;
+}
+
+const AVSampleFormat AudioDesc::getSampleFormat() const
+{
+	return m_codecContext->sample_fmt;
+}
+
+
 }

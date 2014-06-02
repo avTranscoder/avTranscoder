@@ -38,6 +38,10 @@ public:
 
 	std::string getAudioCodec()  const;
 	AVCodecID   getAudioCodecId()  const;
+	
+	const size_t getSampleRate() const;
+	const size_t getChannels() const;
+	const AVSampleFormat getSampleFormat() const;
 
 #ifndef SWIG
 	AVCodec*        getCodec()        const { return m_codec; }
