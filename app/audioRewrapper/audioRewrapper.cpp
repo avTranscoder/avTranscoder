@@ -100,6 +100,8 @@ void transcodeAudio( const char* inputfilename, const char* outputFilename )
 	}
 	std::cout << std::endl;
 	
+	outputStreamAudio.encodeFrame( codedFrame );
+
 	outputFile.endWrap();
 }
 

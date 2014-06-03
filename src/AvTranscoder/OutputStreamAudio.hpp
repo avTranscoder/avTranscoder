@@ -24,7 +24,7 @@ public:
 	/**
 	 * get delayed encoded frames
 	 */
-	//bool encodeFrame( DataStream& codedFrame );
+	bool encodeFrame( DataStream& codedFrame );
 	
 	AudioDesc& getAudioDesc() { return m_audioDesc; }
 

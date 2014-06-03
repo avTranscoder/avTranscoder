@@ -101,7 +101,12 @@ bool OutputStreamAudio::encodeFrame( const AudioFrame& decodedFrame, DataStream&
 		memcpy( codedFrame.getPtr(), packet.data, packet.size );
 	}
 #else
-	// throw...
+	int ret = avcodec_encode_audio( codecContext, packet.data, packet.size, frame );
+	if( ret > 0 )
+	{
+		codedFrame.getBuffer().resize( packet.size );
+		memcpy( codedFrame.getPtr(), packet.data, packet.size );
+	}
 #endif
 	
 	av_free_packet( &packet );
@@ -118,6 +123,41 @@ bool OutputStreamAudio::encodeFrame( const AudioFrame& decodedFrame, DataStream&
 	#endif
 #endif
 	return ret == 0;
+}
+
+bool OutputStreamAudio::encodeFrame( DataStream& codedFrame )
+{
+	AVCodecContext* codecContext = m_audioDesc.getCodecContext();
+
+	AVPacket packet;
+	av_init_packet( &packet );
+	
+	packet.size = 0;
+	packet.data = NULL;
+	packet.stream_index = 0;
+
+#if LIBAVCODEC_VERSION_MAJOR > 53
+	int gotPacket = 0;
+	int ret = avcodec_encode_audio2( codecContext, &packet, NULL, &gotPacket );
+	if( ret == 0 && gotPacket == 1 )
+	{
+		codedFrame.getBuffer().resize( packet.size );
+		memcpy( codedFrame.getPtr(), packet.data, packet.size );
+	}
+	av_free_packet( &packet );
+	return ret == 0 && gotPacket == 1;
+
+#else
+	int ret = avcodec_encode_audio( codecContext, packet.data, packet.size, NULL );
+	if( ret > 0 )
+	{
+		codedFrame.getBuffer().resize( packet.size );
+		memcpy( codedFrame.getPtr(), packet.data, packet.size );
+	}
+	av_free_packet( &packet );
+	return ret == 0;
+
+#endif
 }
 
 }
