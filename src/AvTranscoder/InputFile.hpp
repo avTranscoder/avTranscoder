@@ -1,11 +1,11 @@
 #ifndef _AV_TRANSCODER_INPUT_FILE_HPP_
 #define _AV_TRANSCODER_INPUT_FILE_HPP_
 
+#include <AvTranscoder/AvInputStream.hpp>
 #include <AvTranscoder/DatasStructures/DataStreamDesc.hpp>
 #include <AvTranscoder/DatasStructures/AudioDesc.hpp>
 #include <AvTranscoder/DatasStructures/VideoDesc.hpp>
 #include <AvTranscoder/Metadatas/MediaMetadatasStructures.hpp>
-
 
 #include <string>
 #include <vector>
@@ -18,8 +18,6 @@ class AVCodecContext;
 
 namespace avtranscoder
 {
-
-class AvInputStream;
 
 class AvExport InputFile
 {

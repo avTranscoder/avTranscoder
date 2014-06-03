@@ -53,6 +53,7 @@ void transcodeAudio( const char* inputfilename, const char* outputFilename )
 
 	// init audio decoders
 	InputStreamAudio inputStreamAudio( inputFile.getStream( 0 ) );
+	inputFile.getStream( 0 ).setBufferred( true );
 
 	OutputFile outputFile( outputFilename );
 
@@ -69,13 +70,18 @@ void transcodeAudio( const char* inputfilename, const char* outputFilename )
 	AudioFrameDesc audioFrameDesc;
 
 	AudioFrame audioFrame( audioFrameDesc );
-
+	
+	DataStream codedFrame;
 
 	while( inputStreamAudio.readNextFrame( audioFrame ) )
 	{
-		std::cout << "\rprocess frame " << (int)frame - 1 << std::flush;
+		std::cout << "\rprocess frame " << (int)frame - 1 << std::endl << std::flush;
 
-		// outputFile.wrap( data, 0 );
+		// convert
+		
+		//outputStreamAudio.encodeFrame( audioFrame, codedFrame );
+		
+		// outputFile.wrap( codedFrame, 0 );
 
 		++frame;
 	}
