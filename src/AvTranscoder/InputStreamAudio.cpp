@@ -137,10 +137,12 @@ bool InputStreamAudio::readNextFrame( AudioFrame& audioFrameBuffer )
 		if( audioFrameBuffer.getSize() != decodedSize )
 			audioFrameBuffer.getBuffer().resize( decodedSize );
 
+		int nb_channels = av_get_channel_layout_nb_channels( *m_codecContext->codec->channel_layouts );
+		
 		unsigned char* dest = audioFrameBuffer.getPtr();
 		av_samples_fill_arrays(&dest, m_frame->linesize,
 							   m_frame->data[0],
-							   m_frame->channels, m_frame->nb_samples,
+							   nb_channels, m_frame->nb_samples,
 							   m_codecContext->sample_fmt, 1);
 	}
 
