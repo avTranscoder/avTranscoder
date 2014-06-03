@@ -114,7 +114,7 @@ bool InputStreamVideo::readNextFrame( Image& frameBuffer )
 
 	size_t decodedSize = avpicture_get_size( (AVPixelFormat)m_frame->format, m_frame->width, m_frame->height );
 	if( frameBuffer.getBuffer().size() != decodedSize )
-		frameBuffer.getBuffer().resize( avpicture_get_size( (AVPixelFormat)m_frame->format, m_frame->width, m_frame->height ) );
+		frameBuffer.getBuffer().resize( decodedSize );
 
 	// Copy pixel data from an AVPicture into one contiguous buffer.
 	avpicture_layout( (AVPicture*)m_frame, (AVPixelFormat)m_frame->format, m_frame->width, m_frame->height, &frameBuffer.getBuffer()[0], frameBuffer.getBuffer().size() );
