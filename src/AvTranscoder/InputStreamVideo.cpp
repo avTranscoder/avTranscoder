@@ -106,9 +106,17 @@ bool InputStreamVideo::readNextFrame( Image& frameBuffer )
 		packet.stream_index = m_selectedStream;
 		packet.data         = data.getPtr();
 		packet.size         = data.getSize();
-
-		avcodec_decode_video2( m_codecContext, m_frame, &got_frame, &packet );
-
+		
+		int ret = avcodec_decode_video2( m_codecContext, m_frame, &got_frame, &packet );
+		
+		if( ret < 0 )
+		{
+			char err[250];
+			av_strerror( ret, err, 250);
+			
+			throw std::runtime_error( "an error occured during video decoding - " + std::string(err) );
+		}
+		
 		av_free_packet( &packet );
 	}
 
