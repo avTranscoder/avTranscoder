@@ -4,6 +4,7 @@
 #include <AvTranscoder/InputFile.hpp>
 #include <AvTranscoder/AvInputStream.hpp>
 #include <AvTranscoder/InputStreamAudio.hpp>
+#include <AvTranscoder/OutputStreamAudio.hpp>
 
 #include <AvTranscoder/OutputFile.hpp>
 
@@ -54,15 +55,29 @@ void transcodeAudio( const char* inputfilename, const char* outputFilename )
 	// init audio decoders
 	InputStreamAudio inputStreamAudio( inputFile.getStream( 0 ) );
 	inputFile.getStream( 0 ).setBufferred( true );
-
+	
 	OutputFile outputFile( outputFilename );
-
 	outputFile.setup();
-
 	outputFile.addAudioStream( inputFile.getStream( 0 ).getAudioDesc() );
+	outputFile.beginWrap();
 
-	DataStream data;
-
+	OutputStreamAudio outputStreamAudio;
+	AudioDesc& audioDesc = outputStreamAudio.getAudioDesc();
+	audioDesc.setAudioCodec( "pcm_s16le" );
+	audioDesc.setAudioParameters( 
+		inputFile.getStream( 0 ).getAudioDesc().getSampleRate(),
+		inputFile.getStream( 0 ).getAudioDesc().getChannels(),
+		inputFile.getStream( 0 ).getAudioDesc().getSampleFormat()
+		);
+	
+	DataStream codedFrame;
+	
+	if( ! outputStreamAudio.setup( ) )
+	{
+		std::cout << "error during initialising audio output stream" << std::endl;
+		exit( -1 );
+	}
+	
 	// Transcoding
 	std::cout << "start transcoding" << std::endl;
 
@@ -70,8 +85,6 @@ void transcodeAudio( const char* inputfilename, const char* outputFilename )
 	AudioFrameDesc audioFrameDesc;
 
 	AudioFrame audioFrame( audioFrameDesc );
-	
-	DataStream codedFrame;
 
 	while( inputStreamAudio.readNextFrame( audioFrame ) )
 	{
@@ -79,13 +92,15 @@ void transcodeAudio( const char* inputfilename, const char* outputFilename )
 
 		// convert
 		
-		//outputStreamAudio.encodeFrame( audioFrame, codedFrame );
+		outputStreamAudio.encodeFrame( audioFrame, codedFrame );
 		
-		// outputFile.wrap( codedFrame, 0 );
+		outputFile.wrap( codedFrame, 0 );
 
 		++frame;
 	}
 	std::cout << std::endl;
+	
+	outputFile.endWrap();
 }
 
 int main( int argc, char** argv )

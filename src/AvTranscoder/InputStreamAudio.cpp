@@ -50,8 +50,6 @@ InputStreamAudio::InputStreamAudio( AvInputStream& inputStream )
 	
 	int ret = avcodec_open2( m_codecContext, m_codec, NULL );
 
-	std::cout << "ret value : " << ret << std::endl;
-
 	if( ret < 0 || m_codecContext == NULL || m_codec == NULL )
 	{
 		std::string msg = "unable open audio codec: ";
@@ -134,6 +132,8 @@ bool InputStreamAudio::readNextFrame( AudioFrame& audioFrameBuffer )
 	size_t decodedSize = av_samples_get_buffer_size(NULL, m_codecContext->channels,
 													m_frame->nb_samples,
 													m_codecContext->sample_fmt, 1);
+	
+	audioFrameBuffer.setNbSamples( m_frame->nb_samples );
 	
 	if( decodedSize )
 	{
