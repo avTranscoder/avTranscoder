@@ -122,7 +122,10 @@ bool InputStreamAudio::readNextFrame( AudioFrame& audioFrameBuffer )
 
 		if( ret < 0 )
 		{
-			throw std::runtime_error( "an error occured during audio decoding" );
+			char err[250];
+			av_strerror( ret, err, 250);
+			
+			throw std::runtime_error( "an error occured during audio decoding" + std::string( err ) );
 		}
 
 		av_free_packet( &packet );
@@ -135,15 +138,13 @@ bool InputStreamAudio::readNextFrame( AudioFrame& audioFrameBuffer )
 	if( decodedSize )
 	{
 		if( audioFrameBuffer.getSize() != decodedSize )
-			audioFrameBuffer.getBuffer().resize( decodedSize );
-
-		int nb_channels = av_get_channel_layout_nb_channels( *m_codecContext->codec->channel_layouts );
+			audioFrameBuffer.getBuffer().resize( decodedSize, 0 );
 		
 		unsigned char* dest = audioFrameBuffer.getPtr();
-		av_samples_fill_arrays(&dest, m_frame->linesize,
-							   m_frame->data[0],
-							   nb_channels, m_frame->nb_samples,
-							   m_codecContext->sample_fmt, 1);
+		int nb_channels = m_codecContext->channels;
+		av_samples_copy(&dest, (uint8_t* const* )m_frame->data, 0,
+						0, m_frame->nb_samples, nb_channels,
+						m_codecContext->sample_fmt);
 	}
 
 	return true;
