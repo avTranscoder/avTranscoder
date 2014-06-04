@@ -1,4 +1,5 @@
 import os
+import platform
 
 Import( 'AvTranscoder' )
 Import( 'sAvTranscoder' )
@@ -72,19 +73,20 @@ audioRewrapper = env.Program(
                 ]
         )
 
-avplayer = env.Program(
-        'avplayer',
-        Glob( 'avplay/*.cpp' ),
-        LIBS = [
-                sAvTranscoder,
-                'avutil',
-                'avformat',
-                'avcodec',
-                'swscale',
-                'GL',
-                'glut',
-                ]
-        )
+if platform.system() != 'Windows':
+        avplayer = env.Program(
+                'avplayer',
+                Glob( 'avplay/*.cpp' ),
+                LIBS = [
+                        sAvTranscoder,
+                        'avutil',
+                        'avformat',
+                        'avcodec',
+                        'swscale',
+                        'GL',
+                        'glut',
+                        ]
+                )
 
 
 avprofiles = env.Program(
