@@ -18,6 +18,8 @@ extern "C" {
 namespace avtranscoder
 {
 
+class AudioFrameDesc;
+
 class AvExport AudioDesc
 {
 public:
@@ -48,6 +50,8 @@ public:
 	AVCodecContext* getCodecContext() const { return m_codecContext; }
 #endif
 
+	AudioFrameDesc getFrameDesc() const;
+	
 private:
 	void initCodecContext( );
 

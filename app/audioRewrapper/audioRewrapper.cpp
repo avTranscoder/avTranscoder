@@ -2,11 +2,15 @@
 #include <iomanip>
 
 #include <AvTranscoder/InputFile.hpp>
+#include <AvTranscoder/OutputFile.hpp>
+
 #include <AvTranscoder/AvInputStream.hpp>
 #include <AvTranscoder/InputStreamAudio.hpp>
 #include <AvTranscoder/OutputStreamAudio.hpp>
 
-#include <AvTranscoder/OutputFile.hpp>
+#include <AvTranscoder/AudioTransform.hpp>
+
+
 
 void rewrapAudio( const char* inputfilename, const char* outputFilename )
 {
@@ -52,25 +56,22 @@ void transcodeAudio( const char* inputfilename, const char* outputFilename )
 	InputFile inputFile( inputfilename );
 	inputFile.analyse();
 
+	OutputFile outputFile( outputFilename );
+	outputFile.setup();
+	
 	// init audio decoders
 	InputStreamAudio inputStreamAudio( inputFile.getStream( 0 ) );
 	inputFile.getStream( 0 ).setBufferred( true );
-	
-	OutputFile outputFile( outputFilename );
-	outputFile.setup();
-	outputFile.addAudioStream( inputFile.getStream( 0 ).getAudioDesc() );
-	outputFile.beginWrap();
 
+	// init audio encoders
 	OutputStreamAudio outputStreamAudio;
 	AudioDesc& audioDesc = outputStreamAudio.getAudioDesc();
-	audioDesc.setAudioCodec( "pcm_s16le" );
+	audioDesc.setAudioCodec( "pcm_s24le" );
 	audioDesc.setAudioParameters( 
 		inputFile.getStream( 0 ).getAudioDesc().getSampleRate(),
 		inputFile.getStream( 0 ).getAudioDesc().getChannels(),
-		inputFile.getStream( 0 ).getAudioDesc().getSampleFormat()
+		AV_SAMPLE_FMT_S32//,inputFile.getStream( 0 ).getAudioDesc().getSampleFormat()
 		);
-	
-	DataStream codedFrame;
 	
 	if( ! outputStreamAudio.setup( ) )
 	{
@@ -78,30 +79,42 @@ void transcodeAudio( const char* inputfilename, const char* outputFilename )
 		exit( -1 );
 	}
 	
-	// Transcoding
+	outputFile.addAudioStream( audioDesc );
+	outputFile.beginWrap();
+	
+	// init convert
+	AudioTransform audioTransform;
+	
+	DataStream codedFrame;
+
+	// start transcoding process
 	std::cout << "start transcoding" << std::endl;
-
+	
+	AudioFrame audioFrameSource( inputFile.getStream( 0 ).getAudioDesc().getFrameDesc() );
+	AudioFrame audioFrameToEncode( audioDesc.getFrameDesc() );
+	
 	size_t frame = 0;
-	AudioFrameDesc audioFrameDesc;
-
-	AudioFrame audioFrame( audioFrameDesc );
-
-	while( inputStreamAudio.readNextFrame( audioFrame ) )
+	while( inputStreamAudio.readNextFrame( audioFrameSource ) )
 	{
-		std::cout << "\rprocess frame " << (int)frame - 1 << std::endl << std::flush;
+		std::cout << "\rprocess frame " << (int)frame - 1 << std::flush;
 
-		// convert
+		audioTransform.convert( audioFrameSource, audioFrameToEncode );
 		
-		outputStreamAudio.encodeFrame( audioFrame, codedFrame );
-		
+		outputStreamAudio.encodeFrame( audioFrameToEncode, codedFrame );
+				
 		outputFile.wrap( codedFrame, 0 );
 
 		++frame;
+//		if(frame == 10*48100)
+//			break;
 	}
 	std::cout << std::endl;
 	
 	outputStreamAudio.encodeFrame( codedFrame );
-
+	outputFile.wrap( codedFrame, 0 );
+	
+	// end of transcoding process
+	
 	outputFile.endWrap();
 }
 

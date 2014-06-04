@@ -69,6 +69,7 @@ audioRewrapper = env.Program(
                 'avformat',
                 'avcodec',
                 'swscale',
+                'swresample',
                 ]
         )
 
