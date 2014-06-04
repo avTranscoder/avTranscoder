@@ -70,8 +70,7 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 
 	if( !outputStreamVideo.setup( ) )
 	{
-		std::cout << "error during initialising video output stream" << std::endl;
-		exit( -1 );
+		throw std::runtime_error( "error during initialising video output stream" );
 	}
 
 	Image imageToEncode( sourceImage );
@@ -88,8 +87,7 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 
 	if( ! of.setup( ) )
 	{
-		std::cout << "error during setup output file" << std::endl;
-		exit( -1 );
+		throw std::runtime_error( "error during setup output file" );
 	}
 
 	of.addVideoStream( inputFile.getStream( 0 ).getVideoDesc() );
@@ -145,8 +143,16 @@ int main( int argc, char** argv )
 
 	std::cout << "start ..." << std::endl;
 
-	// example of video Transcoding
-	transcodeVideo( argv[1], "transcodedVideo.avi" );
+	try
+	{
+		// example of video Transcoding
+		transcodeVideo( argv[1], "transcodedVideo.avi" );
+	}
+	catch( std::exception &e )
+	{
+		std::cout << "[ERROR] " << e.what() << std::endl;
+	}
+
 
 	std::cout << "end ..." << std::endl;
 }
