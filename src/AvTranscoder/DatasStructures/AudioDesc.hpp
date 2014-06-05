@@ -15,10 +15,10 @@ extern "C" {
 #include <libavcodec/avcodec.h>
 }
 
+#include <AvTranscoder/DatasStructures/AudioFrame.hpp>
+
 namespace avtranscoder
 {
-
-class AudioFrameDesc;
 
 class AvExport AudioDesc
 {
