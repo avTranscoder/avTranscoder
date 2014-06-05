@@ -65,9 +65,9 @@ void transcodeAudio( const char* inputfilename, const char* outputFilename )
 
 	// init audio encoders
 	OutputStreamAudio outputStreamAudio;
-	AudioDesc& audioDesc = outputStreamAudio.getAudioDesc();
-	audioDesc.setAudioCodec( "pcm_s24le" );
-	audioDesc.setAudioParameters( 
+	AudioDesc& audioOutputDesc = outputStreamAudio.getAudioDesc();
+	audioOutputDesc.setAudioCodec( "pcm_s24le" );
+	audioOutputDesc.setAudioParameters( 
 		inputFile.getStream( 0 ).getAudioDesc().getSampleRate(),
 		inputFile.getStream( 0 ).getAudioDesc().getChannels(),
 		AV_SAMPLE_FMT_S32//,inputFile.getStream( 0 ).getAudioDesc().getSampleFormat()
@@ -79,7 +79,7 @@ void transcodeAudio( const char* inputfilename, const char* outputFilename )
 		exit( -1 );
 	}
 	
-	outputFile.addAudioStream( audioDesc );
+	outputFile.addAudioStream( audioOutputDesc );
 	outputFile.beginWrap();
 	
 	// init convert
@@ -91,7 +91,7 @@ void transcodeAudio( const char* inputfilename, const char* outputFilename )
 	std::cout << "start transcoding" << std::endl;
 	
 	AudioFrame audioFrameSource( inputFile.getStream( 0 ).getAudioDesc().getFrameDesc() );
-	AudioFrame audioFrameToEncode( audioDesc.getFrameDesc() );
+	AudioFrame audioFrameToEncode( audioOutputDesc.getFrameDesc() );
 	
 	size_t frame = 0;
 	while( inputStreamAudio.readNextFrame( audioFrameSource ) )
@@ -105,6 +105,7 @@ void transcodeAudio( const char* inputfilename, const char* outputFilename )
 		outputFile.wrap( codedFrame, 0 );
 
 		++frame;
+		// if you want to stop the transcoding process (after 10s at 48,1 KHz)
 //		if(frame == 10*48100)
 //			break;
 	}
