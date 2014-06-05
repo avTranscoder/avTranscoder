@@ -34,14 +34,10 @@ bool AudioTransform::init( const AudioFrame& src, const AudioFrame& dst )
 		throw std::runtime_error( "unable to create audio convert context" );
 	}
 	
-	av_opt_set_int(m_audioConvertContext, "in_channel_layout", av_get_default_channel_layout( src.desc().getChannels() ), 0);
-	av_opt_set_int(m_audioConvertContext, "out_channel_layout", av_get_default_channel_layout( dst.desc().getChannels() ), 0);
-	
-	av_opt_set_int(m_audioConvertContext, "in_sample_rate", src.desc().getSampleRate(), 0);
-	av_opt_set_int(m_audioConvertContext, "out_sample_rate", dst.desc().getSampleRate(), 0);
-	
-	av_opt_set_int(m_audioConvertContext, "in_sample_fmt", src.desc().getSampleFormat(), 0);
-	av_opt_set_int(m_audioConvertContext, "out_sample_fmt", dst.desc().getSampleFormat(), 0);
+	swr_alloc_set_opts( m_audioConvertContext,
+	                    av_get_default_channel_layout( dst.desc().getChannels() ), dst.desc().getSampleFormat(), av_get_default_channel_layout( dst.desc().getSampleRate() ),
+	                    av_get_default_channel_layout( src.desc().getChannels() ), src.desc().getSampleFormat(), av_get_default_channel_layout( src.desc().getSampleRate() ),
+	                    0, NULL);
 	
 	if( swr_init( m_audioConvertContext ) < 0 )
 	{
