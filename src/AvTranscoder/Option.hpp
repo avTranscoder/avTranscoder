@@ -27,9 +27,9 @@ public:
 	virtual AVOptionType getType() const = 0;
 	
 	virtual int getDefaultValue( int& value ) const;
-	virtual int64_t getDefaultValue( int64_t& value ) const;
 	virtual double getDefaultValue( double& value ) const;
-	virtual std::string& getDefaultValue( std::string& value );
+	virtual std::string& getDefaultValue( std::string& value ) const;
+	virtual bool getDefaultValue( bool& value ) const;
 	
 	std::string& getName() { return m_name; }
 	std::string& getHelp() { return m_help; }

@@ -14,22 +14,22 @@ Option::Option( const AVOption& avOption )
 
 int Option::getDefaultValue( int& value ) const
 {
-	throw std::runtime_error( "Wrong access to int getDefaultValue" );
-}
-
-int64_t Option::getDefaultValue( int64_t& value ) const
-{
-	throw std::runtime_error( "Wrong access to int64_t getDefaultValue" );
+	throw std::runtime_error( "Wrong access to getDefaultValue (int)." );
 }
 
 double Option::getDefaultValue( double& value ) const
 {
-	throw std::runtime_error( "Wrong access to double getDefaultValue" );
+	throw std::runtime_error( "Wrong access to getDefaultValue (double)." );
 }
 
-std::string& Option::getDefaultValue( std::string& value )
+std::string& Option::getDefaultValue( std::string& value ) const
 {
-	throw std::runtime_error( "Wrong access to char* getDefaultValue" );
+	throw std::runtime_error( "Wrong access to getDefaultValue (char*)." );
+}
+
+bool Option::getDefaultValue( bool& value ) const
+{
+	throw std::runtime_error( "Wrong access to getDefaultValue (bool)." );
 }
 
 }
