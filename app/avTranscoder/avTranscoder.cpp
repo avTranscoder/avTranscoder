@@ -29,7 +29,7 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 
 	// init video decoders
 	InputStreamVideo inputStreamVideo( input.getStream( 0 ) );
-	Image sourceImage( inputStreamVideo.getVideoDesc().getImageDesc() );
+	Image sourceImage( input.getStream( 0 ).getVideoDesc().getImageDesc() );
 
 	// init video encoder
 	OutputStreamVideo outputStreamVideo;
