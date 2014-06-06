@@ -14,7 +14,7 @@ namespace avtranscoder
 {
 
 /**
- * @brief Wrap of AVOption with a type of AV_OPT_TYPE_FLAGS.
+ * @brief Wrap of AVOption with a type of AV_OPT_TYPE_FLAGS and no unit informed..
  */
 class OptionBoolean : public Option
 {

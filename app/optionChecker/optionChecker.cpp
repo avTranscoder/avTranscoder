@@ -6,9 +6,11 @@
 #include <AvTranscoder/Options/OptionString.hpp>
 #include <AvTranscoder/Options/OptionBoolean.hpp>
 #include <AvTranscoder/Options/Option2D.hpp>
+#include <AvTranscoder/Options/OptionGroup.hpp>
 #include <AvTranscoder/Option.hpp>
 
 #include <vector>
+#include <string>
 #include <iostream>
 #include <iomanip>
 
@@ -23,24 +25,46 @@ int optionChecker( const std::string& inputfilename )
 	try
 	{
 		const AVOption* avOption = NULL;
-
+		
 		while( ( avOption = av_opt_next( audioDesc.getCodecContext(), avOption ) ) != NULL )
 		{
-			std::cout << "The option is " << avOption->name;
-			std::cout << " of type : " << avOption->type << std::endl;
-			
 			avtranscoder::Option* opt = NULL;
 			
+			if( !avOption || ! avOption->name )
+			{
+				continue;
+			}
+			
+			std::cout << "The option is " << avOption->name << " of type : " << avOption->type << std::endl;
+
+			if( avOption->unit && avOption->type == AV_OPT_TYPE_FLAGS )
+			{
+				opt = new avtranscoder::OptionGroup( *avOption );
+				options.push_back( opt );
+				continue;
+			}
+			if( avOption->unit && avOption->type == AV_OPT_TYPE_INT )
+			{
+				// OptionChoice
+				//options.push_back( opt );
+				continue;
+			}
+
 			switch( avOption->type )
 			{
+				case AV_OPT_TYPE_FLAGS:
+				{
+					opt = new avtranscoder::OptionBoolean( *avOption );
+					break;
+				}
 				case AV_OPT_TYPE_INT:
 				case AV_OPT_TYPE_INT64:
 				{
 					opt = new avtranscoder::OptionInt( *avOption );
 					break;
 				}
-				case AV_OPT_TYPE_FLOAT:
 				case AV_OPT_TYPE_DOUBLE:
+				case AV_OPT_TYPE_FLOAT:
 				{
 					opt = new avtranscoder::OptionDouble( *avOption );
 					break;
@@ -50,18 +74,26 @@ int optionChecker( const std::string& inputfilename )
 					opt = new avtranscoder::OptionString( *avOption );
 					break;
 				}
-				case AV_OPT_TYPE_FLAGS:
-				{
-					opt = new avtranscoder::OptionBoolean( *avOption );
-					break;
-				}
 				case AV_OPT_TYPE_RATIONAL:
 				{
 					opt = new avtranscoder::Option2D( *avOption );
 					break;
 				}
+				case AV_OPT_TYPE_BINARY:
+				{
+					//opt = new avtranscoder::OptionString( *avOption );
+					break;
+				}
+				case AV_OPT_TYPE_CONST:
+				{
+					break;
+				}
+				default:
+				{
+					//throw std::runtime_error( "undefined type for " + std::string( avOption->name ) );
+					std::cout << "----- Unknowed type for " << avOption->name << "-----" << std::endl;
+				}
 			}
-			
 			if( opt )
 				options.push_back( opt );
 		}
@@ -113,7 +145,10 @@ int optionChecker( const std::string& inputfilename )
 			}
 			case AV_OPT_TYPE_FLAGS:
 			{
-				std::cout << "DefaultValue: " << option->getDefaultValue( valueBool ) << std::endl;
+				if( option->getName().substr(0, 2) == "g_" ) // OptionGroup
+					std::cout << "DefaultValue: " << option->getDefaultValue( valueInt ) << std::endl;
+				else // OptionBoolean
+					std::cout << "DefaultValue: " << option->getDefaultValue( valueBool ) << std::endl;
 				break;
 			}
 			case AV_OPT_TYPE_RATIONAL:
