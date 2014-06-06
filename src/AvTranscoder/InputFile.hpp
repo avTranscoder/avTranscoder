@@ -34,6 +34,10 @@ public:
 	/// get file properties
 	const Properties& getProperties() const { return m_properties; }
 
+	void getProperties( Properties& properties ) const { properties = m_properties; }
+
+	static Properties analyseFile( const std::string& filename );
+
 	AVMediaType getStreamType( size_t index );
 
 	AvInputStream& getStream( size_t index );

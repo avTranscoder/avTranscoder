@@ -136,6 +136,15 @@ InputFile& InputFile::analyse()
 	return *this;
 }
 
+Properties InputFile::analyseFile( const std::string& filename )
+{
+	InputFile file( filename );
+	file.analyse();
+	Properties properties;
+	file.getProperties( properties );
+	return properties;
+}
+
 AVMediaType InputFile::getStreamType( size_t index )
 {
 	if( index >= m_formatContext->nb_streams )
