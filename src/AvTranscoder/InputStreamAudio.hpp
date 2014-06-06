@@ -24,9 +24,6 @@ private:
 	AVFrame*           m_frame;
 
 	int                m_selectedStream;
-
-private:
-
 };
 
 }

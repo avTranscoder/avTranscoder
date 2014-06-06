@@ -11,10 +11,9 @@ namespace avtranscoder
 class InputStream
 {
 public:
-	InputStream( )
-	{}
+	InputStream() {}
 
-	virtual ~InputStream(){};
+	virtual ~InputStream() {};
 
 	virtual size_t getStreamIndex() const = 0;
 
