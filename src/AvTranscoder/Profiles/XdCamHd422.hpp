@@ -15,32 +15,36 @@ void loadXdCamHD422( Profile::ProfilesDesc& profiles )
 	xdCamHd422[ "codec" ] = "mpeg2video";
 	xdCamHd422[ "profile" ] = "0"; // FF_PROFILE_MPEG2_422
 	xdCamHd422[ "level" ] = "2";
+
 	xdCamHd422[ "g" ] = "12";
 	xdCamHd422[ "bf" ] = "2"; // max_b_frames
 	xdCamHd422[ "dtg_active_format" ] = "10"; // FF_DTG_AFD_16_9
-	xdCamHd422[ "qmin" ] = "1";
-	xdCamHd422[ "dc" ] = "2";
+	xdCamHd422[ "qmin" ] = "2";
+	xdCamHd422[ "qmax" ] = "12";
+	xdCamHd422[ "dc" ] = "2"; // 10 - 8 = 2
 
 	xdCamHd422[ "pix_fmt" ] = "yuv422p";
 
-
 	// color informations are not used in FFmpeg/LibAV for Mpeg2
-	// xdCamHd422[ "colorspace" ] = "AVCOL_SPC_BT709";
-	// xdCamHd422[ "color_trc" ] = "AVCOL_SPC_BT709";
-	// xdCamHd422[ "color_primaries" ] = "AVCOL_SPC_BT709";
-	// xdCamHd422[ "color_range" ] = "AVCOL_RANGE_MPEG";
+	xdCamHd422[ "colorspace" ] = "1"; // AVCOL_SPC_BT709
+	xdCamHd422[ "color_trc" ] = "1"; // AVCOL_SPC_BT709
+	xdCamHd422[ "color_primaries" ] = "1"; // AVCOL_SPC_BT709
+	xdCamHd422[ "color_range" ] = "1"; // AVCOL_RANGE_MPEG
 
 	xdCamHd422[ "timecode_frame_start" ] = "900000"; // 10:00:00:00
 
-	xdCamHd422[ "b" ] = "50000000";
-	xdCamHd422[ "minrate" ] = "50000000";
-	xdCamHd422[ "maxrate" ] = "50000000";
+	xdCamHd422[ "b" ] = "50M";
+	xdCamHd422[ "bt" ] = "4M"; // bitrate tolerance
+	xdCamHd422[ "minrate" ] = "50M";
+	xdCamHd422[ "maxrate" ] = "50M";
 
-	xdCamHd422[ "bufsize" ] = "50000000";
-	xdCamHd422[ "rc_max_vbv_use" ] = "1";
-	xdCamHd422[ "rc_min_vbv_use" ] = "1";
+
+
+	xdCamHd422[ "bufsize" ] = "17825792";
+	// xdCamHd422[ "lmin" ] = "0";
 	xdCamHd422[ "lmin" ] = "1*QP2LAMBDA";
-	xdCamHd422[ "field_order" ] = "tb";
+	// xdCamHd422[ "field_order" ] = "tb";
+	// xdCamHd422[ "field_order" ] = "2";
 
 	// research modes
 	xdCamHd422[ "me_method" ] = "dia";
@@ -54,17 +58,35 @@ void loadXdCamHD422( Profile::ProfilesDesc& profiles )
 	xdCamHd422[ "subcmp" ] = "sse"; // me_sub_cmp
 	xdCamHd422[ "precmp" ] = "sse"; // me_pre_cmp
 
-	xdCamHd422[ "rc_max_vbv_use" ] = "1";
-	xdCamHd422[ "rc_min_vbv_use" ] = "1";
+	xdCamHd422[ "rc_max_vbv_use" ] = "0.3333333";
+	xdCamHd422[ "rc_min_vbv_use" ] = "3";
+
+	xdCamHd422[ "rc_init_occupancy" ] = "17825792";
+	xdCamHd422[ "rc_buf_aggressivity" ] = "1"; // default value
 
 	xdCamHd422[ "global_quality" ] = "1*QP2LAMBDA"; // 1 * FF_QP2LAMBDA
 
-	xdCamHd422[ "flags" ] = "cgop"; // open GOP
+	xdCamHd422[ "b_qoffset" ] = "1.25";
+	xdCamHd422[ "b_qfactor" ] = "1.25";
+	xdCamHd422[ "i_qoffset" ] = "0";
+	xdCamHd422[ "i_qfactor" ] = "-0.8";
+	xdCamHd422[ "flags" ] = "+cgop"; // open GOP
 
-	// xdCamHd422[ "intra_vlc" ] = "1";
-	// xdCamHd422[ "non_linear_quant" ] = "1";
+	xdCamHd422[ "flags" ] = "+ilme";  // use interlaced motion estimation
+	xdCamHd422[ "flags" ] = "+ildct"; // use interlaced DCT
+	xdCamHd422[ "flags" ] = "+qscale";
 
-	xdCamHd422[ "threads" ] = "6";
+
+	xdCamHd422[ "intra_vlc" ] = "1";
+	xdCamHd422[ "non_linear_quant" ] = "1";
+
+	xdCamHd422[ "sc_threshold" ] = "1000000000";
+
+
+	xdCamHd422[ "threads" ] = "5";
+
+	// xdCamHd422[ "thread_type" ] = "frame";
+	
 
 	profiles.push_back( xdCamHd422 );
 }

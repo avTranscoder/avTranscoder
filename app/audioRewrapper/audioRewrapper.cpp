@@ -75,8 +75,7 @@ void transcodeAudio( const char* inputfilename, const char* outputFilename )
 	
 	if( ! outputStreamAudio.setup( ) )
 	{
-		std::cout << "error during initialising audio output stream" << std::endl;
-		exit( -1 );
+		throw std::runtime_error( "error during initialising audio output stream" );
 	}
 	
 	outputFile.addAudioStream( audioOutputDesc );
