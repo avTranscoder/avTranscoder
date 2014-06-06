@@ -17,8 +17,8 @@ namespace avtranscoder
 class Value2D;
 
 /**
- * @breif Abstract class to manage AVOption.
- * Subclasses implement specific AVOption: int, boolean...
+ * @breif Abstract class to wrap AVOption.
+ * Subclasses  implement specific AVOption: int, boolean...
  */
 class Option
 {	

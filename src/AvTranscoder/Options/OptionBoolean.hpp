@@ -13,6 +13,9 @@ extern "C" {
 namespace avtranscoder
 {
 
+/**
+ * @brief Wrap of AVOption with a type of AV_OPT_TYPE_FLAGS.
+ */
 class OptionBoolean : public Option
 {
 public:
