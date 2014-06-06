@@ -23,7 +23,7 @@ public:
 	
 	~OptionInt();
 	
-	AVOptionType getType() const { return AV_OPT_TYPE_INT; }
+	std::string getType() const { return "OptionInt"; }
 	int getDefaultValue( int& defaultValue ) const { return defaultValue = m_defaultValue; }
 	
 private:

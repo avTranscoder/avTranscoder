@@ -23,7 +23,7 @@ public:
 	
 	~OptionGroup();
 	
-	AVOptionType getType() const { return AV_OPT_TYPE_FLAGS; }
+	std::string getType() const { return "OptionGroup"; }
 	int getDefaultValue( int& defaultValue ) const { return defaultValue = m_defaultValue; }
 	
 private:

@@ -8,6 +8,7 @@ namespace avtranscoder
 Option::Option( const AVOption& avOption )
 	: m_name ( avOption.name )
 	, m_help ( avOption.help ? avOption.help : "" )
+	, m_unit ( avOption.unit ? avOption.unit : "" )
 	, m_flags( avOption.flags )
 {
 }

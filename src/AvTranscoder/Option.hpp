@@ -10,6 +10,7 @@ extern "C" {
 
 #include <vector>
 #include <bitset>
+#include <string>
 
 namespace avtranscoder
 {
@@ -26,7 +27,7 @@ public:
 	Option( const AVOption& avOption );
 	virtual ~Option() {}
 	
-	virtual AVOptionType getType() const = 0;
+	virtual std::string getType() const = 0;
 	
 	virtual int getDefaultValue( int& value ) const;
 	virtual double getDefaultValue( double& value ) const;
@@ -36,6 +37,7 @@ public:
 	
 	std::string& getName() { return m_name; }
 	std::string& getHelp() { return m_help; }
+	std::string& getUnit() { return m_unit; }
 	
 	bool isEncodingOpt(){ return m_flags & AV_OPT_FLAG_ENCODING_PARAM; }
 	bool isDecodingOpt(){ return m_flags & AV_OPT_FLAG_DECODING_PARAM; }
@@ -46,6 +48,7 @@ public:
 protected:
 	std::string m_name;
 	std::string m_help;
+	std::string m_unit;
 	int         m_flags;
 };
 

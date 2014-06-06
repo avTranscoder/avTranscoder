@@ -42,7 +42,7 @@ public:
 	
 	~Option2D();
 	
-	AVOptionType getType() const { return AV_OPT_TYPE_RATIONAL; }
+	std::string getType() const { return "Option2D"; }
 	Value2D& getDefaultValue( Value2D& defaultValue ) const { return defaultValue = m_defaultValue; }
 	
 private:

@@ -7,6 +7,7 @@
 #include <AvTranscoder/Options/OptionBoolean.hpp>
 #include <AvTranscoder/Options/Option2D.hpp>
 #include <AvTranscoder/Options/OptionGroup.hpp>
+#include <AvTranscoder/Options/OptionChoice.hpp>
 #include <AvTranscoder/Option.hpp>
 
 #include <vector>
@@ -22,6 +23,7 @@ int optionChecker( const std::string& inputfilename )
 	avtranscoder::AudioDesc audioDesc( inputFile.getStream( 0 ).getAudioDesc() );
 	
 	std::vector<avtranscoder::Option*> options;
+	std::vector<avtranscoder::OptionChoice*> optionsChoice; // need to access easely to the OptionChoice to add the list of value for each of them
 	try
 	{
 		const AVOption* avOption = NULL;
@@ -45,8 +47,9 @@ int optionChecker( const std::string& inputfilename )
 			}
 			if( avOption->unit && avOption->type == AV_OPT_TYPE_INT )
 			{
-				// OptionChoice
-				//options.push_back( opt );
+				opt = new avtranscoder::OptionChoice( *avOption );
+				options.push_back( opt );
+				optionsChoice.push_back( dynamic_cast<avtranscoder::OptionChoice*>( opt ) );
 				continue;
 			}
 
@@ -90,14 +93,53 @@ int optionChecker( const std::string& inputfilename )
 				}
 				default:
 				{
-					//throw std::runtime_error( "undefined type for " + std::string( avOption->name ) );
 					std::cout << "----- Unknowed type for " << avOption->name << "-----" << std::endl;
+					break;
 				}
 			}
 			if( opt )
 				options.push_back( opt );
 		}
+		
+		// adding enum values and set default value for enums
+		avOption = NULL;
+		while( (avOption = av_opt_next( audioDesc.getCodecContext(), avOption)  ) != NULL )
+		{
+			if( !avOption ||
+				!avOption->name ||
+				( avOption->unit && avOption->type == AV_OPT_TYPE_FLAGS ) ||
+				( avOption->unit && avOption->type == AV_OPT_TYPE_INT ) )
+			{
+				continue;
+			}
+
+			switch( avOption->type )
+			{
+				case AV_OPT_TYPE_CONST:
+				{
+					for( size_t i = 0; i < optionsChoice.size(); i++ )
+					{
+						if( avOption->unit == optionsChoice.at( i )->getUnit() )
+						{
+							if( avOption->help )
+								optionsChoice.at( i )->appendOption( avOption->name, avOption->help );
+							else
+								optionsChoice.at( i )->appendOption( avOption->name );
+							
+							double valueDouble;
+							if( avOption->default_val.dbl == optionsChoice.at( i )->getDefaultValue( valueDouble ) )
+								optionsChoice.at( i )->setDefaultChoiceIndex( optionsChoice.at( i )->getNbChoices() - 1 );
+						}
+					}
+				}
+				default:
+				{
+					break;
+				}
+			}
+		}
 	}
+	
 	catch( std::exception &e )
 	{
 		for( auto it = options.begin(); it != options.end(); ++it)
@@ -109,6 +151,7 @@ int optionChecker( const std::string& inputfilename )
 		throw e;
 	}
 	
+	// display Options
 	for( auto option : options )
 	{
 		std::cout << std::left;
@@ -124,42 +167,42 @@ int optionChecker( const std::string& inputfilename )
 		bool valueBool;
 		avtranscoder::Value2D value2D;
 		
-		switch( option->getType() )
+		if( option->getType() == "OptionInt" )
 		{
-			case AV_OPT_TYPE_INT:
-			case AV_OPT_TYPE_INT64:
-			{
-				std::cout << "DefaultValue: " << option->getDefaultValue( valueInt ) << std::endl;
-				break;
-			}
-			case AV_OPT_TYPE_FLOAT:
-			case AV_OPT_TYPE_DOUBLE:
-			{
-				std::cout << "DefaultValue: " << option->getDefaultValue( valueDouble ) << std::endl;
-				break;
-			}
-			case AV_OPT_TYPE_STRING:
-			{
-				std::cout << "DefaultValue: " << option->getDefaultValue( valueStr ) << std::endl;
-				break;
-			}
-			case AV_OPT_TYPE_FLAGS:
-			{
-				if( option->getName().substr(0, 2) == "g_" ) // OptionGroup
-					std::cout << "DefaultValue: " << option->getDefaultValue( valueInt ) << std::endl;
-				else // OptionBoolean
-					std::cout << "DefaultValue: " << option->getDefaultValue( valueBool ) << std::endl;
-				break;
-			}
-			case AV_OPT_TYPE_RATIONAL:
-			{
-				option->getDefaultValue( value2D );
-				std::cout << "DefaultValue: " << value2D.num << ", " << value2D.dem << std::endl;
-				break;
-			}
+			std::cout << "DefaultValue: " << option->getDefaultValue( valueInt ) << std::endl;
+		}
+		else if( option->getType() == "OptionBoolean" )
+		{
+			std::cout << "DefaultValue: " << option->getDefaultValue( valueBool ) << std::endl;
+		}
+		else if( option->getType() == "OptionDouble" )
+		{
+			std::cout << "DefaultValue: " << option->getDefaultValue( valueDouble ) << std::endl;
+		}
+		else if( option->getType() == "Option2D" )
+		{
+			option->getDefaultValue( value2D );
+			std::cout << "DefaultValue: " << value2D.num << ", " << value2D.dem << std::endl;
+		}
+		else if( option->getType() == "OptionString" )
+		{
+			std::cout << "DefaultValue: " << option->getDefaultValue( valueStr ) << std::endl;
+		}
+		else if( option->getType() == "OptionChoice" )
+		{
+			std::cout << "DefaultValue: " << option->getDefaultValue( valueDouble ) << std::endl;
+			
+			avtranscoder::OptionChoice* choice = dynamic_cast<avtranscoder::OptionChoice*>( option );
+			std::cout << "Nb choices: " << choice->getNbChoices() << std::endl;
+			std::cout << "Default choice index: " << choice->getDefaultChoiceIndex() << std::endl;
+			for(size_t i = 0; i < choice->getChoices().size(); ++i )
+				std::cout << "Choice " << i << ": " << choice->getChoice( i ).first << " // " << choice->getChoice( i ).second << std::endl;
+		}
+		else if( option->getType() == "OptionChoice" )
+		{
+			std::cout << "DefaultValue: " << option->getDefaultValue( valueInt ) << std::endl;
 		}
 	}
-
 }
 
 int main( int argc, char** argv )

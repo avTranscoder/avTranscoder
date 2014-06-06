@@ -23,8 +23,8 @@ public:
 	
 	~OptionDouble();
 	
-	AVOptionType getType() const { return AV_OPT_TYPE_DOUBLE; }
-	double getDefaultValue( double &defaultValue ) const { return defaultValue = m_defaultValue; }
+	std::string getType() const { return "OptionDouble"; }
+	double getDefaultValue( double& defaultValue ) const { return defaultValue = m_defaultValue; }
 
 private:
 	double m_defaultValue;

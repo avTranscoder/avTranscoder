@@ -23,7 +23,7 @@ public:
 	
 	~OptionBoolean();
 	
-	AVOptionType getType() const { return AV_OPT_TYPE_FLAGS; }
+	std::string getType() const { return "OptionBoolean"; }
 	bool getDefaultValue( bool& defaultValue ) const { return defaultValue = m_defaultValue; }
 	
 private:
