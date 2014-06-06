@@ -5,6 +5,7 @@
 #include <AvTranscoder/Options/OptionDouble.hpp>
 #include <AvTranscoder/Options/OptionString.hpp>
 #include <AvTranscoder/Options/OptionBoolean.hpp>
+#include <AvTranscoder/Options/Option2D.hpp>
 #include <AvTranscoder/Option.hpp>
 
 #include <vector>
@@ -54,6 +55,11 @@ int optionChecker( const std::string& inputfilename )
 					opt = new avtranscoder::OptionBoolean( *avOption );
 					break;
 				}
+				case AV_OPT_TYPE_RATIONAL:
+				{
+					opt = new avtranscoder::Option2D( *avOption );
+					break;
+				}
 			}
 			
 			if( opt )
@@ -83,6 +89,8 @@ int optionChecker( const std::string& inputfilename )
 		int valueInt;
 		double valueDouble;
 		std::string valueStr;
+		bool valueBool;
+		avtranscoder::Value2D value2D;
 		
 		switch( option->getType() )
 		{
@@ -101,6 +109,17 @@ int optionChecker( const std::string& inputfilename )
 			case AV_OPT_TYPE_STRING:
 			{
 				std::cout << "DefaultValue: " << option->getDefaultValue( valueStr ) << std::endl;
+				break;
+			}
+			case AV_OPT_TYPE_FLAGS:
+			{
+				std::cout << "DefaultValue: " << option->getDefaultValue( valueBool ) << std::endl;
+				break;
+			}
+			case AV_OPT_TYPE_RATIONAL:
+			{
+				option->getDefaultValue( value2D );
+				std::cout << "DefaultValue: " << value2D.num << ", " << value2D.dem << std::endl;
 				break;
 			}
 		}

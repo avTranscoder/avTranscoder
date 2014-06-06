@@ -14,6 +14,8 @@ extern "C" {
 namespace avtranscoder
 {
 
+class Value2D;
+
 /**
  * @breif Abstract class to manage AVOption.
  * Subclasses implement specific AVOption: int, boolean...
@@ -30,6 +32,7 @@ public:
 	virtual double getDefaultValue( double& value ) const;
 	virtual std::string& getDefaultValue( std::string& value ) const;
 	virtual bool getDefaultValue( bool& value ) const;
+	virtual Value2D& getDefaultValue( Value2D& value ) const;
 	
 	std::string& getName() { return m_name; }
 	std::string& getHelp() { return m_help; }
