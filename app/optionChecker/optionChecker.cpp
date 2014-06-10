@@ -24,18 +24,19 @@ int optionChecker( const std::string& inputfilename )
 	
 	std::vector<avtranscoder::Option*> options;
 	std::vector<avtranscoder::OptionChoice*> optionsChoice; // need to access easely to the OptionChoice to add the list of value for each of them
+	std::vector<avtranscoder::OptionGroup*> optionsGroup; // need to access easely to the OptionGroup to add the list of value for each of them
 	try
 	{
 		const AVOption* avOption = NULL;
 		
 		while( ( avOption = av_opt_next( audioDesc.getCodecContext(), avOption ) ) != NULL )
-		{
-			avtranscoder::Option* opt = NULL;
-			
+		{	
 			if( !avOption || ! avOption->name )
 			{
 				continue;
 			}
+			
+			avtranscoder::Option* opt = NULL;
 			
 			std::cout << "The option is " << avOption->name << " of type : " << avOption->type << std::endl;
 
@@ -43,6 +44,7 @@ int optionChecker( const std::string& inputfilename )
 			{
 				opt = new avtranscoder::OptionGroup( *avOption );
 				options.push_back( opt );
+				optionsGroup.push_back( dynamic_cast<avtranscoder::OptionGroup*>( opt ) );
 				continue;
 			}
 			if( avOption->unit && avOption->type == AV_OPT_TYPE_INT )
@@ -84,7 +86,7 @@ int optionChecker( const std::string& inputfilename )
 				}
 				case AV_OPT_TYPE_BINARY:
 				{
-					//opt = new avtranscoder::OptionString( *avOption );
+					opt = new avtranscoder::OptionString( *avOption );
 					break;
 				}
 				case AV_OPT_TYPE_CONST:
@@ -112,6 +114,8 @@ int optionChecker( const std::string& inputfilename )
 			{
 				continue;
 			}
+			
+			avtranscoder::OptionBoolean* optBoolean = NULL;
 
 			switch( avOption->type )
 			{
@@ -129,6 +133,18 @@ int optionChecker( const std::string& inputfilename )
 							double valueDouble;
 							if( avOption->default_val.dbl == optionsChoice.at( i )->getDefaultValue( valueDouble ) )
 								optionsChoice.at( i )->setDefaultChoiceIndex( optionsChoice.at( i )->getNbChoices() - 1 );
+						}
+					}
+					
+					for( size_t i = 0; i < optionsGroup.size(); i++ )
+					{
+						std::string name = "g_";
+						name += avOption->unit;
+						if( name == optionsGroup.at( i )->getName() )
+						{
+							optBoolean = new avtranscoder::OptionBoolean( *avOption );
+							optionsGroup.at( i )->appendElement( *optBoolean );
+							break;
 						}
 					}
 				}
@@ -198,9 +214,16 @@ int optionChecker( const std::string& inputfilename )
 			for(size_t i = 0; i < choice->getChoices().size(); ++i )
 				std::cout << "Choice " << i << ": " << choice->getChoice( i ).first << " // " << choice->getChoice( i ).second << std::endl;
 		}
-		else if( option->getType() == "OptionChoice" )
+		else if( option->getType() == "OptionGroup" )
 		{
 			std::cout << "DefaultValue: " << option->getDefaultValue( valueInt ) << std::endl;
+			
+			avtranscoder::OptionGroup* group = dynamic_cast<avtranscoder::OptionGroup*>( option );
+			std::cout << "Nb choices: " << group->getNbElements() << std::endl;
+			for(size_t i = 0; i < group->getNbElements(); ++i )
+				std::cout << "Element " << i << ": " << 
+					group->getElement( i ).getName() << " // " <<
+					group->getElement( i ).getDefaultValue( valueBool ) << std::endl;
 		}
 	}
 }
