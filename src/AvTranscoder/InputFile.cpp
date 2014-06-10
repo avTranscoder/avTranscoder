@@ -196,7 +196,7 @@ void InputFile::seekAtFrame( const size_t frame )
 
 	if( av_seek_frame( m_formatContext, -1, pos, AVSEEK_FLAG_BACKWARD ) < 0 )
 	{
-		std::cerr << "Error during seek in file" << std::endl;
+		std::cerr << "Error during seek at " << frame << " (" << pos << ") in file" << std::endl;
 	}
 
 	for( std::vector<AvInputStream*>::iterator it = m_inputStreams.begin(); it != m_inputStreams.end(); ++it )
