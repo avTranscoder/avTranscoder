@@ -126,9 +126,9 @@ int optionChecker( const std::string& inputfilename )
 						if( avOption->unit == optionsChoice.at( i )->getUnit() )
 						{
 							if( avOption->help )
-								optionsChoice.at( i )->appendOption( avOption->name, avOption->help );
+								optionsChoice.at( i )->appendChoice( avOption->name, avOption->help );
 							else
-								optionsChoice.at( i )->appendOption( avOption->name );
+								optionsChoice.at( i )->appendChoice( avOption->name );
 							
 							double valueDouble;
 							if( avOption->default_val.dbl == optionsChoice.at( i )->getDefaultValue( valueDouble ) )
@@ -211,7 +211,7 @@ int optionChecker( const std::string& inputfilename )
 			avtranscoder::OptionChoice* choice = dynamic_cast<avtranscoder::OptionChoice*>( option );
 			std::cout << "Nb choices: " << choice->getNbChoices() << std::endl;
 			std::cout << "Default choice index: " << choice->getDefaultChoiceIndex() << std::endl;
-			for(size_t i = 0; i < choice->getChoices().size(); ++i )
+			for(size_t i = 0; i < choice->getNbChoices(); ++i )
 				std::cout << "Choice " << i << ": " << choice->getChoice( i ).first << " // " << choice->getChoice( i ).second << std::endl;
 		}
 		else if( option->getType() == "OptionGroup" )

@@ -17,7 +17,7 @@ namespace avtranscoder
 {
 
 /**
- * @brief Wrap of AVOption with a type of AV_OPT_TYPE_DOUBLE.
+ * @brief Wrap of AVOption with a type of AV_OPT_TYPE_INT and unit informed.
  */
 class OptionChoice : public Option
 {
@@ -36,13 +36,14 @@ public:
 	
 	void setDefaultChoiceIndex( int defaultChoiceIndex ) { m_defaultChoiceIndex = defaultChoiceIndex; }
 	
-	void appendOption( const char* name, const char* help );
-	void appendOption( const char* name );
+	void appendChoice( const char* name, const char* help );
+	void appendChoice( const char* name );
 
 private:
 	double m_defaultValue;
 	double m_minValue;
 	double m_maxValue;
+	
 	std::vector< std::pair<std::string, std::string> > m_choices;
 	int m_defaultChoiceIndex;
 };

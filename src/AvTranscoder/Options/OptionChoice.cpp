@@ -20,12 +20,12 @@ OptionChoice::~OptionChoice()
 	
 }
 
-void OptionChoice::appendOption( const char* name, const char* help )
+void OptionChoice::appendChoice( const char* name, const char* help )
 {
 	m_choices.push_back( std::pair<std::string, std::string>( name, help ) );
 }
 
-void OptionChoice::appendOption( const char* name )
+void OptionChoice::appendChoice( const char* name )
 {
 	m_choices.push_back( std::pair<std::string, std::string>( name, "" ) );
 }
