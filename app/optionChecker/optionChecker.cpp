@@ -1,16 +1,7 @@
 #include <AvTranscoder/InputFile.hpp>
 #include <AvTranscoder/DatasStructures/AudioDesc.hpp>
 
-#include <AvTranscoder/Options/OptionGroup.hpp>
-#include <AvTranscoder/Options/OptionChoice.hpp>
 #include <AvTranscoder/OptionLoader.hpp>
-
-extern "C" {
-#ifndef __STDC_CONSTANT_MACROS
-	#define __STDC_CONSTANT_MACROS
-#endif
-#include <libavutil/opt.h>
-}
 
 #include <string>
 #include <iostream>
@@ -32,58 +23,48 @@ int optionChecker( const std::string& inputfilename )
 	{
 		std::cout << std::left;
 		std::cout << "****************************" << std::endl;
-		std::cout << std::setw(30) << option->getName();
-		std::cout << ": " << option->getHelp() << std::endl;
-		std::cout << "Type: " << option->getType() << std::endl;
+		std::cout << std::setw(30) << option.getName();
+		std::cout << ": " << option.getHelp() << std::endl;
+		std::cout << "Type: " << option.getType() << std::endl;
 		
 		// get default value
-		int valueInt;
-		double valueDouble;
-		std::string valueStr;
-		bool valueBool;
-		std::pair<int, int> value2D;
 		
-		if( option->getType() == "OptionInt" )
+		if( option.getType() == avtranscoder::TypeInt )
 		{
-			std::cout << "DefaultValue: " << option->getDefaultValue( valueInt ) << std::endl;
+			std::cout << "DefaultValue: " << option.getDefaultValueInt() << std::endl;
 		}
-		else if( option->getType() == "OptionBoolean" )
+		else if( option.getType() == avtranscoder::TypeBool )
 		{
-			std::cout << "DefaultValue: " << option->getDefaultValue( valueBool ) << std::endl;
+			std::cout << "DefaultValue: " << option.getDefaultValueBool() << std::endl;
 		}
-		else if( option->getType() == "OptionDouble" )
+		else if( option.getType() == avtranscoder::TypeDouble )
 		{
-			std::cout << "DefaultValue: " << option->getDefaultValue( valueDouble ) << std::endl;
+			std::cout << "DefaultValue: " << option.getDefaultValueDouble() << std::endl;
 		}
-		else if( option->getType() == "OptionRatio" )
+		else if( option.getType() == avtranscoder::TypeRatio )
 		{
-			option->getDefaultValue( value2D );
-			std::cout << "DefaultValue: " << value2D.first << ", " << value2D.second << std::endl;
+			std::cout << "DefaultValue: " << option.getDefaultValueRatio().first << ", " << option.getDefaultValueRatio().second << std::endl;
 		}
-		else if( option->getType() == "OptionString" )
+		else if( option.getType() == avtranscoder::TypeString )
 		{
-			std::cout << "DefaultValue: " << option->getDefaultValue( valueStr ) << std::endl;
+			std::cout << "DefaultValue: " << option.getDefaultValueString() << std::endl;
 		}
-		else if( option->getType() == "OptionChoice" )
+		else if( option.getType() == avtranscoder::TypeChoice )
 		{
-			std::cout << "DefaultValue: " << option->getDefaultValue( valueDouble ) << std::endl;
-			
-			avtranscoder::OptionChoice* choice = dynamic_cast<avtranscoder::OptionChoice*>( option );
-			std::cout << "Nb choices: " << choice->getNbChoices() << std::endl;
-			std::cout << "Default choice index: " << choice->getDefaultChoiceIndex() << std::endl;
-			for(size_t i = 0; i < choice->getNbChoices(); ++i )
-				std::cout << "Choice " << i << ": " << choice->getChoice( i ).first << " // " << choice->getChoice( i ).second << std::endl;
+			std::cout << "Nb choices: " << option.getNbChilds() << std::endl;
+			std::cout << "Default choice index: " << option.getDefaultChildIndex() << std::endl;
+			for(size_t i = 0; i < option.getNbChilds(); ++i )
+				std::cout << "Choice " << i << ": " << 
+					option.getChild( i ).getName() << " // " << 
+					option.getChild( i ).getHelp() << std::endl;
 		}
-		else if( option->getType() == "OptionGroup" )
+		else if( option.getType() == avtranscoder::TypeGroup )
 		{
-			std::cout << "DefaultValue: " << option->getDefaultValue( valueInt ) << std::endl;
-			
-			avtranscoder::OptionGroup* group = dynamic_cast<avtranscoder::OptionGroup*>( option );
-			std::cout << "Nb choices: " << group->getNbElements() << std::endl;
-			for(size_t i = 0; i < group->getNbElements(); ++i )
+			std::cout << "Nb choices: " << option.getNbChilds() << std::endl;
+			for(size_t i = 0; i < option.getNbChilds(); ++i )
 				std::cout << "Element " << i << ": " << 
-					group->getElement( i ).getName() << " // " <<
-					group->getElement( i ).getDefaultValue( valueBool ) << std::endl;
+					option.getChild( i ).getName() << " // " <<
+					option.getChild( i ).getDefaultValueBool() << std::endl;
 		}
 	}
 }

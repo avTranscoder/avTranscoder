@@ -17,7 +17,7 @@ class OptionLoader
 public:
 	OptionLoader();
 	
-	std::vector<Option*>& getOptions() { return m_options; }
+	std::vector<Option>& getOptions() { return m_options; }
 	
 	/**
      * @param av_class: a libav / ffmpeg object which contains AVOption.
@@ -25,7 +25,7 @@ public:
 	void loadOptions( void* av_class, int req_flags, int rej_flags );
 	
 private:
-	std::vector<Option*> m_options;
+	std::vector<Option> m_options;
 };
 
 }
