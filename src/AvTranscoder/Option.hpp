@@ -18,7 +18,7 @@ namespace avtranscoder
 class Value2D;
 
 /**
- * @breif Abstract class to wrap AVOption.
+ * @brief Abstract class to wrap AVOption.
  * Subclasses  implement specific AVOption: int, boolean...
  */
 class Option
