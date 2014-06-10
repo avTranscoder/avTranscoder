@@ -36,6 +36,8 @@ AvInputStream::AvInputStream( InputFile& inputFile, const size_t streamIndex )
 		, m_streamIndex( streamIndex )
 		, m_bufferized( false )
 {
+	if( m_inputFile->getFormatContext().streams[m_streamIndex]->codec->codec_type == AVMEDIA_TYPE_AUDIO )
+		m_inputFile->getFormatContext().streams[m_streamIndex]->codec->block_align = 5760;
 }
 
 AvInputStream::~AvInputStream( )
