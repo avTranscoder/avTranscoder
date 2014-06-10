@@ -5,6 +5,13 @@
 #include <AvTranscoder/Options/OptionChoice.hpp>
 #include <AvTranscoder/OptionLoader.hpp>
 
+extern "C" {
+#ifndef __STDC_CONSTANT_MACROS
+	#define __STDC_CONSTANT_MACROS
+#endif
+#include <libavutil/opt.h>
+}
+
 #include <string>
 #include <iostream>
 #include <iomanip>
@@ -18,7 +25,7 @@ int optionChecker( const std::string& inputfilename )
 	avtranscoder::AudioDesc audioDesc( inputFile.getStream( 0 ).getAudioDesc() );
 	
 	avtranscoder::OptionLoader optionLoader;
-	optionLoader.loadOptions( audioDesc.getCodecContext() );
+	optionLoader.loadOptions( audioDesc.getCodecContext(), 0, 0 );
 	
 	// display Options
 	for( auto option : optionLoader.getOptions() )

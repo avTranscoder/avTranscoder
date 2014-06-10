@@ -20,7 +20,7 @@ OptionLoader::OptionLoader()
 	
 }
 
-void OptionLoader::loadOptions( void* av_class )
+void OptionLoader::loadOptions( void* av_class, int req_flags, int rej_flags )
 {
 	// tmp vectors to access easely to the OptionChoice/OptionGroup to add choice / boolean to them
 	std::vector<avtranscoder::OptionChoice*> optionsChoice; 
@@ -31,7 +31,10 @@ void OptionLoader::loadOptions( void* av_class )
 		
 		while( ( avOption = av_opt_next( av_class, avOption ) ) != NULL )
 		{	
-			if( !avOption || ! avOption->name )
+			if( !avOption || 
+				! avOption->name ||
+				( avOption->flags & req_flags ) != req_flags ||
+				( avOption->flags & rej_flags ) )
 			{
 				continue;
 			}
@@ -109,6 +112,8 @@ void OptionLoader::loadOptions( void* av_class )
 		{
 			if( !avOption ||
 				!avOption->name ||
+				( avOption->flags & req_flags ) != req_flags ||
+				( avOption->flags & rej_flags ) ||
 				( avOption->unit && avOption->type == AV_OPT_TYPE_FLAGS ) ||
 				( avOption->unit && avOption->type == AV_OPT_TYPE_INT ) )
 			{
