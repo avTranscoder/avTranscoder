@@ -11,11 +11,10 @@ extern "C" {
 #include <vector>
 #include <bitset>
 #include <string>
+#include <utility> //pair
 
 namespace avtranscoder
 {
-
-class Value2D;
 
 /**
  * @brief Abstract class to wrap AVOption.
@@ -33,7 +32,7 @@ public:
 	virtual double getDefaultValue( double& value ) const;
 	virtual std::string& getDefaultValue( std::string& value ) const;
 	virtual bool getDefaultValue( bool& value ) const;
-	virtual Value2D& getDefaultValue( Value2D& value ) const;
+	virtual std::pair<int, int>& getDefaultValue( std::pair<int, int>& value ) const;
 	
 	std::string& getName() { return m_name; }
 	std::string& getHelp() { return m_help; }

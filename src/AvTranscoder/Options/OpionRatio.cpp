@@ -1,10 +1,10 @@
-#include "Option2D.hpp"
+#include "OpionRatio.hpp"
 
 
 namespace avtranscoder
 {
 
-Option2D::Option2D( const AVOption& avOption )
+OpionRatio::OpionRatio( const AVOption& avOption )
 	: Option( avOption )
 	, m_defaultValue( avOption.default_val.q.num, avOption.default_val.q.den )
 	, m_minValue( avOption.min )
@@ -13,7 +13,7 @@ Option2D::Option2D( const AVOption& avOption )
 	
 }
 
-Option2D::~Option2D()
+OpionRatio::~OpionRatio()
 {
 	
 }

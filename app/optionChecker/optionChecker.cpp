@@ -5,7 +5,7 @@
 #include <AvTranscoder/Options/OptionDouble.hpp>
 #include <AvTranscoder/Options/OptionString.hpp>
 #include <AvTranscoder/Options/OptionBoolean.hpp>
-#include <AvTranscoder/Options/Option2D.hpp>
+#include <AvTranscoder/Options/OpionRatio.hpp>
 #include <AvTranscoder/Options/OptionGroup.hpp>
 #include <AvTranscoder/Options/OptionChoice.hpp>
 #include <AvTranscoder/Option.hpp>
@@ -14,6 +14,7 @@
 #include <string>
 #include <iostream>
 #include <iomanip>
+#include <utility> //pair
 
 int optionChecker( const std::string& inputfilename )
 {
@@ -81,7 +82,7 @@ int optionChecker( const std::string& inputfilename )
 				}
 				case AV_OPT_TYPE_RATIONAL:
 				{
-					opt = new avtranscoder::Option2D( *avOption );
+					opt = new avtranscoder::OpionRatio( *avOption );
 					break;
 				}
 				case AV_OPT_TYPE_BINARY:
@@ -181,7 +182,7 @@ int optionChecker( const std::string& inputfilename )
 		double valueDouble;
 		std::string valueStr;
 		bool valueBool;
-		avtranscoder::Value2D value2D;
+		std::pair<int, int> value2D;
 		
 		if( option->getType() == "OptionInt" )
 		{
@@ -195,10 +196,10 @@ int optionChecker( const std::string& inputfilename )
 		{
 			std::cout << "DefaultValue: " << option->getDefaultValue( valueDouble ) << std::endl;
 		}
-		else if( option->getType() == "Option2D" )
+		else if( option->getType() == "OptionRatio" )
 		{
 			option->getDefaultValue( value2D );
-			std::cout << "DefaultValue: " << value2D.num << ", " << value2D.dem << std::endl;
+			std::cout << "DefaultValue: " << value2D.first << ", " << value2D.second << std::endl;
 		}
 		else if( option->getType() == "OptionString" )
 		{

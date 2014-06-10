@@ -33,9 +33,9 @@ bool Option::getDefaultValue( bool& value ) const
 	throw std::runtime_error( "Wrong access to getDefaultValue (bool)." );
 }
 
-Value2D& Option::getDefaultValue( Value2D& value ) const
+std::pair<int, int>& Option::getDefaultValue( std::pair<int, int>& value ) const
 {
-	throw std::runtime_error( "Wrong access to getDefaultValue (Value2D)." );
+	throw std::runtime_error( "Wrong access to getDefaultValue (std::pair<int, int>)." );
 }
 
 }
