@@ -1,5 +1,5 @@
 #ifndef _AV_TRANSCODER_OPTION_2D_HPP
-#define	_AV_TRANSCODER_OPTION_2D_HPP
+#define _AV_TRANSCODER_OPTION_2D_HPP
 
 #include <AvTranscoder/Option.hpp>
 
