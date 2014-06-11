@@ -17,17 +17,49 @@ namespace avtranscoder
 
 OptionLoader::OptionLoader()
 	: m_options()
+	, m_avFormatContext( NULL )
+	, m_avCodecContext( NULL )
 {
+	m_avFormatContext = avformat_alloc_context();
 	
+#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT( 53, 8, 0 )
+	m_avCodecContext = avcodec_alloc_context();
+	// deprecated in the same version
+	//m_avCodecContext = avcodec_alloc_context2( AVMEDIA_TYPE_UNKNOWN );
+#else
+	AVCodec* avCodec = NULL;
+	m_avCodecContext = avcodec_alloc_context3( avCodec );
+#endif
 }
 
-void OptionLoader::loadOptions( void* av_class, int req_flags, int rej_flags )
+OptionLoader::~OptionLoader()
+{
+	avformat_free_context( m_avFormatContext );
+	avcodec_close( m_avCodecContext );
+}
+
+void OptionLoader::loadOptions( int req_flags, int rej_flags )
 {
 	std::map<std::string, int> optionUnitToIndex;
 	std::vector<Option> childOptions;
 	
 	const AVOption* avOption = NULL;
-
+	
+	// get ffmpeg / libav object on which we'll scan AVOption
+	void* av_class = NULL;
+	if( ( req_flags & AV_OPT_FLAG_VIDEO_PARAM ) == AV_OPT_FLAG_VIDEO_PARAM ||
+		( req_flags & AV_OPT_FLAG_AUDIO_PARAM ) == AV_OPT_FLAG_AUDIO_PARAM ||
+		( req_flags & AV_OPT_FLAG_METADATA ) == AV_OPT_FLAG_METADATA ||
+		( req_flags & AV_OPT_FLAG_FILTERING_PARAM ) == AV_OPT_FLAG_FILTERING_PARAM ||
+		( req_flags & AV_OPT_FLAG_SUBTITLE_PARAM ) == AV_OPT_FLAG_SUBTITLE_PARAM )
+	{
+		av_class = (void*)m_avCodecContext;
+	}
+	else
+	{
+		av_class = (void*)m_avFormatContext;
+	}
+	
 	// iterate on options
 	while( ( avOption = av_opt_next( av_class, avOption ) ) != NULL )
 	{	
@@ -65,7 +97,7 @@ void OptionLoader::loadOptions( void* av_class, int req_flags, int rej_flags )
 		
 		m_options.at( indexParentOption ).appendChild( *it );
 		
-		// child to a Choice
+		// child of a Choice
 		if( m_options.at( indexParentOption ).getType() == TypeChoice )
 		{
 			if( it->getDefaultValueInt() == m_options.at( indexParentOption ).getDefaultValueInt() )

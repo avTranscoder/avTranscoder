@@ -1,21 +1,14 @@
-#include <AvTranscoder/InputFile.hpp>
-#include <AvTranscoder/DatasStructures/AudioDesc.hpp>
-
 #include <AvTranscoder/OptionLoader.hpp>
+#include <AvTranscoder/Option.hpp>
 
 #include <string>
 #include <iostream>
 #include <utility> //pair
 
 int optionChecker( const std::string& inputfilename )
-{
-	avtranscoder::InputFile inputFile( inputfilename );
-	inputFile.analyse();
-	
-	avtranscoder::AudioDesc audioDesc( inputFile.getStream( 0 ).getAudioDesc() );
-	
+{	
 	avtranscoder::OptionLoader optionLoader;
-	optionLoader.loadOptions( audioDesc.getCodecContext(), 0, 0 );
+	optionLoader.loadOptions( 0, 0 );
 	
 	// display Options
 	for( auto option : optionLoader.getOptions() )

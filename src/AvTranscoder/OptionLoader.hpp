@@ -3,6 +3,14 @@
 
 #include <AvTranscoder/Option.hpp>
 
+extern "C" {
+#ifndef __STDC_CONSTANT_MACROS
+	#define __STDC_CONSTANT_MACROS
+#endif
+	#include <libavcodec/avcodec.h>
+	#include <libavformat/avformat.h>
+}
+
 #include <vector>
 
 namespace avtranscoder
@@ -16,16 +24,26 @@ class OptionLoader
 {
 public:
 	OptionLoader();
+	~OptionLoader();
 	
 	std::vector<Option>& getOptions() { return m_options; }
 	
+	const AVFormatContext* getFormatContext() const { return m_avFormatContext; }
+	const AVCodecContext* getCodecContext() const { return m_avCodecContext; }
+	
 	/**
-     * @param av_class: a libav / ffmpeg object which contains AVOption.
+	 * @brief: load array of Option depending on the flags.
+     * @param req_flags
+     * @param rej_flags
      */
-	void loadOptions( void* av_class, int req_flags, int rej_flags );
+	void loadOptions( int req_flags, int rej_flags );
 	
 private:
 	std::vector<Option> m_options;
+	
+	AVFormatContext* m_avFormatContext;
+	AVCodecContext* m_avCodecContext;
+
 };
 
 }
