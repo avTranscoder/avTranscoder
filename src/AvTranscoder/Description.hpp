@@ -11,6 +11,7 @@ extern "C" {
 
 #include <vector>
 #include <cstring>
+#include <algorithm> //sort, unique
 
 namespace avtranscoder
 {
@@ -44,7 +45,7 @@ std::vector<std::string> getInputExtensions()
 				ext = strtok( NULL, "," );
 			}
 			
-			//parse name (name's format defines (in general) extensions )
+			// parse name (name's format defines (in general) extensions )
 			ext = const_cast<char*>( iFormat->name );
 			while( ext != NULL )
 			{
@@ -53,6 +54,12 @@ std::vector<std::string> getInputExtensions()
 			}
 		}
 	}
+	// sort
+	std::sort( extensions.begin(), extensions.end() ); 
+	// suppress duplicates
+	std::vector<std::string>::iterator last = std::unique( extensions.begin(), extensions.end() );
+	extensions.erase( last, extensions.end() );
+	
 	return extensions;
 }
 
