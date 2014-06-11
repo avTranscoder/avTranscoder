@@ -5,7 +5,6 @@
 
 #include <string>
 #include <iostream>
-#include <iomanip>
 #include <utility> //pair
 
 int optionChecker( const std::string& inputfilename )
@@ -23,8 +22,9 @@ int optionChecker( const std::string& inputfilename )
 	{
 		std::cout << std::left;
 		std::cout << "****************************" << std::endl;
-		std::cout << std::setw(30) << option.getName();
-		std::cout << ": " << option.getHelp() << std::endl;
+		std::cout << "Name: " << option.getName() << std::endl;
+		std::cout << "Unit : " << option.getUnit() << std::endl;
+		std::cout << "Help: " << option.getHelp() << std::endl;
 		std::cout << "Type: " << option.getType() << std::endl;
 		
 		// get default value
