@@ -43,17 +43,18 @@ public:
 	~Option() {}
 	
 	OptionType getType() const;
-	const std::string getName() { return std::string( m_avOption.name ? m_avOption.name : "" ); }
-	const std::string getHelp() { return std::string( m_avOption.help ? m_avOption.help : "" ); }
-	const std::string getUnit() { return std::string( m_avOption.unit ? m_avOption.unit : "" ); }
+	std::string getName() const { return std::string( m_avOption.name ? m_avOption.name : "" ); }
+	std::string getHelp() const { return std::string( m_avOption.help ? m_avOption.help : "" ); }
+	std::string getUnit() const { return std::string( m_avOption.unit ? m_avOption.unit : "" ); }
+	int getOffset() const { return m_avOption.offset; }
 	
 	// flags
-	int getFlags() { return m_avOption.flags; }
-	bool isEncodingOpt(){ return m_avOption.flags & AV_OPT_FLAG_ENCODING_PARAM; }
-	bool isDecodingOpt(){ return m_avOption.flags & AV_OPT_FLAG_DECODING_PARAM; }
-	bool isAudioOpt(){ return m_avOption.flags & AV_OPT_FLAG_AUDIO_PARAM; }
-	bool isVideoOpt(){ return m_avOption.flags & AV_OPT_FLAG_VIDEO_PARAM; }
-	bool isSubtitleOpt(){ return m_avOption.flags & AV_OPT_FLAG_SUBTITLE_PARAM; }
+	int getFlags() const { return m_avOption.flags; }
+	bool isEncodingOpt() const { return m_avOption.flags & AV_OPT_FLAG_ENCODING_PARAM; }
+	bool isDecodingOpt() const { return m_avOption.flags & AV_OPT_FLAG_DECODING_PARAM; }
+	bool isAudioOpt() const { return m_avOption.flags & AV_OPT_FLAG_AUDIO_PARAM; }
+	bool isVideoOpt() const { return m_avOption.flags & AV_OPT_FLAG_VIDEO_PARAM; }
+	bool isSubtitleOpt() const { return m_avOption.flags & AV_OPT_FLAG_SUBTITLE_PARAM; }
 	
 	// default value
 	bool getDefaultValueBool() const;
@@ -63,11 +64,12 @@ public:
 	std::pair<int, int> getDefaultValueRatio() const;
 	
 	// array of childs
-	bool hasChild() { return ! m_options.empty(); }
-	std::vector<Option> getChilds() { return m_options; }
-	Option& getChild( size_t index ) { return m_options.at( index ); }
-	size_t getNbChilds() { return m_options.size(); }
+	bool hasChild() const { return ! m_options.empty(); }
+	const std::vector<Option>& getChilds() { return m_options; }
+	const Option& getChild( size_t index ) { return m_options.at( index ); }
+	size_t getNbChilds() const { return m_options.size(); }
 	int getDefaultChildIndex() const { return m_defaultChildIndex; }
+	
 	void setDefaultChildIndex( size_t index ) { m_defaultChildIndex = index; }
 	void appendChild( const Option& child );
 	
