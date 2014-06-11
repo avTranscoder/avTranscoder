@@ -12,6 +12,9 @@ extern "C" {
 #include <vector>
 #include <cstring>
 
+namespace avtranscoder
+{
+
 std::vector<size_t> getVersion()
 {
 	std::vector<size_t> version;
@@ -52,7 +55,6 @@ std::vector<std::string> getOutputExtensions()
 	return extensions;
 }
 
-
+}
 
 #endif
-
