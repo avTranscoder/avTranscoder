@@ -38,7 +38,8 @@ std::vector<std::string> getInputExtensions()
 		if( iFormat->extensions != NULL )
 		{
 			// parse extensions
-			char* ext = const_cast<char*>( iFormat->extensions );
+			std::string exts = std::string( iFormat->extensions );
+			char* ext = strtok( const_cast<char*>( exts.c_str() ), "," );
 			while( ext != NULL )
 			{
 				extensions.push_back( std::string( ext ) );
@@ -46,7 +47,9 @@ std::vector<std::string> getInputExtensions()
 			}
 			
 			// parse name (name's format defines (in general) extensions )
-			ext = const_cast<char*>( iFormat->name );
+			// don't need to do it in recent LibAV/FFMpeg versions
+			exts = std::string( iFormat->name );
+			ext = strtok( const_cast<char*>( exts.c_str() ), "," );
 			while( ext != NULL )
 			{
 				extensions.push_back( std::string( ext ) );
