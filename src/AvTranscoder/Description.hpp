@@ -36,8 +36,16 @@ std::vector<std::string> getInputExtensions()
 	{
 		if( iFormat->extensions != NULL )
 		{
+			// parse extensions
 			char* ext = const_cast<char*>( iFormat->extensions );
-
+			while( ext != NULL )
+			{
+				extensions.push_back( std::string( ext ) );
+				ext = strtok( NULL, "," );
+			}
+			
+			//parse name (name's format defines (in general) extensions )
+			ext = const_cast<char*>( iFormat->name );
 			while( ext != NULL )
 			{
 				extensions.push_back( std::string( ext ) );
