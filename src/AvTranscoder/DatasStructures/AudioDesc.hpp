@@ -15,6 +15,8 @@ extern "C" {
 #include <libavcodec/avcodec.h>
 }
 
+#include <AvTranscoder/DatasStructures/AudioFrame.hpp>
+
 namespace avtranscoder
 {
 
@@ -48,6 +50,8 @@ public:
 	AVCodecContext* getCodecContext() const { return m_codecContext; }
 #endif
 
+	AudioFrameDesc getFrameDesc() const;
+	
 private:
 	void initCodecContext( );
 

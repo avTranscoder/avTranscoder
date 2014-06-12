@@ -20,70 +20,27 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 {
 	using namespace avtranscoder;
 
-	av_log_set_level( AV_LOG_FATAL );
-	//av_log_set_level( AV_LOG_DEBUG );
+	// av_log_set_level( AV_LOG_DEBUG );
 
-	InputFile inputFile( inputfilename );
-	inputFile.analyse();
+	InputFile input( inputfilename );
+	input.analyse();
+
+	input.readStream( input.getProperties().videoStreams.at( 0 ).streamId );
 
 	// init video decoders
-	InputStreamVideo inputStreamVideo( inputFile.getStream( 0 ) );
+	InputStreamVideo inputStreamVideo( input.getStream( 0 ) );
+	Image sourceImage( input.getStream( 0 ).getVideoDesc().getImageDesc() );
 
-	// init audio decoders
-	//InputStreamAudio inputStreamAudio( inputFile.getStream( 1 ) );
-	//InputStreamAudio inputStreamAudioRight( inputFile.getStream( 2 ) );
-
-	// init video & audio encoders
+	// init video encoder
 	OutputStreamVideo outputStreamVideo;
-
-	VideoDesc& videoDesc = outputStreamVideo.getVideoDesc();
-
-	Pixel oPixel;
-
-	oPixel.setSubsampling( eSubsampling422 );
-	oPixel.setBitsPerPixel( 16 );
-
-	ImageDesc imageDesc;
-	imageDesc.setWidth ( inputFile.getProperties().videoStreams.at(0).width );
-	imageDesc.setHeight( inputFile.getProperties().videoStreams.at(0).height );
-	imageDesc.setPixel ( oPixel );
-
-	Image sourceImage( imageDesc );
-
-	videoDesc.setVideoCodec( "mpeg2video" );
-	videoDesc.set( "b", 5000 );
-
-	try
-	{
-		videoDesc.set( "unknownParameter", 120000000 );
-	}
-	catch( const std::exception& e )
-	{
-		std::cout << "[ERROR] " << e.what() << std::endl;
-	}
-
-	videoDesc.setTimeBase( 1, 25 ); // 25 fps
-
-	videoDesc.setImageParameters( sourceImage.desc() );
-
-	//videoDesc.initCodecContext();
-
-	if( !outputStreamVideo.setup( ) )
-	{
-		std::cout << "error during initialising video output stream" << std::endl;
-		exit( -1 );
-	}
-
-	Image imageToEncode( sourceImage );
+	outputStreamVideo.setProfile( "xdcamhd422" );
+	Image imageToEncode( outputStreamVideo.getVideoDesc().getImageDesc() );
+	
 	DataStream codedImage;
 
-
-	// OutputStreamAudio osAudioLeft ( );  // "AudioStreamEncoder" / "AudioOutputStream" ?
-	// OutputStreamAudio osAudioRight( );
-	// OutputStreamAudio osAudioLfe  ( );
-
 	// setup wrapper
-	OutputFile of( outputFilename );  // "Format" ? to keep libav naming
+	//mxftkwrapper::MxftkOutputFile of( outputFilename );
+	OutputFile of( outputFilename );
 
 
 	if( ! of.setup( ) )
@@ -92,25 +49,9 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 		exit( -1 );
 	}
 
-	of.addVideoStream( inputFile.getStream( 0 ).getVideoDesc() );
-	/*of.addAudioStream();
-	of.addAudioStream();
-	of.addAudioStream();
-	of.addAudioStream();*/
+	of.addVideoStream( outputStreamVideo.getVideoDesc() );
 
-
-	/*eVideoLeft  = wrapper.createVideoEncoder( );
-	eVideoRight = wrapper.createVideoEncoder( dVideo );
-
-	eAudioLeft = wrapper.createAudioEncoder( 2 );
-
-
-	wrapper.createAudioEncoder( eAudioLeft, 2 );*/
-
-	// AudioFrameDesc audioFrameDesc;
-	// AudioFrame sourceAudio( audioFrameDesc );
-
-
+	of.beginWrap();
 
 	ColorTransform ct;
 
@@ -118,26 +59,32 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 	// Encodage/transcodage
 	std::cout << "start transcoding" << std::endl;
 
-	size_t frame = 0;
+	size_t frame = 1;
 
 	while( inputStreamVideo.readNextFrame( sourceImage ) )
 	{
 		std::cout << "\rprocess frame " << frame << std::flush;
-
+		
 		ct.convert( sourceImage, imageToEncode );
 
-		outputStreamVideo.encodeFrame( imageToEncode, codedImage );
-
-		of.wrap( codedImage, 0 );
+		if( outputStreamVideo.encodeFrame( imageToEncode, codedImage ) )
+			of.wrap( codedImage, 0 );
 
 		++frame;
 	}
+
+	while( outputStreamVideo.encodeFrame( codedImage ) )
+	{
+		of.wrap( codedImage, 0 );
+	}
+
+	of.endWrap();
 	std::cout << std::endl;
 }
 
 int main( int argc, char** argv )
 {
-	if( argc != 2 )
+	if( argc != 3 )
 	{
 		std::cout << "av++ require a media filename" << std::endl;
 		return( -1 );
@@ -145,8 +92,15 @@ int main( int argc, char** argv )
 
 	std::cout << "start ..." << std::endl;
 
-	// example of video Transcoding
-	transcodeVideo( argv[1], "transcodedVideo.avi" );
+	try
+	{
+		transcodeVideo( argv[1], argv[2] );
+	}
+	catch( std::exception &e )
+	{
+		std::cout << "[ERROR] " << e.what() << std::endl;
+	}
+
 
 	std::cout << "end ..." << std::endl;
 }

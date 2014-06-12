@@ -106,15 +106,23 @@ bool InputStreamVideo::readNextFrame( Image& frameBuffer )
 		packet.stream_index = m_selectedStream;
 		packet.data         = data.getPtr();
 		packet.size         = data.getSize();
-
-		avcodec_decode_video2( m_codecContext, m_frame, &got_frame, &packet );
-
+		
+		int ret = avcodec_decode_video2( m_codecContext, m_frame, &got_frame, &packet );
+		
+		if( ret < 0 )
+		{
+			char err[250];
+			av_strerror( ret, err, 250);
+			
+			throw std::runtime_error( "an error occured during video decoding - " + std::string(err) );
+		}
+		
 		av_free_packet( &packet );
 	}
 
 	size_t decodedSize = avpicture_get_size( (AVPixelFormat)m_frame->format, m_frame->width, m_frame->height );
 	if( frameBuffer.getBuffer().size() != decodedSize )
-		frameBuffer.getBuffer().resize( avpicture_get_size( (AVPixelFormat)m_frame->format, m_frame->width, m_frame->height ) );
+		frameBuffer.getBuffer().resize( decodedSize );
 
 	// Copy pixel data from an AVPicture into one contiguous buffer.
 	avpicture_layout( (AVPicture*)m_frame, (AVPixelFormat)m_frame->format, m_frame->width, m_frame->height, &frameBuffer.getBuffer()[0], frameBuffer.getBuffer().size() );

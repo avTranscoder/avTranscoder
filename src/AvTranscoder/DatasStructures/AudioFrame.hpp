@@ -65,6 +65,7 @@ public:
 	AudioFrame( const AudioFrameDesc& ref )
 		: m_dataBuffer( ref.getDataSize(), 0 )
 		, m_audioFrameDesc( ref )
+		, m_nbSamples( 0 )
 	{ }
 
 	const AudioFrameDesc& desc() const    { return m_audioFrameDesc; }
@@ -74,10 +75,14 @@ public:
 	const unsigned char*  getPtr()  const { return &m_dataBuffer[0]; }
 #endif
 	size_t                getSize() const { return m_dataBuffer.size(); }
+	
+	size_t getNbSamples() const { return m_nbSamples; }
+	void setNbSamples( size_t nbSamples ) { m_nbSamples = nbSamples; }
 
 private:
 	DataBuffer m_dataBuffer;
 	const AudioFrameDesc m_audioFrameDesc;
+	size_t m_nbSamples;
 };
 
 }
