@@ -9,6 +9,8 @@ extern "C" {
 #include <libavutil/avutil.h>
 }
 
+#include "Profile.hpp"
+
 namespace avtranscoder
 {
 
@@ -19,6 +21,7 @@ OutputStreamAudio::OutputStreamAudio()
 
 bool OutputStreamAudio::setup()
 {
+	std::cout << "[OutputStreamAudio::setup] ..." << std::endl;
 	av_register_all();  // Warning: should be called only once
 
 	AVCodecContext* codecContext( m_audioDesc.getCodecContext() );
@@ -160,4 +163,17 @@ bool OutputStreamAudio::encodeFrame( DataStream& codedFrame )
 #endif
 }
 
+void OutputStreamAudio::setProfile( const std::string& profile )
+{
+	Profile p;
+	p.loadAudioProfiles();
+	Profile::ProfileDesc profDesc = p.getProfile( profile );
+
+	m_audioDesc.setAudioCodec( profDesc["codec"] );
+	m_audioDesc.setAudioParameters( 48000, 2, av_get_sample_fmt( profDesc["sample_fmt"].c_str() ) );
+
+	setup();
 }
+
+}
+

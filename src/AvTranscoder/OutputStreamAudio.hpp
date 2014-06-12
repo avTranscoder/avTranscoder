@@ -26,6 +26,8 @@ public:
 	 */
 	bool encodeFrame( DataStream& codedFrame );
 	
+	void setProfile( const std::string& profile );
+
 	AudioDesc& getAudioDesc() { return m_audioDesc; }
 
 private:
