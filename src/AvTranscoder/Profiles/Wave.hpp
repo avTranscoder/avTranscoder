@@ -1,10 +1,10 @@
-#ifndef _AVTRANSCODER_PROFIL_XDCAMHD422_HPP_
-#define _AVTRANSCODER_PROFIL_XDCAMHD422_HPP_
+#ifndef _AVTRANSCODER_PROFIL_WAVE_HPP_
+#define _AVTRANSCODER_PROFIL_WAVE_HPP_
 
 namespace avtranscoder
 {
 
-void loadXdCamHD422( Profile::ProfilesDesc& profiles )
+void loadWave( Profile::ProfilesDesc& profiles )
 {
 	Profile::ProfileDesc wave24bits;
 
@@ -21,6 +21,9 @@ void loadXdCamHD422( Profile::ProfilesDesc& profiles )
 
 	wave16bits[ "codec" ] = "pcm_s16le";
 	wave16bits[ "sample_fmt" ] = "s16";
+
+	profiles.push_back( wave24bits );
+	profiles.push_back( wave16bits );
 }
 
 }
