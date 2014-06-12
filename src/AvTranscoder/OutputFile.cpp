@@ -27,6 +27,7 @@ OutputFile::OutputFile( const std::string& file )
 	, filename      ( file )
 	, packetCount   ( 0 )
 {
+	
 }
 
 bool OutputFile::setup()
@@ -131,6 +132,18 @@ bool OutputFile::wrap( const DataStream& data, const size_t streamId )
 
 bool OutputFile::endWrap( )
 {
+	if( av_write_trailer( formatContext ) != 0)
+	{
+		throw std::runtime_error( "could not write trailer" );
+	}
+	avcodec_close( stream->codec );
+	if( !( formatContext->oformat->flags & AVFMT_NOFILE ) )
+	{
+		avio_close( formatContext->pb );
+	}
+	avformat_free_context( formatContext );
+	//freeFormat();
+	
 	return true;
 }
 
