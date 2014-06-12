@@ -2,6 +2,7 @@
 
 #include <AvTranscoder/Profiles/XdCamHd422.hpp>
 #include <AvTranscoder/Profiles/DNxHD.hpp>
+#include <AvTranscoder/Profiles/Wave.hpp>
 
 namespace avtranscoder
 {
@@ -19,6 +20,11 @@ void Profile::loadProfiles()
 {
 	loadXdCamHD422( _profiles );
 	loadDNxHD( _profiles );
+}
+
+void Profile::loadAudioProfiles()
+{
+	loadWave( _profiles );
 }
 
 const Profile::ProfilesDesc& Profile::getProfiles()
