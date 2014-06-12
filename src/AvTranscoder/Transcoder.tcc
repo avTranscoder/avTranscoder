@@ -68,9 +68,9 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 		{
 			std::cout << "[Transcoder::add] AVMEDIA_TYPE_VIDEO" << std::endl;
 			_inputStreams.push_back( & referenceFile->getStream( streamIndex ) );
-			// StreamTranscoder streamTranscoder( referenceFile->getStream( streamIndex ), true );
-			// streamTranscoder.init( profile );
-			// _streamTranscoders.push_back( & streamTranscoder );
+			StreamTranscoder streamTranscoder( referenceFile->getStream( streamIndex ), true );
+			streamTranscoder.init( profile );
+			_streamTranscoders.push_back( & streamTranscoder );
 			_outputFile.addVideoStream( _inputStreams.back()->getVideoDesc() );
 			break;
 		}
@@ -78,9 +78,9 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 		{
 			std::cout << "[Transcoder::add] AVMEDIA_TYPE_AUDIO" << std::endl;
 			_inputStreams.push_back( & referenceFile->getStream( streamIndex ) );
-			// StreamTranscoder streamTranscoder( referenceFile->getStream( streamIndex ), false );
-			// streamTranscoder.init( profile );
-			// _streamTranscoders.push_back( & streamTranscoder );
+			StreamTranscoder streamTranscoder( referenceFile->getStream( streamIndex ), false );
+			streamTranscoder.init( profile );
+			_streamTranscoders.push_back( & streamTranscoder );
 			_outputFile.addAudioStream( _inputStreams.back()->getAudioDesc() );
 			break;
 		}
@@ -110,7 +110,7 @@ void Transcoder::add( const StreamDefinitions& streamDefs )
 		     streamDefs.at( streamDest ).transcodeProfile );
 	}
 	std::cout << "[Transcoder::add]      _inputStreams: " << _inputStreams.size() << std::endl;
-	// std::cout << "[Transcoder::add] _streamTranscoders: " << _streamTranscoders.size() << std::endl;
+	std::cout << "[Transcoder::add] _streamTranscoders: " << _streamTranscoders.size() << std::endl;
 	return;
 }
 
