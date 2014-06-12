@@ -8,7 +8,7 @@
 int optionChecker( const std::string& inputfilename )
 {	
 	avtranscoder::OptionLoader optionLoader;
-	optionLoader.loadOptions( 0, 0 );
+	optionLoader.loadOptions( AV_OPT_FLAG_AUDIO_PARAM );
 	
 	// display Options
 	for( auto option : optionLoader.getOptions() )

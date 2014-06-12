@@ -33,10 +33,9 @@ public:
 	
 	/**
 	 * @brief: load array of Option depending on the flags.
-     * @param req_flags
-     * @param rej_flags
+     * @param req_flags: AVOption flags we want to load.
      */
-	void loadOptions( int req_flags, int rej_flags );
+	void loadOptions( int req_flags );
 	
 private:
 	std::vector<Option> m_options;

@@ -35,10 +35,10 @@ OptionLoader::OptionLoader()
 OptionLoader::~OptionLoader()
 {
 	avformat_free_context( m_avFormatContext );
-	avcodec_close( m_avCodecContext );
+	av_free( m_avCodecContext );
 }
 
-void OptionLoader::loadOptions( int req_flags, int rej_flags )
+void OptionLoader::loadOptions( int req_flags )
 {
 	std::map<std::string, int> optionUnitToIndex;
 	std::vector<Option> childOptions;
@@ -65,8 +65,7 @@ void OptionLoader::loadOptions( int req_flags, int rej_flags )
 	{	
 		if( !avOption || 
 			! avOption->name ||
-			( avOption->flags & req_flags ) != req_flags ||
-			( avOption->flags & rej_flags ) )
+			( avOption->flags & req_flags ) != req_flags )
 		{
 			continue;
 		}
