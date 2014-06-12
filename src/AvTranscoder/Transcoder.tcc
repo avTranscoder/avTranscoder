@@ -1,6 +1,4 @@
 
-#include <AvTranscoder/InputFile.hpp>
-
 #include <AvTranscoder/AvInputStream.hpp>
 
 namespace avtranscoder
@@ -25,8 +23,9 @@ Transcoder::~Transcoder()
 	}
 }
 
-void Transcoder::add( const std::string& filename, const size_t streamIndex )
+void Transcoder::add( const std::string& filename, const size_t streamIndex, const std::string& profile )
 {
+	std::cout << "[Transcoder::add] " << filename << " / " << streamIndex << " / " << profile << std::endl;
 	if( ! filename.length() )
 	{
 		_dummyInputStreams.push_back( new DummyInputStream() );
@@ -67,13 +66,21 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex )
 	{
 		case AVMEDIA_TYPE_VIDEO:
 		{
+			std::cout << "[Transcoder::add] AVMEDIA_TYPE_VIDEO" << std::endl;
 			_inputStreams.push_back( & referenceFile->getStream( streamIndex ) );
+			// StreamTranscoder streamTranscoder( referenceFile->getStream( streamIndex ), true );
+			// streamTranscoder.init( profile );
+			// _streamTranscoders.push_back( & streamTranscoder );
 			_outputFile.addVideoStream( _inputStreams.back()->getVideoDesc() );
 			break;
 		}
 		case AVMEDIA_TYPE_AUDIO:
 		{
+			std::cout << "[Transcoder::add] AVMEDIA_TYPE_AUDIO" << std::endl;
 			_inputStreams.push_back( & referenceFile->getStream( streamIndex ) );
+			// StreamTranscoder streamTranscoder( referenceFile->getStream( streamIndex ), false );
+			// streamTranscoder.init( profile );
+			// _streamTranscoders.push_back( & streamTranscoder );
 			_outputFile.addAudioStream( _inputStreams.back()->getAudioDesc() );
 			break;
 		}
@@ -88,12 +95,22 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex )
 	return;
 }
 
-void Transcoder::add( const StreamsDefinition& streams )
+void Transcoder::add( const StreamDefinitions& streamDefs )
 {
-	for( size_t streamIndex = 0; streamIndex < streams.size(); ++streamIndex )
+	for( size_t streamDest = 0; streamDest < streamDefs.size(); ++streamDest )
 	{
-		add( streams.at( streamIndex ).first, streams.at( streamIndex ).second );
+		std::cout << "[Transcoder::add] ";
+		std::cout << streamDest << " | ";
+		std::cout << streamDefs.at( streamDest ).streamId << " | ";
+		std::cout << streamDefs.at( streamDest ).filename << " | ";
+		std::cout << streamDefs.at( streamDest ).transcodeProfile << std::endl;
+
+		add( streamDefs.at( streamDest ).filename,
+		     streamDefs.at( streamDest ).streamId,
+		     streamDefs.at( streamDest ).transcodeProfile );
 	}
+	std::cout << "[Transcoder::add]      _inputStreams: " << _inputStreams.size() << std::endl;
+	// std::cout << "[Transcoder::add] _streamTranscoders: " << _streamTranscoders.size() << std::endl;
 	return;
 }
 
