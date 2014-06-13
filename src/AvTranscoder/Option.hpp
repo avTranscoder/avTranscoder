@@ -47,6 +47,8 @@ public:
 	std::string getHelp() const { return std::string( m_avOption.help ? m_avOption.help : "" ); }
 	std::string getUnit() const { return std::string( m_avOption.unit ? m_avOption.unit : "" ); }
 	int getOffset() const { return m_avOption.offset; }
+	double getMin() const { return m_avOption.min; }
+	double getMax() const { return m_avOption.max; }
 	
 	// flags
 	int getFlags() const { return m_avOption.flags; }
