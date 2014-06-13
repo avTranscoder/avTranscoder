@@ -10,15 +10,16 @@ extern "C" {
 #include <string>
 #include <map>
 #include <utility> //pair
-#include <exception>
+#include <iostream>
 
 namespace avtranscoder
 {
 
 OptionLoader::OptionLoader()
-	: m_options()
-	, m_avFormatContext( NULL )
+	: m_avFormatContext( NULL )
 	, m_avCodecContext( NULL )
+	, m_outputFormat( NULL )
+	, m_codec( NULL )
 {
 	m_avFormatContext = avformat_alloc_context();
 	
@@ -38,31 +39,63 @@ OptionLoader::~OptionLoader()
 	av_free( m_avCodecContext );
 }
 
-void OptionLoader::loadOptions( int req_flags )
+OptionLoader::OptionArray OptionLoader::loadFormatContextOptions( int req_flags )
 {
+	return loadOptions( (void*)m_avFormatContext, req_flags );
+}
+
+OptionLoader::OptionArray OptionLoader::loadCodecContextOptions( int req_flags )
+{
+	return loadOptions( (void*)m_avCodecContext, req_flags );
+}
+
+OptionLoader::OptionMap OptionLoader::loadOutputFormatOptions()
+{
+	OptionMap outputFormatOptions;
+	
+	m_outputFormat = av_oformat_next( NULL );
+	
+	// iterate on formats
+	while( m_outputFormat )
+	{
+		// add only format with video track
+		// m_outputFormat->audio_codec ?
+		if( m_outputFormat->video_codec != AV_CODEC_ID_NONE )
+		{
+			if( m_outputFormat->priv_class )
+			{
+				std::string outputFormatName( m_outputFormat->name );
+				OptionArray optionsArray = loadOptions( (void*)&m_outputFormat->priv_class );
+
+				outputFormatOptions.insert( 
+					std::pair< std::string, OptionArray >( 
+						outputFormatName,
+						optionsArray )
+					);
+			}
+		}
+		m_outputFormat = av_oformat_next( m_outputFormat );
+	}
+	return outputFormatOptions;
+}
+
+
+OptionLoader::OptionArray OptionLoader::loadOptions( void* av_class, int req_flags )
+{
+	OptionArray options;
+	
 	std::map<std::string, int> optionUnitToIndex;
 	std::vector<Option> childOptions;
 	
 	const AVOption* avOption = NULL;
 	
-	// get ffmpeg / libav object on which we'll scan AVOption
-	void* av_class = NULL;
-	if( ( req_flags & AV_OPT_FLAG_VIDEO_PARAM ) == AV_OPT_FLAG_VIDEO_PARAM ||
-		( req_flags & AV_OPT_FLAG_AUDIO_PARAM ) == AV_OPT_FLAG_AUDIO_PARAM ||
-		( req_flags & AV_OPT_FLAG_METADATA ) == AV_OPT_FLAG_METADATA ||
-		( req_flags & AV_OPT_FLAG_FILTERING_PARAM ) == AV_OPT_FLAG_FILTERING_PARAM ||
-		( req_flags & AV_OPT_FLAG_SUBTITLE_PARAM ) == AV_OPT_FLAG_SUBTITLE_PARAM )
-	{
-		av_class = (void*)m_avCodecContext;
-	}
-	else
-	{
-		av_class = (void*)m_avFormatContext;
-	}
-	
 	// iterate on options
-	while( ( avOption = av_opt_next( av_class, avOption ) ) != NULL )
-	{	
+#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT( 51, 12, 0 )
+	while( ( avOption = av_next_option( av_class, avOption ) ) )
+#else
+	while( ( avOption = av_opt_next( av_class, avOption ) ) )
+#endif
+	{
 		if( !avOption || 
 			! avOption->name ||
 			( avOption->flags & req_flags ) != req_flags )
@@ -80,29 +113,31 @@ void OptionLoader::loadOptions( int req_flags )
 		}
 		else
 		{
-			m_options.push_back( Option( *avOption, optionType ) );
+			options.push_back( Option( *avOption, optionType ) );
 			optionUnitToIndex.insert( 
 				std::pair<std::string, int>( 
 					std::string( avOption->unit ? avOption->unit : "" ), 
-					m_options.size() - 1 ) 
+					options.size() - 1 ) 
 				);
 		}
 	}
 
-	// iterate on childs option
+	// iterate on child options
 	for( std::vector<Option>::iterator it = childOptions.begin(); it != childOptions.end(); ++it )
 	{
 		int indexParentOption = optionUnitToIndex.at( it->getUnit() );
+		Option& parentOption = options.at( indexParentOption );
 		
-		m_options.at( indexParentOption ).appendChild( *it );
+		parentOption.appendChild( *it );
 		
 		// child of a Choice
-		if( m_options.at( indexParentOption ).getType() == TypeChoice )
+		if( parentOption.getType() == TypeChoice )
 		{
-			if( it->getDefaultValueInt() == m_options.at( indexParentOption ).getDefaultValueInt() )
-				m_options.at( indexParentOption ).setDefaultChildIndex( m_options.at( indexParentOption ).getNbChilds() - 1 );
+			if( it->getDefaultValueInt() == parentOption.getDefaultValueInt() )
+				parentOption.setDefaultChildIndex( parentOption.getNbChilds() - 1 );
 		}
 	}
+	return options;
 }
 
 }
