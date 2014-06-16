@@ -20,6 +20,8 @@ OptionLoader::OptionLoader()
 	, m_avCodecContext( NULL )
 	, m_outputFormat( NULL )
 	, m_codec( NULL )
+	, m_formatsLongNames()
+	, m_formatsShortNames()
 {
 	// Alloc format context
 	m_avFormatContext = avformat_alloc_context();
@@ -33,6 +35,21 @@ OptionLoader::OptionLoader()
 	AVCodec* avCodec = NULL;
 	m_avCodecContext = avcodec_alloc_context3( avCodec );
 #endif
+	
+	// fill format short and long names
+	AVOutputFormat* fmt = NULL;
+	while( ( fmt = av_oformat_next( fmt ) ) )
+	{
+		// add only format with video track
+		if( fmt->video_codec != AV_CODEC_ID_NONE )
+		{
+			if( fmt->long_name )
+			{
+				m_formatsLongNames.push_back( std::string( fmt->long_name ) + std::string( " (" ) + std::string( fmt->name ) + std::string( ")" ) );
+				m_formatsShortNames.push_back( std::string( fmt->name ) );
+			}
+		}
+	}
 }
 
 OptionLoader::~OptionLoader()

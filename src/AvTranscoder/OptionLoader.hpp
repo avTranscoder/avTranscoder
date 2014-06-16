@@ -51,6 +51,9 @@ public:
 	OptionMap loadOutputFormatOptions();
 	OptionMap loadVideoCodecOptions();
 	OptionMap loadAudioCodecOptions();
+	
+	std::vector<std::string>& getFormatsLongNames() { return m_formatsLongNames; }
+	std::vector<std::string>& getFormatsShortNames() { return m_formatsShortNames; }
 private:
 	/**
 	 * @brief: load array of Option depending on the flags.
@@ -63,6 +66,9 @@ private:
 	
 	AVOutputFormat* m_outputFormat;
 	AVCodec* m_codec;
+	
+	std::vector<std::string> m_formatsLongNames;
+	std::vector<std::string> m_formatsShortNames;
 
 };
 
