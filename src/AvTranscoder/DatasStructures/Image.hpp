@@ -24,8 +24,6 @@ extern "C" {
 namespace avtranscoder
 {
 
-typedef std::vector< unsigned char > DataBuffer;
-
 // struct ColorProperties
 // {
 // 	//EColorspace     eColorspace;
@@ -78,9 +76,14 @@ private:
 	bool            m_topFieldFirst;
 };
 
+//template< template<typename> Alloc >
+//class AvExport ImageBase
 class AvExport Image
 {
 public:
+//	typedef std::vector< unsigned char, Alloc<unsigned char> > DataBuffer;
+	typedef std::vector< unsigned char> DataBuffer;
+
 	Image( const ImageDesc& ref )
 		: m_dataBuffer( ref.getDataSize(), 0 )
 		, m_imageDesc( ref )
@@ -98,6 +101,8 @@ private:
 	DataBuffer m_dataBuffer;
 	const ImageDesc m_imageDesc;
 };
+
+//typedef ImageBase<std::allocator> Image;
 
 }
 

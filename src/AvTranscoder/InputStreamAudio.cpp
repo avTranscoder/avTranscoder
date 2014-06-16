@@ -11,14 +11,16 @@ extern "C" {
 #include <libavutil/pixdesc.h>
 }
 
+#include "AvInputStream.hpp"
+
 #include <iostream>
 #include <stdexcept>
 
 namespace avtranscoder
 {
 
-InputStreamAudio::InputStreamAudio( const InputStream* inputStream )
-	: m_inputStream   ( inputStream )
+InputStreamAudio::InputStreamAudio( AvInputStream& inputStream )
+	: m_inputStream   ( &inputStream )
 	, m_codec         ( NULL )
 	, m_codecContext  ( NULL )
 	, m_frame         ( NULL )
@@ -26,26 +28,27 @@ InputStreamAudio::InputStreamAudio( const InputStream* inputStream )
 {
 	avcodec_register_all();
 
-	std::cout << "Audio codec Id : " << m_inputStream->getAudioDesc().getAudioCodecId() << std::endl;
-
 	m_codec = avcodec_find_decoder( m_inputStream->getAudioDesc().getAudioCodecId() );
 	if( m_codec == NULL )
 	{
 		throw std::runtime_error( "codec not supported" );
 	}
-
+	
 	m_codecContext = avcodec_alloc_context3( m_codec );
 	if( m_codecContext == NULL )
 	{
 		throw std::runtime_error( "unable to find context for codec" );
 	}
+	
+	m_codecContext->channels = m_inputStream->getAudioDesc().getChannels();
 
 	std::cout << "Audio codec Id : " << m_codecContext->codec_id << std::endl;
+	std::cout << "Audio codec Id : " << m_codec->name << std::endl;
 	std::cout << "Audio codec Id : " << m_codec->long_name << std::endl;
 
+	m_codecContext->channels = m_inputStream->getAudioDesc().getCodecContext()->channels;
+	
 	int ret = avcodec_open2( m_codecContext, m_codec, NULL );
-
-	std::cout << "ret value : " << ret << std::endl;
 
 	if( ret < 0 || m_codecContext == NULL || m_codec == NULL )
 	{
@@ -98,38 +101,50 @@ InputStreamAudio::~InputStreamAudio()
 }
 
 bool InputStreamAudio::readNextFrame( AudioFrame& audioFrameBuffer )
-{
-/*
+{	
 	int got_frame = 0;
 	while( ! got_frame )
 	{
+		DataStream data;
+		if( ! m_inputStream->readNextPacket( data ) ) // error or end of file
+			return false;
+
 		AVPacket packet;
 		av_init_packet( &packet );
-
-		if( ! m_inputStream.readNextPacket( packet ) ) // error or end of file
-		{
-			av_free_packet( &packet );
-			return false;
-		}
-
+		
+		packet.stream_index = m_selectedStream;
+		packet.data         = data.getPtr();
+		packet.size         = data.getSize();
+		
 		int ret = avcodec_decode_audio4( m_codecContext, m_frame, &got_frame, &packet );
 
 		if( ret < 0 )
 		{
-			throw std::runtime_error( "an error occured during audio decoding" );
+			char err[250];
+			av_strerror( ret, err, 250);
+			
+			throw std::runtime_error( "an error occured during audio decoding" + std::string( err ) );
 		}
 
 		av_free_packet( &packet );
-	}*/
-
-	//size_t unpadded_linesize = m_frame->nb_samples * av_get_bytes_per_sample( m_frame->format );
-
-	// size_t decodedSize = avpicture_get_size( (AVPixelFormat)m_frame->format, m_frame->width, m_frame->height );
-	// if( frameBuffer.getBuffer().size() != decodedSize )
-	// 	frameBuffer.getBuffer().resize( avpicture_get_size( (AVPixelFormat)m_frame->format, m_frame->width, m_frame->height ) );
-
-	// // Copy pixel data from an AVPicture into one contiguous buffer.
-	// avpicture_layout( (AVPicture*)m_frame, (AVPixelFormat)m_frame->format, m_frame->width, m_frame->height, &frameBuffer.getBuffer()[0], frameBuffer.getBuffer().size() );
+	}
+	
+	size_t decodedSize = av_samples_get_buffer_size(NULL, m_codecContext->channels,
+													m_frame->nb_samples,
+													m_codecContext->sample_fmt, 1);
+	
+	audioFrameBuffer.setNbSamples( m_frame->nb_samples );
+	
+	if( decodedSize )
+	{
+		if( audioFrameBuffer.getSize() != decodedSize )
+			audioFrameBuffer.getBuffer().resize( decodedSize, 0 );
+		
+		unsigned char* dst = audioFrameBuffer.getPtr();
+		av_samples_copy(&dst, (uint8_t* const* )m_frame->data, 0,
+						0, m_frame->nb_samples, m_codecContext->channels,
+						m_codecContext->sample_fmt);
+	}
 
 	return true;
 }

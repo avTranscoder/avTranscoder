@@ -1,4 +1,5 @@
 import os
+import platform
 
 Import( 'AvTranscoder' )
 Import( 'sAvTranscoder' )
@@ -18,6 +19,7 @@ avinfo = env.Program(
                 'avformat',
                 'avcodec',
                 'swscale',
+                'swresample',
                 ]
         )
 
@@ -30,6 +32,7 @@ avmeta = env.Program(
                 'avformat',
                 'avcodec',
                 'swscale',
+                'swresample',
                 ]
         )
 
@@ -42,6 +45,7 @@ avtransform = env.Program(
                 'avformat',
                 'avcodec',
                 'swscale',
+                'swresample',
                 ]
         )
 
@@ -54,6 +58,7 @@ avprocessor = env.Program(
                 'avformat',
                 'avcodec',
                 'swscale',
+                'swresample',
                 ],
         CXXFLAGS = [
                 '-std=c++0x'
@@ -69,21 +74,55 @@ audioRewrapper = env.Program(
                 'avformat',
                 'avcodec',
                 'swscale',
+                'swresample',
+                'swresample',
                 ]
         )
 
-avplayer = env.Program(
-        'avplayer',
-        Glob( 'avplay/*.cpp' ),
+if platform.system() != 'Windows':
+        avplayer = env.Program(
+                'avplayer',
+                Glob( 'avplay/*.cpp' ),
+                LIBS = [
+                        sAvTranscoder,
+                        'avutil',
+                        'avformat',
+                        'avcodec',
+                        'swscale',
+                        'swresample',
+                        'GL',
+                        'glut',
+                        ]
+                )
+        
+        avprofiles = env.Program(
+                'avprofiles',
+                Glob( 'presetChecker/*.cpp' ),
+                LIBS = [
+                        sAvTranscoder,
+                        'avutil',
+                        'avformat',
+                        'avcodec',
+                        'swscale',
+                        'swresample',
+                        ],
+                CXXFLAGS = [
+                        '-std=c++0x'
+                        ],
+        )
+
+avprofiles = env.Program(
+        'avoptions',
+        Glob( 'optionChecker/*.cpp' ),
         LIBS = [
                 sAvTranscoder,
                 'avutil',
                 'avformat',
-                'avcodec',
-                'swscale',
-                'GL',
-                'glut',
-                ]
+                'avcodec'
+                ],
+        CXXFLAGS = [
+                '-std=c++0x'
+                ],
         )
 
 env.Depends( avmeta, sAvTranscoder )

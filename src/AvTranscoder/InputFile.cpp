@@ -49,7 +49,7 @@ InputFile::InputFile( const std::string& filename )
 
 	for( size_t streamIndex = 0; streamIndex < m_formatContext->nb_streams; ++streamIndex )
 	{
-		m_inputStreams.push_back( new AvInputStream( this, streamIndex ) );
+		m_inputStreams.push_back( new AvInputStream( *this, streamIndex ) );
 	}
 }
 
@@ -136,6 +136,15 @@ InputFile& InputFile::analyse()
 	return *this;
 }
 
+Properties InputFile::analyseFile( const std::string& filename )
+{
+	InputFile file( filename );
+	file.analyse();
+	Properties properties;
+	file.getProperties( properties );
+	return properties;
+}
+
 AVMediaType InputFile::getStreamType( size_t index )
 {
 	if( index >= m_formatContext->nb_streams )
@@ -143,9 +152,9 @@ AVMediaType InputFile::getStreamType( size_t index )
 	return m_formatContext->streams[index]->codec->codec_type;
 }
 
-AvInputStream* InputFile::getStream( size_t index )
+AvInputStream& InputFile::getStream( size_t index )
 {
-	return m_inputStreams.at( index );
+	return *m_inputStreams.at( index );
 }
 
 bool InputFile::readNextPacket( const size_t streamIndex )
@@ -180,14 +189,14 @@ bool InputFile::readNextPacket( const size_t streamIndex )
 
 void InputFile::seekAtFrame( const size_t frame )
 {
-	uint64_t pos = frame / 25 * AV_TIME_BASE; 
+	uint64_t pos = frame / 25 * AV_TIME_BASE;  // WARNING: hardcoded fps
 
 	if( (int)m_formatContext->start_time != AV_NOPTS_VALUE )
 		pos += m_formatContext->start_time;
 
 	if( av_seek_frame( m_formatContext, -1, pos, AVSEEK_FLAG_BACKWARD ) < 0 )
 	{
-		std::cerr << "Error during seek in file" << std::endl;
+		std::cerr << "Error during seek at " << frame << " (" << pos << ") in file" << std::endl;
 	}
 
 	for( std::vector<AvInputStream*>::iterator it = m_inputStreams.begin(); it != m_inputStreams.end(); ++it )

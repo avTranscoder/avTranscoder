@@ -29,13 +29,15 @@ AvInputStream::AvInputStream( )
 {
 }
 
-AvInputStream::AvInputStream( InputFile* inputFile, const size_t streamIndex )
+AvInputStream::AvInputStream( InputFile& inputFile, const size_t streamIndex )
 		: InputStream( )
-		, m_inputFile( inputFile )
+		, m_inputFile( &inputFile )
 		, m_packetDuration( 0 )
 		, m_streamIndex( streamIndex )
 		, m_bufferized( false )
 {
+	if( m_inputFile->getFormatContext().streams[m_streamIndex]->codec->codec_type == AVMEDIA_TYPE_AUDIO )
+		m_inputFile->getFormatContext().streams[m_streamIndex]->codec->block_align = 5760;
 }
 
 AvInputStream::~AvInputStream( )
@@ -44,6 +46,9 @@ AvInputStream::~AvInputStream( )
 
 bool AvInputStream::readNextPacket( DataStream& data )
 {
+	if( ! m_bufferized )
+		throw std::runtime_error( "Can't read packet on non-bufferized input stream." );
+
 	if( m_streamCache.empty() )
 		m_inputFile->readNextPacket( m_streamIndex );
 
@@ -86,15 +91,14 @@ void AvInputStream::addPacket( AVPacket& packet )
 
 VideoDesc AvInputStream::getVideoDesc() const
 {
-	assert( m_inputFile->getFormatContext() != NULL );
-	assert( m_streamIndex <= m_inputFile->getFormatContext()->nb_streams );
+	assert( m_streamIndex <= m_inputFile->getFormatContext().nb_streams );
 
-	if( m_inputFile->getFormatContext()->streams[m_streamIndex]->codec->codec_type != AVMEDIA_TYPE_VIDEO )
+	if( m_inputFile->getFormatContext().streams[m_streamIndex]->codec->codec_type != AVMEDIA_TYPE_VIDEO )
 	{
 		throw std::runtime_error( "unable to get video descriptor on non-video stream" );
 	}
 
-	AVCodecContext* codecContext = m_inputFile->getFormatContext()->streams[m_streamIndex]->codec;
+	AVCodecContext* codecContext = m_inputFile->getFormatContext().streams[m_streamIndex]->codec;
 
 	VideoDesc desc( codecContext->codec_id );
 
@@ -106,15 +110,14 @@ VideoDesc AvInputStream::getVideoDesc() const
 
 AudioDesc AvInputStream::getAudioDesc() const
 {
-	assert( m_inputFile->getFormatContext() != NULL );
-	assert( m_streamIndex <= m_inputFile->getFormatContext()->nb_streams );
+	assert( m_streamIndex <= m_inputFile->getFormatContext().nb_streams );
 
-	if( m_inputFile->getFormatContext()->streams[m_streamIndex]->codec->codec_type != AVMEDIA_TYPE_AUDIO )
+	if( m_inputFile->getFormatContext().streams[m_streamIndex]->codec->codec_type != AVMEDIA_TYPE_AUDIO )
 	{
 		throw std::runtime_error( "unable to get audio descriptor on non-audio stream" );
 	}
 
-	AVCodecContext* codecContext = m_inputFile->getFormatContext()->streams[m_streamIndex]->codec;
+	AVCodecContext* codecContext = m_inputFile->getFormatContext().streams[m_streamIndex]->codec;
 
 	AudioDesc desc( codecContext->codec_id );
 
@@ -126,12 +129,12 @@ AudioDesc AvInputStream::getAudioDesc() const
 
 double AvInputStream::getDuration() const
 {
-	return 1.0 * m_inputFile->getFormatContext()->duration / AV_TIME_BASE;
+	return 1.0 * m_inputFile->getFormatContext().duration / AV_TIME_BASE;
 }
 
 double AvInputStream::getPacketDuration() const
 {
-	return m_packetDuration * av_q2d( m_inputFile->getFormatContext()->streams[m_streamIndex]->time_base );
+	return m_packetDuration * av_q2d( m_inputFile->getFormatContext().streams[m_streamIndex]->time_base );
 }
 
 void AvInputStream::clearBuffering()

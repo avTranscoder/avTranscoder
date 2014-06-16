@@ -182,7 +182,32 @@ void OutputStreamVideo::setProfile( const std::string& profile )
 
 	m_videoDesc.setVideoCodec( prof["codec"] );
 	m_videoDesc.setTimeBase( 1, 25 ); // 25 fps
-	// m_videoDesc.set( "pix_fmt", prof["pix_fmt"] );
+	m_videoDesc.setImageParameters( 1920, 1080, av_get_pix_fmt( prof["pix_fmt"].c_str() ) );
+
+	for( Profile::ProfileDesc::iterator it = prof.begin(); it != prof.end(); ++it )
+	{
+		if( (*it).first == "avProfile" )
+			continue;
+		if( (*it).first == "avProfileLong" )
+			continue;
+		if( (*it).first == "codec" )
+			continue;
+		if( (*it).first == "pix_fmt" )
+			continue;
+		if( (*it).first == "width" )
+			continue;
+		if( (*it).first == "height" )
+			continue;
+
+		try
+		{
+			m_videoDesc.set( (*it).first, (*it).second );
+		}
+		catch( std::exception& e )
+		{
+			std::cout << "warning: " << e.what() << std::endl;
+		}
+	}
 
 	setup();
 
@@ -194,11 +219,23 @@ void OutputStreamVideo::setProfile( const std::string& profile )
 			continue;
 		if( (*it).first == "codec" )
 			continue;
-		// if( (*it).first == "pix_fmt" )
-		// 	continue;
+		if( (*it).first == "pix_fmt" )
+			continue;
+		if( (*it).first == "width" )
+			continue;
+		if( (*it).first == "height" )
+			continue;
 
-		m_videoDesc.set( (*it).first, (*it).second );
+		try
+		{
+			m_videoDesc.set( (*it).first, (*it).second );
+		}
+		catch( std::exception& e )
+		{
+			std::cout << "2.warning: " << e.what() << std::endl;
+		}
 	}
+
 }
 
 }

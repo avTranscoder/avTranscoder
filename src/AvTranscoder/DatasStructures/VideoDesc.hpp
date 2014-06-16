@@ -30,7 +30,7 @@ public:
 	void setVideoCodec( const std::string& codecName );
 	void setVideoCodec( const AVCodecID codecId );
 
-	void setImageParameters( const Image& image );
+	void setImageParameters( const ImageDesc& imageDesc );
 	void setImageParameters( const size_t width, const size_t height, const Pixel& pixel );
 	void setImageParameters( const size_t width, const size_t height, const AVPixelFormat& pixel );
 

@@ -19,9 +19,9 @@ class AvInputStream;
 class AvExport InputStreamVideo
 {
 public:
-	InputStreamVideo( AvInputStream* inputStream );
+	InputStreamVideo( AvInputStream& inputStream );
 	~InputStreamVideo();
-
+	
 	bool readNextFrame( Image& frameBuffer );
 
 	void flushDecoder();

@@ -1,4 +1,5 @@
 #include "AudioDesc.hpp"
+#include "AudioFrame.hpp"
 
 extern "C" {
 #ifndef __STDC_CONSTANT_MACROS
@@ -49,7 +50,7 @@ void AudioDesc::setAudioCodec( const AVCodecID codecId )
 	initCodecContext();
 }
 
-void AudioDesc::setAudioParameters( const size_t sampleRate, const size_t channels, const AVSampleFormat& sampleFormat )
+void AudioDesc::setAudioParameters( const size_t sampleRate, const size_t channels, const AVSampleFormat sampleFormat )
 {
 	m_codecContext->sample_rate = sampleRate;
 	m_codecContext->channels    = channels;
@@ -192,5 +193,33 @@ AVCodecID AudioDesc::getAudioCodecId() const
 {
 	return m_codecContext->codec_id;
 }
+
+
+const size_t AudioDesc::getSampleRate() const
+{
+	return m_codecContext->sample_rate;
+}
+
+const size_t AudioDesc::getChannels() const
+{
+	return m_codecContext->channels;
+}
+
+const AVSampleFormat AudioDesc::getSampleFormat() const
+{
+	return m_codecContext->sample_fmt;
+}
+
+AudioFrameDesc AudioDesc::getFrameDesc() const
+{
+	AudioFrameDesc audioFrameDesc;
+	
+	audioFrameDesc.setChannels( m_codecContext->channels );
+	audioFrameDesc.setSampleRate( m_codecContext->sample_rate );
+	audioFrameDesc.setSampleFormat( m_codecContext->sample_fmt );
+	
+	return audioFrameDesc;
+}
+
 
 }

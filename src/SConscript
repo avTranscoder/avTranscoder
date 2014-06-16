@@ -14,25 +14,25 @@ env.Append(
 
 sAvTranscoder = env.StaticLibrary(
     'sAvTranscoder',
-    Glob( 'AvTranscoder/*.cpp' ) + Glob( 'AvTranscoder/DatasStructures/*.cpp' ) ,
+    Glob( 'AvTranscoder/*.cpp' ) + Glob( 'AvTranscoder/DatasStructures/*.cpp' ),
     LIBS = [
-        'libavutil',
-        'libavcodec',
-        'libavformat',
-        'libswscale',
-        #'pthread',
+        'avutil',
+        'avcodec',
+        'avformat',
+        'swscale',
+        'swresample',
     ]
 )
 
 SharedAvTranscoder = env.SharedLibrary(
     'AvTranscoder',
-    Glob( 'AvTranscoder/*.cpp' ) + Glob( 'AvTranscoder/DatasStructures/*.cpp' ) ,
+    Glob( 'AvTranscoder/*.cpp' ) + Glob( 'AvTranscoder/DatasStructures/*.cpp' ),
     LIBS = [
-        'libavutil',
-        'libavcodec',
-        'libavformat',
-        'libswscale',
-        #'pthread',
+        'avutil',
+        'avcodec',
+        'avformat',
+        'swscale',
+        'swresample',
     ],
     SHLIBVERSION = AvTranscoderVersion,
 )
@@ -42,10 +42,11 @@ jAvTranscoder = envJava.SharedLibrary(
         source=['AvTranscoder/avTranscoder.i'],
         LIBS=[ 
             sAvTranscoder,
-            'libavutil',
-            'libavcodec',
-            'libavformat',
-            'libswscale',
+            'avutil',
+            'avcodec',
+            'avformat',
+            'swscale',
+            'swresample',
         ],
     )
 
@@ -54,10 +55,11 @@ pyAvTranscoder = envPy.SharedLibrary(
         source='AvTranscoder/avTranscoder.i',
         LIBS=[
             sAvTranscoder,
-            'libavutil',
-            'libavcodec',
-            'libavformat',
-            'libswscale',
+            'avutil',
+            'avcodec',
+            'avformat',
+            'swscale',
+            'swresample',
         ],
     )
 

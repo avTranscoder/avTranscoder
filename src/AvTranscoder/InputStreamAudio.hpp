@@ -7,24 +7,23 @@
 namespace avtranscoder
 {
 
+class AvInputStream;
+
 class AvExport InputStreamAudio
 {
 public:
-	InputStreamAudio( const InputStream* inputStream );
+	InputStreamAudio( AvInputStream& inputStream );
 	~InputStreamAudio();
 
 	bool readNextFrame( AudioFrame& audioFrameBuffer );
 
 private:
-	const InputStream* m_inputStream;
+	AvInputStream*     m_inputStream;
 	AVCodec*           m_codec;
 	AVCodecContext*    m_codecContext;
 	AVFrame*           m_frame;
 
 	int                m_selectedStream;
-
-private:
-
 };
 
 }
