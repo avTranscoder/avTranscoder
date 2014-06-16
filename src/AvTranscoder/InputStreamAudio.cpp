@@ -19,12 +19,41 @@ extern "C" {
 namespace avtranscoder
 {
 
-InputStreamAudio::InputStreamAudio( AvInputStream& inputStream )
-	: m_inputStream   ( &inputStream )
+InputStreamAudio::InputStreamAudio( AvInputStream& inputStream ) 
+    : InputStreamReader::InputStreamReader( inputStream )
+	, m_inputStream   ( &inputStream )
 	, m_codec         ( NULL )
 	, m_codecContext  ( NULL )
 	, m_frame         ( NULL )
 	, m_selectedStream( -1 )
+{
+}
+
+InputStreamAudio::~InputStreamAudio()
+{
+	if( m_codecContext != NULL )
+	{
+		avcodec_close( m_codecContext );
+		av_free( m_codecContext );
+		m_codecContext = NULL;
+	}
+	if( m_frame != NULL )
+	{
+#if LIBAVCODEC_VERSION_MAJOR > 54
+		av_frame_free( &m_frame );
+#else
+ #if LIBAVCODEC_VERSION_MAJOR > 53
+		avcodec_free_frame( &m_frame );
+ #else
+		av_free( m_frame );
+ #endif
+#endif
+		m_frame = NULL;
+	}
+}
+
+
+void InputStreamAudio::setup()
 {
 	avcodec_register_all();
 
@@ -77,30 +106,7 @@ InputStreamAudio::InputStreamAudio( AvInputStream& inputStream )
 	}
 }
 
-InputStreamAudio::~InputStreamAudio()
-{
-	if( m_codecContext != NULL )
-	{
-		avcodec_close( m_codecContext );
-		av_free( m_codecContext );
-		m_codecContext = NULL;
-	}
-	if( m_frame != NULL )
-	{
-#if LIBAVCODEC_VERSION_MAJOR > 54
-		av_frame_free( &m_frame );
-#else
- #if LIBAVCODEC_VERSION_MAJOR > 53
-		avcodec_free_frame( &m_frame );
- #else
-		av_free( m_frame );
- #endif
-#endif
-		m_frame = NULL;
-	}
-}
-
-bool InputStreamAudio::readNextFrame( AudioFrame& audioFrameBuffer )
+bool InputStreamAudio::readNextFrame( Frame& frameBuffer )
 {	
 	int got_frame = 0;
 	while( ! got_frame )
@@ -133,14 +139,16 @@ bool InputStreamAudio::readNextFrame( AudioFrame& audioFrameBuffer )
 													m_frame->nb_samples,
 													m_codecContext->sample_fmt, 1);
 	
-	audioFrameBuffer.setNbSamples( m_frame->nb_samples );
+	AudioFrame& audioBuffer = static_cast<AudioFrame&>( frameBuffer );
+
+	audioBuffer.setNbSamples( m_frame->nb_samples );
 	
 	if( decodedSize )
 	{
-		if( audioFrameBuffer.getSize() != decodedSize )
-			audioFrameBuffer.getBuffer().resize( decodedSize, 0 );
+		if( audioBuffer.getSize() != decodedSize )
+			audioBuffer.getBuffer().resize( decodedSize, 0 );
 		
-		unsigned char* dst = audioFrameBuffer.getPtr();
+		unsigned char* dst = audioBuffer.getPtr();
 		av_samples_copy(&dst, (uint8_t* const* )m_frame->data, 0,
 						0, m_frame->nb_samples, m_codecContext->channels,
 						m_codecContext->sample_fmt);

@@ -20,11 +20,39 @@ namespace avtranscoder
 {
 
 InputStreamVideo::InputStreamVideo( AvInputStream& inputStream )
-	: m_inputStream   ( &inputStream )
+	: InputStreamReader::InputStreamReader( inputStream )
+	, m_inputStream   ( &inputStream )
 	, m_codec         ( NULL )
 	, m_codecContext  ( NULL )
 	, m_frame         ( NULL )
 	, m_selectedStream( -1 )
+{
+}
+
+InputStreamVideo::~InputStreamVideo()
+{
+	if( m_codecContext != NULL )
+	{
+		//avcodec_close( m_codecContext );
+		av_free( m_codecContext );
+		m_codecContext = NULL;
+	}
+	if( m_frame != NULL )
+	{
+#if LIBAVCODEC_VERSION_MAJOR > 54
+		av_frame_free( &m_frame );
+#else
+ #if LIBAVCODEC_VERSION_MAJOR > 53
+		avcodec_free_frame( &m_frame );
+ #else
+		av_free( m_frame );
+ #endif
+#endif
+		m_frame = NULL;
+	}
+}
+
+void InputStreamVideo::setup()
 {
 	av_register_all();
 
@@ -67,30 +95,7 @@ InputStreamVideo::InputStreamVideo( AvInputStream& inputStream )
 	}
 }
 
-InputStreamVideo::~InputStreamVideo()
-{
-	if( m_codecContext != NULL )
-	{
-		//avcodec_close( m_codecContext );
-		av_free( m_codecContext );
-		m_codecContext = NULL;
-	}
-	if( m_frame != NULL )
-	{
-#if LIBAVCODEC_VERSION_MAJOR > 54
-		av_frame_free( &m_frame );
-#else
- #if LIBAVCODEC_VERSION_MAJOR > 53
-		avcodec_free_frame( &m_frame );
- #else
-		av_free( m_frame );
- #endif
-#endif
-		m_frame = NULL;
-	}
-}
-
-bool InputStreamVideo::readNextFrame( Image& frameBuffer )
+bool InputStreamVideo::readNextFrame( Frame& frameBuffer )
 {
 	int got_frame = 0;
 
@@ -120,12 +125,14 @@ bool InputStreamVideo::readNextFrame( Image& frameBuffer )
 		av_free_packet( &packet );
 	}
 
+	Image& imageBuffer = static_cast<Image&>( frameBuffer );
+
 	size_t decodedSize = avpicture_get_size( (AVPixelFormat)m_frame->format, m_frame->width, m_frame->height );
-	if( frameBuffer.getBuffer().size() != decodedSize )
-		frameBuffer.getBuffer().resize( decodedSize );
+	if( imageBuffer.getBuffer().size() != decodedSize )
+		imageBuffer.getBuffer().resize( decodedSize );
 
 	// Copy pixel data from an AVPicture into one contiguous buffer.
-	avpicture_layout( (AVPicture*)m_frame, (AVPixelFormat)m_frame->format, m_frame->width, m_frame->height, &frameBuffer.getBuffer()[0], frameBuffer.getBuffer().size() );
+	avpicture_layout( (AVPicture*)m_frame, (AVPixelFormat)m_frame->format, m_frame->width, m_frame->height, &imageBuffer.getBuffer()[0], frameBuffer.getBuffer().size() );
 
 	return true;
 }
