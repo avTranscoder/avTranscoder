@@ -22,6 +22,10 @@ OptionLoader::OptionLoader()
 	, m_codec( NULL )
 	, m_formatsLongNames()
 	, m_formatsShortNames()
+	, m_videoCodecsLongNames()
+	, m_videoCodecsShortNames()
+	, m_audioCodecsLongNames()
+	, m_audioCodecsShortNames()
 {
 	// Alloc format context
 	m_avFormatContext = avformat_alloc_context();
@@ -47,6 +51,42 @@ OptionLoader::OptionLoader()
 			{
 				m_formatsLongNames.push_back( std::string( fmt->long_name ) + std::string( " (" ) + std::string( fmt->name ) + std::string( ")" ) );
 				m_formatsShortNames.push_back( std::string( fmt->name ) );
+			}
+		}
+	}
+	
+	// fill video and audio codec short and long names
+	AVCodec* c = NULL;
+	while( ( c = av_codec_next( c ) ) )
+	{
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 53, 34, 0 )
+		if( c->encode2 )
+#else
+		if( c->encode )
+#endif
+		{
+			switch( c->type )
+			{
+				case AVMEDIA_TYPE_VIDEO:
+				{
+					if( c->long_name )
+					{
+						m_videoCodecsLongNames.push_back( std::string( c->long_name ) );
+						m_videoCodecsShortNames.push_back( std::string( c->name ) );
+					}
+					break;
+				}
+				case AVMEDIA_TYPE_AUDIO:
+				{
+					if( c->long_name )
+					{
+						m_audioCodecsLongNames.push_back( std::string( c->long_name ) );
+						m_audioCodecsShortNames.push_back( std::string( c->name ) );
+					}
+					break;
+				}
+				default:
+					break;
 			}
 		}
 	}

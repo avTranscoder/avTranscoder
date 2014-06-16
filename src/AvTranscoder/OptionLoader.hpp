@@ -54,6 +54,13 @@ public:
 	
 	std::vector<std::string>& getFormatsLongNames() { return m_formatsLongNames; }
 	std::vector<std::string>& getFormatsShortNames() { return m_formatsShortNames; }
+	
+	std::vector<std::string>& getVideoCodecsLongNames() { return m_videoCodecsLongNames; }
+	std::vector<std::string>& getVideoCodecsShortNames() { return m_videoCodecsShortNames; }
+	
+	std::vector<std::string>& getAudioCodecsLongNames() { return m_audioCodecsLongNames; }
+	std::vector<std::string>& getAudioCodecsShortNames() { return m_audioCodecsShortNames; }
+	
 private:
 	/**
 	 * @brief: load array of Option depending on the flags.
@@ -69,6 +76,12 @@ private:
 	
 	std::vector<std::string> m_formatsLongNames;
 	std::vector<std::string> m_formatsShortNames;
+	
+	std::vector<std::string> m_videoCodecsLongNames;
+	std::vector<std::string> m_videoCodecsShortNames;
+
+	std::vector<std::string> m_audioCodecsLongNames;
+	std::vector<std::string> m_audioCodecsShortNames;
 
 };
 
