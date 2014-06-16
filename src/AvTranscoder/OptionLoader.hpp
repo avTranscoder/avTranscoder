@@ -49,6 +49,8 @@ public:
 	OptionArray loadCodecContextOptions( int req_flags = 0 );
 	
 	OptionMap loadOutputFormatOptions();
+	OptionMap loadVideoCodecOptions();
+	OptionMap loadAudioCodecOptions();
 private:
 	/**
 	 * @brief: load array of Option depending on the flags.

@@ -21,8 +21,10 @@ OptionLoader::OptionLoader()
 	, m_outputFormat( NULL )
 	, m_codec( NULL )
 {
+	// Alloc format context
 	m_avFormatContext = avformat_alloc_context();
 	
+	// Alloc codec context
 #if LIBAVCODEC_VERSION_INT < AV_VERSION_INT( 53, 8, 0 )
 	m_avCodecContext = avcodec_alloc_context();
 	// deprecated in the same version
@@ -79,6 +81,77 @@ OptionLoader::OptionMap OptionLoader::loadOutputFormatOptions()
 	return outputFormatOptions;
 }
 
+OptionLoader::OptionMap OptionLoader::loadVideoCodecOptions()
+{
+	OptionMap videoCodecOptions;
+	
+	m_codec = av_codec_next( NULL );
+	
+	// iterate on codecs
+	while( m_codec )
+	{
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 53, 34, 0 )
+		if( m_codec->encode2 )
+#else
+		if( m_codec->encode )
+#endif
+		{
+			// add only video codec
+			if( m_codec->type == AVMEDIA_TYPE_VIDEO )
+			{
+				if( m_codec->priv_class )
+				{
+					std::string videoCodecName( m_codec->name );
+					OptionArray optionsArray = loadOptions( (void*)&m_codec->priv_class );
+					
+					videoCodecOptions.insert( 
+						std::pair< std::string, OptionArray >( 
+							videoCodecName,
+							optionsArray )
+						);
+				}
+			}
+		}
+		m_codec = av_codec_next( m_codec );
+	}
+	return videoCodecOptions;
+}
+
+OptionLoader::OptionMap OptionLoader::loadAudioCodecOptions()
+{
+	OptionMap audioCodecOptions;
+	
+	m_codec = av_codec_next( NULL );
+	
+	// iterate on codecs
+	while( m_codec )
+	{
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 53, 34, 0 )
+		if( m_codec->encode2 )
+#else
+		if( m_codec->encode )
+#endif
+		{
+			// add only audio codec
+			if( m_codec->type == AVMEDIA_TYPE_AUDIO )
+			{
+				if( m_codec->priv_class )
+				{
+					std::string audioCodecName( m_codec->name );
+					OptionArray optionsArray = loadOptions( (void*)&m_codec->priv_class );
+					
+					audioCodecOptions.insert( 
+						std::pair< std::string, OptionArray >( 
+							audioCodecName,
+							optionsArray )
+						);
+				}
+			}
+		}
+		m_codec = av_codec_next( m_codec );
+	}
+	return audioCodecOptions;
+}
 
 OptionLoader::OptionArray OptionLoader::loadOptions( void* av_class, int req_flags )
 {
