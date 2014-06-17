@@ -6,6 +6,7 @@
 #include <AvTranscoder/OutputFile.hpp>
 #include <AvTranscoder/ProgressListener.hpp>
 #include <AvTranscoder/DummyInputStream.hpp>
+#include <AvTranscoder/StreamTranscoder.hpp>
 
 #include <AvTranscoder/StreamTranscoder.hpp>
 
@@ -32,15 +33,18 @@ public:
 		}
 	};
 
-	typedef std::vector< InputStreamDesc > StreamDefinitions;
+	typedef std::vector< InputStreamDesc > InputStreamsDesc;
 
 	Transcoder( OutputFile& outputFile );
 	~Transcoder();
 
 	void add( const std::string& filename, const size_t streamIndex, const std::string& profile );
-	void add( const StreamDefinitions& streamDefs );
+	void add( const InputStreamsDesc& streamDefs );
 
 	void process( ProgressListener& progress );
+
+private:
+	bool getStreamsNextPacket( std::vector< DataStream >& dataStreams );
 
 private:
 	OutputFile&                      _outputFile;
@@ -48,7 +52,7 @@ private:
 
 	std::vector< InputStream* >      _inputStreams;
 	std::vector< StreamTranscoder* > _streamTranscoders;
-
+	
 	std::vector< DummyInputStream* > _dummyInputStreams;
 };
 

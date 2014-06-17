@@ -1,87 +1,76 @@
 
 #include "StreamTranscoder.hpp"
 
-
-/*
-InputFile : fichier
-
-InputStream : déwrapper virtuel
-AvInputStream : déwrapper AV
-DummyInputStream : generate silence
-
-InputStreamAudio : décoder audio
-InputStreamVideo : décoder video
-
-OutputStreamAudio : encoder audio
-OutputStreamVideo : encoder video
-
-OutputStream : encoder vide (futur: wrapper)
-OutputFile : fichier + wrapper virtuel
-
-*/
-
 namespace avtranscoder
 {
 
-StreamTranscoder::StreamTranscoder( AvInputStream& stream, const bool isVideoStream )
+StreamTranscoder::StreamTranscoder( AvInputStream& stream, OutputFile& outputFile, const size_t& streamId )
 	: _stream( &stream )
-	, _inputStreamVideo( NULL )
-	, _outputStreamVideo( NULL )
-	, _inputStreamAudio( NULL )
-	, _outputStreamAudio( NULL )
-	, _isVideoStream( isVideoStream )
+	, _frameBuffer( NULL )
+	, _inputStreamReader( NULL )
+	, _outputStreamWriter( NULL )
+	, _outputFile( &outputFile )
+	, _streamIndex( streamId )
 	, _transcodeStream( false )
 {
-	// std::cout << "[StreamTranscoder::StreamTranscoder]" << std::endl;
 }
 
 StreamTranscoder::~StreamTranscoder()
 {
-	if( _inputStreamVideo )
-		delete _inputStreamVideo;
-	if( _outputStreamVideo )
-		delete _outputStreamVideo;
-
-	if( _inputStreamAudio )
-		delete _inputStreamAudio;
-	if( _outputStreamAudio )
-		delete _outputStreamAudio;
+	if( _frameBuffer )
+		delete _frameBuffer;
+	if( _inputStreamReader )
+		delete _inputStreamReader;
+	if( _outputStreamWriter )
+		delete _outputStreamWriter;
 }
 
 void StreamTranscoder::init( const std::string& profile )
 {
-	std::cout << "[StreamTranscoder::init] isVideoStream: " << _isVideoStream << std::endl;
-	std::cout << "[StreamTranscoder::init] profile: " << profile << std::endl;
-
-	if( ! profile.empty() )
+	if( profile.empty() )
 	{
-		_transcodeStream = true;
-		if( _isVideoStream )
+		return;
+	}
+
+	_transcodeStream = true;
+
+	switch( _stream->getStreamType() )
+	{
+		case AVMEDIA_TYPE_VIDEO :
 		{
-			std::cout << "[StreamTranscoder::init] video stream..." << std::endl;
-			_inputStreamVideo = new InputStreamVideo( *_stream );
-			_outputStreamVideo = new OutputStreamVideo();
-			_outputStreamVideo->setProfile( profile );
+			_inputStreamReader = new InputStreamVideo( *_stream );
+			_outputStreamWriter = new OutputStreamVideo();
+			_outputStreamWriter->setProfile( profile );
+			_frameBuffer = new Image( _stream->getVideoDesc().getImageDesc() );
+			break;
 		}
-		else
+		case AVMEDIA_TYPE_AUDIO :
 		{
-			std::cout << "[StreamTranscoder::init] audio stream..." << std::endl;
-			_inputStreamAudio = new InputStreamAudio( *_stream );
-			_outputStreamAudio = new OutputStreamAudio();
-			_outputStreamAudio->setProfile( profile );
+			_inputStreamReader = new InputStreamAudio( *_stream );
+			_outputStreamWriter = new OutputStreamAudio();
+			_outputStreamWriter->setProfile( profile );
+			_frameBuffer = new AudioFrame( _stream->getAudioDesc().getFrameDesc() );
+			break;
 		}
+		default:
+			break;
 	}
 }
 
 bool StreamTranscoder::processFrame()
 {
-	if( _transcodeStream )
+	DataStream dataStream;
+	if( ! _transcodeStream )
 	{
-		// transcodes
-
+		_stream->readNextPacket( dataStream );
+		_outputFile->wrap( dataStream, _streamIndex );
+		return true;
 	}
-	// wraps
+	// transcodes
+	_inputStreamReader->readNextFrame( *_frameBuffer );
+	_outputStreamWriter->encodeFrame( *_frameBuffer, dataStream );
 
+	_outputFile->wrap( dataStream, _streamIndex );
 	return true;
 }
 

@@ -126,6 +126,10 @@ AudioDesc AvInputStream::getAudioDesc() const
 	return desc;
 }
 
+AVMediaType AvInputStream::getStreamType() const
+{
+	return m_inputFile->getStreamType( m_streamIndex );
+}
 
 double AvInputStream::getDuration() const
 {

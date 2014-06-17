@@ -32,6 +32,8 @@ public:
 	VideoDesc getVideoDesc() const;
 	AudioDesc getAudioDesc() const;
 
+	AVMediaType getStreamType() const;
+
 	double getDuration() const;
 	double getPacketDuration() const;
 

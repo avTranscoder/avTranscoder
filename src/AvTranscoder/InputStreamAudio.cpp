@@ -20,7 +20,7 @@ namespace avtranscoder
 {
 
 InputStreamAudio::InputStreamAudio( AvInputStream& inputStream ) 
-    : InputStreamReader::InputStreamReader( inputStream )
+	: InputStreamReader::InputStreamReader( inputStream )
 	, m_inputStream   ( &inputStream )
 	, m_codec         ( NULL )
 	, m_codecContext  ( NULL )

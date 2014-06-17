@@ -52,6 +52,11 @@ AudioDesc DummyInputStream::getAudioDesc() const
 	return m_audioDesc;
 }
 
+AVMediaType DummyInputStream::getStreamType() const
+{
+	//TODO return different type whether it's an audio or video type
+	return AVMEDIA_TYPE_AUDIO;
+}
 
 double DummyInputStream::getDuration() const
 {

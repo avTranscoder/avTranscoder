@@ -9,7 +9,7 @@
 #include <cstdlib>
 
 
-void parseConfigFile( const std::string& configFilename, avtranscoder::Transcoder::StreamDefinitions& streams )
+void parseConfigFile( const std::string& configFilename, avtranscoder::Transcoder::InputStreamsDesc& streams )
 {
 	std::ifstream configFile( configFilename.c_str(), std::ifstream::in );
 
@@ -49,7 +49,7 @@ int main( int argc, char** argv )
 		std::string inputConfigFile( argv[1] );
 		avtranscoder::OutputFile outputFile( argv[2] );
 
-		avtranscoder::Transcoder::StreamDefinitions streams;
+		avtranscoder::Transcoder::InputStreamsDesc streams;
 
 		parseConfigFile( inputConfigFile, streams );
 

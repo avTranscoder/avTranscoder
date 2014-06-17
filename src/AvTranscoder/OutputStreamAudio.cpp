@@ -9,19 +9,20 @@ extern "C" {
 #include <libavutil/avutil.h>
 }
 
+#include "DatasStructures/AudioFrame.hpp"
 #include "Profile.hpp"
 
 namespace avtranscoder
 {
 
 OutputStreamAudio::OutputStreamAudio()
-	: m_audioDesc( "pcm_s16le" )
+	: OutputStreamWriter::OutputStreamWriter()
+	, m_audioDesc( "pcm_s16le" )
 {
 }
 
 bool OutputStreamAudio::setup()
 {
-	std::cout << "[OutputStreamAudio::setup] ..." << std::endl;
 	av_register_all();  // Warning: should be called only once
 
 	AVCodecContext* codecContext( m_audioDesc.getCodecContext() );
@@ -36,7 +37,7 @@ bool OutputStreamAudio::setup()
 	return true;
 }
 
-bool OutputStreamAudio::encodeFrame( const AudioFrame& decodedFrame, DataStream& codedFrame )
+bool OutputStreamAudio::encodeFrame( const Frame& sourceFrame, DataStream& codedFrame )
 {
 #if LIBAVCODEC_VERSION_MAJOR > 54
 	AVFrame* frame = av_frame_alloc();
@@ -52,8 +53,10 @@ bool OutputStreamAudio::encodeFrame( const AudioFrame& decodedFrame, DataStream&
 #else
 	avcodec_get_frame_defaults( frame );
 #endif
+
+	const AudioFrame& sourceAudioFrame = static_cast<const AudioFrame&>( sourceFrame );
 	
-	frame->nb_samples     = decodedFrame.getNbSamples();
+	frame->nb_samples     = sourceAudioFrame.getNbSamples();
 	frame->format         = codecContext->sample_fmt;
 	frame->channel_layout = codecContext->channel_layout;
 	
@@ -67,7 +70,7 @@ bool OutputStreamAudio::encodeFrame( const AudioFrame& decodedFrame, DataStream&
 		throw std::runtime_error( "EncodeFrame error: buffer size < 0 - " + std::string(err) );
 	}
 
-	int retvalue = avcodec_fill_audio_frame(frame, codecContext->channels, codecContext->sample_fmt, decodedFrame.getPtr(), buffer_size, 0);
+	int retvalue = avcodec_fill_audio_frame(frame, codecContext->channels, codecContext->sample_fmt, sourceAudioFrame.getPtr(), buffer_size, 0);
 	if( retvalue < 0 )
 	{
 		char err[250];

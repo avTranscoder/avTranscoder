@@ -12,7 +12,6 @@ class AvExport InputStreamReader
 {
 public:
 	InputStreamReader( AvInputStream& inputStream ) {};
-	// virtual ~InputStreamReader() = 0;
 	
 	virtual void setup() = 0;
 
