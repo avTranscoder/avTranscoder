@@ -1,10 +1,12 @@
 #ifndef _AV_TRANSCODER_OUTPUT_FILE_HPP_
 #define _AV_TRANSCODER_OUTPUT_FILE_HPP_
 
-#include "DatasStructures/Image.hpp"
-#include "DatasStructures/DataStreamDesc.hpp"
-#include "DatasStructures/VideoDesc.hpp"
-#include "DatasStructures/AudioDesc.hpp"
+#include <AvTranscoder/DatasStructures/Image.hpp>
+#include <AvTranscoder/DatasStructures/DataStreamDesc.hpp>
+#include <AvTranscoder/DatasStructures/VideoDesc.hpp>
+#include <AvTranscoder/DatasStructures/AudioDesc.hpp>
+
+#include <AvTranscoder/AvOutputStream.hpp>
 
 #include <string>
 #include <vector>
@@ -45,14 +47,21 @@ public:
 	 * @note call setup() before adding any stream
 	 * @param videoDesc description of output stream
 	**/
-	virtual void addVideoStream( const VideoDesc& videoDesc );
+	virtual AvOutputStream& addVideoStream( const VideoDesc& videoDesc );
 
 	/**
 	 * @brief Add an audio output stream using the description.
 	 * @note call setup() before adding any stream
 	 * @param audioDesc description of output stream
 	**/
-	virtual void addAudioStream( const AudioDesc& audioDesc );
+	virtual AvOutputStream& addAudioStream( const AudioDesc& audioDesc );
+
+	/**
+	 * @brief get the output stream description.
+	 * @param streamId select the output stream
+	 * @return the output stream reference
+	**/
+	virtual AvOutputStream& getStream( const size_t streamId );
 
 	/**
 	 * @brief Initialise the wrapping
@@ -74,6 +83,7 @@ public:
 	virtual bool endWrap( );
 
 private:
+	std::vector<AvOutputStream> _outputStreams;
 	AVOutputFormat*  outputFormat;
 	AVFormatContext* formatContext;
 
