@@ -19,8 +19,8 @@ namespace avtranscoder
 {
 
 /**
- * Outputfile is a simple C++ API to wrap and write medias.
- * the default implentation use avformat wrapper frome the LibAV/FFMpeg 
+ * @brief Outputfile is a simple C++ API to wrap and write medias.\n
+ * the default implentation use avformat wrapper frome the LibAV/FFMpeg.\n
  * It can be overloaded to integrate custom wrapper.
  **/
 class AvExport OutputFile
