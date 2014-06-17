@@ -18,13 +18,13 @@ extern "C" {
 namespace avtranscoder
 {
 
-OutputFile::OutputFile( const std::string& file )
+OutputFile::OutputFile( const std::string& filename )
 	: outputFormat  ( NULL )
 	, formatContext ( NULL )
 	, codec         ( NULL )
 	, codecContext  ( NULL )
 	, stream        ( NULL )
-	, filename      ( file )
+	, filename      ( filename )
 	, packetCount   ( 0 )
 {
 }
