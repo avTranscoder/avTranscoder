@@ -5,6 +5,8 @@ extern "C" {
 	#define __STDC_CONSTANT_MACROS
 #endif
 #include <libavutil/opt.h>
+#include <libavutil/pixfmt.h>
+#include <libavutil/pixdesc.h>
 }
 
 #include <string>
@@ -268,6 +270,35 @@ OptionLoader::OptionArray OptionLoader::loadOptions( void* av_class, int req_fla
 		}
 	}
 	return options;
+}
+
+std::vector<std::string> OptionLoader::getPixelFormats ( const std::string& videoCodecName ) const
+{
+	std::vector<std::string> pixelFormats;
+	
+	AVCodec* videoCodec = avcodec_find_encoder_by_name( videoCodecName.c_str() );
+	
+	if( videoCodec->pix_fmts == 0 )
+	{
+		for( int pix_fmt = 0; pix_fmt < PIX_FMT_NB; pix_fmt++ )
+		{
+			const AVPixFmtDescriptor* pix_desc = &av_pix_fmt_descriptors[pix_fmt];
+			if( ! pix_desc->name )
+				continue;
+			pixelFormats.push_back( std::string( pix_desc->name ) );
+		}
+		return pixelFormats;
+	}
+	
+	int i = 0;
+	while( videoCodec->pix_fmts[i] != -1 )
+	{
+		const AVPixFmtDescriptor* pix_desc = &av_pix_fmt_descriptors[ videoCodec->pix_fmts[i] ];
+		pixelFormats.push_back( std::string( pix_desc->name ) );
+		i++;
+	}
+	
+	return pixelFormats;
 }
 
 }

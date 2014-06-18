@@ -61,6 +61,11 @@ public:
 	std::vector<std::string>& getAudioCodecsLongNames() { return m_audioCodecsLongNames; }
 	std::vector<std::string>& getAudioCodecsShortNames() { return m_audioCodecsShortNames; }
 	
+	/**
+	 *  Get array of pixel format supported by video codec.
+	 */
+	std::vector<std::string> getPixelFormats( const std::string& videoCodecName ) const;
+	
 private:
 	/**
 	 * @brief: load array of Option depending on the flags.
