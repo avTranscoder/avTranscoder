@@ -33,7 +33,7 @@ public:
 	//void setVideoDesc( const VideoDesc& videoDesc );
 
 	/**
-	 * @param[out] codecFrame blabla
+	 * @param[out] codecFrame
 	 */
 	bool encodeFrame( const Image& sourceImage, DataStream& codedFrame );
 

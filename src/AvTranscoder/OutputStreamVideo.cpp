@@ -14,8 +14,6 @@ extern "C" {
 
 #include "Profile.hpp"
 
-#include <iostream>
-
 namespace avtranscoder
 {
 
@@ -34,7 +32,7 @@ bool OutputStreamVideo::setup( )
 		return false;
 
 	// try to open encoder with parameters.
-	if( avcodec_open2( m_videoDesc.getCodecContext(), m_videoDesc.getCodec(), NULL ) < 0 )
+	if( avcodec_open2( codecContext, m_videoDesc.getCodec(), NULL ) < 0 )
 		return false;
 
 	return true;
