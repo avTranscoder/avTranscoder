@@ -75,9 +75,7 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 			StreamTranscoder* streamTranscoder = new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile, _streamTranscoders.size() );
 			streamTranscoder->init( profile );
 			_streamTranscoders.push_back( streamTranscoder );
-			
 			_inputStreams.push_back( & referenceFile->getStream( streamIndex ) );
-			_outputFile.addVideoStream( _inputStreams.back()->getVideoDesc() );
 			break;
 		}
 		case AVMEDIA_TYPE_AUDIO:
@@ -85,9 +83,7 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 			StreamTranscoder* streamTranscoder = new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile, _streamTranscoders.size() );
 			streamTranscoder->init( profile );
 			_streamTranscoders.push_back( streamTranscoder );
-			
 			_inputStreams.push_back( & referenceFile->getStream( streamIndex ) );
-			_outputFile.addAudioStream( _inputStreams.back()->getAudioDesc() );
 			break;
 		}
 		case AVMEDIA_TYPE_DATA:
@@ -127,30 +123,34 @@ void Transcoder::process( ProgressListener& progress )
 		dataStreams.push_back( dataStream );
 	}
 
-	// _outputFile.beginWrap();
+	_outputFile.beginWrap();
+
 
 	while( 1 )
 	{
-		// read one frame for each streamIndex, and stop process when one of the stream is ended (the shorter)
-		// if( ! getStreamsNextPacket( dataStreams ) )
-		// 	break;
-
-		// display process progression // first stream duration (not the shorter !!!!)
 		if( progress.progress( _inputStreams.at( 0 )->getPacketDuration() * ( frame + 1 ), _inputStreams.at( 0 )->getDuration() ) == eJobStatusCancel )
+		{
 			break;
+		}
+
 
 		for( size_t streamIndex = 0; streamIndex < _inputStreams.size(); ++streamIndex )
 		{
-			if( _streamTranscoders.at( streamIndex ) )
-				_streamTranscoders.at( streamIndex )->processFrame();
-			// _outputFile.wrap( dataStreams.at( streamIndex ), streamIndex );
+			if( _streamTranscoders.at( streamIndex ) && ! _streamTranscoders.at( streamIndex )->processFrame() )
+			{
+				_inputStreams.erase( _inputStreams.begin() + streamIndex );
+			}
+		}
+
+		if( _inputStreams.size() == 0 )
+		{
+			break;
 		}
 
 		++frame;
 	}
 
-	// _outputFile.endWrap();
-
+	_outputFile.endWrap();
 }
 
 bool Transcoder::getStreamsNextPacket( std::vector< DataStream >& dataStreams )
