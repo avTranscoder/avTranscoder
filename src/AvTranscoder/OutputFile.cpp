@@ -73,11 +73,13 @@ void OutputFile::addVideoStream( const VideoDesc& videoDesc )
 	stream->codec->height = videoDesc.getCodecContext()->height;
 	stream->codec->bit_rate = videoDesc.getCodecContext()->bit_rate;
 	stream->codec->time_base = videoDesc.getCodecContext()->time_base;
+	stream->codec->ticks_per_frame = videoDesc.getCodecContext()->ticks_per_frame;
 	stream->codec->pix_fmt = videoDesc.getCodecContext()->pix_fmt;
 	stream->codec->profile = videoDesc.getCodecContext()->profile;
 	stream->codec->level = videoDesc.getCodecContext()->level;
 
-	stream->time_base = stream->codec->time_base;
+	stream->time_base.num = stream->codec->time_base.num;
+	stream->time_base.den = stream->codec->time_base.den / stream->codec->ticks_per_frame;
 }
 
 void OutputFile::addAudioStream( const AudioDesc& audioDesc )
