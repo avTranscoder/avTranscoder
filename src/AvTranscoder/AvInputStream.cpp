@@ -103,7 +103,7 @@ VideoDesc AvInputStream::getVideoDesc() const
 	VideoDesc desc( codecContext->codec_id );
 
 	desc.setImageParameters( codecContext->width, codecContext->height, codecContext->pix_fmt );
-	desc.setTimeBase( codecContext->time_base.num, codecContext->time_base.den );
+	desc.setTimeBase( codecContext->time_base.num, codecContext->time_base.den, codecContext->ticks_per_frame );
 
 	return desc;
 }

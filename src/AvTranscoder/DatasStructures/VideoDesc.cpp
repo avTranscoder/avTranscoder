@@ -67,10 +67,11 @@ void VideoDesc::setImageParameters( const size_t width, const size_t height, con
 	m_codecContext->pix_fmt = pixel;
 }
 
-void VideoDesc::setTimeBase( const size_t num, const size_t den )
+void VideoDesc::setTimeBase( const size_t num, const size_t den, const size_t ticksPerFrame )
 {
 	m_codecContext->time_base.num = num;
 	m_codecContext->time_base.den = den;
+	m_codecContext->ticks_per_frame = ticksPerFrame;
 }
 
 std::string VideoDesc::getVideoCodec() const
