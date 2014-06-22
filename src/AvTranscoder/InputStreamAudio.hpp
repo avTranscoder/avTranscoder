@@ -25,12 +25,12 @@ public:
 	bool readNextFrame( Frame& frameBuffer );
 
 private:
-	AvInputStream*     m_inputStream;
-	AVCodec*           m_codec;
-	AVCodecContext*    m_codecContext;
-	AVFrame*           m_frame;
+	AvInputStream*     _inputStream;
+	AVCodec*           _codec;
+	AVCodecContext*    _codecContext;
+	AVFrame*           _frame;
 
-	int                m_selectedStream;
+	int                _selectedStream;
 };
 
 }

@@ -17,7 +17,7 @@ namespace avtranscoder
 
 OutputStreamAudio::OutputStreamAudio()
 	: OutputStreamWriter::OutputStreamWriter()
-	, m_audioDesc( "pcm_s16le" )
+	, _audioDesc( "pcm_s16le" )
 {
 }
 
@@ -25,13 +25,13 @@ bool OutputStreamAudio::setup()
 {
 	av_register_all();  // Warning: should be called only once
 
-	AVCodecContext* codecContext( m_audioDesc.getCodecContext() );
+	AVCodecContext* codecContext( _audioDesc.getCodecContext() );
 
 	if( codecContext == NULL )
 		return false;
 	
 	// try to open encoder with parameters.
-	if( avcodec_open2( codecContext, m_audioDesc.getCodec(), NULL ) < 0 )
+	if( avcodec_open2( codecContext, _audioDesc.getCodec(), NULL ) < 0 )
 		return false;
 
 	return true;
@@ -45,7 +45,7 @@ bool OutputStreamAudio::encodeFrame( const Frame& sourceFrame, DataStream& coded
 	AVFrame* frame = avcodec_alloc_frame();
 #endif
 
-	AVCodecContext* codecContext = m_audioDesc.getCodecContext();
+	AVCodecContext* codecContext = _audioDesc.getCodecContext();
 
 	// Set default frame parameters
 #if LIBAVCODEC_VERSION_MAJOR > 54
@@ -61,22 +61,22 @@ bool OutputStreamAudio::encodeFrame( const Frame& sourceFrame, DataStream& coded
 	frame->channel_layout = codecContext->channel_layout;
 	
 	// we calculate the size of the samples buffer in bytes
-	int buffer_size = av_samples_get_buffer_size(NULL, codecContext->channels, frame->nb_samples, codecContext->sample_fmt, 0);
+	int buffer_size = av_samples_get_buffer_size( NULL, codecContext->channels, frame->nb_samples, codecContext->sample_fmt, 0 );
 	if( buffer_size < 0 )
 	{
 		char err[250];
-		av_strerror( buffer_size, err, 250);
+		av_strerror( buffer_size, err, 250 );
 		
 		throw std::runtime_error( "EncodeFrame error: buffer size < 0 - " + std::string(err) );
 	}
 
-	int retvalue = avcodec_fill_audio_frame(frame, codecContext->channels, codecContext->sample_fmt, sourceAudioFrame.getPtr(), buffer_size, 0);
+	int retvalue = avcodec_fill_audio_frame( frame, codecContext->channels, codecContext->sample_fmt, sourceAudioFrame.getPtr(), buffer_size, 0 );
 	if( retvalue < 0 )
 	{
 		char err[250];
 		av_strerror( retvalue, err, 250);	
 		
-		throw std::runtime_error( "EncodeFrame error: avcodec fill audio frame - " + std::string(err) );
+		throw std::runtime_error( "EncodeFrame error: avcodec fill audio frame - " + std::string( err ) );
 	}
 	
 	AVPacket packet;
@@ -133,7 +133,7 @@ bool OutputStreamAudio::encodeFrame( const Frame& sourceFrame, DataStream& coded
 
 bool OutputStreamAudio::encodeFrame( DataStream& codedFrame )
 {
-	AVCodecContext* codecContext = m_audioDesc.getCodecContext();
+	AVCodecContext* codecContext = _audioDesc.getCodecContext();
 
 	AVPacket packet;
 	av_init_packet( &packet );
@@ -172,8 +172,8 @@ void OutputStreamAudio::setProfile( const std::string& profile )
 	p.loadAudioProfiles();
 	Profile::ProfileDesc profDesc = p.getProfile( profile );
 
-	m_audioDesc.setAudioCodec( profDesc["codec"] );
-	m_audioDesc.setAudioParameters( 48000, 2, av_get_sample_fmt( profDesc["sample_fmt"].c_str() ) );
+	_audioDesc.setAudioCodec( profDesc["codec"] );
+	_audioDesc.setAudioParameters( 48000, 2, av_get_sample_fmt( profDesc["sample_fmt"].c_str() ) );
 
 	setup();
 }

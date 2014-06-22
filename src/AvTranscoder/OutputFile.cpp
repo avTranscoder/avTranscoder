@@ -19,87 +19,87 @@ namespace avtranscoder
 {
 
 OutputFile::OutputFile( const std::string& filename )
-	: outputFormat  ( NULL )
-	, formatContext ( NULL )
-	, codec         ( NULL )
-	, codecContext  ( NULL )
-	, stream        ( NULL )
-	, filename      ( filename )
-	, packetCount   ( 0 )
+	: _outputFormat  ( NULL )
+	, _formatContext ( NULL )
+	, _codec         ( NULL )
+	, _codecContext  ( NULL )
+	, _stream        ( NULL )
+	, _filename      ( filename )
+	, _packetCount   ( 0 )
 {
 }
 
 bool OutputFile::setup()
 {
 	av_register_all();
-	outputFormat = av_guess_format( NULL, filename.c_str(), NULL);
+	_outputFormat = av_guess_format( NULL, _filename.c_str(), NULL);
 
-	if( !outputFormat )
+	if( ! _outputFormat )
 	{
 		throw std::runtime_error( "unable to find format" );
 	}
 
-	if( ( formatContext = avformat_alloc_context() ) == NULL )
+	if( ( _formatContext = avformat_alloc_context() ) == NULL )
 	{
 		throw std::runtime_error( "unable to create format context" );
 	}
 
-	formatContext->oformat = outputFormat;
+	_formatContext->oformat = _outputFormat;
 
-	if( !( outputFormat->flags & AVFMT_NOFILE ) )
+	if( !( _outputFormat->flags & AVFMT_NOFILE ) )
 	{
-		if( avio_open2( &formatContext->pb, filename.c_str(), AVIO_FLAG_WRITE, NULL, NULL ) < 0 )
+		if( avio_open2( &_formatContext->pb, _filename.c_str(), AVIO_FLAG_WRITE, NULL, NULL ) < 0 )
 		{
-			avformat_close_input( &formatContext );
-			formatContext = NULL;
+			avformat_close_input( &_formatContext );
+			_formatContext = NULL;
 			throw std::runtime_error( "error when opening output format" );
 		}
 	}
 
-	return formatContext != NULL;
+	return _formatContext != NULL;
 }
 
 AvOutputStream& OutputFile::addVideoStream( const VideoDesc& videoDesc )
 {
-	assert( formatContext != NULL );
+	assert( _formatContext != NULL );
 
-	if( ( stream = avformat_new_stream( formatContext, videoDesc.getCodec() ) ) == NULL )
+	if( ( _stream = avformat_new_stream( _formatContext, videoDesc.getCodec() ) ) == NULL )
 	{
 		throw std::runtime_error( "unable to add new video stream" );
 	}
 
-	stream->codec->width  = videoDesc.getCodecContext()->width;
-	stream->codec->height = videoDesc.getCodecContext()->height;
-	stream->codec->bit_rate = videoDesc.getCodecContext()->bit_rate;
-	stream->codec->ticks_per_frame = videoDesc.getCodecContext()->ticks_per_frame;
-	stream->codec->pix_fmt = videoDesc.getCodecContext()->pix_fmt;
-	stream->codec->profile = videoDesc.getCodecContext()->profile;
-	stream->codec->level = videoDesc.getCodecContext()->level;
+	_stream->codec->width  = videoDesc.getCodecContext()->width;
+	_stream->codec->height = videoDesc.getCodecContext()->height;
+	_stream->codec->bit_rate = videoDesc.getCodecContext()->bit_rate;
+	_stream->codec->ticks_per_frame = videoDesc.getCodecContext()->ticks_per_frame;
+	_stream->codec->pix_fmt = videoDesc.getCodecContext()->pix_fmt;
+	_stream->codec->profile = videoDesc.getCodecContext()->profile;
+	_stream->codec->level = videoDesc.getCodecContext()->level;
 
 	// need to set the time_base on the AVCodecContext and the AVStream...
 	av_reduce(
-		&stream->codec->time_base.num,
-		&stream->codec->time_base.den,
+		&_stream->codec->time_base.num,
+		&_stream->codec->time_base.den,
 		videoDesc.getCodecContext()->time_base.num * videoDesc.getCodecContext()->ticks_per_frame,
 		videoDesc.getCodecContext()->time_base.den,
 		INT_MAX );
 
-	stream->time_base = stream->codec->time_base;
+	_stream->time_base = _stream->codec->time_base;
 	return _outputStreams.back();
 }
 
 AvOutputStream& OutputFile::addAudioStream( const AudioDesc& audioDesc )
 {
-	assert( formatContext != NULL );
+	assert( _formatContext != NULL );
 
-	if( ( stream = avformat_new_stream( formatContext, audioDesc.getCodec() ) ) == NULL )
+	if( ( _stream = avformat_new_stream( _formatContext, audioDesc.getCodec() ) ) == NULL )
 	{
 		throw std::runtime_error( "unable to add new audio stream" );
 	}
 
-	stream->codec->sample_rate = audioDesc.getCodecContext()->sample_rate;
-	stream->codec->channels = audioDesc.getCodecContext()->channels;
-	stream->codec->sample_fmt = audioDesc.getCodecContext()->sample_fmt;
+	_stream->codec->sample_rate = audioDesc.getCodecContext()->sample_rate;
+	_stream->codec->channels = audioDesc.getCodecContext()->channels;
+	_stream->codec->sample_fmt = audioDesc.getCodecContext()->sample_fmt;
 
 	return _outputStreams.back();
 }
@@ -111,7 +111,7 @@ AvOutputStream& OutputFile::getStream( const size_t streamId )
 
 bool OutputFile::beginWrap( )
 {
-	if( avformat_write_header( formatContext, NULL ) != 0 )
+	if( avformat_write_header( _formatContext, NULL ) != 0 )
 	{
 		throw std::runtime_error( "could not write header" );
 	}
@@ -130,9 +130,9 @@ bool OutputFile::wrap( const DataStream& data, const size_t streamId )
 	packet.data = (uint8_t*)data.getPtr();
 	packet.size = data.getSize();
 	packet.dts = 0;
-	packet.pts = packetCount;
+	packet.pts = _packetCount;
 
-	if( av_interleaved_write_frame( formatContext, &packet ) != 0 )
+	if( av_interleaved_write_frame( _formatContext, &packet ) != 0 )
 	{
 		std::cout << "error when writting packet in stream" << std::endl;
 		return false;
@@ -140,7 +140,7 @@ bool OutputFile::wrap( const DataStream& data, const size_t streamId )
 
 	av_free_packet( &packet );
 
-	packetCount++;
+	_packetCount++;
 	return true;
 }
 

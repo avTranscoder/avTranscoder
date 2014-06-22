@@ -20,28 +20,28 @@ namespace avtranscoder
 {
 
 AudioTransform::AudioTransform()
-	: m_audioConvertContext( NULL )
-	, m_isInit    ( false )
+	: _audioConvertContext( NULL )
+	, _isInit    ( false )
 {
 }
 
 bool AudioTransform::init( const AudioFrame& src, const AudioFrame& dst )
 {
-	m_audioConvertContext = swr_alloc();
+	_audioConvertContext = swr_alloc();
 	
-	if( !m_audioConvertContext )
+	if( !_audioConvertContext )
 	{
 		throw std::runtime_error( "unable to create audio convert context" );
 	}
 	
-	swr_alloc_set_opts( m_audioConvertContext,
+	swr_alloc_set_opts( _audioConvertContext,
 	                    av_get_default_channel_layout( dst.desc().getChannels() ), dst.desc().getSampleFormat(), av_get_default_channel_layout( dst.desc().getSampleRate() ),
 	                    av_get_default_channel_layout( src.desc().getChannels() ), src.desc().getSampleFormat(), av_get_default_channel_layout( src.desc().getSampleRate() ),
 	                    0, NULL);
 	
-	if( swr_init( m_audioConvertContext ) < 0 )
+	if( swr_init( _audioConvertContext ) < 0 )
 	{
-		swr_free( &m_audioConvertContext );
+		swr_free( &_audioConvertContext );
 		throw std::runtime_error( "unable to open audio convert context" );
 	}
 	
@@ -50,10 +50,10 @@ bool AudioTransform::init( const AudioFrame& src, const AudioFrame& dst )
 
 void AudioTransform::convert( const AudioFrame& src, AudioFrame& dst )
 {
-	if( ! m_isInit )
+	if( ! _isInit )
 	{
-		m_isInit = init( src, dst );
-		m_isInit = true;
+		_isInit = init( src, dst );
+		_isInit = true;
 	}
 		
 	if( dst.getSize() != src.getSize() )
@@ -62,7 +62,7 @@ void AudioTransform::convert( const AudioFrame& src, AudioFrame& dst )
 	const unsigned char* srcData = src.getPtr();
 	unsigned char* dstData = dst.getPtr();
 	
-	swr_convert( m_audioConvertContext, &dstData, dst.getSize(), &srcData, src.getSize() );
+	swr_convert( _audioConvertContext, &dstData, dst.getSize(), &srcData, src.getSize() );
 	
 	dst.setNbSamples( src.getNbSamples() );
 }

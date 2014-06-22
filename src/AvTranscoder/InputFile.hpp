@@ -34,7 +34,7 @@ public:
 	/**
 	 * @return Return the resource to access
 	**/
-	std::string getFilename() const { return m_filename; }
+	std::string getFilename() const { return _filename; }
 
 	/**
 	 * @brief Run the analyse on the file after a setup.
@@ -47,9 +47,9 @@ public:
 	 * @note require to launch analyse() before to fill the property struture
 	 * @return structure of media metadatas
 	 **/
-	const Properties& getProperties() const { return m_properties; }
+	const Properties& getProperties() const { return _properties; }
 
-	void getProperties( Properties& properties ) const { properties = m_properties; }
+	void getProperties( Properties& properties ) const { properties = _properties; }
 
 	/**
 	 * @brief Get media file properties using static method.
@@ -75,7 +75,7 @@ public:
 	 * @brief Get LibAV/FFmpeg AVFormatContext
 	 * @return format context on current InputFile
 	 **/
-	AVFormatContext& getFormatContext() const { return *m_formatContext; }
+	AVFormatContext& getFormatContext() const { return *_formatContext; }
 
 	/**
 	 * @brief Read the next packet for the specified stream
@@ -99,10 +99,10 @@ public:
 	void readStream( const size_t streamIndex, const bool readStream = true );
 
 protected:
-	AVFormatContext*            m_formatContext;
-	Properties                  m_properties;
-	std::string                 m_filename;
-	std::vector<AvInputStream*> m_inputStreams;
+	AVFormatContext*            _formatContext;
+	Properties                  _properties;
+	std::string                 _filename;
+	std::vector<AvInputStream*> _inputStreams;
 };
 
 }

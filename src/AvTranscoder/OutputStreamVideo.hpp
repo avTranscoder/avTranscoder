@@ -41,12 +41,12 @@ public:
 	 */
 	bool encodeFrame( DataStream& codedFrame );
 
-	VideoDesc& getVideoDesc() { return m_videoDesc; }
+	VideoDesc& getVideoDesc() { return _videoDesc; }
 
 	void setProfile( const std::string& profile );
 
 private:
-	VideoDesc m_videoDesc;
+	VideoDesc _videoDesc;
 };
 
 }

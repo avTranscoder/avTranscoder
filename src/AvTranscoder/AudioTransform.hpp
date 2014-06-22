@@ -20,9 +20,9 @@ public:
 private:
 	bool init( const AudioFrame& src, const AudioFrame& dst );
 	
-	SwrContext* m_audioConvertContext;
+	SwrContext* _audioConvertContext;
 
-	bool m_isInit;
+	bool _isInit;
 };
 
 }

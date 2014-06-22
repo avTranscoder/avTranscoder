@@ -84,16 +84,16 @@ public:
 
 private:
 	std::vector<AvOutputStream> _outputStreams;
-	AVOutputFormat*  outputFormat;
-	AVFormatContext* formatContext;
+	AVOutputFormat*  _outputFormat;
+	AVFormatContext* _formatContext;
 
-	AVCodec*         codec;
-	AVCodecContext*  codecContext;
-	AVStream*        stream;
+	AVCodec*         _codec;
+	AVCodecContext*  _codecContext;
+	AVStream*        _stream;
 
-	std::string filename;
+	std::string      _filename;
 
-	size_t packetCount;
+	size_t           _packetCount;
 };
 
 }
