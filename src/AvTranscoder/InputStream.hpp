@@ -22,6 +22,8 @@ public:
 	// Stream properties
 	virtual VideoDesc getVideoDesc() const = 0;
 	virtual AudioDesc getAudioDesc() const = 0;
+	
+	virtual AVMediaType getStreamType() const = 0;
 
 	virtual double getDuration() const = 0;
 	virtual double getPacketDuration() const = 0;
@@ -29,6 +31,7 @@ public:
 	virtual void setBufferred( const bool bufferized ) = 0;
 
 	virtual void clearBuffering() = 0;
+
 };
 
 }

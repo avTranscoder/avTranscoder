@@ -8,9 +8,8 @@ extern "C" {
 #include <libavutil/pixfmt.h>
 }
 
-#include "OutputStream.hpp"
+#include "OutputStreamWriter.hpp"
 
-#include "DatasStructures/Image.hpp"
 #include "DatasStructures/VideoDesc.hpp"
 #include "DatasStructures/DataStreamDesc.hpp"
 
@@ -23,7 +22,7 @@ class AVCodecContext;
 namespace avtranscoder
 {
 
-class AvExport OutputStreamVideo
+class AvExport OutputStreamVideo : public OutputStreamWriter
 {
 public:
 	OutputStreamVideo();
@@ -33,9 +32,9 @@ public:
 	//void setVideoDesc( const VideoDesc& videoDesc );
 
 	/**
-	 * @param[out] codecFrame blabla
+	 * @param[out] codedFrame blabla
 	 */
-	bool encodeFrame( const Image& sourceImage, DataStream& codedFrame );
+	bool encodeFrame( const Frame& sourceFrame, DataStream& codedFrame );
 
 	/**
 	 * get delayed encoded frames

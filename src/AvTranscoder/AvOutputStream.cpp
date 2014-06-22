@@ -23,7 +23,7 @@ AvOutputStream::~AvOutputStream()
 
 bool AvOutputStream::wrap( DataStream& data )
 {
-	_outputFile->wrap( data, _streamIndex );
+	return _outputFile->wrap( data, _streamIndex );
 }
 
 VideoDesc AvOutputStream::getVideoDesc() const

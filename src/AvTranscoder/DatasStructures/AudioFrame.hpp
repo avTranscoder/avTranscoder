@@ -20,13 +20,12 @@ extern "C" {
 #include <stdexcept>
 
 //#include "Sample.hpp"
+#include "Frame.hpp"
 
 namespace avtranscoder
 {
 
-typedef std::vector< unsigned char > DataBuffer;
-
-class AudioFrameDesc
+class AvExport AudioFrameDesc
 {
 public:
 	AudioFrameDesc()
@@ -59,28 +58,22 @@ private:
 	AVSampleFormat m_sampleFormat;
 };
 
-class AudioFrame
+class AvExport AudioFrame : public Frame
 {
 public:
 	AudioFrame( const AudioFrameDesc& ref )
-		: m_dataBuffer( ref.getDataSize(), 0 )
-		, m_audioFrameDesc( ref )
+		: m_audioFrameDesc( ref )
 		, m_nbSamples( 0 )
-	{ }
+	{
+		 m_dataBuffer = DataBuffer( ref.getDataSize(), (unsigned char) 0 );
+	}
 
 	const AudioFrameDesc& desc() const    { return m_audioFrameDesc; }
-	DataBuffer&           getBuffer()     { return m_dataBuffer; }
-	unsigned char*        getPtr()        { return &m_dataBuffer[0]; }
-#ifndef SWIG
-	const unsigned char*  getPtr()  const { return &m_dataBuffer[0]; }
-#endif
-	size_t                getSize() const { return m_dataBuffer.size(); }
 	
 	size_t getNbSamples() const { return m_nbSamples; }
 	void setNbSamples( size_t nbSamples ) { m_nbSamples = nbSamples; }
 
 private:
-	DataBuffer m_dataBuffer;
 	const AudioFrameDesc m_audioFrameDesc;
 	size_t m_nbSamples;
 };

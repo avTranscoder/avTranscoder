@@ -68,14 +68,21 @@ AvOutputStream& OutputFile::addVideoStream( const VideoDesc& videoDesc )
 		throw std::runtime_error( "unable to add new video stream" );
 	}
 
-	// need to set the time_base on the AVCodecContext and the AVStream...
 	stream->codec->width  = videoDesc.getCodecContext()->width;
 	stream->codec->height = videoDesc.getCodecContext()->height;
 	stream->codec->bit_rate = videoDesc.getCodecContext()->bit_rate;
-	stream->codec->time_base = videoDesc.getCodecContext()->time_base;
+	stream->codec->ticks_per_frame = videoDesc.getCodecContext()->ticks_per_frame;
 	stream->codec->pix_fmt = videoDesc.getCodecContext()->pix_fmt;
 	stream->codec->profile = videoDesc.getCodecContext()->profile;
 	stream->codec->level = videoDesc.getCodecContext()->level;
+
+	// need to set the time_base on the AVCodecContext and the AVStream...
+	av_reduce(
+		&stream->codec->time_base.num,
+		&stream->codec->time_base.den,
+		videoDesc.getCodecContext()->time_base.num * videoDesc.getCodecContext()->ticks_per_frame,
+		videoDesc.getCodecContext()->time_base.den,
+		INT_MAX );
 
 	stream->time_base = stream->codec->time_base;
 	return _outputStreams.back();

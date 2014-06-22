@@ -12,6 +12,7 @@ extern "C" {
 #include <libavutil/mathematics.h>
 }
 
+#include "DatasStructures/Image.hpp"
 #include "Profile.hpp"
 
 #include <iostream>
@@ -20,7 +21,8 @@ namespace avtranscoder
 {
 
 OutputStreamVideo::OutputStreamVideo( )
-	: m_videoDesc( "mpeg2video" )
+	: OutputStreamWriter::OutputStreamWriter( )
+	, m_videoDesc( "mpeg2video" )
 {
 }
 
@@ -41,7 +43,7 @@ bool OutputStreamVideo::setup( )
 }
 
 
-bool OutputStreamVideo::encodeFrame( const Image& sourceImage, DataStream& codedFrame )
+bool OutputStreamVideo::encodeFrame( const Frame& sourceFrame, DataStream& codedFrame )
 {
 #if LIBAVCODEC_VERSION_MAJOR > 54
 	AVFrame* frame = av_frame_alloc();
@@ -58,10 +60,12 @@ bool OutputStreamVideo::encodeFrame( const Image& sourceImage, DataStream& coded
 	avcodec_get_frame_defaults( frame );
 #endif
 
+	const Image& sourceImageFrame = static_cast<const Image&>( sourceFrame );
+
 	frame->width  = codecContext->width;
 	frame->height = codecContext->height;
 	frame->format = codecContext->pix_fmt;
-	avpicture_fill( (AVPicture*)frame, const_cast< unsigned char * >( sourceImage.getPtr() ), codecContext->pix_fmt, codecContext->width, codecContext->height );
+	avpicture_fill( (AVPicture*)frame, const_cast< unsigned char * >( sourceImageFrame.getPtr() ), codecContext->pix_fmt, codecContext->width, codecContext->height );
 
 	AVPacket packet;
 	av_init_packet( &packet );
@@ -86,6 +90,7 @@ bool OutputStreamVideo::encodeFrame( const Image& sourceImage, DataStream& coded
 	{
 		packet.flags |= AV_PKT_FLAG_KEY;
 	}
+
 
 #if LIBAVCODEC_VERSION_MAJOR > 53
 	int gotPacket = 0;
