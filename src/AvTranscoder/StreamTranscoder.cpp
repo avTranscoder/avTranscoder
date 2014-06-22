@@ -36,40 +36,41 @@ void StreamTranscoder::init( const std::string& profile )
 			_inputStreamReader = new InputStreamVideo( *_stream );
 			_inputStreamReader->setup();
 
-			if( ! profile.empty() )
-			{
-				_outputStreamWriter = new OutputStreamVideo();
-				OutputStreamVideo* outputStreamVideo = static_cast<OutputStreamVideo*>( _outputStreamWriter );
-
-				outputStreamVideo->setProfile( profile );
-				_outputFile->addVideoStream( outputStreamVideo->getVideoDesc() );
-				_frameBuffer = new Image( outputStreamVideo->getVideoDesc().getImageDesc() );
-			}
-			else
+			// re-wrap only, get output descriptor from input
+			if( profile.empty() )
 			{
 				_outputFile->addVideoStream( _stream->getVideoDesc() );
+				break;
 			}
 
+			OutputStreamVideo* outputStreamVideo = new OutputStreamVideo();
+			_outputStreamWriter = outputStreamVideo;
+
+			_outputStreamWriter->setProfile( profile );
+			_outputFile->addVideoStream( outputStreamVideo->getVideoDesc() );
+			_frameBuffer = new Image( outputStreamVideo->getVideoDesc().getImageDesc() );
+			
 			break;
 		}
 		case AVMEDIA_TYPE_AUDIO :
 		{
 			_inputStreamReader = new InputStreamAudio( *_stream );
 			_inputStreamReader->setup();
-			if( ! profile.empty() )
-			{
-				_outputStreamWriter = new OutputStreamAudio();
-				OutputStreamAudio* outputStreamAudio = static_cast<OutputStreamAudio*>( _outputStreamWriter );
 
-				outputStreamAudio->setProfile( profile );
-				_outputFile->addAudioStream( outputStreamAudio->getAudioDesc() );
-				_frameBuffer = new AudioFrame( outputStreamAudio->getAudioDesc().getFrameDesc() );
-			}
-			else
+			// re-wrap only, get output descriptor from input
+			if( profile.empty() )
 			{
 				_outputFile->addAudioStream( _stream->getAudioDesc() );
+				break;
 			}
+			
+			OutputStreamAudio* outputStreamAudio = new OutputStreamAudio();
+			_outputStreamWriter = outputStreamAudio;
 
+			outputStreamAudio->setProfile( profile );
+			_outputFile->addAudioStream( outputStreamAudio->getAudioDesc() );
+			_frameBuffer = new AudioFrame( outputStreamAudio->getAudioDesc().getFrameDesc() );
+			
 			break;
 		}
 		default:
