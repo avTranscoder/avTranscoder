@@ -33,7 +33,7 @@ void Profile::loadProfiles()
 	if( const char* envAvProfiles = std::getenv("AVPROFILES") )
 	{
 		std::vector< std::string > paths;
-		split( paths, envAvProfiles, ";" );
+		split( paths, envAvProfiles, ":" );
 		for( std::vector< std::string >::iterator it = paths.begin(); it != paths.end(); ++it )
 		{
 			std::cout << "search profile in path " << *it << std::endl;
