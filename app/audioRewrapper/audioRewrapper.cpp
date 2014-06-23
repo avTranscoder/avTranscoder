@@ -21,12 +21,15 @@ void rewrapAudio( const char* inputfilename, const char* outputFilename )
 
 	InputFile inputFile( inputfilename );
 	inputFile.analyse();
+	inputFile.readStream( 0 );
 
 	OutputFile outputFile( outputFilename );
 
 	outputFile.setup();
 
 	outputFile.addAudioStream( inputFile.getStream( 0 ).getAudioDesc() );
+	
+	outputFile.beginWrap();
 
 	DataStream data;
 
@@ -43,6 +46,7 @@ void rewrapAudio( const char* inputfilename, const char* outputFilename )
 
 		++frame;
 	}
+	outputFile.endWrap();
 	std::cout << std::endl;
 }
 
@@ -131,8 +135,8 @@ int main( int argc, char** argv )
 
 	try
 	{
-		//rewrapAudio( argv[1], argv[2] );
-		transcodeAudio( argv[1], argv[2] );
+		rewrapAudio( argv[1], argv[2] );
+		// transcodeAudio( argv[1], argv[2] );
 	}
 	catch( std::exception &e )
 	{
