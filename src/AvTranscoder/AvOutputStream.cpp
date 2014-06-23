@@ -1,6 +1,6 @@
 #include "AvOutputStream.hpp"
 
-#include "OutputFile.hpp"
+#include <AvTranscoder/File/OutputFile.hpp>
 
 namespace avtranscoder
 {

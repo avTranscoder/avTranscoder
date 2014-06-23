@@ -33,8 +33,8 @@
 #include <AvTranscoder/InputStreamAudio.hpp>
 #include <AvTranscoder/InputStreamVideo.hpp>
 
-#include <AvTranscoder/InputFile.hpp>
-#include <AvTranscoder/OutputFile.hpp>
+#include <AvTranscoder/File/InputFile.hpp>
+#include <AvTranscoder/File/OutputFile.hpp>
 
 #include <AvTranscoder/Transcoder.hpp>
 
@@ -77,7 +77,7 @@ namespace std {
 %include <AvTranscoder/InputStreamAudio.hpp>
 %include <AvTranscoder/InputStreamVideo.hpp>
 
-%include <AvTranscoder/InputFile.hpp>
-%include <AvTranscoder/OutputFile.hpp>
+%include <AvTranscoder/File/InputFile.hpp>
+%include <AvTranscoder/File/OutputFile.hpp>
 
 %include <AvTranscoder/Transcoder.hpp>

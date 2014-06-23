@@ -1,9 +1,9 @@
 #ifndef _AV_TRANSCODER_TRANSCODER_HPP_
 #define _AV_TRANSCODER_TRANSCODER_HPP_
 
-#include <AvTranscoder/InputFile.hpp>
+#include <AvTranscoder/File/InputFile.hpp>
+#include <AvTranscoder/File/OutputFile.hpp>
 #include <AvTranscoder/InputStream.hpp>
-#include <AvTranscoder/OutputFile.hpp>
 #include <AvTranscoder/ProgressListener.hpp>
 #include <AvTranscoder/DummyInputStream.hpp>
 #include <AvTranscoder/StreamTranscoder.hpp>

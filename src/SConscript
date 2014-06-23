@@ -14,7 +14,9 @@ env.Append(
 
 sAvTranscoder = env.StaticLibrary(
     'sAvTranscoder',
-    Glob( 'AvTranscoder/*.cpp' ) + Glob( 'AvTranscoder/DatasStructures/*.cpp' ),
+    Glob( 'AvTranscoder/*.cpp' ) +
+    Glob( 'AvTranscoder/DatasStructures/*.cpp' ) +
+    Glob( 'AvTranscoder/File/*.cpp' ),
     LIBS = [
         'avutil',
         'avcodec',
@@ -26,7 +28,9 @@ sAvTranscoder = env.StaticLibrary(
 
 SharedAvTranscoder = env.SharedLibrary(
     'AvTranscoder',
-    Glob( 'AvTranscoder/*.cpp' ) + Glob( 'AvTranscoder/DatasStructures/*.cpp' ),
+    Glob( 'AvTranscoder/*.cpp' ) +
+    Glob( 'AvTranscoder/DatasStructures/*.cpp' ) +
+    Glob( 'AvTranscoder/File/*.cpp' ),
     LIBS = [
         'avutil',
         'avcodec',

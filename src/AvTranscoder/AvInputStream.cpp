@@ -1,6 +1,6 @@
 #include "AvInputStream.hpp"
 
-#include <AvTranscoder/InputFile.hpp>
+#include <AvTranscoder/File/InputFile.hpp>
 
 extern "C" {
 #ifndef __STDC_CONSTANT_MACROS

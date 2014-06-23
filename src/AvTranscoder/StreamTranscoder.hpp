@@ -10,7 +10,7 @@
 #include <AvTranscoder/InputStreamAudio.hpp>
 #include <AvTranscoder/OutputStreamAudio.hpp>
 
-#include <AvTranscoder/OutputFile.hpp>
+#include <AvTranscoder/File/OutputFile.hpp>
 
 
 namespace avtranscoder

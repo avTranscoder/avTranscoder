@@ -1,4 +1,4 @@
-#include <AvTranscoder/InputFile.hpp>
+#include <AvTranscoder/File/InputFile.hpp>
 #include <AvTranscoder/Metadatas/Print.hpp>
 
 #include <iostream>

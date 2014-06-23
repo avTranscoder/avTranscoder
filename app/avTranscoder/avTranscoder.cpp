@@ -8,8 +8,9 @@
 #include <AvTranscoder/OutputStream.hpp>
 #include <AvTranscoder/OutputStreamAudio.hpp>
 #include <AvTranscoder/OutputStreamVideo.hpp>
-#include <AvTranscoder/InputFile.hpp>
-#include <AvTranscoder/OutputFile.hpp>
+
+#include <AvTranscoder/File/InputFile.hpp>
+#include <AvTranscoder/File/OutputFile.hpp>
 
 #include <AvTranscoder/ColorTransform.hpp>
 

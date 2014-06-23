@@ -5,7 +5,7 @@
 #include <AvTranscoder/AvInputStream.hpp>
 #include <AvTranscoder/InputStreamAudio.hpp>
 #include <AvTranscoder/InputStreamVideo.hpp>
-#include <AvTranscoder/InputFile.hpp>
+#include <AvTranscoder/File/InputFile.hpp>
 
 #include <AvTranscoder/ColorTransform.hpp>
 

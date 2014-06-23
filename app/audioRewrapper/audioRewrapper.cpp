@@ -1,8 +1,8 @@
 #include <iostream>
 #include <iomanip>
 
-#include <AvTranscoder/InputFile.hpp>
-#include <AvTranscoder/OutputFile.hpp>
+#include <AvTranscoder/File/InputFile.hpp>
+#include <AvTranscoder/File/OutputFile.hpp>
 
 #include <AvTranscoder/AvInputStream.hpp>
 #include <AvTranscoder/InputStreamAudio.hpp>
