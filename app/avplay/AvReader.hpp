@@ -22,7 +22,9 @@ public:
 		, m_sourceImage( NULL )
 		, m_imageToDisplay( NULL )
 	{
-		m_inputFile.analyse();
+		avtranscoder::ProgressListener p;
+
+		m_inputFile.analyse( p );
 		m_videoStream = m_inputFile.getProperties().videoStreams.at(0).streamId;
 
 		m_inputFile.readStream( m_videoStream );

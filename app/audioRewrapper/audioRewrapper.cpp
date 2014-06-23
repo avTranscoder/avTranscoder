@@ -10,8 +10,6 @@
 
 #include <AvTranscoder/AudioTransform.hpp>
 
-
-
 void rewrapAudio( const char* inputfilename, const char* outputFilename )
 {
 	using namespace avtranscoder;
@@ -19,8 +17,10 @@ void rewrapAudio( const char* inputfilename, const char* outputFilename )
 	av_log_set_level( AV_LOG_FATAL );
 	av_log_set_level( AV_LOG_DEBUG );
 
+	ProgressListener p;
+
 	InputFile inputFile( inputfilename );
-	inputFile.analyse();
+	inputFile.analyse( p );
 
 	OutputFile outputFile( outputFilename );
 
@@ -53,8 +53,10 @@ void transcodeAudio( const char* inputfilename, const char* outputFilename )
 	av_log_set_level( AV_LOG_FATAL );
 	av_log_set_level( AV_LOG_DEBUG );
 
+	ProgressListener p;
+
 	InputFile inputFile( inputfilename );
-	inputFile.analyse();
+	inputFile.analyse( p );
 
 	OutputFile outputFile( outputFilename );
 	outputFile.setup();

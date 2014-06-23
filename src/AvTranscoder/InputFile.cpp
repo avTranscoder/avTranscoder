@@ -67,7 +67,7 @@ InputFile::~InputFile()
 	}
 }
 
-InputFile& InputFile::analyse()
+InputFile& InputFile::analyse( ProgressListener& progress, const EAnalyseLevel level )
 {
 	assert( _formatContext != NULL );
 
@@ -95,7 +95,7 @@ InputFile& InputFile::analyse()
 		{
 			case AVMEDIA_TYPE_VIDEO:
 			{
-				_properties.videoStreams.push_back( videoStreamInfo( _formatContext, streamId ) );
+				_properties.videoStreams.push_back( videoStreamInfo( _formatContext, streamId, progress, level ) );
 				break;
 			}
 			case AVMEDIA_TYPE_AUDIO:
@@ -136,10 +136,10 @@ InputFile& InputFile::analyse()
 	return *this;
 }
 
-Properties InputFile::analyseFile( const std::string& filename )
+Properties InputFile::analyseFile( const std::string& filename, ProgressListener& progress, const EAnalyseLevel level )
 {
 	InputFile file( filename );
-	file.analyse();
+	file.analyse( progress, level );
 	Properties properties;
 	file.getProperties( properties );
 	return properties;

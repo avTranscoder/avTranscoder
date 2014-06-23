@@ -11,8 +11,10 @@ int main( int argc, char** argv )
 		return( -1 );
 	}
 
+	avtranscoder::ProgressListener p;
+
 	avtranscoder::InputFile input( argv[1] );
-	input.analyse();
+	input.analyse( p );
 
 	// a simply metadata display
 	displayMetadatas( input );

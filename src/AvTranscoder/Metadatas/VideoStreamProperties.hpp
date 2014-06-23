@@ -27,7 +27,14 @@ namespace avtranscoder
 namespace details
 {
 
-void getGopProperties( VideoProperties& vp, AVFormatContext* formatContext, AVCodecContext* codecContext, AVCodec* codec, const int index )
+void getGopProperties(
+	VideoProperties& vp,
+	AVFormatContext* formatContext,
+	AVCodecContext* codecContext,
+	AVCodec* codec,
+	const int videoStreamIndex,
+	ProgressListener& progress
+	)
 {
 	AVPacket pkt;
 
@@ -42,10 +49,11 @@ void getGopProperties( VideoProperties& vp, AVFormatContext* formatContext, AVCo
 
 	int count = 0;
 	int gotFrame = 0;
-	
+	bool stopAnalyse = false;
+
 	while( ! av_read_frame( formatContext, &pkt ) )
 	{
-		if( pkt.stream_index == index )
+		if( pkt.stream_index == videoStreamIndex )
 		{
 			avcodec_decode_video2( codecContext, frame, &gotFrame, &pkt );
 			if( gotFrame )
@@ -54,6 +62,8 @@ void getGopProperties( VideoProperties& vp, AVFormatContext* formatContext, AVCo
 				vp.isInterlaced  = frame->interlaced_frame;
 				vp.topFieldFirst = frame->top_field_first;
 				++count;
+				if( progress.progress( count, codecContext->gop_size ) == eJobStatusCancel )
+					stopAnalyse = true;
 			}
 		}
 
@@ -61,8 +71,11 @@ void getGopProperties( VideoProperties& vp, AVFormatContext* formatContext, AVCo
 		
 		if( codecContext->gop_size == count )
 		{
-			break;
+			stopAnalyse = true;
 		}
+
+		if( stopAnalyse )
+			break;
 	}
 #if LIBAVCODEC_VERSION_MAJOR > 54
 	av_frame_free( &frame );
@@ -90,14 +103,19 @@ std::string makeTimecodeMpegToString( uint32_t tc25bit )
 }
 
 
-VideoProperties videoStreamInfo( AVFormatContext* formatContext, const size_t index )
+VideoProperties videoStreamInfo(
+	AVFormatContext* formatContext,
+	const size_t videoStreamIndex,
+	ProgressListener& progress,
+	const InputFile::EAnalyseLevel level
+	)
 {
 	VideoProperties vp;
-	AVCodecContext* codec_context = formatContext->streams[index]->codec;
+	AVCodecContext* codec_context = formatContext->streams[videoStreamIndex]->codec;
 	
 	codec_context->skip_frame = AVDISCARD_NONE;
 
-	vp.streamId         = index;
+	vp.streamId         = videoStreamIndex;
 
 	vp.codecName        = codec_context->codec_name;
 	vp.codecLongName    = codec_context->codec_name;
@@ -289,6 +307,9 @@ VideoProperties videoStreamInfo( AVFormatContext* formatContext, const size_t in
 		}
 	}
 
+	if( level == InputFile::eAnalyseLevelFast )
+		return vp;
+
 	AVCodec* codec = NULL;
 	if( ( codec = avcodec_find_decoder( codec_context->codec_id ) ) != NULL )
 	{
@@ -307,7 +328,7 @@ VideoProperties videoStreamInfo( AVFormatContext* formatContext, const size_t in
 		
 		if( codec_context->width && codec_context->height )
 		{
-			details::getGopProperties( vp, formatContext, codec_context, codec, index);
+			details::getGopProperties( vp, formatContext, codec_context, codec, videoStreamIndex, progress );
 		}
 	}
 

@@ -22,8 +22,10 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 
 	// av_log_set_level( AV_LOG_DEBUG );
 
+	ProgressListener p;
+
 	InputFile input( inputfilename );
-	input.analyse();
+	input.analyse( p );
 
 	input.readStream( input.getProperties().videoStreams.at( 0 ).streamId );
 

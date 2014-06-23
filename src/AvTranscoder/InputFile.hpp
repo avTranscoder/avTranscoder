@@ -6,6 +6,7 @@
 #include <AvTranscoder/DatasStructures/AudioDesc.hpp>
 #include <AvTranscoder/DatasStructures/VideoDesc.hpp>
 #include <AvTranscoder/Metadatas/MediaMetadatasStructures.hpp>
+#include <AvTranscoder/ProgressListener.hpp>
 
 #include <string>
 #include <vector>
@@ -31,6 +32,12 @@ public:
 
 	~InputFile();
 
+	enum EAnalyseLevel
+	{
+		eAnalyseLevelFast = 0,
+		eAnalyseLevelFull = 0,
+	};
+
 	/**
 	 * @return Return the resource to access
 	**/
@@ -39,8 +46,9 @@ public:
 	/**
 	 * @brief Run the analyse on the file after a setup.
 	 *        call this function before getProperties().
+	 * @param progress callback to get analysis progression
 	 **/
-	InputFile& analyse();
+	InputFile& analyse( ProgressListener& progress, const EAnalyseLevel level = eAnalyseLevelFull );
 	
 	/**
 	 * @brief Return media properties on the current InputFile.
@@ -53,9 +61,11 @@ public:
 
 	/**
 	 * @brief Get media file properties using static method.
+	 * @param filename input filename
+	 * @param progress callback to get analysis progression
 	 * @return structure of media metadatas
 	 **/
-	static Properties analyseFile( const std::string& filename );
+	static Properties analyseFile( const std::string& filename, ProgressListener& progress, const EAnalyseLevel level = eAnalyseLevelFull );
 
 	/**
 	 * @brief Get stream type: video, audio, subtitle, etc.
