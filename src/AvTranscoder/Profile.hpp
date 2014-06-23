@@ -26,7 +26,6 @@ public:
 	Profile();
 
 	void loadProfiles();
-	void loadAudioProfiles();
 
 	const ProfilesDesc& getProfiles();
 

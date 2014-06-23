@@ -1,8 +1,13 @@
 #include "Profile.hpp"
 
+#include <AvTranscoder/common.hpp>
+
 #include <AvTranscoder/Profiles/XdCamHd422.hpp>
 #include <AvTranscoder/Profiles/DNxHD.hpp>
 #include <AvTranscoder/Profiles/Wave.hpp>
+
+#include <iostream>
+#include <cstdlib>
 
 namespace avtranscoder
 {
@@ -23,11 +28,17 @@ void Profile::loadProfiles()
 {
 	loadXdCamHD422( _profiles );
 	loadDNxHD( _profiles );
-}
-
-void Profile::loadAudioProfiles()
-{
 	loadWave( _profiles );
+
+	if( const char* envAvProfiles = std::getenv("AVPROFILES") )
+	{
+		std::vector< std::string > paths;
+		split( paths, envAvProfiles, ";" );
+		for( std::vector< std::string >::iterator it = paths.begin(); it != paths.end(); ++it )
+		{
+			std::cout << "search profile in path " << *it << std::endl;
+		}
+	}
 }
 
 const Profile::ProfilesDesc& Profile::getProfiles()
@@ -38,6 +49,12 @@ const Profile::ProfilesDesc& Profile::getProfiles()
 Profile::ProfilesDesc Profile::getVideoProfiles()
 {
 	ProfilesDesc profiles;
+
+	for( ProfilesDesc::iterator it = _profiles.begin(); it != _profiles.end(); ++it )
+	{
+		if( (*it).find( avProfilType )->second == avProfilTypeVideo )
+			profiles.push_back( *it );
+	}
 
 	return profiles;
 }
@@ -53,7 +70,7 @@ Profile::ProfileDesc& Profile::getProfile( const std::string& searchProfile )
 {
 	for( ProfilesDesc::iterator it = _profiles.begin(); it != _profiles.end(); ++it )
 	{
-		if( (*it)["avProfile"] == searchProfile )
+		if( (*it).find( avProfilIdentificator )->second == searchProfile )
 		{
 			return (*it);
 		}

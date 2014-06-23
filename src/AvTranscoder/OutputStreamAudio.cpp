@@ -169,7 +169,7 @@ bool OutputStreamAudio::encodeFrame( DataStream& codedFrame )
 void OutputStreamAudio::setProfile( const std::string& profile )
 {
 	Profile p;
-	p.loadAudioProfiles();
+	p.loadProfiles();
 	Profile::ProfileDesc profDesc = p.getProfile( profile );
 
 	_audioDesc.setAudioCodec( profDesc["codec"] );

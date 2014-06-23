@@ -13,6 +13,8 @@ extern "C" {
 #include <cstring>
 #include <algorithm> //sort, unique
 
+#include "common.hpp"
+
 namespace avtranscoder
 {
 
@@ -38,23 +40,11 @@ std::vector<std::string> getInputExtensions()
 		if( iFormat->extensions != NULL )
 		{
 			// parse extensions
-			std::string exts = std::string( iFormat->extensions );
-			char* ext = strtok( const_cast<char*>( exts.c_str() ), "," );
-			while( ext != NULL )
-			{
-				extensions.push_back( std::string( ext ) );
-				ext = strtok( NULL, "," );
-			}
+			split( extensions, std::string( iFormat->extensions ), "," );
 			
 			// parse name (name's format defines (in general) extensions )
 			// don't need to do it in recent LibAV/FFMpeg versions
-			exts = std::string( iFormat->name );
-			ext = strtok( const_cast<char*>( exts.c_str() ), "," );
-			while( ext != NULL )
-			{
-				extensions.push_back( std::string( ext ) );
-				ext = strtok( NULL, "," );
-			}
+			split( extensions, std::string( iFormat->name ), "," );
 		}
 	}
 	// sort
@@ -77,23 +67,11 @@ std::vector<std::string> getOutputExtensions()
 		if( oFormat->extensions != NULL )
 		{			
 			// parse extensions
-			std::string exts = std::string( oFormat->extensions );
-			char* ext = strtok( const_cast<char*>( exts.c_str() ), "," );
-			while( ext != NULL )
-			{
-				extensions.push_back( std::string( ext ) );
-				ext = strtok( NULL, "," );
-			}
+			split( extensions, std::string( oFormat->extensions ), "," );
 			
 			// parse name (name's format defines (in general) extensions )
 			// don't need to do it in recent LibAV/FFMpeg versions
-			exts = std::string( oFormat->name );
-			ext = strtok( const_cast<char*>( exts.c_str() ), "," );
-			while( ext != NULL )
-			{
-				extensions.push_back( std::string( ext ) );
-				ext = strtok( NULL, "," );
-			}
+			split( extensions, std::string( oFormat->name ), "," );
 		}
 	}
 	// sort
