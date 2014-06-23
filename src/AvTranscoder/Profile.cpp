@@ -9,6 +9,9 @@ namespace avtranscoder
 
 const std::string Profile::avProfilIdentificator( "avProfile" );
 const std::string Profile::avProfilIdentificatorHuman( "avProfileLong" );
+const std::string Profile::avProfilType( "avProfileType" );
+const std::string Profile::avProfilTypeVideo( "avProfileTypeVideo" );
+const std::string Profile::avProfilTypeAudio( "avProfileTypeAudio" );
 
 
 Profile::Profile()

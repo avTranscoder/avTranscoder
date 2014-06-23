@@ -10,6 +10,7 @@ void loadWave( Profile::ProfilesDesc& profiles )
 
 	wave24bits[ Profile::avProfilIdentificator ] = "wave24bits";
 	wave24bits[ Profile::avProfilIdentificatorHuman ] = "Wave 24bits";
+	wave24bits[ Profile::avProfilType ] = Profile::avProfilTypeAudio;
 
 	wave24bits[ "codec" ] = "pcm_s24le";
 	wave24bits[ "sample_fmt" ] = "s32";
@@ -18,6 +19,7 @@ void loadWave( Profile::ProfilesDesc& profiles )
 
 	wave16bits[ Profile::avProfilIdentificator ] = "wave16bits";
 	wave16bits[ Profile::avProfilIdentificatorHuman ] = "Wave 16bits";
+	wave16bits[ Profile::avProfilType ] = Profile::avProfilTypeAudio;
 
 	wave16bits[ "codec" ] = "pcm_s16le";
 	wave16bits[ "sample_fmt" ] = "s16";

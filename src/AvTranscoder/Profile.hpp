@@ -14,6 +14,10 @@ class Profile
 public:
 	static const std::string avProfilIdentificator;
 	static const std::string avProfilIdentificatorHuman;
+	static const std::string avProfilType;
+
+	static const std::string avProfilTypeVideo;
+	static const std::string avProfilTypeAudio;
 
 	// typedef std::pair< std::string, std::string > KeyDesc;
 	typedef std::map< std::string, std::string > ProfileDesc;

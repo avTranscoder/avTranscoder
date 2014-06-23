@@ -9,6 +9,7 @@ void loadDNxHD( Profile::ProfilesDesc& profiles )
 	Profile::ProfileDesc dnxhd120;
 	dnxhd120[ Profile::avProfilIdentificator ] = "dnxhd120";
 	dnxhd120[ Profile::avProfilIdentificatorHuman ] = "DNxHD 120";
+	dnxhd120[ Profile::avProfilType ] = Profile::avProfilTypeVideo;
 	dnxhd120[ "codec" ] = "dnxhd";
 	dnxhd120[ "b" ] = "120000000";
 	dnxhd120[ "pix_fmt" ] = "yuv422p";
@@ -17,6 +18,7 @@ void loadDNxHD( Profile::ProfilesDesc& profiles )
 	Profile::ProfileDesc dnxhd185;
 	dnxhd185[ Profile::avProfilIdentificator ] = "dnxhd185";
 	dnxhd185[ Profile::avProfilIdentificatorHuman ] = "DNxHD 185";
+	dnxhd185[ Profile::avProfilType ] = Profile::avProfilTypeVideo;
 	dnxhd185[ "codec" ] = "dnxhd";
 	dnxhd185[ "b" ] = "185000000";
 	dnxhd185[ "pix_fmt" ] = "yuv422p";
@@ -25,6 +27,7 @@ void loadDNxHD( Profile::ProfilesDesc& profiles )
 	Profile::ProfileDesc dnxhd185x;
 	dnxhd185x[ Profile::avProfilIdentificator ] = "dnxhd185x";
 	dnxhd185x[ Profile::avProfilIdentificatorHuman ] = "DNxHD 185 X";
+	dnxhd185x[ Profile::avProfilType ] = Profile::avProfilTypeVideo;
 	dnxhd185x[ "codec" ] = "dnxhd";
 	dnxhd185x[ "b" ] = "185000000";
 	dnxhd185x[ "pix_fmt" ] = "yuv422p10";

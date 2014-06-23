@@ -10,6 +10,7 @@ void loadXdCamHD422( Profile::ProfilesDesc& profiles )
 
 	xdCamHd422[ Profile::avProfilIdentificator ] = "xdcamhd422";
 	xdCamHd422[ Profile::avProfilIdentificatorHuman ] = "XdCamHD 422";
+	xdCamHd422[ Profile::avProfilType ] = Profile::avProfilTypeVideo;
 
 
 	xdCamHd422[ "codec" ] = "mpeg2video";
