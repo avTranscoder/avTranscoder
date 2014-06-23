@@ -35,7 +35,6 @@ public:
 	ProfileDesc& getProfile( const std::string& searchProfile );
 
 private:
-
 	ProfilesDesc _profiles;
 };
 

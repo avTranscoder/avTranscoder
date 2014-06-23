@@ -7,7 +7,9 @@
 #include <AvTranscoder/Profiles/Wave.hpp>
 
 #include <iostream>
+#include <fstream>
 #include <cstdlib>
+#include <stdexcept>
 
 namespace avtranscoder
 {
@@ -30,7 +32,7 @@ void Profile::loadProfiles()
 	loadDNxHD( _profiles );
 	loadWave( _profiles );
 
-	if( const char* envAvProfiles = std::getenv("AVPROFILES") )
+	if( const char* envAvProfiles = std::getenv( "AVPROFILES" ) )
 	{
 		std::vector< std::string > paths;
 		split( paths, envAvProfiles, ":" );
@@ -46,11 +48,31 @@ void Profile::loadProfiles()
 				if( ( *fileIt == "." ) || ( *fileIt == ".." ) )
 					continue;
 
-				std::ifstream ifs;
+				std::ifstream infile;
+				infile.open( ( ( *dirIt ) + "/" + ( *fileIt ) ).c_str(), std::ifstream::in );
 
-				ifs.open( ( *dirIt ) + ( *fileIt ), std::ifstream::in );
-
-				std::cout << "file " << *dirIt << *fileIt << std::endl;
+				// std::cout << "file " << *dirIt << *fileIt << std::endl;
+				Profile::ProfileDesc customProfile;
+				
+				std::string line;
+				while( std::getline( infile, line ) )
+				{
+					std::vector< std::string > keyValue;
+					split( keyValue, line, "=" );
+					if( keyValue.size() == 2 )
+						customProfile[ keyValue.at( 0 ) ] = keyValue.at( 1 );
+				}
+				// check if profile contains required values
+				if( 
+					customProfile.count( avProfileIdentificator ) &&
+					customProfile.count( avProfileIdentificatorHuman ) &&
+					customProfile.count( avProfileType ) &&
+					( customProfile.find( avProfileType )->second == avProfileTypeVideo ||
+					customProfile.find( avProfileType )->second == avProfileTypeAudio )
+					)
+				{
+					_profiles.push_back( customProfile );
+				}
 			}
 		}
 	}
@@ -90,6 +112,7 @@ Profile::ProfileDesc& Profile::getProfile( const std::string& searchProfile )
 			return (*it);
 		}
 	}
+	throw std::runtime_error( "unable to find profile: " + searchProfile );
 }
 
 }
