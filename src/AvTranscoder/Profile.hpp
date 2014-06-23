@@ -12,12 +12,12 @@ namespace avtranscoder
 class Profile
 {
 public:
-	static const std::string avProfilIdentificator;
-	static const std::string avProfilIdentificatorHuman;
-	static const std::string avProfilType;
+	static const std::string avProfileIdentificator;
+	static const std::string avProfileIdentificatorHuman;
+	static const std::string avProfileType;
 
-	static const std::string avProfilTypeVideo;
-	static const std::string avProfilTypeAudio;
+	static const std::string avProfileTypeVideo;
+	static const std::string avProfileTypeAudio;
 
 	// typedef std::pair< std::string, std::string > KeyDesc;
 	typedef std::map< std::string, std::string > ProfileDesc;

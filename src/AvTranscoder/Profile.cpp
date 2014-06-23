@@ -12,11 +12,11 @@
 namespace avtranscoder
 {
 
-const std::string Profile::avProfilIdentificator( "avProfile" );
-const std::string Profile::avProfilIdentificatorHuman( "avProfileLong" );
-const std::string Profile::avProfilType( "avProfileType" );
-const std::string Profile::avProfilTypeVideo( "avProfileTypeVideo" );
-const std::string Profile::avProfilTypeAudio( "avProfileTypeAudio" );
+const std::string Profile::avProfileIdentificator( "avProfile" );
+const std::string Profile::avProfileIdentificatorHuman( "avProfileLong" );
+const std::string Profile::avProfileType( "avProfileType" );
+const std::string Profile::avProfileTypeVideo( "avProfileTypeVideo" );
+const std::string Profile::avProfileTypeAudio( "avProfileTypeAudio" );
 
 
 Profile::Profile()
@@ -52,7 +52,7 @@ Profile::ProfilesDesc Profile::getVideoProfiles()
 
 	for( ProfilesDesc::iterator it = _profiles.begin(); it != _profiles.end(); ++it )
 	{
-		if( (*it).find( avProfilType )->second == avProfilTypeVideo )
+		if( (*it).find( avProfileType )->second == avProfileTypeVideo )
 			profiles.push_back( *it );
 	}
 
@@ -70,7 +70,7 @@ Profile::ProfileDesc& Profile::getProfile( const std::string& searchProfile )
 {
 	for( ProfilesDesc::iterator it = _profiles.begin(); it != _profiles.end(); ++it )
 	{
-		if( (*it).find( avProfilIdentificator )->second == searchProfile )
+		if( (*it).find( avProfileIdentificator )->second == searchProfile )
 		{
 			return (*it);
 		}
