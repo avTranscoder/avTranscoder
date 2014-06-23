@@ -34,9 +34,24 @@ void Profile::loadProfiles()
 	{
 		std::vector< std::string > paths;
 		split( paths, envAvProfiles, ":" );
-		for( std::vector< std::string >::iterator it = paths.begin(); it != paths.end(); ++it )
+		for( std::vector< std::string >::iterator dirIt = paths.begin(); dirIt != paths.end(); ++dirIt )
 		{
-			std::cout << "search profile in path " << *it << std::endl;
+			//std::cout << "search profile in path " << *dirIt << std::endl;
+			std::vector< std::string > files;
+			if( getFilesInDir( *dirIt, files ) != 0 )
+				continue;
+
+			for( std::vector< std::string >::iterator fileIt = files.begin(); fileIt != files.end(); ++fileIt )
+			{
+				if( ( *fileIt == "." ) || ( *fileIt == ".." ) )
+					continue;
+
+				std::ifstream ifs;
+
+				ifs.open( ( *dirIt ) + ( *fileIt ), std::ifstream::in );
+
+				std::cout << "file " << *dirIt << *fileIt << std::endl;
+			}
 		}
 	}
 }
