@@ -51,10 +51,10 @@ bool OutputStreamAudio::encodeFrame( const AudioFrame& decodedFrame, DataStream&
 #endif
 	
 	frame->nb_samples     = decodedFrame.getNbSamples();
-    frame->format         = codecContext->sample_fmt;
-    frame->channel_layout = codecContext->channel_layout;
+	frame->format         = codecContext->sample_fmt;
+	frame->channel_layout = codecContext->channel_layout;
 	
-    // we calculate the size of the samples buffer in bytes
+	// we calculate the size of the samples buffer in bytes
 	int buffer_size = av_samples_get_buffer_size(NULL, codecContext->channels, frame->nb_samples, codecContext->sample_fmt, 0);
 	if( buffer_size < 0 )
 	{

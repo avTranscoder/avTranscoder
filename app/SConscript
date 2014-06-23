@@ -19,6 +19,7 @@ avinfo = env.Program(
                 'avformat',
                 'avcodec',
                 'swscale',
+                'swresample',
                 ]
         )
 
@@ -31,6 +32,7 @@ avmeta = env.Program(
                 'avformat',
                 'avcodec',
                 'swscale',
+                'swresample',
                 ]
         )
 
@@ -43,6 +45,7 @@ avtransform = env.Program(
                 'avformat',
                 'avcodec',
                 'swscale',
+                'swresample',
                 ]
         )
 
@@ -55,6 +58,7 @@ avprocessor = env.Program(
                 'avformat',
                 'avcodec',
                 'swscale',
+                'swresample',
                 ],
         CXXFLAGS = [
                 '-std=c++0x'
@@ -71,6 +75,7 @@ audioRewrapper = env.Program(
                 'avcodec',
                 'swscale',
                 'swresample',
+                'swresample',
                 ]
         )
 
@@ -84,6 +89,7 @@ if platform.system() != 'Windows':
                         'avformat',
                         'avcodec',
                         'swscale',
+                        'swresample',
                         'GL',
                         'glut',
                         ]
@@ -97,7 +103,8 @@ if platform.system() != 'Windows':
                         'avutil',
                         'avformat',
                         'avcodec',
-                        'swscale'
+                        'swscale',
+                        'swresample',
                         ],
                 CXXFLAGS = [
                         '-std=c++0x'

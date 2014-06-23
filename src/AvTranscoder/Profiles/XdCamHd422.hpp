@@ -39,25 +39,23 @@ void loadXdCamHD422( Profile::ProfilesDesc& profiles )
 	xdCamHd422[ "maxrate" ] = "50M";
 
 
-
 	xdCamHd422[ "bufsize" ] = "17825792";
-	// xdCamHd422[ "lmin" ] = "0";
 	xdCamHd422[ "lmin" ] = "1*QP2LAMBDA";
-	// xdCamHd422[ "field_order" ] = "tb";
-	// xdCamHd422[ "field_order" ] = "2";
+	// xdCamHd422[ "field_order" ] = "0";
 
 	// research modes
 	xdCamHd422[ "me_method" ] = "dia";
 	xdCamHd422[ "me_range" ] = "0"; // no limit !
 	xdCamHd422[ "dia_size" ] = "0";
 	xdCamHd422[ "pre_dia_size" ] = "0";
-	xdCamHd422[ "mbd" ] = "rd"; //mb_decision = Rate-Distorsion // FF_MB_DECISION_RD
+	//xdCamHd422[ "mbd" ] = "rd"; //mb_decision = Rate-Distorsion // FF_MB_DECISION_RD
 
-	xdCamHd422[ "ildctcmp" ] = "vsse"; // FF_CMP_VSSE
 	xdCamHd422[ "cmp" ] = "sse"; // me_cmp
 	xdCamHd422[ "subcmp" ] = "sse"; // me_sub_cmp
 	xdCamHd422[ "precmp" ] = "sse"; // me_pre_cmp
+	xdCamHd422[ "ildctcmp" ] = "vsse"; // FF_CMP_VSSE
 
+	
 	xdCamHd422[ "rc_max_vbv_use" ] = "0.3333333";
 	xdCamHd422[ "rc_min_vbv_use" ] = "3";
 
@@ -70,23 +68,19 @@ void loadXdCamHD422( Profile::ProfilesDesc& profiles )
 	xdCamHd422[ "b_qfactor" ] = "1.25";
 	xdCamHd422[ "i_qoffset" ] = "0";
 	xdCamHd422[ "i_qfactor" ] = "-0.8";
-	xdCamHd422[ "flags" ] = "+cgop"; // open GOP
+	xdCamHd422[ "flags" ] = "-cgop"; // open GOP
 
 	xdCamHd422[ "flags" ] = "+ilme";  // use interlaced motion estimation
 	xdCamHd422[ "flags" ] = "+ildct"; // use interlaced DCT
-	xdCamHd422[ "flags" ] = "+qscale";
 
+	xdCamHd422[ "field_order" ] = "tt";
 
 	xdCamHd422[ "intra_vlc" ] = "1";
 	xdCamHd422[ "non_linear_quant" ] = "1";
 
 	xdCamHd422[ "sc_threshold" ] = "1000000000";
 
-
 	xdCamHd422[ "threads" ] = "5";
-
-	// xdCamHd422[ "thread_type" ] = "frame";
-	
 
 	profiles.push_back( xdCamHd422 );
 }

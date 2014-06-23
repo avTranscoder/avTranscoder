@@ -23,7 +23,7 @@ class AVCodecContext;
 namespace avtranscoder
 {
 
-class AvExport OutputStreamVideo : public OutputStream
+class AvExport OutputStreamVideo
 {
 public:
 	OutputStreamVideo();
