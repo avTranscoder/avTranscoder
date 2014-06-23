@@ -276,28 +276,35 @@ std::vector<std::string> OptionLoader::getPixelFormats ( const std::string& vide
 {
 	std::vector<std::string> pixelFormats;
 	
-	AVCodec* videoCodec = avcodec_find_encoder_by_name( videoCodecName.c_str() );
-	
-	if( videoCodec->pix_fmts == 0 )
+	// all video codec concerned
+	if( videoCodecName == "" )
 	{
-		for( int pix_fmt = 0; pix_fmt < PIX_FMT_NB; pix_fmt++ )
+		for( int pix_fmt = 0; pix_fmt < PIX_FMT_NB; ++pix_fmt )
 		{
-			const AVPixFmtDescriptor* pix_desc = &av_pix_fmt_descriptors[pix_fmt];
+			const AVPixFmtDescriptor *pix_desc = &av_pix_fmt_descriptors[pix_fmt];
 			if( ! pix_desc->name )
 				continue;
 			pixelFormats.push_back( std::string( pix_desc->name ) );
 		}
-		return pixelFormats;
 	}
-	
-	int i = 0;
-	while( videoCodec->pix_fmts[i] != -1 )
+	// specific video codec
+	else
 	{
-		const AVPixFmtDescriptor* pix_desc = &av_pix_fmt_descriptors[ videoCodec->pix_fmts[i] ];
-		pixelFormats.push_back( std::string( pix_desc->name ) );
-		i++;
+		AVCodec* videoCodec = avcodec_find_encoder_by_name( videoCodecName.c_str() );
+
+		if( videoCodec->pix_fmts != NULL )
+		{
+			size_t pix_fmt = 0;
+			while( videoCodec->pix_fmts[pix_fmt] != -1 )
+			{
+				const AVPixFmtDescriptor* pix_desc = &av_pix_fmt_descriptors[ videoCodec->pix_fmts[pix_fmt] ];
+				if( ! pix_desc->name )
+					continue;
+				pixelFormats.push_back( std::string( pix_desc->name ) );
+				++pix_fmt;
+			}
+		}
 	}
-	
 	return pixelFormats;
 }
 

@@ -63,8 +63,9 @@ public:
 	
 	/**
 	 *  Get array of pixel format supported by video codec.
+	 *  @param videoCodecName: the video codec name (empty if not indicated, and so get all pixel formats supported by all video codecs).
 	 */
-	std::vector<std::string> getPixelFormats( const std::string& videoCodecName ) const;
+	std::vector<std::string> getPixelFormats( const std::string& videoCodecName = "" ) const;
 	
 private:
 	/**
