@@ -195,6 +195,8 @@ void OutputStreamVideo::setProfile( const std::string& profile )
 			continue;
 		if( (*it).first == "avProfileLong" )
 			continue;
+		if( (*it).first == Profile::avProfileType )
+			continue;
 		if( (*it).first == "codec" )
 			continue;
 		if( (*it).first == "pix_fmt" )
@@ -221,6 +223,8 @@ void OutputStreamVideo::setProfile( const std::string& profile )
 		if( (*it).first == "avProfile" )
 			continue;
 		if( (*it).first == "avProfileLong" )
+			continue;
+		if( (*it).first == Profile::avProfileType )
 			continue;
 		if( (*it).first == "codec" )
 			continue;
