@@ -57,12 +57,4 @@ Profile::ProfileDesc& Profile::getProfile( const std::string& searchProfile )
 	}
 }
 
-/*
-ffmpeg can set options with 
-int av_opt_set(void *obj, const char *name, const char *val, int search_flags)
-
-can be string / string parameter, ffmpeg can detect option type and convert value to match
-
-*/
-
 }
