@@ -279,12 +279,12 @@ std::vector<std::string> OptionLoader::getPixelFormats ( const std::string& vide
 	// all video codec concerned
 	if( videoCodecName == "" )
 	{
-		for( int pix_fmt = 0; pix_fmt < PIX_FMT_NB; ++pix_fmt )
+		const AVPixFmtDescriptor* pixFmtDesc = NULL; 
+		while( ( pixFmtDesc = av_pix_fmt_desc_next( pixFmtDesc ) ) != NULL )
 		{
-			const AVPixFmtDescriptor *pix_desc = &av_pix_fmt_descriptors[pix_fmt];
-			if( ! pix_desc->name )
+			if( ! pixFmtDesc->name )
 				continue;
-			pixelFormats.push_back( std::string( pix_desc->name ) );
+			pixelFormats.push_back( std::string( pixFmtDesc->name ) );
 		}
 	}
 	// specific video codec
@@ -297,7 +297,7 @@ std::vector<std::string> OptionLoader::getPixelFormats ( const std::string& vide
 			size_t pix_fmt = 0;
 			while( videoCodec->pix_fmts[pix_fmt] != -1 )
 			{
-				const AVPixFmtDescriptor* pix_desc = &av_pix_fmt_descriptors[ videoCodec->pix_fmts[pix_fmt] ];
+				const AVPixFmtDescriptor* pix_desc = av_pix_fmt_desc_get( videoCodec->pix_fmts[pix_fmt] );
 				if( ! pix_desc->name )
 					continue;
 				pixelFormats.push_back( std::string( pix_desc->name ) );
