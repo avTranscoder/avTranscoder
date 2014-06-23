@@ -181,19 +181,20 @@ bool OutputStreamVideo::encodeFrame( DataStream& codedFrame )
 void OutputStreamVideo::setProfile( const std::string& profile )
 {
 	Profile p;
+
 	p.loadProfiles();
 
 	Profile::ProfileDesc prof = p.getProfile( profile );
 
-	_videoDesc.setVideoCodec( prof["codec"] );
+	_videoDesc.setVideoCodec( prof[ "codec" ] );
 	_videoDesc.setTimeBase( 1, 25 ); // 25 fps
-	_videoDesc.setImageParameters( 1920, 1080, av_get_pix_fmt( prof["pix_fmt"].c_str() ) );
+	_videoDesc.setImageParameters( 1920, 1080, av_get_pix_fmt( prof[ "pix_fmt" ].c_str() ) );
 
 	for( Profile::ProfileDesc::iterator it = prof.begin(); it != prof.end(); ++it )
 	{
-		if( (*it).first == "avProfile" )
+		if( (*it).first == Profile::avProfileIdentificator )
 			continue;
-		if( (*it).first == "avProfileLong" )
+		if( (*it).first == Profile::avProfileIdentificatorHuman )
 			continue;
 		if( (*it).first == Profile::avProfileType )
 			continue;
@@ -220,9 +221,9 @@ void OutputStreamVideo::setProfile( const std::string& profile )
 
 	for( Profile::ProfileDesc::iterator it = prof.begin(); it != prof.end(); ++it )
 	{
-		if( (*it).first == "avProfile" )
+		if( (*it).first == Profile::avProfileIdentificator )
 			continue;
-		if( (*it).first == "avProfileLong" )
+		if( (*it).first == Profile::avProfileIdentificatorHuman )
 			continue;
 		if( (*it).first == Profile::avProfileType )
 			continue;
@@ -244,7 +245,6 @@ void OutputStreamVideo::setProfile( const std::string& profile )
 			std::cout << "2.warning: " << e.what() << std::endl;
 		}
 	}
-
 }
 
 }
