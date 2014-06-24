@@ -31,10 +31,17 @@ public:
 private:
 	AvInputStream* _stream;
 
-	Frame* _frameBuffer;
+	Frame*      _frameBuffer;
+	Image*      _videoFrameBuffer;
+	AudioFrame* _audioFrameBuffer;
 
 	InputStreamReader*  _inputStreamReader;
+	InputStreamVideo*   _inputStreamVideo;
+	InputStreamAudio*   _inputStreamAudio;
+
 	OutputStreamWriter* _outputStreamWriter;
+	OutputStreamVideo*  _outputStreamVideo;
+	OutputStreamAudio*  _outputStreamAudio;
 
 	OutputFile* _outputFile;
 
