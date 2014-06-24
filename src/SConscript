@@ -5,6 +5,7 @@ Import( "env" )
 Import( "envJava" )
 Import( "envPy" )
 Import( "installPrefix" )
+Import( "resampleLibraryName" )
 
 AvTranscoderVersion = "0.0.1"
 
@@ -22,7 +23,7 @@ sAvTranscoder = env.StaticLibrary(
         'avcodec',
         'avformat',
         'swscale',
-        'swresample',
+        resampleLibraryName,
     ]
 )
 
@@ -36,7 +37,7 @@ SharedAvTranscoder = env.SharedLibrary(
         'avcodec',
         'avformat',
         'swscale',
-        'swresample',
+        resampleLibraryName,
     ],
     SHLIBVERSION = AvTranscoderVersion,
 )
@@ -50,7 +51,7 @@ jAvTranscoder = envJava.SharedLibrary(
             'avcodec',
             'avformat',
             'swscale',
-            'swresample',
+            resampleLibraryName,
         ],
     )
 
@@ -63,7 +64,7 @@ pyAvTranscoder = envPy.SharedLibrary(
             'avcodec',
             'avformat',
             'swscale',
-            'swresample',
+            resampleLibraryName,
         ],
     )
 

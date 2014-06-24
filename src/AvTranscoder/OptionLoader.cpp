@@ -7,6 +7,10 @@ extern "C" {
 #include <libavutil/opt.h>
 }
 
+#ifndef AV_OPT_FLAG_FILTERING_PARAM
+ #define AV_OPT_FLAG_FILTERING_PARAM (1<<16)
+#endif
+
 #include <string>
 #include <map>
 #include <utility> //pair
