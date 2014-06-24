@@ -27,29 +27,52 @@ StreamTranscoder::~StreamTranscoder()
 
 void StreamTranscoder::init( const std::string& profile )
 {
-	if( profile.empty() )
-	{
-		return;
-	}
-
-	_transcodeStream = true;
-
+	_transcodeStream = profile.size();
+	
 	switch( _stream->getStreamType() )
 	{
 		case AVMEDIA_TYPE_VIDEO :
 		{
 			_inputStreamReader = new InputStreamVideo( *_stream );
-			_outputStreamWriter = new OutputStreamVideo();
+			_inputStreamReader->setup();
+
+			// re-wrap only, get output descriptor from input
+			if( profile.empty() )
+			{
+				_outputFile->addVideoStream( _stream->getVideoDesc() );
+				break;
+			}
+
+			OutputStreamVideo* outputStreamVideo = new OutputStreamVideo();
+			_outputStreamWriter = outputStreamVideo;
+
 			_outputStreamWriter->setProfile( profile );
-			_frameBuffer = new Image( _stream->getVideoDesc().getImageDesc() );
+			_outputFile->addVideoStream( outputStreamVideo->getVideoDesc() );
+			_videoFrameBuffer = new Image( outputStreamVideo->getVideoDesc().getImageDesc() );
+			_frameBuffer = _videoFrameBuffer;
+			
 			break;
 		}
 		case AVMEDIA_TYPE_AUDIO :
 		{
 			_inputStreamReader = new InputStreamAudio( *_stream );
-			_outputStreamWriter = new OutputStreamAudio();
+			_inputStreamReader->setup();
+
+			// re-wrap only, get output descriptor from input
+			if( profile.empty() )
+			{
+				_outputFile->addAudioStream( _stream->getAudioDesc() );
+				break;
+			}
+			
+			OutputStreamAudio* outputStreamAudio = new OutputStreamAudio();
+			_outputStreamWriter = outputStreamAudio;
+
 			_outputStreamWriter->setProfile( profile );
-			_frameBuffer = new AudioFrame( _stream->getAudioDesc().getFrameDesc() );
+			_outputFile->addAudioStream( outputStreamAudio->getAudioDesc() );
+			_audioFrameBuffer = new AudioFrame( outputStreamAudio->getAudioDesc().getFrameDesc() );
+			_frameBuffer = _audioFrameBuffer;
+			
 			break;
 		}
 		default:
@@ -62,13 +85,22 @@ bool StreamTranscoder::processFrame()
 	DataStream dataStream;
 	if( ! _transcodeStream )
 	{
-		_stream->readNextPacket( dataStream );
+		if( ! _stream->readNextPacket( dataStream ) )
+			return false;
 		_outputFile->wrap( dataStream, _streamIndex );
 		return true;
 	}
-	// transcodes
-	_inputStreamReader->readNextFrame( *_frameBuffer );
-	_outputStreamWriter->encodeFrame( *_frameBuffer, dataStream );
+
+	// std::cout << "encode & wrap" << _streamIndex << std::endl;
+
+	if( _inputStreamReader->readNextFrame( *_frameBuffer ) )
+	{
+		_outputStreamWriter->encodeFrame( *_frameBuffer, dataStream );
+	}
+	else if( ! _outputStreamWriter->encodeFrame( dataStream ) )
+	{
+		return false;
+	}
 
 	_outputFile->wrap( dataStream, _streamIndex );
 	return true;

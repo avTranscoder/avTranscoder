@@ -4,10 +4,10 @@ namespace avtranscoder
 {
 
 Option::Option( const AVOption& avOption, OptionType type )
-	: m_avOption( avOption )
-	, m_type( type )
-	, m_options()
-	, m_defaultChildIndex( 0 )
+	: _avOption( avOption )
+	, _type( type )
+	, _options()
+	, _defaultChildIndex( 0 )
 {
 	
 }
@@ -56,37 +56,37 @@ OptionType Option::getTypeFromAVOption( const char* unit, AVOptionType avType )
 
 OptionType Option::getType() const
 {
-	return m_type;
+	return _type;
 }
 
 bool Option::getDefaultValueBool() const
 {
-	return m_avOption.default_val.i64;
+	return _avOption.default_val.i64;
 }
 
 int Option::getDefaultValueInt() const
 {
-	return m_avOption.default_val.i64;
+	return _avOption.default_val.i64;
 }
 
 double Option::getDefaultValueDouble() const
 {
-	return m_avOption.default_val.dbl;
+	return _avOption.default_val.dbl;
 }
 
 std::string Option::getDefaultValueString() const
 {
-	return std::string( m_avOption.default_val.str ? m_avOption.default_val.str : "" );
+	return std::string( _avOption.default_val.str ? _avOption.default_val.str : "" );
 }
 
 std::pair<int, int> Option::getDefaultValueRatio() const
 {
-	return std::pair<int, int>( m_avOption.default_val.q.num, m_avOption.default_val.q.den );
+	return std::pair<int, int>( _avOption.default_val.q.num, _avOption.default_val.q.den );
 }
 
 void Option::appendChild( const Option& child )
 {
-	m_options.push_back( child );
+	_options.push_back( child );
 }
 
 }

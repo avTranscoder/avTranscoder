@@ -88,6 +88,9 @@ public:
 		m_dataBuffer = DataBuffer( ref.getDataSize(), 0 );
 	}
 
+	virtual ~Image()
+	{};
+
 	const ImageDesc&     desc() const    { return m_imageDesc; }
 
 private:

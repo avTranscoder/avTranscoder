@@ -11,7 +11,7 @@ namespace avtranscoder
 class OutputStream
 {
 public:
-	OutputStream( );
+	OutputStream( ) {};
 
 	virtual ~OutputStream() {};
 

@@ -7,6 +7,10 @@ extern "C" {
 #include <libavutil/opt.h>
 }
 
+#ifndef AV_OPT_FLAG_FILTERING_PARAM
+ #define AV_OPT_FLAG_FILTERING_PARAM (1<<16)
+#endif
+
 #include <string>
 #include <map>
 #include <utility> //pair
@@ -16,26 +20,26 @@ namespace avtranscoder
 {
 
 OptionLoader::OptionLoader()
-	: m_options()
-	, m_avFormatContext( NULL )
-	, m_avCodecContext( NULL )
+	: _options()
+	, _avFormatContext( NULL )
+	, _avCodecContext( NULL )
 {
-	m_avFormatContext = avformat_alloc_context();
+	_avFormatContext = avformat_alloc_context();
 	
 #if LIBAVCODEC_VERSION_INT < AV_VERSION_INT( 53, 8, 0 )
-	m_avCodecContext = avcodec_alloc_context();
+	_avCodecContext = avcodec_alloc_context();
 	// deprecated in the same version
-	//m_avCodecContext = avcodec_alloc_context2( AVMEDIA_TYPE_UNKNOWN );
+	// _avCodecContext = avcodec_alloc_context2( AVMEDIA_TYPE_UNKNOWN );
 #else
 	AVCodec* avCodec = NULL;
-	m_avCodecContext = avcodec_alloc_context3( avCodec );
+	_avCodecContext = avcodec_alloc_context3( avCodec );
 #endif
 }
 
 OptionLoader::~OptionLoader()
 {
-	avformat_free_context( m_avFormatContext );
-	avcodec_close( m_avCodecContext );
+	avformat_free_context( _avFormatContext );
+	avcodec_close( _avCodecContext );
 }
 
 void OptionLoader::loadOptions( int req_flags, int rej_flags )
@@ -53,11 +57,11 @@ void OptionLoader::loadOptions( int req_flags, int rej_flags )
 		( req_flags & AV_OPT_FLAG_FILTERING_PARAM ) == AV_OPT_FLAG_FILTERING_PARAM ||
 		( req_flags & AV_OPT_FLAG_SUBTITLE_PARAM ) == AV_OPT_FLAG_SUBTITLE_PARAM )
 	{
-		av_class = (void*)m_avCodecContext;
+		av_class = (void*)_avCodecContext;
 	}
 	else
 	{
-		av_class = (void*)m_avFormatContext;
+		av_class = (void*)_avFormatContext;
 	}
 	
 	// iterate on options
@@ -81,11 +85,11 @@ void OptionLoader::loadOptions( int req_flags, int rej_flags )
 		}
 		else
 		{
-			m_options.push_back( Option( *avOption, optionType ) );
+			_options.push_back( Option( *avOption, optionType ) );
 			optionUnitToIndex.insert( 
 				std::pair<std::string, int>( 
 					std::string( avOption->unit ? avOption->unit : "" ), 
-					m_options.size() - 1 ) 
+					_options.size() - 1 ) 
 				);
 		}
 	}
@@ -95,13 +99,13 @@ void OptionLoader::loadOptions( int req_flags, int rej_flags )
 	{
 		int indexParentOption = optionUnitToIndex.at( it->getUnit() );
 		
-		m_options.at( indexParentOption ).appendChild( *it );
+		_options.at( indexParentOption ).appendChild( *it );
 		
 		// child of a Choice
-		if( m_options.at( indexParentOption ).getType() == TypeChoice )
+		if( _options.at( indexParentOption ).getType() == TypeChoice )
 		{
-			if( it->getDefaultValueInt() == m_options.at( indexParentOption ).getDefaultValueInt() )
-				m_options.at( indexParentOption ).setDefaultChildIndex( m_options.at( indexParentOption ).getNbChilds() - 1 );
+			if( it->getDefaultValueInt() == _options.at( indexParentOption ).getDefaultValueInt() )
+				_options.at( indexParentOption ).setDefaultChildIndex( _options.at( indexParentOption ).getNbChilds() - 1 );
 		}
 	}
 }

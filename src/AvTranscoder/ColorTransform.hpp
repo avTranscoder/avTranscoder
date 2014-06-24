@@ -22,16 +22,16 @@ public:
 private:
 	bool init( const Image& src, const Image& dst );
 
-	SwsContext* m_imageConvertContext;
+	SwsContext* _imageConvertContext;
 
-	std::vector<uint8_t *> srcData;
-	std::vector<uint8_t *> dstData;
-	std::vector<int>       srcLineSize;
-	std::vector<int>       dstLineSize;
-	std::vector<size_t>    srcOffsets;
-	std::vector<size_t>    dstOffsets;
+	std::vector<uint8_t *> _srcData;
+	std::vector<uint8_t *> _dstData;
+	std::vector<int>       _srcLineSize;
+	std::vector<int>       _dstLineSize;
+	std::vector<size_t>    _srcOffsets;
+	std::vector<size_t>    _dstOffsets;
 
-	bool m_isInit;
+	bool _isInit;
 };
 
 }

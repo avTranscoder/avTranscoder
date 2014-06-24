@@ -1,11 +1,12 @@
-#ifndef _AV_TRANSCODER_INPUT_FILE_HPP_
-#define _AV_TRANSCODER_INPUT_FILE_HPP_
+#ifndef _AV_TRANSCODER_FILE_INPUT_FILE_HPP_
+#define _AV_TRANSCODER_FILE_INPUT_FILE_HPP_
 
 #include <AvTranscoder/AvInputStream.hpp>
 #include <AvTranscoder/DatasStructures/DataStreamDesc.hpp>
 #include <AvTranscoder/DatasStructures/AudioDesc.hpp>
 #include <AvTranscoder/DatasStructures/VideoDesc.hpp>
 #include <AvTranscoder/Metadatas/MediaMetadatasStructures.hpp>
+#include <AvTranscoder/ProgressListener.hpp>
 
 #include <string>
 #include <vector>
@@ -31,31 +32,40 @@ public:
 
 	~InputFile();
 
+	enum EAnalyseLevel
+	{
+		eAnalyseLevelFast = 0,
+		eAnalyseLevelFull = 0,
+	};
+
 	/**
 	 * @return Return the resource to access
 	**/
-	std::string getFilename() const { return m_filename; }
+	std::string getFilename() const { return _filename; }
 
 	/**
 	 * @brief Run the analyse on the file after a setup.
 	 *        call this function before getProperties().
+	 * @param progress callback to get analysis progression
 	 **/
-	InputFile& analyse();
+	InputFile& analyse( ProgressListener& progress, const EAnalyseLevel level = eAnalyseLevelFull );
 	
 	/**
 	 * @brief Return media properties on the current InputFile.
 	 * @note require to launch analyse() before to fill the property struture
 	 * @return structure of media metadatas
 	 **/
-	const Properties& getProperties() const { return m_properties; }
+	const Properties& getProperties() const { return _properties; }
 
-	void getProperties( Properties& properties ) const { properties = m_properties; }
+	void getProperties( Properties& properties ) const { properties = _properties; }
 
 	/**
 	 * @brief Get media file properties using static method.
+	 * @param filename input filename
+	 * @param progress callback to get analysis progression
 	 * @return structure of media metadatas
 	 **/
-	static Properties analyseFile( const std::string& filename );
+	static Properties analyseFile( const std::string& filename, ProgressListener& progress, const EAnalyseLevel level = eAnalyseLevelFull );
 
 	/**
 	 * @brief Get stream type: video, audio, subtitle, etc.
@@ -75,7 +85,7 @@ public:
 	 * @brief Get LibAV/FFmpeg AVFormatContext
 	 * @return format context on current InputFile
 	 **/
-	AVFormatContext& getFormatContext() const { return *m_formatContext; }
+	AVFormatContext& getFormatContext() const { return *_formatContext; }
 
 	/**
 	 * @brief Read the next packet for the specified stream
@@ -99,10 +109,10 @@ public:
 	void readStream( const size_t streamIndex, const bool readStream = true );
 
 protected:
-	AVFormatContext*            m_formatContext;
-	Properties                  m_properties;
-	std::string                 m_filename;
-	std::vector<AvInputStream*> m_inputStreams;
+	AVFormatContext*            _formatContext;
+	Properties                  _properties;
+	std::string                 _filename;
+	std::vector<AvInputStream*> _inputStreams;
 };
 
 }

@@ -26,10 +26,10 @@ public:
 	OptionLoader();
 	~OptionLoader();
 	
-	std::vector<Option>& getOptions() { return m_options; }
+	std::vector<Option>& getOptions() { return _options; }
 	
-	const AVFormatContext* getFormatContext() const { return m_avFormatContext; }
-	const AVCodecContext* getCodecContext() const { return m_avCodecContext; }
+	const AVFormatContext* getFormatContext() const { return _avFormatContext; }
+	const AVCodecContext* getCodecContext() const { return _avCodecContext; }
 	
 	/**
 	 * @brief: load array of Option depending on the flags.
@@ -39,10 +39,10 @@ public:
 	void loadOptions( int req_flags, int rej_flags );
 	
 private:
-	std::vector<Option> m_options;
+	std::vector<Option> _options;
 	
-	AVFormatContext* m_avFormatContext;
-	AVCodecContext* m_avCodecContext;
+	AVFormatContext* _avFormatContext;
+	AVCodecContext*  _avCodecContext;
 
 };
 

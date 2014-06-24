@@ -18,13 +18,13 @@ public:
 
 	AvInputStream( const AvInputStream& inputStream )
 		: InputStream( )
-		, m_inputFile( inputStream.m_inputFile )
-		, m_streamIndex( inputStream.m_streamIndex )
-		, m_bufferized( inputStream.m_bufferized )
+		, _inputFile( inputStream._inputFile )
+		, _streamIndex( inputStream._streamIndex )
+		, _bufferized( inputStream._bufferized )
 	{
 	}
 
-	size_t getStreamIndex() const { return m_streamIndex; }
+	size_t getStreamIndex() const { return _streamIndex; }
 
 	bool readNextPacket( DataStream& data );
 
@@ -39,20 +39,20 @@ public:
 
 	void addPacket( AVPacket& packet );
 
-	void setBufferred( const bool bufferized ){ m_bufferized = bufferized; };
+	void setBufferred( const bool bufferized ){ _bufferized = bufferized; };
 
 	void clearBuffering();
 
 private:
-	InputFile*       m_inputFile;
-	std::vector<DataStream> m_streamCache;
+	InputFile*       _inputFile;
+	std::vector<DataStream> _streamCache;
 
-	VideoDesc        m_videoDesc;
-	AudioDesc        m_audioDesc;
+	VideoDesc        _videoDesc;
+	AudioDesc        _audioDesc;
 
-	int              m_packetDuration;
-	size_t           m_streamIndex;
-	bool             m_bufferized;
+	int              _packetDuration;
+	size_t           _streamIndex;
+	bool             _bufferized;
 };
 
 }

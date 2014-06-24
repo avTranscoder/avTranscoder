@@ -5,6 +5,7 @@ Import( 'AvTranscoder' )
 Import( 'sAvTranscoder' )
 #Import( 'AvTranscoder_jar' )
 Import( 'installPrefix' )
+Import( "resampleLibraryName" )
 
 env = Environment().Clone()
 
@@ -19,7 +20,7 @@ avinfo = env.Program(
                 'avformat',
                 'avcodec',
                 'swscale',
-                'swresample',
+                resampleLibraryName,
                 ]
         )
 
@@ -32,7 +33,7 @@ avmeta = env.Program(
                 'avformat',
                 'avcodec',
                 'swscale',
-                'swresample',
+                resampleLibraryName,
                 ]
         )
 
@@ -45,7 +46,7 @@ avtransform = env.Program(
                 'avformat',
                 'avcodec',
                 'swscale',
-                'swresample',
+                resampleLibraryName,
                 ]
         )
 
@@ -58,7 +59,7 @@ avprocessor = env.Program(
                 'avformat',
                 'avcodec',
                 'swscale',
-                'swresample',
+                resampleLibraryName,
                 ],
         CXXFLAGS = [
                 '-std=c++0x'
@@ -74,8 +75,7 @@ audioRewrapper = env.Program(
                 'avformat',
                 'avcodec',
                 'swscale',
-                'swresample',
-                'swresample',
+                resampleLibraryName,
                 ]
         )
 
@@ -89,7 +89,7 @@ if platform.system() != 'Windows':
                         'avformat',
                         'avcodec',
                         'swscale',
-                        'swresample',
+                        resampleLibraryName,
                         'GL',
                         'glut',
                         ]
@@ -104,7 +104,7 @@ if platform.system() != 'Windows':
                         'avformat',
                         'avcodec',
                         'swscale',
-                        'swresample',
+                        resampleLibraryName,
                         ],
                 CXXFLAGS = [
                         '-std=c++0x'
@@ -118,7 +118,9 @@ avprofiles = env.Program(
                 sAvTranscoder,
                 'avutil',
                 'avformat',
-                'avcodec'
+                'avcodec',
+                'swscale',
+                resampleLibraryName,
                 ],
         CXXFLAGS = [
                 '-std=c++0x'

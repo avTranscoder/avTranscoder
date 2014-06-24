@@ -27,10 +27,10 @@ public:
 	
 	void setProfile( const std::string& profile );
 
-	AudioDesc& getAudioDesc() { return m_audioDesc; }
+	AudioDesc& getAudioDesc() { return _audioDesc; }
 
 private:
-	AudioDesc m_audioDesc;
+	AudioDesc _audioDesc;
 };
 
 }

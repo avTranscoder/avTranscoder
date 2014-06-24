@@ -22,7 +22,7 @@ namespace avtranscoder
 
 OutputStreamVideo::OutputStreamVideo( )
 	: OutputStreamWriter::OutputStreamWriter( )
-	, m_videoDesc( "mpeg2video" )
+	, _videoDesc( "mpeg2video" )
 {
 }
 
@@ -30,13 +30,13 @@ bool OutputStreamVideo::setup( )
 {
 	av_register_all();  // Warning: should be called only once
 
-	AVCodecContext* codecContext( m_videoDesc.getCodecContext() );
+	AVCodecContext* codecContext( _videoDesc.getCodecContext() );
 
 	if( codecContext == NULL )
 		return false;
 
 	// try to open encoder with parameters.
-	if( avcodec_open2( m_videoDesc.getCodecContext(), m_videoDesc.getCodec(), NULL ) < 0 )
+	if( avcodec_open2( _videoDesc.getCodecContext(), _videoDesc.getCodec(), NULL ) < 0 )
 		return false;
 
 	return true;
@@ -51,7 +51,7 @@ bool OutputStreamVideo::encodeFrame( const Frame& sourceFrame, DataStream& coded
 	AVFrame* frame = avcodec_alloc_frame();
 #endif
 
-	AVCodecContext* codecContext = m_videoDesc.getCodecContext();
+	AVCodecContext* codecContext = _videoDesc.getCodecContext();
 
 	// Set default frame parameters
 #if LIBAVCODEC_VERSION_MAJOR > 54
@@ -145,7 +145,7 @@ bool OutputStreamVideo::encodeFrame( const Frame& sourceFrame, DataStream& coded
 
 bool OutputStreamVideo::encodeFrame( DataStream& codedFrame )
 {
-	AVCodecContext* codecContext = m_videoDesc.getCodecContext();
+	AVCodecContext* codecContext = _videoDesc.getCodecContext();
 
 	AVPacket packet;
 	av_init_packet( &packet );
@@ -181,19 +181,22 @@ bool OutputStreamVideo::encodeFrame( DataStream& codedFrame )
 void OutputStreamVideo::setProfile( const std::string& profile )
 {
 	Profile p;
+
 	p.loadProfiles();
 
 	Profile::ProfileDesc prof = p.getProfile( profile );
 
-	m_videoDesc.setVideoCodec( prof["codec"] );
-	m_videoDesc.setTimeBase( 1, 25 ); // 25 fps
-	m_videoDesc.setImageParameters( 1920, 1080, av_get_pix_fmt( prof["pix_fmt"].c_str() ) );
+	_videoDesc.setVideoCodec( prof[ "codec" ] );
+	_videoDesc.setTimeBase( 1, 25 ); // 25 fps
+	_videoDesc.setImageParameters( 1920, 1080, av_get_pix_fmt( prof[ "pix_fmt" ].c_str() ) );
 
 	for( Profile::ProfileDesc::iterator it = prof.begin(); it != prof.end(); ++it )
 	{
-		if( (*it).first == "avProfile" )
+		if( (*it).first == Profile::avProfileIdentificator )
 			continue;
-		if( (*it).first == "avProfileLong" )
+		if( (*it).first == Profile::avProfileIdentificatorHuman )
+			continue;
+		if( (*it).first == Profile::avProfileType )
 			continue;
 		if( (*it).first == "codec" )
 			continue;
@@ -206,7 +209,7 @@ void OutputStreamVideo::setProfile( const std::string& profile )
 
 		try
 		{
-			m_videoDesc.set( (*it).first, (*it).second );
+			_videoDesc.set( (*it).first, (*it).second );
 		}
 		catch( std::exception& e )
 		{
@@ -218,9 +221,11 @@ void OutputStreamVideo::setProfile( const std::string& profile )
 
 	for( Profile::ProfileDesc::iterator it = prof.begin(); it != prof.end(); ++it )
 	{
-		if( (*it).first == "avProfile" )
+		if( (*it).first == Profile::avProfileIdentificator )
 			continue;
-		if( (*it).first == "avProfileLong" )
+		if( (*it).first == Profile::avProfileIdentificatorHuman )
+			continue;
+		if( (*it).first == Profile::avProfileType )
 			continue;
 		if( (*it).first == "codec" )
 			continue;
@@ -233,14 +238,13 @@ void OutputStreamVideo::setProfile( const std::string& profile )
 
 		try
 		{
-			m_videoDesc.set( (*it).first, (*it).second );
+			_videoDesc.set( (*it).first, (*it).second );
 		}
 		catch( std::exception& e )
 		{
 			std::cout << "2.warning: " << e.what() << std::endl;
 		}
 	}
-
 }
 
 }

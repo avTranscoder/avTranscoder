@@ -10,7 +10,7 @@
 #include <AvTranscoder/InputStreamAudio.hpp>
 #include <AvTranscoder/OutputStreamAudio.hpp>
 
-#include <AvTranscoder/OutputFile.hpp>
+#include <AvTranscoder/File/OutputFile.hpp>
 
 
 namespace avtranscoder
@@ -31,11 +31,12 @@ public:
 private:
 	AvInputStream* _stream;
 
-	Frame* _frameBuffer;
+	Frame*      _frameBuffer;
+	Image*      _videoFrameBuffer;
+	AudioFrame* _audioFrameBuffer;
 
 	InputStreamReader*  _inputStreamReader;
 	OutputStreamWriter* _outputStreamWriter;
-
 	OutputFile* _outputFile;
 
 	size_t _streamIndex;

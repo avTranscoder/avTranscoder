@@ -25,8 +25,8 @@ public:
 	void setVideoDesc( VideoDesc videoDesc );
 	void setAudioDesc( AudioDesc audioDesc );
 
-	void setImageDesc( ImageDesc& imageDesc ){ m_imageDesc = imageDesc; }
-	void setFrameDesc( AudioFrameDesc& frameDesc ){ m_frameDesc = frameDesc; }
+	void setImageDesc( ImageDesc& imageDesc ){ _imageDesc = imageDesc; }
+	void setFrameDesc( AudioFrameDesc& frameDesc ){ _frameDesc = frameDesc; }
 
 	VideoDesc getVideoDesc() const;
 	AudioDesc getAudioDesc() const;
@@ -41,11 +41,11 @@ public:
 	void clearBuffering();
 
 private:
-	VideoDesc m_videoDesc;
-	AudioDesc m_audioDesc;
+	VideoDesc _videoDesc;
+	AudioDesc _audioDesc;
 
-	ImageDesc      m_imageDesc;
-	AudioFrameDesc m_frameDesc;
+	ImageDesc      _imageDesc;
+	AudioFrameDesc _frameDesc;
 };
 
 }

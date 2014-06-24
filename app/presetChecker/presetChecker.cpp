@@ -4,6 +4,7 @@
 #include <AvTranscoder/Profile.hpp>
 
 #include <AvTranscoder/OutputStreamVideo.hpp>
+#include <AvTranscoder/OutputStreamAudio.hpp>
 
 
 int main( int argc, char** argv )
@@ -21,8 +22,18 @@ int main( int argc, char** argv )
 		for( auto key : profile )
 			std::cout << std::setw(35) << key.first << key.second << std::endl;
 
-		avtranscoder::OutputStreamVideo outputVideoStream;
-		outputVideoStream.setProfile( profile[ "avProfile" ] );
+		if( profile.find( avtranscoder::Profile::avProfileType )->second == avtranscoder::Profile::avProfileTypeVideo )
+		{
+			avtranscoder::OutputStreamVideo outputVideoStream;
+			outputVideoStream.setProfile( profile.find( avtranscoder::Profile::avProfileIdentificator )->second );
+		}
+
+		if( profile.find( avtranscoder::Profile::avProfileType )->second == avtranscoder::Profile::avProfileTypeAudio )
+		{
+			avtranscoder::OutputStreamAudio outputAudioStream;
+			outputAudioStream.setProfile( profile.find( avtranscoder::Profile::avProfileIdentificator )->second );
+		}
+
 	}
 
 }
