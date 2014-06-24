@@ -1,0 +1,16 @@
+/** @mainpage AvTranscoder
+ *
+ * See the website for a full presentation and the general documentation.
+ *
+ * https://github.com/MarcAntoine-Arnaud/avTranscoder
+ *
+ *  - using C++ API on FFMpeg / LibAV
+ *  - participate to the project developpement
+ *
+ * Authors
+ * - Marc-Antoine Arnaud
+ * - Valentin Noël
+ * - Clément Champetier
+ * 
+ */
+

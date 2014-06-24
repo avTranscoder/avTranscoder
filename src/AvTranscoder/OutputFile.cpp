@@ -18,13 +18,13 @@ extern "C" {
 namespace avtranscoder
 {
 
-OutputFile::OutputFile( const std::string& file )
+OutputFile::OutputFile( const std::string& filename )
 	: outputFormat  ( NULL )
 	, formatContext ( NULL )
 	, codec         ( NULL )
 	, codecContext  ( NULL )
 	, stream        ( NULL )
-	, filename      ( file )
+	, filename      ( filename )
 	, packetCount   ( 0 )
 {
 }
@@ -59,7 +59,7 @@ bool OutputFile::setup()
 	return formatContext != NULL;
 }
 
-void OutputFile::addVideoStream( const VideoDesc& videoDesc )
+AvOutputStream& OutputFile::addVideoStream( const VideoDesc& videoDesc )
 {
 	assert( formatContext != NULL );
 
@@ -78,9 +78,10 @@ void OutputFile::addVideoStream( const VideoDesc& videoDesc )
 	stream->codec->level = videoDesc.getCodecContext()->level;
 
 	stream->time_base = stream->codec->time_base;
+	return _outputStreams.back();
 }
 
-void OutputFile::addAudioStream( const AudioDesc& audioDesc )
+AvOutputStream& OutputFile::addAudioStream( const AudioDesc& audioDesc )
 {
 	assert( formatContext != NULL );
 
@@ -92,6 +93,13 @@ void OutputFile::addAudioStream( const AudioDesc& audioDesc )
 	stream->codec->sample_rate = audioDesc.getCodecContext()->sample_rate;
 	stream->codec->channels = audioDesc.getCodecContext()->channels;
 	stream->codec->sample_fmt = audioDesc.getCodecContext()->sample_fmt;
+
+	return _outputStreams.back();
+}
+
+AvOutputStream& OutputFile::getStream( const size_t streamId )
+{
+	return _outputStreams.at( streamId );
 }
 
 bool OutputFile::beginWrap( )
