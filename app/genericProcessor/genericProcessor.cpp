@@ -21,10 +21,12 @@ void parseConfigFile( const std::string& configFilename, avtranscoder::Transcode
 		if( std::getline( is_line, filename, '=' ) )
 		{
 			std::string streamId;
-			if( std::getline( is_line, streamId ) )
+			if( std::getline( is_line, streamId, ':' ) )
 			{
-				std::cout << filename << " ( " << streamId <<  " )" << std::endl;
-				streams.push_back( avtranscoder::Transcoder::InputStreamDesc( atoi( streamId.c_str() ), filename, "" ) );
+				std::string transcodeProfile;
+				std::getline( is_line, transcodeProfile );
+				std::cout << filename << " ( " << streamId <<  " ) : " << transcodeProfile << std::endl;
+				streams.push_back( avtranscoder::Transcoder::InputStreamDesc( atoi( streamId.c_str() ), filename, transcodeProfile ) );
 			}
 		}
 	}
