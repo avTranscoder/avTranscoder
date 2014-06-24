@@ -14,8 +14,9 @@ typedef std::vector< unsigned char> DataBuffer;
 class AvExport Frame
 {
 public:
-
-	Frame() {};
+	Frame(){};
+	
+	virtual ~Frame(){};
 
 	virtual DataBuffer& getBuffer() { return m_dataBuffer; }
 	virtual unsigned char* getPtr() { return &m_dataBuffer[0]; }

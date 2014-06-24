@@ -8,11 +8,7 @@ StreamTranscoder::StreamTranscoder( AvInputStream& stream, OutputFile& outputFil
 	: _stream( &stream )
 	, _frameBuffer( NULL )
 	, _inputStreamReader( NULL )
-	, _inputStreamVideo( NULL )
-	, _inputStreamAudio( NULL )
 	, _outputStreamWriter( NULL )
-	, _outputStreamVideo( NULL )
-	, _outputStreamAudio( NULL )
 	, _outputFile( &outputFile )
 	, _streamIndex( streamId )
 	, _transcodeStream( false )
@@ -23,16 +19,10 @@ StreamTranscoder::~StreamTranscoder()
 {
 	if( _frameBuffer )
 		delete _frameBuffer;
-
-	if( _inputStreamVideo )
-		delete _inputStreamVideo;
-	if( _inputStreamAudio )
-		delete _inputStreamAudio;
-
-	if( _outputStreamVideo )
-		delete _outputStreamVideo;
-	if( _outputStreamAudio )
-		delete _outputStreamAudio;
+	if( _inputStreamReader )
+		delete _inputStreamReader;
+	if( _outputStreamWriter )
+		delete _outputStreamWriter;
 }
 
 void StreamTranscoder::init( const std::string& profile )
@@ -43,8 +33,7 @@ void StreamTranscoder::init( const std::string& profile )
 	{
 		case AVMEDIA_TYPE_VIDEO :
 		{
-			_inputStreamVideo = new InputStreamVideo( *_stream );
-			_inputStreamReader = _inputStreamVideo;
+			_inputStreamReader = new InputStreamVideo( *_stream );
 			_inputStreamReader->setup();
 
 			// re-wrap only, get output descriptor from input
@@ -54,20 +43,19 @@ void StreamTranscoder::init( const std::string& profile )
 				break;
 			}
 
-			_outputStreamVideo = new OutputStreamVideo();
-			_outputStreamWriter = _outputStreamVideo;
+			OutputStreamVideo* outputStreamVideo = new OutputStreamVideo();
+			_outputStreamWriter = outputStreamVideo;
 
 			_outputStreamWriter->setProfile( profile );
-			_outputFile->addVideoStream( _outputStreamVideo->getVideoDesc() );
-			_videoFrameBuffer = new Image( _outputStreamVideo->getVideoDesc().getImageDesc() );
+			_outputFile->addVideoStream( outputStreamVideo->getVideoDesc() );
+			_videoFrameBuffer = new Image( outputStreamVideo->getVideoDesc().getImageDesc() );
 			_frameBuffer = _videoFrameBuffer;
 			
 			break;
 		}
 		case AVMEDIA_TYPE_AUDIO :
 		{
-			_inputStreamAudio = new InputStreamAudio( *_stream );
-			_inputStreamReader = _inputStreamAudio;
+			_inputStreamReader = new InputStreamAudio( *_stream );
 			_inputStreamReader->setup();
 
 			// re-wrap only, get output descriptor from input
@@ -77,12 +65,12 @@ void StreamTranscoder::init( const std::string& profile )
 				break;
 			}
 			
-			_outputStreamAudio = new OutputStreamAudio();
-			_outputStreamWriter = _outputStreamAudio;
+			OutputStreamAudio* outputStreamAudio = new OutputStreamAudio();
+			_outputStreamWriter = outputStreamAudio;
 
 			_outputStreamWriter->setProfile( profile );
-			_outputFile->addAudioStream( _outputStreamAudio->getAudioDesc() );
-			_audioFrameBuffer = new AudioFrame( _outputStreamAudio->getAudioDesc().getFrameDesc() );
+			_outputFile->addAudioStream( outputStreamAudio->getAudioDesc() );
+			_audioFrameBuffer = new AudioFrame( outputStreamAudio->getAudioDesc().getFrameDesc() );
 			_frameBuffer = _audioFrameBuffer;
 			
 			break;

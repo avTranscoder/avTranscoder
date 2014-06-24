@@ -36,13 +36,7 @@ private:
 	AudioFrame* _audioFrameBuffer;
 
 	InputStreamReader*  _inputStreamReader;
-	InputStreamVideo*   _inputStreamVideo;
-	InputStreamAudio*   _inputStreamAudio;
-
 	OutputStreamWriter* _outputStreamWriter;
-	OutputStreamVideo*  _outputStreamVideo;
-	OutputStreamAudio*  _outputStreamAudio;
-
 	OutputFile* _outputFile;
 
 	size_t _streamIndex;

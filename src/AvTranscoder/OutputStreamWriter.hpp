@@ -23,6 +23,9 @@ public:
 	OutputStreamWriter()
 	{}
 
+	virtual ~OutputStreamWriter()
+	{}
+
 	/**
 	 * @brief Setup the encoder
 	 * @return status of setup
