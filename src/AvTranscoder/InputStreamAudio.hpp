@@ -24,7 +24,12 @@ public:
 
 	bool readNextFrame( Frame& frameBuffer );
 
+	bool readNextFrame( std::vector<Frame>& frameBuffer );
+
 private:
+
+	bool getNextFrame();
+
 	AvInputStream*     _inputStream;
 	AVCodec*           _codec;
 	AVCodecContext*    _codecContext;
