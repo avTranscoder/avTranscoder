@@ -85,6 +85,9 @@ AvOutputStream& OutputFile::addVideoStream( const VideoDesc& videoDesc )
 		INT_MAX );
 
 	_stream->time_base = _stream->codec->time_base;
+	
+	_outputStreams.push_back( AvOutputStream( *this, _formatContext->nb_streams ) );
+
 	return _outputStreams.back();
 }
 
@@ -101,6 +104,8 @@ AvOutputStream& OutputFile::addAudioStream( const AudioDesc& audioDesc )
 	_stream->codec->channels = audioDesc.getCodecContext()->channels;
 	_stream->codec->sample_fmt = audioDesc.getCodecContext()->sample_fmt;
 
+	_outputStreams.push_back( AvOutputStream( *this, _formatContext->nb_streams ) );
+
 	return _outputStreams.back();
 }
 
@@ -111,9 +116,14 @@ AvOutputStream& OutputFile::getStream( const size_t streamId )
 
 bool OutputFile::beginWrap( )
 {
-	if( avformat_write_header( _formatContext, NULL ) != 0 )
+	int ret = avformat_write_header( _formatContext, NULL );
+	if( ret != 0 )
 	{
-		throw std::runtime_error( "could not write header" );
+		char err[250];
+		av_strerror( ret, err, 250);
+		std::string msg = "could not write header: ";
+		msg += err;
+		throw std::runtime_error( msg );
 	}
 	return true;
 }
