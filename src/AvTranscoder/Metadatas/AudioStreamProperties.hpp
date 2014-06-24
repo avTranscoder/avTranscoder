@@ -19,8 +19,6 @@ AudioProperties audioStreamInfo( const AVFormatContext* formatContext, const siz
 	AudioProperties ap;
 	AVCodecContext* codec_context = formatContext->streams[index]->codec;
 	
-	ap.codecName     = codec_context->codec_name;
-	ap.codecLongName = codec_context->codec_name;
 	ap.codecId       = codec_context->codec_id;
 	ap.sampleRate    = codec_context->sample_rate;
 	ap.channels      = codec_context->channels;

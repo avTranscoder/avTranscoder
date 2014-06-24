@@ -117,8 +117,6 @@ VideoProperties videoStreamInfo(
 
 	vp.streamId         = videoStreamIndex;
 
-	vp.codecName        = codec_context->codec_name;
-	vp.codecLongName    = codec_context->codec_name;
 	vp.codecId          = codec_context->codec_id;
 	vp.bitRate          = codec_context->bit_rate;
 	vp.maxBitRate       = codec_context->rc_max_rate;
