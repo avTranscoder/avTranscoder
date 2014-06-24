@@ -1,5 +1,5 @@
-#ifndef _AV_TRANSCODER_OUTPUT_FILE_HPP_
-#define _AV_TRANSCODER_OUTPUT_FILE_HPP_
+#ifndef _AV_TRANSCODER_FILE_OUTPUT_FILE_HPP_
+#define _AV_TRANSCODER_FILE_OUTPUT_FILE_HPP_
 
 #include <AvTranscoder/DatasStructures/Image.hpp>
 #include <AvTranscoder/DatasStructures/DataStreamDesc.hpp>
