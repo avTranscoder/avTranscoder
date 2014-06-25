@@ -5,6 +5,8 @@
 #include "DatasStructures/AudioDesc.hpp"
 #include "DatasStructures/DataStreamDesc.hpp"
 
+#include "Profile.hpp"
+
 namespace avtranscoder
 {
 
@@ -28,6 +30,9 @@ public:
 	void setProfile( const std::string& profile );
 
 	AudioDesc& getAudioDesc() { return _audioDesc; }
+
+private:
+	bool checkProfileKey( Profile::ProfileDesc& profDesc, const std::string& key );
 
 private:
 	AudioDesc _audioDesc;

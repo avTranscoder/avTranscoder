@@ -10,7 +10,8 @@ extern "C" {
 }
 
 #include "DatasStructures/AudioFrame.hpp"
-#include "Profile.hpp"
+
+#include <sstream>
 
 namespace avtranscoder
 {
@@ -172,10 +173,30 @@ void OutputStreamAudio::setProfile( const std::string& profile )
 	p.loadProfiles();
 	Profile::ProfileDesc profDesc = p.getProfile( profile );
 
+	checkProfileKey( profDesc, "codec" );
+	checkProfileKey( profDesc, "sample_fmt" );
+	checkProfileKey( profDesc, "sample_rate" );
+	checkProfileKey( profDesc, "channels" );
+
+	size_t sample_rate;
+	size_t channels;
+	std::istringstream( profDesc["sample_rate"] ) >> sample_rate;
+	std::istringstream( profDesc["channels"] ) >> channels;
+
 	_audioDesc.setAudioCodec( profDesc["codec"] );
-	_audioDesc.setAudioParameters( 48000, 2, av_get_sample_fmt( profDesc["sample_fmt"].c_str() ) );
+	_audioDesc.setAudioParameters( sample_rate, channels, av_get_sample_fmt( profDesc["sample_fmt"].c_str() ) );
 
 	setup();
+}
+
+bool OutputStreamAudio::checkProfileKey( Profile::ProfileDesc& profDesc, const std::string& key )
+{
+	if( profDesc[ key ].empty() )
+	{
+		throw std::runtime_error( key + " not specified into profile: " + profDesc[ Profile::avProfileIdentificator ] );
+		return false;
+	}
+	return true;
 }
 
 }
