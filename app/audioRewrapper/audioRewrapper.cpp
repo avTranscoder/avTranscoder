@@ -67,6 +67,7 @@ void transcodeAudio( const char* inputfilename, const char* outputFilename )
 	
 	// init audio decoders
 	InputStreamAudio inputStreamAudio( inputFile.getStream( 0 ) );
+	inputStreamAudio.setup();
 	inputFile.getStream( 0 ).setBufferred( true );
 
 	// init audio encoders
