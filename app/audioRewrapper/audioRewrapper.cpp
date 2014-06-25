@@ -1,16 +1,14 @@
 #include <iostream>
 #include <iomanip>
 
-#include <AvTranscoder/InputFile.hpp>
-#include <AvTranscoder/OutputFile.hpp>
+#include <AvTranscoder/File/InputFile.hpp>
+#include <AvTranscoder/File/OutputFile.hpp>
 
 #include <AvTranscoder/AvInputStream.hpp>
 #include <AvTranscoder/InputStreamAudio.hpp>
 #include <AvTranscoder/OutputStreamAudio.hpp>
 
 #include <AvTranscoder/AudioTransform.hpp>
-
-
 
 void rewrapAudio( const char* inputfilename, const char* outputFilename )
 {
@@ -19,14 +17,19 @@ void rewrapAudio( const char* inputfilename, const char* outputFilename )
 	av_log_set_level( AV_LOG_FATAL );
 	av_log_set_level( AV_LOG_DEBUG );
 
+	ProgressListener p;
+
 	InputFile inputFile( inputfilename );
-	inputFile.analyse();
+	inputFile.analyse( p );
+	inputFile.readStream( 0 );
 
 	OutputFile outputFile( outputFilename );
 
 	outputFile.setup();
 
 	outputFile.addAudioStream( inputFile.getStream( 0 ).getAudioDesc() );
+	
+	outputFile.beginWrap();
 
 	DataStream data;
 
@@ -43,6 +46,7 @@ void rewrapAudio( const char* inputfilename, const char* outputFilename )
 
 		++frame;
 	}
+	outputFile.endWrap();
 	std::cout << std::endl;
 }
 
@@ -53,8 +57,10 @@ void transcodeAudio( const char* inputfilename, const char* outputFilename )
 	av_log_set_level( AV_LOG_FATAL );
 	av_log_set_level( AV_LOG_DEBUG );
 
+	ProgressListener p;
+
 	InputFile inputFile( inputfilename );
-	inputFile.analyse();
+	inputFile.analyse( p );
 
 	OutputFile outputFile( outputFilename );
 	outputFile.setup();
@@ -131,8 +137,8 @@ int main( int argc, char** argv )
 
 	try
 	{
-		//rewrapAudio( argv[1], argv[2] );
-		transcodeAudio( argv[1], argv[2] );
+		rewrapAudio( argv[1], argv[2] );
+		// transcodeAudio( argv[1], argv[2] );
 	}
 	catch( std::exception &e )
 	{

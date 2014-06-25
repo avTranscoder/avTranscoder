@@ -5,7 +5,7 @@
 #include <AvTranscoder/AvInputStream.hpp>
 #include <AvTranscoder/InputStreamAudio.hpp>
 #include <AvTranscoder/InputStreamVideo.hpp>
-#include <AvTranscoder/InputFile.hpp>
+#include <AvTranscoder/File/InputFile.hpp>
 
 #include <AvTranscoder/ColorTransform.hpp>
 
@@ -22,7 +22,9 @@ public:
 		, m_sourceImage( NULL )
 		, m_imageToDisplay( NULL )
 	{
-		m_inputFile.analyse();
+		avtranscoder::ProgressListener p;
+
+		m_inputFile.analyse( p );
 		m_videoStream = m_inputFile.getProperties().videoStreams.at(0).streamId;
 
 		m_inputFile.readStream( m_videoStream );

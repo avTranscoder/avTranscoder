@@ -9,6 +9,10 @@ extern "C" {
 #include <libavutil/pixdesc.h>
 }
 
+#ifndef AV_OPT_FLAG_FILTERING_PARAM
+ #define AV_OPT_FLAG_FILTERING_PARAM (1<<16)
+#endif
+
 #include <string>
 #include <map>
 #include <utility> //pair
@@ -18,28 +22,28 @@ namespace avtranscoder
 {
 
 OptionLoader::OptionLoader()
-	: m_avFormatContext( NULL )
-	, m_avCodecContext( NULL )
-	, m_outputFormat( NULL )
-	, m_codec( NULL )
-	, m_formatsLongNames()
-	, m_formatsShortNames()
-	, m_videoCodecsLongNames()
-	, m_videoCodecsShortNames()
-	, m_audioCodecsLongNames()
-	, m_audioCodecsShortNames()
+	: _avFormatContext( NULL )
+	, _avCodecContext( NULL )
+	, _outputFormat( NULL )
+	, _codec( NULL )
+	, _formatsLongNames()
+	, _formatsShortNames()
+	, _videoCodecsLongNames()
+	, _videoCodecsShortNames()
+	, _audioCodecsLongNames()
+	, _audioCodecsShortNames()
 {
 	// Alloc format context
-	m_avFormatContext = avformat_alloc_context();
+	_avFormatContext = avformat_alloc_context();
 	
 	// Alloc codec context
 #if LIBAVCODEC_VERSION_INT < AV_VERSION_INT( 53, 8, 0 )
-	m_avCodecContext = avcodec_alloc_context();
+	_avCodecContext = avcodec_alloc_context();
 	// deprecated in the same version
-	//m_avCodecContext = avcodec_alloc_context2( AVMEDIA_TYPE_UNKNOWN );
+	// _avCodecContext = avcodec_alloc_context2( AVMEDIA_TYPE_UNKNOWN );
 #else
 	AVCodec* avCodec = NULL;
-	m_avCodecContext = avcodec_alloc_context3( avCodec );
+	_avCodecContext = avcodec_alloc_context3( avCodec );
 #endif
 	
 	// fill format short and long names
@@ -51,8 +55,8 @@ OptionLoader::OptionLoader()
 		{
 			if( fmt->long_name )
 			{
-				m_formatsLongNames.push_back( std::string( fmt->long_name ) + std::string( " (" ) + std::string( fmt->name ) + std::string( ")" ) );
-				m_formatsShortNames.push_back( std::string( fmt->name ) );
+				_formatsLongNames.push_back( std::string( fmt->long_name ) + std::string( " (" ) + std::string( fmt->name ) + std::string( ")" ) );
+				_formatsShortNames.push_back( std::string( fmt->name ) );
 			}
 		}
 	}
@@ -73,8 +77,8 @@ OptionLoader::OptionLoader()
 				{
 					if( c->long_name )
 					{
-						m_videoCodecsLongNames.push_back( std::string( c->long_name ) );
-						m_videoCodecsShortNames.push_back( std::string( c->name ) );
+						_videoCodecsLongNames.push_back( std::string( c->long_name ) );
+						_videoCodecsShortNames.push_back( std::string( c->name ) );
 					}
 					break;
 				}
@@ -82,8 +86,8 @@ OptionLoader::OptionLoader()
 				{
 					if( c->long_name )
 					{
-						m_audioCodecsLongNames.push_back( std::string( c->long_name ) );
-						m_audioCodecsShortNames.push_back( std::string( c->name ) );
+						_audioCodecsLongNames.push_back( std::string( c->long_name ) );
+						_audioCodecsShortNames.push_back( std::string( c->name ) );
 					}
 					break;
 				}
@@ -96,37 +100,37 @@ OptionLoader::OptionLoader()
 
 OptionLoader::~OptionLoader()
 {
-	avformat_free_context( m_avFormatContext );
-	av_free( m_avCodecContext );
+	avformat_free_context( _avFormatContext );
+	avcodec_close( _avCodecContext );
 }
 
 OptionLoader::OptionArray OptionLoader::loadFormatContextOptions( int req_flags )
 {
-	return loadOptions( (void*)m_avFormatContext, req_flags );
+	return loadOptions( (void*)_avFormatContext, req_flags );
 }
 
 OptionLoader::OptionArray OptionLoader::loadCodecContextOptions( int req_flags )
 {
-	return loadOptions( (void*)m_avCodecContext, req_flags );
+	return loadOptions( (void*)_avCodecContext, req_flags );
 }
 
 OptionLoader::OptionMap OptionLoader::loadOutputFormatOptions()
 {
 	OptionMap outputFormatOptions;
 	
-	m_outputFormat = av_oformat_next( NULL );
+	_outputFormat = av_oformat_next( NULL );
 	
 	// iterate on formats
-	while( m_outputFormat )
+	while( _outputFormat )
 	{
 		// add only format with video track
-		// m_outputFormat->audio_codec ?
-		if( m_outputFormat->video_codec != AV_CODEC_ID_NONE )
+		// _outputFormat->audio_codec ?
+		if( _outputFormat->video_codec != AV_CODEC_ID_NONE )
 		{
-			if( m_outputFormat->priv_class )
+			if( _outputFormat->priv_class )
 			{
-				std::string outputFormatName( m_outputFormat->name );
-				OptionArray optionsArray = loadOptions( (void*)&m_outputFormat->priv_class );
+				std::string outputFormatName( _outputFormat->name );
+				OptionArray optionsArray = loadOptions( (void*)&_outputFormat->priv_class );
 
 				outputFormatOptions.insert( 
 					std::pair< std::string, OptionArray >( 
@@ -135,7 +139,7 @@ OptionLoader::OptionMap OptionLoader::loadOutputFormatOptions()
 					);
 			}
 		}
-		m_outputFormat = av_oformat_next( m_outputFormat );
+		_outputFormat = av_oformat_next( _outputFormat );
 	}
 	return outputFormatOptions;
 }
@@ -144,24 +148,24 @@ OptionLoader::OptionMap OptionLoader::loadVideoCodecOptions()
 {
 	OptionMap videoCodecOptions;
 	
-	m_codec = av_codec_next( NULL );
+	_codec = av_codec_next( NULL );
 	
 	// iterate on codecs
-	while( m_codec )
+	while( _codec )
 	{
 #if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 53, 34, 0 )
-		if( m_codec->encode2 )
+		if( _codec->encode2 )
 #else
-		if( m_codec->encode )
+		if( _codec->encode )
 #endif
 		{
 			// add only video codec
-			if( m_codec->type == AVMEDIA_TYPE_VIDEO )
+			if( _codec->type == AVMEDIA_TYPE_VIDEO )
 			{
-				if( m_codec->priv_class )
+				if( _codec->priv_class )
 				{
-					std::string videoCodecName( m_codec->name );
-					OptionArray optionsArray = loadOptions( (void*)&m_codec->priv_class );
+					std::string videoCodecName( _codec->name );
+					OptionArray optionsArray = loadOptions( (void*)&_codec->priv_class );
 					
 					videoCodecOptions.insert( 
 						std::pair< std::string, OptionArray >( 
@@ -171,7 +175,7 @@ OptionLoader::OptionMap OptionLoader::loadVideoCodecOptions()
 				}
 			}
 		}
-		m_codec = av_codec_next( m_codec );
+		_codec = av_codec_next( _codec );
 	}
 	return videoCodecOptions;
 }
@@ -180,24 +184,24 @@ OptionLoader::OptionMap OptionLoader::loadAudioCodecOptions()
 {
 	OptionMap audioCodecOptions;
 	
-	m_codec = av_codec_next( NULL );
+	_codec = av_codec_next( NULL );
 	
 	// iterate on codecs
-	while( m_codec )
+	while( _codec )
 	{
 #if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 53, 34, 0 )
-		if( m_codec->encode2 )
+		if( _codec->encode2 )
 #else
-		if( m_codec->encode )
+		if( _codec->encode )
 #endif
 		{
 			// add only audio codec
-			if( m_codec->type == AVMEDIA_TYPE_AUDIO )
+			if( _codec->type == AVMEDIA_TYPE_AUDIO )
 			{
-				if( m_codec->priv_class )
+				if( _codec->priv_class )
 				{
-					std::string audioCodecName( m_codec->name );
-					OptionArray optionsArray = loadOptions( (void*)&m_codec->priv_class );
+					std::string audioCodecName( _codec->name );
+					OptionArray optionsArray = loadOptions( (void*)&_codec->priv_class );
 					
 					audioCodecOptions.insert( 
 						std::pair< std::string, OptionArray >( 
@@ -207,7 +211,7 @@ OptionLoader::OptionMap OptionLoader::loadAudioCodecOptions()
 				}
 			}
 		}
-		m_codec = av_codec_next( m_codec );
+		_codec = av_codec_next( _codec );
 	}
 	return audioCodecOptions;
 }

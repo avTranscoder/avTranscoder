@@ -1,29 +1,41 @@
 #ifndef _AV_TRANSCODER_INPUT_STREAM_AUDIO_HPP_
 #define _AV_TRANSCODER_INPUT_STREAM_AUDIO_HPP_
 
-#include "InputStream.hpp"
+#include "InputStreamReader.hpp"
 #include "DatasStructures/AudioFrame.hpp"
+
+class AVFormatContext;
+class AVCodec;
+class AVCodecContext;
+class AVFrame;
 
 namespace avtranscoder
 {
 
 class AvInputStream;
 
-class AvExport InputStreamAudio
+class AvExport InputStreamAudio : public InputStreamReader
 {
 public:
 	InputStreamAudio( AvInputStream& inputStream );
 	~InputStreamAudio();
 
-	bool readNextFrame( AudioFrame& audioFrameBuffer );
+	void setup();
+
+	bool readNextFrame( Frame& frameBuffer );
+
+	bool readNextFrame( std::vector<Frame>& frameBuffer );
 
 private:
-	AvInputStream*     m_inputStream;
-	AVCodec*           m_codec;
-	AVCodecContext*    m_codecContext;
-	AVFrame*           m_frame;
 
-	int                m_selectedStream;
+	bool getNextFrame();
+
+	AvInputStream*     _inputStream;
+	AVCodec*           _codec;
+	AVCodecContext*    _codecContext;
+	AVFrame*           _frame;
+
+	int                _selectedStream;
 };
 
 }

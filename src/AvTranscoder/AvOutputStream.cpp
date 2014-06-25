@@ -1,6 +1,6 @@
 #include "AvOutputStream.hpp"
 
-#include "OutputFile.hpp"
+#include <AvTranscoder/File/OutputFile.hpp>
 
 namespace avtranscoder
 {
@@ -23,7 +23,7 @@ AvOutputStream::~AvOutputStream()
 
 bool AvOutputStream::wrap( DataStream& data )
 {
-	_outputFile->wrap( data, _streamIndex );
+	return _outputFile->wrap( data, _streamIndex );
 }
 
 VideoDesc AvOutputStream::getVideoDesc() const

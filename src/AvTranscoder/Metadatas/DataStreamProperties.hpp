@@ -72,8 +72,6 @@ DataProperties dataStreamInfo( AVFormatContext* formatContext, const size_t inde
 
 	// AVCodecContext* codec_context = formatContext->streams[index]->codec;
 	
-	// dp.codecName     = codec_context->codec_name;
-	// dp.codecLongName = codec_context->codec_name;
 	// dp.codecId       = codec_context->codec_id;
 
 	//detectAncillaryData( formatContext, index );

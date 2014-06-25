@@ -33,11 +33,11 @@ public:
 	OptionLoader();
 	~OptionLoader();
 	
-	const AVFormatContext* getFormatContext() const { return m_avFormatContext; }
-	const AVCodecContext* getCodecContext() const { return m_avCodecContext; }
-	const AVOutputFormat* getOutputFormat() const { return m_outputFormat; }
-	const AVCodec* getCodec() const { return m_codec; }
-	
+	const AVFormatContext* getFormatContext() const { return _avFormatContext; }
+	const AVCodecContext* getCodecContext() const { return _avCodecContext; }
+	const AVOutputFormat* getOutputFormat() const { return _outputFormat; }
+	const AVCodec* getCodec() const { return _codec; }
+		
 	/**
      * @param req_flags: AVOption flags (default = 0: no flag restriction)
      */
@@ -52,14 +52,14 @@ public:
 	OptionMap loadVideoCodecOptions();
 	OptionMap loadAudioCodecOptions();
 	
-	std::vector<std::string>& getFormatsLongNames() { return m_formatsLongNames; }
-	std::vector<std::string>& getFormatsShortNames() { return m_formatsShortNames; }
+	std::vector<std::string>& getFormatsLongNames() { return _formatsLongNames; }
+	std::vector<std::string>& getFormatsShortNames() { return _formatsShortNames; }
 	
-	std::vector<std::string>& getVideoCodecsLongNames() { return m_videoCodecsLongNames; }
-	std::vector<std::string>& getVideoCodecsShortNames() { return m_videoCodecsShortNames; }
+	std::vector<std::string>& getVideoCodecsLongNames() { return _videoCodecsLongNames; }
+	std::vector<std::string>& getVideoCodecsShortNames() { return _videoCodecsShortNames; }
 	
-	std::vector<std::string>& getAudioCodecsLongNames() { return m_audioCodecsLongNames; }
-	std::vector<std::string>& getAudioCodecsShortNames() { return m_audioCodecsShortNames; }
+	std::vector<std::string>& getAudioCodecsLongNames() { return _audioCodecsLongNames; }
+	std::vector<std::string>& getAudioCodecsShortNames() { return _audioCodecsShortNames; }
 	
 	/**
 	 *  Get array of pixel format supported by video codec.
@@ -74,21 +74,20 @@ private:
      */
 	OptionArray loadOptions( void* av_class, int req_flags = 0 );
 	
-	AVFormatContext* m_avFormatContext;
-	AVCodecContext* m_avCodecContext;
+	AVFormatContext* _avFormatContext;
+	AVCodecContext* _avCodecContext;
 	
-	AVOutputFormat* m_outputFormat;
-	AVCodec* m_codec;
+	AVOutputFormat* _outputFormat;
+	AVCodec* _codec;
+		
+	std::vector<std::string> _formatsLongNames;
+	std::vector<std::string> _formatsShortNames;
 	
-	std::vector<std::string> m_formatsLongNames;
-	std::vector<std::string> m_formatsShortNames;
-	
-	std::vector<std::string> m_videoCodecsLongNames;
-	std::vector<std::string> m_videoCodecsShortNames;
+	std::vector<std::string> _videoCodecsLongNames;
+	std::vector<std::string> _videoCodecsShortNames;
 
-	std::vector<std::string> m_audioCodecsLongNames;
-	std::vector<std::string> m_audioCodecsShortNames;
-
+	std::vector<std::string> _audioCodecsLongNames;
+	std::vector<std::string> _audioCodecsShortNames;
 };
 
 }

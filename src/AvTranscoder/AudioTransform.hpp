@@ -3,7 +3,13 @@
 
 #include "common.hpp"
 
-class SwrContext;
+#ifdef AV_RESAMPLE_LIBRARY
+ #define ResampleContext AVAudioResampleContext
+#else
+ #define ResampleContext SwrContext
+#endif
+
+class ResampleContext;
 
 namespace avtranscoder
 {
@@ -20,9 +26,9 @@ public:
 private:
 	bool init( const AudioFrame& src, const AudioFrame& dst );
 	
-	SwrContext* m_audioConvertContext;
+	ResampleContext* _audioConvertContext;
 
-	bool m_isInit;
+	bool _isInit;
 };
 
 }

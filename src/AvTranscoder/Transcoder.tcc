@@ -1,6 +1,4 @@
 
-#include <AvTranscoder/InputFile.hpp>
-
 #include <AvTranscoder/AvInputStream.hpp>
 
 namespace avtranscoder
@@ -23,9 +21,14 @@ Transcoder::~Transcoder()
 	{
 		delete (*it);
 	}
+
+	for( std::vector< StreamTranscoder* >::iterator it = _streamTranscoders.begin(); it != _streamTranscoders.end(); ++it )
+	{
+		delete (*it);
+	}
 }
 
-void Transcoder::add( const std::string& filename, const size_t streamIndex )
+void Transcoder::add( const std::string& filename, const size_t streamIndex, const std::string& profile )
 {
 	if( ! filename.length() )
 	{
@@ -40,6 +43,8 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex )
 		}
 		else
 			std::cout << "dummy can't be the first audio channel" << std::endl;
+		
+		_streamTranscoders.push_back( NULL );
 
 		return;
 	}
@@ -67,14 +72,18 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex )
 	{
 		case AVMEDIA_TYPE_VIDEO:
 		{
+			StreamTranscoder* streamTranscoder = new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile, _streamTranscoders.size() );
+			streamTranscoder->init( profile );
+			_streamTranscoders.push_back( streamTranscoder );
 			_inputStreams.push_back( & referenceFile->getStream( streamIndex ) );
-			_outputFile.addVideoStream( _inputStreams.back()->getVideoDesc() );
 			break;
 		}
 		case AVMEDIA_TYPE_AUDIO:
 		{
+			StreamTranscoder* streamTranscoder = new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile, _streamTranscoders.size() );
+			streamTranscoder->init( profile );
+			_streamTranscoders.push_back( streamTranscoder );
 			_inputStreams.push_back( & referenceFile->getStream( streamIndex ) );
-			_outputFile.addAudioStream( _inputStreams.back()->getAudioDesc() );
 			break;
 		}
 		case AVMEDIA_TYPE_DATA:
@@ -88,13 +97,16 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex )
 	return;
 }
 
-void Transcoder::add( const StreamsDefinition& streams )
+void Transcoder::add( const InputStreamsDesc& streamDefs )
 {
-	for( size_t streamIndex = 0; streamIndex < streams.size(); ++streamIndex )
+	for( size_t streamDest = 0; streamDest < streamDefs.size(); ++streamDest )
 	{
-		add( streams.at( streamIndex ).first, streams.at( streamIndex ).second );
+		add( streamDefs.at( streamDest ).filename,
+		     streamDefs.at( streamDest ).streamId,
+		     streamDefs.at( streamDest ).transcodeProfile );
 	}
-	return;
+	if( _inputStreams.size() != _streamTranscoders.size() )
+		throw std::runtime_error( "_inputStreams and _streamTranscoders must have the same number of streams" );
 }
 
 void Transcoder::process( ProgressListener& progress )
@@ -113,50 +125,45 @@ void Transcoder::process( ProgressListener& progress )
 
 	_outputFile.beginWrap();
 
-	bool continueProcess( true );
 
 	while( 1 )
 	{
-		// read one frame for each streamIndex
-		for( size_t streamIndex = 0; streamIndex < _inputStreams.size(); ++streamIndex )
+		if( progress.progress( _inputStreams.at( 0 )->getPacketDuration() * ( frame + 1 ), _inputStreams.at( 0 )->getDuration() ) == eJobStatusCancel )
 		{
-			bool ret = _inputStreams.at( streamIndex )->readNextPacket( dataStreams.at( streamIndex ) );
-
-			if( ! ret || ( dataStreams.at( streamIndex ).getBuffer().size() == 0 ) )
-			{
-				continueProcess = false;
-			}
+			break;
 		}
 
-		if( ! continueProcess )
-			break;
-
-		switch( progress.progress( _inputStreams.at( 0 )->getPacketDuration() * ( frame + 1 ), _inputStreams.at( 0 )->getDuration() ) )
-		{
-			case eJobStatusContinue:
-			{
-				break;
-			}
-			case eJobStatusCancel:
-			{
-				continueProcess = false;
-				break;
-			}
-		}
-
-		if( ! continueProcess )
-			break;
 
 		for( size_t streamIndex = 0; streamIndex < _inputStreams.size(); ++streamIndex )
 		{
-			_outputFile.wrap( dataStreams.at( streamIndex ), streamIndex );
+			if( _streamTranscoders.at( streamIndex ) && ! _streamTranscoders.at( streamIndex )->processFrame() )
+			{
+				_inputStreams.erase( _inputStreams.begin() + streamIndex );
+			}
+		}
+
+		if( _inputStreams.size() == 0 )
+		{
+			break;
 		}
 
 		++frame;
 	}
 
 	_outputFile.endWrap();
+}
 
+bool Transcoder::getStreamsNextPacket( std::vector< DataStream >& dataStreams )
+{
+	for( size_t i = 0; i < _inputStreams.size(); ++i )
+	{
+		bool ret = _inputStreams.at( i )->readNextPacket( dataStreams.at( i ) );
+		if( ! ret || ( dataStreams.at( i ).getBuffer().size() == 0 ) )
+		{
+			return false;
+		}
+	}
+	return true;
 }
 
 }

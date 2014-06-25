@@ -15,6 +15,8 @@ extern "C" {
 }
 
 #include <string>
+#include <cstring>
+#include <vector>
 
 #ifdef SWIG
  #define AvExport
@@ -56,6 +58,10 @@ struct Ratio
 	size_t num;
 	size_t den;
 };
+
+void split( std::vector< std::string >& splitedString, const std::string& inputString, const std::string& splitChars = ";" );
+
+int getFilesInDir( std::string dir, std::vector< std::string > &files );
 
 }
 

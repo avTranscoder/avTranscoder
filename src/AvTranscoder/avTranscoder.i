@@ -12,6 +12,7 @@
 #include <AvTranscoder/common.hpp>
 
 #include <AvTranscoder/DatasStructures/Pixel.hpp>
+#include <AvTranscoder/DatasStructures/Frame.hpp>
 #include <AvTranscoder/DatasStructures/Image.hpp>
 #include <AvTranscoder/DatasStructures/AudioFrame.hpp>
 #include <AvTranscoder/DatasStructures/VideoDesc.hpp>
@@ -21,17 +22,19 @@
 #include <AvTranscoder/Metadatas/MediaMetadatasStructures.hpp>
 
 #include <AvTranscoder/OutputStream.hpp>
+#include <AvTranscoder/OutputStreamWriter.hpp>
 #include <AvTranscoder/AvOutputStream.hpp>
 #include <AvTranscoder/OutputStreamAudio.hpp>
 #include <AvTranscoder/OutputStreamVideo.hpp>
 
 #include <AvTranscoder/InputStream.hpp>
 #include <AvTranscoder/AvInputStream.hpp>
+#include <AvTranscoder/InputStreamReader.hpp>
 #include <AvTranscoder/InputStreamAudio.hpp>
 #include <AvTranscoder/InputStreamVideo.hpp>
 
-#include <AvTranscoder/InputFile.hpp>
-#include <AvTranscoder/OutputFile.hpp>
+#include <AvTranscoder/File/InputFile.hpp>
+#include <AvTranscoder/File/OutputFile.hpp>
 
 #include <AvTranscoder/Transcoder.hpp>
 
@@ -53,6 +56,7 @@ namespace std {
 %include <AvTranscoder/common.hpp>
 
 %include <AvTranscoder/DatasStructures/Pixel.hpp>
+%include <AvTranscoder/DatasStructures/Frame.hpp>
 %include <AvTranscoder/DatasStructures/Image.hpp>
 %include <AvTranscoder/DatasStructures/AudioFrame.hpp>
 %include <AvTranscoder/DatasStructures/VideoDesc.hpp>
@@ -62,16 +66,18 @@ namespace std {
 %include <AvTranscoder/Metadatas/MediaMetadatasStructures.hpp>
 
 %include <AvTranscoder/OutputStream.hpp>
+%include <AvTranscoder/OutputStreamWriter.hpp>
 %include <AvTranscoder/AvOutputStream.hpp>
 %include <AvTranscoder/OutputStreamAudio.hpp>
 %include <AvTranscoder/OutputStreamVideo.hpp>
 
 %include <AvTranscoder/InputStream.hpp>
 %include <AvTranscoder/AvInputStream.hpp>
+%include <AvTranscoder/InputStreamReader.hpp>
 %include <AvTranscoder/InputStreamAudio.hpp>
 %include <AvTranscoder/InputStreamVideo.hpp>
 
-%include <AvTranscoder/InputFile.hpp>
-%include <AvTranscoder/OutputFile.hpp>
+%include <AvTranscoder/File/InputFile.hpp>
+%include <AvTranscoder/File/OutputFile.hpp>
 
 %include <AvTranscoder/Transcoder.hpp>

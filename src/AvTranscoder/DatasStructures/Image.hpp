@@ -20,6 +20,7 @@ extern "C" {
 #include <stdexcept>
 
 #include "Pixel.hpp"
+#include "Frame.hpp"
 
 namespace avtranscoder
 {
@@ -74,27 +75,21 @@ private:
 
 //template< template<typename> Alloc >
 //class AvExport ImageBase
-class AvExport Image
+class AvExport Image : public Frame
 {
 public:
-//	typedef std::vector< unsigned char, Alloc<unsigned char> > DataBuffer;
-	typedef std::vector< unsigned char> DataBuffer;
-
 	Image( const ImageDesc& ref )
-		: m_dataBuffer( ref.getDataSize(), 0 )
-		, m_imageDesc( ref )
-	{ }
+		: m_imageDesc( ref )
+	{
+		m_dataBuffer = DataBuffer( ref.getDataSize(), 0 );
+	}
+
+	virtual ~Image()
+	{};
 
 	const ImageDesc&     desc() const    { return m_imageDesc; }
-	DataBuffer&          getBuffer()     { return m_dataBuffer; }
-	unsigned char*       getPtr()        { return &m_dataBuffer[0]; }
-#ifndef SWIG
-	const unsigned char* getPtr()  const { return &m_dataBuffer[0]; }
-#endif
-	size_t               getSize() const { return m_dataBuffer.size(); }
 
 private:
-	DataBuffer m_dataBuffer;
 	const ImageDesc m_imageDesc;
 };
 
