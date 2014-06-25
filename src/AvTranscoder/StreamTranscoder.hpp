@@ -12,6 +12,7 @@
 
 #include <AvTranscoder/File/OutputFile.hpp>
 
+#include <AvTranscoder/EssenceTransform/EssenceTransform.hpp>
 
 namespace avtranscoder
 {
@@ -31,9 +32,12 @@ public:
 private:
 	AvInputStream* _stream;
 
+	Frame*      _sourceBuffer;
 	Frame*      _frameBuffer;
 	Image*      _videoFrameBuffer;
 	AudioFrame* _audioFrameBuffer;
+
+	EssenceTransform* _transform;
 
 	InputStreamReader*  _inputStreamReader;
 	OutputStreamWriter* _outputStreamWriter;

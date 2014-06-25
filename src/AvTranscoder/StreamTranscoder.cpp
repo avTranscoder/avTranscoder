@@ -1,4 +1,7 @@
 
+#include <AvTranscoder/EssenceTransform/AudioTransform.hpp>
+#include <AvTranscoder/EssenceTransform/ColorTransform.hpp>
+
 #include "StreamTranscoder.hpp"
 
 namespace avtranscoder
@@ -6,7 +9,9 @@ namespace avtranscoder
 
 StreamTranscoder::StreamTranscoder( AvInputStream& stream, OutputFile& outputFile, const size_t& streamId )
 	: _stream( &stream )
+	, _sourceBuffer( NULL )
 	, _frameBuffer( NULL )
+	, _transform( NULL )
 	, _inputStreamReader( NULL )
 	, _outputStreamWriter( NULL )
 	, _outputFile( &outputFile )
@@ -17,6 +22,8 @@ StreamTranscoder::StreamTranscoder( AvInputStream& stream, OutputFile& outputFil
 
 StreamTranscoder::~StreamTranscoder()
 {
+	if( _sourceBuffer )
+		delete _sourceBuffer;
 	if( _frameBuffer )
 		delete _frameBuffer;
 	if( _inputStreamReader )
@@ -33,15 +40,19 @@ void StreamTranscoder::init( const std::string& profile )
 	{
 		case AVMEDIA_TYPE_VIDEO :
 		{
-			_inputStreamReader = new InputStreamVideo( *_stream );
-			_inputStreamReader->setup();
-
 			// re-wrap only, get output descriptor from input
 			if( profile.empty() )
 			{
 				_outputFile->addVideoStream( _stream->getVideoDesc() );
 				break;
 			}
+
+			_inputStreamReader = new InputStreamVideo( *_stream );
+			_inputStreamReader->setup();
+
+			_sourceBuffer = new Image( _stream->getVideoDesc().getImageDesc() );
+
+			_transform = new ColorTransform();
 
 			OutputStreamVideo* outputStreamVideo = new OutputStreamVideo();
 			_outputStreamWriter = outputStreamVideo;
@@ -55,16 +66,20 @@ void StreamTranscoder::init( const std::string& profile )
 		}
 		case AVMEDIA_TYPE_AUDIO :
 		{
-			_inputStreamReader = new InputStreamAudio( *_stream );
-			_inputStreamReader->setup();
-
 			// re-wrap only, get output descriptor from input
 			if( profile.empty() )
 			{
 				_outputFile->addAudioStream( _stream->getAudioDesc() );
 				break;
 			}
-			
+
+			_inputStreamReader = new InputStreamAudio( *_stream );
+			_inputStreamReader->setup();
+
+			_sourceBuffer = new AudioFrame( _stream->getAudioDesc().getFrameDesc() );
+
+			_transform = new AudioTransform();
+
 			OutputStreamAudio* outputStreamAudio = new OutputStreamAudio();
 			_outputStreamWriter = outputStreamAudio;
 
@@ -92,9 +107,9 @@ bool StreamTranscoder::processFrame()
 	}
 
 	// std::cout << "encode & wrap" << _streamIndex << std::endl;
-
-	if( _inputStreamReader->readNextFrame( *_frameBuffer ) )
+	if( _inputStreamReader->readNextFrame( *_sourceBuffer ) )
 	{
+		_transform->convert( *_sourceBuffer, *_frameBuffer );
 		_outputStreamWriter->encodeFrame( *_frameBuffer, dataStream );
 	}
 	else if( ! _outputStreamWriter->encodeFrame( dataStream ) )
