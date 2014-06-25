@@ -1,5 +1,5 @@
 #include "ColorTransform.hpp"
-#include "common.hpp"
+#include <AvTranscoder/common.hpp>
 
 extern "C" {
 #ifndef __STDC_CONSTANT_MACROS

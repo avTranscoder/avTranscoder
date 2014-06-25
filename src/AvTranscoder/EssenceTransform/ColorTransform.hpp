@@ -1,8 +1,8 @@
 #ifndef _AV_TRANSCODER_COLOR_TRANSFORM_HPP_
 #define _AV_TRANSCODER_COLOR_TRANSFORM_HPP_
 
-#include "DatasStructures/Pixel.hpp"
-#include "DatasStructures/Image.hpp"
+#include <AvTranscoder/DatasStructures/Pixel.hpp>
+#include <AvTranscoder/DatasStructures/Image.hpp>
 
 #include <vector>
 #include <string>

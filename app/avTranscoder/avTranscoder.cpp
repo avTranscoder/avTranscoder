@@ -12,7 +12,7 @@
 #include <AvTranscoder/File/InputFile.hpp>
 #include <AvTranscoder/File/OutputFile.hpp>
 
-#include <AvTranscoder/ColorTransform.hpp>
+#include <AvTranscoder/EssenceTransform/ColorTransform.hpp>
 
 #include <AvTranscoder/DatasStructures/VideoDesc.hpp>
 #include <AvTranscoder/DatasStructures/Image.hpp>

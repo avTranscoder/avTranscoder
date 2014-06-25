@@ -17,6 +17,7 @@ sAvTranscoder = env.StaticLibrary(
     'sAvTranscoder',
     Glob( 'AvTranscoder/*.cpp' ) +
     Glob( 'AvTranscoder/DatasStructures/*.cpp' ) +
+    Glob( 'AvTranscoder/EssenceTransform/*.cpp' ) +
     Glob( 'AvTranscoder/File/*.cpp' ),
     LIBS = [
         'avutil',

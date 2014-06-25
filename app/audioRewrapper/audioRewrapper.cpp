@@ -8,7 +8,7 @@
 #include <AvTranscoder/InputStreamAudio.hpp>
 #include <AvTranscoder/OutputStreamAudio.hpp>
 
-#include <AvTranscoder/AudioTransform.hpp>
+#include <AvTranscoder/EssenceTransform/AudioTransform.hpp>
 
 void rewrapAudio( const char* inputfilename, const char* outputFilename )
 {

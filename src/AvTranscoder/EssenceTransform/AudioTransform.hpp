@@ -1,7 +1,7 @@
 #ifndef _AV_TRANSCODER_AUDIO_TRANSFORM_HPP
 #define _AV_TRANSCODER_AUDIO_TRANSFORM_HPP
 
-#include "common.hpp"
+#include <AvTranscoder/common.hpp>
 
 #ifdef AV_RESAMPLE_LIBRARY
  #define ResampleContext AVAudioResampleContext

@@ -7,7 +7,7 @@
 #include <AvTranscoder/InputStreamVideo.hpp>
 #include <AvTranscoder/File/InputFile.hpp>
 
-#include <AvTranscoder/ColorTransform.hpp>
+#include <AvTranscoder/EssenceTransform/ColorTransform.hpp>
 
 #include <AvTranscoder/Metadatas/Print.hpp>
 

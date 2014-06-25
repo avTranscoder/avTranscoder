@@ -1,6 +1,5 @@
 #include "AudioTransform.hpp"
-#include "DatasStructures/AudioFrame.hpp"
-#include "common.hpp"
+#include <AvTranscoder/DatasStructures/AudioFrame.hpp>
 
 extern "C" {
 #ifndef __STDC_CONSTANT_MACROS
