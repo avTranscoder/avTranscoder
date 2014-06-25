@@ -1,5 +1,5 @@
-#ifndef _AV_TRANSCODER_COLOR_TRANSFORM_HPP_
-#define _AV_TRANSCODER_COLOR_TRANSFORM_HPP_
+#ifndef _AV_TRANSCODER_ESSENCE_TRANSFORM_COLOR_TRANSFORM_HPP_
+#define _AV_TRANSCODER_ESSENCE_TRANSFORM_COLOR_TRANSFORM_HPP_
 
 #include <AvTranscoder/DatasStructures/Pixel.hpp>
 #include <AvTranscoder/DatasStructures/Image.hpp>
