@@ -4,6 +4,8 @@
 #include <AvTranscoder/DatasStructures/Pixel.hpp>
 #include <AvTranscoder/DatasStructures/Image.hpp>
 
+#include "EssenceTransform.hpp"
+
 #include <vector>
 #include <string>
 
@@ -12,15 +14,15 @@ class SwsContext;
 namespace avtranscoder
 {
 
-class AvExport ColorTransform
+class AvExport ColorTransform : public EssenceTransform
 {
 public:
 	ColorTransform();
 
-	void convert( const Image& src, Image& dst );
+	void convert( const Frame& src, Frame& dst );
 
 private:
-	bool init( const Image& src, const Image& dst );
+	bool init( const Frame& src, const Frame& dst );
 
 	SwsContext* _imageConvertContext;
 

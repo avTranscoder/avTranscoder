@@ -1,4 +1,5 @@
 #include "AudioTransform.hpp"
+
 #include <AvTranscoder/DatasStructures/AudioFrame.hpp>
 
 extern "C" {
@@ -33,13 +34,17 @@ namespace avtranscoder
 {
 
 AudioTransform::AudioTransform()
-	: _audioConvertContext( NULL )
+	: EssenceTransform()
+	, _audioConvertContext( NULL )
 	, _isInit    ( false )
 {
 }
 
-bool AudioTransform::init( const AudioFrame& src, const AudioFrame& dst )
+bool AudioTransform::init( const Frame& src, const Frame& dst )
 {
+	const AudioFrame& srcAudioFrame = static_cast<const AudioFrame&>( src );
+	const AudioFrame& dstAudioFrame = static_cast<const AudioFrame&>( dst );
+
 	_audioConvertContext = AllocResampleContext();
 
 	if( !_audioConvertContext )
@@ -47,12 +52,12 @@ bool AudioTransform::init( const AudioFrame& src, const AudioFrame& dst )
 		throw std::runtime_error( "unable to create audio convert context" );
 	}
 	
-	av_opt_set_int(  _audioConvertContext, "in_channel_layout",  av_get_default_channel_layout( src.desc().getChannels() ), 0 );
-	av_opt_set_int(  _audioConvertContext, "out_channel_layout", av_get_default_channel_layout( dst.desc().getChannels() ), 0 );
-	av_opt_set_int(  _audioConvertContext, "in_sample_rate",     src.desc().getSampleRate(), 0 );
-	av_opt_set_int(  _audioConvertContext, "out_sample_rate",    dst.desc().getSampleRate(), 0 );
-	SetSampleFormat( _audioConvertContext, "in_sample_fmt",      src.desc().getSampleFormat(), 0 );
-	SetSampleFormat( _audioConvertContext, "out_sample_fmt",     dst.desc().getSampleFormat(), 0 );
+	av_opt_set_int(  _audioConvertContext, "in_channel_layout",  av_get_default_channel_layout( srcAudioFrame.desc().getChannels() ), 0 );
+	av_opt_set_int(  _audioConvertContext, "out_channel_layout", av_get_default_channel_layout( dstAudioFrame.desc().getChannels() ), 0 );
+	av_opt_set_int(  _audioConvertContext, "in_sample_rate",     srcAudioFrame.desc().getSampleRate(), 0 );
+	av_opt_set_int(  _audioConvertContext, "out_sample_rate",    dstAudioFrame.desc().getSampleRate(), 0 );
+	SetSampleFormat( _audioConvertContext, "in_sample_fmt",      srcAudioFrame.desc().getSampleFormat(), 0 );
+	SetSampleFormat( _audioConvertContext, "out_sample_fmt",     dstAudioFrame.desc().getSampleFormat(), 0 );
 	
 	if( InitResampleContext( _audioConvertContext ) < 0 )
 	{
@@ -63,27 +68,30 @@ bool AudioTransform::init( const AudioFrame& src, const AudioFrame& dst )
 	return true;
 }
 
-void AudioTransform::convert( const AudioFrame& src, AudioFrame& dst )
+void AudioTransform::convert( const Frame& src, Frame& dst )
 {
 	if( ! _isInit )
 	{
 		_isInit = init( src, dst );
 		_isInit = true;
 	}
-		
-	if( dst.getSize() != src.getSize() )
-		dst.getBuffer().resize( src.getSize(), 0 );
 
-	const unsigned char* srcData = src.getPtr();
-	unsigned char* dstData = dst.getPtr();
+	const AudioFrame& srcAudioFrame = static_cast<const AudioFrame&>( src );
+	AudioFrame& dstAudioFrame = static_cast<AudioFrame&>( dst );
+		
+	if( dstAudioFrame.getSize() != srcAudioFrame.getSize() )
+		dstAudioFrame.getBuffer().resize( srcAudioFrame.getSize(), 0 );
+
+	const unsigned char* srcData = srcAudioFrame.getPtr();
+	unsigned char* dstData = dstAudioFrame.getPtr();
 	
 #ifdef AV_RESAMPLE_LIBRARY
-	avresample_convert( _audioConvertContext, (uint8_t**)&dstData, 0, dst.getSize(), (uint8_t**)&srcData, 0, src.getSize() );
+	avresample_convert( _audioConvertContext, (uint8_t**)&dstData, 0, dstAudioFrame.getSize(), (uint8_t**)&srcData, 0, srcAudioFrame.getSize() );
 #else
-	swr_convert( _audioConvertContext, &dstData, dst.getSize(), &srcData, src.getSize() );
+	swr_convert( _audioConvertContext, &dstData, dstAudioFrame.getSize(), &srcData, srcAudioFrame.getSize() );
 #endif
 
-	dst.setNbSamples( src.getNbSamples() );
+	dstAudioFrame.setNbSamples( srcAudioFrame.getNbSamples() );
 }
 
 }

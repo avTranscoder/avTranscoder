@@ -23,7 +23,8 @@ namespace avtranscoder
 {
 
 ColorTransform::ColorTransform()
-	: _imageConvertContext( NULL )
+	: EssenceTransform()
+	, _imageConvertContext( NULL )
 	, _srcData     ( (uint8_t)MAX_SWS_PLANE, NULL )
 	, _dstData     ( (uint8_t)MAX_SWS_PLANE, NULL )
 	, _srcLineSize ( MAX_SWS_PLANE, 0 )
@@ -34,16 +35,19 @@ ColorTransform::ColorTransform()
 {
 }
 
-bool ColorTransform::init( const Image& src, const Image& dst )
+bool ColorTransform::init( const Frame& src, const Frame& dst )
 {
-	assert( src.desc().getWidth()  != 0 );
-	assert( src.desc().getHeight() != 0 );
-	assert( src.desc().getWidth()  == dst.desc().getWidth()  );
-	assert( src.desc().getHeight() == dst.desc().getHeight() );
+	const Image& srcImage = static_cast<const Image&>( src );
+	const Image& dstImage = static_cast<const Image&>( dst );
+
+	assert( srcImage.desc().getWidth()  != 0 );
+	assert( srcImage.desc().getHeight() != 0 );
+	assert( srcImage.desc().getWidth()  == dstImage.desc().getWidth()  );
+	assert( srcImage.desc().getHeight() == dstImage.desc().getHeight() );
 
 	_imageConvertContext = sws_getContext(
-		src.desc().getWidth(), src.desc().getHeight(), src.desc().getPixelDesc().findPixel(),
-		dst.desc().getWidth(), dst.desc().getHeight(), dst.desc().getPixelDesc().findPixel(),
+		srcImage.desc().getWidth(), srcImage.desc().getHeight(), srcImage.desc().getPixelDesc().findPixel(),
+		dstImage.desc().getWidth(), dstImage.desc().getHeight(), dstImage.desc().getPixelDesc().findPixel(),
 		SWS_POINT, NULL, NULL, NULL);
 
 	if( ! _imageConvertContext )
@@ -51,8 +55,8 @@ bool ColorTransform::init( const Image& src, const Image& dst )
 		throw std::runtime_error( "unable to create color convert context" );
 	}
 
-	av_image_fill_linesizes( &_srcLineSize[0], src.desc().getPixelDesc().findPixel(), src.desc().getWidth() );
-	av_image_fill_linesizes( &_dstLineSize[0], dst.desc().getPixelDesc().findPixel(), dst.desc().getWidth() );
+	av_image_fill_linesizes( &_srcLineSize[0], srcImage.desc().getPixelDesc().findPixel(), srcImage.desc().getWidth() );
+	av_image_fill_linesizes( &_dstLineSize[0], dstImage.desc().getPixelDesc().findPixel(), dstImage.desc().getWidth() );
 
 	size_t cumulSrcOffset = 0;
 	size_t cumulDstOffset = 0;
@@ -69,29 +73,32 @@ bool ColorTransform::init( const Image& src, const Image& dst )
 		_srcOffsets.at( plane ) = cumulSrcOffset;
 		_dstOffsets.at( plane ) = cumulDstOffset;
 
-		cumulSrcOffset += _srcLineSize.at( plane ) * src.desc().getHeight();
-		cumulDstOffset += _dstLineSize.at( plane ) * dst.desc().getHeight();
+		cumulSrcOffset += _srcLineSize.at( plane ) * srcImage.desc().getHeight();
+		cumulDstOffset += _dstLineSize.at( plane ) * dstImage.desc().getHeight();
 	}
 
 	return true;
 }
 
-void ColorTransform::convert( const Image& src, Image& dst )
+void ColorTransform::convert( const Frame& src, Frame& dst )
 {
-	assert( src.desc().getWidth()  != 0 );
-	assert( src.desc().getHeight() != 0 );
-	assert( src.desc().getWidth()  == dst.desc().getWidth()  );
-	assert( src.desc().getHeight() == dst.desc().getHeight() );
-	assert( src.desc().getPixelDesc().getComponents() != 0 );
-	assert( src.desc().getPixelDesc().getComponents() == dst.desc().getPixelDesc().getComponents() );
+	const Image& srcImage = static_cast<const Image&>( src );
+	Image& dstImage = static_cast<Image&>( dst );
+
+	assert( srcImage.desc().getWidth()  != 0 );
+	assert( srcImage.desc().getHeight() != 0 );
+	assert( srcImage.desc().getWidth()  == dstImage.desc().getWidth()  );
+	assert( srcImage.desc().getHeight() == dstImage.desc().getHeight() );
+	assert( srcImage.desc().getPixelDesc().getComponents() != 0 );
+	assert( srcImage.desc().getPixelDesc().getComponents() == dstImage.desc().getPixelDesc().getComponents() );
 
 	if( ! _isInit )
-		_isInit = init( src, dst );
+		_isInit = init( srcImage, dstImage );
 
 	for( size_t plane = 0; plane < MAX_SWS_PLANE; ++plane )
 	{
-		_srcData.at( plane ) = (uint8_t*)const_cast< unsigned char* >( src.getPtr() + _srcOffsets.at( plane ) );
-		_dstData.at( plane ) = (uint8_t*)dst.getPtr() + _dstOffsets.at( plane );
+		_srcData.at( plane ) = (uint8_t*)const_cast< unsigned char* >( srcImage.getPtr() + _srcOffsets.at( plane ) );
+		_dstData.at( plane ) = (uint8_t*)dstImage.getPtr() + _dstOffsets.at( plane );
 	}
 	
 	if( !_imageConvertContext )
@@ -100,10 +107,10 @@ void ColorTransform::convert( const Image& src, Image& dst )
 	}
 
 	int ret = sws_scale( _imageConvertContext,
-		&_srcData[0], &_srcLineSize[0], 0, src.desc().getHeight(),
+		&_srcData[0], &_srcLineSize[0], 0, srcImage.desc().getHeight(),
 		&_dstData[0], &_dstLineSize[0] );
 
-	if( ret != (int) src.desc().getHeight() )
+	if( ret != (int) srcImage.desc().getHeight() )
 		throw std::runtime_error( "error in color converter" );
 }
 
