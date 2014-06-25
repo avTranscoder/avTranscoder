@@ -42,10 +42,6 @@ InputStreamAudio::InputStreamAudio( AvInputStream& inputStream )
 	
 	m_codecContext->channels = m_inputStream->getAudioDesc().getChannels();
 
-	std::cout << "Audio codec Id : " << m_codecContext->codec_id << std::endl;
-	std::cout << "Audio codec Id : " << m_codec->name << std::endl;
-	std::cout << "Audio codec Id : " << m_codec->long_name << std::endl;
-
 	m_codecContext->channels = m_inputStream->getAudioDesc().getCodecContext()->channels;
 	
 	int ret = avcodec_open2( m_codecContext, m_codec, NULL );
