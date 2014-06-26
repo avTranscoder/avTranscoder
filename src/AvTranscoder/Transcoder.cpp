@@ -1,3 +1,5 @@
+#include "Transcoder.hpp"
+
 #include <AvTranscoder/AvInputStream.hpp>
 
 namespace avtranscoder

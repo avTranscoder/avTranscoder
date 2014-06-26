@@ -57,6 +57,4 @@ private:
 
 }
 
-#include "Transcoder.tcc"
-
 #endif
