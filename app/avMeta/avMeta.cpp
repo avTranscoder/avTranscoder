@@ -14,7 +14,7 @@ int main( int argc, char** argv )
 	avtranscoder::ProgressListener p;
 
 	avtranscoder::InputFile input( argv[1] );
-	input.analyse( p );
+	input.analyse( p, avtranscoder::InputFile::eAnalyseLevelFull );
 
 	// a simply metadata display
 	displayMetadatas( input );

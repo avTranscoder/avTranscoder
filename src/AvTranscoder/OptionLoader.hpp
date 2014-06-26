@@ -11,39 +11,83 @@ extern "C" {
 	#include <libavformat/avformat.h>
 }
 
+#include <string>
 #include <vector>
+#include <map>
+#include <utility> //pair
 
 namespace avtranscoder
 {
 
 /**
- * @brief Manage a list of Option.
- * The list is filled by loading options from a libav / ffmpeg object.
+ * @brief Manage Options.
+ * Get a list of options by calling a load****Options(), depending on which FFMpeg / LibAV object you want to analyse.
  */
 class OptionLoader 
 {
 public:
+	typedef std::vector<Option> OptionArray;
+	typedef std::map< std::string, std::vector<Option> > OptionMap;
+	
+public:
 	OptionLoader();
 	~OptionLoader();
 	
-	std::vector<Option>& getOptions() { return _options; }
-	
 	const AVFormatContext* getFormatContext() const { return _avFormatContext; }
 	const AVCodecContext* getCodecContext() const { return _avCodecContext; }
+	const AVOutputFormat* getOutputFormat() const { return _outputFormat; }
+	const AVCodec* getCodec() const { return _codec; }
+		
+	/**
+	 * @param req_flags: AVOption flags (default = 0: no flag restriction)
+	 */
+	OptionArray loadFormatContextOptions( int req_flags = 0 );
 	
 	/**
-	 * @brief: load array of Option depending on the flags.
-     * @param req_flags
-     * @param rej_flags
-     */
-	void loadOptions( int req_flags, int rej_flags );
+	 * @param req_flags: AVOption flags (default = 0: no flag restriction)
+	 */
+	OptionArray loadCodecContextOptions( int req_flags = 0 );
+	
+	OptionMap loadOutputFormatOptions();
+	OptionMap loadVideoCodecOptions();
+	OptionMap loadAudioCodecOptions();
+	
+	std::vector<std::string>& getFormatsLongNames() { return _formatsLongNames; }
+	std::vector<std::string>& getFormatsShortNames() { return _formatsShortNames; }
+	
+	std::vector<std::string>& getVideoCodecsLongNames() { return _videoCodecsLongNames; }
+	std::vector<std::string>& getVideoCodecsShortNames() { return _videoCodecsShortNames; }
+	
+	std::vector<std::string>& getAudioCodecsLongNames() { return _audioCodecsLongNames; }
+	std::vector<std::string>& getAudioCodecsShortNames() { return _audioCodecsShortNames; }
+	
+	/**
+	 *  Get array of pixel format supported by video codec.
+	 *  @param videoCodecName: the video codec name (empty if not indicated, and so get all pixel formats supported by all video codecs).
+	 */
+	std::vector<std::string> getPixelFormats( const std::string& videoCodecName = "" ) const;
 	
 private:
-	std::vector<Option> _options;
+	/**
+	 * @brief: load array of Option depending on the flags.
+	 * @param req_flags: AVOption flags we want to load.
+	 */
+	OptionArray loadOptions( void* av_class, int req_flags = 0 );
 	
 	AVFormatContext* _avFormatContext;
-	AVCodecContext*  _avCodecContext;
+	AVCodecContext* _avCodecContext;
+	
+	AVOutputFormat* _outputFormat;
+	AVCodec* _codec;
+		
+	std::vector<std::string> _formatsLongNames;
+	std::vector<std::string> _formatsShortNames;
+	
+	std::vector<std::string> _videoCodecsLongNames;
+	std::vector<std::string> _videoCodecsShortNames;
 
+	std::vector<std::string> _audioCodecsLongNames;
+	std::vector<std::string> _audioCodecsShortNames;
 };
 
 }
