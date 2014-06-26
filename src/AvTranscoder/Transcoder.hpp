@@ -40,6 +40,7 @@ public:
 	void add( const InputStreamsDesc& streamDefs );
 
 	void process( ProgressListener& progress );
+	void processFrame( size_t nbFrame = 1 );
 
 private:
 	bool getStreamsNextPacket( std::vector< DataStream >& dataStreams );

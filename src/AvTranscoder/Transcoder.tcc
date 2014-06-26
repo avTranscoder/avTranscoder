@@ -1,4 +1,3 @@
-
 #include <AvTranscoder/AvInputStream.hpp>
 
 namespace avtranscoder
@@ -158,6 +157,18 @@ void Transcoder::process( ProgressListener& progress )
 	}
 
 	_outputFile.endWrap();
+}
+
+void Transcoder::processFrame( size_t nbFrame )
+{
+	while( nbFrame )
+	{
+		for( size_t i = 0; i < _streamTranscoders.size(); ++i )
+		{
+			_streamTranscoders.at( i )->processFrame();
+		}
+		--nbFrame;
+	}
 }
 
 bool Transcoder::getStreamsNextPacket( std::vector< DataStream >& dataStreams )
