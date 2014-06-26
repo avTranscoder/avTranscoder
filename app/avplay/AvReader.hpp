@@ -7,7 +7,7 @@
 #include <AvTranscoder/InputStreamVideo.hpp>
 #include <AvTranscoder/File/InputFile.hpp>
 
-#include <AvTranscoder/ColorTransform.hpp>
+#include <AvTranscoder/EssenceTransform/VideoEssenceTransform.hpp>
 
 #include <AvTranscoder/Metadatas/Print.hpp>
 
@@ -80,7 +80,7 @@ public:
 	{
 		++currentFrame;
 		m_inputStreamVideo->readNextFrame( *m_sourceImage );
-		m_colorTransform.convert( *m_sourceImage, *m_imageToDisplay );
+		m_videoEssenceTransform.convert( *m_sourceImage, *m_imageToDisplay );
 		return (const char*)m_imageToDisplay->getPtr();
 	}
 
@@ -114,7 +114,7 @@ private:
 	avtranscoder::Pixel pixel;
 	avtranscoder::ImageDesc imageDescToDisplay;
 
-	avtranscoder::ColorTransform m_colorTransform;
+	avtranscoder::VideoEssenceTransform m_videoEssenceTransform;
 	size_t m_videoStream;
 };
 

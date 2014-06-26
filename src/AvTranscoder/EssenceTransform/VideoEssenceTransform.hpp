@@ -1,8 +1,8 @@
-#ifndef _AV_TRANSCODER_COLOR_TRANSFORM_HPP_
-#define _AV_TRANSCODER_COLOR_TRANSFORM_HPP_
+#ifndef _AV_TRANSCODER_ESSENCE_TRANSFORM_VIDEO_ESSENCE_TRANSFORM_HPP
+#define _AV_TRANSCODER_ESSENCE_TRANSFORM_VIDEO_ESSENCE_TRANSFORM_HPP
 
-#include "DatasStructures/Pixel.hpp"
-#include "DatasStructures/Image.hpp"
+#include <AvTranscoder/DatasStructures/Pixel.hpp>
+#include <AvTranscoder/DatasStructures/Image.hpp>
 
 #include <vector>
 #include <string>
@@ -12,10 +12,10 @@ class SwsContext;
 namespace avtranscoder
 {
 
-class AvExport ColorTransform
+class AvExport VideoEssenceTransform
 {
 public:
-	ColorTransform();
+	VideoEssenceTransform();
 
 	void convert( const Image& src, Image& dst );
 

@@ -8,7 +8,7 @@
 #include <AvTranscoder/InputStreamAudio.hpp>
 #include <AvTranscoder/OutputStreamAudio.hpp>
 
-#include <AvTranscoder/AudioTransform.hpp>
+#include <AvTranscoder/EssenceTransform/AudioEssenceTransform.hpp>
 
 void rewrapAudio( const char* inputfilename, const char* outputFilename )
 {
@@ -92,7 +92,7 @@ void transcodeAudio( const char* inputfilename, const char* outputFilename )
 	outputFile.beginWrap();
 	
 	// init convert
-	AudioTransform audioTransform;
+	AudioEssenceTransform audioEssenceTransform;
 	
 	DataStream codedFrame;
 
@@ -107,7 +107,7 @@ void transcodeAudio( const char* inputfilename, const char* outputFilename )
 	{
 		std::cout << "\rprocess frame " << (int)frame - 1 << std::flush;
 
-		audioTransform.convert( audioFrameSource, audioFrameToEncode );
+		audioEssenceTransform.convert( audioFrameSource, audioFrameToEncode );
 		
 		outputStreamAudio.encodeFrame( audioFrameToEncode, codedFrame );
 				

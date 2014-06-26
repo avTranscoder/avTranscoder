@@ -1,6 +1,6 @@
-#include "AudioTransform.hpp"
-#include "DatasStructures/AudioFrame.hpp"
-#include "common.hpp"
+#include "AudioEssenceTransform.hpp"
+#include <AvTranscoder/DatasStructures/AudioFrame.hpp>
+#include <AvTranscoder/common.hpp>
 
 extern "C" {
 #ifndef __STDC_CONSTANT_MACROS
@@ -33,13 +33,13 @@ extern "C" {
 namespace avtranscoder
 {
 
-AudioTransform::AudioTransform()
+AudioEssenceTransform::AudioEssenceTransform()
 	: _audioConvertContext( NULL )
 	, _isInit    ( false )
 {
 }
 
-bool AudioTransform::init( const AudioFrame& src, const AudioFrame& dst )
+bool AudioEssenceTransform::init( const AudioFrame& src, const AudioFrame& dst )
 {
 	_audioConvertContext = AllocResampleContext();
 
@@ -64,7 +64,7 @@ bool AudioTransform::init( const AudioFrame& src, const AudioFrame& dst )
 	return true;
 }
 
-void AudioTransform::convert( const AudioFrame& src, AudioFrame& dst )
+void AudioEssenceTransform::convert( const AudioFrame& src, AudioFrame& dst )
 {
 	if( ! _isInit )
 	{
