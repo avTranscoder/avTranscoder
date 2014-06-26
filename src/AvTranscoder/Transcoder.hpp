@@ -8,8 +8,6 @@
 #include <AvTranscoder/DummyInputStream.hpp>
 #include <AvTranscoder/StreamTranscoder.hpp>
 
-#include <AvTranscoder/StreamTranscoder.hpp>
-
 #include <string>
 #include <vector>
 

@@ -19,7 +19,7 @@ namespace avtranscoder
 class StreamTranscoder
 {
 public:
-	StreamTranscoder( AvInputStream& stream, OutputFile& outputFile, const size_t& streamId );
+	StreamTranscoder( InputStream& stream, OutputFile& outputFile, const size_t& streamId );
 	~StreamTranscoder();
 
 	void init( const std::string& profile );
@@ -29,7 +29,7 @@ public:
 	bool isTranscodeStream() const { return _transcodeStream; }
 
 private:
-	AvInputStream* _stream;
+	InputStream* _stream;
 
 	Frame*      _frameBuffer;
 	Image*      _videoFrameBuffer;

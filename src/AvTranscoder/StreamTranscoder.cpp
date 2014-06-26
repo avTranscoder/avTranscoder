@@ -1,10 +1,9 @@
-
 #include "StreamTranscoder.hpp"
 
 namespace avtranscoder
 {
 
-StreamTranscoder::StreamTranscoder( AvInputStream& stream, OutputFile& outputFile, const size_t& streamId )
+StreamTranscoder::StreamTranscoder( InputStream& stream, OutputFile& outputFile, const size_t& streamId )
 	: _stream( &stream )
 	, _frameBuffer( NULL )
 	, _inputStreamReader( NULL )
@@ -33,7 +32,7 @@ void StreamTranscoder::init( const std::string& profile )
 	{
 		case AVMEDIA_TYPE_VIDEO :
 		{
-			_inputStreamReader = new InputStreamVideo( *_stream );
+			_inputStreamReader = new InputStreamVideo( *dynamic_cast<AvInputStream*>( _stream ) );
 			_inputStreamReader->setup();
 
 			// re-wrap only, get output descriptor from input
@@ -55,7 +54,7 @@ void StreamTranscoder::init( const std::string& profile )
 		}
 		case AVMEDIA_TYPE_AUDIO :
 		{
-			_inputStreamReader = new InputStreamAudio( *_stream );
+			_inputStreamReader = new InputStreamAudio( *dynamic_cast<AvInputStream*>( _stream ) );
 			_inputStreamReader->setup();
 
 			// re-wrap only, get output descriptor from input
@@ -70,6 +69,7 @@ void StreamTranscoder::init( const std::string& profile )
 
 			_outputStreamWriter->setProfile( profile );
 			_outputFile->addAudioStream( outputStreamAudio->getAudioDesc() );
+
 			_audioFrameBuffer = new AudioFrame( outputStreamAudio->getAudioDesc().getFrameDesc() );
 			_frameBuffer = _audioFrameBuffer;
 			
@@ -83,6 +83,7 @@ void StreamTranscoder::init( const std::string& profile )
 bool StreamTranscoder::processFrame()
 {
 	DataStream dataStream;
+	
 	if( ! _transcodeStream )
 	{
 		if( ! _stream->readNextPacket( dataStream ) )
@@ -90,9 +91,7 @@ bool StreamTranscoder::processFrame()
 		_outputFile->wrap( dataStream, _streamIndex );
 		return true;
 	}
-
-	// std::cout << "encode & wrap" << _streamIndex << std::endl;
-
+	
 	if( _inputStreamReader->readNextFrame( *_frameBuffer ) )
 	{
 		_outputStreamWriter->encodeFrame( *_frameBuffer, dataStream );
