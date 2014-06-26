@@ -176,14 +176,8 @@ bool OutputStreamVideo::encodeFrame( DataStream& codedFrame )
 #endif
 }
 
-void OutputStreamVideo::setProfile( const std::string& profile )
+void OutputStreamVideo::setProfile( Profile::ProfileDesc& prof )
 {
-	Profile p;
-
-	p.loadProfiles();
-
-	Profile::ProfileDesc prof = p.getProfile( profile );
-
 	_videoDesc.setVideoCodec( prof[ "codec" ] );
 	_videoDesc.setTimeBase( 1, 25 ); // 25 fps
 	_videoDesc.setImageParameters( 1920, 1080, av_get_pix_fmt( prof[ "pix_fmt" ].c_str() ) );
@@ -243,6 +237,15 @@ void OutputStreamVideo::setProfile( const std::string& profile )
 			std::cout << "2.warning: " << e.what() << std::endl;
 		}
 	}
+}
+
+void OutputStreamVideo::setProfile( const std::string& profile )
+{
+	Profile p;
+
+	p.loadProfiles();
+
+	setProfile( p.getProfile( profile ) );
 }
 
 }
