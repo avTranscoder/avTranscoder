@@ -13,6 +13,8 @@ extern "C" {
 #include "DatasStructures/VideoDesc.hpp"
 #include "DatasStructures/DataStreamDesc.hpp"
 
+#include "Profile.hpp"
+
 #include <string>
 #include <vector>
 
@@ -43,6 +45,7 @@ public:
 
 	VideoDesc& getVideoDesc() { return _videoDesc; }
 
+	void setProfile( Profile::ProfileDesc& prof );
 	void setProfile( const std::string& profile );
 
 private:

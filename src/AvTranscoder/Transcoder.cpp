@@ -1,3 +1,4 @@
+#include "Transcoder.hpp"
 
 #include <AvTranscoder/AvInputStream.hpp>
 
@@ -32,20 +33,27 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 {
 	if( ! filename.length() )
 	{
+		try
+		{
+			// be sure the first inputStream is an AvInputStream created from an audio file
+			dynamic_cast<AvInputStream*>( _inputStreams.at( 0 ) );
+		}
+		catch( std::exception& e)
+		{
+			std::cout << "Warning: dummy can't be the first audio channel" << std::endl;
+			return;
+		}
+		
 		_dummyInputStreams.push_back( new DummyInputStream() );
 		
 		_inputStreams.push_back( _dummyInputStreams.back() );
 		
-		if( _inputStreams.at( 1 ) )
-		{
-			_dummyInputStreams.back()->setAudioDesc( _inputStreams.at( 1 )->getAudioDesc() );
-			_outputFile.addAudioStream( _inputStreams.back()->getAudioDesc() );
-		}
-		else
-			std::cout << "dummy can't be the first audio channel" << std::endl;
+		_dummyInputStreams.back()->setAudioDesc( _inputStreams.at( 0 )->getAudioDesc() );
+		_outputFile.addAudioStream( _inputStreams.back()->getAudioDesc() );
 		
-		_streamTranscoders.push_back( NULL );
-
+		StreamTranscoder* streamTranscoder = new StreamTranscoder( *_dummyInputStreams.back(), _outputFile, _streamTranscoders.size() );
+		_streamTranscoders.push_back( streamTranscoder );
+		
 		return;
 	}
 
@@ -153,6 +161,18 @@ void Transcoder::process( ProgressListener& progress )
 	}
 
 	_outputFile.endWrap();
+}
+
+void Transcoder::processFrame( size_t nbFrame )
+{
+	while( nbFrame )
+	{
+		for( size_t i = 0; i < _streamTranscoders.size(); ++i )
+		{
+			_streamTranscoders.at( i )->processFrame();
+		}
+		--nbFrame;
+	}
 }
 
 bool Transcoder::getStreamsNextPacket( std::vector< DataStream >& dataStreams )

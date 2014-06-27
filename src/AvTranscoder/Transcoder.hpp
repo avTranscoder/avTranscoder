@@ -8,8 +8,6 @@
 #include <AvTranscoder/DummyInputStream.hpp>
 #include <AvTranscoder/StreamTranscoder.hpp>
 
-#include <AvTranscoder/StreamTranscoder.hpp>
-
 #include <string>
 #include <vector>
 
@@ -42,6 +40,7 @@ public:
 	void add( const InputStreamsDesc& streamDefs );
 
 	void process( ProgressListener& progress );
+	void processFrame( size_t nbFrame = 1 );
 
 private:
 	bool getStreamsNextPacket( std::vector< DataStream >& dataStreams );
@@ -57,7 +56,5 @@ private:
 };
 
 }
-
-#include "Transcoder.tcc"
 
 #endif
