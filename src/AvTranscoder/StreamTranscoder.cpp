@@ -1,10 +1,12 @@
 
 #include "StreamTranscoder.hpp"
 
+#include <AvTranscoder/AvInputStream.hpp>
+
 namespace avtranscoder
 {
 
-StreamTranscoder::StreamTranscoder( AvInputStream& stream, OutputFile& outputFile, const size_t& streamId )
+StreamTranscoder::StreamTranscoder( InputStream& stream, OutputFile& outputFile, const size_t& streamId )
 	: _stream( &stream )
 	, _frameBuffer( NULL )
 	, _inputEssence( NULL )
@@ -33,7 +35,7 @@ void StreamTranscoder::init( const std::string& profile )
 	{
 		case AVMEDIA_TYPE_VIDEO :
 		{
-			_inputEssence = new InputVideo( *_stream );
+			_inputEssence = new InputVideo( *static_cast<AvInputStream*>( _stream ) );
 			_inputEssence->setup();
 
 			// re-wrap only, get output descriptor from input
@@ -55,7 +57,7 @@ void StreamTranscoder::init( const std::string& profile )
 		}
 		case AVMEDIA_TYPE_AUDIO :
 		{
-			_inputEssence = new InputAudio( *_stream );
+			_inputEssence = new InputAudio( *static_cast<AvInputStream*>( _stream ) );
 			_inputEssence->setup();
 
 			// re-wrap only, get output descriptor from input

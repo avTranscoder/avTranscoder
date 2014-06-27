@@ -33,19 +33,25 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 {
 	if( ! filename.length() )
 	{
+		try
+		{
+			// be sure the first inputStream is an AvInputStream created from an audio file
+			dynamic_cast<AvInputStream*>( _inputStreams.at( 0 ) );
+		}
+		catch( std::exception& e)
+		{
+			throw std::runtime_error( "dummy stream can't be the first audio channel" );
+		}
+
 		_dummyInputStreams.push_back( new DummyInputStream() );
 		
 		_inputStreams.push_back( _dummyInputStreams.back() );
 		
-		if( _inputStreams.at( 1 ) )
-		{
-			_dummyInputStreams.back()->setAudioDesc( _inputStreams.at( 1 )->getAudioDesc() );
-			_outputFile.addAudioStream( _inputStreams.back()->getAudioDesc() );
-		}
-		else
-			std::cout << "dummy can't be the first audio channel" << std::endl;
+		_dummyInputStreams.back()->setAudioDesc( _inputStreams.at( 0 )->getAudioDesc() );
+		_outputFile.addAudioStream( _inputStreams.back()->getAudioDesc() );
 		
-		_streamTranscoders.push_back( NULL );
+		StreamTranscoder* streamTranscoder = new StreamTranscoder( *_dummyInputStreams.back(), _outputFile, _streamTranscoders.size() );
+		_streamTranscoders.push_back( streamTranscoder );
 
 		return;
 	}
@@ -107,7 +113,7 @@ void Transcoder::add( const InputStreamsDesc& streamDefs )
 		     streamDefs.at( streamDest ).transcodeProfile );
 	}
 	if( _inputStreams.size() != _streamTranscoders.size() )
-		throw std::runtime_error( "_inputStreams and _streamTranscoders must have the same number of streams" );
+		throw std::runtime_error( "error during settings streams and transcoders" );
 }
 
 

@@ -1,7 +1,6 @@
 #ifndef _AV_TRANSCODER_STREAM_TRANSCODER_HPP_
 #define _AV_TRANSCODER_STREAM_TRANSCODER_HPP_
 
-#include <AvTranscoder/AvInputStream.hpp>
 #include <AvTranscoder/InputStream.hpp>
 
 #include <AvTranscoder/EssenceStream/InputVideo.hpp>
@@ -19,7 +18,7 @@ namespace avtranscoder
 class StreamTranscoder
 {
 public:
-	StreamTranscoder( AvInputStream& stream, OutputFile& outputFile, const size_t& streamId );
+	StreamTranscoder( InputStream& stream, OutputFile& outputFile, const size_t& streamId );
 	~StreamTranscoder();
 
 	void init( const std::string& profile );
