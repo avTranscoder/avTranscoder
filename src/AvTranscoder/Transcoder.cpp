@@ -1,3 +1,4 @@
+#include "Transcoder.tcc"
 
 #include <AvTranscoder/AvInputStream.hpp>
 
