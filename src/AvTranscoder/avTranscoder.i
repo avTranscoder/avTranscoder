@@ -29,9 +29,9 @@
 
 #include <AvTranscoder/InputStream.hpp>
 #include <AvTranscoder/AvInputStream.hpp>
-#include <AvTranscoder/InputStreamReader.hpp>
-#include <AvTranscoder/InputStreamAudio.hpp>
-#include <AvTranscoder/InputStreamVideo.hpp>
+#include <AvTranscoder/EssenceStream/InputEssence.hpp>
+#include <AvTranscoder/EssenceStream/InputAudio.hpp>
+#include <AvTranscoder/EssenceStream/InputVideo.hpp>
 
 #include <AvTranscoder/File/InputFile.hpp>
 #include <AvTranscoder/File/OutputFile.hpp>
@@ -73,9 +73,9 @@ namespace std {
 
 %include <AvTranscoder/InputStream.hpp>
 %include <AvTranscoder/AvInputStream.hpp>
-%include <AvTranscoder/InputStreamReader.hpp>
-%include <AvTranscoder/InputStreamAudio.hpp>
-%include <AvTranscoder/InputStreamVideo.hpp>
+%include <AvTranscoder/EssenceStream/InputEssence.hpp>
+%include <AvTranscoder/EssenceStream/InputAudio.hpp>
+%include <AvTranscoder/EssenceStream/InputVideo.hpp>
 
 %include <AvTranscoder/File/InputFile.hpp>
 %include <AvTranscoder/File/OutputFile.hpp>

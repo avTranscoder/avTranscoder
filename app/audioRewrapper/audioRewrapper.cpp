@@ -5,7 +5,7 @@
 #include <AvTranscoder/File/OutputFile.hpp>
 
 #include <AvTranscoder/AvInputStream.hpp>
-#include <AvTranscoder/InputStreamAudio.hpp>
+#include <AvTranscoder/EssenceStream/InputAudio.hpp>
 #include <AvTranscoder/OutputStreamAudio.hpp>
 
 #include <AvTranscoder/EssenceTransform/AudioEssenceTransform.hpp>
@@ -70,7 +70,7 @@ void transcodeAudio( const char* inputfilename, const char* outputFilename )
 	
 	// init audio decoders
 	size_t audioStreamId = inputFile.getProperties().audioStreams.at( 0 ).streamId;
-	InputStreamAudio inputStreamAudio( inputFile.getStream( audioStreamId ) );
+	InputAudio inputAudio( inputFile.getStream( audioStreamId ) );
 	inputFile.readStream( audioStreamId );
 
 	// init audio encoders
@@ -103,7 +103,7 @@ void transcodeAudio( const char* inputfilename, const char* outputFilename )
 	AudioFrame audioFrameToEncode( audioOutputDesc.getFrameDesc() );
 	
 	size_t frame = 0;
-	while( inputStreamAudio.readNextFrame( audioFrameSource ) )
+	while( inputAudio.readNextFrame( audioFrameSource ) )
 	{
 		std::cout << "\rprocess frame " << (int)frame - 1 << std::flush;
 

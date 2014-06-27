@@ -1,5 +1,4 @@
-#include "InputStreamVideo.hpp"
-#include "common.hpp"
+#include "InputVideo.hpp"
 
 extern "C" {
 #ifndef __STDC_CONSTANT_MACROS
@@ -11,7 +10,7 @@ extern "C" {
 #include <libavutil/pixdesc.h>
 }
 
-#include "AvInputStream.hpp"
+#include <AvTranscoder/AvInputStream.hpp>
 
 #include <iostream>
 #include <stdexcept>
@@ -19,8 +18,8 @@ extern "C" {
 namespace avtranscoder
 {
 
-InputStreamVideo::InputStreamVideo( AvInputStream& inputStream )
-	: InputStreamReader::InputStreamReader( inputStream )
+InputVideo::InputVideo( AvInputStream& inputStream )
+	: InputEssence   ( inputStream )
 	, _inputStream   ( &inputStream )
 	, _codec         ( NULL )
 	, _codecContext  ( NULL )
@@ -29,7 +28,7 @@ InputStreamVideo::InputStreamVideo( AvInputStream& inputStream )
 {
 }
 
-InputStreamVideo::~InputStreamVideo()
+InputVideo::~InputVideo()
 {
 	if( _codecContext != NULL )
 	{
@@ -52,7 +51,7 @@ InputStreamVideo::~InputStreamVideo()
 	}
 }
 
-void InputStreamVideo::setup()
+void InputVideo::setup()
 {
 	av_register_all();
 
@@ -95,7 +94,7 @@ void InputStreamVideo::setup()
 	}
 }
 
-bool InputStreamVideo::readNextFrame( Frame& frameBuffer )
+bool InputVideo::readNextFrame( Frame& frameBuffer )
 {
 	int got_frame = 0;
 
@@ -137,7 +136,7 @@ bool InputStreamVideo::readNextFrame( Frame& frameBuffer )
 	return true;
 }
 
-void InputStreamVideo::flushDecoder()
+void InputVideo::flushDecoder()
 {
 	avcodec_flush_buffers( _codecContext );
 }

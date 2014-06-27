@@ -3,8 +3,8 @@
 #include <cstdlib>
 
 #include <AvTranscoder/AvInputStream.hpp>
-#include <AvTranscoder/InputStreamAudio.hpp>
-#include <AvTranscoder/InputStreamVideo.hpp>
+#include <AvTranscoder/EssenceStream/InputAudio.hpp>
+#include <AvTranscoder/EssenceStream/InputVideo.hpp>
 #include <AvTranscoder/OutputStream.hpp>
 #include <AvTranscoder/OutputStreamAudio.hpp>
 #include <AvTranscoder/OutputStreamVideo.hpp>
@@ -31,7 +31,7 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 	input.readStream( input.getProperties().videoStreams.at( 0 ).streamId );
 
 	// init video decoders
-	InputStreamVideo inputStreamVideo( input.getStream( 0 ) );
+	InputVideo inputVideo( input.getStream( 0 ) );
 	Image sourceImage( input.getStream( 0 ).getVideoDesc().getImageDesc() );
 
 	// init video encoder
@@ -64,7 +64,7 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 
 	size_t frame = 1;
 
-	while( inputStreamVideo.readNextFrame( sourceImage ) )
+	while( inputVideo.readNextFrame( sourceImage ) )
 	{
 		std::cout << "\rprocess frame " << frame << std::flush;
 		

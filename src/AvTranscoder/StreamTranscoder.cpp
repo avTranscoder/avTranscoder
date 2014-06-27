@@ -7,7 +7,7 @@ namespace avtranscoder
 StreamTranscoder::StreamTranscoder( AvInputStream& stream, OutputFile& outputFile, const size_t& streamId )
 	: _stream( &stream )
 	, _frameBuffer( NULL )
-	, _inputStreamReader( NULL )
+	, _inputEssence( NULL )
 	, _outputStreamWriter( NULL )
 	, _outputFile( &outputFile )
 	, _streamIndex( streamId )
@@ -19,8 +19,8 @@ StreamTranscoder::~StreamTranscoder()
 {
 	if( _frameBuffer )
 		delete _frameBuffer;
-	if( _inputStreamReader )
-		delete _inputStreamReader;
+	if( _inputEssence )
+		delete _inputEssence;
 	if( _outputStreamWriter )
 		delete _outputStreamWriter;
 }
@@ -33,8 +33,8 @@ void StreamTranscoder::init( const std::string& profile )
 	{
 		case AVMEDIA_TYPE_VIDEO :
 		{
-			_inputStreamReader = new InputStreamVideo( *_stream );
-			_inputStreamReader->setup();
+			_inputEssence = new InputVideo( *_stream );
+			_inputEssence->setup();
 
 			// re-wrap only, get output descriptor from input
 			if( profile.empty() )
@@ -55,8 +55,8 @@ void StreamTranscoder::init( const std::string& profile )
 		}
 		case AVMEDIA_TYPE_AUDIO :
 		{
-			_inputStreamReader = new InputStreamAudio( *_stream );
-			_inputStreamReader->setup();
+			_inputEssence = new InputAudio( *_stream );
+			_inputEssence->setup();
 
 			// re-wrap only, get output descriptor from input
 			if( profile.empty() )
@@ -93,7 +93,7 @@ bool StreamTranscoder::processFrame()
 
 	// std::cout << "encode & wrap" << _streamIndex << std::endl;
 
-	if( _inputStreamReader->readNextFrame( *_frameBuffer ) )
+	if( _inputEssence->readNextFrame( *_frameBuffer ) )
 	{
 		_outputStreamWriter->encodeFrame( *_frameBuffer, dataStream );
 	}
