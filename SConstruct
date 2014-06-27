@@ -128,10 +128,10 @@ resampleLibraryName = 'avresample'
 if not conf.CheckLibWithHeader('avutil', 'libavutil/avutil.h', 'c'):
     sys.exit( 0 )
 
-if not conf.CheckLibWithHeader('avformat', 'libavformat/avformat.h', 'c'):
+if not conf.CheckLibWithHeader('avcodec', 'libavcodec/avcodec.h', 'c'):
     sys.exit( 0 )
 
-if not conf.CheckLibWithHeader('avcodec', 'libavcodec/avcodec.h', 'c'):
+if not conf.CheckLibWithHeader('avformat', 'libavformat/avformat.h', 'c'):
     sys.exit( 0 )
 
 if not conf.CheckLibWithHeader('swscale', 'libswscale/swscale.h', 'c'):
