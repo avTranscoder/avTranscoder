@@ -10,7 +10,7 @@ StreamTranscoder::StreamTranscoder( InputStream& stream, OutputFile& outputFile,
 	: _stream( &stream )
 	, _frameBuffer( NULL )
 	, _inputEssence( NULL )
-	, _outputStreamWriter( NULL )
+	, _outputEssence( NULL )
 	, _outputFile( &outputFile )
 	, _streamIndex( streamId )
 	, _transcodeStream( false )
@@ -23,8 +23,8 @@ StreamTranscoder::~StreamTranscoder()
 		delete _frameBuffer;
 	if( _inputEssence )
 		delete _inputEssence;
-	if( _outputStreamWriter )
-		delete _outputStreamWriter;
+	if( _outputEssence )
+		delete _outputEssence;
 }
 
 void StreamTranscoder::init( const std::string& profile )
@@ -45,12 +45,12 @@ void StreamTranscoder::init( const std::string& profile )
 				break;
 			}
 
-			OutputStreamVideo* outputStreamVideo = new OutputStreamVideo();
-			_outputStreamWriter = outputStreamVideo;
+			OutputVideo* outputVideo = new OutputVideo();
+			_outputEssence = outputVideo;
 
-			_outputStreamWriter->setProfile( profile );
-			_outputFile->addVideoStream( outputStreamVideo->getVideoDesc() );
-			_videoFrameBuffer = new Image( outputStreamVideo->getVideoDesc().getImageDesc() );
+			_outputEssence->setProfile( profile );
+			_outputFile->addVideoStream( outputVideo->getVideoDesc() );
+			_videoFrameBuffer = new Image( outputVideo->getVideoDesc().getImageDesc() );
 			_frameBuffer = _videoFrameBuffer;
 			
 			break;
@@ -67,12 +67,12 @@ void StreamTranscoder::init( const std::string& profile )
 				break;
 			}
 			
-			OutputStreamAudio* outputStreamAudio = new OutputStreamAudio();
-			_outputStreamWriter = outputStreamAudio;
+			OutputAudio* outputAudio = new OutputAudio();
+			_outputEssence = outputAudio;
 
-			_outputStreamWriter->setProfile( profile );
-			_outputFile->addAudioStream( outputStreamAudio->getAudioDesc() );
-			_audioFrameBuffer = new AudioFrame( outputStreamAudio->getAudioDesc().getFrameDesc() );
+			_outputEssence->setProfile( profile );
+			_outputFile->addAudioStream( outputAudio->getAudioDesc() );
+			_audioFrameBuffer = new AudioFrame( outputAudio->getAudioDesc().getFrameDesc() );
 			_frameBuffer = _audioFrameBuffer;
 			
 			break;
@@ -97,9 +97,9 @@ bool StreamTranscoder::processFrame()
 
 	if( _inputEssence->readNextFrame( *_frameBuffer ) )
 	{
-		_outputStreamWriter->encodeFrame( *_frameBuffer, dataStream );
+		_outputEssence->encodeFrame( *_frameBuffer, dataStream );
 	}
-	else if( ! _outputStreamWriter->encodeFrame( dataStream ) )
+	else if( ! _outputEssence->encodeFrame( dataStream ) )
 	{
 		return false;
 	}

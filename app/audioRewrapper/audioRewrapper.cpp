@@ -6,7 +6,7 @@
 
 #include <AvTranscoder/AvInputStream.hpp>
 #include <AvTranscoder/EssenceStream/InputAudio.hpp>
-#include <AvTranscoder/OutputStreamAudio.hpp>
+#include <AvTranscoder/EssenceStream/OutputAudio.hpp>
 
 #include <AvTranscoder/EssenceTransform/AudioEssenceTransform.hpp>
 
@@ -74,8 +74,8 @@ void transcodeAudio( const char* inputfilename, const char* outputFilename )
 	inputFile.readStream( audioStreamId );
 
 	// init audio encoders
-	OutputStreamAudio outputStreamAudio;
-	AudioDesc& audioOutputDesc = outputStreamAudio.getAudioDesc();
+	OutputAudio outputAudio;
+	AudioDesc& audioOutputDesc = outputAudio.getAudioDesc();
 	audioOutputDesc.setAudioCodec( "pcm_s24le" );
 	audioOutputDesc.setAudioParameters( 
 		inputFile.getStream( 0 ).getAudioDesc().getSampleRate(),
@@ -83,7 +83,7 @@ void transcodeAudio( const char* inputfilename, const char* outputFilename )
 		AV_SAMPLE_FMT_S16//,inputFile.getStream( 0 ).getAudioDesc().getSampleFormat()
 		);
 	
-	if( ! outputStreamAudio.setup( ) )
+	if( ! outputAudio.setup( ) )
 	{
 		throw std::runtime_error( "error during initialising audio output stream" );
 	}
@@ -109,7 +109,7 @@ void transcodeAudio( const char* inputfilename, const char* outputFilename )
 
 		audioEssenceTransform.convert( audioFrameSource, audioFrameToEncode );
 		
-		outputStreamAudio.encodeFrame( audioFrameToEncode, codedFrame );
+		outputAudio.encodeFrame( audioFrameToEncode, codedFrame );
 				
 		audioStream.wrap( codedFrame );
 
@@ -120,7 +120,7 @@ void transcodeAudio( const char* inputfilename, const char* outputFilename )
 	}
 	std::cout << std::endl;
 	
-	outputStreamAudio.encodeFrame( codedFrame );
+	outputAudio.encodeFrame( codedFrame );
 	audioStream.wrap( codedFrame );
 	
 	// end of transcoding process

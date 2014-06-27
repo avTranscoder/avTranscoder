@@ -1,17 +1,17 @@
-#ifndef _AV_TRANSCODER_OUTPUT_STREAM_AUDIO_HPP_
-#define _AV_TRANSCODER_OUTPUT_STREAM_AUDIO_HPP_
+#ifndef _AV_TRANSCODER_ESSENCE_STREAM_OUTPUT_AUDIO_HPP_
+#define _AV_TRANSCODER_ESSENCE_STREAM_OUTPUT_AUDIO_HPP_
 
-#include "OutputStreamWriter.hpp"
-#include "DatasStructures/AudioDesc.hpp"
-#include "DatasStructures/DataStreamDesc.hpp"
+#include "OutputEssence.hpp"
+#include <AvTranscoder/DatasStructures/AudioDesc.hpp>
+#include <AvTranscoder/DatasStructures/DataStreamDesc.hpp>
 
 namespace avtranscoder
 {
 
-class OutputStreamAudio : public OutputStreamWriter
+class OutputAudio : public OutputEssence
 {
 public:
-	OutputStreamAudio();
+	OutputAudio();
 	
 	bool setup();
 

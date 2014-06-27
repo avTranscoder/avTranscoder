@@ -4,10 +4,10 @@
 #include <AvTranscoder/InputStream.hpp>
 
 #include <AvTranscoder/EssenceStream/InputVideo.hpp>
-#include <AvTranscoder/OutputStreamVideo.hpp>
+#include <AvTranscoder/EssenceStream/OutputVideo.hpp>
 
 #include <AvTranscoder/EssenceStream/InputAudio.hpp>
-#include <AvTranscoder/OutputStreamAudio.hpp>
+#include <AvTranscoder/EssenceStream/OutputAudio.hpp>
 
 #include <AvTranscoder/File/OutputFile.hpp>
 
@@ -35,8 +35,8 @@ private:
 	AudioFrame* _audioFrameBuffer;
 
 	InputEssence*  _inputEssence;
-	OutputStreamWriter* _outputStreamWriter;
-	OutputFile* _outputFile;
+	OutputEssence* _outputEssence;
+	OutputFile*    _outputFile;
 
 	size_t _streamIndex;
 

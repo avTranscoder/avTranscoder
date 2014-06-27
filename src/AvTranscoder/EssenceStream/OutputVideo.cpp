@@ -1,4 +1,4 @@
-#include "OutputStreamVideo.hpp"
+#include "OutputVideo.hpp"
 
 extern "C" {
 #ifndef __STDC_CONSTANT_MACROS
@@ -12,19 +12,19 @@ extern "C" {
 #include <libavutil/mathematics.h>
 }
 
-#include "DatasStructures/Image.hpp"
-#include "Profile.hpp"
+#include <AvTranscoder/DatasStructures/Image.hpp>
+#include <AvTranscoder/Profile.hpp>
 
 namespace avtranscoder
 {
 
-OutputStreamVideo::OutputStreamVideo( )
-	: OutputStreamWriter::OutputStreamWriter( )
+OutputVideo::OutputVideo( )
+	: OutputEssence( )
 	, _videoDesc( "mpeg2video" )
 {
 }
 
-bool OutputStreamVideo::setup( )
+bool OutputVideo::setup( )
 {
 	av_register_all();  // Warning: should be called only once
 
@@ -41,7 +41,7 @@ bool OutputStreamVideo::setup( )
 }
 
 
-bool OutputStreamVideo::encodeFrame( const Frame& sourceFrame, DataStream& codedFrame )
+bool OutputVideo::encodeFrame( const Frame& sourceFrame, DataStream& codedFrame )
 {
 #if LIBAVCODEC_VERSION_MAJOR > 54
 	AVFrame* frame = av_frame_alloc();
@@ -141,7 +141,7 @@ bool OutputStreamVideo::encodeFrame( const Frame& sourceFrame, DataStream& coded
 }
 
 
-bool OutputStreamVideo::encodeFrame( DataStream& codedFrame )
+bool OutputVideo::encodeFrame( DataStream& codedFrame )
 {
 	AVCodecContext* codecContext = _videoDesc.getCodecContext();
 
@@ -176,7 +176,7 @@ bool OutputStreamVideo::encodeFrame( DataStream& codedFrame )
 #endif
 }
 
-void OutputStreamVideo::setProfile( const std::string& profile )
+void OutputVideo::setProfile( const std::string& profile )
 {
 	Profile p;
 

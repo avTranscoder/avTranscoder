@@ -1,5 +1,5 @@
-#ifndef _AV_TRANSCODER_OUTPUT_STREAM_WRITER_HPP_
-#define _AV_TRANSCODER_OUTPUT_STREAM_WRITER_HPP_
+#ifndef _AV_TRANSCODER_ESSENCE_STREAM_OUTPUT_ESSENCE_HPP_
+#define _AV_TRANSCODER_ESSENCE_STREAM_OUTPUT_ESSENCE_HPP_
 
 extern "C" {
 #ifndef __STDC_CONSTANT_MACROS
@@ -11,19 +11,19 @@ extern "C" {
 #include <string>
 #include <vector>
 
-#include "DatasStructures/Frame.hpp"
-#include "DatasStructures/DataStreamDesc.hpp"
+#include <AvTranscoder/DatasStructures/Frame.hpp>
+#include <AvTranscoder/DatasStructures/DataStreamDesc.hpp>
 
 namespace avtranscoder
 {
 
-class AvExport OutputStreamWriter
+class AvExport OutputEssence
 {
 public:
-	OutputStreamWriter()
+	OutputEssence()
 	{}
 
-	virtual ~OutputStreamWriter()
+	virtual ~OutputEssence()
 	{}
 
 	/**

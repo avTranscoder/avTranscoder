@@ -6,8 +6,8 @@
 #include <AvTranscoder/EssenceStream/InputAudio.hpp>
 #include <AvTranscoder/EssenceStream/InputVideo.hpp>
 #include <AvTranscoder/OutputStream.hpp>
-#include <AvTranscoder/OutputStreamAudio.hpp>
-#include <AvTranscoder/OutputStreamVideo.hpp>
+#include <AvTranscoder/EssenceStream/OutputAudio.hpp>
+#include <AvTranscoder/EssenceStream/OutputVideo.hpp>
 
 #include <AvTranscoder/File/InputFile.hpp>
 #include <AvTranscoder/File/OutputFile.hpp>
@@ -35,9 +35,9 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 	Image sourceImage( input.getStream( 0 ).getVideoDesc().getImageDesc() );
 
 	// init video encoder
-	OutputStreamVideo outputStreamVideo;
-	outputStreamVideo.setProfile( "xdcamhd422" );
-	Image imageToEncode( outputStreamVideo.getVideoDesc().getImageDesc() );
+	OutputVideo outputVideo;
+	outputVideo.setProfile( "xdcamhd422" );
+	Image imageToEncode( outputVideo.getVideoDesc().getImageDesc() );
 	
 	DataStream codedImage;
 
@@ -52,7 +52,7 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 		exit( -1 );
 	}
 
-	of.addVideoStream( outputStreamVideo.getVideoDesc() );
+	of.addVideoStream( outputVideo.getVideoDesc() );
 
 	of.beginWrap();
 
@@ -70,13 +70,13 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 		
 		ct.convert( sourceImage, imageToEncode );
 
-		if( outputStreamVideo.encodeFrame( imageToEncode, codedImage ) )
+		if( outputVideo.encodeFrame( imageToEncode, codedImage ) )
 			of.wrap( codedImage, 0 );
 
 		++frame;
 	}
 
-	while( outputStreamVideo.encodeFrame( codedImage ) )
+	while( outputVideo.encodeFrame( codedImage ) )
 	{
 		of.wrap( codedImage, 0 );
 	}

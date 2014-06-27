@@ -1,4 +1,4 @@
-#include "OutputStreamAudio.hpp"
+#include "OutputAudio.hpp"
 
 extern "C" {
 #ifndef __STDC_CONSTANT_MACROS
@@ -9,19 +9,19 @@ extern "C" {
 #include <libavutil/avutil.h>
 }
 
-#include "DatasStructures/AudioFrame.hpp"
-#include "Profile.hpp"
+#include <AvTranscoder/DatasStructures/AudioFrame.hpp>
+#include <AvTranscoder/Profile.hpp>
 
 namespace avtranscoder
 {
 
-OutputStreamAudio::OutputStreamAudio()
-	: OutputStreamWriter::OutputStreamWriter()
+OutputAudio::OutputAudio()
+	: OutputEssence()
 	, _audioDesc( "pcm_s16le" )
 {
 }
 
-bool OutputStreamAudio::setup()
+bool OutputAudio::setup()
 {
 	av_register_all();  // Warning: should be called only once
 
@@ -37,7 +37,7 @@ bool OutputStreamAudio::setup()
 	return true;
 }
 
-bool OutputStreamAudio::encodeFrame( const Frame& sourceFrame, DataStream& codedFrame )
+bool OutputAudio::encodeFrame( const Frame& sourceFrame, DataStream& codedFrame )
 {
 #if LIBAVCODEC_VERSION_MAJOR > 54
 	AVFrame* frame = av_frame_alloc();
@@ -131,7 +131,7 @@ bool OutputStreamAudio::encodeFrame( const Frame& sourceFrame, DataStream& coded
 	return ret == 0;
 }
 
-bool OutputStreamAudio::encodeFrame( DataStream& codedFrame )
+bool OutputAudio::encodeFrame( DataStream& codedFrame )
 {
 	AVCodecContext* codecContext = _audioDesc.getCodecContext();
 
@@ -166,7 +166,7 @@ bool OutputStreamAudio::encodeFrame( DataStream& codedFrame )
 #endif
 }
 
-void OutputStreamAudio::setProfile( const std::string& profile )
+void OutputAudio::setProfile( const std::string& profile )
 {
 	Profile p;
 	p.loadProfiles();
