@@ -41,7 +41,7 @@ public:
 	void add( const std::string& filename, const size_t streamIndex, const std::string& profile );
 	void add( const InputStreamsDesc& streamDefs );
 
-	void processFrame();
+	bool processFrame();
 
 	void process( ProgressListener& progress );
 

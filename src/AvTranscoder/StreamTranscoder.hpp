@@ -28,7 +28,7 @@ public:
 	bool isTranscodeStream() const { return _transcodeStream; }
 
 private:
-	AvInputStream* _stream;
+	InputStream* _stream;
 
 	Frame*      _frameBuffer;
 	Image*      _videoFrameBuffer;

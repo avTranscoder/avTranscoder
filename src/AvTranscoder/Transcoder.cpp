@@ -1,4 +1,4 @@
-#include "Transcoder.tcc"
+#include "Transcoder.hpp"
 
 #include <AvTranscoder/AvInputStream.hpp>
 
@@ -117,7 +117,7 @@ void Transcoder::add( const InputStreamsDesc& streamDefs )
 }
 
 
-void Transcoder::processFrame()
+bool Transcoder::processFrame()
 {
 	for( size_t streamIndex = 0; streamIndex < _inputStreams.size(); ++streamIndex )
 	{
@@ -131,12 +131,13 @@ void Transcoder::processFrame()
 
 	if( _inputStreams.size() == 0 )
 	{
-		break;
+		return false;
 	}
 	for( size_t i = 0; i < _streamTranscoders.size(); ++i )
 	{
 		_streamTranscoders.at( i )->processFrame();
 	}
+	return true;
 }
 
 
@@ -164,7 +165,8 @@ void Transcoder::process( ProgressListener& progress )
 			break;
 		}
 
-		processFrame();
+		if( ! processFrame() )
+			break;
 
 		++frame;
 	}
