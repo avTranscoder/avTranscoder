@@ -12,7 +12,7 @@
 #include <AvTranscoder/File/InputFile.hpp>
 #include <AvTranscoder/File/OutputFile.hpp>
 
-#include <AvTranscoder/ColorTransform.hpp>
+#include <AvTranscoder/EssenceTransform/VideoEssenceTransform.hpp>
 
 #include <AvTranscoder/DatasStructures/VideoDesc.hpp>
 #include <AvTranscoder/DatasStructures/Image.hpp>
@@ -56,7 +56,7 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 
 	of.beginWrap();
 
-	ColorTransform ct;
+	VideoEssenceTransform ct;
 
 
 	// Encodage/transcodage

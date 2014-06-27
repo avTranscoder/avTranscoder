@@ -144,9 +144,11 @@ void Transcoder::process( ProgressListener& progress )
 
 		for( size_t streamIndex = 0; streamIndex < _inputStreams.size(); ++streamIndex )
 		{
-			if( _streamTranscoders.at( streamIndex ) && ! _streamTranscoders.at( streamIndex )->processFrame() )
+			if( ( _streamTranscoders.size() > streamIndex ) &&
+				! _streamTranscoders.at( streamIndex )->processFrame() )
 			{
-				_inputStreams.erase( _inputStreams.begin() + streamIndex );
+				//_inputStreams.erase( _inputStreams.begin() + streamIndex );
+				_inputStreams.clear();
 			}
 		}
 

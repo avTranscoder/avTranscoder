@@ -51,49 +51,49 @@ OptionLoader::OptionLoader()
 	while( ( fmt = av_oformat_next( fmt ) ) )
 	{
 		// add only format with video track
-		if( fmt->video_codec != AV_CODEC_ID_NONE )
-		{
-			if( fmt->long_name )
-			{
-				_formatsLongNames.push_back( std::string( fmt->long_name ) + std::string( " (" ) + std::string( fmt->name ) + std::string( ")" ) );
-				_formatsShortNames.push_back( std::string( fmt->name ) );
-			}
-		}
+		if( fmt->video_codec == AV_CODEC_ID_NONE )
+			continue;
+		
+		if( ! fmt->long_name )
+			continue;
+		
+		_formatsLongNames.push_back( std::string( fmt->long_name ) );
+		_formatsShortNames.push_back( std::string( fmt->name ) );
 	}
 	
 	// fill video and audio codec short and long names
 	AVCodec* c = NULL;
-	while( ( c = av_codec_next( c ) ) )
+	while( ( c = av_codec_next( c ) ) != NULL )
 	{
 #if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 53, 34, 0 )
-		if( c->encode2 )
+		if( ! c->encode2 )
+			continue;
 #else
-		if( c->encode )
+		if( ! c->encode )
+			continue;
 #endif
+		switch( c->type )
 		{
-			switch( c->type )
+			case AVMEDIA_TYPE_VIDEO:
 			{
-				case AVMEDIA_TYPE_VIDEO:
-				{
-					if( c->long_name )
-					{
-						_videoCodecsLongNames.push_back( std::string( c->long_name ) );
-						_videoCodecsShortNames.push_back( std::string( c->name ) );
-					}
-					break;
-				}
-				case AVMEDIA_TYPE_AUDIO:
-				{
-					if( c->long_name )
-					{
-						_audioCodecsLongNames.push_back( std::string( c->long_name ) );
-						_audioCodecsShortNames.push_back( std::string( c->name ) );
-					}
-					break;
-				}
-				default:
-					break;
+				if( ! c->long_name )
+					continue;
+
+				_videoCodecsLongNames.push_back( std::string( c->long_name ) );
+				_videoCodecsShortNames.push_back( std::string( c->name ) );
+				break;
 			}
+			case AVMEDIA_TYPE_AUDIO:
+			{
+				if( ! c->long_name )
+					continue;
+
+				_audioCodecsLongNames.push_back( std::string( c->long_name ) );
+				_audioCodecsShortNames.push_back( std::string( c->name ) );
+				break;
+			}
+			default:
+				break;
 		}
 	}
 }

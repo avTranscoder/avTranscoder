@@ -15,7 +15,8 @@ extern "C" {
 namespace avtranscoder
 {
 
-enum OptionType {
+enum OptionType
+{
 	TypeBool,
 	TypeInt,
 	TypeDouble,
@@ -23,7 +24,6 @@ enum OptionType {
 	TypeRatio,
 	TypeChoice,
 	TypeGroup,
-	
 	TypeChild, // Option which brelongs to Choice or Group
 	TypeUnknown
 };

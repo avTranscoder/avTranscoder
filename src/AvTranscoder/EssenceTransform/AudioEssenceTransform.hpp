@@ -1,7 +1,7 @@
-#ifndef _AV_TRANSCODER_AUDIO_TRANSFORM_HPP
-#define _AV_TRANSCODER_AUDIO_TRANSFORM_HPP
+#ifndef _AV_TRANSCODER_ESSENCE_TRANSFORM_AUDIO_ESSENCE_TRANSFORM_HPP
+#define _AV_TRANSCODER_ESSENCE_TRANSFORM_AUDIO_ESSENCE_TRANSFORM_HPP
 
-#include "common.hpp"
+#include <AvTranscoder/common.hpp>
 
 #ifdef AV_RESAMPLE_LIBRARY
  #define ResampleContext AVAudioResampleContext
@@ -16,10 +16,10 @@ namespace avtranscoder
 
 class AudioFrame;
 
-class AvExport AudioTransform
+class AvExport AudioEssenceTransform
 {
 public:
-	AudioTransform();
+	AudioEssenceTransform();
 
 	void convert( const AudioFrame& src, AudioFrame& dst );
 

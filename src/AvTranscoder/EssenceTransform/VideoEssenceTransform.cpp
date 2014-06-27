@@ -1,5 +1,5 @@
-#include "ColorTransform.hpp"
-#include "common.hpp"
+#include "VideoEssenceTransform.hpp"
+#include <AvTranscoder/common.hpp>
 
 extern "C" {
 #ifndef __STDC_CONSTANT_MACROS
@@ -22,7 +22,7 @@ extern "C" {
 namespace avtranscoder
 {
 
-ColorTransform::ColorTransform()
+VideoEssenceTransform::VideoEssenceTransform()
 	: _imageConvertContext( NULL )
 	, _srcData     ( (uint8_t)MAX_SWS_PLANE, NULL )
 	, _dstData     ( (uint8_t)MAX_SWS_PLANE, NULL )
@@ -34,7 +34,7 @@ ColorTransform::ColorTransform()
 {
 }
 
-bool ColorTransform::init( const Image& src, const Image& dst )
+bool VideoEssenceTransform::init( const Image& src, const Image& dst )
 {
 	assert( src.desc().getWidth()  != 0 );
 	assert( src.desc().getHeight() != 0 );
@@ -76,7 +76,7 @@ bool ColorTransform::init( const Image& src, const Image& dst )
 	return true;
 }
 
-void ColorTransform::convert( const Image& src, Image& dst )
+void VideoEssenceTransform::convert( const Image& src, Image& dst )
 {
 	assert( src.desc().getWidth()  != 0 );
 	assert( src.desc().getHeight() != 0 );

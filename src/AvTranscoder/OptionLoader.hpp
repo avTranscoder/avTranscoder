@@ -21,7 +21,7 @@ namespace avtranscoder
 
 /**
  * @brief Manage Options.
- * Get a list of options by calling a "load_function", depending on which FFMpeg / libAv object you want to analyse.
+ * Get a list of options by calling a load****Options(), depending on which FFMpeg / LibAV object you want to analyse.
  */
 class OptionLoader 
 {
@@ -39,13 +39,13 @@ public:
 	const AVCodec* getCodec() const { return _codec; }
 		
 	/**
-     * @param req_flags: AVOption flags (default = 0: no flag restriction)
-     */
+	 * @param req_flags: AVOption flags (default = 0: no flag restriction)
+	 */
 	OptionArray loadFormatContextOptions( int req_flags = 0 );
 	
 	/**
-     * @param req_flags: AVOption flags (default = 0: no flag restriction)
-     */
+	 * @param req_flags: AVOption flags (default = 0: no flag restriction)
+	 */
 	OptionArray loadCodecContextOptions( int req_flags = 0 );
 	
 	OptionMap loadOutputFormatOptions();
@@ -70,8 +70,8 @@ public:
 private:
 	/**
 	 * @brief: load array of Option depending on the flags.
-     * @param req_flags: AVOption flags we want to load.
-     */
+	 * @param req_flags: AVOption flags we want to load.
+	 */
 	OptionArray loadOptions( void* av_class, int req_flags = 0 );
 	
 	AVFormatContext* _avFormatContext;

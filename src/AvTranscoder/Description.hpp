@@ -4,6 +4,8 @@
 #include <vector>
 #include <string>
 
+#include "common.hpp"
+
 namespace avtranscoder
 {
 
