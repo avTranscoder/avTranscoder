@@ -110,6 +110,30 @@ void Transcoder::add( const InputStreamsDesc& streamDefs )
 		throw std::runtime_error( "_inputStreams and _streamTranscoders must have the same number of streams" );
 }
 
+
+void Transcoder::processFrame()
+{
+	for( size_t streamIndex = 0; streamIndex < _inputStreams.size(); ++streamIndex )
+	{
+		if( ( _streamTranscoders.size() > streamIndex ) &&
+			! _streamTranscoders.at( streamIndex )->processFrame() )
+		{
+			//_inputStreams.erase( _inputStreams.begin() + streamIndex );
+			_inputStreams.clear();
+		}
+	}
+
+	if( _inputStreams.size() == 0 )
+	{
+		break;
+	}
+	for( size_t i = 0; i < _streamTranscoders.size(); ++i )
+	{
+		_streamTranscoders.at( i )->processFrame();
+	}
+}
+
+
 void Transcoder::process( ProgressListener& progress )
 {
 	size_t frame = 0;
@@ -134,21 +158,7 @@ void Transcoder::process( ProgressListener& progress )
 			break;
 		}
 
-
-		for( size_t streamIndex = 0; streamIndex < _inputStreams.size(); ++streamIndex )
-		{
-			if( ( _streamTranscoders.size() > streamIndex ) &&
-				! _streamTranscoders.at( streamIndex )->processFrame() )
-			{
-				//_inputStreams.erase( _inputStreams.begin() + streamIndex );
-				_inputStreams.clear();
-			}
-		}
-
-		if( _inputStreams.size() == 0 )
-		{
-			break;
-		}
+		processFrame();
 
 		++frame;
 	}
