@@ -12,7 +12,9 @@
 *.la
 *.a
 
+.sconf_temp
 .sconsign.dblite
+config.log
 scons.cfg
 build
 dist
