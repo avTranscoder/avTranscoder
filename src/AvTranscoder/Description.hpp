@@ -3,13 +3,17 @@
 
 #include <vector>
 #include <string>
+#include <map>
 
 #include "common.hpp"
 
 namespace avtranscoder
 {
 
-std::vector<size_t> getVersion();
+typedef std::map< std::string, std::vector<size_t> > AvVersions;
+
+AvVersions  getVersion();
+std::string getLicence();
 
 std::vector<std::string> getInputExtensions();
 

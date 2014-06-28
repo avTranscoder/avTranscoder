@@ -4,8 +4,15 @@ extern "C" {
 #ifndef __STDC_CONSTANT_MACROS
     #define __STDC_CONSTANT_MACROS
 #endif
+#include <libavutil/version.h>
+#include <libavcodec/version.h>
+#include <libswscale/version.h>
+#ifdef AV_RESAMPLE_LIBRARY
+	#include <libavresample/version.h>
+#else
+	#include <libswresample/version.h>
+#endif
 #include <libavformat/avformat.h>
-#include <libavutil/avstring.h>
 }
 
 #include <cstring>
@@ -14,15 +21,59 @@ extern "C" {
 namespace avtranscoder
 {
 
-std::vector<size_t> getVersion()
+std::map< std::string, std::vector<size_t> > getVersion()
 {
-	std::vector<size_t> version;
-	version.push_back( 0 );
-	version.push_back( 0 );
-	version.push_back( 0 );
-	// avutil_version
-	// avutil_license
+	std::map< std::string, std::vector<size_t> > version;
+
+	std::vector<size_t> avutilVersion;
+	avutilVersion.push_back( LIBAVUTIL_VERSION_MAJOR );
+	avutilVersion.push_back( LIBAVUTIL_VERSION_MINOR );
+	avutilVersion.push_back( LIBAVUTIL_VERSION_MICRO );
+
+	std::vector<size_t> avformatVersion;
+	avformatVersion.push_back( LIBAVFORMAT_VERSION_MAJOR );
+	avformatVersion.push_back( LIBAVFORMAT_VERSION_MINOR );
+	avformatVersion.push_back( LIBAVFORMAT_VERSION_MICRO );
+
+	std::vector<size_t> avcodecVersion;
+	avcodecVersion.push_back( LIBAVCODEC_VERSION_MAJOR );
+	avcodecVersion.push_back( LIBAVCODEC_VERSION_MINOR );
+	avcodecVersion.push_back( LIBAVCODEC_VERSION_MICRO );
+
+	std::vector<size_t> swscaleVersion;
+	swscaleVersion.push_back( LIBSWSCALE_VERSION_MAJOR );
+	swscaleVersion.push_back( LIBSWSCALE_VERSION_MINOR );
+	swscaleVersion.push_back( LIBSWSCALE_VERSION_MICRO );
+
+#ifdef AV_RESAMPLE_LIBRARY
+	std::vector<size_t> avresampleVersion;
+	avresampleVersion.push_back( LIBAVRESAMPLE_VERSION_MAJOR );
+	avresampleVersion.push_back( LIBAVRESAMPLE_VERSION_MINOR );
+	avresampleVersion.push_back( LIBAVRESAMPLE_VERSION_MICRO );
+#else
+	std::vector<size_t> swresampleVersion;
+	swresampleVersion.push_back( LIBSWRESAMPLE_VERSION_MAJOR );
+	swresampleVersion.push_back( LIBRESAMPLE_VERSION_MINOR );
+	swresampleVersion.push_back( LIBRESAMPLE_VERSION_MICRO );
+#endif
+
+	version[ "avutil" ] = avutilVersion;
+	version[ "avformat" ] = avformatVersion;
+	version[ "avcodec" ] = avcodecVersion;
+	version[ "swscale" ] = swscaleVersion;
+#ifdef AV_RESAMPLE_LIBRARY
+	version[ "avresample" ] = avresampleVersion;
+#else
+	version[ "swresample" ] = swresampleVersion;
+#endif
+
 	return version;
+}
+
+std::string getLicence()
+{
+	std::string licence( avutil_license() );
+	return licence;
 }
 
 std::vector<std::string> getInputExtensions()
