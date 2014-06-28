@@ -1,4 +1,6 @@
+
 #include "Transcoder.hpp"
+#include "StreamTranscoder.hpp"
 
 #include <AvTranscoder/CodedStream/AvInputStream.hpp>
 

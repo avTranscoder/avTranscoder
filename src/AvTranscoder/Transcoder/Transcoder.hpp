@@ -6,13 +6,14 @@
 #include <AvTranscoder/CodedStream/InputStream.hpp>
 #include <AvTranscoder/ProgressListener.hpp>
 #include <AvTranscoder/DummyInputStream.hpp>
-#include <AvTranscoder/StreamTranscoder.hpp>
 
 #include <string>
 #include <vector>
 
 namespace avtranscoder
 {
+
+class StreamTranscoder;
 
 class Transcoder
 {
