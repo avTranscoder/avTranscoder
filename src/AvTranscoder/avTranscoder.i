@@ -21,14 +21,16 @@
 
 #include <AvTranscoder/Metadatas/MediaMetadatasStructures.hpp>
 
-#include <AvTranscoder/OutputStream.hpp>
-#include <AvTranscoder/AvOutputStream.hpp>
+#include <AvTranscoder/CodedStream/OutputStream.hpp>
+#include <AvTranscoder/CodedStream/AvOutputStream.hpp>
+
+#include <AvTranscoder/CodedStream/InputStream.hpp>
+#include <AvTranscoder/CodedStream/AvInputStream.hpp>
+
 #include <AvTranscoder/EssenceStream/OutputEssence.hpp>
 #include <AvTranscoder/EssenceStream/OutputAudio.hpp>
 #include <AvTranscoder/EssenceStream/OutputVideo.hpp>
 
-#include <AvTranscoder/InputStream.hpp>
-#include <AvTranscoder/AvInputStream.hpp>
 #include <AvTranscoder/EssenceStream/InputEssence.hpp>
 #include <AvTranscoder/EssenceStream/InputAudio.hpp>
 #include <AvTranscoder/EssenceStream/InputVideo.hpp>
@@ -65,14 +67,16 @@ namespace std {
 
 %include <AvTranscoder/Metadatas/MediaMetadatasStructures.hpp>
 
-%include <AvTranscoder/OutputStream.hpp>
-%include <AvTranscoder/AvOutputStream.hpp>
+%include <AvTranscoder/CodedStream/OutputStream.hpp>
+%include <AvTranscoder/CodedStream/AvOutputStream.hpp>
+
+%include <AvTranscoder/CodedStream/InputStream.hpp>
+%include <AvTranscoder/CodedStream/AvInputStream.hpp>
+
 %include <AvTranscoder/EssenceStream/OutputEssence.hpp>
 %include <AvTranscoder/EssenceStream/OutputAudio.hpp>
 %include <AvTranscoder/EssenceStream/OutputVideo.hpp>
 
-%include <AvTranscoder/InputStream.hpp>
-%include <AvTranscoder/AvInputStream.hpp>
 %include <AvTranscoder/EssenceStream/InputEssence.hpp>
 %include <AvTranscoder/EssenceStream/InputAudio.hpp>
 %include <AvTranscoder/EssenceStream/InputVideo.hpp>

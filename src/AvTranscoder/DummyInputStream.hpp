@@ -1,9 +1,7 @@
 #ifndef _AV_TRANSCODER_DUMMY_INPUT_STREAM_HPP_
 #define _AV_TRANSCODER_DUMMY_INPUT_STREAM_HPP_
 
-#include <AvTranscoder/InputStream.hpp>
-
-#include <AvTranscoder/InputStream.hpp>
+#include <AvTranscoder/CodedStream/InputStream.hpp>
 #include <AvTranscoder/DatasStructures/Image.hpp>
 #include <AvTranscoder/DatasStructures/AudioFrame.hpp>
 

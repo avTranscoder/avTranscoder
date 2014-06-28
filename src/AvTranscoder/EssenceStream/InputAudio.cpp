@@ -11,7 +11,7 @@ extern "C" {
 #include <libavutil/channel_layout.h>
 }
 
-#include <AvTranscoder/AvInputStream.hpp>
+#include <AvTranscoder/CodedStream/AvInputStream.hpp>
 
 #include <iostream>
 #include <stdexcept>

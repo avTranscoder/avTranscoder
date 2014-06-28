@@ -1,9 +1,9 @@
-#ifndef _AV_TRANSCODER_OUTPUT_STREAM_HPP_
-#define _AV_TRANSCODER_OUTPUT_STREAM_HPP_
+#ifndef _AV_TRANSCODER_CODED_STREAM_OUTPUT_STREAM_HPP_
+#define _AV_TRANSCODER_CODED_STREAM_OUTPUT_STREAM_HPP_
 
-#include "DatasStructures/DataStreamDesc.hpp"
-#include "DatasStructures/AudioDesc.hpp"
-#include "DatasStructures/VideoDesc.hpp"
+#include <AvTranscoder/DatasStructures/DataStreamDesc.hpp>
+#include <AvTranscoder/DatasStructures/AudioDesc.hpp>
+#include <AvTranscoder/DatasStructures/VideoDesc.hpp>
 
 namespace avtranscoder
 {

@@ -3,11 +3,9 @@
 
 #include <AvTranscoder/File/InputFile.hpp>
 #include <AvTranscoder/File/OutputFile.hpp>
-#include <AvTranscoder/InputStream.hpp>
+#include <AvTranscoder/CodedStream/InputStream.hpp>
 #include <AvTranscoder/ProgressListener.hpp>
 #include <AvTranscoder/DummyInputStream.hpp>
-#include <AvTranscoder/StreamTranscoder.hpp>
-
 #include <AvTranscoder/StreamTranscoder.hpp>
 
 #include <string>
