@@ -92,6 +92,7 @@ void Profile::update( const ProfileDesc& profile )
 		}
 		++profileIndex;
 	}
+	// profile not found: add the new profile
 	_profiles.push_back( profile );
 }
 
