@@ -14,6 +14,8 @@ extern "C" {
 #include <AvTranscoder/DatasStructures/Frame.hpp>
 #include <AvTranscoder/DatasStructures/DataStreamDesc.hpp>
 
+#include <AvTranscoder/Profile.hpp>
+
 namespace avtranscoder
 {
 
@@ -50,9 +52,9 @@ public:
 	/**
 	 * @brief Set the profile for the encoder
 	 * @note see Profile to get list of supported profiles
-	 * @param profile selected profile name
+	 * @param desc description of the selected profile
 	 */
-	virtual void setProfile( const std::string& profile ) = 0;
+	virtual void setProfile( Profile::ProfileDesc& desc ) = 0;
 
 };
 

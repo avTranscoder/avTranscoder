@@ -27,9 +27,10 @@ StreamTranscoder::~StreamTranscoder()
 		delete _outputEssence;
 }
 
-void StreamTranscoder::init( const std::string& profile )
+void StreamTranscoder::init( const Profile::ProfileDesc& profileDesc )
 {
-	_transcodeStream = profile.size();
+	const std::string profileName = profileDesc.find( Profile::avProfileIdentificator )->second;
+	_transcodeStream = profileName.size();
 	
 	switch( _stream->getStreamType() )
 	{
@@ -39,7 +40,7 @@ void StreamTranscoder::init( const std::string& profile )
 			_inputEssence->setup();
 
 			// re-wrap only, get output descriptor from input
-			if( profile.empty() )
+			if( profileName.empty() )
 			{
 				_outputFile->addVideoStream( _stream->getVideoDesc() );
 				break;
@@ -48,7 +49,8 @@ void StreamTranscoder::init( const std::string& profile )
 			OutputVideo* outputVideo = new OutputVideo();
 			_outputEssence = outputVideo;
 
-			_outputEssence->setProfile( profile );
+			Profile::ProfileDesc prof = profileDesc;
+			_outputEssence->setProfile( prof );
 			_outputFile->addVideoStream( outputVideo->getVideoDesc() );
 			_videoFrameBuffer = new Image( outputVideo->getVideoDesc().getImageDesc() );
 			_frameBuffer = _videoFrameBuffer;
@@ -61,7 +63,7 @@ void StreamTranscoder::init( const std::string& profile )
 			_inputEssence->setup();
 
 			// re-wrap only, get output descriptor from input
-			if( profile.empty() )
+			if( profileName.empty() )
 			{
 				_outputFile->addAudioStream( _stream->getAudioDesc() );
 				break;
@@ -70,7 +72,8 @@ void StreamTranscoder::init( const std::string& profile )
 			OutputAudio* outputAudio = new OutputAudio();
 			_outputEssence = outputAudio;
 
-			_outputEssence->setProfile( profile );
+			Profile::ProfileDesc prof = profileDesc;
+			_outputEssence->setProfile( prof );
 			_outputFile->addAudioStream( outputAudio->getAudioDesc() );
 			_audioFrameBuffer = new AudioFrame( outputAudio->getAudioDesc().getFrameDesc() );
 			_frameBuffer = _audioFrameBuffer;

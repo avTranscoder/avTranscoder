@@ -16,6 +16,7 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 
 	// av_log_set_level( AV_LOG_DEBUG );
 
+	Profile profile( true );
 	ProgressListener p;
 
 	InputFile input( inputfilename );
@@ -29,7 +30,7 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 
 	// init video encoder
 	OutputVideo outputVideo;
-	outputVideo.setProfile( "xdcamhd422" );
+	outputVideo.setProfile( profile.getProfile( "xdcamhd422" ) );
 	Image imageToEncode( outputVideo.getVideoDesc().getImageDesc() );
 	
 	DataStream codedImage;
