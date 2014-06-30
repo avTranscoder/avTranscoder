@@ -101,6 +101,12 @@ Profile::ProfilesDesc Profile::getAudioProfiles()
 {
 	ProfilesDesc profiles;
 
+	for( ProfilesDesc::iterator it = _profiles.begin(); it != _profiles.end(); ++it )
+	{
+		if( (*it).find( avProfileType )->second == avProfileTypeAudio )
+			profiles.push_back( *it );
+	}
+
 	return profiles;
 }
 
