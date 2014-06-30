@@ -65,11 +65,11 @@ OptionLoader::OptionLoader()
 	AVCodec* c = NULL;
 	while( ( c = av_codec_next( c ) ) != NULL )
 	{
-#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 53, 34, 0 )
-		if( ! c->encode2 )
+#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT( 53, 34, 0 )
+		if( ! c->encode )
 			continue;
 #else
-		if( ! c->encode )
+		if( ! c->encode2 )
 			continue;
 #endif
 		switch( c->type )
@@ -153,10 +153,10 @@ OptionLoader::OptionMap OptionLoader::loadVideoCodecOptions()
 	// iterate on codecs
 	while( _codec )
 	{
-#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 53, 34, 0 )
-		if( _codec->encode2 )
-#else
+#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT( 53, 34, 0 )
 		if( _codec->encode )
+#else
+		if( _codec->encode2 )
 #endif
 		{
 			// add only video codec
@@ -189,10 +189,10 @@ OptionLoader::OptionMap OptionLoader::loadAudioCodecOptions()
 	// iterate on codecs
 	while( _codec )
 	{
-#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 53, 34, 0 )
-		if( _codec->encode2 )
-#else
+#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT( 53, 34, 0 )
 		if( _codec->encode )
+#else
+		if( _codec->encode2 )
 #endif
 		{
 			// add only audio codec
@@ -276,7 +276,7 @@ OptionLoader::OptionArray OptionLoader::loadOptions( void* av_class, int req_fla
 	return options;
 }
 
-std::vector<std::string> OptionLoader::getPixelFormats ( const std::string& videoCodecName ) const
+std::vector<std::string> OptionLoader::getPixelFormats( const std::string& videoCodecName ) const
 {
 	std::vector<std::string> pixelFormats;
 	
