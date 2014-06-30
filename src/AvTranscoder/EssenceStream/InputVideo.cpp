@@ -19,7 +19,7 @@ namespace avtranscoder
 {
 
 InputVideo::InputVideo( AvInputStream& inputStream )
-	: InputEssence   ( inputStream )
+	: InputEssence()
 	, _inputStream   ( &inputStream )
 	, _codec         ( NULL )
 	, _codecContext  ( NULL )
@@ -134,6 +134,11 @@ bool InputVideo::readNextFrame( Frame& frameBuffer )
 	avpicture_layout( (AVPicture*)_frame, (AVPixelFormat)_frame->format, _frame->width, _frame->height, &imageBuffer.getBuffer()[0], frameBuffer.getBuffer().size() );
 
 	return true;
+}
+
+bool InputVideo::readNextFrame( std::vector<Frame>& frameBuffer )
+{
+
 }
 
 void InputVideo::flushDecoder()
