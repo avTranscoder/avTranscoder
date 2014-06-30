@@ -13,6 +13,8 @@ extern "C" {
 #include <AvTranscoder/DatasStructures/VideoDesc.hpp>
 #include <AvTranscoder/DatasStructures/DataStreamDesc.hpp>
 
+#include <AvTranscoder/Profile.hpp>
+
 #include <string>
 #include <vector>
 
@@ -41,9 +43,9 @@ public:
 	 */
 	bool encodeFrame( DataStream& codedFrame );
 
+	void setProfile( Profile::ProfileDesc& desc );
+	
 	VideoDesc& getVideoDesc() { return _videoDesc; }
-
-	void setProfile( const std::string& profile );
 
 private:
 	VideoDesc _videoDesc;

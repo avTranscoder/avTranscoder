@@ -9,7 +9,7 @@
 #include <cstdlib>
 
 
-void parseConfigFile( const std::string& configFilename, avtranscoder::Transcoder::InputStreamsDesc& streams )
+void parseConfigFile( const std::string& configFilename, avtranscoder::Transcoder::InputStreamsDesc& streams, avtranscoder::Profile& profile )
 {
 	std::ifstream configFile( configFilename.c_str(), std::ifstream::in );
 
@@ -26,7 +26,7 @@ void parseConfigFile( const std::string& configFilename, avtranscoder::Transcode
 				std::string transcodeProfile;
 				std::getline( is_line, transcodeProfile );
 				std::cout << filename << " ( " << streamId <<  " ) : " << transcodeProfile << std::endl;
-				streams.push_back( avtranscoder::Transcoder::InputStreamDesc( atoi( streamId.c_str() ), filename, transcodeProfile ) );
+				streams.push_back( avtranscoder::Transcoder::InputStreamDesc( atoi( streamId.c_str() ), filename, profile.getProfile( transcodeProfile ) ) );
 			}
 		}
 	}
@@ -48,12 +48,14 @@ int main( int argc, char** argv )
 	{
 		std::cout << "start ..." << std::endl;
 
+		avtranscoder::Profile profiles( true );
+
 		std::string inputConfigFile( argv[1] );
 		avtranscoder::OutputFile outputFile( argv[2] );
 
 		avtranscoder::Transcoder::InputStreamsDesc streams;
 
-		parseConfigFile( inputConfigFile, streams );
+		parseConfigFile( inputConfigFile, streams, profiles );
 
 		avtranscoder::Transcoder transcoder( outputFile );
 

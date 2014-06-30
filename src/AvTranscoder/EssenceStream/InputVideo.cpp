@@ -138,7 +138,7 @@ bool InputVideo::readNextFrame( Frame& frameBuffer )
 
 bool InputVideo::readNextFrame( std::vector<Frame>& frameBuffer )
 {
-
+	return false;
 }
 
 void InputVideo::flushDecoder()

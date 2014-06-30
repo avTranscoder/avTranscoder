@@ -21,6 +21,8 @@
 
 #include <AvTranscoder/Metadatas/MediaMetadatasStructures.hpp>
 
+#include <AvTranscoder/Profile.hpp>
+
 #include <AvTranscoder/CodedStream/OutputStream.hpp>
 #include <AvTranscoder/CodedStream/AvOutputStream.hpp>
 
@@ -70,6 +72,8 @@ namespace std {
 %include <AvTranscoder/DatasStructures/DataStreamDesc.hpp>
 
 %include <AvTranscoder/Metadatas/MediaMetadatasStructures.hpp>
+
+%include <AvTranscoder/Profile.hpp>
 
 %include <AvTranscoder/CodedStream/OutputStream.hpp>
 %include <AvTranscoder/CodedStream/AvOutputStream.hpp>

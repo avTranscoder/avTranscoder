@@ -22,22 +22,24 @@ public:
 	/**
 	 * @brief rewrap stream
 	 **/
-	StreamTranscoder( InputStream& inputStream, OutputStream& outputStream );
+	StreamTranscoder( InputStream& inputStream, OutputStream& outputStream, OutputFile& outputFile );
 
 	/**
 	 * @brief transcode stream
 	 **/
-	StreamTranscoder( InputStream& inputStream, OutputStream& outputStream, Profile::ProfileDesc& profile );
+	StreamTranscoder( InputStream& inputStream, OutputStream& outputStream, OutputFile& outputFile, Profile::ProfileDesc& profile );
 
 	/**
 	 * @brief encode from dummy stream
 	 **/
-	StreamTranscoder( InputEssence& inputEssence, OutputStream& outputStream, Profile::ProfileDesc& profile );
+	StreamTranscoder( InputEssence& inputEssence, OutputStream& outputStream, OutputFile& outputFile, Profile::ProfileDesc& profile );
 
 	~StreamTranscoder();
 
-	void init( const std::string& profile );
-
+	/**
+	 * @brief process a single frame for the current stream
+	 * @return the process status result
+	 */
 	bool processFrame();
 
 	bool isTranscodeStream() const { return _transcodeStream; }
