@@ -21,9 +21,10 @@ const std::string Profile::avProfileTypeVideo( "avProfileTypeVideo" );
 const std::string Profile::avProfileTypeAudio( "avProfileTypeAudio" );
 
 
-Profile::Profile()
+Profile::Profile( bool autoload )
 {
-
+	if( autoload )
+		loadProfiles();
 }
 
 void Profile::loadProfiles()
