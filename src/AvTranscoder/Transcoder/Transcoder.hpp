@@ -4,8 +4,9 @@
 #include <AvTranscoder/File/InputFile.hpp>
 #include <AvTranscoder/File/OutputFile.hpp>
 #include <AvTranscoder/CodedStream/InputStream.hpp>
+#include <AvTranscoder/EssenceStream/DummyAudio.hpp>
+#include <AvTranscoder/EssenceStream/DummyVideo.hpp>
 #include <AvTranscoder/ProgressListener.hpp>
-#include <AvTranscoder/DummyInputStream.hpp>
 
 #include <string>
 #include <vector>
@@ -45,7 +46,9 @@ public:
 	void process( ProgressListener& progress );
 
 private:
-	bool getStreamsNextPacket( std::vector< DataStream >& dataStreams );
+	// void addRewrapStream();
+	// void addTranscodeStream();
+	// void addDummyStream();
 
 private:
 	OutputFile&                      _outputFile;
@@ -54,7 +57,8 @@ private:
 	std::vector< InputStream* >      _inputStreams;
 	std::vector< StreamTranscoder* > _streamTranscoders;
 	
-	std::vector< DummyInputStream* > _dummyInputStreams;
+	std::vector< DummyAudio* > _dummyAudio;
+	std::vector< DummyVideo* > _dummyVideo;
 };
 
 }

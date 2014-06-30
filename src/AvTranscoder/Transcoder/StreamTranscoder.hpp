@@ -11,6 +11,7 @@
 
 #include <AvTranscoder/File/OutputFile.hpp>
 
+#include <AvTranscoder/Profile.hpp>
 
 namespace avtranscoder
 {
@@ -18,7 +19,21 @@ namespace avtranscoder
 class StreamTranscoder
 {
 public:
-	StreamTranscoder( InputStream& stream, OutputFile& outputFile, const size_t& streamId );
+	/**
+	 * @brief rewrap stream
+	 **/
+	StreamTranscoder( InputStream& inputStream, OutputStream& outputStream );
+
+	/**
+	 * @brief transcode stream
+	 **/
+	StreamTranscoder( InputStream& inputStream, OutputStream& outputStream, Profile::ProfileDesc& profile );
+
+	/**
+	 * @brief encode from dummy stream
+	 **/
+	StreamTranscoder( InputEssence& inputEssence, OutputStream& outputStream, Profile::ProfileDesc& profile );
+
 	~StreamTranscoder();
 
 	void init( const std::string& profile );
@@ -28,17 +43,15 @@ public:
 	bool isTranscodeStream() const { return _transcodeStream; }
 
 private:
-	InputStream* _stream;
+	InputStream*   _inputStream;
+	OutputStream*  _outputStream;
 
-	Frame*      _frameBuffer;
-	Image*      _videoFrameBuffer;
-	AudioFrame* _audioFrameBuffer;
+	Frame*         _frameBuffer;
+	Image*         _videoFrameBuffer;
+	AudioFrame*    _audioFrameBuffer;
 
 	InputEssence*  _inputEssence;
 	OutputEssence* _outputEssence;
-	OutputFile*    _outputFile;
-
-	size_t _streamIndex;
 
 	bool _transcodeStream;
 
@@ -48,4 +61,3 @@ private:
 }
 
 #endif
-
