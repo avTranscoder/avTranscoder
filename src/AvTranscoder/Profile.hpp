@@ -27,6 +27,8 @@ public:
 
 	void loadProfiles();
 
+	void update( const ProfileDesc& profile );
+	
 	const ProfilesDesc& getProfiles();
 
 	ProfilesDesc getVideoProfiles();

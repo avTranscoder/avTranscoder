@@ -79,6 +79,22 @@ void Profile::loadProfiles()
 	}
 }
 
+void Profile::update( const ProfileDesc& profile )
+{
+	std::string profileId( profile.find( avProfileIdentificator )->second );
+	size_t profileIndex = 0;
+	for( ProfilesDesc::iterator it = _profiles.begin(); it != _profiles.end(); ++it )
+	{
+		if( (*it).find( avProfileIdentificator )->second == profileId )
+		{
+			_profiles.at( profileIndex ) = profile;
+			return;
+		}
+		++profileIndex;
+	}
+	_profiles.push_back( profile );
+}
+
 const Profile::ProfilesDesc& Profile::getProfiles()
 {
 	return _profiles;
