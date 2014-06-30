@@ -152,6 +152,18 @@ bool OutputFile::wrap( const DataStream& data, const size_t streamId )
 
 bool OutputFile::endWrap( )
 {
+	if( av_write_trailer( _formatContext ) != 0)
+	{
+		throw std::runtime_error( "could not write trailer" );
+	}
+	avcodec_close( _stream->codec );
+	if( !( _formatContext->oformat->flags & AVFMT_NOFILE ) )
+	{
+		avio_close( _formatContext->pb );
+	}
+	avformat_free_context( _formatContext );
+	//freeFormat();
+	
 	return true;
 }
 

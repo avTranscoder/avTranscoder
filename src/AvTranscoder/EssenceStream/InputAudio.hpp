@@ -1,10 +1,8 @@
-#ifndef _AV_TRANSCODER_INPUT_STREAM_VIDEO_HPP_
-#define _AV_TRANSCODER_INPUT_STREAM_VIDEO_HPP_
+#ifndef _AV_TRANSCODER_ESSENCE_STREAM_INPUT_AUDIO_HPP_
+#define _AV_TRANSCODER_ESSENCE_STREAM_INPUT_AUDIO_HPP_
 
-#include "InputStreamReader.hpp"
-#include "DatasStructures/Image.hpp"
-
-#include <vector>
+#include "InputEssence.hpp"
+#include <AvTranscoder/DatasStructures/AudioFrame.hpp>
 
 class AVFormatContext;
 class AVCodec;
@@ -16,19 +14,20 @@ namespace avtranscoder
 
 class AvInputStream;
 
-class AvExport InputStreamVideo : public InputStreamReader
+class AvExport InputAudio : public InputEssence
 {
 public:
-	InputStreamVideo( AvInputStream& inputStream );
-	~InputStreamVideo();
-	
+	InputAudio( AvInputStream& inputStream );
+	~InputAudio();
+
 	void setup();
 
 	bool readNextFrame( Frame& frameBuffer );
-
-	void flushDecoder();
+	bool readNextFrame( std::vector<Frame>& frameBuffer );
 
 private:
+	bool getNextFrame();
+
 	AvInputStream*     _inputStream;
 	AVCodec*           _codec;
 	AVCodecContext*    _codecContext;

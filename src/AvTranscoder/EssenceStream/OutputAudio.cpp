@@ -1,4 +1,4 @@
-#include "OutputStreamAudio.hpp"
+#include "OutputAudio.hpp"
 
 extern "C" {
 #ifndef __STDC_CONSTANT_MACROS
@@ -9,20 +9,20 @@ extern "C" {
 #include <libavutil/avutil.h>
 }
 
-#include "DatasStructures/AudioFrame.hpp"
-
+#include <AvTranscoder/DatasStructures/AudioFrame.hpp>
+#include <AvTranscoder/Profile.hpp>
 #include <sstream>
 
 namespace avtranscoder
 {
 
-OutputStreamAudio::OutputStreamAudio()
-	: OutputStreamWriter::OutputStreamWriter()
+OutputAudio::OutputAudio()
+	: OutputEssence()
 	, _audioDesc( "pcm_s16le" )
 {
 }
 
-bool OutputStreamAudio::setup()
+bool OutputAudio::setup()
 {
 	av_register_all();  // Warning: should be called only once
 
@@ -38,7 +38,7 @@ bool OutputStreamAudio::setup()
 	return true;
 }
 
-bool OutputStreamAudio::encodeFrame( const Frame& sourceFrame, DataStream& codedFrame )
+bool OutputAudio::encodeFrame( const Frame& sourceFrame, DataStream& codedFrame )
 {
 #if LIBAVCODEC_VERSION_MAJOR > 54
 	AVFrame* frame = av_frame_alloc();
@@ -132,7 +132,7 @@ bool OutputStreamAudio::encodeFrame( const Frame& sourceFrame, DataStream& coded
 	return ret == 0;
 }
 
-bool OutputStreamAudio::encodeFrame( DataStream& codedFrame )
+bool OutputAudio::encodeFrame( DataStream& codedFrame )
 {
 	AVCodecContext* codecContext = _audioDesc.getCodecContext();
 
@@ -167,12 +167,10 @@ bool OutputStreamAudio::encodeFrame( DataStream& codedFrame )
 #endif
 }
 
-void OutputStreamAudio::setProfile( const std::string& profile )
+void OutputAudio::setProfile( Profile::ProfileDesc& desc )
 {
-	Profile p;
-	p.loadProfiles();
-	Profile::ProfileDesc profDesc = p.getProfile( profile );
-
+	_audioDesc.setAudioCodec( desc["codec"] );
+	_audioDesc.setAudioParameters( 48000, 2, av_get_sample_fmt( desc["sample_fmt"].c_str() ) );
 	checkProfileKey( profDesc, "codec" );
 	checkProfileKey( profDesc, "sample_fmt" );
 	checkProfileKey( profDesc, "sample_rate" );
@@ -183,8 +181,6 @@ void OutputStreamAudio::setProfile( const std::string& profile )
 	std::istringstream( profDesc["sample_rate"] ) >> sample_rate;
 	std::istringstream( profDesc["channels"] ) >> channels;
 
-	_audioDesc.setAudioCodec( profDesc["codec"] );
-	_audioDesc.setAudioParameters( sample_rate, channels, av_get_sample_fmt( profDesc["sample_fmt"].c_str() ) );
 
 	setup();
 }

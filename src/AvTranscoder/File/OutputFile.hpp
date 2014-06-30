@@ -5,8 +5,8 @@
 #include <AvTranscoder/DatasStructures/DataStreamDesc.hpp>
 #include <AvTranscoder/DatasStructures/VideoDesc.hpp>
 #include <AvTranscoder/DatasStructures/AudioDesc.hpp>
+#include <AvTranscoder/CodedStream/AvOutputStream.hpp>
 
-#include <AvTranscoder/AvOutputStream.hpp>
 
 #include <string>
 #include <vector>

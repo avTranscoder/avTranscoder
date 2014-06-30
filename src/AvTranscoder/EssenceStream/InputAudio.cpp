@@ -1,5 +1,4 @@
-#include "InputStreamAudio.hpp"
-#include "common.hpp"
+#include "InputAudio.hpp"
 
 extern "C" {
 #ifndef __STDC_CONSTANT_MACROS
@@ -12,7 +11,7 @@ extern "C" {
 #include <libavutil/channel_layout.h>
 }
 
-#include "AvInputStream.hpp"
+#include <AvTranscoder/CodedStream/AvInputStream.hpp>
 
 #include <iostream>
 #include <stdexcept>
@@ -20,8 +19,8 @@ extern "C" {
 namespace avtranscoder
 {
 
-InputStreamAudio::InputStreamAudio( AvInputStream& inputStream ) 
-	: InputStreamReader( inputStream )
+InputAudio::InputAudio( AvInputStream& inputStream ) 
+	: InputEssence   ( inputStream )
 	, _inputStream   ( &inputStream )
 	, _codec         ( NULL )
 	, _codecContext  ( NULL )
@@ -30,7 +29,7 @@ InputStreamAudio::InputStreamAudio( AvInputStream& inputStream )
 {
 }
 
-InputStreamAudio::~InputStreamAudio()
+InputAudio::~InputAudio()
 {
 	if( _codecContext != NULL )
 	{
@@ -54,7 +53,7 @@ InputStreamAudio::~InputStreamAudio()
 }
 
 
-void InputStreamAudio::setup()
+void InputAudio::setup()
 {
 	avcodec_register_all();
 
@@ -71,7 +70,7 @@ void InputStreamAudio::setup()
 	}
 	
 	_codecContext->channels = _inputStream->getAudioDesc().getChannels();
-
+	
 	// std::cout << "Audio codec Id : " << _codecContext->codec_id << std::endl;
 	// std::cout << "Audio codec Id : " << _codec->name << std::endl;
 	// std::cout << "Audio codec Id : " << _codec->long_name << std::endl;
@@ -107,7 +106,7 @@ void InputStreamAudio::setup()
 	}
 }
 
-bool InputStreamAudio::readNextFrame( Frame& frameBuffer )
+bool InputAudio::readNextFrame( Frame& frameBuffer )
 {
 	if( ! getNextFrame() )
 		return false;
@@ -134,7 +133,7 @@ bool InputStreamAudio::readNextFrame( Frame& frameBuffer )
 	return true;
 }
 
-bool InputStreamAudio::readNextFrame( std::vector<Frame>& frameBuffer )
+bool InputAudio::readNextFrame( std::vector<Frame>& frameBuffer )
 {
 	if( ! getNextFrame() )
 		return false;
@@ -162,7 +161,7 @@ bool InputStreamAudio::readNextFrame( std::vector<Frame>& frameBuffer )
 	return true;
 }
 
-bool InputStreamAudio::getNextFrame()
+bool InputAudio::getNextFrame()
 {
 	int got_frame = 0;
 	while( ! got_frame )

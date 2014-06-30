@@ -55,9 +55,11 @@ void getGopProperties(
 	{
 		if( pkt.stream_index == videoStreamIndex )
 		{
+			// std::cout << "decode frame" << std::endl;
 			avcodec_decode_video2( codecContext, frame, &gotFrame, &pkt );
 			if( gotFrame )
 			{
+				// std::cout << "inteleaved " << frame->interlaced_frame << std::endl;
 				vp.gopStructure.push_back( std::pair<char, bool>( av_get_picture_type_char( frame->pict_type ), frame->key_frame ) );
 				vp.isInterlaced  = frame->interlaced_frame;
 				vp.topFieldFirst = frame->top_field_first;
@@ -305,9 +307,6 @@ VideoProperties videoStreamInfo(
 		}
 	}
 
-	if( level == InputFile::eAnalyseLevelFast )
-		return vp;
-
 	AVCodec* codec = NULL;
 	if( ( codec = avcodec_find_decoder( codec_context->codec_id ) ) != NULL )
 	{
@@ -324,8 +323,11 @@ VideoProperties videoStreamInfo(
 				vp.profileName = profile;
 		}
 		
-		if( codec_context->width && codec_context->height )
+		// std::cout << "pass here " <<  codec_context->width << "x" << codec_context->height<< std::endl;
+
+		if( codec_context->width && codec_context->height )// && level != InputFile::eAnalyseLevelFast )
 		{
+			// std::cout << "full analysis" << std::endl;
 			details::getGopProperties( vp, formatContext, codec_context, codec, videoStreamIndex, progress );
 		}
 	}

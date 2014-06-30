@@ -15,7 +15,8 @@ extern "C" {
 namespace avtranscoder
 {
 
-enum OptionType {
+enum OptionType
+{
 	TypeBool,
 	TypeInt,
 	TypeDouble,
@@ -23,7 +24,6 @@ enum OptionType {
 	TypeRatio,
 	TypeChoice,
 	TypeGroup,
-	
 	TypeChild, // Option which brelongs to Choice or Group
 	TypeUnknown
 };
@@ -43,10 +43,13 @@ public:
 	~Option() {}
 	
 	OptionType getType() const;
+
 	std::string getName() const { return std::string( _avOption.name ? _avOption.name : "" ); }
 	std::string getHelp() const { return std::string( _avOption.help ? _avOption.help : "" ); }
 	std::string getUnit() const { return std::string( _avOption.unit ? _avOption.unit : "" ); }
 	int getOffset() const { return _avOption.offset; }
+	double getMin() const { return _avOption.min; }
+	double getMax() const { return _avOption.max; }
 	
 	// flags
 	int getFlags() const { return _avOption.flags; }

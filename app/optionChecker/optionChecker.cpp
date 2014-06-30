@@ -3,15 +3,13 @@
 
 #include <string>
 #include <iostream>
+#include <map>
+#include <vector>
 #include <utility> //pair
 
-int optionChecker( const std::string& inputfilename )
-{	
-	avtranscoder::OptionLoader optionLoader;
-	optionLoader.loadOptions( 0, 0 );
-	
-	// display Options
-	for( auto option : optionLoader.getOptions() )
+void displayOptions( avtranscoder::OptionLoader::OptionArray& options )
+{
+	for( auto option : options )
 	{
 		std::cout << std::left;
 		std::cout << "****************************" << std::endl;
@@ -59,6 +57,23 @@ int optionChecker( const std::string& inputfilename )
 					option.getChild( i ).getName() << " // " <<
 					option.getChild( i ).getDefaultValueBool() << std::endl;
 		}
+	}
+}
+
+int optionChecker( const std::string& inputfilename )
+{	
+	avtranscoder::OptionLoader optionLoader;
+	
+	//avtranscoder::OptionLoader::OptionArray optionsArray = optionLoader.loadOptions( AV_OPT_FLAG_AUDIO_PARAM );
+	avtranscoder::OptionLoader::OptionMap optionsMap = optionLoader.loadOutputFormatOptions();
+	
+	//displayOptions( optionsArray );
+	for( avtranscoder::OptionLoader::OptionMap::iterator it = optionsMap.begin();
+		it != optionsMap.end();
+		++it )
+	{
+		std::cout << "----- " << it->first << " -----" << std::endl;
+		displayOptions( it->second );
 	}
 }
 

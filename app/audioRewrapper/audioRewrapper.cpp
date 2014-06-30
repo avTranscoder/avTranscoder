@@ -4,11 +4,10 @@
 #include <AvTranscoder/File/InputFile.hpp>
 #include <AvTranscoder/File/OutputFile.hpp>
 
-#include <AvTranscoder/AvInputStream.hpp>
-#include <AvTranscoder/InputStreamAudio.hpp>
-#include <AvTranscoder/OutputStreamAudio.hpp>
+#include <AvTranscoder/EssenceStream/InputAudio.hpp>
+#include <AvTranscoder/EssenceStream/OutputAudio.hpp>
 
-#include <AvTranscoder/EssenceTransform/AudioTransform.hpp>
+#include <AvTranscoder/EssenceTransform/AudioEssenceTransform.hpp>
 
 void rewrapAudio( const char* inputfilename, const char* outputFilename )
 {
@@ -21,13 +20,16 @@ void rewrapAudio( const char* inputfilename, const char* outputFilename )
 
 	InputFile inputFile( inputfilename );
 	inputFile.analyse( p );
-	inputFile.readStream( 0 );
+
+	size_t audioStreamId = inputFile.getProperties().audioStreams.at( 0 ).streamId;
+
+	inputFile.readStream( audioStreamId );
 
 	OutputFile outputFile( outputFilename );
 
 	outputFile.setup();
 
-	outputFile.addAudioStream( inputFile.getStream( 0 ).getAudioDesc() );
+	AvOutputStream& audioStream = outputFile.addAudioStream( inputFile.getStream( audioStreamId ).getAudioDesc() );
 	
 	outputFile.beginWrap();
 
@@ -38,11 +40,11 @@ void rewrapAudio( const char* inputfilename, const char* outputFilename )
 
 	size_t frame = 0;
 
-	while( inputFile.getStream( 0 ).readNextPacket( data ) )
+	while( inputFile.getStream( audioStreamId ).readNextPacket( data ) )
 	{
 		std::cout << "\rprocess frame " << (int)frame - 1 << std::flush;
 
-		outputFile.wrap( data, 0 );
+		audioStream.wrap( data );
 
 		++frame;
 	}
@@ -66,30 +68,30 @@ void transcodeAudio( const char* inputfilename, const char* outputFilename )
 	outputFile.setup();
 	
 	// init audio decoders
-	InputStreamAudio inputStreamAudio( inputFile.getStream( 0 ) );
-	inputStreamAudio.setup();
-	inputFile.getStream( 0 ).setBufferred( true );
+	size_t audioStreamId = inputFile.getProperties().audioStreams.at( 0 ).streamId;
+	InputAudio inputAudio( inputFile.getStream( audioStreamId ) );
+	inputFile.readStream( audioStreamId );
 
 	// init audio encoders
-	OutputStreamAudio outputStreamAudio;
-	AudioDesc& audioOutputDesc = outputStreamAudio.getAudioDesc();
+	OutputAudio outputAudio;
+	AudioDesc& audioOutputDesc = outputAudio.getAudioDesc();
 	audioOutputDesc.setAudioCodec( "pcm_s24le" );
 	audioOutputDesc.setAudioParameters( 
 		inputFile.getStream( 0 ).getAudioDesc().getSampleRate(),
 		inputFile.getStream( 0 ).getAudioDesc().getChannels(),
-		AV_SAMPLE_FMT_S32//,inputFile.getStream( 0 ).getAudioDesc().getSampleFormat()
+		AV_SAMPLE_FMT_S16//,inputFile.getStream( 0 ).getAudioDesc().getSampleFormat()
 		);
 	
-	if( ! outputStreamAudio.setup( ) )
+	if( ! outputAudio.setup( ) )
 	{
 		throw std::runtime_error( "error during initialising audio output stream" );
 	}
 	
-	outputFile.addAudioStream( audioOutputDesc );
+	AvOutputStream& audioStream = outputFile.addAudioStream( audioOutputDesc );
 	outputFile.beginWrap();
 	
 	// init convert
-	AudioTransform audioTransform;
+	AudioEssenceTransform audioEssenceTransform;
 	
 	DataStream codedFrame;
 
@@ -100,15 +102,15 @@ void transcodeAudio( const char* inputfilename, const char* outputFilename )
 	AudioFrame audioFrameToEncode( audioOutputDesc.getFrameDesc() );
 	
 	size_t frame = 0;
-	while( inputStreamAudio.readNextFrame( audioFrameSource ) )
+	while( inputAudio.readNextFrame( audioFrameSource ) )
 	{
 		std::cout << "\rprocess frame " << (int)frame - 1 << std::flush;
 
-		audioTransform.convert( audioFrameSource, audioFrameToEncode );
+		audioEssenceTransform.convert( audioFrameSource, audioFrameToEncode );
 		
-		outputStreamAudio.encodeFrame( audioFrameToEncode, codedFrame );
+		outputAudio.encodeFrame( audioFrameToEncode, codedFrame );
 				
-		outputFile.wrap( codedFrame, 0 );
+		audioStream.wrap( codedFrame );
 
 		++frame;
 		// if you want to stop the transcoding process (after 10s at 48,1 KHz)
@@ -117,8 +119,8 @@ void transcodeAudio( const char* inputfilename, const char* outputFilename )
 	}
 	std::cout << std::endl;
 	
-	outputStreamAudio.encodeFrame( codedFrame );
-	outputFile.wrap( codedFrame, 0 );
+	outputAudio.encodeFrame( codedFrame );
+	audioStream.wrap( codedFrame );
 	
 	// end of transcoding process
 	
@@ -139,7 +141,7 @@ int main( int argc, char** argv )
 	try
 	{
 		rewrapAudio( argv[1], argv[2] );
-		// transcodeAudio( argv[1], argv[2] );
+		//transcodeAudio( argv[1], argv[2] );
 	}
 	catch( std::exception &e )
 	{

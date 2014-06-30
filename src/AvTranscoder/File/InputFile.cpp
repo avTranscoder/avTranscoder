@@ -1,5 +1,4 @@
 #include "InputFile.hpp"
-#include <AvTranscoder/AvInputStream.hpp>
 
 #include <AvTranscoder/Metadatas/VideoStreamProperties.hpp>
 #include <AvTranscoder/Metadatas/AudioStreamProperties.hpp>

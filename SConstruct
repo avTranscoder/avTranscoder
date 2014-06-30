@@ -46,28 +46,6 @@ env     = Environment().Clone()
 envJava = Environment().Clone()
 envPy   = Environment().Clone()
 
-conf = Configure( env )
-
-resampleLibraryFlag = '-DAV_RESAMPLE_LIBRARY'
-resampleLibraryName = 'avresample'
-
-if not conf.CheckLibWithHeader('avutil', 'libavutil/avutil.h', 'c'):
-    sys.exit( 0 )
-
-if not conf.CheckLibWithHeader('avformat', 'libavformat/avformat.h', 'c'):
-    sys.exit( 0 )
-
-if not conf.CheckLibWithHeader('avcodec', 'libavcodec/avcodec.h', 'c'):
-    sys.exit( 0 )
-
-if not conf.CheckLibWithHeader('swscale', 'libswscale/swscale.h', 'c'):
-    sys.exit( 0 )
-
-if not conf.CheckLibWithHeader('avresample', 'libavresample/avresample.h', 'c'):
-    if conf.CheckLibWithHeader('swresample', 'libswresample/swresample.h', 'c'):
-        resampleLibraryFlag = '-DFF_RESAMPLE_LIBRARY'
-        resampleLibraryName = 'swresample'
-
 # C++ environment
 env.Append(
     CPPPATH = [
@@ -77,7 +55,6 @@ env.Append(
     CXXFLAGS = [
         '-Wall',
         '-fPIC',
-        resampleLibraryFlag,
     ],
     LIBPATH = [
         libavLibDir,
@@ -96,7 +73,6 @@ envJava.Replace(
     SWIGCXXFILESUFFIX= '_wrapJava$CXXFILESUFFIX',
     CXXFLAGS = [
         '-Wall',
-        resampleLibraryFlag,
     ],
     SWIGFLAGS = [
         '-java',
@@ -128,7 +104,6 @@ envPy.Replace(
     SHLIBPREFIX= '_',
     CXXFLAGS = [
         '-Wall',
-        resampleLibraryFlag,
     ],
     SWIGFLAGS = [
         '-python',
@@ -144,6 +119,38 @@ envPy.Replace(
 )
 
 envPy.Append( SWIGPATH = envPy['CPPPATH'] )
+
+conf = Configure( env )
+
+resampleLibraryFlag = '-DAV_RESAMPLE_LIBRARY'
+resampleLibraryName = 'avresample'
+
+if not conf.CheckLibWithHeader('avutil', 'libavutil/avutil.h', 'c'):
+    sys.exit( 0 )
+
+if not conf.CheckLibWithHeader('avcodec', 'libavcodec/avcodec.h', 'c'):
+    sys.exit( 0 )
+
+if not conf.CheckLibWithHeader('avformat', 'libavformat/avformat.h', 'c'):
+    sys.exit( 0 )
+
+if not conf.CheckLibWithHeader('swscale', 'libswscale/swscale.h', 'c'):
+    sys.exit( 0 )
+
+if not conf.CheckLibWithHeader('avresample', 'libavresample/avresample.h', 'c'):
+    if conf.CheckLibWithHeader('swresample', 'libswresample/swresample.h', 'c'):
+        resampleLibraryFlag = '-DFF_RESAMPLE_LIBRARY'
+        resampleLibraryName = 'swresample'
+
+env.Append(
+    CXXFLAGS = resampleLibraryFlag
+)
+envJava.Append(
+    CXXFLAGS = resampleLibraryFlag
+)
+envPy.Append(
+    CXXFLAGS = resampleLibraryFlag
+)
 
 Export( "env" )
 Export( "envJava" )

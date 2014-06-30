@@ -3,8 +3,8 @@
 #include <iomanip>
 #include <AvTranscoder/Profile.hpp>
 
-#include <AvTranscoder/OutputStreamVideo.hpp>
-#include <AvTranscoder/OutputStreamAudio.hpp>
+#include <AvTranscoder/EssenceStream/OutputVideo.hpp>
+#include <AvTranscoder/EssenceStream/OutputAudio.hpp>
 
 
 int main( int argc, char** argv )
@@ -24,14 +24,14 @@ int main( int argc, char** argv )
 
 		if( profile.find( avtranscoder::Profile::avProfileType )->second == avtranscoder::Profile::avProfileTypeVideo )
 		{
-			avtranscoder::OutputStreamVideo outputVideoStream;
-			outputVideoStream.setProfile( profile.find( avtranscoder::Profile::avProfileIdentificator )->second );
+			avtranscoder::OutputVideo outputVideo;
+			outputVideo.setProfile( profile );
 		}
 
 		if( profile.find( avtranscoder::Profile::avProfileType )->second == avtranscoder::Profile::avProfileTypeAudio )
 		{
-			avtranscoder::OutputStreamAudio outputAudioStream;
-			outputAudioStream.setProfile( profile.find( avtranscoder::Profile::avProfileIdentificator )->second );
+			avtranscoder::OutputAudio outputAudio;
+			outputAudio.setProfile( profile );
 		}
 
 	}

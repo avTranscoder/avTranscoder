@@ -36,9 +36,6 @@ namespace avtranscoder
 class AvExport ImageDesc
 {
 public:
-	ImageDesc()
-	{};
-
 	void setWidth ( const size_t width     ) { m_width = width; }
 	void setHeight( const size_t height    ) { m_height = height; }
 	void setPixel ( const Pixel  pixel     ) { m_pixel = pixel; }
@@ -66,7 +63,6 @@ public:
 	}
 
 private:
-
 	size_t          m_width;
 	size_t          m_height;
 	Ratio           m_displayAspectRatio;

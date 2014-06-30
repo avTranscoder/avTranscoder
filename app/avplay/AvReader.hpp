@@ -1,14 +1,10 @@
 #ifndef _AVPLAYER_AVREADER_
 #define _AVPLAYER_AVREADER_
 
-
-#include <AvTranscoder/AvInputStream.hpp>
-#include <AvTranscoder/InputStreamAudio.hpp>
-#include <AvTranscoder/InputStreamVideo.hpp>
 #include <AvTranscoder/File/InputFile.hpp>
-
-#include <AvTranscoder/EssenceTransform/ColorTransform.hpp>
-
+#include <AvTranscoder/EssenceStream/InputAudio.hpp>
+#include <AvTranscoder/EssenceStream/InputVideo.hpp>
+#include <AvTranscoder/EssenceTransform/VideoEssenceTransform.hpp>
 #include <AvTranscoder/Metadatas/Print.hpp>
 
 #include "Reader.hpp"
@@ -18,7 +14,7 @@ class AvReader : public Reader
 public:
 	AvReader( const std::string& filename )
 		: m_inputFile( filename )
-		, m_inputStreamVideo( NULL )
+		, m_inputVideo( NULL )
 		, m_sourceImage( NULL )
 		, m_imageToDisplay( NULL )
 	{
@@ -29,7 +25,7 @@ public:
 
 		m_inputFile.readStream( m_videoStream );
 
-		m_inputStreamVideo = new avtranscoder::InputStreamVideo( m_inputFile.getStream( m_videoStream ) );
+		m_inputVideo = new avtranscoder::InputVideo( m_inputFile.getStream( m_videoStream ) );
 		
 		m_sourceImage = new avtranscoder::Image( m_inputFile.getStream( m_videoStream ).getVideoDesc().getImageDesc() );
 
@@ -51,7 +47,7 @@ public:
 
 	~AvReader()
 	{
-		delete m_inputStreamVideo;
+		delete m_inputVideo;
 		delete m_sourceImage;
 		delete m_imageToDisplay;
 	}
@@ -79,8 +75,8 @@ public:
 	const char* readNextFrame()
 	{
 		++currentFrame;
-		m_inputStreamVideo->readNextFrame( *m_sourceImage );
-		m_colorTransform.convert( *m_sourceImage, *m_imageToDisplay );
+		m_inputVideo->readNextFrame( *m_sourceImage );
+		m_videoEssenceTransform.convert( *m_sourceImage, *m_imageToDisplay );
 		return (const char*)m_imageToDisplay->getPtr();
 	}
 
@@ -94,7 +90,7 @@ public:
 	{
 		// /std::cout << "seek at " << frame << std::endl;
 		m_inputFile.seekAtFrame( frame );
-		m_inputStreamVideo->flushDecoder();
+		m_inputVideo->flushDecoder();
 		return readNextFrame();
 	}
 
@@ -106,7 +102,7 @@ public:
 private:
 	avtranscoder::InputFile m_inputFile;
 	
-	avtranscoder::InputStreamVideo* m_inputStreamVideo;
+	avtranscoder::InputVideo* m_inputVideo;
 
 	avtranscoder::Image* m_sourceImage;
 	avtranscoder::Image* m_imageToDisplay;
@@ -114,7 +110,7 @@ private:
 	avtranscoder::Pixel pixel;
 	avtranscoder::ImageDesc imageDescToDisplay;
 
-	avtranscoder::ColorTransform m_colorTransform;
+	avtranscoder::VideoEssenceTransform m_videoEssenceTransform;
 	size_t m_videoStream;
 };
 

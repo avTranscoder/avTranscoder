@@ -1,4 +1,4 @@
-#include "OutputStreamVideo.hpp"
+#include "OutputVideo.hpp"
 
 extern "C" {
 #ifndef __STDC_CONSTANT_MACROS
@@ -12,21 +12,19 @@ extern "C" {
 #include <libavutil/mathematics.h>
 }
 
-#include "DatasStructures/Image.hpp"
-#include "Profile.hpp"
-
-#include <iostream>
+#include <AvTranscoder/DatasStructures/Image.hpp>
+#include <AvTranscoder/Profile.hpp>
 
 namespace avtranscoder
 {
 
-OutputStreamVideo::OutputStreamVideo( )
-	: OutputStreamWriter::OutputStreamWriter( )
+OutputVideo::OutputVideo( )
+	: OutputEssence( )
 	, _videoDesc( "mpeg2video" )
 {
 }
 
-bool OutputStreamVideo::setup( )
+bool OutputVideo::setup( )
 {
 	av_register_all();  // Warning: should be called only once
 
@@ -35,15 +33,15 @@ bool OutputStreamVideo::setup( )
 	if( codecContext == NULL )
 		return false;
 
-	// try to open encoder with parameters.
-	if( avcodec_open2( _videoDesc.getCodecContext(), _videoDesc.getCodec(), NULL ) < 0 )
+	// try to open encoder with parameters
+	if( avcodec_open2( codecContext, _videoDesc.getCodec(), NULL ) < 0 )
 		return false;
 
 	return true;
 }
 
 
-bool OutputStreamVideo::encodeFrame( const Frame& sourceFrame, DataStream& codedFrame )
+bool OutputVideo::encodeFrame( const Frame& sourceFrame, DataStream& codedFrame )
 {
 #if LIBAVCODEC_VERSION_MAJOR > 54
 	AVFrame* frame = av_frame_alloc();
@@ -143,7 +141,7 @@ bool OutputStreamVideo::encodeFrame( const Frame& sourceFrame, DataStream& coded
 }
 
 
-bool OutputStreamVideo::encodeFrame( DataStream& codedFrame )
+bool OutputVideo::encodeFrame( DataStream& codedFrame )
 {
 	AVCodecContext* codecContext = _videoDesc.getCodecContext();
 
@@ -178,19 +176,13 @@ bool OutputStreamVideo::encodeFrame( DataStream& codedFrame )
 #endif
 }
 
-void OutputStreamVideo::setProfile( const std::string& profile )
+void OutputVideo::setProfile( Profile::ProfileDesc& desc )
 {
-	Profile p;
-
-	p.loadProfiles();
-
-	Profile::ProfileDesc prof = p.getProfile( profile );
-
-	_videoDesc.setVideoCodec( prof[ "codec" ] );
+	_videoDesc.setVideoCodec( desc[ "codec" ] );
 	_videoDesc.setTimeBase( 1, 25 ); // 25 fps
-	_videoDesc.setImageParameters( 1920, 1080, av_get_pix_fmt( prof[ "pix_fmt" ].c_str() ) );
+	_videoDesc.setImageParameters( 1920, 1080, av_get_pix_fmt( desc[ "pix_fmt" ].c_str() ) );
 
-	for( Profile::ProfileDesc::iterator it = prof.begin(); it != prof.end(); ++it )
+	for( Profile::ProfileDesc::iterator it = desc.begin(); it != desc.end(); ++it )
 	{
 		if( (*it).first == Profile::avProfileIdentificator )
 			continue;
@@ -219,7 +211,7 @@ void OutputStreamVideo::setProfile( const std::string& profile )
 
 	setup();
 
-	for( Profile::ProfileDesc::iterator it = prof.begin(); it != prof.end(); ++it )
+	for( Profile::ProfileDesc::iterator it = desc.begin(); it != desc.end(); ++it )
 	{
 		if( (*it).first == Profile::avProfileIdentificator )
 			continue;

@@ -1,11 +1,15 @@
 
-#include <AvTranscoder/AvInputStream.hpp>
+#include "Transcoder.hpp"
+#include "StreamTranscoder.hpp"
+
+#include <AvTranscoder/CodedStream/AvInputStream.hpp>
 
 namespace avtranscoder
 {
 
 Transcoder::Transcoder( OutputFile& outputFile )
 	: _outputFile( outputFile )
+	, _profile( true )
 {
 	_outputFile.setup();
 }
@@ -28,23 +32,57 @@ Transcoder::~Transcoder()
 	}
 }
 
-void Transcoder::add( const std::string& filename, const size_t streamIndex, const std::string& profile )
+void Transcoder::add( const std::string& filename, const size_t streamIndex, const std::string& profileName )
 {
+	InputStreamDesc streamDesc( streamIndex, filename, profileName );
+	add( streamDesc );
+}
+
+void Transcoder::add( const std::string& filename, const size_t streamIndex, const Profile::ProfileDesc& profileDesc )
+{
+	_profile.update( profileDesc );
+	
+	InputStreamDesc streamDesc( streamIndex, filename, profileDesc );
+	add( streamDesc );
+}
+
+void Transcoder::add( const InputStreamsDesc& streamDefs )
+{
+	for( size_t streamDest = 0; streamDest < streamDefs.size(); ++streamDest )
+	{
+		add( streamDefs.at( streamDest ) );
+	}
+	if( _inputStreams.size() != _streamTranscoders.size() )
+		throw std::runtime_error( "_inputStreams and _streamTranscoders must have the same number of streams" );
+}
+
+void Transcoder::add( const InputStreamDesc& streamDefinition )
+{
+	const std::string filename( streamDefinition.filename );
+	const size_t streamIndex = streamDefinition.streamId;
+	const Profile::ProfileDesc profileDesc = streamDefinition.transcodeProfile;
+	
 	if( ! filename.length() )
 	{
+		try
+		{
+			// be sure the first inputStream is an AvInputStream created from an audio file
+			dynamic_cast<AvInputStream*>( _inputStreams.at( 0 ) );
+		}
+		catch( std::exception& e)
+		{
+			throw std::runtime_error( "dummy stream can't be the first audio channel" );
+		}
+
 		_dummyInputStreams.push_back( new DummyInputStream() );
 		
 		_inputStreams.push_back( _dummyInputStreams.back() );
 		
-		if( _inputStreams.at( 1 ) )
-		{
-			_dummyInputStreams.back()->setAudioDesc( _inputStreams.at( 1 )->getAudioDesc() );
-			_outputFile.addAudioStream( _inputStreams.back()->getAudioDesc() );
-		}
-		else
-			std::cout << "dummy can't be the first audio channel" << std::endl;
+		_dummyInputStreams.back()->setAudioDesc( _inputStreams.at( 0 )->getAudioDesc() );
+		_outputFile.addAudioStream( _inputStreams.back()->getAudioDesc() );
 		
-		_streamTranscoders.push_back( NULL );
+		StreamTranscoder* streamTranscoder = new StreamTranscoder( *_dummyInputStreams.back(), _outputFile, _streamTranscoders.size() );
+		_streamTranscoders.push_back( streamTranscoder );
 
 		return;
 	}
@@ -73,7 +111,7 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 		case AVMEDIA_TYPE_VIDEO:
 		{
 			StreamTranscoder* streamTranscoder = new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile, _streamTranscoders.size() );
-			streamTranscoder->init( profile );
+			streamTranscoder->init( profileDesc );
 			_streamTranscoders.push_back( streamTranscoder );
 			_inputStreams.push_back( & referenceFile->getStream( streamIndex ) );
 			break;
@@ -81,7 +119,7 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 		case AVMEDIA_TYPE_AUDIO:
 		{
 			StreamTranscoder* streamTranscoder = new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile, _streamTranscoders.size() );
-			streamTranscoder->init( profile );
+			streamTranscoder->init( profileDesc );
 			_streamTranscoders.push_back( streamTranscoder );
 			_inputStreams.push_back( & referenceFile->getStream( streamIndex ) );
 			break;
@@ -97,17 +135,30 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 	return;
 }
 
-void Transcoder::add( const InputStreamsDesc& streamDefs )
+
+bool Transcoder::processFrame()
 {
-	for( size_t streamDest = 0; streamDest < streamDefs.size(); ++streamDest )
+	for( size_t streamIndex = 0; streamIndex < _inputStreams.size(); ++streamIndex )
 	{
-		add( streamDefs.at( streamDest ).filename,
-		     streamDefs.at( streamDest ).streamId,
-		     streamDefs.at( streamDest ).transcodeProfile );
+		if( ( _streamTranscoders.size() > streamIndex ) &&
+			! _streamTranscoders.at( streamIndex )->processFrame() )
+		{
+			//_inputStreams.erase( _inputStreams.begin() + streamIndex );
+			_inputStreams.clear();
+		}
 	}
-	if( _inputStreams.size() != _streamTranscoders.size() )
-		throw std::runtime_error( "_inputStreams and _streamTranscoders must have the same number of streams" );
+
+	if( _inputStreams.size() == 0 )
+	{
+		return false;
+	}
+	for( size_t i = 0; i < _streamTranscoders.size(); ++i )
+	{
+		_streamTranscoders.at( i )->processFrame();
+	}
+	return true;
 }
+
 
 void Transcoder::process( ProgressListener& progress )
 {
@@ -133,19 +184,8 @@ void Transcoder::process( ProgressListener& progress )
 			break;
 		}
 
-
-		for( size_t streamIndex = 0; streamIndex < _inputStreams.size(); ++streamIndex )
-		{
-			if( _streamTranscoders.at( streamIndex ) && ! _streamTranscoders.at( streamIndex )->processFrame() )
-			{
-				_inputStreams.erase( _inputStreams.begin() + streamIndex );
-			}
-		}
-
-		if( _inputStreams.size() == 0 )
-		{
+		if( ! processFrame() )
 			break;
-		}
 
 		++frame;
 	}

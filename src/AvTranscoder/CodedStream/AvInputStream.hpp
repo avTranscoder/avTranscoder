@@ -1,7 +1,7 @@
-#ifndef _AV_TRANSCODER_AV_INPUT_STREAM_HPP_
-#define _AV_TRANSCODER_AV_INPUT_STREAM_HPP_
+#ifndef _AV_TRANSCODER_CODED_STREAM_AV_INPUT_STREAM_HPP_
+#define _AV_TRANSCODER_CODED_STREAM_AV_INPUT_STREAM_HPP_
 
-#include <AvTranscoder/InputStream.hpp>
+#include "InputStream.hpp"
 
 namespace avtranscoder
 {

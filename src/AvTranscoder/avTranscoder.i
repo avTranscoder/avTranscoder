@@ -21,22 +21,27 @@
 
 #include <AvTranscoder/Metadatas/MediaMetadatasStructures.hpp>
 
-#include <AvTranscoder/OutputStream.hpp>
-#include <AvTranscoder/OutputStreamWriter.hpp>
-#include <AvTranscoder/AvOutputStream.hpp>
-#include <AvTranscoder/OutputStreamAudio.hpp>
-#include <AvTranscoder/OutputStreamVideo.hpp>
+#include <AvTranscoder/Profile.hpp>
 
-#include <AvTranscoder/InputStream.hpp>
-#include <AvTranscoder/AvInputStream.hpp>
-#include <AvTranscoder/InputStreamReader.hpp>
-#include <AvTranscoder/InputStreamAudio.hpp>
-#include <AvTranscoder/InputStreamVideo.hpp>
+#include <AvTranscoder/CodedStream/OutputStream.hpp>
+#include <AvTranscoder/CodedStream/AvOutputStream.hpp>
+
+#include <AvTranscoder/CodedStream/InputStream.hpp>
+#include <AvTranscoder/CodedStream/AvInputStream.hpp>
+
+#include <AvTranscoder/EssenceStream/OutputEssence.hpp>
+#include <AvTranscoder/EssenceStream/OutputAudio.hpp>
+#include <AvTranscoder/EssenceStream/OutputVideo.hpp>
+
+#include <AvTranscoder/EssenceStream/InputEssence.hpp>
+#include <AvTranscoder/EssenceStream/InputAudio.hpp>
+#include <AvTranscoder/EssenceStream/InputVideo.hpp>
 
 #include <AvTranscoder/File/InputFile.hpp>
 #include <AvTranscoder/File/OutputFile.hpp>
 
-#include <AvTranscoder/Transcoder.hpp>
+#include <AvTranscoder/Transcoder/StreamTranscoder.hpp>
+#include <AvTranscoder/Transcoder/Transcoder.hpp>
 
 %}
 
@@ -65,19 +70,24 @@ namespace std {
 
 %include <AvTranscoder/Metadatas/MediaMetadatasStructures.hpp>
 
-%include <AvTranscoder/OutputStream.hpp>
-%include <AvTranscoder/OutputStreamWriter.hpp>
-%include <AvTranscoder/AvOutputStream.hpp>
-%include <AvTranscoder/OutputStreamAudio.hpp>
-%include <AvTranscoder/OutputStreamVideo.hpp>
+%include <AvTranscoder/Profile.hpp>
 
-%include <AvTranscoder/InputStream.hpp>
-%include <AvTranscoder/AvInputStream.hpp>
-%include <AvTranscoder/InputStreamReader.hpp>
-%include <AvTranscoder/InputStreamAudio.hpp>
-%include <AvTranscoder/InputStreamVideo.hpp>
+%include <AvTranscoder/CodedStream/OutputStream.hpp>
+%include <AvTranscoder/CodedStream/AvOutputStream.hpp>
+
+%include <AvTranscoder/CodedStream/InputStream.hpp>
+%include <AvTranscoder/CodedStream/AvInputStream.hpp>
+
+%include <AvTranscoder/EssenceStream/OutputEssence.hpp>
+%include <AvTranscoder/EssenceStream/OutputAudio.hpp>
+%include <AvTranscoder/EssenceStream/OutputVideo.hpp>
+
+%include <AvTranscoder/EssenceStream/InputEssence.hpp>
+%include <AvTranscoder/EssenceStream/InputAudio.hpp>
+%include <AvTranscoder/EssenceStream/InputVideo.hpp>
 
 %include <AvTranscoder/File/InputFile.hpp>
 %include <AvTranscoder/File/OutputFile.hpp>
 
-%include <AvTranscoder/Transcoder.hpp>
+%include <AvTranscoder/Transcoder/StreamTranscoder.hpp>
+%include <AvTranscoder/Transcoder/Transcoder.hpp>

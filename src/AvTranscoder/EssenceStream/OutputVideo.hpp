@@ -1,5 +1,5 @@
-#ifndef _AV_TRANSCODER_OUTPUT_STREAM_VIDEO_HPP_
-#define _AV_TRANSCODER_OUTPUT_STREAM_VIDEO_HPP_
+#ifndef _AV_TRANSCODER_ESSENCE_STREAM_OUTPUT_VIDEO_HPP_
+#define _AV_TRANSCODER_ESSENCE_STREAM_OUTPUT_VIDEO_HPP_
 
 extern "C" {
 #ifndef __STDC_CONSTANT_MACROS
@@ -8,10 +8,12 @@ extern "C" {
 #include <libavutil/pixfmt.h>
 }
 
-#include "OutputStreamWriter.hpp"
+#include "OutputEssence.hpp"
 
-#include "DatasStructures/VideoDesc.hpp"
-#include "DatasStructures/DataStreamDesc.hpp"
+#include <AvTranscoder/DatasStructures/VideoDesc.hpp>
+#include <AvTranscoder/DatasStructures/DataStreamDesc.hpp>
+
+#include <AvTranscoder/Profile.hpp>
 
 #include <string>
 #include <vector>
@@ -22,10 +24,10 @@ class AVCodecContext;
 namespace avtranscoder
 {
 
-class AvExport OutputStreamVideo : public OutputStreamWriter
+class AvExport OutputVideo : public OutputEssence
 {
 public:
-	OutputStreamVideo();
+	OutputVideo();
 
 	bool setup();
 
@@ -41,9 +43,9 @@ public:
 	 */
 	bool encodeFrame( DataStream& codedFrame );
 
+	void setProfile( Profile::ProfileDesc& desc );
+	
 	VideoDesc& getVideoDesc() { return _videoDesc; }
-
-	void setProfile( const std::string& profile );
 
 private:
 	VideoDesc _videoDesc;
