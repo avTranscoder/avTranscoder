@@ -176,19 +176,13 @@ bool OutputVideo::encodeFrame( DataStream& codedFrame )
 #endif
 }
 
-void OutputVideo::setProfile( const std::string& profile )
+void OutputVideo::setProfile( Profile::ProfileDesc& desc )
 {
-	Profile p;
-
-	p.loadProfiles();
-
-	Profile::ProfileDesc prof = p.getProfile( profile );
-
-	_videoDesc.setVideoCodec( prof[ "codec" ] );
+	_videoDesc.setVideoCodec( desc[ "codec" ] );
 	_videoDesc.setTimeBase( 1, 25 ); // 25 fps
-	_videoDesc.setImageParameters( 1920, 1080, av_get_pix_fmt( prof[ "pix_fmt" ].c_str() ) );
+	_videoDesc.setImageParameters( 1920, 1080, av_get_pix_fmt( desc[ "pix_fmt" ].c_str() ) );
 
-	for( Profile::ProfileDesc::iterator it = prof.begin(); it != prof.end(); ++it )
+	for( Profile::ProfileDesc::iterator it = desc.begin(); it != desc.end(); ++it )
 	{
 		if( (*it).first == Profile::avProfileIdentificator )
 			continue;
@@ -217,7 +211,7 @@ void OutputVideo::setProfile( const std::string& profile )
 
 	setup();
 
-	for( Profile::ProfileDesc::iterator it = prof.begin(); it != prof.end(); ++it )
+	for( Profile::ProfileDesc::iterator it = desc.begin(); it != desc.end(); ++it )
 	{
 		if( (*it).first == Profile::avProfileIdentificator )
 			continue;

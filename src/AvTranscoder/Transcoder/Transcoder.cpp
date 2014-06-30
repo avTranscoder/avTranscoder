@@ -9,6 +9,7 @@ namespace avtranscoder
 
 Transcoder::Transcoder( OutputFile& outputFile )
 	: _outputFile( outputFile )
+	, _profile( true )
 {
 	_outputFile.setup();
 }
@@ -31,8 +32,36 @@ Transcoder::~Transcoder()
 	}
 }
 
-void Transcoder::add( const std::string& filename, const size_t streamIndex, const std::string& profile )
+void Transcoder::add( const std::string& filename, const size_t streamIndex, const std::string& profileName )
 {
+	InputStreamDesc streamDesc( streamIndex, filename, profileName );
+	add( streamDesc );
+}
+
+void Transcoder::add( const std::string& filename, const size_t streamIndex, const Profile::ProfileDesc& profileDesc )
+{
+	_profile.update( profileDesc );
+	
+	InputStreamDesc streamDesc( streamIndex, filename, profileDesc );
+	add( streamDesc );
+}
+
+void Transcoder::add( const InputStreamsDesc& streamDefs )
+{
+	for( size_t streamDest = 0; streamDest < streamDefs.size(); ++streamDest )
+	{
+		add( streamDefs.at( streamDest ) );
+	}
+	if( _inputStreams.size() != _streamTranscoders.size() )
+		throw std::runtime_error( "_inputStreams and _streamTranscoders must have the same number of streams" );
+}
+
+void Transcoder::add( const InputStreamDesc& streamDefinition )
+{
+	const std::string filename( streamDefinition.filename );
+	const size_t streamIndex = streamDefinition.streamId;
+	const Profile::ProfileDesc profileDesc = streamDefinition.transcodeProfile;
+	
 	if( ! filename.length() )
 	{
 		try
@@ -82,7 +111,7 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 		case AVMEDIA_TYPE_VIDEO:
 		{
 			StreamTranscoder* streamTranscoder = new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile, _streamTranscoders.size() );
-			streamTranscoder->init( profile );
+			streamTranscoder->init( profileDesc );
 			_streamTranscoders.push_back( streamTranscoder );
 			_inputStreams.push_back( & referenceFile->getStream( streamIndex ) );
 			break;
@@ -90,7 +119,7 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 		case AVMEDIA_TYPE_AUDIO:
 		{
 			StreamTranscoder* streamTranscoder = new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile, _streamTranscoders.size() );
-			streamTranscoder->init( profile );
+			streamTranscoder->init( profileDesc );
 			_streamTranscoders.push_back( streamTranscoder );
 			_inputStreams.push_back( & referenceFile->getStream( streamIndex ) );
 			break;
@@ -104,18 +133,6 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 		}
 	}
 	return;
-}
-
-void Transcoder::add( const InputStreamsDesc& streamDefs )
-{
-	for( size_t streamDest = 0; streamDest < streamDefs.size(); ++streamDest )
-	{
-		add( streamDefs.at( streamDest ).filename,
-		     streamDefs.at( streamDest ).streamId,
-		     streamDefs.at( streamDest ).transcodeProfile );
-	}
-	if( _inputStreams.size() != _streamTranscoders.size() )
-		throw std::runtime_error( "error during settings streams and transcoders" );
 }
 
 

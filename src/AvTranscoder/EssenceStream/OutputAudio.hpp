@@ -2,8 +2,11 @@
 #define _AV_TRANSCODER_ESSENCE_STREAM_OUTPUT_AUDIO_HPP_
 
 #include "OutputEssence.hpp"
+
 #include <AvTranscoder/DatasStructures/AudioDesc.hpp>
 #include <AvTranscoder/DatasStructures/DataStreamDesc.hpp>
+
+#include <AvTranscoder/Profile.hpp>
 
 namespace avtranscoder
 {
@@ -25,7 +28,7 @@ public:
 	 */
 	bool encodeFrame( DataStream& codedFrame );
 	
-	void setProfile( const std::string& profile );
+	void setProfile( Profile::ProfileDesc& desc );
 
 	AudioDesc& getAudioDesc() { return _audioDesc; }
 

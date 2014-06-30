@@ -21,9 +21,10 @@ const std::string Profile::avProfileTypeVideo( "avProfileTypeVideo" );
 const std::string Profile::avProfileTypeAudio( "avProfileTypeAudio" );
 
 
-Profile::Profile()
+Profile::Profile( bool autoload )
 {
-
+	if( autoload )
+		loadProfiles();
 }
 
 void Profile::loadProfiles()
@@ -78,6 +79,23 @@ void Profile::loadProfiles()
 	}
 }
 
+void Profile::update( const ProfileDesc& profile )
+{
+	std::string profileId( profile.find( avProfileIdentificator )->second );
+	size_t profileIndex = 0;
+	for( ProfilesDesc::iterator it = _profiles.begin(); it != _profiles.end(); ++it )
+	{
+		if( (*it).find( avProfileIdentificator )->second == profileId )
+		{
+			_profiles.at( profileIndex ) = profile;
+			return;
+		}
+		++profileIndex;
+	}
+	// profile not found: add the new profile
+	_profiles.push_back( profile );
+}
+
 const Profile::ProfilesDesc& Profile::getProfiles()
 {
 	return _profiles;
@@ -99,6 +117,12 @@ Profile::ProfilesDesc Profile::getVideoProfiles()
 Profile::ProfilesDesc Profile::getAudioProfiles()
 {
 	ProfilesDesc profiles;
+
+	for( ProfilesDesc::iterator it = _profiles.begin(); it != _profiles.end(); ++it )
+	{
+		if( (*it).find( avProfileType )->second == avProfileTypeAudio )
+			profiles.push_back( *it );
+	}
 
 	return profiles;
 }

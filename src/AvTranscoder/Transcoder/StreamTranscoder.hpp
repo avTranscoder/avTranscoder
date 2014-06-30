@@ -11,6 +11,7 @@
 
 #include <AvTranscoder/File/OutputFile.hpp>
 
+#include <AvTranscoder/Profile.hpp>
 
 namespace avtranscoder
 {
@@ -21,7 +22,7 @@ public:
 	StreamTranscoder( InputStream& stream, OutputFile& outputFile, const size_t& streamId );
 	~StreamTranscoder();
 
-	void init( const std::string& profile );
+	void init( const Profile::ProfileDesc& profileDesc );
 
 	bool processFrame();
 

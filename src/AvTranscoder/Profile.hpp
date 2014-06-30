@@ -23,10 +23,12 @@ public:
 	typedef std::map< std::string, std::string > ProfileDesc;
 	typedef std::vector< ProfileDesc > ProfilesDesc;
 
-	Profile();
+	Profile( bool autoload = false );
 
 	void loadProfiles();
 
+	void update( const ProfileDesc& profile );
+	
 	const ProfilesDesc& getProfiles();
 
 	ProfilesDesc getVideoProfiles();

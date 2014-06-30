@@ -166,14 +166,10 @@ bool OutputAudio::encodeFrame( DataStream& codedFrame )
 #endif
 }
 
-void OutputAudio::setProfile( const std::string& profile )
+void OutputAudio::setProfile( Profile::ProfileDesc& desc )
 {
-	Profile p;
-	p.loadProfiles();
-	Profile::ProfileDesc profDesc = p.getProfile( profile );
-
-	_audioDesc.setAudioCodec( profDesc["codec"] );
-	_audioDesc.setAudioParameters( 48000, 2, av_get_sample_fmt( profDesc["sample_fmt"].c_str() ) );
+	_audioDesc.setAudioCodec( desc["codec"] );
+	_audioDesc.setAudioParameters( 48000, 2, av_get_sample_fmt( desc["sample_fmt"].c_str() ) );
 
 	setup();
 }
