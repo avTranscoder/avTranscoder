@@ -53,8 +53,8 @@ std::map< std::string, std::vector<size_t> > getVersion()
 #else
 	std::vector<size_t> swresampleVersion;
 	swresampleVersion.push_back( LIBSWRESAMPLE_VERSION_MAJOR );
-	swresampleVersion.push_back( LIBRESAMPLE_VERSION_MINOR );
-	swresampleVersion.push_back( LIBRESAMPLE_VERSION_MICRO );
+	swresampleVersion.push_back( LIBSWRESAMPLE_VERSION_MINOR );
+	swresampleVersion.push_back( LIBSWRESAMPLE_VERSION_MICRO );
 #endif
 
 	version[ "avutil" ] = avutilVersion;
