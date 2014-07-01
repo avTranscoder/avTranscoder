@@ -42,11 +42,17 @@ int main( int argc, char** argv )
 		return( -1 );
 	}
 
+	bool verbose = false;
+
 	av_log_set_level( AV_LOG_FATAL );
+
+	if( verbose )
+		av_log_set_level( AV_LOG_DEBUG );
 
 	try
 	{
-		std::cout << "start ..." << std::endl;
+		if( verbose )
+			std::cout << "start ..." << std::endl;
 
 		avtranscoder::Profile profiles( true );
 
@@ -59,20 +65,30 @@ int main( int argc, char** argv )
 
 		avtranscoder::Transcoder transcoder( outputFile );
 
+		transcoder.setVerbose( verbose );
+		if( verbose )
+			std::cout << "add streams to transcoder" << std::endl;
+
 		transcoder.add( streams );
 
-		std::cout << "start Transcode" << std::endl;
+		if( verbose )
+			std::cout << "start Transcode" << std::endl;
 
 		avtranscoder::ProgressListener progress;
 
 		// video re-wrapping or transcoding if necessary
 		transcoder.process( progress );
 
-		std::cout << std::endl << "end ..." << std::endl;
+		if( verbose )
+				std::cout << std::endl << "end ..." << std::endl;
 	}
 	catch( std::exception& e )
 	{
-		std::cerr << "ERROR: during process, an error occured:" << std::endl << e.what() << std::endl;
+		std::cerr << "ERROR: during process, an error occured: " << e.what() << std::endl;
+	}
+	catch( ... )
+	{
+		std::cerr << "ERROR: during process, an unknown error occured" << std::endl;
 	}
 
 }
