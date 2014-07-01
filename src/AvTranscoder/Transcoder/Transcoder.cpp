@@ -36,29 +36,32 @@ Transcoder::~Transcoder()
 
 void Transcoder::add( const std::string& filename, const size_t streamIndex, const std::string& profileName )
 {
-	// if( ! profile.size() ) // no profile, only wrap stream
+	if( profileName.length() == 0 ) // no profile, only re-wrap stream
+	{
+		if( _verbose )
+			std::cout << "add re-wrap stream" << std::endl;
+		addRewrapStream( filename, streamIndex );
+		return;
+	}
 
 	Profile::ProfileDesc& transcodeProfile = _profile.getProfile( profileName );
-	InputStreamDesc streamDesc( streamIndex, filename, transcodeProfile );
-	add( streamDesc );
+	add( filename, streamIndex, transcodeProfile );
 }
 
 void Transcoder::add( const std::string& filename, const size_t streamIndex, Profile::ProfileDesc& profileDesc )
 {
 	_profile.update( profileDesc );
-	
-	InputStreamDesc streamDesc( streamIndex, filename, profileDesc );
-	add( streamDesc );
-}
-
-void Transcoder::add( InputStreamsDesc& streamsDefinition )
-{
-	for( InputStreamsDesc::iterator itStream = streamsDefinition.begin(); itStream != streamsDefinition.end(); ++itStream )
+	if( ! filename.length() )
 	{
 		if( _verbose )
-			std::cout << "+ add stream" << std::endl;
-		add( *itStream );	
+			std::cout << "add encoding stream for dummy input" << std::endl;
+		addDummyStream( profileDesc );
+		return;
 	}
+
+	if( _verbose )
+		std::cout << "add transcoding stream" << std::endl;
+	addTranscodeStream( filename, streamIndex, profileDesc );
 }
 
 bool Transcoder::processFrame()
@@ -77,10 +80,10 @@ bool Transcoder::processFrame()
 	{
 		return false;
 	}
-	for( size_t i = 0; i < _streamTranscoders.size(); ++i )
-	{
-		_streamTranscoders.at( i )->processFrame();
-	}
+	// for( size_t i = 0; i < _streamTranscoders.size(); ++i )
+	// {
+	// 	_streamTranscoders.at( i )->processFrame();
+	// }
 	return true;
 }
 
@@ -99,19 +102,21 @@ void Transcoder::process( ProgressListener& progress )
 		dataStreams.push_back( dataStream );
 	}
 
+	if( ! _inputStreams.size() )
+	{
+		throw std::runtime_error( "missing input streams in transcoder" );
+	}
+	
 	if( _verbose )
 		std::cout << "begin transcoding" << std::endl;
+	
 	_outputFile.beginWrap();
 
+	double totalDuration = _inputStreams.at( 0 )->getDuration();
 
 	while( 1 )
 	{
-		if( ! _inputStreams.size() )
-		{
-			throw std::runtime_error( "missing input streams in transcoder" );
-		}
-
-		if( progress.progress( _inputStreams.at( 0 )->getPacketDuration() * ( frame + 1 ), _inputStreams.at( 0 )->getDuration() ) == eJobStatusCancel )
+		if( progress.progress( _inputStreams.at( 0 )->getPacketDuration() * ( frame + 1 ), totalDuration ) == eJobStatusCancel )
 		{
 			break;
 		}
@@ -126,32 +131,6 @@ void Transcoder::process( ProgressListener& progress )
 		std::cout << "end of transcoding" << std::endl;
 
 	_outputFile.endWrap();
-}
-
-void Transcoder::add( InputStreamDesc& streamDefinition )
-{
-	if( _verbose )
-			std::cout << "+ add stream" << std::endl;
-	if( ! streamDefinition.filename.length() )
-	{
-		if( _verbose )
-			std::cout << "add encoding stream for dummy input" << std::endl;
-		addDummyStream( streamDefinition.transcodeProfile );
-		return;
-	}
-
-	//if( ! streamDefinition.transcodeProfile.length() )
-	// {
-	// 	if( _verbose )
-	// 		std::cout << "add transcoding stream" << std::endl;
-	// 		addRewrapStream( streamDefinition.filename, streamDefinition.streamId );
-	// 	return;
-	// }
-
-	if( _verbose )
-		std::cout << "add transcoding stream" << std::endl;
-	addTranscodeStream( streamDefinition.filename, streamDefinition.streamId, streamDefinition.transcodeProfile );
-	return;
 }
 
 void Transcoder::addRewrapStream( const std::string& filename, const size_t streamIndex )

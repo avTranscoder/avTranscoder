@@ -19,41 +19,23 @@ namespace avtranscoder
 
 class Transcoder
 {
-
 public:
-	struct InputStreamDesc {
-		size_t streamId;
-		std::string filename;
-		Profile::ProfileDesc transcodeProfile;
-
-		InputStreamDesc( const size_t& sId, const std::string& filename, Profile::ProfileDesc& profile )
-			: streamId( sId )
-			, filename( filename )
-			, transcodeProfile( profile )
-		{
-		}
-	};
-
-	typedef std::vector< InputStreamDesc > InputStreamsDesc;
 
 	Transcoder( OutputFile& outputFile );
+	
 	~Transcoder();
 
 	/**
 	 * @brief Add a stream and set a profile
 	 * @note If profile is empty, add a dummy stream.
 	 */
-	void add( const std::string& filename, const size_t streamIndex, const std::string& profileName = "" );
+	void add( const std::string& filename, const size_t streamIndex, const std::string& profileName );
+
 	/**
 	 * @brief Add a stream and set a custom profile
 	 * @note Profile will be updated, be sure to pass unique profile name.
 	 */
 	void add( const std::string& filename, const size_t streamIndex, Profile::ProfileDesc& profileDesc );
-
-	/**
-	 * @brief Add a list of streams.
-	 */
-	void add( InputStreamsDesc& streamsDefinition );
 
 	bool processFrame();
 
@@ -62,9 +44,11 @@ public:
 	void setVerbose( bool verbose = true ){ _verbose = verbose; }
 
 private:
-	void add( InputStreamDesc& streamDefinition );
+
 	void addRewrapStream( const std::string& filename, const size_t streamIndex );
+
 	void addTranscodeStream( const std::string& filename, const size_t streamIndex, Profile::ProfileDesc& profile );
+
 	void addDummyStream( Profile::ProfileDesc& profile );
 
 	InputFile* addInputFile( const std::string& filename, const size_t streamIndex );
