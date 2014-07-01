@@ -36,6 +36,8 @@ Transcoder::~Transcoder()
 
 void Transcoder::add( const std::string& filename, const size_t streamIndex, const std::string& profileName )
 {
+	// if( ! profile.size() ) // no profile, only wrap stream
+
 	Profile::ProfileDesc& transcodeProfile = _profile.getProfile( profileName );
 	InputStreamDesc streamDesc( streamIndex, filename, transcodeProfile );
 	add( streamDesc );
@@ -86,6 +88,7 @@ void Transcoder::process( ProgressListener& progress )
 {
 	size_t frame = 0;
 
+
 	std::vector< DataStream > dataStreams;
 
 	dataStreams.reserve( _inputStreams.size() );
@@ -103,6 +106,11 @@ void Transcoder::process( ProgressListener& progress )
 
 	while( 1 )
 	{
+		if( ! _inputStreams.size() )
+		{
+			throw std::runtime_error( "missing input streams in transcoder" );
+		}
+
 		if( progress.progress( _inputStreams.at( 0 )->getPacketDuration() * ( frame + 1 ), _inputStreams.at( 0 )->getDuration() ) == eJobStatusCancel )
 		{
 			break;
@@ -122,6 +130,8 @@ void Transcoder::process( ProgressListener& progress )
 
 void Transcoder::add( InputStreamDesc& streamDefinition )
 {
+	if( _verbose )
+			std::cout << "+ add stream" << std::endl;
 	if( ! streamDefinition.filename.length() )
 	{
 		if( _verbose )
@@ -130,11 +140,13 @@ void Transcoder::add( InputStreamDesc& streamDefinition )
 		return;
 	}
 
-//	if( ! streamDefinition.transcodeProfile.length() )
-	{
-		// addRewrapStream( streamDefinition.filename, streamDefinition.streamId );
-		// return;
-	}
+	//if( ! streamDefinition.transcodeProfile.length() )
+	// {
+	// 	if( _verbose )
+	// 		std::cout << "add transcoding stream" << std::endl;
+	// 		addRewrapStream( streamDefinition.filename, streamDefinition.streamId );
+	// 	return;
+	// }
 
 	if( _verbose )
 		std::cout << "add transcoding stream" << std::endl;
@@ -176,6 +188,7 @@ void Transcoder::addTranscodeStream( const std::string& filename, const size_t s
 		case AVMEDIA_TYPE_ATTACHMENT:
 		default:
 		{
+			throw std::runtime_error( "unsupported media type in transcode setup" );
 			return;
 		}
 	}

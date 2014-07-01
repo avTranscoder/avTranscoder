@@ -8,8 +8,9 @@
 #include <sstream>
 #include <cstdlib>
 
+bool verbose = false;
 
-void parseConfigFile( const std::string& configFilename, avtranscoder::Transcoder::InputStreamsDesc& streams, avtranscoder::Profile& profile )
+void parseConfigFile( const std::string& configFilename, avtranscoder::Transcoder& transcoder, avtranscoder::Profile& profile )
 {
 	std::ifstream configFile( configFilename.c_str(), std::ifstream::in );
 
@@ -25,8 +26,9 @@ void parseConfigFile( const std::string& configFilename, avtranscoder::Transcode
 			{
 				std::string transcodeProfile;
 				std::getline( is_line, transcodeProfile );
-				std::cout << filename << " ( " << streamId <<  " ) : " << transcodeProfile << std::endl;
-				streams.push_back( avtranscoder::Transcoder::InputStreamDesc( atoi( streamId.c_str() ), filename, profile.getProfile( transcodeProfile ) ) );
+				if( verbose )
+					std::cout << filename << " ( " << streamId <<  " ) : " << transcodeProfile << std::endl;
+				transcoder.add( filename, atoi( streamId.c_str() ), transcodeProfile );
 			}
 		}
 	}
@@ -42,8 +44,6 @@ int main( int argc, char** argv )
 		return( -1 );
 	}
 
-	bool verbose = false;
-
 	av_log_set_level( AV_LOG_FATAL );
 
 	if( verbose )
@@ -56,20 +56,18 @@ int main( int argc, char** argv )
 
 		avtranscoder::Profile profiles( true );
 
+		if( verbose )
+			std::cout << "output file: " << argv[2] << std::endl;
+
 		std::string inputConfigFile( argv[1] );
 		avtranscoder::OutputFile outputFile( argv[2] );
 
-		avtranscoder::Transcoder::InputStreamsDesc streams;
-
-		parseConfigFile( inputConfigFile, streams, profiles );
-
 		avtranscoder::Transcoder transcoder( outputFile );
-
 		transcoder.setVerbose( verbose );
-		if( verbose )
-			std::cout << "add streams to transcoder" << std::endl;
 
-		transcoder.add( streams );
+		if( verbose )
+			std::cout << "parse config file" << std::endl;
+		parseConfigFile( inputConfigFile, transcoder, profiles );
 
 		if( verbose )
 			std::cout << "start Transcode" << std::endl;
@@ -79,8 +77,9 @@ int main( int argc, char** argv )
 		// video re-wrapping or transcoding if necessary
 		transcoder.process( progress );
 
+		std::cout << std::endl;
 		if( verbose )
-				std::cout << std::endl << "end ..." << std::endl;
+				std::cout << "end ..." << std::endl;
 	}
 	catch( std::exception& e )
 	{
