@@ -59,7 +59,7 @@ bool OutputFile::setup()
 	return _formatContext != NULL;
 }
 
-AvOutputStream& OutputFile::addVideoStream( const VideoDesc& videoDesc )
+OutputStream& OutputFile::addVideoStream( const VideoDesc& videoDesc )
 {
 	assert( _formatContext != NULL );
 
@@ -87,9 +87,10 @@ AvOutputStream& OutputFile::addVideoStream( const VideoDesc& videoDesc )
 	_stream->time_base = _stream->codec->time_base;
 	
 	_outputStreams.push_back( AvOutputStream( *this, _formatContext->nb_streams ) );
+	return _outputStreams.back();
 }
 
-AvOutputStream& OutputFile::addAudioStream( const AudioDesc& audioDesc )
+OutputStream& OutputFile::addAudioStream( const AudioDesc& audioDesc )
 {
 	assert( _formatContext != NULL );
 
@@ -103,9 +104,10 @@ AvOutputStream& OutputFile::addAudioStream( const AudioDesc& audioDesc )
 	_stream->codec->sample_fmt = audioDesc.getCodecContext()->sample_fmt;
 
 	_outputStreams.push_back( AvOutputStream( *this, _formatContext->nb_streams ) );
+	return _outputStreams.back();
 }
 
-AvOutputStream& OutputFile::getStream( const size_t streamId )
+OutputStream& OutputFile::getStream( const size_t streamId )
 {
 	return _outputStreams.at( streamId );
 }

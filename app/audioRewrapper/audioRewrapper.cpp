@@ -29,7 +29,7 @@ void rewrapAudio( const char* inputfilename, const char* outputFilename )
 
 	outputFile.setup();
 
-	AvOutputStream& audioStream = outputFile.addAudioStream( inputFile.getStream( audioStreamId ).getAudioDesc() );
+	OutputStream& audioStream = outputFile.addAudioStream( inputFile.getStream( audioStreamId ).getAudioDesc() );
 	
 	outputFile.beginWrap();
 
@@ -87,7 +87,7 @@ void transcodeAudio( const char* inputfilename, const char* outputFilename )
 		throw std::runtime_error( "error during initialising audio output stream" );
 	}
 	
-	AvOutputStream& audioStream = outputFile.addAudioStream( audioOutputDesc );
+	OutputStream& audioStream = outputFile.addAudioStream( audioOutputDesc );
 	outputFile.beginWrap();
 	
 	// init convert
