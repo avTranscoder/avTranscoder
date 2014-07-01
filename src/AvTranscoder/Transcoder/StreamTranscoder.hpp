@@ -22,17 +22,17 @@ public:
 	/**
 	 * @brief rewrap stream
 	 **/
-	StreamTranscoder( InputStream& inputStream, OutputStream& outputStream, OutputFile& outputFile );
+	StreamTranscoder( InputStream& inputStream, OutputFile& outputFile );
 
 	/**
 	 * @brief transcode stream
 	 **/
-	StreamTranscoder( InputStream& inputStream, OutputStream& outputStream, OutputFile& outputFile, Profile::ProfileDesc& profile );
+	StreamTranscoder( InputStream& inputStream, OutputFile& outputFile, Profile::ProfileDesc& profile );
 
 	/**
 	 * @brief encode from dummy stream
 	 **/
-	StreamTranscoder( InputEssence& inputEssence, OutputStream& outputStream, OutputFile& outputFile, Profile::ProfileDesc& profile );
+	StreamTranscoder( InputEssence& inputEssence, OutputFile& outputFile, Profile::ProfileDesc& profile );
 
 	~StreamTranscoder();
 
@@ -43,6 +43,10 @@ public:
 	bool processFrame();
 
 	bool isTranscodeStream() const { return _transcodeStream; }
+
+private:
+	bool processRewrap();
+	bool processTranscode();
 
 private:
 	InputStream*   _inputStream;

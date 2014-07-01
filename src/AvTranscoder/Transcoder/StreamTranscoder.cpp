@@ -3,16 +3,17 @@
 
 #include <AvTranscoder/CodedStream/AvInputStream.hpp>
 
+#include <cassert>
+
 namespace avtranscoder
 {
 
 StreamTranscoder::StreamTranscoder(
 		InputStream& inputStream,
-		OutputStream& outputStream,
 		OutputFile& outputFile
 	)
 	: _inputStream( &inputStream )
-	, _outputStream( &outputStream )
+	, _outputStream( NULL )
 	, _frameBuffer( NULL )
 	, _videoFrameBuffer( NULL )
 	, _audioFrameBuffer( NULL )
@@ -25,12 +26,12 @@ StreamTranscoder::StreamTranscoder(
 	{
 		case AVMEDIA_TYPE_VIDEO :
 		{
-			outputFile.addVideoStream( _inputStream->getVideoDesc() );
+			_outputStream = &outputFile.addVideoStream( _inputStream->getVideoDesc() );
 			break;
 		}
 		case AVMEDIA_TYPE_AUDIO :
 		{
-			outputFile.addAudioStream( _inputStream->getAudioDesc() );
+			_outputStream = &outputFile.addAudioStream( _inputStream->getAudioDesc() );
 			break;
 		}
 		default:
@@ -40,12 +41,11 @@ StreamTranscoder::StreamTranscoder(
 
 StreamTranscoder::StreamTranscoder(
 		InputStream& inputStream,
-		OutputStream& outputStream,
 		OutputFile& outputFile,
 		Profile::ProfileDesc& profile
 	)
 	: _inputStream( &inputStream )
-	, _outputStream( &outputStream )
+	, _outputStream( NULL )
 	, _frameBuffer( NULL )
 	, _videoFrameBuffer( NULL )
 	, _audioFrameBuffer( NULL )
@@ -62,10 +62,11 @@ StreamTranscoder::StreamTranscoder(
 			_inputEssence->setup();
 
 			OutputVideo* outputVideo = new OutputVideo();
-			_outputEssence = outputVideo;
 
+			_outputEssence = outputVideo;
 			_outputEssence->setProfile( profile );
-			outputFile.addVideoStream( outputVideo->getVideoDesc() );
+			
+			_outputStream = &outputFile.addVideoStream( outputVideo->getVideoDesc() );
 			_videoFrameBuffer = new Image( outputVideo->getVideoDesc().getImageDesc() );
 			_frameBuffer = _videoFrameBuffer;
 			
@@ -77,28 +78,31 @@ StreamTranscoder::StreamTranscoder(
 			_inputEssence->setup();
 			
 			OutputAudio* outputAudio = new OutputAudio();
-			_outputEssence = outputAudio;
 
+			_outputEssence = outputAudio;
 			_outputEssence->setProfile( profile );
-			outputFile.addAudioStream( outputAudio->getAudioDesc() );
+
+			_outputStream = &outputFile.addAudioStream( outputAudio->getAudioDesc() );
 			_audioFrameBuffer = new AudioFrame( outputAudio->getAudioDesc().getFrameDesc() );
 			_frameBuffer = _audioFrameBuffer;
 			
 			break;
 		}
 		default:
+		{
+			throw std::runtime_error( "unupported stream type" );
 			break;
+		}
 	}
 }
 
 StreamTranscoder::StreamTranscoder(
 		InputEssence& inputEssence,
-		OutputStream& outputStream,
 		OutputFile& outputFile,
 		Profile::ProfileDesc& profile
 	)
 	: _inputStream( NULL )
-	, _outputStream( &outputStream )
+	, _outputStream( NULL )
 	, _frameBuffer( NULL )
 	, _videoFrameBuffer( NULL )
 	, _audioFrameBuffer( NULL )
@@ -115,7 +119,7 @@ StreamTranscoder::StreamTranscoder(
 			_outputEssence = outputVideo;
 
 			_outputEssence->setProfile( profile );
-			outputFile.addVideoStream( outputVideo->getVideoDesc() );
+			_outputStream = &outputFile.addVideoStream( outputVideo->getVideoDesc() );
 			_videoFrameBuffer = new Image( outputVideo->getVideoDesc().getImageDesc() );
 			_frameBuffer = _videoFrameBuffer;
 			
@@ -127,14 +131,17 @@ StreamTranscoder::StreamTranscoder(
 			_outputEssence = outputAudio;
 
 			_outputEssence->setProfile( profile );
-			outputFile.addAudioStream( outputAudio->getAudioDesc() );
+			_outputStream = &outputFile.addAudioStream( outputAudio->getAudioDesc() );
 			_audioFrameBuffer = new AudioFrame( outputAudio->getAudioDesc().getFrameDesc() );
 			_frameBuffer = _audioFrameBuffer;
 			
 			break;
 		}
 		default:
+		{
+			throw std::runtime_error( "unupported stream type" );
 			break;
+		}
 	}
 }
 
@@ -151,22 +158,41 @@ StreamTranscoder::~StreamTranscoder()
 
 bool StreamTranscoder::processFrame()
 {
-	DataStream dataStream;
-	if( ! _transcodeStream )
+	if( _transcodeStream )
 	{
-		if( ! _inputStream->readNextPacket( dataStream ) )
-			return false;
-		_outputStream->wrap( dataStream );
-		return true;
+		return processTranscode();
 	}
+	return processRewrap();
+}
 
+bool StreamTranscoder::processRewrap()
+{
+	assert( _inputStream  != NULL );
+	
+	DataStream dataStream;
+	if( ! _inputStream->readNextPacket( dataStream ) )
+		return false;
+	_outputStream->wrap( dataStream );
+	return true;
+}
+
+bool StreamTranscoder::processTranscode()
+{
+	assert( _inputEssence  != NULL );
+	assert( _outputEssence != NULL );
+	assert( _frameBuffer   != NULL );
+
+	DataStream dataStream;
 	if( _inputEssence->readNextFrame( *_frameBuffer ) )
 	{
 		_outputEssence->encodeFrame( *_frameBuffer, dataStream );
 	}
-	else if( ! _outputEssence->encodeFrame( dataStream ) )
+	else
 	{
-		return false;
+		if( ! _outputEssence->encodeFrame( dataStream ) )
+		{
+			return false;
+		}
 	}
 
 	_outputStream->wrap( dataStream );

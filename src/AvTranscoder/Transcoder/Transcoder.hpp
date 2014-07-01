@@ -59,6 +59,8 @@ public:
 
 	void process( ProgressListener& progress );
 
+	void setVerbose( bool verbose = true ){ _verbose = verbose; }
+
 private:
 	void add( InputStreamDesc& streamDefinition );
 	void addRewrapStream( const std::string& filename, const size_t streamIndex );
@@ -77,6 +79,8 @@ private:
 	std::vector< DummyAudio* > _dummyAudio;
 	std::vector< DummyVideo* > _dummyVideo;
 	Profile _profile;
+
+	bool _verbose;
 };
 
 }

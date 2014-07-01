@@ -86,9 +86,11 @@ AvOutputStream& OutputFile::addVideoStream( const VideoDesc& videoDesc )
 
 	_stream->time_base = _stream->codec->time_base;
 	
-	_outputStreams.push_back( AvOutputStream( *this, _formatContext->nb_streams ) );
+	AvOutputStream* avOutputStream = new AvOutputStream( *this, _formatContext->nb_streams - 1 );
 
-	return _outputStreams.back();
+	_outputStreams.push_back( avOutputStream );
+
+	return *_outputStreams.back();
 }
 
 AvOutputStream& OutputFile::addAudioStream( const AudioDesc& audioDesc )
@@ -104,14 +106,17 @@ AvOutputStream& OutputFile::addAudioStream( const AudioDesc& audioDesc )
 	_stream->codec->channels = audioDesc.getCodecContext()->channels;
 	_stream->codec->sample_fmt = audioDesc.getCodecContext()->sample_fmt;
 
-	_outputStreams.push_back( AvOutputStream( *this, _formatContext->nb_streams ) );
+	AvOutputStream* avOutputStream = new AvOutputStream( *this, _formatContext->nb_streams - 1 );
+	_outputStreams.push_back( avOutputStream );
 
-	return _outputStreams.back();
+	return *_outputStreams.back();
 }
 
 AvOutputStream& OutputFile::getStream( const size_t streamId )
 {
-	return _outputStreams.at( streamId );
+	if( streamId >= _outputStreams.size() )
+		throw std::runtime_error( "unable to get output stream (out of range)" );
+	return *_outputStreams.at( streamId );
 }
 
 bool OutputFile::beginWrap( )
