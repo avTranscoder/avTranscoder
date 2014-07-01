@@ -80,10 +80,6 @@ bool Transcoder::processFrame()
 	{
 		return false;
 	}
-	// for( size_t i = 0; i < _streamTranscoders.size(); ++i )
-	// {
-	// 	_streamTranscoders.at( i )->processFrame();
-	// }
 	return true;
 }
 
