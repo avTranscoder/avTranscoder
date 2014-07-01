@@ -169,23 +169,23 @@ bool OutputAudio::encodeFrame( DataStream& codedFrame )
 
 void OutputAudio::setProfile( Profile::ProfileDesc& desc )
 {
-	_audioDesc.setAudioCodec( desc["codec"] );
-	_audioDesc.setAudioParameters( 48000, 2, av_get_sample_fmt( desc["sample_fmt"].c_str() ) );
-	checkProfileKey( profDesc, "codec" );
-	checkProfileKey( profDesc, "sample_fmt" );
-	checkProfileKey( profDesc, "sample_rate" );
-	checkProfileKey( profDesc, "channels" );
+	checkProfileKey( desc, "codec" );
+	checkProfileKey( desc, "sample_fmt" );
+	checkProfileKey( desc, "sample_rate" );
+	checkProfileKey( desc, "channels" );
 
 	size_t sample_rate;
 	size_t channels;
-	std::istringstream( profDesc["sample_rate"] ) >> sample_rate;
-	std::istringstream( profDesc["channels"] ) >> channels;
+	std::istringstream( desc["sample_rate"] ) >> sample_rate;
+	std::istringstream( desc["channels"] ) >> channels;
 
+	_audioDesc.setAudioCodec( desc["codec"] );
+	_audioDesc.setAudioParameters( sample_rate, channels, av_get_sample_fmt( desc["sample_fmt"].c_str() ) );
 
 	setup();
 }
 
-bool OutputStreamAudio::checkProfileKey( Profile::ProfileDesc& profDesc, const std::string& key )
+bool OutputAudio::checkProfileKey( Profile::ProfileDesc& profDesc, const std::string& key )
 {
 	if( profDesc[ key ].empty() )
 	{

@@ -59,7 +59,7 @@ bool OutputFile::setup()
 	return _formatContext != NULL;
 }
 
-void OutputFile::addVideoStream( const VideoDesc& videoDesc )
+AvOutputStream& OutputFile::addVideoStream( const VideoDesc& videoDesc )
 {
 	assert( _formatContext != NULL );
 
@@ -89,7 +89,7 @@ void OutputFile::addVideoStream( const VideoDesc& videoDesc )
 	_outputStreams.push_back( AvOutputStream( *this, _formatContext->nb_streams ) );
 }
 
-void OutputFile::addAudioStream( const AudioDesc& audioDesc )
+AvOutputStream& OutputFile::addAudioStream( const AudioDesc& audioDesc )
 {
 	assert( _formatContext != NULL );
 

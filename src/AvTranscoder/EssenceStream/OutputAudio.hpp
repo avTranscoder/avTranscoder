@@ -33,6 +33,9 @@ public:
 	AudioDesc& getAudioDesc() { return _audioDesc; }
 
 private:
+	bool checkProfileKey( Profile::ProfileDesc& profDesc, const std::string& key );
+
+private:
 	AudioDesc _audioDesc;
 };
 

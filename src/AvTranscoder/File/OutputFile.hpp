@@ -47,14 +47,14 @@ public:
 	 * @note call setup() before adding any stream
 	 * @param videoDesc description of output stream
 	**/
-	virtual void addVideoStream( const VideoDesc& videoDesc );
+	virtual AvOutputStream& addVideoStream( const VideoDesc& videoDesc );
 
 	/**
 	 * @brief Add an audio output stream using the description.
 	 * @note call setup() before adding any stream
 	 * @param audioDesc description of output stream
 	**/
-	virtual void addAudioStream( const AudioDesc& audioDesc );
+	virtual AvOutputStream& addAudioStream( const AudioDesc& audioDesc );
 
 	/**
 	 * @brief get the output stream description.
