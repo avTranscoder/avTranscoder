@@ -66,17 +66,17 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, Pro
 
 bool Transcoder::processFrame()
 {
-	for( size_t streamIndex = 0; streamIndex < _inputStreams.size(); ++streamIndex )
+	if( _verbose )
+		std::cout << "process frame" << std::endl;
+	for( size_t streamIndex = 0; streamIndex < _streamTranscoders.size(); ++streamIndex )
 	{
-		if( ( _streamTranscoders.size() > streamIndex ) &&
-			! _streamTranscoders.at( streamIndex )->processFrame() )
+		if( ! _streamTranscoders.at( streamIndex )->processFrame() )
 		{
-			//_inputStreams.erase( _inputStreams.begin() + streamIndex );
-			_inputStreams.clear();
+			_streamTranscoders.clear();
 		}
 	}
 
-	if( _inputStreams.size() == 0 )
+	if( _streamTranscoders.size() == 0 )
 	{
 		return false;
 	}
@@ -164,13 +164,15 @@ void Transcoder::addTranscodeStream( const std::string& filename, const size_t s
 		default:
 		{
 			throw std::runtime_error( "unsupported media type in transcode setup" );
-			return;
 		}
 	}
 }
 
 void Transcoder::addDummyStream( Profile::ProfileDesc& profile )
 {
+	if( ! profile.count( Profile::avProfileType ) )
+		throw std::runtime_error( "unable to found stream type (audio, video, etc.)" );
+
 	if( profile.find( Profile::avProfileType )->second == Profile::avProfileTypeAudio )
 	{
 		_dummyAudio.push_back( new DummyAudio() );

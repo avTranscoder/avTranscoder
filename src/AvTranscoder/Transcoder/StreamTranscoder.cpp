@@ -110,39 +110,36 @@ StreamTranscoder::StreamTranscoder(
 	, _outputEssence( NULL )
 	, _transcodeStream( true )
 {
-	// create an encoder case from a dummy
-	switch( _inputStream->getStreamType() )
+	if( ! profile.count( Profile::avProfileType ) )
+		throw std::runtime_error( "unable to found stream type (audio, video, etc.)" );
+
+	if( profile.find( Profile::avProfileType )->second == Profile::avProfileTypeAudio )
 	{
-		case AVMEDIA_TYPE_VIDEO :
-		{
-			OutputVideo* outputVideo = new OutputVideo();
-			_outputEssence = outputVideo;
+		OutputAudio* outputAudio = new OutputAudio();
 
-			_outputEssence->setProfile( profile );
-			_outputStream = &outputFile.addVideoStream( outputVideo->getVideoDesc() );
-			_videoFrameBuffer = new Image( outputVideo->getVideoDesc().getImageDesc() );
-			_frameBuffer = _videoFrameBuffer;
-			
-			break;
-		}
-		case AVMEDIA_TYPE_AUDIO :
-		{
-			OutputAudio* outputAudio = new OutputAudio();
-			_outputEssence = outputAudio;
+		_outputEssence = outputAudio;
+		_outputEssence->setProfile( profile );
 
-			_outputEssence->setProfile( profile );
-			_outputStream = &outputFile.addAudioStream( outputAudio->getAudioDesc() );
-			_audioFrameBuffer = new AudioFrame( outputAudio->getAudioDesc().getFrameDesc() );
-			_frameBuffer = _audioFrameBuffer;
-			
-			break;
-		}
-		default:
-		{
-			throw std::runtime_error( "unupported stream type" );
-			break;
-		}
+		_outputStream = &outputFile.addAudioStream( outputAudio->getAudioDesc() );
+		_audioFrameBuffer = new AudioFrame( outputAudio->getAudioDesc().getFrameDesc() );
+		_frameBuffer = _audioFrameBuffer;
+		return;
 	}
+
+	if( profile.find( Profile::avProfileType )->second == Profile::avProfileTypeVideo )
+	{
+		OutputVideo* outputVideo = new OutputVideo();
+
+		_outputEssence = outputVideo;
+		_outputEssence->setProfile( profile );
+
+		_outputStream = &outputFile.addVideoStream( outputVideo->getVideoDesc() );
+		_videoFrameBuffer = new Image( outputVideo->getVideoDesc().getImageDesc() );
+		_frameBuffer = _videoFrameBuffer;
+		return;
+	}
+
+	throw std::runtime_error( "unupported stream type" );
 }
 
 StreamTranscoder::~StreamTranscoder()
@@ -182,19 +179,24 @@ bool StreamTranscoder::processTranscode()
 	assert( _outputEssence != NULL );
 	assert( _frameBuffer   != NULL );
 
+	std::cout << "transcode" << std::endl; 
+
 	DataStream dataStream;
 	if( _inputEssence->readNextFrame( *_frameBuffer ) )
 	{
+		std::cout << "encode" << std::endl;
 		_outputEssence->encodeFrame( *_frameBuffer, dataStream );
 	}
 	else
 	{
+		std::cout << "encode last frame" << std::endl;
 		if( ! _outputEssence->encodeFrame( dataStream ) )
 		{
 			return false;
 		}
 	}
 
+	std::cout << "wrap" << std::endl;
 	_outputStream->wrap( dataStream );
 	return true;
 }
