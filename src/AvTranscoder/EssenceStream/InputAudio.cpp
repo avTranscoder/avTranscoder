@@ -182,7 +182,7 @@ bool InputAudio::getNextFrame()
 		if( ret < 0 )
 		{
 			char err[250];
-			av_strerror( ret, err, 250);
+			av_strerror( ret, err, 250 );
 			
 			throw std::runtime_error( "an error occured during audio decoding" + std::string( err ) );
 		}
