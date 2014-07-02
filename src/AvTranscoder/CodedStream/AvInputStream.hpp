@@ -40,6 +40,7 @@ public:
 	void addPacket( AVPacket& packet );
 
 	void setBufferred( const bool bufferized ){ _bufferized = bufferized; };
+	bool getBufferred() const { return _bufferized; };
 
 	void clearBuffering();
 

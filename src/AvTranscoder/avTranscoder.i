@@ -40,8 +40,11 @@
 #include <AvTranscoder/File/InputFile.hpp>
 #include <AvTranscoder/File/OutputFile.hpp>
 
+#include <AvTranscoder/Profile.hpp>
+
 #include <AvTranscoder/Transcoder/StreamTranscoder.hpp>
 #include <AvTranscoder/Transcoder/Transcoder.hpp>
+
 
 %}
 
@@ -89,5 +92,8 @@ namespace std {
 %include <AvTranscoder/File/InputFile.hpp>
 %include <AvTranscoder/File/OutputFile.hpp>
 
+%include <AvTranscoder/Profile.hpp>
+
 %include <AvTranscoder/Transcoder/StreamTranscoder.hpp>
 %include <AvTranscoder/Transcoder/Transcoder.hpp>
+
