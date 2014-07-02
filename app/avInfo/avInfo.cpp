@@ -6,19 +6,15 @@
 
 int main( int argc, char** argv )
 {
-	avtranscoder::AvVersions versions( avtranscoder::getVersion() );
+	avtranscoder::Libraries libs( avtranscoder::getLibraries() );
 
-	for( avtranscoder::AvVersions::iterator libVersion = versions.begin(); libVersion != versions.end(); ++libVersion )
+	for( avtranscoder::Libraries::iterator library = libs.begin(); library != libs.end(); ++library )
 	{
-		std::cout << std::left << std::setw( 15 ) << (*libVersion).first;
-		std::cout << std::left << std::setw( 30 ) << avtranscoder::getLicence();
-
-		std::stringstream completeVersion;
-		for( std::vector<size_t>::iterator version = (*libVersion).second.begin(); version != (*libVersion).second.end(); ++version )
-		{
-			completeVersion << *version << ".";
-		}
-		std::cout << completeVersion.str() << std::endl;
+		std::cout << std::left;
+		std::cout << std::setw( 15 ) << (*library).getName();
+		std::cout << std::setw( 10 ) << (*library).getStringVersion();
+		std::cout << std::setw( 30 ) << (*library).getLicence();
+		std::cout << std::endl;
 	}
 
 	// std::cout << "avinfo" << std::endl;
