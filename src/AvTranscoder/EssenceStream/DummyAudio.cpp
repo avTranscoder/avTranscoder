@@ -33,6 +33,9 @@ bool DummyAudio::readNextFrame( Frame& frameBuffer )
 {
 	frameBuffer.getBuffer().resize( _frameDesc.getDataSize() );
 
+	AudioFrame& audioFrameBuffer = static_cast<AudioFrame&>( frameBuffer );
+	audioFrameBuffer.setNbSamples( 1.0 * _frameDesc.getSampleRate() / _frameDesc.getFps() );
+
 	//av_samples_set_silence( data.getPtr(), offset, nb_samples, nb_channels, sample_fmt );
 	int fill_char = (
 		_frameDesc.getSampleFormat() == AV_SAMPLE_FMT_U8 ||
@@ -59,6 +62,8 @@ bool DummyAudio::readNextFrame( std::vector<Frame>& frameBuffer )
 
 	for( size_t channel = 0; channel < _frameDesc.getChannels(); ++channel )
 	{
+		AudioFrame& audioFrameBuffer = static_cast<AudioFrame&>( frameBuffer.at( channel ) );
+		audioFrameBuffer.setNbSamples( 1.0 * _frameDesc.getSampleRate() / _frameDesc.getFps() );
 		frameBuffer.at( channel).getBuffer().resize( dataSizeOneChannel );
 		memset( frameBuffer.at( channel).getPtr(), fill_char, frameBuffer.at( channel).getSize() );
 	}
