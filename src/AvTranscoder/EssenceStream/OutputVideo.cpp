@@ -178,9 +178,24 @@ bool OutputVideo::encodeFrame( DataStream& codedFrame )
 
 void OutputVideo::setProfile( Profile::ProfileDesc& desc )
 {
+	// if not specified in the profile desc: 1920*1080, 25 fps, with pixel aspect ratio = 1
+	const size_t width = ( desc.find( "width" ) != desc.end() ) ? atoi( desc[ "width" ].c_str() ) : 1920;
+	const size_t height = ( desc.find( "height" ) != desc.end() ) ? atoi( desc[ "height" ].c_str() ) : 1080;
+	const size_t frameRate = ( desc.find( "r" ) != desc.end() ) ? atoi( desc[ "r" ].c_str() ) : 25;
+	const size_t par = ( desc.find( "par" ) != desc.end() ) ? atoi( desc[ "par" ].c_str() ) : 1;
+	const AVPixelFormat pix_fmt = static_cast<AVPixelFormat>( atoi( desc[ "pix_fmt" ].c_str() ) );
+	
 	_videoDesc.setVideoCodec( desc[ "codec" ] );
-	_videoDesc.setTimeBase( 1, 25 ); // 25 fps
-	_videoDesc.setImageParameters( 1920, 1080, av_get_pix_fmt( desc[ "pix_fmt" ].c_str() ) );
+	_videoDesc.setTimeBase( 1, frameRate );
+	
+	avtranscoder::ImageDesc imageDesc;
+	avtranscoder::Pixel pixel( pix_fmt );
+	// @todo: set par of pixel
+	imageDesc.setPixel( pixel );
+	imageDesc.setWidth( width );
+	imageDesc.setHeight( height );
+	imageDesc.setDar( width, height );
+	_videoDesc.setImageParameters( imageDesc );
 
 	for( Profile::ProfileDesc::iterator it = desc.begin(); it != desc.end(); ++it )
 	{
@@ -197,6 +212,10 @@ void OutputVideo::setProfile( Profile::ProfileDesc& desc )
 		if( (*it).first == "width" )
 			continue;
 		if( (*it).first == "height" )
+			continue;
+		if( (*it).first == "r" )
+			continue;
+		if( (*it).first == "par" )
 			continue;
 
 		try
@@ -226,6 +245,10 @@ void OutputVideo::setProfile( Profile::ProfileDesc& desc )
 		if( (*it).first == "width" )
 			continue;
 		if( (*it).first == "height" )
+			continue;
+		if( (*it).first == "r" )
+			continue;
+		if( (*it).first == "par" )
 			continue;
 
 		try
