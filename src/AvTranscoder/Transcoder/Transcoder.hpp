@@ -29,7 +29,7 @@ public:
 	 * @brief Add a stream and set a profile
 	 * @note If profile is empty, add a dummy stream.
 	 */
-	void add( const std::string& filename, const size_t streamIndex, const std::string& profileName );
+	void add( const std::string& filename, const size_t streamIndex, const std::string& profileName = "" );
 
 	/**
 	 * @brief Add a stream and set a custom profile
