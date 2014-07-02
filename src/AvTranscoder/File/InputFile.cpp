@@ -209,4 +209,9 @@ void InputFile::readStream( const size_t streamIndex, bool readStream )
 	_inputStreams.at( streamIndex )->setBufferred( readStream );
 }
 
+bool InputFile::getReadStream( const size_t streamIndex )
+{
+	return _inputStreams.at( streamIndex )->getBufferred();
+}
+
 }

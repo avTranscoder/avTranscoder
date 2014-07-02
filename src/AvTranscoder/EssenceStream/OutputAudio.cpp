@@ -169,7 +169,9 @@ bool OutputAudio::encodeFrame( DataStream& codedFrame )
 void OutputAudio::setProfile( Profile::ProfileDesc& desc )
 {
 	_audioDesc.setAudioCodec( desc["codec"] );
-	_audioDesc.setAudioParameters( 48000, 2, av_get_sample_fmt( desc["sample_fmt"].c_str() ) );
+	size_t sample_rate = atoi( desc["sample_rate"].c_str() );
+	size_t channels = atoi( desc["channels"].c_str() );
+	_audioDesc.setAudioParameters( sample_rate, channels, av_get_sample_fmt( desc["sample_fmt"].c_str() ) );
 
 	setup();
 }

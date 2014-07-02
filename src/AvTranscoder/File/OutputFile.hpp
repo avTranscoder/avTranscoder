@@ -83,7 +83,7 @@ public:
 	virtual bool endWrap( );
 
 private:
-	std::vector<AvOutputStream> _outputStreams;
+	std::vector<AvOutputStream*> _outputStreams;
 	AVOutputFormat*  _outputFormat;
 	AVFormatContext* _formatContext;
 

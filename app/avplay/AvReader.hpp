@@ -27,6 +27,8 @@ public:
 
 		m_inputVideo = new avtranscoder::InputVideo( m_inputFile.getStream( m_videoStream ) );
 		
+		m_inputVideo->setup();
+
 		m_sourceImage = new avtranscoder::Image( m_inputFile.getStream( m_videoStream ).getVideoDesc().getImageDesc() );
 
 		pixel.setBitsPerPixel( getComponents() * getBitDepth() );

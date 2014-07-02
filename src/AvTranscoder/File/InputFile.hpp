@@ -108,6 +108,13 @@ public:
 	 **/
 	void readStream( const size_t streamIndex, const bool readStream = true );
 
+	/** 
+	 * @brief Indicate that the stream will be bufferized during the read
+	 * @param streamIndex specify stream index
+	 * @return the reading status of the streamIndex
+	 **/
+	bool getReadStream( const size_t streamIndex );
+
 protected:
 	AVFormatContext*            _formatContext;
 	Properties                  _properties;
