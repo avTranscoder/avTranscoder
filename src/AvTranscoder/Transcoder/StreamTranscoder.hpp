@@ -19,27 +19,45 @@ namespace avtranscoder
 class StreamTranscoder
 {
 public:
-	StreamTranscoder( InputStream& stream, OutputFile& outputFile, const size_t& streamId );
+	/**
+	 * @brief rewrap stream
+	 **/
+	StreamTranscoder( InputStream& inputStream, OutputFile& outputFile );
+
+	/**
+	 * @brief transcode stream
+	 **/
+	StreamTranscoder( InputStream& inputStream, OutputFile& outputFile, Profile::ProfileDesc& profile );
+
+	/**
+	 * @brief encode from dummy stream
+	 **/
+	StreamTranscoder( InputEssence& inputEssence, OutputFile& outputFile, Profile::ProfileDesc& profile );
+
 	~StreamTranscoder();
 
-	void init( const Profile::ProfileDesc& profileDesc );
-
+	/**
+	 * @brief process a single frame for the current stream
+	 * @return the process status result
+	 */
 	bool processFrame();
 
 	bool isTranscodeStream() const { return _transcodeStream; }
 
 private:
-	InputStream* _stream;
+	bool processRewrap();
+	bool processTranscode();
 
-	Frame*      _frameBuffer;
-	Image*      _videoFrameBuffer;
-	AudioFrame* _audioFrameBuffer;
+private:
+	InputStream*   _inputStream;
+	OutputStream*  _outputStream;
+
+	Frame*         _frameBuffer;
+	Image*         _videoFrameBuffer;
+	AudioFrame*    _audioFrameBuffer;
 
 	InputEssence*  _inputEssence;
 	OutputEssence* _outputEssence;
-	OutputFile*    _outputFile;
-
-	size_t _streamIndex;
 
 	bool _transcodeStream;
 
@@ -49,4 +67,3 @@ private:
 }
 
 #endif
-

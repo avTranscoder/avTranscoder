@@ -25,6 +25,7 @@ public:
 	void setup();
 
 	bool readNextFrame( Frame& frameBuffer );
+	bool readNextFrame( std::vector<Frame>& frameBuffer );
 
 	void flushDecoder();
 

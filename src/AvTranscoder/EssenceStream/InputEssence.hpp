@@ -12,13 +12,14 @@ class AvInputStream;
 class AvExport InputEssence
 {
 public:
-	InputEssence( AvInputStream& inputStream ) {};
+	InputEssence() {};
 
 	virtual ~InputEssence() {};
 	
 	virtual void setup() = 0;
 
 	virtual bool readNextFrame( Frame& frameBuffer ) = 0;
+	virtual bool readNextFrame( std::vector<Frame>& frameBuffer ) = 0;
 };
 
 }
