@@ -18,6 +18,16 @@ public:
 
 	static const std::string avProfileTypeVideo;
 	static const std::string avProfileTypeAudio;
+	
+	static const std::string avProfileCodec;
+	static const std::string avProfilePixelFormat;
+	static const std::string avProfileSampleFormat;
+	static const std::string avProfileFrameRate;
+	static const std::string avProfileSampleRate;
+	static const std::string avProfileChannel;
+	
+	static const std::string avProfileWidth;
+	static const std::string avProfileHeight;
 
 	// typedef std::pair< std::string, std::string > KeyDesc;
 	typedef std::map< std::string, std::string > ProfileDesc;

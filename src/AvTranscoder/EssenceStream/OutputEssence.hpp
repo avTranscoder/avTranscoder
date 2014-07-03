@@ -49,13 +49,6 @@ public:
 	 */
 	virtual bool encodeFrame( DataStream& codedFrame ) = 0;
 
-	/**
-	 * @brief Set the profile for the encoder
-	 * @note see Profile to get list of supported profiles
-	 * @param desc description of the selected profile
-	 */
-	virtual void setProfile( Profile::ProfileDesc& desc ) = 0;
-
 };
 
 }
