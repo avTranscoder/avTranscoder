@@ -55,13 +55,14 @@ private:
 
 private:
 	OutputFile&                      _outputFile;
-	std::vector< InputFile* >        _inputFiles;
+	std::vector< InputFile >         _inputFiles;
 
 	std::vector< InputStream* >      _inputStreams;
-	std::vector< StreamTranscoder* > _streamTranscoders;
+	std::vector< StreamTranscoder >  _streamTranscoders;
 	
-	std::vector< DummyAudio* > _dummyAudio;
-	std::vector< DummyVideo* > _dummyVideo;
+	std::vector< DummyAudio > _dummyAudio;
+	std::vector< DummyVideo > _dummyVideo;
+
 	Profile _profile;
 
 	bool _verbose;

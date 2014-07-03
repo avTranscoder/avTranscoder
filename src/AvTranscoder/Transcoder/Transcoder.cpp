@@ -16,22 +16,6 @@ Transcoder::Transcoder( OutputFile& outputFile )
 
 Transcoder::~Transcoder()
 {
-	for( std::vector< InputFile* >::iterator it = _inputFiles.begin(); it != _inputFiles.end(); ++it )
-	{
-		delete (*it);
-	}
-	for( std::vector< DummyAudio* >::iterator it = _dummyAudio.begin(); it != _dummyAudio.end(); ++it )
-	{
-		delete (*it);
-	}
-	for( std::vector< DummyVideo* >::iterator it = _dummyVideo.begin(); it != _dummyVideo.end(); ++it )
-	{
-		delete (*it);
-	}
-	for( std::vector< StreamTranscoder* >::iterator it = _streamTranscoders.begin(); it != _streamTranscoders.end(); ++it )
-	{
-		delete (*it);
-	}
 }
 
 void Transcoder::add( const std::string& filename, const size_t streamIndex, const std::string& profileName )
@@ -70,7 +54,7 @@ bool Transcoder::processFrame()
 		std::cout << "process frame" << std::endl;
 	for( size_t streamIndex = 0; streamIndex < _streamTranscoders.size(); ++streamIndex )
 	{
-		if( ! _streamTranscoders.at( streamIndex )->processFrame() )
+		if( ! _streamTranscoders.at( streamIndex ).processFrame() )
 		{
 			_streamTranscoders.clear();
 		}
@@ -133,8 +117,7 @@ void Transcoder::addRewrapStream( const std::string& filename, const size_t stre
 {
 	InputFile* referenceFile = addInputFile( filename, streamIndex );
 
-	StreamTranscoder* streamTranscoder = new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile );
-	_streamTranscoders.push_back( streamTranscoder );
+	_streamTranscoders.push_back( StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile ) );
 	_inputStreams.push_back( &referenceFile->getStream( streamIndex ) );
 }
 
@@ -146,15 +129,13 @@ void Transcoder::addTranscodeStream( const std::string& filename, const size_t s
 	{
 		case AVMEDIA_TYPE_VIDEO:
 		{
-			StreamTranscoder* streamTranscoder = new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile, profile );
-			_streamTranscoders.push_back( streamTranscoder );
+			_streamTranscoders.push_back( StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile, profile ) );
 			_inputStreams.push_back( &referenceFile->getStream( streamIndex ) );
 			break;
 		}
 		case AVMEDIA_TYPE_AUDIO:
 		{
-			StreamTranscoder* streamTranscoder = new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile, profile );
-			_streamTranscoders.push_back( streamTranscoder );
+			_streamTranscoders.push_back( StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile, profile ) );
 			_inputStreams.push_back( &referenceFile->getStream( streamIndex ) );
 			break;
 		}
@@ -175,16 +156,14 @@ void Transcoder::addDummyStream( Profile::ProfileDesc& profile )
 
 	if( profile.find( Profile::avProfileType )->second == Profile::avProfileTypeAudio )
 	{
-		_dummyAudio.push_back( new DummyAudio() );
-		StreamTranscoder* streamTranscoder = new StreamTranscoder( *_dummyAudio.back(), _outputFile, profile );
-		_streamTranscoders.push_back( streamTranscoder );
+		_dummyAudio.push_back( DummyAudio() );
+		_streamTranscoders.push_back( StreamTranscoder( _dummyAudio.back(), _outputFile, profile ) );
 	}
 
 	if( profile.find( Profile::avProfileType )->second == Profile::avProfileTypeVideo )
 	{
-		_dummyVideo.push_back( new DummyVideo() );
-		StreamTranscoder* streamTranscoder = new StreamTranscoder( *_dummyVideo.back(), _outputFile, profile );
-		_streamTranscoders.push_back( streamTranscoder );
+		_dummyVideo.push_back( DummyVideo() );
+		_streamTranscoders.push_back( StreamTranscoder( _dummyVideo.back(), _outputFile, profile ) );
 	}
 }
 
@@ -192,11 +171,11 @@ InputFile* Transcoder::addInputFile( const std::string& filename, const size_t s
 {
 	InputFile* referenceFile = NULL;
 
-	for( std::vector< InputFile* >::iterator it = _inputFiles.begin(); it != _inputFiles.end(); ++it )
+	for( std::vector< InputFile >::iterator it = _inputFiles.begin(); it != _inputFiles.end(); ++it )
 	{
-		if( (*it)->getFilename() == filename )
+		if( (*it).getFilename() == filename )
 		{
-			referenceFile = (*it);
+			referenceFile = &(*it);
 			break;
 		}
 	}
@@ -205,8 +184,8 @@ InputFile* Transcoder::addInputFile( const std::string& filename, const size_t s
 	{
 		if( _verbose )
 			std::cout << "new InputFile for " << filename << std::endl;
-		_inputFiles.push_back( new InputFile( filename ) );
-		referenceFile = _inputFiles.back();
+		_inputFiles.push_back( InputFile( filename ) );
+		referenceFile = &_inputFiles.back();
 	}
 
 	referenceFile->readStream( streamIndex );
