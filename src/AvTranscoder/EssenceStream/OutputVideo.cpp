@@ -15,6 +15,9 @@ extern "C" {
 #include <AvTranscoder/DatasStructures/Image.hpp>
 #include <AvTranscoder/Profile.hpp>
 
+#include <stdexcept>
+#include <cstdlib>
+
 namespace avtranscoder
 {
 
@@ -176,25 +179,24 @@ bool OutputVideo::encodeFrame( DataStream& codedFrame )
 #endif
 }
 
-void OutputVideo::setProfile( Profile::ProfileDesc& desc )
+void OutputVideo::setProfile( Profile::ProfileDesc& desc, const avtranscoder::ImageDesc& imageDesc )
 {
-	// if not specified in the profile desc: 1920*1080, 25 fps, with pixel aspect ratio = 1
-	const size_t width = ( desc.find( "width" ) != desc.end() ) ? atoi( desc[ "width" ].c_str() ) : 1920;
-	const size_t height = ( desc.find( "height" ) != desc.end() ) ? atoi( desc[ "height" ].c_str() ) : 1080;
-	const size_t frameRate = ( desc.find( "r" ) != desc.end() ) ? atoi( desc[ "r" ].c_str() ) : 25;
-	const size_t par = ( desc.find( "par" ) != desc.end() ) ? atoi( desc[ "par" ].c_str() ) : 1;
-	const AVPixelFormat pix_fmt = static_cast<AVPixelFormat>( atoi( desc[ "pix_fmt" ].c_str() ) );
+	if( ! desc.count( Profile::avProfileCodec ) ||
+		! desc.count( Profile::avProfilePixelFormat ) || 
+		! desc.count( Profile::avProfileFrameRate ) )
+	{
+		throw std::runtime_error( "The profile " + desc[ Profile::avProfileIdentificatorHuman ] + " is invalid." );
+	}
 	
-	_videoDesc.setVideoCodec( desc[ "codec" ] );
+	if( ( desc.count( Profile::avProfileWidth ) && std::strtoul( desc[ Profile::avProfileWidth ].c_str(), NULL, 0 ) != imageDesc.getWidth() ) || 
+		( desc.count( Profile::avProfileHeight ) && std::strtoul( desc[ Profile::avProfileHeight ].c_str(), NULL, 0 ) != imageDesc.getHeight() ) )
+	{
+		throw std::runtime_error( "Invalid imageDesc with the profile " + desc[ Profile::avProfileIdentificatorHuman ] + "." );
+	}
+	
+	_videoDesc.setVideoCodec( desc[ Profile::avProfileCodec ] );
+	const size_t frameRate = std::strtoul( desc[ Profile::avProfileFrameRate ].c_str(), NULL, 0 );
 	_videoDesc.setTimeBase( 1, frameRate );
-	
-	avtranscoder::ImageDesc imageDesc;
-	avtranscoder::Pixel pixel( pix_fmt );
-	// @todo: set par of pixel
-	imageDesc.setPixel( pixel );
-	imageDesc.setWidth( width );
-	imageDesc.setHeight( height );
-	imageDesc.setDar( width, height );
 	_videoDesc.setImageParameters( imageDesc );
 
 	for( Profile::ProfileDesc::iterator it = desc.begin(); it != desc.end(); ++it )
@@ -205,17 +207,15 @@ void OutputVideo::setProfile( Profile::ProfileDesc& desc )
 			continue;
 		if( (*it).first == Profile::avProfileType )
 			continue;
-		if( (*it).first == "codec" )
+		if( (*it).first == Profile::avProfileCodec )
 			continue;
-		if( (*it).first == "pix_fmt" )
+		if( (*it).first == Profile::avProfilePixelFormat )
 			continue;
-		if( (*it).first == "width" )
+		if( (*it).first == Profile::avProfileWidth )
 			continue;
-		if( (*it).first == "height" )
+		if( (*it).first == Profile::avProfileHeight )
 			continue;
-		if( (*it).first == "r" )
-			continue;
-		if( (*it).first == "par" )
+		if( (*it).first == Profile::avProfileFrameRate )
 			continue;
 
 		try
@@ -238,17 +238,15 @@ void OutputVideo::setProfile( Profile::ProfileDesc& desc )
 			continue;
 		if( (*it).first == Profile::avProfileType )
 			continue;
-		if( (*it).first == "codec" )
+		if( (*it).first == Profile::avProfileCodec )
 			continue;
-		if( (*it).first == "pix_fmt" )
+		if( (*it).first == Profile::avProfilePixelFormat )
 			continue;
-		if( (*it).first == "width" )
+		if( (*it).first == Profile::avProfileWidth )
 			continue;
-		if( (*it).first == "height" )
+		if( (*it).first == Profile::avProfileHeight )
 			continue;
-		if( (*it).first == "r" )
-			continue;
-		if( (*it).first == "par" )
+		if( (*it).first == Profile::avProfileFrameRate )
 			continue;
 
 		try

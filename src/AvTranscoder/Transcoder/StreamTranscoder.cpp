@@ -64,7 +64,7 @@ StreamTranscoder::StreamTranscoder(
 			OutputVideo* outputVideo = new OutputVideo();
 
 			_outputEssence = outputVideo;
-			_outputEssence->setProfile( profile );
+			outputVideo->setProfile( profile, _inputStream->getVideoDesc().getImageDesc() );
 			
 			_outputStream = &outputFile.addVideoStream( outputVideo->getVideoDesc() );
 			_videoFrameBuffer = new Image( outputVideo->getVideoDesc().getImageDesc() );
@@ -80,7 +80,7 @@ StreamTranscoder::StreamTranscoder(
 			OutputAudio* outputAudio = new OutputAudio();
 
 			_outputEssence = outputAudio;
-			_outputEssence->setProfile( profile );
+			outputAudio->setProfile( profile, _inputStream->getAudioDesc().getFrameDesc() );
 
 			_outputStream = &outputFile.addAudioStream( outputAudio->getAudioDesc() );
 			_audioFrameBuffer = new AudioFrame( outputAudio->getAudioDesc().getFrameDesc() );
@@ -118,7 +118,7 @@ StreamTranscoder::StreamTranscoder(
 		OutputAudio* outputAudio = new OutputAudio();
 
 		_outputEssence = outputAudio;
-		_outputEssence->setProfile( profile );
+		outputAudio->setProfile( profile, outputAudio->getAudioDesc().getFrameDesc() );
 
 		_outputStream = &outputFile.addAudioStream( outputAudio->getAudioDesc() );
 		_audioFrameBuffer = new AudioFrame( outputAudio->getAudioDesc().getFrameDesc() );
@@ -131,7 +131,7 @@ StreamTranscoder::StreamTranscoder(
 		OutputVideo* outputVideo = new OutputVideo();
 
 		_outputEssence = outputVideo;
-		_outputEssence->setProfile( profile );
+		outputVideo->setProfile( profile, outputVideo->getVideoDesc().getImageDesc() );
 
 		_outputStream = &outputFile.addVideoStream( outputVideo->getVideoDesc() );
 		_videoFrameBuffer = new Image( outputVideo->getVideoDesc().getImageDesc() );
