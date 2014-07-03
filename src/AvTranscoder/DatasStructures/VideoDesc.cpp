@@ -16,6 +16,7 @@ extern "C" {
 #include <iostream>
 #include <stdexcept>
 #include <sstream>
+#include <cassert>
 
 namespace avtranscoder
 {
@@ -76,16 +77,19 @@ void VideoDesc::setTimeBase( const size_t num, const size_t den, const size_t ti
 
 std::string VideoDesc::getVideoCodec() const
 {
+	assert( m_codecContext != NULL );
 	return m_codecContext->codec_name;
 }
 
 AVCodecID VideoDesc::getVideoCodecId() const
 {
+	assert( m_codecContext != NULL );
 	return m_codecContext->codec_id;
 }
 
 std::pair< size_t, size_t > VideoDesc::getTimeBase() const
 {
+	assert( m_codecContext != NULL );
 	std::pair< size_t, size_t > timeBase;
 	timeBase.first = m_codecContext->time_base.num;
 	timeBase.second = m_codecContext->time_base.den;
@@ -221,6 +225,7 @@ void VideoDesc::set( const std::string& key, const std::string& value )
 
 ImageDesc VideoDesc::getImageDesc() const
 {
+	assert( m_codecContext != NULL );
 	ImageDesc imageDesc;
 	Pixel pixel( m_codecContext->pix_fmt );
 

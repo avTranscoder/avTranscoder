@@ -3,6 +3,9 @@
 
 #include <AvTranscoder/CodedStream/AvInputStream.hpp>
 
+#include <AvTranscoder/EssenceStream/DummyVideo.hpp>
+#include <AvTranscoder/EssenceStream/DummyAudio.hpp>
+
 #include <AvTranscoder/EssenceTransform/AudioEssenceTransform.hpp>
 #include <AvTranscoder/EssenceTransform/VideoEssenceTransform.hpp>
 
@@ -19,8 +22,6 @@ StreamTranscoder::StreamTranscoder(
 	, _outputStream( NULL )
 	, _sourceBuffer( NULL )
 	, _frameBuffer( NULL )
-	, _videoFrameBuffer( NULL )
-	, _audioFrameBuffer( NULL )
 	, _inputEssence( NULL )
 	, _outputEssence( NULL )
 	, _transform( NULL )
@@ -53,8 +54,6 @@ StreamTranscoder::StreamTranscoder(
 	, _outputStream( NULL )
 	, _sourceBuffer( NULL )
 	, _frameBuffer( NULL )
-	, _videoFrameBuffer( NULL )
-	, _audioFrameBuffer( NULL )
 	, _inputEssence( NULL )
 	, _outputEssence( NULL )
 	, _transform( NULL )
@@ -71,13 +70,12 @@ StreamTranscoder::StreamTranscoder(
 			OutputVideo* outputVideo = new OutputVideo();
 
 			_outputEssence = outputVideo;
-			_outputEssence->setProfile( profile );
+			outputVideo->setProfile( profile, _inputStream->getVideoDesc().getImageDesc() );
 			
 			_outputStream = &outputFile.addVideoStream( outputVideo->getVideoDesc() );
 
 			_sourceBuffer = new Image( _inputStream->getVideoDesc().getImageDesc() );
-			_videoFrameBuffer = new Image( outputVideo->getVideoDesc().getImageDesc() );
-			_frameBuffer = _videoFrameBuffer;
+			_frameBuffer = new Image( outputVideo->getVideoDesc().getImageDesc() );
 			
 			_transform = new VideoEssenceTransform();
 
@@ -91,13 +89,12 @@ StreamTranscoder::StreamTranscoder(
 			OutputAudio* outputAudio = new OutputAudio();
 
 			_outputEssence = outputAudio;
-			_outputEssence->setProfile( profile );
+			outputAudio->setProfile( profile, _inputStream->getAudioDesc().getFrameDesc() );
 
 			_outputStream = &outputFile.addAudioStream( outputAudio->getAudioDesc() );
 
 			_sourceBuffer = new AudioFrame( _inputStream->getAudioDesc().getFrameDesc() );
-			_audioFrameBuffer = new AudioFrame( outputAudio->getAudioDesc().getFrameDesc() );
-			_frameBuffer = _audioFrameBuffer;
+			_frameBuffer  = new AudioFrame( outputAudio->getAudioDesc().getFrameDesc() );
 			
 			_transform = new AudioEssenceTransform();
 
@@ -120,8 +117,6 @@ StreamTranscoder::StreamTranscoder(
 	, _outputStream( NULL )
 	, _sourceBuffer( NULL )
 	, _frameBuffer( NULL )
-	, _videoFrameBuffer( NULL )
-	, _audioFrameBuffer( NULL )
 	, _inputEssence( &inputEssence )
 	, _outputEssence( NULL )
 	, _transform( NULL )
@@ -135,24 +130,34 @@ StreamTranscoder::StreamTranscoder(
 		OutputAudio* outputAudio = new OutputAudio();
 
 		_outputEssence = outputAudio;
-		_outputEssence->setProfile( profile );
-
+		AudioFrameDesc srcAudioFrameDesc; // @todo better solution ?
+		outputAudio->setProfile( profile, srcAudioFrameDesc );
+		
+		static_cast<DummyAudio*>( _inputEssence )->setAudioDesc( outputAudio->getAudioDesc() );
+		
 		_outputStream = &outputFile.addAudioStream( outputAudio->getAudioDesc() );
-		_audioFrameBuffer = new AudioFrame( outputAudio->getAudioDesc().getFrameDesc() );
-		_frameBuffer = _audioFrameBuffer;
+		_sourceBuffer = new AudioFrame( outputAudio->getAudioDesc().getFrameDesc() );
+		_frameBuffer  = new AudioFrame( outputAudio->getAudioDesc().getFrameDesc() );
+
+		_transform = new AudioEssenceTransform();
+		
 		return;
 	}
 
 	if( profile.find( Profile::avProfileType )->second == Profile::avProfileTypeVideo )
 	{
 		OutputVideo* outputVideo = new OutputVideo();
-
+		
 		_outputEssence = outputVideo;
-		_outputEssence->setProfile( profile );
+		ImageDesc srcImageDesc; // @todo better solution ?
+		outputVideo->setProfile( profile, srcImageDesc );
 
 		_outputStream = &outputFile.addVideoStream( outputVideo->getVideoDesc() );
-		_videoFrameBuffer = new Image( outputVideo->getVideoDesc().getImageDesc() );
-		_frameBuffer = _videoFrameBuffer;
+		_sourceBuffer = new Image( outputVideo->getVideoDesc().getImageDesc() );
+		_frameBuffer = new Image( outputVideo->getVideoDesc().getImageDesc() );
+		
+		_transform = new VideoEssenceTransform();
+		
 		return;
 	}
 
@@ -199,24 +204,20 @@ bool StreamTranscoder::processTranscode()
 	assert( _sourceBuffer  != NULL );
 	assert( _frameBuffer   != NULL );
 
-	std::cout << "transcode" << std::endl; 
-
 	DataStream dataStream;
 	if( _inputEssence->readNextFrame( *_sourceBuffer ) )
-	{
+	{ 
 		_transform->convert( *_sourceBuffer, *_frameBuffer );
 		_outputEssence->encodeFrame( *_frameBuffer, dataStream );
 	}
 	else
 	{
-		std::cout << "encode last frame" << std::endl;
 		if( ! _outputEssence->encodeFrame( dataStream ) )
 		{
 			return false;
 		}
 	}
 
-	std::cout << "wrap" << std::endl;
 	_outputStream->wrap( dataStream );
 	return true;
 }
