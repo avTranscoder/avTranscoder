@@ -14,6 +14,9 @@ extern "C" {
 #endif
 }
 
+#include <AvTranscoder/DatasStructures/Pixel.hpp>
+#include <AvTranscoder/DatasStructures/Image.hpp>
+
 #include <iostream>
 #include <iomanip>
 #include <cassert>
@@ -34,8 +37,11 @@ VideoEssenceTransform::VideoEssenceTransform()
 {
 }
 
-bool VideoEssenceTransform::init( const Image& src, const Image& dst )
+bool VideoEssenceTransform::init( const Frame& srcFrame, const Frame& dstFrame )
 {
+	const Image& src = static_cast<const Image&>( srcFrame );
+	const Image& dst = static_cast<const Image&>( dstFrame );
+
 	assert( src.desc().getWidth()  != 0 );
 	assert( src.desc().getHeight() != 0 );
 	assert( src.desc().getWidth()  == dst.desc().getWidth()  );
@@ -76,8 +82,11 @@ bool VideoEssenceTransform::init( const Image& src, const Image& dst )
 	return true;
 }
 
-void VideoEssenceTransform::convert( const Image& src, Image& dst )
+void VideoEssenceTransform::convert( const Frame& srcFrame, Frame& dstFrame )
 {
+	const Image& src = static_cast<const Image&>( srcFrame );
+	Image& dst = static_cast<Image&>( dstFrame );
+
 	assert( src.desc().getWidth()  != 0 );
 	assert( src.desc().getHeight() != 0 );
 	assert( src.desc().getWidth()  == dst.desc().getWidth()  );
@@ -86,12 +95,12 @@ void VideoEssenceTransform::convert( const Image& src, Image& dst )
 	assert( src.desc().getPixelDesc().getComponents() == dst.desc().getPixelDesc().getComponents() );
 
 	if( ! _isInit )
-		_isInit = init( src, dst );
+		_isInit = init( srcFrame, dstFrame );
 
 	for( size_t plane = 0; plane < MAX_SWS_PLANE; ++plane )
 	{
-		_srcData.at( plane ) = (uint8_t*)const_cast< unsigned char* >( src.getPtr() + _srcOffsets.at( plane ) );
-		_dstData.at( plane ) = (uint8_t*)dst.getPtr() + _dstOffsets.at( plane );
+		_srcData.at( plane ) = (uint8_t*) const_cast< unsigned char* >( src.getPtr() + _srcOffsets.at( plane ) );
+		_dstData.at( plane ) = (uint8_t*) dst.getPtr() + _dstOffsets.at( plane );
 	}
 	
 	if( !_imageConvertContext )
