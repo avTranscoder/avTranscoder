@@ -132,9 +132,6 @@ StreamTranscoder::StreamTranscoder(
 		_outputEssence = outputAudio;
 		AudioFrameDesc srcAudioFrameDesc; // @todo better solution ?
 		outputAudio->setProfile( profile, srcAudioFrameDesc );
-
-		std::cout <<  outputAudio->getAudioDesc().getSampleRate() << std::endl;
-		std::cout <<  outputAudio->getAudioDesc().getSampleFormat() << std::endl;
 		
 		static_cast<DummyAudio*>( _inputEssence )->setAudioDesc( outputAudio->getAudioDesc() );
 		
