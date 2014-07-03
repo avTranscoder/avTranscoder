@@ -56,8 +56,6 @@ private:
 
 	Frame*         _sourceBuffer;
 	Frame*         _frameBuffer;
-	Image*         _videoFrameBuffer;
-	AudioFrame*    _audioFrameBuffer;
 
 	InputEssence*  _inputEssence;
 	OutputEssence* _outputEssence;
