@@ -60,7 +60,7 @@ void displayOptions( avtranscoder::OptionLoader::OptionArray& options )
 	}
 }
 
-int optionChecker( const std::string& inputfilename )
+void optionChecker( const std::string& inputfilename )
 {	
 	avtranscoder::OptionLoader optionLoader;
 	
