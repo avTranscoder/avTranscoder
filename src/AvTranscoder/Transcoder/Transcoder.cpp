@@ -20,14 +20,6 @@ Transcoder::~Transcoder()
 	{
 		delete (*it);
 	}
-	for( std::vector< DummyAudio* >::iterator it = _dummyAudio.begin(); it != _dummyAudio.end(); ++it )
-	{
-		delete (*it);
-	}
-	for( std::vector< DummyVideo* >::iterator it = _dummyVideo.begin(); it != _dummyVideo.end(); ++it )
-	{
-		delete (*it);
-	}
 	for( std::vector< StreamTranscoder* >::iterator it = _streamTranscoders.begin(); it != _streamTranscoders.end(); ++it )
 	{
 		delete (*it);
@@ -175,15 +167,15 @@ void Transcoder::addDummyStream( Profile::ProfileDesc& profile )
 
 	if( profile.find( Profile::avProfileType )->second == Profile::avProfileTypeAudio )
 	{
-		_dummyAudio.push_back( new DummyAudio() );
-		StreamTranscoder* streamTranscoder = new StreamTranscoder( *_dummyAudio.back(), _outputFile, profile );
+		DummyAudio* dummyAudio = new DummyAudio();
+		StreamTranscoder* streamTranscoder = new StreamTranscoder( *dummyAudio, _outputFile, profile );
 		_streamTranscoders.push_back( streamTranscoder );
 	}
 
 	if( profile.find( Profile::avProfileType )->second == Profile::avProfileTypeVideo )
 	{
-		_dummyVideo.push_back( new DummyVideo() );
-		StreamTranscoder* streamTranscoder = new StreamTranscoder( *_dummyVideo.back(), _outputFile, profile );
+		DummyVideo* dummyVideo = new DummyVideo();
+		StreamTranscoder* streamTranscoder = new StreamTranscoder( *dummyVideo, _outputFile, profile );
 		_streamTranscoders.push_back( streamTranscoder );
 	}
 }

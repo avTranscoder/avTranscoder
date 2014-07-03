@@ -60,8 +60,6 @@ private:
 	std::vector< InputStream* >      _inputStreams;
 	std::vector< StreamTranscoder* > _streamTranscoders;
 	
-	std::vector< DummyAudio* > _dummyAudio;
-	std::vector< DummyVideo* > _dummyVideo;
 	Profile _profile;
 
 	bool _verbose;
