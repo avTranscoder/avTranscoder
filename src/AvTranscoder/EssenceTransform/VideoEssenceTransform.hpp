@@ -1,26 +1,25 @@
 #ifndef _AV_TRANSCODER_ESSENCE_TRANSFORM_VIDEO_ESSENCE_TRANSFORM_HPP
 #define _AV_TRANSCODER_ESSENCE_TRANSFORM_VIDEO_ESSENCE_TRANSFORM_HPP
 
-#include <AvTranscoder/DatasStructures/Pixel.hpp>
-#include <AvTranscoder/DatasStructures/Image.hpp>
+#include <AvTranscoder/DatasStructures/Frame.hpp>
+#include "EssenceTransform.hpp"
 
 #include <vector>
-#include <string>
 
 class SwsContext;
 
 namespace avtranscoder
 {
 
-class AvExport VideoEssenceTransform
+class AvExport VideoEssenceTransform : public EssenceTransform
 {
 public:
 	VideoEssenceTransform();
 
-	void convert( const Image& src, Image& dst );
+	void convert( const Frame& srcFrame, Frame& dstFrame );
 
 private:
-	bool init( const Image& src, const Image& dst );
+	bool init( const Frame& srcFrame, const Frame& dstFrame );
 
 	SwsContext* _imageConvertContext;
 

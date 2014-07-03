@@ -3,6 +3,9 @@
 
 #include <AvTranscoder/CodedStream/AvInputStream.hpp>
 
+#include <AvTranscoder/EssenceTransform/AudioEssenceTransform.hpp>
+#include <AvTranscoder/EssenceTransform/VideoEssenceTransform.hpp>
+
 #include <cassert>
 
 namespace avtranscoder
@@ -14,11 +17,13 @@ StreamTranscoder::StreamTranscoder(
 	)
 	: _inputStream( &inputStream )
 	, _outputStream( NULL )
+	, _sourceBuffer( NULL )
 	, _frameBuffer( NULL )
 	, _videoFrameBuffer( NULL )
 	, _audioFrameBuffer( NULL )
 	, _inputEssence( NULL )
 	, _outputEssence( NULL )
+	, _transform( NULL )
 	, _transcodeStream( false )
 {
 	// create a re-wrapping case
@@ -46,11 +51,13 @@ StreamTranscoder::StreamTranscoder(
 	)
 	: _inputStream( &inputStream )
 	, _outputStream( NULL )
+	, _sourceBuffer( NULL )
 	, _frameBuffer( NULL )
 	, _videoFrameBuffer( NULL )
 	, _audioFrameBuffer( NULL )
 	, _inputEssence( NULL )
 	, _outputEssence( NULL )
+	, _transform( NULL )
 	, _transcodeStream( true )
 {
 	// create a transcode case
@@ -67,9 +74,13 @@ StreamTranscoder::StreamTranscoder(
 			_outputEssence->setProfile( profile );
 			
 			_outputStream = &outputFile.addVideoStream( outputVideo->getVideoDesc() );
+
+			_sourceBuffer = new Image( _inputStream->getVideoDesc().getImageDesc() );
 			_videoFrameBuffer = new Image( outputVideo->getVideoDesc().getImageDesc() );
 			_frameBuffer = _videoFrameBuffer;
 			
+			_transform = new VideoEssenceTransform();
+
 			break;
 		}
 		case AVMEDIA_TYPE_AUDIO :
@@ -83,9 +94,13 @@ StreamTranscoder::StreamTranscoder(
 			_outputEssence->setProfile( profile );
 
 			_outputStream = &outputFile.addAudioStream( outputAudio->getAudioDesc() );
+
+			_sourceBuffer = new AudioFrame( _inputStream->getAudioDesc().getFrameDesc() );
 			_audioFrameBuffer = new AudioFrame( outputAudio->getAudioDesc().getFrameDesc() );
 			_frameBuffer = _audioFrameBuffer;
 			
+			_transform = new AudioEssenceTransform();
+
 			break;
 		}
 		default:
@@ -103,11 +118,13 @@ StreamTranscoder::StreamTranscoder(
 	)
 	: _inputStream( NULL )
 	, _outputStream( NULL )
+	, _sourceBuffer( NULL )
 	, _frameBuffer( NULL )
 	, _videoFrameBuffer( NULL )
 	, _audioFrameBuffer( NULL )
 	, _inputEssence( &inputEssence )
 	, _outputEssence( NULL )
+	, _transform( NULL )
 	, _transcodeStream( true )
 {
 	if( ! profile.count( Profile::avProfileType ) )
@@ -150,6 +167,8 @@ StreamTranscoder::~StreamTranscoder()
 		delete _inputEssence;
 	if( _outputEssence )
 		delete _outputEssence;
+	if( _transform )
+		delete _transform;
 }
 
 
@@ -177,14 +196,15 @@ bool StreamTranscoder::processTranscode()
 {
 	assert( _inputEssence  != NULL );
 	assert( _outputEssence != NULL );
+	assert( _sourceBuffer  != NULL );
 	assert( _frameBuffer   != NULL );
 
 	std::cout << "transcode" << std::endl; 
 
 	DataStream dataStream;
-	if( _inputEssence->readNextFrame( *_frameBuffer ) )
+	if( _inputEssence->readNextFrame( *_sourceBuffer ) )
 	{
-		std::cout << "encode" << std::endl;
+		_transform->convert( *_sourceBuffer, *_frameBuffer );
 		_outputEssence->encodeFrame( *_frameBuffer, dataStream );
 	}
 	else
