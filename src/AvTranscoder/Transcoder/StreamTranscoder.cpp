@@ -167,6 +167,8 @@ StreamTranscoder::~StreamTranscoder()
 		delete _inputEssence;
 	if( _outputEssence )
 		delete _outputEssence;
+	if( _transform )
+		delete _transform;
 }
 
 
