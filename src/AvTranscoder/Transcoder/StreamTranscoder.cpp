@@ -199,8 +199,6 @@ bool StreamTranscoder::processTranscode()
 	assert( _sourceBuffer  != NULL );
 	assert( _frameBuffer   != NULL );
 
-	std::cout << "transcode" << std::endl; 
-
 	DataStream dataStream;
 	if( _inputEssence->readNextFrame( *_sourceBuffer ) )
 	{
@@ -209,14 +207,12 @@ bool StreamTranscoder::processTranscode()
 	}
 	else
 	{
-		std::cout << "encode last frame" << std::endl;
 		if( ! _outputEssence->encodeFrame( dataStream ) )
 		{
 			return false;
 		}
 	}
 
-	std::cout << "wrap" << std::endl;
 	_outputStream->wrap( dataStream );
 	return true;
 }
