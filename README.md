@@ -9,7 +9,7 @@ You can also use it in Java & Python for simpliest integration in projects.
 #### Continuous Integration
 
 ###### Drone.io  
-[![Build Status](https://drone.io/github.com/MarcAntoine-Arnaud/avTranscoder/status.png)](https://drone.io/github.com/MarcAntoine-Arnaud/avTranscoder/latest)
+[![Build Status](https://drone.io/github.com/avTranscoder/avTranscoder/status.png)](https://drone.io/github.com/avTranscoder/avTranscoder/latest)
 
 #### Packaging
 
