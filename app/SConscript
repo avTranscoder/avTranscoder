@@ -66,19 +66,6 @@ avprocessor = env.Program(
                 ],
         )
 
-audioRewrapper = env.Program(
-        'audioWrap',
-        Glob( 'audioRewrapper/*.cpp' ),
-        LIBS = [
-                sAvTranscoder,
-                'avutil',
-                'avformat',
-                'avcodec',
-                'swscale',
-                resampleLibraryName,
-                ]
-        )
-
 if platform.system() != 'Windows':
         avplayer = env.Program(
                 'avplayer',
@@ -128,9 +115,7 @@ avprofiles = env.Program(
         )
 
 env.Depends( avmeta, sAvTranscoder )
-env.Depends( audioRewrapper, sAvTranscoder )
 
 env.Alias( "install", env.Install(os.path.join( installPrefix, "bin" ), avmeta ) )
 env.Alias( "install", env.Install(os.path.join( installPrefix, "bin" ), avprocessor ) )
 env.Alias( "install", env.Install(os.path.join( installPrefix, "bin" ), avtransform ) )
-env.Alias( "install", env.Install(os.path.join( installPrefix, "bin" ), audioRewrapper ) )

@@ -16,6 +16,8 @@
 namespace avtranscoder
 {
 
+class EssenceTransform;
+
 class StreamTranscoder
 {
 public:
@@ -52,12 +54,13 @@ private:
 	InputStream*   _inputStream;
 	OutputStream*  _outputStream;
 
+	Frame*         _sourceBuffer;
 	Frame*         _frameBuffer;
-	Image*         _videoFrameBuffer;
-	AudioFrame*    _audioFrameBuffer;
 
 	InputEssence*  _inputEssence;
 	OutputEssence* _outputEssence;
+
+	EssenceTransform* _transform;
 
 	bool _transcodeStream;
 
