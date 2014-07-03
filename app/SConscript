@@ -98,21 +98,21 @@ if platform.system() != 'Windows':
                         ],
         )
 
-avprofiles = env.Program(
-        'avoptions',
-        Glob( 'optionChecker/*.cpp' ),
-        LIBS = [
-                sAvTranscoder,
-                'avutil',
-                'avformat',
-                'avcodec',
-                'swscale',
-                resampleLibraryName,
-                ],
-        CXXFLAGS = [
-                '-std=c++0x'
-                ],
-        )
+        avprofiles = env.Program(
+                'avoptions',
+                Glob( 'optionChecker/*.cpp' ),
+                LIBS = [
+                        sAvTranscoder,
+                        'avutil',
+                        'avformat',
+                        'avcodec',
+                        'swscale',
+                        resampleLibraryName,
+                        ],
+                CXXFLAGS = [
+                        '-std=c++0x'
+                        ],
+                )
 
 env.Depends( avmeta, sAvTranscoder )
 
