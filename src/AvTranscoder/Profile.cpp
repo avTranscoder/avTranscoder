@@ -70,7 +70,12 @@ void Profile::loadProfiles( const std::string& avProfilesPath )
 	
 	std::string realAvProfilesPath = avProfilesPath;
 	if( realAvProfilesPath.empty() )
-		realAvProfilesPath = std::getenv( "AVPROFILES" );
+	{
+		if( std::getenv( "AVPROFILES" ) )
+			realAvProfilesPath = std::getenv( "AVPROFILES" );
+		else
+			return;
+	}
 	
 	std::vector< std::string > paths;
 	split( paths, realAvProfilesPath, ":" );
