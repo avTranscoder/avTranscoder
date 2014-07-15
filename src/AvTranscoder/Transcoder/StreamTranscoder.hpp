@@ -63,8 +63,7 @@ private:
 	EssenceTransform* _transform;
 
 	bool _transcodeStream;
-
-
+	bool _dummyStream;
 };
 	
 }
