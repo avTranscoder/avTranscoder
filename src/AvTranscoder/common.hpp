@@ -61,7 +61,7 @@ struct Ratio
 
 void split( std::vector< std::string >& splitedString, const std::string& inputString, const std::string& splitChars = ";" );
 
-int getFilesInDir( std::string dir, std::vector< std::string > &files );
+int getFilesInDir( const std::string& dir, std::vector< std::string >& files );
 
 }
 
