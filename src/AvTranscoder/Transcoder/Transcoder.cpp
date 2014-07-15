@@ -125,8 +125,7 @@ void Transcoder::addRewrapStream( const std::string& filename, const size_t stre
 {
 	InputFile* referenceFile = addInputFile( filename, streamIndex );
 
-	StreamTranscoder* streamTranscoder = new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile );
-	_streamTranscoders.push_back( streamTranscoder );
+	_streamTranscoders.push_back( new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile ) );
 	_inputStreams.push_back( &referenceFile->getStream( streamIndex ) );
 }
 
@@ -138,15 +137,13 @@ void Transcoder::addTranscodeStream( const std::string& filename, const size_t s
 	{
 		case AVMEDIA_TYPE_VIDEO:
 		{
-			StreamTranscoder* streamTranscoder = new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile, profile );
-			_streamTranscoders.push_back( streamTranscoder );
+			_streamTranscoders.push_back( new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile, profile ) );
 			_inputStreams.push_back( &referenceFile->getStream( streamIndex ) );
 			break;
 		}
 		case AVMEDIA_TYPE_AUDIO:
 		{
-			StreamTranscoder* streamTranscoder = new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile, profile );
-			_streamTranscoders.push_back( streamTranscoder );
+			_streamTranscoders.push_back( new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile, profile ) );
 			_inputStreams.push_back( &referenceFile->getStream( streamIndex ) );
 			break;
 		}
@@ -167,16 +164,14 @@ void Transcoder::addDummyStream( Profile::ProfileDesc& profile )
 
 	if( profile.find( Profile::avProfileType )->second == Profile::avProfileTypeAudio )
 	{
-		DummyAudio* dummyAudio = new DummyAudio();
-		StreamTranscoder* streamTranscoder = new StreamTranscoder( *dummyAudio, _outputFile, profile );
-		_streamTranscoders.push_back( streamTranscoder );
+		_dummyAudio.push_back( DummyAudio() );
+		_streamTranscoders.push_back( new StreamTranscoder( _dummyAudio.back(), _outputFile, profile ) );
 	}
 
 	if( profile.find( Profile::avProfileType )->second == Profile::avProfileTypeVideo )
 	{
-		DummyVideo* dummyVideo = new DummyVideo();
-		StreamTranscoder* streamTranscoder = new StreamTranscoder( *dummyVideo, _outputFile, profile );
-		_streamTranscoders.push_back( streamTranscoder );
+		_dummyVideo.push_back( DummyVideo() );
+		_streamTranscoders.push_back( new StreamTranscoder( _dummyVideo.back(), _outputFile, profile ) );
 	}
 }
 

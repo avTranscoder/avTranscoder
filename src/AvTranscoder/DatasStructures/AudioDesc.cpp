@@ -17,6 +17,7 @@ extern "C" {
 #include <iostream>
 #include <stdexcept>
 #include <sstream>
+#include <cassert>
 
 namespace avtranscoder
 {
@@ -34,6 +35,13 @@ AudioDesc::AudioDesc( const AVCodecID codecId )
 	, m_codecContext( NULL )
 {
 	setAudioCodec( codecId );
+}
+
+AudioDesc::AudioDesc( const AudioDesc& audioDesc )
+	: m_codec( NULL )
+	, m_codecContext( NULL ) 
+{
+	setAudioCodec( audioDesc.getAudioCodecId() );
 }
 
 void AudioDesc::setAudioCodec( const std::string& codecName )
@@ -186,32 +194,38 @@ void AudioDesc::set( const std::string& key, const std::string& value )
 
 std::string AudioDesc::getAudioCodec() const
 {
+	assert( m_codecContext != NULL );
 	return m_codecContext->codec_name;
 }
 
 AVCodecID AudioDesc::getAudioCodecId() const
 {
+	assert( m_codecContext != NULL );
 	return m_codecContext->codec_id;
 }
 
 
 const size_t AudioDesc::getSampleRate() const
 {
+	assert( m_codecContext != NULL );
 	return m_codecContext->sample_rate;
 }
 
 const size_t AudioDesc::getChannels() const
 {
+	assert( m_codecContext != NULL );
 	return m_codecContext->channels;
 }
 
 const AVSampleFormat AudioDesc::getSampleFormat() const
 {
+	assert( m_codecContext != NULL );
 	return m_codecContext->sample_fmt;
 }
 
 AudioFrameDesc AudioDesc::getFrameDesc() const
 {
+	assert( m_codecContext != NULL );
 	AudioFrameDesc audioFrameDesc;
 	
 	audioFrameDesc.setChannels( m_codecContext->channels );
