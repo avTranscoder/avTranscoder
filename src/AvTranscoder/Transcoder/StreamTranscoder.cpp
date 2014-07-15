@@ -172,6 +172,8 @@ StreamTranscoder::~StreamTranscoder()
 {
 	if( _frameBuffer )
 		delete _frameBuffer;
+	if( _sourceBuffer )
+		delete _sourceBuffer;
 	if( _inputEssence && ! _dummyStream )
 		delete _inputEssence;
 	if( _outputEssence )
