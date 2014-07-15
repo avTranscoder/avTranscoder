@@ -16,19 +16,22 @@ void split( std::vector< std::string >& splitedString, const std::string& inputS
 	}
 }
 
-int getFilesInDir( std::string dir, std::vector< std::string > &files )
+int getFilesInDir( const std::string& dir, std::vector< std::string >& files )
 {
     DIR *dp;
     struct dirent *dirp;
     if( ( dp  = opendir( dir.c_str() ) ) == NULL )
     {
-        std::cout << "Error(" << errno << ") opening " << dir << std::endl;
+        std::cerr << "Error(" << errno << ") opening " << dir << std::endl;
         return errno;
     }
 
     while( ( dirp = readdir( dp ) ) != NULL )
     {
-        files.push_back( std::string( dirp->d_name ) );
+        std::string filename( dirp->d_name );
+		if( filename == "." || filename == ".." )
+			continue;
+        files.push_back( filename );
     }
     closedir( dp );
     return 0;
