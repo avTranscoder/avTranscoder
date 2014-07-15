@@ -26,6 +26,7 @@ StreamTranscoder::StreamTranscoder(
 	, _outputEssence( NULL )
 	, _transform( NULL )
 	, _transcodeStream( false )
+	, _dummyStream( false )
 {
 	// create a re-wrapping case
 	switch( _inputStream->getStreamType() )
@@ -58,6 +59,7 @@ StreamTranscoder::StreamTranscoder(
 	, _outputEssence( NULL )
 	, _transform( NULL )
 	, _transcodeStream( true )
+	, _dummyStream( false )
 {
 	// create a transcode case
 	switch( _inputStream->getStreamType() )
@@ -121,7 +123,9 @@ StreamTranscoder::StreamTranscoder(
 	, _outputEssence( NULL )
 	, _transform( NULL )
 	, _transcodeStream( true )
+	, _dummyStream( true )
 {
+	// create a dummy case
 	if( ! profile.count( Profile::avProfileType ) )
 		throw std::runtime_error( "unable to found stream type (audio, video, etc.)" );
 
@@ -168,7 +172,9 @@ StreamTranscoder::~StreamTranscoder()
 {
 	if( _frameBuffer )
 		delete _frameBuffer;
-	if( _inputEssence )
+	if( _sourceBuffer )
+		delete _sourceBuffer;
+	if( _inputEssence && ! _dummyStream )
 		delete _inputEssence;
 	if( _outputEssence )
 		delete _outputEssence;
