@@ -67,6 +67,12 @@ public:
 	 */
 	std::vector<std::string> getPixelFormats( const std::string& videoCodecName = "" ) const;
 	
+	/**
+	 *  Get array of sample format supported by an audio codec.
+	 *  @param audioCodecName: the audio codec name (empty if not indicated, and so get all sample formats supported by all audio codecs).
+	 */
+	std::vector<std::string> getSampleFormats( const std::string& audioCodecName = "" ) const;
+	
 private:
 	/**
 	 * @brief: load array of Option depending on the flags.
