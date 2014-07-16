@@ -301,9 +301,9 @@ std::vector<std::string> OptionLoader::getPixelFormats( const std::string& video
 	// specific video codec
 	else
 	{
-		AVCodec* videoCodec = avcodec_find_encoder_by_name( videoCodecName.c_str() );
+		const AVCodec* videoCodec = avcodec_find_encoder_by_name( videoCodecName.c_str() );
 
-		if( videoCodec->pix_fmts != NULL )
+		if( videoCodec && videoCodec->pix_fmts != NULL )
 		{
 			size_t pix_fmt = 0;
 			while( videoCodec->pix_fmts[pix_fmt] != -1 )
