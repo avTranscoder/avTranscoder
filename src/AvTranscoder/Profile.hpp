@@ -25,6 +25,7 @@ public:
 	static const std::string avProfileFrameRate;
 	static const std::string avProfileSampleRate;
 	static const std::string avProfileChannel;
+	static const std::string avProfileChannelLayout;
 	
 	static const std::string avProfileWidth;
 	static const std::string avProfileHeight;
