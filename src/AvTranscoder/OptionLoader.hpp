@@ -62,7 +62,7 @@ public:
 	std::vector<std::string>& getAudioCodecsShortNames() { return _audioCodecsShortNames; }
 	
 	/**
-	 *  Get array of pixel format supported by video codec.
+	 *  Get array of pixel format supported by a video codec.
 	 *  @param videoCodecName: the video codec name (empty if not indicated, and so get all pixel formats supported by all video codecs).
 	 */
 	std::vector<std::string> getPixelFormats( const std::string& videoCodecName = "" ) const;
