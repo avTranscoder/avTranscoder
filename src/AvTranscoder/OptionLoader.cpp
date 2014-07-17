@@ -276,7 +276,7 @@ OptionLoader::OptionArray OptionLoader::loadOptions( void* av_class, int req_fla
 	return options;
 }
 
-std::vector<std::string> OptionLoader::getPixelFormats( const std::string& videoCodecName ) const
+std::vector<std::string> OptionLoader::getPixelFormats( const std::string& videoCodecName )
 {
 	std::vector<std::string> pixelFormats;
 	
@@ -320,6 +320,36 @@ std::vector<std::string> OptionLoader::getPixelFormats( const std::string& video
 		}
 	}
 	return pixelFormats;
+}
+
+std::vector<std::string> OptionLoader::getSampleFormats( const std::string& audioCodecName )
+{
+	std::vector<std::string> sampleFormats;
+	
+	if( audioCodecName.empty() )
+	{
+		for( size_t sampleFormat = 0; sampleFormat < AV_SAMPLE_FMT_NB; ++sampleFormat)
+		{
+			sampleFormats.push_back( av_get_sample_fmt_name( static_cast<AVSampleFormat>( sampleFormat ) ) );
+		}
+	}
+	else
+	{
+		const AVCodec* audioCodec = avcodec_find_encoder_by_name( audioCodecName.c_str() );
+		if( audioCodec && audioCodec->sample_fmts != NULL )
+		{
+			size_t sample_fmt = 0;
+			while( audioCodec->sample_fmts[sample_fmt] != -1 )
+			{
+				const char* sampleFormatName = av_get_sample_fmt_name( audioCodec->sample_fmts[sample_fmt] );
+				if( sampleFormatName )
+					sampleFormats.push_back( std::string( sampleFormatName ) );
+				sample_fmt++;
+			}
+		}
+	}
+	
+	return sampleFormats;
 }
 
 }
