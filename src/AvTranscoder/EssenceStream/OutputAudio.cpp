@@ -11,9 +11,11 @@ extern "C" {
 
 #include <AvTranscoder/DatasStructures/AudioFrame.hpp>
 #include <AvTranscoder/Profile.hpp>
+#include <AvTranscoder/OptionLoader.hpp>
 
 #include <stdexcept>
 #include <cstdlib>
+#include <algorithm> // std::find
 
 namespace avtranscoder
 {
@@ -189,6 +191,13 @@ void OutputAudio::setProfile( Profile::ProfileDesc& desc, const AudioFrameDesc& 
 	
 	if( desc[ Profile::avProfileChannelLayout ] == "0" )
 		throw std::runtime_error( "Profile " + desc[ Profile::avProfileIdentificatorHuman ] + ": bad audio channel layout." );
+	
+	// check sample format
+	std::vector<std::string> sampleFormats( OptionLoader::getSampleFormats( desc[ Profile::avProfileCodec ] ) );
+	if( std::find( sampleFormats.begin(), sampleFormats.end(), desc[ Profile::avProfileSampleFormat ] ) == sampleFormats.end() )
+	{
+		throw std::runtime_error( desc[ Profile::avProfileSampleFormat ] + " is a wrong audio sample format for the codec " + desc[ Profile::avProfileCodec ] );
+	}
 	
 	_audioDesc.setAudioCodec( desc[ Profile::avProfileCodec ] );
 	
