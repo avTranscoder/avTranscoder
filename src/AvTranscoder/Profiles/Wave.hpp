@@ -8,7 +8,7 @@ void loadWave( Profile::ProfilesDesc& profiles )
 {
 	Profile::ProfileDesc wave24b48kMono;
 
-	wave24b48kMono[ Profile::avProfileIdentificator ] = "wave24b48kMono";
+	wave24b48kMono[ Profile::avProfileIdentificator ] = "wave24b48kmono";
 	wave24b48kMono[ Profile::avProfileIdentificatorHuman ] = "Wave 24bits 48kHz mono";
 	wave24b48kMono[ Profile::avProfileType ] = Profile::avProfileTypeAudio;
 
@@ -19,7 +19,7 @@ void loadWave( Profile::ProfilesDesc& profiles )
 
 	Profile::ProfileDesc wave16b48kMono;
 
-	wave16b48kMono[ Profile::avProfileIdentificator ] = "wave16b48kMono";
+	wave16b48kMono[ Profile::avProfileIdentificator ] = "wave16b48kmono";
 	wave16b48kMono[ Profile::avProfileIdentificatorHuman ] = "Wave 16bits 48kHz mono";
 	wave16b48kMono[ Profile::avProfileType ] = Profile::avProfileTypeAudio;
 
