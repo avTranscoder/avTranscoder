@@ -17,7 +17,7 @@ class OutputAudio : public OutputEssence
 public:
 	OutputAudio();
 	
-	bool setup();
+	void setup();
 
 	/**
 	 * @param[out] codedFrame
