@@ -183,8 +183,7 @@ void OutputAudio::setProfile( Profile::ProfileDesc& desc, const AudioFrameDesc& 
 	if( ! desc.count( Profile::avProfileCodec ) || 		
 		! desc.count( Profile::avProfileSampleFormat ) || 
 		! desc.count( Profile::avProfileSampleRate ) || 
-		! desc.count( Profile::avProfileChannel ) || 
-		! desc.count( Profile::avProfileChannelLayout ) )
+		! desc.count( Profile::avProfileChannel ) )
 	{
 		throw std::runtime_error( "The profile " + desc[ Profile::avProfileIdentificatorHuman ] + " is invalid." );
 	}
