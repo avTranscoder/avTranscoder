@@ -27,20 +27,27 @@ OutputVideo::OutputVideo( )
 {
 }
 
-bool OutputVideo::setup( )
+void OutputVideo::setup( )
 {
 	av_register_all();  // Warning: should be called only once
 
 	AVCodecContext* codecContext( _videoDesc.getCodecContext() );
 
 	if( codecContext == NULL )
-		return false;
+	{
+		throw std::runtime_error( "could not allocate video codec context" );
+	}
 
 	// try to open encoder with parameters
-	if( avcodec_open2( codecContext, _videoDesc.getCodec(), NULL ) < 0 )
-		return false;
-
-	return true;
+	int ret = avcodec_open2( codecContext, _videoDesc.getCodec(), NULL );
+	if( ret < 0 )
+	{
+		char err[250];
+		av_strerror( ret, err, 250);
+		std::string msg = "could not open video encoder: ";
+		msg += err;
+		throw std::runtime_error( msg );
+	}
 }
 
 

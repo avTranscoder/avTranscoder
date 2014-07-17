@@ -24,20 +24,27 @@ OutputAudio::OutputAudio()
 {
 }
 
-bool OutputAudio::setup()
+void OutputAudio::setup()
 {
 	av_register_all();  // Warning: should be called only once
 
 	AVCodecContext* codecContext( _audioDesc.getCodecContext() );
 
 	if( codecContext == NULL )
-		return false;
+	{
+		throw std::runtime_error( "could not allocate audio codec context" );
+	}
 	
 	// try to open encoder with parameters.
-	if( avcodec_open2( codecContext, _audioDesc.getCodec(), NULL ) < 0 )
-		return false;
-
-	return true;
+	int ret = avcodec_open2( codecContext, _audioDesc.getCodec(), NULL );
+	if( ret < 0 )
+	{
+		char err[250];
+		av_strerror( ret, err, 250);
+		std::string msg = "could not open audio encoder: ";
+		msg += err;
+		throw std::runtime_error( msg );
+	}
 }
 
 bool OutputAudio::encodeFrame( const Frame& sourceFrame, DataStream& codedFrame )
