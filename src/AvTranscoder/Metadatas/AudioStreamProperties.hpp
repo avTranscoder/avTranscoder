@@ -31,7 +31,19 @@ AudioProperties audioStreamInfo( const AVFormatContext* formatContext, const siz
 		ap.codecName = codec->name;
 		ap.codecLongName = codec->long_name;
 	}
+
+	char buf1[1024];
+	av_get_channel_layout_string( buf1, sizeof( buf1 ), -1, codec_context->channel_layout );
 	
+	ap.channelLayout = std::string( buf1 );
+
+	const char* channelName = av_get_channel_name( codec_context->channel_layout );
+	const char* channelDescription = av_get_channel_description( codec_context->channel_layout );
+	if( channelName )
+		ap.channelName = std::string( channelName );
+	if( channelDescription )
+		ap.channelDescription = std::string( channelDescription );
+
 	std::string sampleFormat = "";
 	switch( codec_context->sample_fmt )
 	{

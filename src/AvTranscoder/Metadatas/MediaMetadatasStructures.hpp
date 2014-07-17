@@ -76,6 +76,9 @@ struct AudioProperties {
 	std::string codecName;
 	std::string codecLongName;
 	std::string sampleFormat;
+	std::string channelLayout;
+	std::string channelName;
+ 	std::string channelDescription;
 	size_t      streamId;
 	size_t      codecId;
 	size_t      sampleRate;
