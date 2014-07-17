@@ -353,4 +353,22 @@ std::vector<std::string> OptionLoader::getSampleFormats( const std::string& audi
 	return sampleFormats;
 }
 
+
+std::vector<int> OptionLoader::getSampleRates( const std::string& codecName )
+{
+	std::vector<int> sampleRates;
+	
+	const AVCodec* codec = avcodec_find_encoder_by_name( codecName.c_str() );
+	if( codec && codec->supported_samplerates != NULL )
+	{
+		size_t sample_rate = 0;
+		while( codec->supported_samplerates[sample_rate] != 0 )
+		{
+			sampleRates.push_back( codec->supported_samplerates[sample_rate] );
+			sample_rate++;
+		}
+	}
+	
+	return sampleRates;
+}
 }

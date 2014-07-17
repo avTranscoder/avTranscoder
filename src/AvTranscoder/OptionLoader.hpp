@@ -74,6 +74,11 @@ public:
 	 */
 	static std::vector<std::string> getSampleFormats( const std::string& audioCodecName = "" );
 	
+	/**
+	 *  Get array of sample rate supported by a codec.
+	 *  @param codecName: the codec name (empty if not indicated, and so get all sample rates supported by all codecs).
+	 */
+	static std::vector<int> getSampleRates( const std::string& codecName );
 private:
 	/**
 	 * @brief: load array of Option depending on the flags.
