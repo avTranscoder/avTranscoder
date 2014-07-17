@@ -189,39 +189,6 @@ void OutputAudio::setProfile( Profile::ProfileDesc& desc, const AudioFrameDesc& 
 		throw std::runtime_error( "The profile " + desc[ Profile::avProfileIdentificatorHuman ] + " is invalid." );
 	}
 	
-	// check some values of the profile
-	if( desc[ Profile::avProfileSampleRate ] == "0" )
-		throw std::runtime_error( "Profile " + desc[ Profile::avProfileIdentificatorHuman ] + ": bad sample rate." );
-	
-	if( desc[ Profile::avProfileChannel ] == "0" )
-		throw std::runtime_error( "Profile " + desc[ Profile::avProfileIdentificatorHuman ] + ": bad audio channel." );
-	
-	if( desc[ Profile::avProfileChannelLayout ] == "0" )
-		throw std::runtime_error( "Profile " + desc[ Profile::avProfileIdentificatorHuman ] + ": bad audio channel layout." );
-	
-	// check sample format
-	std::vector<std::string> sampleFormats( OptionLoader::getSampleFormats( desc[ Profile::avProfileCodec ] ) );
-	if( std::find( sampleFormats.begin(), sampleFormats.end(), desc[ Profile::avProfileSampleFormat ] ) == sampleFormats.end() )
-	{
-		throw std::runtime_error( desc[ Profile::avProfileSampleFormat ] + " is a wrong audio sample format for the codec " + desc[ Profile::avProfileCodec ] );
-	}
-	
-	// check sample rate
-	std::vector<int> sampleRates( OptionLoader::getSampleRates( desc[ Profile::avProfileCodec ] ) );
-	// sampleRates.size() == 0: supported sample rates of the audio codec are unknown
-	if( sampleRates.size() > 0 && std::find( sampleRates.begin(), sampleRates.end(), std::atoi( desc[ Profile::avProfileSampleRate ].c_str() ) ) == sampleRates.end() )
-	{
-		throw std::runtime_error( desc[ Profile::avProfileSampleRate ] + " is a wrong audio sample rate for the codec " + desc[ Profile::avProfileCodec ] );
-	}
-	
-	// check channel layout
-	std::vector<int> channelLayouts( OptionLoader::getChannelLayouts( desc[ Profile::avProfileChannelLayout ] ) );
-	// channelLayouts.size() == 0: supported channel layouts of the audio codec are unknown
-	if( channelLayouts.size() > 0 && std::find( channelLayouts.begin(), channelLayouts.end(), std::atoi( desc[ Profile::avProfileChannelLayout ].c_str() ) ) == channelLayouts.end() )
-	{
-		throw std::runtime_error( desc[ Profile::avProfileChannelLayout ] + " is a wrong audio channel layout for the codec " + desc[ Profile::avProfileCodec ] );
-	}
-	
 	_audioDesc.setAudioCodec( desc[ Profile::avProfileCodec ] );
 	
 	size_t sample_rate = std::strtoul( desc[ Profile::avProfileSampleRate ].c_str(), NULL, 0 );
