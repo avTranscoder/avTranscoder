@@ -277,7 +277,7 @@ OptionLoader::OptionArray OptionLoader::loadOptions( void* av_class, int req_fla
 	return options;
 }
 
-std::vector<std::string> OptionLoader::getPixelFormats( const std::string& videoCodecName ) const
+std::vector<std::string> OptionLoader::getPixelFormats( const std::string& videoCodecName )
 {
 	std::vector<std::string> pixelFormats;
 	
@@ -323,7 +323,7 @@ std::vector<std::string> OptionLoader::getPixelFormats( const std::string& video
 	return pixelFormats;
 }
 
-std::vector<std::string> OptionLoader::getSampleFormats( const std::string& audioCodecName ) const
+std::vector<std::string> OptionLoader::getSampleFormats( const std::string& audioCodecName )
 {
 	std::vector<std::string> sampleFormats;
 	
@@ -351,6 +351,43 @@ std::vector<std::string> OptionLoader::getSampleFormats( const std::string& audi
 	}
 	
 	return sampleFormats;
+}
+
+
+std::vector<int> OptionLoader::getSampleRates( const std::string& codecName )
+{
+	std::vector<int> sampleRates;
+	
+	const AVCodec* codec = avcodec_find_encoder_by_name( codecName.c_str() );
+	if( codec && codec->supported_samplerates != NULL )
+	{
+		size_t sample_rate = 0;
+		while( codec->supported_samplerates[sample_rate] != 0 )
+		{
+			sampleRates.push_back( codec->supported_samplerates[sample_rate] );
+			sample_rate++;
+		}
+	}
+	
+	return sampleRates;
+}
+
+std::vector<int> OptionLoader::getChannelLayouts( const std::string& codecName )
+{
+	std::vector<int> channelLayouts;
+	
+	const AVCodec* codec = avcodec_find_encoder_by_name( codecName.c_str() );
+	if( codec && codec->channel_layouts != NULL )
+	{
+		size_t channel_layout = 0;
+		while( codec->channel_layouts[channel_layout] != 0 )
+		{
+			channelLayouts.push_back( codec->channel_layouts[channel_layout] );
+			channel_layout++;
+		}
+	}
+	
+	return channelLayouts;
 }
 
 }

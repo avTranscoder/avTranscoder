@@ -25,7 +25,6 @@ const std::string Profile::avProfileSampleFormat( "sample_fmt" );
 const std::string Profile::avProfileFrameRate( "r" );
 const std::string Profile::avProfileSampleRate( "ar" );
 const std::string Profile::avProfileChannel( "ac" );
-const std::string Profile::avProfileChannelLayout( "channel_layout" );
 const std::string Profile::avProfileWidth( "width" );
 const std::string Profile::avProfileHeight( "height" );
 
