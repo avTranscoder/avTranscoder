@@ -76,7 +76,7 @@ public:
 	
 	/**
 	 *  Get array of sample rate supported by a codec.
-	 *  @param codecName: the codec name (empty if not indicated, and so get all sample rates supported by all codecs).
+	 *  @param codecName: the codec name
 	 */
 	static std::vector<int> getSampleRates( const std::string& codecName );
 	
