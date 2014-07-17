@@ -199,6 +199,14 @@ void OutputAudio::setProfile( Profile::ProfileDesc& desc, const AudioFrameDesc& 
 		throw std::runtime_error( desc[ Profile::avProfileSampleFormat ] + " is a wrong audio sample format for the codec " + desc[ Profile::avProfileCodec ] );
 	}
 	
+	// check sample rate
+	std::vector<int> sampleRates( OptionLoader::getSampleRates( desc[ Profile::avProfileCodec ] ) );
+	// sampleRates.size() == 0: supported sample rates of the audio codec are unknown
+	if( sampleRates.size() > 0 && std::find( sampleRates.begin(), sampleRates.end(), std::atoi( desc[ Profile::avProfileSampleRate ].c_str() ) ) == sampleRates.end() )
+	{
+		throw std::runtime_error( desc[ Profile::avProfileSampleRate ] + " is a wrong audio sample rate for the codec " + desc[ Profile::avProfileCodec ] );
+	}
+	
 	_audioDesc.setAudioCodec( desc[ Profile::avProfileCodec ] );
 	
 	size_t sample_rate = std::strtoul( desc[ Profile::avProfileSampleRate ].c_str(), NULL, 0 );
