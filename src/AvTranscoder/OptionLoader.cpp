@@ -371,4 +371,23 @@ std::vector<int> OptionLoader::getSampleRates( const std::string& codecName )
 	
 	return sampleRates;
 }
+
+std::vector<int> OptionLoader::getChannelLayouts( const std::string& codecName )
+{
+	std::vector<int> channelLayouts;
+	
+	const AVCodec* codec = avcodec_find_encoder_by_name( codecName.c_str() );
+	if( codec && codec->channel_layouts != NULL )
+	{
+		size_t channel_layout = 0;
+		while( codec->channel_layouts[channel_layout] != 0 )
+		{
+			channelLayouts.push_back( codec->channel_layouts[channel_layout] );
+			channel_layout++;
+		}
+	}
+	
+	return channelLayouts;
+}
+
 }
