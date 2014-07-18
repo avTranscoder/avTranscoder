@@ -24,20 +24,27 @@ OutputAudio::OutputAudio()
 {
 }
 
-bool OutputAudio::setup()
+void OutputAudio::setup()
 {
 	av_register_all();  // Warning: should be called only once
 
 	AVCodecContext* codecContext( _audioDesc.getCodecContext() );
 
 	if( codecContext == NULL )
-		return false;
+	{
+		throw std::runtime_error( "could not allocate audio codec context" );
+	}
 	
 	// try to open encoder with parameters.
-	if( avcodec_open2( codecContext, _audioDesc.getCodec(), NULL ) < 0 )
-		return false;
-
-	return true;
+	int ret = avcodec_open2( codecContext, _audioDesc.getCodec(), NULL );
+	if( ret < 0 )
+	{
+		char err[250];
+		av_strerror( ret, err, 250);
+		std::string msg = "could not open audio encoder: ";
+		msg += err;
+		throw std::runtime_error( msg );
+	}
 }
 
 bool OutputAudio::encodeFrame( const Frame& sourceFrame, DataStream& codedFrame )
@@ -174,21 +181,10 @@ void OutputAudio::setProfile( Profile::ProfileDesc& desc, const AudioFrameDesc& 
 	if( ! desc.count( Profile::avProfileCodec ) || 		
 		! desc.count( Profile::avProfileSampleFormat ) || 
 		! desc.count( Profile::avProfileSampleRate ) || 
-		! desc.count( Profile::avProfileChannel ) || 
-		! desc.count( Profile::avProfileChannelLayout ) )
+		! desc.count( Profile::avProfileChannel ) )
 	{
 		throw std::runtime_error( "The profile " + desc[ Profile::avProfileIdentificatorHuman ] + " is invalid." );
 	}
-	
-	// check some values of the profile
-	if( desc[ Profile::avProfileSampleRate ] == "0" )
-		throw std::runtime_error( "Profile " + desc[ Profile::avProfileIdentificatorHuman ] + ": bad sample rate." );
-	
-	if( desc[ Profile::avProfileChannel ] == "0" )
-		throw std::runtime_error( "Profile " + desc[ Profile::avProfileIdentificatorHuman ] + ": bad audio channel." );
-	
-	if( desc[ Profile::avProfileChannelLayout ] == "0" )
-		throw std::runtime_error( "Profile " + desc[ Profile::avProfileIdentificatorHuman ] + ": bad audio channel layout." );
 	
 	_audioDesc.setAudioCodec( desc[ Profile::avProfileCodec ] );
 	

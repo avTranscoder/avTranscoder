@@ -30,9 +30,8 @@ public:
 
 	/**
 	 * @brief Setup the encoder
-	 * @return status of setup
 	 */
-	virtual bool setup() = 0;
+	virtual void setup() = 0;
 
 	/**
 	 * @brief Encode a new frame, and get coded frame
