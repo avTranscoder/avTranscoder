@@ -37,17 +37,33 @@ public:
 	 */
 	void add( const std::string& filename, const size_t streamIndex, Profile::ProfileDesc& profileDesc );
 
+	/**
+	 * @brief Add a stream and set a profile
+	 * @note If profile is empty, add a dummy stream.
+	 * @note If subStreamIndex is negative, no substream a selected it's the stream. 
+	 */
+	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const std::string& profileName = "" );
+
+	/**
+	 * @brief Add a stream and set a custom profile
+	 * @note Profile will be updated, be sure to pass unique profile name.
+	 * @note If subStreamIndex is negative, no substream a selected it's the stream.
+	 */
+	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, Profile::ProfileDesc& profileDesc );
+
 	bool processFrame();
 
 	void process( ProgressListener& progress );
 
-	void setVerbose( bool verbose = true ){ _verbose = verbose; }
+	void setVerbose( bool verbose = true );
 
 private:
 
 	void addRewrapStream( const std::string& filename, const size_t streamIndex );
 
 	void addTranscodeStream( const std::string& filename, const size_t streamIndex, Profile::ProfileDesc& profile );
+
+	void addTranscodeStream( const std::string& filename, const size_t streamIndex, const size_t subStreamIndex, Profile::ProfileDesc& profile );
 
 	void addDummyStream( Profile::ProfileDesc& profile );
 
@@ -60,12 +76,12 @@ private:
 	std::vector< InputStream* >      _inputStreams;
 	std::vector< StreamTranscoder* > _streamTranscoders;
 	
-	std::vector< DummyAudio > _dummyAudio;
-	std::vector< DummyVideo > _dummyVideo;
+	std::vector< DummyAudio* > _dummyAudio;
+	std::vector< DummyVideo* > _dummyVideo;
 
 	Profile _profile;
 
-	bool _verbose;
+	bool    _verbose;
 };
 
 }

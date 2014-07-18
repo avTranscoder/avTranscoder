@@ -29,7 +29,7 @@ public:
 	/**
 	 * @brief transcode stream
 	 **/
-	StreamTranscoder( InputStream& inputStream, OutputFile& outputFile, Profile::ProfileDesc& profile );
+	StreamTranscoder( InputStream& inputStream, OutputFile& outputFile, Profile::ProfileDesc& profile, const int subStreamIndex = -1 );
 
 	/**
 	 * @brief encode from dummy stream
@@ -46,9 +46,13 @@ public:
 
 	bool isTranscodeStream() const { return _transcodeStream; }
 
+	void setVerbose( bool verbose = true ){ _verbose = verbose; }
+
 private:
 	bool processRewrap();
+	bool processRewrap( const int subStreamIndex );
 	bool processTranscode();
+	bool processTranscode( const int subStreamIndex );
 
 private:
 	InputStream*   _inputStream;
@@ -62,9 +66,10 @@ private:
 
 	EssenceTransform* _transform;
 
+	int  _subStreamIndex;
+
 	bool _transcodeStream;
-
-
+	bool _verbose;
 };
 	
 }

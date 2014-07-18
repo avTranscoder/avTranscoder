@@ -231,6 +231,7 @@ AudioFrameDesc AudioDesc::getFrameDesc() const
 	audioFrameDesc.setChannels( m_codecContext->channels );
 	audioFrameDesc.setSampleRate( m_codecContext->sample_rate );
 	audioFrameDesc.setSampleFormat( m_codecContext->sample_fmt );
+	// audioFrameDesc.setFps( 25 );
 	
 	return audioFrameDesc;
 }
