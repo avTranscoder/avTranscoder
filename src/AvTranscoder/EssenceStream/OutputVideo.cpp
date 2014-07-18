@@ -202,27 +202,22 @@ void OutputVideo::setProfile( Profile::ProfileDesc& desc, const avtranscoder::Im
 	}
 	
 	_videoDesc.setVideoCodec( desc[ Profile::avProfileCodec ] );
+	
 	const size_t frameRate = std::strtoul( desc[ Profile::avProfileFrameRate ].c_str(), NULL, 0 );
 	_videoDesc.setTimeBase( 1, frameRate );
+	
 	_videoDesc.setImageParameters( imageDesc );
 
 	for( Profile::ProfileDesc::iterator it = desc.begin(); it != desc.end(); ++it )
 	{
-		if( (*it).first == Profile::avProfileIdentificator )
-			continue;
-		if( (*it).first == Profile::avProfileIdentificatorHuman )
-			continue;
-		if( (*it).first == Profile::avProfileType )
-			continue;
-		if( (*it).first == Profile::avProfileCodec )
-			continue;
-		if( (*it).first == Profile::avProfilePixelFormat )
-			continue;
-		if( (*it).first == Profile::avProfileWidth )
-			continue;
-		if( (*it).first == Profile::avProfileHeight )
-			continue;
-		if( (*it).first == Profile::avProfileFrameRate )
+		if( (*it).first == Profile::avProfileIdentificator ||
+			(*it).first == Profile::avProfileIdentificatorHuman ||
+			(*it).first == Profile::avProfileType ||
+			(*it).first == Profile::avProfileCodec ||
+			(*it).first == Profile::avProfilePixelFormat ||
+			(*it).first == Profile::avProfileWidth ||
+			(*it).first == Profile::avProfileHeight ||
+			(*it).first == Profile::avProfileFrameRate )
 			continue;
 
 		try
@@ -239,21 +234,14 @@ void OutputVideo::setProfile( Profile::ProfileDesc& desc, const avtranscoder::Im
 
 	for( Profile::ProfileDesc::iterator it = desc.begin(); it != desc.end(); ++it )
 	{
-		if( (*it).first == Profile::avProfileIdentificator )
-			continue;
-		if( (*it).first == Profile::avProfileIdentificatorHuman )
-			continue;
-		if( (*it).first == Profile::avProfileType )
-			continue;
-		if( (*it).first == Profile::avProfileCodec )
-			continue;
-		if( (*it).first == Profile::avProfilePixelFormat )
-			continue;
-		if( (*it).first == Profile::avProfileWidth )
-			continue;
-		if( (*it).first == Profile::avProfileHeight )
-			continue;
-		if( (*it).first == Profile::avProfileFrameRate )
+		if( (*it).first == Profile::avProfileIdentificator ||
+			(*it).first == Profile::avProfileIdentificatorHuman ||
+			(*it).first == Profile::avProfileType ||
+			(*it).first == Profile::avProfileCodec ||
+			(*it).first == Profile::avProfilePixelFormat ||
+			(*it).first == Profile::avProfileWidth ||
+			(*it).first == Profile::avProfileHeight ||
+			(*it).first == Profile::avProfileFrameRate )
 			continue;
 
 		try
