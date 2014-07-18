@@ -51,6 +51,8 @@ public:
 	 */
 	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, Profile::ProfileDesc& profileDesc );
 
+	void add( StreamTranscoder& stream );
+	
 	bool processFrame();
 
 	void process( ProgressListener& progress );
