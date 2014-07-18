@@ -9,6 +9,7 @@ extern "C" {
 #include <libavformat/avformat.h>
 #include <libavutil/avutil.h>
 #include <libavutil/pixdesc.h>
+#include <libavutil/channel_layout.h>
 }
 
 namespace avtranscoder
@@ -38,12 +39,14 @@ AudioProperties audioStreamInfo( const AVFormatContext* formatContext, const siz
 	ap.channelLayout = std::string( buf1 );
 
 	const char* channelName = av_get_channel_name( codec_context->channel_layout );
-	const char* channelDescription = av_get_channel_description( codec_context->channel_layout );
 	if( channelName )
 		ap.channelName = std::string( channelName );
+#ifdef FF_RESAMPLE_LIBRARY
+	const char* channelDescription = av_get_channel_description( codec_context->channel_layout );
 	if( channelDescription )
 		ap.channelDescription = std::string( channelDescription );
-
+#endif
+	
 	std::string sampleFormat = "";
 	switch( codec_context->sample_fmt )
 	{
