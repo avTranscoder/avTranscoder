@@ -30,7 +30,7 @@ class AvExport OutputVideo : public OutputEssence
 public:
 	OutputVideo();
 
-	bool setup();
+	void setup();
 
 	//void setVideoDesc( const VideoDesc& videoDesc );
 

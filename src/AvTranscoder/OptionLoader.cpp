@@ -277,7 +277,7 @@ OptionLoader::OptionArray OptionLoader::loadOptions( void* av_class, int req_fla
 	return options;
 }
 
-std::vector<std::string> OptionLoader::getPixelFormats( const std::string& videoCodecName ) const
+std::vector<std::string> OptionLoader::getPixelFormats( const std::string& videoCodecName )
 {
 	std::vector<std::string> pixelFormats;
 	
@@ -323,7 +323,7 @@ std::vector<std::string> OptionLoader::getPixelFormats( const std::string& video
 	return pixelFormats;
 }
 
-std::vector<std::string> OptionLoader::getSampleFormats( const std::string& audioCodecName ) const
+std::vector<std::string> OptionLoader::getSampleFormats( const std::string& audioCodecName )
 {
 	std::vector<std::string> sampleFormats;
 	
