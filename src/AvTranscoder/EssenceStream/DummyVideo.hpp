@@ -23,10 +23,13 @@ public:
 	
 	void setup() {}
 
+	void setFrame( Frame& inputFrame );
+	
 	bool readNextFrame( Frame& frameBuffer );
 	bool readNextFrame( Frame& frameBuffer, const size_t subStreamIndex );
 
 private:
+	Frame*    _inputFrame;
 	VideoDesc _videoDesc;
 	ImageDesc _imageDesc;
 
