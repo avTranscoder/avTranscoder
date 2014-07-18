@@ -25,9 +25,6 @@ public:
 	static const std::string avProfileFrameRate;
 	static const std::string avProfileSampleRate;
 	static const std::string avProfileChannel;
-	
-	static const std::string avProfileWidth;
-	static const std::string avProfileHeight;
 
 public:
 	// typedef std::pair< std::string, std::string > KeyDesc;

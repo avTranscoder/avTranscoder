@@ -195,12 +195,6 @@ void OutputVideo::setProfile( Profile::ProfileDesc& desc, const avtranscoder::Im
 		throw std::runtime_error( "The profile " + desc[ Profile::avProfileIdentificatorHuman ] + " is invalid." );
 	}
 	
-	if( ( desc.count( Profile::avProfileWidth ) && std::strtoul( desc[ Profile::avProfileWidth ].c_str(), NULL, 0 ) != imageDesc.getWidth() ) || 
-		( desc.count( Profile::avProfileHeight ) && std::strtoul( desc[ Profile::avProfileHeight ].c_str(), NULL, 0 ) != imageDesc.getHeight() ) )
-	{
-		throw std::runtime_error( "Invalid imageDesc with the profile " + desc[ Profile::avProfileIdentificatorHuman ] + "." );
-	}
-	
 	_videoDesc.setVideoCodec( desc[ Profile::avProfileCodec ] );
 	
 	const size_t frameRate = std::strtoul( desc[ Profile::avProfileFrameRate ].c_str(), NULL, 0 );
@@ -215,8 +209,6 @@ void OutputVideo::setProfile( Profile::ProfileDesc& desc, const avtranscoder::Im
 			(*it).first == Profile::avProfileType ||
 			(*it).first == Profile::avProfileCodec ||
 			(*it).first == Profile::avProfilePixelFormat ||
-			(*it).first == Profile::avProfileWidth ||
-			(*it).first == Profile::avProfileHeight ||
 			(*it).first == Profile::avProfileFrameRate )
 			continue;
 
@@ -239,8 +231,6 @@ void OutputVideo::setProfile( Profile::ProfileDesc& desc, const avtranscoder::Im
 			(*it).first == Profile::avProfileType ||
 			(*it).first == Profile::avProfileCodec ||
 			(*it).first == Profile::avProfilePixelFormat ||
-			(*it).first == Profile::avProfileWidth ||
-			(*it).first == Profile::avProfileHeight ||
 			(*it).first == Profile::avProfileFrameRate )
 			continue;
 
