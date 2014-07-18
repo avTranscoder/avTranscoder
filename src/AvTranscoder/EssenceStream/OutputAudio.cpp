@@ -174,18 +174,71 @@ void OutputAudio::setProfile( Profile::ProfileDesc& desc, const AudioFrameDesc& 
 	if( ! desc.count( Profile::avProfileCodec ) || 		
 		! desc.count( Profile::avProfileSampleFormat ) || 
 		! desc.count( Profile::avProfileSampleRate ) || 
-		! desc.count( Profile::avProfileChannel ) )
+		! desc.count( Profile::avProfileChannel ) || 
+		! desc.count( Profile::avProfileChannelLayout ) )
 	{
 		throw std::runtime_error( "The profile " + desc[ Profile::avProfileIdentificatorHuman ] + " is invalid." );
 	}
 	
+	// check some values of the profile
+	if( desc[ Profile::avProfileSampleRate ] == "0" )
+		throw std::runtime_error( "Profile " + desc[ Profile::avProfileIdentificatorHuman ] + ": bad sample rate." );
+	
+	if( desc[ Profile::avProfileChannel ] == "0" )
+		throw std::runtime_error( "Profile " + desc[ Profile::avProfileIdentificatorHuman ] + ": bad audio channel." );
+	
+	if( desc[ Profile::avProfileChannelLayout ] == "0" )
+		throw std::runtime_error( "Profile " + desc[ Profile::avProfileIdentificatorHuman ] + ": bad audio channel layout." );
+	
 	_audioDesc.setAudioCodec( desc[ Profile::avProfileCodec ] );
+	
 	size_t sample_rate = std::strtoul( desc[ Profile::avProfileSampleRate ].c_str(), NULL, 0 );
 	size_t channels = std::strtoul( desc[ Profile::avProfileChannel ].c_str(), NULL, 0 );
-	
 	_audioDesc.setAudioParameters( sample_rate, channels, av_get_sample_fmt( desc[ Profile::avProfileSampleFormat ].c_str() ) );
+	
+	for( Profile::ProfileDesc::iterator it = desc.begin(); it != desc.end(); ++it )
+	{
+		if( (*it).first == Profile::avProfileIdentificator ||
+			(*it).first == Profile::avProfileIdentificatorHuman ||
+			(*it).first == Profile::avProfileType ||
+			(*it).first == Profile::avProfileCodec ||
+			(*it).first == Profile::avProfileSampleFormat ||
+			(*it).first == Profile::avProfileSampleRate ||
+			(*it).first == Profile::avProfileChannel )
+			continue;
+
+		try
+		{
+			_audioDesc.set( (*it).first, (*it).second );
+		}
+		catch( std::exception& e )
+		{
+			std::cout << "warning: " << e.what() << std::endl;
+		}
+	}
 
 	setup();
+
+	for( Profile::ProfileDesc::iterator it = desc.begin(); it != desc.end(); ++it )
+	{
+		if( (*it).first == Profile::avProfileIdentificator ||
+			(*it).first == Profile::avProfileIdentificatorHuman ||
+			(*it).first == Profile::avProfileType ||
+			(*it).first == Profile::avProfileCodec ||
+			(*it).first == Profile::avProfileSampleFormat ||
+			(*it).first == Profile::avProfileSampleRate ||
+			(*it).first == Profile::avProfileChannel )
+			continue;
+
+		try
+		{
+			_audioDesc.set( (*it).first, (*it).second );
+		}
+		catch( std::exception& e )
+		{
+			std::cout << "2.warning: " << e.what() << std::endl;
+		}
+	}
 }
 
 }

@@ -26,8 +26,6 @@ public:
 	AudioDesc( const std::string& codecName = "" );
 	AudioDesc( const AVCodecID codecId );
 	
-	AudioDesc( const AudioDesc& audioDesc );
-
 	void setAudioCodec( const std::string& codecName );
 	void setAudioCodec( const AVCodecID codecId );
 

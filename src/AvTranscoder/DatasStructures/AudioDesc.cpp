@@ -37,13 +37,6 @@ AudioDesc::AudioDesc( const AVCodecID codecId )
 	setAudioCodec( codecId );
 }
 
-AudioDesc::AudioDesc( const AudioDesc& audioDesc )
-	: m_codec( NULL )
-	, m_codecContext( NULL ) 
-{
-	setAudioCodec( audioDesc.getAudioCodecId() );
-}
-
 void AudioDesc::setAudioCodec( const std::string& codecName )
 {
 	avcodec_register_all();  // Warning: should be called only once

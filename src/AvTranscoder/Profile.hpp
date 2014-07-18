@@ -25,17 +25,21 @@ public:
 	static const std::string avProfileFrameRate;
 	static const std::string avProfileSampleRate;
 	static const std::string avProfileChannel;
+	static const std::string avProfileChannelLayout;
 	
 	static const std::string avProfileWidth;
 	static const std::string avProfileHeight;
 
+public:
 	// typedef std::pair< std::string, std::string > KeyDesc;
 	typedef std::map< std::string, std::string > ProfileDesc;
 	typedef std::vector< ProfileDesc > ProfilesDesc;
 
+public:
 	Profile( bool autoload = false );
 
-	void loadProfiles();
+	void loadProfiles( const std::string& avProfilesPath = "" );
+	void loadProfile( const std::string& avProfileFile );
 
 	void update( const ProfileDesc& profile );
 	

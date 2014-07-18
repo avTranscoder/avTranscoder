@@ -67,7 +67,6 @@ private:
 	EssenceTransform* _transform;
 
 	int  _subStreamIndex;
-
 	bool _transcodeStream;
 	bool _verbose;
 };

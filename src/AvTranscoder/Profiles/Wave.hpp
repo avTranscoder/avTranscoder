@@ -16,6 +16,7 @@ void loadWave( Profile::ProfilesDesc& profiles )
 	wave24b48kMono[ Profile::avProfileSampleFormat ] = "s32";
 	wave24b48kMono[ Profile::avProfileSampleRate ] = "48000";
 	wave24b48kMono[ Profile::avProfileChannel ] = "1";
+	wave24b48kMono[ Profile::avProfileChannelLayout ] = "1";
 
 	Profile::ProfileDesc wave16b48kMono;
 
@@ -27,6 +28,7 @@ void loadWave( Profile::ProfilesDesc& profiles )
 	wave16b48kMono[ Profile::avProfileSampleFormat ] = "s16";
 	wave16b48kMono[ Profile::avProfileSampleRate ] = "48000";
 	wave16b48kMono[ Profile::avProfileChannel ] = "1";
+	wave16b48kMono[ Profile::avProfileChannelLayout ] = "1";
 
 	profiles.push_back( wave24b48kMono );
 	profiles.push_back( wave16b48kMono );

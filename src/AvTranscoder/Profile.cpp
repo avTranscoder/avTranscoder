@@ -24,7 +24,8 @@ const std::string Profile::avProfilePixelFormat( "pix_fmt" );
 const std::string Profile::avProfileSampleFormat( "sample_fmt" );
 const std::string Profile::avProfileFrameRate( "r" );
 const std::string Profile::avProfileSampleRate( "ar" );
-const std::string Profile::avProfileChannel( "channel" );
+const std::string Profile::avProfileChannel( "ac" );
+const std::string Profile::avProfileChannelLayout( "channel_layout" );
 const std::string Profile::avProfileWidth( "width" );
 const std::string Profile::avProfileHeight( "height" );
 
@@ -34,54 +35,61 @@ Profile::Profile( bool autoload )
 		loadProfiles();
 }
 
-void Profile::loadProfiles()
+void Profile::loadProfile( const std::string& avProfileFile )
+{
+	std::ifstream infile;
+	infile.open( avProfileFile.c_str(), std::ifstream::in );
+	
+	Profile::ProfileDesc customProfile;
+
+	std::string line;
+	while( std::getline( infile, line ) )
+	{
+		std::vector< std::string > keyValue;
+		split( keyValue, line, "=" );
+		if( keyValue.size() == 2 )
+			customProfile[ keyValue.at( 0 ) ] = keyValue.at( 1 );
+	}
+	// check if profile contains required values
+	if( 
+		customProfile.count( avProfileIdentificator ) &&
+		customProfile.count( avProfileIdentificatorHuman ) &&
+		customProfile.count( avProfileType ) &&
+		( customProfile.find( avProfileType )->second == avProfileTypeVideo ||
+		customProfile.find( avProfileType )->second == avProfileTypeAudio )
+		)
+	{
+		_profiles.push_back( customProfile );
+	}
+}
+
+void Profile::loadProfiles( const std::string& avProfilesPath )
 {
 	loadXdCamHD422( _profiles );
 	loadDNxHD( _profiles );
 	loadWave( _profiles );
-
-	if( const char* envAvProfiles = std::getenv( "AVPROFILES" ) )
+	
+	std::string realAvProfilesPath = avProfilesPath;
+	if( realAvProfilesPath.empty() )
 	{
-		std::vector< std::string > paths;
-		split( paths, envAvProfiles, ":" );
-		for( std::vector< std::string >::iterator dirIt = paths.begin(); dirIt != paths.end(); ++dirIt )
+		if( std::getenv( "AVPROFILES" ) )
+			realAvProfilesPath = std::getenv( "AVPROFILES" );
+		else
+			return;
+	}
+	
+	std::vector< std::string > paths;
+	split( paths, realAvProfilesPath, ":" );
+	for( std::vector< std::string >::iterator dirIt = paths.begin(); dirIt != paths.end(); ++dirIt )
+	{
+		std::vector< std::string > files;
+		if( getFilesInDir( *dirIt, files ) != 0 )
+			continue;
+
+		for( std::vector< std::string >::iterator fileIt = files.begin(); fileIt != files.end(); ++fileIt )
 		{
-			//std::cout << "search profile in path " << *dirIt << std::endl;
-			std::vector< std::string > files;
-			if( getFilesInDir( *dirIt, files ) != 0 )
-				continue;
-
-			for( std::vector< std::string >::iterator fileIt = files.begin(); fileIt != files.end(); ++fileIt )
-			{
-				if( ( *fileIt == "." ) || ( *fileIt == ".." ) )
-					continue;
-
-				std::ifstream infile;
-				infile.open( ( ( *dirIt ) + "/" + ( *fileIt ) ).c_str(), std::ifstream::in );
-
-				// std::cout << "file " << *dirIt << *fileIt << std::endl;
-				Profile::ProfileDesc customProfile;
-				
-				std::string line;
-				while( std::getline( infile, line ) )
-				{
-					std::vector< std::string > keyValue;
-					split( keyValue, line, "=" );
-					if( keyValue.size() == 2 )
-						customProfile[ keyValue.at( 0 ) ] = keyValue.at( 1 );
-				}
-				// check if profile contains required values
-				if( 
-					customProfile.count( avProfileIdentificator ) &&
-					customProfile.count( avProfileIdentificatorHuman ) &&
-					customProfile.count( avProfileType ) &&
-					( customProfile.find( avProfileType )->second == avProfileTypeVideo ||
-					customProfile.find( avProfileType )->second == avProfileTypeAudio )
-					)
-				{
-					_profiles.push_back( customProfile );
-				}
-			}
+			const std::string absPath = ( *dirIt ) + "/" + ( *fileIt );
+			loadProfile( absPath );
 		}
 	}
 }

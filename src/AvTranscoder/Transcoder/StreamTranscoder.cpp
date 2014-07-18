@@ -189,7 +189,9 @@ StreamTranscoder::~StreamTranscoder()
 {
 	if( _frameBuffer )
 		delete _frameBuffer;
-	if( _inputEssence )
+	if( _sourceBuffer )
+		delete _sourceBuffer;
+	if( _inputEssence && _inputStream )
 		delete _inputEssence;
 	if( _outputEssence )
 		delete _outputEssence;
