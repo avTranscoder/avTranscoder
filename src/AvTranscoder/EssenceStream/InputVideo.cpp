@@ -136,7 +136,7 @@ bool InputVideo::readNextFrame( Frame& frameBuffer )
 	return true;
 }
 
-bool InputVideo::readNextFrame( std::vector<Frame>& frameBuffer )
+bool InputVideo::readNextFrame( Frame& frameBuffer, const size_t subStreamIndex )
 {
 	return false;
 }

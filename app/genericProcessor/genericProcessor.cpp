@@ -8,7 +8,8 @@
 #include <sstream>
 #include <cstdlib>
 
-bool verbose = false;
+// bool verbose = false;
+bool verbose = true;
 
 void parseConfigFile( const std::string& configFilename, avtranscoder::Transcoder& transcoder, avtranscoder::Profile& profile )
 {
@@ -26,9 +27,29 @@ void parseConfigFile( const std::string& configFilename, avtranscoder::Transcode
 			{
 				std::string transcodeProfile;
 				std::getline( is_line, transcodeProfile );
+
+				std::stringstream ss( streamId );
+				size_t streamIndex = 0;
+				char separator;
+				int subStreamIndex = -1;
+				ss >> streamIndex;
+				ss >> separator;
+				if( separator == '.' )
+					ss >> subStreamIndex;
+
 				if( verbose )
-					std::cout << filename << " ( " << streamId <<  " ) : " << transcodeProfile << std::endl;
-				transcoder.add( filename, atoi( streamId.c_str() ), transcodeProfile );
+				{
+					std::cout << ( filename.length() ? filename : "dummy stream" );
+					std::cout << " ( " << streamIndex;
+					if( subStreamIndex > -1 )
+						std::cout << " | " << subStreamIndex << " ";
+					std::cout << " ) : ";
+					std::cout << ( transcodeProfile.length() ? transcodeProfile : "rewrap" );
+					std::cout << std::endl;
+				}
+
+				transcoder.add( filename, streamIndex, subStreamIndex, transcodeProfile );
+
 			}
 		}
 	}

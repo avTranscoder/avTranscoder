@@ -44,7 +44,9 @@ public:
 	, m_planar     ( true )
 	{ }
 
-	Pixel( const AVPixelFormat avpixelFormat );
+	Pixel( const std::string& avPixelFormat );
+
+	Pixel( const AVPixelFormat avPixelFormat );
 
 	void setBitsPerPixel   ( const size_t pixelSize ) { m_pixelSize = pixelSize; }
 	void setBigEndian      ( const bool endianess ) { m_endianess = endianess; }
@@ -65,6 +67,8 @@ public:
 	AVPixelFormat    findPixel() const;
 
 private:
+	void init( const AVPixelFormat avPixelFormat );
+
 	bool asCorrectColorComponents( const AVPixFmtDescriptor* pix_desc, const EComponentType componentType ) const;
 	bool asCorrectSubsampling( const AVPixFmtDescriptor* pix_desc, const ESubsamplingType subsamplingType ) const;
 

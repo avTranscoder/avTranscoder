@@ -110,6 +110,9 @@ void displayMetadatas( InputFile& input )
 		std::cout << std::setw( keyWidth ) << "stream id" << ": " << input.getProperties().audioStreams.at(audioStreamIndex).streamId << std::endl;
 		std::cout << std::setw( keyWidth ) << "sample rate" << ": " << input.getProperties().audioStreams.at(audioStreamIndex).sampleRate << std::endl;
 		std::cout << std::setw( keyWidth ) << "channels" << ": " << input.getProperties().audioStreams.at(audioStreamIndex).channels << std::endl;
+		std::cout << std::setw( keyWidth ) << "channel layout" << ": " << input.getProperties().audioStreams.at(audioStreamIndex).channelLayout << std::endl;
+		std::cout << std::setw( keyWidth ) << "channel name" << ": " << input.getProperties().audioStreams.at(audioStreamIndex).channelName << std::endl;
+		std::cout << std::setw( keyWidth ) << "channel description" << ": " << input.getProperties().audioStreams.at(audioStreamIndex).channelDescription << std::endl;
 		std::cout << std::setw( keyWidth ) << "bit rate" << ": " << input.getProperties().audioStreams.at(audioStreamIndex).bit_rate << std::endl;
 	}
 	for( size_t dataStreamIndex = 0; dataStreamIndex < input.getProperties().dataStreams.size(); ++dataStreamIndex )

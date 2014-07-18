@@ -17,17 +17,17 @@ public:
 	~DummyAudio( );
 
 	// Stream properties
-	void setAudioDesc( AudioDesc& audioDesc );
+	void setAudioDesc( const AudioDesc& audioDesc );
 
 	AudioDesc getAudioDesc() const;
 	
 	void setup() {}
 
 	bool readNextFrame( Frame& frameBuffer );
-	bool readNextFrame( std::vector<Frame>& frameBuffer );
+	bool readNextFrame( Frame& frameBuffer, const size_t subStreamIndex );
 
 private:
-	AudioDesc _audioDesc;
+	AudioDesc      _audioDesc;
 	AudioFrameDesc _frameDesc;
 };
 

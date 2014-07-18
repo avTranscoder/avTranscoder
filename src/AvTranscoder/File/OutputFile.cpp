@@ -135,6 +135,7 @@ bool OutputFile::beginWrap( )
 
 bool OutputFile::wrap( const DataStream& data, const size_t streamId )
 {
+	// std::cout << "wrap on stream " << streamId << " (" << data.getSize() << ")" << std::endl;
 	AVPacket packet;
 	av_init_packet( &packet );
 
@@ -147,9 +148,16 @@ bool OutputFile::wrap( const DataStream& data, const size_t streamId )
 	packet.dts = 0;
 	packet.pts = _packetCount;
 
-	if( av_interleaved_write_frame( _formatContext, &packet ) != 0 )
+	int ret = av_interleaved_write_frame( _formatContext, &packet );
+
+	if( ret != 0 )
 	{
-		std::cout << "error when writting packet in stream" << std::endl;
+		char err[250];
+		av_strerror( ret, err, 250);
+		std::string msg = "error when writting packet in stream: ";
+		msg += err;
+		// throw std::runtime_error( msg );
+		std::cout << msg << std::endl;
 		return false;
 	}
 

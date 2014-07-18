@@ -9,7 +9,7 @@
 namespace avtranscoder
 {
 
-typedef std::vector< unsigned char> DataBuffer;
+typedef std::vector< unsigned char > DataBuffer;
 
 class AvExport Frame
 {

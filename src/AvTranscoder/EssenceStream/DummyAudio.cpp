@@ -15,9 +15,10 @@ DummyAudio::~DummyAudio( )
 {
 }
 
-void DummyAudio::setAudioDesc( AudioDesc& audioDesc )
+void DummyAudio::setAudioDesc( const AudioDesc& audioDesc )
 {
 	_audioDesc = audioDesc;
+	
 	_frameDesc.setSampleRate  ( _audioDesc.getCodecContext()->sample_rate );
 	_frameDesc.setChannels    ( _audioDesc.getCodecContext()->channels );
 	_frameDesc.setFps         ( 25.0 );
@@ -47,28 +48,9 @@ bool DummyAudio::readNextFrame( Frame& frameBuffer )
 	return true;
 }
 
-bool DummyAudio::readNextFrame( std::vector<Frame>& frameBuffer )
+bool DummyAudio::readNextFrame( Frame& frameBuffer, const size_t subStreamIndex )
 {
-	if( frameBuffer.size() != _frameDesc.getChannels() )
-	{
-		frameBuffer.resize( _frameDesc.getChannels() );
-	}
-
-	size_t dataSizeOneChannel = _frameDesc.getDataSize() / _frameDesc.getChannels();
-	int fill_char = (
-		_frameDesc.getSampleFormat() == AV_SAMPLE_FMT_U8 ||
-		_frameDesc.getSampleFormat() == AV_SAMPLE_FMT_U8P
-		) ? 0x80 : 0x00;
-
-	for( size_t channel = 0; channel < _frameDesc.getChannels(); ++channel )
-	{
-		AudioFrame& audioFrameBuffer = static_cast<AudioFrame&>( frameBuffer.at( channel ) );
-		audioFrameBuffer.setNbSamples( 1.0 * _frameDesc.getSampleRate() / _frameDesc.getFps() );
-		frameBuffer.at( channel).getBuffer().resize( dataSizeOneChannel );
-		memset( frameBuffer.at( channel).getPtr(), fill_char, frameBuffer.at( channel).getSize() );
-	}
-
-	return true;
+	return false;
 }
 
 }
