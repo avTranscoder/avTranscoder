@@ -186,13 +186,6 @@ void OutputAudio::setProfile( Profile::ProfileDesc& desc, const AudioFrameDesc& 
 		throw std::runtime_error( "The profile " + desc[ Profile::avProfileIdentificatorHuman ] + " is invalid." );
 	}
 	
-	// check some values of the profile
-	if( desc[ Profile::avProfileSampleRate ] == "0" )
-		throw std::runtime_error( "Profile " + desc[ Profile::avProfileIdentificatorHuman ] + ": bad sample rate." );
-	
-	if( desc[ Profile::avProfileChannel ] == "0" )
-		throw std::runtime_error( "Profile " + desc[ Profile::avProfileIdentificatorHuman ] + ": bad audio channel." );
-	
 	_audioDesc.setAudioCodec( desc[ Profile::avProfileCodec ] );
 	size_t sample_rate = std::strtoul( desc[ Profile::avProfileSampleRate ].c_str(), NULL, 0 );
 	size_t channels = std::strtoul( desc[ Profile::avProfileChannel ].c_str(), NULL, 0 );
