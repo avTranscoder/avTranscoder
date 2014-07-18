@@ -63,13 +63,13 @@ public:
 
 public:
 	/**
-	 *  Get array of pixel format supported by video codec.
+	 *  @brief Get array of pixel format supported by video codec.
 	 *  @param videoCodecName: the video codec name (empty if not indicated, and so get all pixel formats supported by all video codecs).
 	 */
 	static std::vector<std::string> getPixelFormats( const std::string& videoCodecName = "" );
 	
 	/**
-	 *  Get array of sample format supported by an audio codec.
+	 *  @brief Get array of sample format supported by an audio codec.
 	 *  @param audioCodecName: the audio codec name (empty if not indicated, and so get all sample formats supported by all audio codecs).
 	 */
 	static std::vector<std::string> getSampleFormats( const std::string& audioCodecName = "" );
