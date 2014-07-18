@@ -187,9 +187,9 @@ void OutputAudio::setProfile( Profile::ProfileDesc& desc, const AudioFrameDesc& 
 	}
 	
 	_audioDesc.setAudioCodec( desc[ Profile::avProfileCodec ] );
+	
 	size_t sample_rate = std::strtoul( desc[ Profile::avProfileSampleRate ].c_str(), NULL, 0 );
 	size_t channels = std::strtoul( desc[ Profile::avProfileChannel ].c_str(), NULL, 0 );
-	
 	_audioDesc.setAudioParameters( sample_rate, channels, av_get_sample_fmt( desc[ Profile::avProfileSampleFormat ].c_str() ) );
 
 	setup();
