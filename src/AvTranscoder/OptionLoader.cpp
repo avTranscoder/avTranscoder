@@ -353,4 +353,14 @@ std::vector<std::string> OptionLoader::getSampleFormats( const std::string& audi
 	return sampleFormats;
 }
 
+AVPixelFormat OptionLoader::getAVPixelFormat( const std::string& pixelFormat )
+{
+	return av_get_pix_fmt( pixelFormat.c_str() );
+}
+
+AVSampleFormat OptionLoader::getAVSampleFormat( const std::string& sampleFormat )
+{
+	return av_get_sample_fmt( sampleFormat.c_str() );
+}
+
 }
