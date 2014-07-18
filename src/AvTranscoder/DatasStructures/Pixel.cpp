@@ -14,7 +14,12 @@ extern "C" {
 namespace avtranscoder
 {
 
-Pixel::Pixel( const AVPixelFormat avpixelFormat )
+Pixel::Pixel( const std::string& avPixelFormat )
+{
+	init( av_get_pix_fmt( avPixelFormat.c_str() ) );
+}
+
+Pixel::Pixel( const AVPixelFormat avPixelFormat )
 	: m_pixelSize  ( 24 )
 	, m_components ( 3 )
 	, m_componentType ( eComponentYuv )
@@ -23,33 +28,7 @@ Pixel::Pixel( const AVPixelFormat avpixelFormat )
 	, m_withAlpha  ( false )
 	, m_planar     ( true )
 {
-	const AVPixFmtDescriptor *pix_desc = av_pix_fmt_desc_get( avpixelFormat );
-	setBitsPerPixel   ( av_get_bits_per_pixel( pix_desc ) );
-	setBigEndian      ( pix_desc->flags & PIX_FMT_BE );
-	setComponents     ( pix_desc->nb_components );
-	setAlpha          ( pix_desc->flags & PIX_FMT_ALPHA );
-	setPlanar         ( ( pix_desc->flags & PIX_FMT_PLANAR ) != 0 );
-
-	if( pix_desc->nb_components == 1 )
-		setColorComponents( eComponentGray );
-
-	if( pix_desc->flags & PIX_FMT_RGB )
-		setColorComponents( eComponentRgb );
-	else
-		setColorComponents( eComponentYuv );
-
-	setSubsampling( eSubsamplingNone );
-
-	if( ( pix_desc->log2_chroma_w == true ) &&
-		( pix_desc->log2_chroma_h == false ) )
-	{
-		setSubsampling( eSubsampling422 );
-	}
-	if( ( pix_desc->log2_chroma_w == true ) &&
-		( pix_desc->log2_chroma_h == true ) )
-	{
-		setSubsampling( eSubsampling420 );
-	}
+	init( avPixelFormat );
 }
 
 AVPixelFormat Pixel::findPixel() const
@@ -83,6 +62,37 @@ AVPixelFormat Pixel::findPixel() const
 		}
 	}
 	return AV_PIX_FMT_NONE;
+}
+
+void Pixel::init( const AVPixelFormat avPixelFormat )
+{
+	const AVPixFmtDescriptor *pix_desc = av_pix_fmt_desc_get( avPixelFormat );
+	setBitsPerPixel   ( av_get_bits_per_pixel( pix_desc ) );
+	setBigEndian      ( pix_desc->flags & PIX_FMT_BE );
+	setComponents     ( pix_desc->nb_components );
+	setAlpha          ( pix_desc->flags & PIX_FMT_ALPHA );
+	setPlanar         ( ( pix_desc->flags & PIX_FMT_PLANAR ) != 0 );
+
+	if( pix_desc->nb_components == 1 )
+		setColorComponents( eComponentGray );
+
+	if( pix_desc->flags & PIX_FMT_RGB )
+		setColorComponents( eComponentRgb );
+	else
+		setColorComponents( eComponentYuv );
+
+	setSubsampling( eSubsamplingNone );
+
+	if( ( pix_desc->log2_chroma_w == true ) &&
+		( pix_desc->log2_chroma_h == false ) )
+	{
+		setSubsampling( eSubsampling422 );
+	}
+	if( ( pix_desc->log2_chroma_w == true ) &&
+		( pix_desc->log2_chroma_h == true ) )
+	{
+		setSubsampling( eSubsampling420 );
+	}
 }
 
 bool Pixel::asCorrectColorComponents( const AVPixFmtDescriptor* pix_desc, const EComponentType componentType ) const 

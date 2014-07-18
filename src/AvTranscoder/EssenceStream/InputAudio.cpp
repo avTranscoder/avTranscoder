@@ -133,26 +133,44 @@ bool InputAudio::readNextFrame( Frame& frameBuffer )
 	return true;
 }
 
-bool InputAudio::readNextFrame( std::vector<Frame>& frameBuffer )
+bool InputAudio::readNextFrame( Frame& frameBuffer, const size_t subStreamIndex )
 {
 	if( ! getNextFrame() )
 		return false;
 
-	size_t nbChannels = av_get_channel_layout_nb_channels( _frame->channel_layout );
+	size_t decodedSize = av_samples_get_buffer_size(NULL, 1,
+													_frame->nb_samples,
+													_codecContext->sample_fmt, 1);
+	
+	size_t nbChannels = _codecContext->channels;
 	size_t bytePerSample = av_get_bytes_per_sample( (AVSampleFormat)_frame->format );
 
-	frameBuffer.resize( nbChannels );
+	AudioFrame& audioBuffer = static_cast<AudioFrame&>( frameBuffer );
 
-	for( size_t channel = 0; channel < nbChannels; ++ channel )
+	// std::cout << "needed size " << audioBuffer.desc().getDataSize() << std::endl;
+
+	// std::cout << _frame->nb_samples * bytePerSample << std::endl;
+	//audioBuffer.getBuffer().resize( _frame->nb_samples * bytePerSample );
+	audioBuffer.setNbSamples( _frame->nb_samples );
+	
+	if( decodedSize )
 	{
-		AudioFrame& audioBuffer = static_cast<AudioFrame&>( frameBuffer.at( channel ) );
-		audioBuffer.setNbSamples( _frame->nb_samples );
+		if( audioBuffer.getSize() != decodedSize )
+			audioBuffer.getBuffer().resize( decodedSize, 0 );
 
 		unsigned char* src = *_frame->data;
 		unsigned char* dst = audioBuffer.getPtr();
 
+		src += ( nbChannels - 1 ) - ( subStreamIndex * bytePerSample );
+
+		// std::cout << "frame samples count " << _frame->nb_samples << std::endl;
+		// std::cout << "frame data size " << audioBuffer.getSize() << std::endl;
+
 		for( int sample = 0; sample < _frame->nb_samples; ++sample )
 		{
+			// std::cout << "sample " << sample << " ==| ";
+			// std::cout << "src " << static_cast<void *>(src) << " -> ";
+			// std::cout << "dst " << static_cast<void *>(dst) << std::endl;
 			memcpy( dst, src, bytePerSample );
 			dst += bytePerSample;
 			src += bytePerSample * nbChannels;

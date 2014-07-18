@@ -78,7 +78,7 @@ void VideoDesc::setTimeBase( const size_t num, const size_t den, const size_t ti
 std::string VideoDesc::getVideoCodec() const
 {
 	assert( m_codecContext != NULL );
-	return m_codecContext->codec_name;
+	return avcodec_descriptor_get( m_codecContext->codec_id )->name;
 }
 
 AVCodecID VideoDesc::getVideoCodecId() const

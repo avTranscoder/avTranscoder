@@ -188,7 +188,7 @@ void AudioDesc::set( const std::string& key, const std::string& value )
 std::string AudioDesc::getAudioCodec() const
 {
 	assert( m_codecContext != NULL );
-	return m_codecContext->codec_name;
+	return avcodec_descriptor_get( m_codecContext->codec_id )->name;
 }
 
 AVCodecID AudioDesc::getAudioCodecId() const
@@ -196,7 +196,6 @@ AVCodecID AudioDesc::getAudioCodecId() const
 	assert( m_codecContext != NULL );
 	return m_codecContext->codec_id;
 }
-
 
 const size_t AudioDesc::getSampleRate() const
 {
@@ -224,6 +223,7 @@ AudioFrameDesc AudioDesc::getFrameDesc() const
 	audioFrameDesc.setChannels( m_codecContext->channels );
 	audioFrameDesc.setSampleRate( m_codecContext->sample_rate );
 	audioFrameDesc.setSampleFormat( m_codecContext->sample_fmt );
+	// audioFrameDesc.setFps( 25 );
 	
 	return audioFrameDesc;
 }

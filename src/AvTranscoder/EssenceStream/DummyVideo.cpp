@@ -8,7 +8,7 @@ namespace avtranscoder
 
 DummyVideo::DummyVideo( )
 	: InputEssence( )
-	, numberOfView( 1 )
+	, _numberOfView( 1 )
 {
 }
 
@@ -37,19 +37,9 @@ bool DummyVideo::readNextFrame( Frame& frameBuffer )
 	return true;
 }
 
-bool DummyVideo::readNextFrame( std::vector<Frame>& frameBuffer )
+bool DummyVideo::readNextFrame( Frame& frameBuffer, const size_t subStreamIndex )
 {
-	if( frameBuffer.size() != numberOfView )
-	{
-		frameBuffer.resize( numberOfView );
-	}
-
-	for( size_t view = 0; view < numberOfView; ++view )
-	{
-		readNextFrame( frameBuffer.at( view ) );
-	}
-
-	return true;
+	return false;
 }
 
 }

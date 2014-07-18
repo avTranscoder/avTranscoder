@@ -128,6 +128,11 @@ resampleLibraryName = 'avresample'
 if not conf.CheckLibWithHeader('avutil', 'libavutil/avutil.h', 'c'):
     sys.exit( 0 )
 
+if not conf.CheckLibWithHeader('avresample', 'libavresample/avresample.h', 'c'):
+    if conf.CheckLibWithHeader('swresample', 'libswresample/swresample.h', 'c'):
+        resampleLibraryFlag = '-DFF_RESAMPLE_LIBRARY'
+        resampleLibraryName = 'swresample'
+
 if not conf.CheckLibWithHeader('avcodec', 'libavcodec/avcodec.h', 'c'):
     sys.exit( 0 )
 
@@ -137,10 +142,6 @@ if not conf.CheckLibWithHeader('avformat', 'libavformat/avformat.h', 'c'):
 if not conf.CheckLibWithHeader('swscale', 'libswscale/swscale.h', 'c'):
     sys.exit( 0 )
 
-if not conf.CheckLibWithHeader('avresample', 'libavresample/avresample.h', 'c'):
-    if conf.CheckLibWithHeader('swresample', 'libswresample/swresample.h', 'c'):
-        resampleLibraryFlag = '-DFF_RESAMPLE_LIBRARY'
-        resampleLibraryName = 'swresample'
 
 env.Append(
     CXXFLAGS = resampleLibraryFlag

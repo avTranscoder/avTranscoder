@@ -25,7 +25,7 @@ public:
 	void setup();
 
 	bool readNextFrame( Frame& frameBuffer );
-	bool readNextFrame( std::vector<Frame>& frameBuffer );
+	bool readNextFrame( Frame& frameBuffer, const size_t subStreamIndex );
 
 	void flushDecoder();
 
