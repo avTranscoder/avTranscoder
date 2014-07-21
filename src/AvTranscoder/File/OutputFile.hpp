@@ -1,7 +1,7 @@
 #ifndef _AV_TRANSCODER_FILE_OUTPUT_FILE_HPP_
 #define _AV_TRANSCODER_FILE_OUTPUT_FILE_HPP_
 
-#include <AvTranscoder/EssenceStructures/Image.hpp>
+#include <AvTranscoder/EssenceStructures/VideoFrame.hpp>
 #include <AvTranscoder/CodedStructures/DataStreamDesc.hpp>
 #include <AvTranscoder/CodedStructures/VideoDesc.hpp>
 #include <AvTranscoder/CodedStructures/AudioDesc.hpp>

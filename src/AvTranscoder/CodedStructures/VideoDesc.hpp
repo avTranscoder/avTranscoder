@@ -15,7 +15,7 @@ extern "C" {
 }
 
 #include <AvTranscoder/common.hpp>
-#include <AvTranscoder/EssenceStructures/Image.hpp>
+#include <AvTranscoder/EssenceStructures/VideoFrame.hpp>
 #include "EssenceDesc.hpp"
 
 namespace avtranscoder
@@ -28,10 +28,10 @@ public:
 	VideoDesc( const AVCodecID codecId );
 	VideoDesc( const EssenceDesc& essenceDesc );
 	
-	ImageDesc getImageDesc() const;
+	VideoFrameDesc getVideoFrameDesc() const;
 	std::pair< size_t, size_t > getTimeBase() const;
 	
-	void setImageParameters( const ImageDesc& imageDesc );
+	void setImageParameters( const VideoFrameDesc& VideoFrameDesc );
 	void setImageParameters( const size_t width, const size_t height, const Pixel& pixel );
 	void setImageParameters( const size_t width, const size_t height, const AVPixelFormat& pixel );
 

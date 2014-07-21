@@ -13,7 +13,7 @@
 
 #include <AvTranscoder/EssenceStructures/Pixel.hpp>
 #include <AvTranscoder/EssenceStructures/Frame.hpp>
-#include <AvTranscoder/EssenceStructures/Image.hpp>
+#include <AvTranscoder/EssenceStructures/VideoFrame.hpp>
 #include <AvTranscoder/EssenceStructures/AudioFrame.hpp>
 	
 #include <AvTranscoder/CodedStructures/EssenceDesc.hpp>
@@ -67,7 +67,7 @@ namespace std {
 
 %include <AvTranscoder/EssenceStructures/Pixel.hpp>
 %include <AvTranscoder/EssenceStructures/Frame.hpp>
-%include <AvTranscoder/EssenceStructures/Image.hpp>
+%include <AvTranscoder/EssenceStructures/VideoFrame.hpp>
 %include <AvTranscoder/EssenceStructures/AudioFrame.hpp>
 	
 %include <AvTranscoder/CodedStructures/EssenceDesc.hpp>

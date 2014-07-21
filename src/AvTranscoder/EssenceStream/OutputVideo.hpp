@@ -5,7 +5,7 @@
 
 #include <AvTranscoder/CodedStructures/DataStreamDesc.hpp>
 #include <AvTranscoder/CodedStructures/VideoDesc.hpp>
-#include <AvTranscoder/EssenceStructures/Image.hpp>
+#include <AvTranscoder/EssenceStructures/VideoFrame.hpp>
 
 #include <AvTranscoder/Profile.hpp>
 
@@ -37,7 +37,7 @@ public:
 	 */
 	bool encodeFrame( DataStream& codedFrame );
 
-	void setProfile( const Profile::ProfileDesc& desc, const avtranscoder::ImageDesc& imageDesc );
+	void setProfile( const Profile::ProfileDesc& desc, const avtranscoder::VideoFrameDesc& VideoFrameDesc );
 	
 	VideoDesc& getVideoDesc() { return _videoDesc; }
 

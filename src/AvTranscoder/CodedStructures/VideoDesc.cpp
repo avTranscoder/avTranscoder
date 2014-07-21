@@ -22,17 +22,17 @@ VideoDesc::VideoDesc( const EssenceDesc& essenceDesc )
 	m_codecContext = essenceDesc.getCodecContext();
 }
 
-ImageDesc VideoDesc::getImageDesc() const
+VideoFrameDesc VideoDesc::getVideoFrameDesc() const
 {
 	assert( m_codecContext != NULL );
-	ImageDesc imageDesc;
+	VideoFrameDesc VideoFrameDesc;
 	Pixel pixel( m_codecContext->pix_fmt );
 
-	imageDesc.setWidth ( m_codecContext->width  );
-	imageDesc.setHeight( m_codecContext->height );
-	imageDesc.setPixel ( pixel );
-	imageDesc.setDar   ( m_codecContext->height, m_codecContext->width );
-	return imageDesc;
+	VideoFrameDesc.setWidth ( m_codecContext->width  );
+	VideoFrameDesc.setHeight( m_codecContext->height );
+	VideoFrameDesc.setPixel ( pixel );
+	VideoFrameDesc.setDar   ( m_codecContext->height, m_codecContext->width );
+	return VideoFrameDesc;
 }
 
 std::pair< size_t, size_t > VideoDesc::getTimeBase() const
@@ -44,9 +44,9 @@ std::pair< size_t, size_t > VideoDesc::getTimeBase() const
 	return timeBase;
 }
 
-void VideoDesc::setImageParameters( const ImageDesc& imageDesc )
+void VideoDesc::setImageParameters( const VideoFrameDesc& VideoFrameDesc )
 {
-	setImageParameters( imageDesc.getWidth(), imageDesc.getHeight(), imageDesc.getPixelDesc() );
+	setImageParameters( VideoFrameDesc.getWidth(), VideoFrameDesc.getHeight(), VideoFrameDesc.getPixelDesc() );
 }
 
 

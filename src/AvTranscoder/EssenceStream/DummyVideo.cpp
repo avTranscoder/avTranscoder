@@ -20,7 +20,7 @@ DummyVideo::~DummyVideo( )
 void DummyVideo::setVideoDesc( const VideoDesc& videoDesc )
 {
 	_videoDesc = videoDesc;
-	_imageDesc = _videoDesc.getImageDesc();
+	_VideoFrameDesc = _videoDesc.getVideoFrameDesc();
 }
 
 VideoDesc DummyVideo::getVideoDesc() const
@@ -35,7 +35,7 @@ void DummyVideo::setFrame( Frame& inputFrame )
 
 bool DummyVideo::readNextFrame( Frame& frameBuffer )
 {
-	frameBuffer.getBuffer().resize( _imageDesc.getDataSize() );
+	frameBuffer.getBuffer().resize( _VideoFrameDesc.getDataSize() );
 
 	if( ! _inputFrame )
 	{
