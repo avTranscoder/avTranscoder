@@ -24,14 +24,14 @@ Transcoder::~Transcoder()
 	{
 		delete (*it);
 	}
-	// for( std::vector< DummyAudio* >::iterator it = _dummyAudio.begin(); it != _dummyAudio.end(); ++it )
-	// {
-	// 	delete (*it);
-	// }
-	// for( std::vector< DummyVideo* >::iterator it = _dummyVideo.begin(); it != _dummyVideo.end(); ++it )
-	// {
-	// 	delete (*it);
-	// }
+	for( std::vector< DummyAudio* >::iterator it = _dummyAudio.begin(); it != _dummyAudio.end(); ++it )
+	{
+		delete (*it);
+	}
+	for( std::vector< DummyVideo* >::iterator it = _dummyVideo.begin(); it != _dummyVideo.end(); ++it )
+	{
+		delete (*it);
+	}
 }
 
 void Transcoder::add( const std::string& filename, const size_t streamIndex, const std::string& profileName )
