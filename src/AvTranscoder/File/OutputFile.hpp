@@ -1,10 +1,12 @@
 #ifndef _AV_TRANSCODER_FILE_OUTPUT_FILE_HPP_
 #define _AV_TRANSCODER_FILE_OUTPUT_FILE_HPP_
 
-#include <AvTranscoder/EssenceStructures/VideoFrame.hpp>
+#include <AvTranscoder/common.hpp>
+
 #include <AvTranscoder/CodedStructures/DataStreamDesc.hpp>
 #include <AvTranscoder/CodedStructures/VideoDesc.hpp>
 #include <AvTranscoder/CodedStructures/AudioDesc.hpp>
+
 #include <AvTranscoder/CodedStream/AvOutputStream.hpp>
 
 #include <string>
@@ -12,9 +14,9 @@
 
 class AVOutputFormat;
 class AVFormatContext;
-class AVStream;
 class AVCodec;
 class AVCodecContext;
+class AVStream;
 
 namespace avtranscoder
 {

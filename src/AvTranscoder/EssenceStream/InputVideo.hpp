@@ -2,11 +2,7 @@
 #define _AV_TRANSCODER_ESSENCE_STREAM_INPUT_VIDEO_HPP_
 
 #include "InputEssence.hpp"
-#include <AvTranscoder/EssenceStructures/VideoFrame.hpp>
 
-#include <vector>
-
-class AVFormatContext;
 class AVCodec;
 class AVCodecContext;
 class AVFrame;

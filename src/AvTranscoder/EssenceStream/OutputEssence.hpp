@@ -4,8 +4,6 @@
 #include <AvTranscoder/EssenceStructures/Frame.hpp>
 #include <AvTranscoder/CodedStructures/DataStreamDesc.hpp>
 
-#include <AvTranscoder/Profile.hpp>
-
 namespace avtranscoder
 {
 

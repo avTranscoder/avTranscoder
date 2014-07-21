@@ -1,7 +1,4 @@
-
 #include "Transcoder.hpp"
-
-#include <AvTranscoder/CodedStream/AvInputStream.hpp>
 
 namespace avtranscoder
 {

@@ -9,12 +9,6 @@
 
 #include <AvTranscoder/Profile.hpp>
 
-#include <string>
-#include <vector>
-
-class AVFormatContext;
-class AVCodecContext;
-
 namespace avtranscoder
 {
 

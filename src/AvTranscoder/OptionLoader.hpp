@@ -1,20 +1,19 @@
 #ifndef _AV_TRANSCODER_OPTION_LOADER_HPP
 #define	_AV_TRANSCODER_OPTION_LOADER_HPP
 
-#include <AvTranscoder/Option.hpp>
-
-extern "C" {
-#ifndef __STDC_CONSTANT_MACROS
-	#define __STDC_CONSTANT_MACROS
-#endif
-	#include <libavcodec/avcodec.h>
-	#include <libavformat/avformat.h>
-}
 
 #include <string>
 #include <vector>
 #include <map>
 #include <utility> //pair
+
+#include "common.hpp"
+#include "Option.hpp"
+
+class AVFormatContext;
+class AVCodecContext;
+class AVOutputFormat;
+class AVCodec;
 
 namespace avtranscoder
 {

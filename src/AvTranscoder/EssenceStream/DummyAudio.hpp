@@ -3,6 +3,7 @@
 
 #include "InputEssence.hpp"
 
+#include <AvTranscoder/common.hpp>
 #include <AvTranscoder/CodedStructures/AudioDesc.hpp>
 #include <AvTranscoder/EssenceStructures/Frame.hpp>
 

@@ -3,6 +3,10 @@
 
 #include <AvTranscoder/CodedStream/AvInputStream.hpp>
 
+#include <AvTranscoder/EssenceStream/InputVideo.hpp>
+#include <AvTranscoder/EssenceStream/InputAudio.hpp>
+#include <AvTranscoder/EssenceStream/OutputVideo.hpp>
+#include <AvTranscoder/EssenceStream/OutputAudio.hpp>
 #include <AvTranscoder/EssenceStream/DummyVideo.hpp>
 #include <AvTranscoder/EssenceStream/DummyAudio.hpp>
 
@@ -10,6 +14,7 @@
 #include <AvTranscoder/EssenceTransform/VideoEssenceTransform.hpp>
 
 #include <cassert>
+#include <iostream>
 
 namespace avtranscoder
 {

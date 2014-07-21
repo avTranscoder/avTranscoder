@@ -9,6 +9,7 @@ extern "C" {
 #include <libavutil/avutil.h>
 }
 
+#include <iostream>
 #include <stdexcept>
 #include <cstdlib>
 

@@ -1,13 +1,12 @@
 #ifndef _AV_TRANSCODER_STREAM_TRANSCODER_HPP_
 #define _AV_TRANSCODER_STREAM_TRANSCODER_HPP_
 
+#include <AvTranscoder/common.hpp>
+
 #include <AvTranscoder/CodedStream/InputStream.hpp>
 
 #include <AvTranscoder/EssenceStream/InputVideo.hpp>
 #include <AvTranscoder/EssenceStream/OutputVideo.hpp>
-
-#include <AvTranscoder/EssenceStream/InputAudio.hpp>
-#include <AvTranscoder/EssenceStream/OutputAudio.hpp>
 
 #include <AvTranscoder/File/OutputFile.hpp>
 

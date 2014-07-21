@@ -10,7 +10,7 @@ extern "C" {
 
 #include <vector>
 #include <string>
-#include <utility> //pair
+#include <utility>
 
 namespace avtranscoder
 {

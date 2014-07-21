@@ -1,6 +1,7 @@
 #include "AvInputStream.hpp"
 
-#include <AvTranscoder/File/InputFile.hpp>
+#include <stdexcept>
+#include <cassert>
 
 extern "C" {
 #ifndef __STDC_CONSTANT_MACROS
@@ -9,13 +10,9 @@ extern "C" {
 
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
-#include <libavutil/avutil.h>
-#include <libavutil/pixdesc.h>
-#include <libavutil/avstring.h>
 }
 
-#include <stdexcept>
-#include <cassert>
+#include <AvTranscoder/File/InputFile.hpp>
 
 namespace avtranscoder
 {

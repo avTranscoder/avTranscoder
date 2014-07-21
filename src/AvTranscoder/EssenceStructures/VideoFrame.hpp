@@ -11,12 +11,9 @@ extern "C" {
 	#define INT64_C(c) (c ## LL)
 	#define UINT64_C(c) (c ## ULL)
 #endif
-#include <libavcodec/avcodec.h>
+#include <libavutil/pixdesc.h>
 }
 
-#include <iostream>
-#include <string>
-#include <vector>
 #include <stdexcept>
 
 #include "Pixel.hpp"

@@ -11,8 +11,8 @@ extern "C" {
 }
 
 #include <AvTranscoder/CodedStream/AvInputStream.hpp>
+#include <AvTranscoder/EssenceStructures/VideoFrame.hpp>
 
-#include <iostream>
 #include <stdexcept>
 
 namespace avtranscoder
