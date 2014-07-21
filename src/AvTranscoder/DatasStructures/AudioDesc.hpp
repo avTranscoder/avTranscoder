@@ -1,7 +1,6 @@
 #ifndef _AV_TRANSCODER_DATA_AUDIO_DESC_HPP_
 #define _AV_TRANSCODER_DATA_AUDIO_DESC_HPP_
 
-#include "Image.hpp"
 #include <string>
 
 extern "C" {
@@ -15,50 +14,26 @@ extern "C" {
 #include <libavcodec/avcodec.h>
 }
 
+#include <AvTranscoder/common.hpp>
+#include <AvTranscoder/DatasStructures/EssenceDesc.hpp>
 #include <AvTranscoder/DatasStructures/AudioFrame.hpp>
 
 namespace avtranscoder
 {
 
-class AvExport AudioDesc
+class AvExport AudioDesc : public EssenceDesc
 {
 public:
 	AudioDesc( const std::string& codecName = "" );
 	AudioDesc( const AVCodecID codecId );
-	
-	void setAudioCodec( const std::string& codecName );
-	void setAudioCodec( const AVCodecID codecId );
+	AudioDesc( EssenceDesc& essenceDesc );
 
-	void setAudioParameters( const size_t sampleRate, const size_t channels, const AVSampleFormat sampleFormat );
-
-	void set( const std::string& key, const std::string& flag, const bool enable );
-	void set( const std::string& key, const bool value );
-	void set( const std::string& key, const int value );
-	void set( const std::string& key, const int num, const int den );
-	void set( const std::string& key, const double value );
-	void set( const std::string& key, const std::string& value );
-
-	std::string getAudioCodec()  const;
-	AVCodecID   getAudioCodecId()  const;
-	
+	AudioFrameDesc getFrameDesc() const;
 	const size_t getSampleRate() const;
 	const size_t getChannels() const;
 	const AVSampleFormat getSampleFormat() const;
-
-#ifndef SWIG
-	AVCodec*        getCodec()        const { return m_codec; }
-	AVCodecContext* getCodecContext() const { return m_codecContext; }
-#endif
-
-	AudioFrameDesc getFrameDesc() const;
 	
-private:
-	void initCodecContext( );
-
-	void checkError( int error );
-
-	AVCodec*        m_codec;
-	AVCodecContext* m_codecContext;
+	void setAudioParameters( const size_t sampleRate, const size_t channels, const AVSampleFormat sampleFormat );
 };
 
 }
