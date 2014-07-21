@@ -26,7 +26,7 @@ class AvExport AudioDesc : public EssenceDesc
 public:
 	AudioDesc( const std::string& codecName = "" );
 	AudioDesc( const AVCodecID codecId );
-	AudioDesc( EssenceDesc& essenceDesc );
+	AudioDesc( const EssenceDesc& essenceDesc );
 
 	AudioFrameDesc getFrameDesc() const;
 	const size_t getSampleRate() const;

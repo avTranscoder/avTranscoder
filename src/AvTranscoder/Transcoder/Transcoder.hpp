@@ -79,7 +79,7 @@ private:
 
 	void addTranscodeStream( const std::string& filename, const size_t streamIndex, const size_t subStreamIndex, Profile::ProfileDesc& profile );
 
-	void addDummyStream( const Profile::ProfileDesc& profile, EssenceDesc& essenceDesc );
+	void addDummyStream( const Profile::ProfileDesc& profile, const EssenceDesc& essenceDesc );
 
 	InputFile* addInputFile( const std::string& filename, const size_t streamIndex );
 

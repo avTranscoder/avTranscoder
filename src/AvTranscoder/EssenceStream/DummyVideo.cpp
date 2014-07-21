@@ -17,7 +17,7 @@ DummyVideo::~DummyVideo( )
 {
 }
 
-void DummyVideo::setVideoDesc( VideoDesc& videoDesc )
+void DummyVideo::setVideoDesc( const VideoDesc& videoDesc )
 {
 	_videoDesc = videoDesc;
 	_imageDesc = _videoDesc.getImageDesc();

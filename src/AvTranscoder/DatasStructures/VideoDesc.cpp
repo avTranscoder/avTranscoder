@@ -15,7 +15,7 @@ VideoDesc::VideoDesc( const AVCodecID codecId )
 {
 }
 
-VideoDesc::VideoDesc( EssenceDesc& essenceDesc )
+VideoDesc::VideoDesc( const EssenceDesc& essenceDesc )
 	: EssenceDesc( essenceDesc.getCodecId() )
 {
 	m_codec = essenceDesc.getCodec();

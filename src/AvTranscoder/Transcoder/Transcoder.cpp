@@ -291,7 +291,7 @@ void Transcoder::addTranscodeStream( const std::string& filename, const size_t s
 	}
 }
 
-void Transcoder::addDummyStream( const Profile::ProfileDesc& profile, EssenceDesc& essenceDesc )
+void Transcoder::addDummyStream( const Profile::ProfileDesc& profile, const EssenceDesc& essenceDesc )
 {
 	if( ! profile.count( Profile::avProfileType ) )
 		throw std::runtime_error( "unable to found stream type (audio, video, etc.)" );

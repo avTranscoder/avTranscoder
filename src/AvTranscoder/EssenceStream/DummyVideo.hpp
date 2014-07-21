@@ -17,7 +17,7 @@ public:
 	~DummyVideo( );
 
 	// Stream properties
-	void setVideoDesc( VideoDesc& videoDesc );
+	void setVideoDesc( const VideoDesc& videoDesc );
 
 	VideoDesc getVideoDesc() const;
 	

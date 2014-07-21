@@ -15,7 +15,7 @@ AudioDesc::AudioDesc( const AVCodecID codecId )
 {
 }
 
-AudioDesc::AudioDesc( EssenceDesc& essenceDesc )
+AudioDesc::AudioDesc( const EssenceDesc& essenceDesc )
 	: EssenceDesc( essenceDesc.getCodecId() )
 {
 	m_codec = essenceDesc.getCodec();

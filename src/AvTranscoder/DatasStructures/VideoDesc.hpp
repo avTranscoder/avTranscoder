@@ -26,7 +26,7 @@ class AvExport VideoDesc : public EssenceDesc
 public:
 	VideoDesc( const std::string& codecName = "" );
 	VideoDesc( const AVCodecID codecId );
-	VideoDesc( EssenceDesc& essenceDesc );
+	VideoDesc( const EssenceDesc& essenceDesc );
 	
 	ImageDesc getImageDesc() const;
 	std::pair< size_t, size_t > getTimeBase() const;
