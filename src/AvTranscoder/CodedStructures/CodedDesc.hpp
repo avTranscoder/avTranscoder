@@ -19,13 +19,13 @@ extern "C" {
 namespace avtranscoder
 {
 
-class AvExport EssenceDesc
+class AvExport CodedDesc
 {
 public:
-	EssenceDesc( const std::string& codecName );
-	EssenceDesc( const AVCodecID codecId );
+	CodedDesc( const std::string& codecName );
+	CodedDesc( const AVCodecID codecId );
 	
-	virtual ~EssenceDesc() {}
+	virtual ~CodedDesc() {}
 	
 	std::string getCodecName()  const;
 	AVCodecID   getCodecId()  const;

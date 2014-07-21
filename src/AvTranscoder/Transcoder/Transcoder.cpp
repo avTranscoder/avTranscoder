@@ -63,7 +63,7 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, Pro
 	addTranscodeStream( filename, streamIndex, profileDesc );
 }
 
-void Transcoder::add( const std::string& filename, const size_t streamIndex, Profile::ProfileDesc& profileDesc, EssenceDesc& essenceDesc )
+void Transcoder::add( const std::string& filename, const size_t streamIndex, Profile::ProfileDesc& profileDesc, CodedDesc& essenceDesc )
 {
 	_profile.update( profileDesc );
 	if( ! filename.length() )
@@ -122,7 +122,7 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 	addTranscodeStream( filename, streamIndex, subStreamIndex, profileDesc );
 }
 
-void Transcoder::add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, Profile::ProfileDesc& profileDesc, EssenceDesc& essenceDesc )
+void Transcoder::add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, Profile::ProfileDesc& profileDesc, CodedDesc& essenceDesc )
 {
 	_profile.update( profileDesc );
 	
@@ -291,7 +291,7 @@ void Transcoder::addTranscodeStream( const std::string& filename, const size_t s
 	}
 }
 
-void Transcoder::addDummyStream( const Profile::ProfileDesc& profile, const EssenceDesc& essenceDesc )
+void Transcoder::addDummyStream( const Profile::ProfileDesc& profile, const CodedDesc& essenceDesc )
 {
 	if( ! profile.count( Profile::avProfileType ) )
 		throw std::runtime_error( "unable to found stream type (audio, video, etc.)" );

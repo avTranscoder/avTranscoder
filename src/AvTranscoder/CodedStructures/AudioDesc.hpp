@@ -16,17 +16,17 @@ extern "C" {
 
 #include <AvTranscoder/common.hpp>
 #include <AvTranscoder/EssenceStructures/AudioFrame.hpp>
-#include "EssenceDesc.hpp"
+#include "CodedDesc.hpp"
 
 namespace avtranscoder
 {
 
-class AvExport AudioDesc : public EssenceDesc
+class AvExport AudioDesc : public CodedDesc
 {
 public:
 	AudioDesc( const std::string& codecName = "" );
 	AudioDesc( const AVCodecID codecId );
-	AudioDesc( const EssenceDesc& essenceDesc );
+	AudioDesc( const CodedDesc& essenceDesc );
 
 	AudioFrameDesc getFrameDesc() const;
 	const size_t getSampleRate() const;

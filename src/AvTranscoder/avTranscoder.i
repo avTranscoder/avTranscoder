@@ -16,7 +16,7 @@
 #include <AvTranscoder/EssenceStructures/VideoFrame.hpp>
 #include <AvTranscoder/EssenceStructures/AudioFrame.hpp>
 	
-#include <AvTranscoder/CodedStructures/EssenceDesc.hpp>
+#include <AvTranscoder/CodedStructures/CodedDesc.hpp>
 #include <AvTranscoder/CodedStructures/VideoDesc.hpp>
 #include <AvTranscoder/CodedStructures/AudioDesc.hpp>
 #include <AvTranscoder/CodedStructures/DataStreamDesc.hpp>
@@ -70,7 +70,7 @@ namespace std {
 %include <AvTranscoder/EssenceStructures/VideoFrame.hpp>
 %include <AvTranscoder/EssenceStructures/AudioFrame.hpp>
 	
-%include <AvTranscoder/CodedStructures/EssenceDesc.hpp>
+%include <AvTranscoder/CodedStructures/CodedDesc.hpp>
 %include <AvTranscoder/CodedStructures/VideoDesc.hpp>
 %include <AvTranscoder/CodedStructures/AudioDesc.hpp>
 %include <AvTranscoder/CodedStructures/DataStreamDesc.hpp>

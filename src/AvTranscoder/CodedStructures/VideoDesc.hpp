@@ -16,17 +16,17 @@ extern "C" {
 
 #include <AvTranscoder/common.hpp>
 #include <AvTranscoder/EssenceStructures/VideoFrame.hpp>
-#include "EssenceDesc.hpp"
+#include "CodedDesc.hpp"
 
 namespace avtranscoder
 {
 
-class AvExport VideoDesc : public EssenceDesc
+class AvExport VideoDesc : public CodedDesc
 {
 public:
 	VideoDesc( const std::string& codecName = "" );
 	VideoDesc( const AVCodecID codecId );
-	VideoDesc( const EssenceDesc& essenceDesc );
+	VideoDesc( const CodedDesc& essenceDesc );
 	
 	VideoFrameDesc getVideoFrameDesc() const;
 	std::pair< size_t, size_t > getTimeBase() const;

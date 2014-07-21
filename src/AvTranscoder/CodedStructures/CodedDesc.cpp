@@ -1,4 +1,4 @@
-#include "EssenceDesc.hpp"
+#include "CodedDesc.hpp"
 
 extern "C" {
 #ifndef __STDC_CONSTANT_MACROS
@@ -15,7 +15,7 @@ extern "C" {
 
 namespace avtranscoder {
 
-EssenceDesc::EssenceDesc( const std::string& codecName )
+CodedDesc::CodedDesc( const std::string& codecName )
 	: m_codec( NULL )
 	, m_codecContext( NULL )
 {
@@ -23,40 +23,40 @@ EssenceDesc::EssenceDesc( const std::string& codecName )
 		setCodec( codecName );
 }
 
-EssenceDesc::EssenceDesc( const AVCodecID codecId )
+CodedDesc::CodedDesc( const AVCodecID codecId )
 	: m_codec( NULL )
 	, m_codecContext( NULL )
 {
 	setCodec( codecId );
 }
 
-std::string EssenceDesc::getCodecName() const
+std::string CodedDesc::getCodecName() const
 {
 	assert( m_codecContext != NULL );
 	return avcodec_descriptor_get( m_codecContext->codec_id )->name;
 }
 
-AVCodecID EssenceDesc::getCodecId() const
+AVCodecID CodedDesc::getCodecId() const
 {
 	assert( m_codecContext != NULL );
 	return m_codecContext->codec_id;
 }
 
-void EssenceDesc::setCodec( const std::string& codecName )
+void CodedDesc::setCodec( const std::string& codecName )
 {
 	avcodec_register_all();  // Warning: should be called only once
 	m_codec = avcodec_find_encoder_by_name( codecName.c_str() );
 	initCodecContext();
 }
 
-void EssenceDesc::setCodec( const AVCodecID codecId )
+void CodedDesc::setCodec( const AVCodecID codecId )
 {
 	avcodec_register_all();  // Warning: should be called only once
 	m_codec = avcodec_find_encoder( codecId );
 	initCodecContext();
 }
 
-void EssenceDesc::initCodecContext( )
+void CodedDesc::initCodecContext( )
 {
 	if( m_codec == NULL )
 	{
@@ -75,7 +75,7 @@ void EssenceDesc::initCodecContext( )
 	}
 }
 
-void EssenceDesc::set( const std::string& key, const std::string& flag, const bool enable )
+void CodedDesc::set( const std::string& key, const std::string& flag, const bool enable )
 {
 	int error = 0;
 	int64_t optVal;
@@ -112,7 +112,7 @@ void EssenceDesc::set( const std::string& key, const std::string& flag, const bo
 	}
 }
 
-void EssenceDesc::set( const std::string& key, const bool value )
+void CodedDesc::set( const std::string& key, const bool value )
 {
 	int error = av_opt_set_int( m_codecContext, key.c_str(), value, AV_OPT_SEARCH_CHILDREN );
 	if( error != 0 )
@@ -124,7 +124,7 @@ void EssenceDesc::set( const std::string& key, const bool value )
 	}
 }
 
-void EssenceDesc::set( const std::string& key, const int value )
+void CodedDesc::set( const std::string& key, const int value )
 {
 	//const AVOption* flagOpt = av_opt_find( m_codecContext, key.c_str(), NULL, 0, AV_OPT_SEARCH_CHILDREN );
 
@@ -140,7 +140,7 @@ void EssenceDesc::set( const std::string& key, const int value )
 	}
 }
 
-void EssenceDesc::set( const std::string& key, const int num, const int den )
+void CodedDesc::set( const std::string& key, const int num, const int den )
 {
 	AVRational ratio;
 	ratio.num = num;
@@ -157,7 +157,7 @@ void EssenceDesc::set( const std::string& key, const int num, const int den )
 	}
 }
 
-void EssenceDesc::set( const std::string& key, const double value )
+void CodedDesc::set( const std::string& key, const double value )
 {
 	int error = av_opt_set_double( m_codecContext, key.c_str(), value, AV_OPT_SEARCH_CHILDREN );
 	if( error != 0 )
@@ -171,7 +171,7 @@ void EssenceDesc::set( const std::string& key, const double value )
 	}
 }
 
-void EssenceDesc::set( const std::string& key, const std::string& value )
+void CodedDesc::set( const std::string& key, const std::string& value )
 {
 	int error = av_opt_set( m_codecContext, key.c_str(), value.c_str(), AV_OPT_SEARCH_CHILDREN );
 	if( error != 0 )
