@@ -107,6 +107,11 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 	addTranscodeStream( filename, streamIndex, subStreamIndex, profileDesc );
 }
 
+void Transcoder::add( StreamTranscoder& stream )
+{
+	_streamTranscoders.push_back( &stream );
+}
+
 bool Transcoder::processFrame()
 {
 	if( _streamTranscoders.size() == 0 )

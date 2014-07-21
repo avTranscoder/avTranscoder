@@ -170,8 +170,8 @@ StreamTranscoder::StreamTranscoder(
 		OutputVideo* outputVideo = new OutputVideo();
 		
 		_outputEssence = outputVideo;
-		ImageDesc srcImageDesc; // @todo better solution ?
-		outputVideo->setProfile( profile, srcImageDesc );
+		ImageDesc inputImageDesc = static_cast<DummyVideo*>( _inputEssence )->getVideoDesc().getImageDesc();
+		outputVideo->setProfile( profile, inputImageDesc );
 
 		_outputStream = &outputFile.addVideoStream( outputVideo->getVideoDesc() );
 		_sourceBuffer = new Image( outputVideo->getVideoDesc().getImageDesc() );
