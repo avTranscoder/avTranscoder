@@ -27,7 +27,7 @@ public:
 
 	/**
 	 * @brief Add a stream and set a profile
-	 * @note If profile is empty, add a dummy stream.
+	 * @note If profileName is empty, rewrap.
 	 */
 	void add( const std::string& filename, const size_t streamIndex, const std::string& profileName = "" );
 
@@ -36,21 +36,33 @@ public:
 	 * @note Profile will be updated, be sure to pass unique profile name.
 	 */
 	void add( const std::string& filename, const size_t streamIndex, Profile::ProfileDesc& profileDesc );
-
+	/*
+	 * @note If filename is empty, add a dummy stream.
+	 */
+	void add( const std::string& filename, const size_t streamIndex, Profile::ProfileDesc& profileDesc, EssenceDesc& essenceDesc );
+	
 	/**
 	 * @brief Add a stream and set a profile
-	 * @note If profile is empty, add a dummy stream.
-	 * @note If subStreamIndex is negative, no substream a selected it's the stream. 
+	 * @note If profileName is empty, rewrap.
+	 * @note If subStreamIndex is negative, no substream is selected it's the stream. 
 	 */
 	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const std::string& profileName = "" );
 
 	/**
 	 * @brief Add a stream and set a custom profile
 	 * @note Profile will be updated, be sure to pass unique profile name.
-	 * @note If subStreamIndex is negative, no substream a selected it's the stream.
+	 * @note If subStreamIndex is negative, no substream is selected it's the stream.
 	 */
 	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, Profile::ProfileDesc& profileDesc );
+	/**
+	 * @note If filename is empty, add a dummy stream.
+	 */
+	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, Profile::ProfileDesc& profileDesc, EssenceDesc& essenceDesc );
 
+	/**
+	 * @brief Add the stream
+	 * @note The stream will be deleted in Transcoder's destructor.
+	 */
 	void add( StreamTranscoder& stream );
 	
 	bool processFrame();
@@ -67,7 +79,7 @@ private:
 
 	void addTranscodeStream( const std::string& filename, const size_t streamIndex, const size_t subStreamIndex, Profile::ProfileDesc& profile );
 
-	void addDummyStream( Profile::ProfileDesc& profile );
+	void addDummyStream( const Profile::ProfileDesc& profile, const EssenceDesc& essenceDesc );
 
 	InputFile* addInputFile( const std::string& filename, const size_t streamIndex );
 

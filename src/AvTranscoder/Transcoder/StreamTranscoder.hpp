@@ -29,12 +29,12 @@ public:
 	/**
 	 * @brief transcode stream
 	 **/
-	StreamTranscoder( InputStream& inputStream, OutputFile& outputFile, Profile::ProfileDesc& profile, const int subStreamIndex = -1 );
+	StreamTranscoder( InputStream& inputStream, OutputFile& outputFile, const Profile::ProfileDesc& profile, const int subStreamIndex = -1 );
 
 	/**
 	 * @brief encode from dummy stream
 	 **/
-	StreamTranscoder( InputEssence& inputEssence, OutputFile& outputFile, Profile::ProfileDesc& profile );
+	StreamTranscoder( InputEssence& inputEssence, OutputFile& outputFile, const Profile::ProfileDesc& profile );
 
 	~StreamTranscoder();
 

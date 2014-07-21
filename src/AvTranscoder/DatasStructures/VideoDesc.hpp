@@ -1,8 +1,6 @@
 #ifndef _AV_TRANSCODER_DATA_VIDEO_DESC_HPP_
 #define _AV_TRANSCODER_DATA_VIDEO_DESC_HPP_
 
-
-#include "Image.hpp"
 #include <string>
 
 extern "C" {
@@ -16,51 +14,28 @@ extern "C" {
 #include <libavcodec/avcodec.h>
 }
 
+#include <AvTranscoder/common.hpp>
+#include <AvTranscoder/DatasStructures/EssenceDesc.hpp>
 #include <AvTranscoder/DatasStructures/Image.hpp>
 
 namespace avtranscoder
 {
 
-class AvExport VideoDesc
+class AvExport VideoDesc : public EssenceDesc
 {
 public:
 	VideoDesc( const std::string& codecName = "" );
 	VideoDesc( const AVCodecID codecId );
-
-	void setVideoCodec( const std::string& codecName );
-	void setVideoCodec( const AVCodecID codecId );
-
+	VideoDesc( const EssenceDesc& essenceDesc );
+	
+	ImageDesc getImageDesc() const;
+	std::pair< size_t, size_t > getTimeBase() const;
+	
 	void setImageParameters( const ImageDesc& imageDesc );
 	void setImageParameters( const size_t width, const size_t height, const Pixel& pixel );
 	void setImageParameters( const size_t width, const size_t height, const AVPixelFormat& pixel );
 
 	void setTimeBase( const size_t num, const size_t den, const size_t ticksPerFrame = 1 );
-	
-	void set( const std::string& key, const std::string& flag, const bool enable );
-	void set( const std::string& key, const bool value );
-	void set( const std::string& key, const int value );
-	void set( const std::string& key, const int num, const int den );
-	void set( const std::string& key, const double value );
-	void set( const std::string& key, const std::string& value );
-
-	std::string getVideoCodec()  const;
-	AVCodecID   getVideoCodecId() const;
-	std::pair< size_t, size_t > getTimeBase() const;
-
-#ifndef SWIG
-	AVCodec*        getCodec()        const { return m_codec; }
-	AVCodecContext* getCodecContext() const { return m_codecContext; }
-#endif
-
-	ImageDesc getImageDesc() const;
-
-private:
-	void initCodecContext( );
-
-	void checkError( int error );
-
-	AVCodec*        m_codec;
-	AVCodecContext* m_codecContext;
 };
 
 }

@@ -15,6 +15,7 @@
 #include <AvTranscoder/DatasStructures/Frame.hpp>
 #include <AvTranscoder/DatasStructures/Image.hpp>
 #include <AvTranscoder/DatasStructures/AudioFrame.hpp>
+#include <AvTranscoder/DatasStructures/EssenceDesc.hpp>
 #include <AvTranscoder/DatasStructures/VideoDesc.hpp>
 #include <AvTranscoder/DatasStructures/AudioDesc.hpp>
 #include <AvTranscoder/DatasStructures/DataStreamDesc.hpp>
@@ -67,6 +68,7 @@ namespace std {
 %include <AvTranscoder/DatasStructures/Frame.hpp>
 %include <AvTranscoder/DatasStructures/Image.hpp>
 %include <AvTranscoder/DatasStructures/AudioFrame.hpp>
+%include <AvTranscoder/DatasStructures/EssenceDesc.hpp>
 %include <AvTranscoder/DatasStructures/VideoDesc.hpp>
 %include <AvTranscoder/DatasStructures/AudioDesc.hpp>
 %include <AvTranscoder/DatasStructures/DataStreamDesc.hpp>

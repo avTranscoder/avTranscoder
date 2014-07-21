@@ -50,7 +50,7 @@ StreamTranscoder::StreamTranscoder(
 StreamTranscoder::StreamTranscoder(
 		InputStream& inputStream,
 		OutputFile& outputFile,
-		Profile::ProfileDesc& profile,
+		const Profile::ProfileDesc& profile,
 		const int subStreamIndex
 	)
 	: _inputStream( &inputStream )
@@ -78,7 +78,7 @@ StreamTranscoder::StreamTranscoder(
 
 			ImageDesc outputImageDesc = _inputStream->getVideoDesc().getImageDesc();
 
-			outputImageDesc.setPixel( Pixel( profile[ Profile::avProfilePixelFormat ].c_str() ) );
+			outputImageDesc.setPixel( Pixel( profile.find( Profile::avProfilePixelFormat )->second.c_str() ) );
 
 			outputVideo->setProfile( profile, outputImageDesc );
 			
@@ -129,7 +129,7 @@ StreamTranscoder::StreamTranscoder(
 StreamTranscoder::StreamTranscoder(
 		InputEssence& inputEssence,
 		OutputFile& outputFile,
-		Profile::ProfileDesc& profile
+		const Profile::ProfileDesc& profile
 	)
 	: _inputStream( NULL )
 	, _outputStream( NULL )
@@ -151,8 +151,8 @@ StreamTranscoder::StreamTranscoder(
 		OutputAudio* outputAudio = new OutputAudio();
 
 		_outputEssence = outputAudio;
-		AudioFrameDesc srcAudioFrameDesc; // @todo better solution ?
-		outputAudio->setProfile( profile, srcAudioFrameDesc );
+		AudioFrameDesc inputAudioFrameDesc = static_cast<DummyAudio*>( _inputEssence )->getAudioDesc().getFrameDesc();
+		outputAudio->setProfile( profile, inputAudioFrameDesc );
 		
 		static_cast<DummyAudio*>( _inputEssence )->setAudioDesc( outputAudio->getAudioDesc() );
 		

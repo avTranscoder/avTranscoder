@@ -57,7 +57,7 @@ void InputAudio::setup()
 {
 	avcodec_register_all();
 
-	_codec = avcodec_find_decoder( _inputStream->getAudioDesc().getAudioCodecId() );
+	_codec = avcodec_find_decoder( _inputStream->getAudioDesc().getCodecId() );
 	if( _codec == NULL )
 	{
 		throw std::runtime_error( "codec not supported" );
