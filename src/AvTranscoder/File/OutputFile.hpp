@@ -1,12 +1,11 @@
 #ifndef _AV_TRANSCODER_FILE_OUTPUT_FILE_HPP_
 #define _AV_TRANSCODER_FILE_OUTPUT_FILE_HPP_
 
-#include <AvTranscoder/DatasStructures/Image.hpp>
-#include <AvTranscoder/DatasStructures/DataStreamDesc.hpp>
-#include <AvTranscoder/DatasStructures/VideoDesc.hpp>
-#include <AvTranscoder/DatasStructures/AudioDesc.hpp>
+#include <AvTranscoder/EssenceStructures/Image.hpp>
+#include <AvTranscoder/CodedStructures/DataStreamDesc.hpp>
+#include <AvTranscoder/CodedStructures/VideoDesc.hpp>
+#include <AvTranscoder/CodedStructures/AudioDesc.hpp>
 #include <AvTranscoder/CodedStream/AvOutputStream.hpp>
-
 
 #include <string>
 #include <vector>

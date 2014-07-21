@@ -14,8 +14,8 @@ extern "C" {
 #endif
 }
 
-#include <AvTranscoder/DatasStructures/Pixel.hpp>
-#include <AvTranscoder/DatasStructures/Image.hpp>
+#include <AvTranscoder/EssenceStructures/Pixel.hpp>
+#include <AvTranscoder/EssenceStructures/Image.hpp>
 
 #include <iostream>
 #include <iomanip>

@@ -12,9 +12,6 @@ extern "C" {
 #include <libavutil/mathematics.h>
 }
 
-#include <AvTranscoder/DatasStructures/Image.hpp>
-#include <AvTranscoder/Profile.hpp>
-
 #include <stdexcept>
 #include <cstdlib>
 

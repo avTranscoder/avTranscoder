@@ -15,8 +15,8 @@ extern "C" {
 }
 
 #include <AvTranscoder/common.hpp>
-#include <AvTranscoder/DatasStructures/EssenceDesc.hpp>
-#include <AvTranscoder/DatasStructures/Image.hpp>
+#include <AvTranscoder/EssenceStructures/Image.hpp>
+#include "EssenceDesc.hpp"
 
 namespace avtranscoder
 {

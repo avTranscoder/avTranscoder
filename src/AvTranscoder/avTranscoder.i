@@ -11,14 +11,15 @@
 %{
 #include <AvTranscoder/common.hpp>
 
-#include <AvTranscoder/DatasStructures/Pixel.hpp>
-#include <AvTranscoder/DatasStructures/Frame.hpp>
-#include <AvTranscoder/DatasStructures/Image.hpp>
-#include <AvTranscoder/DatasStructures/AudioFrame.hpp>
-#include <AvTranscoder/DatasStructures/EssenceDesc.hpp>
-#include <AvTranscoder/DatasStructures/VideoDesc.hpp>
-#include <AvTranscoder/DatasStructures/AudioDesc.hpp>
-#include <AvTranscoder/DatasStructures/DataStreamDesc.hpp>
+#include <AvTranscoder/EssenceStructures/Pixel.hpp>
+#include <AvTranscoder/EssenceStructures/Frame.hpp>
+#include <AvTranscoder/EssenceStructures/Image.hpp>
+#include <AvTranscoder/EssenceStructures/AudioFrame.hpp>
+	
+#include <AvTranscoder/CodedStructures/EssenceDesc.hpp>
+#include <AvTranscoder/CodedStructures/VideoDesc.hpp>
+#include <AvTranscoder/CodedStructures/AudioDesc.hpp>
+#include <AvTranscoder/CodedStructures/DataStreamDesc.hpp>
 
 #include <AvTranscoder/Metadatas/MediaMetadatasStructures.hpp>
 
@@ -64,14 +65,15 @@ namespace std {
 
 %include <AvTranscoder/common.hpp>
 
-%include <AvTranscoder/DatasStructures/Pixel.hpp>
-%include <AvTranscoder/DatasStructures/Frame.hpp>
-%include <AvTranscoder/DatasStructures/Image.hpp>
-%include <AvTranscoder/DatasStructures/AudioFrame.hpp>
-%include <AvTranscoder/DatasStructures/EssenceDesc.hpp>
-%include <AvTranscoder/DatasStructures/VideoDesc.hpp>
-%include <AvTranscoder/DatasStructures/AudioDesc.hpp>
-%include <AvTranscoder/DatasStructures/DataStreamDesc.hpp>
+%include <AvTranscoder/EssenceStructures/Pixel.hpp>
+%include <AvTranscoder/EssenceStructures/Frame.hpp>
+%include <AvTranscoder/EssenceStructures/Image.hpp>
+%include <AvTranscoder/EssenceStructures/AudioFrame.hpp>
+	
+%include <AvTranscoder/CodedStructures/EssenceDesc.hpp>
+%include <AvTranscoder/CodedStructures/VideoDesc.hpp>
+%include <AvTranscoder/CodedStructures/AudioDesc.hpp>
+%include <AvTranscoder/CodedStructures/DataStreamDesc.hpp>
 
 %include <AvTranscoder/Metadatas/MediaMetadatasStructures.hpp>
 

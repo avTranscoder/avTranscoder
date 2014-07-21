@@ -1,18 +1,11 @@
 #ifndef _AV_TRANSCODER_ESSENCE_STREAM_OUTPUT_VIDEO_HPP_
 #define _AV_TRANSCODER_ESSENCE_STREAM_OUTPUT_VIDEO_HPP_
 
-extern "C" {
-#ifndef __STDC_CONSTANT_MACROS
-    #define __STDC_CONSTANT_MACROS
-#endif
-#include <libavutil/pixfmt.h>
-}
-
 #include "OutputEssence.hpp"
 
-#include <AvTranscoder/DatasStructures/VideoDesc.hpp>
-#include <AvTranscoder/DatasStructures/DataStreamDesc.hpp>
-#include <AvTranscoder/DatasStructures/Image.hpp>
+#include <AvTranscoder/CodedStructures/DataStreamDesc.hpp>
+#include <AvTranscoder/CodedStructures/VideoDesc.hpp>
+#include <AvTranscoder/EssenceStructures/Image.hpp>
 
 #include <AvTranscoder/Profile.hpp>
 

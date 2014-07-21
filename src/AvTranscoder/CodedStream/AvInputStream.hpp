@@ -3,6 +3,8 @@
 
 #include "InputStream.hpp"
 
+#include <AvTranscoder/CodedStructures/DataStreamDesc.hpp>
+
 namespace avtranscoder
 {
 

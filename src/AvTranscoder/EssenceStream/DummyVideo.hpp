@@ -3,8 +3,8 @@
 
 #include "InputEssence.hpp"
 
-#include <AvTranscoder/DatasStructures/VideoDesc.hpp>
-#include <AvTranscoder/DatasStructures/Frame.hpp>
+#include <AvTranscoder/CodedStructures/VideoDesc.hpp>
+#include <AvTranscoder/EssenceStructures/Frame.hpp>
 
 namespace avtranscoder
 {
