@@ -176,23 +176,23 @@ bool OutputAudio::encodeFrame( DataStream& codedFrame )
 #endif
 }
 
-void OutputAudio::setProfile( Profile::ProfileDesc& desc, const AudioFrameDesc& frameDesc  )
+void OutputAudio::setProfile( const Profile::ProfileDesc& desc, const AudioFrameDesc& frameDesc  )
 {
 	if( ! desc.count( Profile::avProfileCodec ) || 		
 		! desc.count( Profile::avProfileSampleFormat ) || 
 		! desc.count( Profile::avProfileSampleRate ) || 
 		! desc.count( Profile::avProfileChannel ) )
 	{
-		throw std::runtime_error( "The profile " + desc[ Profile::avProfileIdentificatorHuman ] + " is invalid." );
+		throw std::runtime_error( "The profile " + desc.find( Profile::avProfileIdentificatorHuman )->second + " is invalid." );
 	}
 	
-	_audioDesc.setCodec( desc[ Profile::avProfileCodec ] );
+	_audioDesc.setCodec( desc.find( Profile::avProfileCodec )->second );
 	
-	size_t sample_rate = std::strtoul( desc[ Profile::avProfileSampleRate ].c_str(), NULL, 0 );
-	size_t channels = std::strtoul( desc[ Profile::avProfileChannel ].c_str(), NULL, 0 );
-	_audioDesc.setAudioParameters( sample_rate, channels, av_get_sample_fmt( desc[ Profile::avProfileSampleFormat ].c_str() ) );
+	size_t sample_rate = std::strtoul( desc.find( Profile::avProfileSampleRate )->second.c_str(), NULL, 0 );
+	size_t channels = std::strtoul( desc.find( Profile::avProfileChannel )->second.c_str(), NULL, 0 );
+	_audioDesc.setAudioParameters( sample_rate, channels, av_get_sample_fmt( desc.find( Profile::avProfileSampleFormat )->second.c_str() ) );
 	
-	for( Profile::ProfileDesc::iterator it = desc.begin(); it != desc.end(); ++it )
+	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
 	{
 		if( (*it).first == Profile::avProfileIdentificator ||
 			(*it).first == Profile::avProfileIdentificatorHuman ||
@@ -215,7 +215,7 @@ void OutputAudio::setProfile( Profile::ProfileDesc& desc, const AudioFrameDesc& 
 
 	setup();
 
-	for( Profile::ProfileDesc::iterator it = desc.begin(); it != desc.end(); ++it )
+	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
 	{
 		if( (*it).first == Profile::avProfileIdentificator ||
 			(*it).first == Profile::avProfileIdentificatorHuman ||

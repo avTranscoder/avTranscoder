@@ -186,23 +186,23 @@ bool OutputVideo::encodeFrame( DataStream& codedFrame )
 #endif
 }
 
-void OutputVideo::setProfile( Profile::ProfileDesc& desc, const avtranscoder::ImageDesc& imageDesc )
+void OutputVideo::setProfile( const Profile::ProfileDesc& desc, const avtranscoder::ImageDesc& imageDesc )
 {
 	if( ! desc.count( Profile::avProfileCodec ) ||
 		! desc.count( Profile::avProfilePixelFormat ) || 
 		! desc.count( Profile::avProfileFrameRate ) )
 	{
-		throw std::runtime_error( "The profile " + desc[ Profile::avProfileIdentificatorHuman ] + " is invalid." );
+		throw std::runtime_error( "The profile " + desc.find( Profile::avProfileIdentificatorHuman )->second + " is invalid." );
 	}
 	
-	_videoDesc.setCodec( desc[ Profile::avProfileCodec ] );
+	_videoDesc.setCodec( desc.find( Profile::avProfileCodec )->second );
 	
-	const size_t frameRate = std::strtoul( desc[ Profile::avProfileFrameRate ].c_str(), NULL, 0 );
+	const size_t frameRate = std::strtoul( desc.find( Profile::avProfileFrameRate )->second.c_str(), NULL, 0 );
 	_videoDesc.setTimeBase( 1, frameRate );
 	
 	_videoDesc.setImageParameters( imageDesc );
 
-	for( Profile::ProfileDesc::iterator it = desc.begin(); it != desc.end(); ++it )
+	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
 	{
 		if( (*it).first == Profile::avProfileIdentificator ||
 			(*it).first == Profile::avProfileIdentificatorHuman ||
@@ -224,7 +224,7 @@ void OutputVideo::setProfile( Profile::ProfileDesc& desc, const avtranscoder::Im
 
 	setup();
 
-	for( Profile::ProfileDesc::iterator it = desc.begin(); it != desc.end(); ++it )
+	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
 	{
 		if( (*it).first == Profile::avProfileIdentificator ||
 			(*it).first == Profile::avProfileIdentificatorHuman ||

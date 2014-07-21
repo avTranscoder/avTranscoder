@@ -29,7 +29,7 @@ public:
 	 */
 	bool encodeFrame( DataStream& codedFrame );
 	
-	void setProfile( Profile::ProfileDesc& desc, const AudioFrameDesc& frameDesc );
+	void setProfile( const Profile::ProfileDesc& desc, const AudioFrameDesc& frameDesc );
 
 	AudioDesc& getAudioDesc() { return _audioDesc; }
 
