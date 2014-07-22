@@ -25,3 +25,17 @@ script:
 after_failure:
   - cat config.log
 
+env:
+  global:
+   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+   #   via the "travis encrypt" command using the project repo's public key
+   - secure: "cDIO5Qhn0jjgzhgpcKMZEJf8r0Az9QQi39WL4XdKdeuYdqwXOxvh5+RfQoYUYxSZ2nPrFJqc5zXhUyGLLyqsiEOW7SCtZhBs6n1FYEFgqXiQiOHuOgj3SpIsrF5AaUkeD1tpIn/oO7QPEwfwiQptFZvmrB5tLztlX0N90rdsI6U="
+
+addons:
+  coverity_scan:
+    project:
+      name: "avTranscoder/avTranscoder"
+      description: "[avTranscoder] Build submitted via Travis CI"
+    notification_email: arnaud.marcantoine@gmail.com
+    build_command:   "scons -j 4"
+    branch_pattern: coverity_scan
