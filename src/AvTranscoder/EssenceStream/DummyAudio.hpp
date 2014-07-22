@@ -23,6 +23,8 @@ public:
 	AudioDesc getAudioDesc() const;
 	
 	void setup() {}
+	
+	void setFrame( Frame& inputFrame );
 
 	bool readNextFrame( Frame& frameBuffer );
 	bool readNextFrame( Frame& frameBuffer, const size_t subStreamIndex );
@@ -30,6 +32,8 @@ public:
 private:
 	AudioDesc      _audioDesc;
 	AudioFrameDesc _frameDesc;
+	
+	Frame*    _inputFrame;
 };
 
 }
