@@ -1,4 +1,7 @@
 #include "VideoEssenceTransform.hpp"
+
+#include <AvTranscoder/EssenceStructures/Pixel.hpp>
+#include <AvTranscoder/EssenceStructures/VideoFrame.hpp>
 #include <AvTranscoder/common.hpp>
 
 extern "C" {
@@ -13,9 +16,6 @@ extern "C" {
 	#include <libavutil/frame.h>
 #endif
 }
-
-#include <AvTranscoder/EssenceStructures/Pixel.hpp>
-#include <AvTranscoder/EssenceStructures/VideoFrame.hpp>
 
 #include <iostream>
 #include <iomanip>
