@@ -1,12 +1,18 @@
 #ifndef _AV_TRANSCODER_TRANSCODER_HPP_
 #define _AV_TRANSCODER_TRANSCODER_HPP_
 
+#include <AvTranscoder/common.hpp>
+
 #include <AvTranscoder/File/InputFile.hpp>
 #include <AvTranscoder/File/OutputFile.hpp>
+
 #include <AvTranscoder/CodedStream/InputStream.hpp>
+
 #include <AvTranscoder/EssenceStream/DummyAudio.hpp>
 #include <AvTranscoder/EssenceStream/DummyVideo.hpp>
+
 #include <AvTranscoder/ProgressListener.hpp>
+
 #include <AvTranscoder/Profile.hpp>
 
 #include "StreamTranscoder.hpp"
@@ -39,7 +45,7 @@ public:
 	/*
 	 * @note If filename is empty, add a dummy stream.
 	 */
-	void add( const std::string& filename, const size_t streamIndex, Profile::ProfileDesc& profileDesc, EssenceDesc& essenceDesc );
+	void add( const std::string& filename, const size_t streamIndex, Profile::ProfileDesc& profileDesc, CodedDesc& essenceDesc );
 	
 	/**
 	 * @brief Add a stream and set a profile
@@ -57,7 +63,7 @@ public:
 	/**
 	 * @note If filename is empty, add a dummy stream.
 	 */
-	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, Profile::ProfileDesc& profileDesc, EssenceDesc& essenceDesc );
+	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, Profile::ProfileDesc& profileDesc, CodedDesc& essenceDesc );
 
 	/**
 	 * @brief Add the stream
@@ -79,7 +85,7 @@ private:
 
 	void addTranscodeStream( const std::string& filename, const size_t streamIndex, const size_t subStreamIndex, Profile::ProfileDesc& profile );
 
-	void addDummyStream( const Profile::ProfileDesc& profile, const EssenceDesc& essenceDesc );
+	void addDummyStream( const Profile::ProfileDesc& profile, const CodedDesc& essenceDesc );
 
 	InputFile* addInputFile( const std::string& filename, const size_t streamIndex );
 

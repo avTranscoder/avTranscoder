@@ -9,9 +9,7 @@ extern "C" {
 #include <libavutil/avutil.h>
 }
 
-#include <AvTranscoder/DatasStructures/AudioFrame.hpp>
-#include <AvTranscoder/Profile.hpp>
-
+#include <iostream>
 #include <stdexcept>
 #include <cstdlib>
 

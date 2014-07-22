@@ -1,6 +1,6 @@
 #include "Profile.hpp"
 
-#include <AvTranscoder/common.hpp>
+#include "common.hpp"
 
 #include <AvTranscoder/Profiles/XdCamHd422.hpp>
 #include <AvTranscoder/Profiles/DNxHD.hpp>

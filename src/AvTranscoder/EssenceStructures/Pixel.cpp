@@ -5,7 +5,6 @@ extern "C" {
 	#define __STDC_CONSTANT_MACROS
 #endif
 #include <libavformat/avformat.h>
-#include <libavutil/pixfmt.h>
 #include <libswscale/swscale.h>
 #include <libavutil/imgutils.h>
 #include <libavutil/pixdesc.h>

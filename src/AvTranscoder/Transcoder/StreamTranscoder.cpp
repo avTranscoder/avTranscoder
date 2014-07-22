@@ -3,6 +3,10 @@
 
 #include <AvTranscoder/CodedStream/AvInputStream.hpp>
 
+#include <AvTranscoder/EssenceStream/InputVideo.hpp>
+#include <AvTranscoder/EssenceStream/InputAudio.hpp>
+#include <AvTranscoder/EssenceStream/OutputVideo.hpp>
+#include <AvTranscoder/EssenceStream/OutputAudio.hpp>
 #include <AvTranscoder/EssenceStream/DummyVideo.hpp>
 #include <AvTranscoder/EssenceStream/DummyAudio.hpp>
 
@@ -10,6 +14,7 @@
 #include <AvTranscoder/EssenceTransform/VideoEssenceTransform.hpp>
 
 #include <cassert>
+#include <iostream>
 
 namespace avtranscoder
 {
@@ -76,19 +81,19 @@ StreamTranscoder::StreamTranscoder(
 
 			_outputEssence = outputVideo;
 
-			ImageDesc outputImageDesc = _inputStream->getVideoDesc().getImageDesc();
+			VideoFrameDesc outputVideoFrameDesc = _inputStream->getVideoDesc().getVideoFrameDesc();
 
-			outputImageDesc.setPixel( Pixel( profile.find( Profile::avProfilePixelFormat )->second.c_str() ) );
+			outputVideoFrameDesc.setPixel( Pixel( profile.find( Profile::avProfilePixelFormat )->second.c_str() ) );
 
-			outputVideo->setProfile( profile, outputImageDesc );
+			outputVideo->setProfile( profile, outputVideoFrameDesc );
 			
 			_outputStream = &outputFile.addVideoStream( outputVideo->getVideoDesc() );
 
-			_sourceBuffer = new Image( _inputStream->getVideoDesc().getImageDesc() );
+			_sourceBuffer = new VideoFrame( _inputStream->getVideoDesc().getVideoFrameDesc() );
 
-			// outputVideo->getVideoDesc().setImageParameters( _inputStream->getVideoDesc().getImageDesc().getWidth(), _inputStream->getVideoDesc().getImageDesc().getHeight(), av_get_pix_fmt( desc[ Profile::avProfilePixelFormat ].c_str() ) );
+			// outputVideo->getVideoDesc().setImageParameters( _inputStream->getVideoDesc().getVideoFrameDesc().getWidth(), _inputStream->getVideoDesc().getVideoFrameDesc().getHeight(), av_get_pix_fmt( desc[ Profile::avProfilePixelFormat ].c_str() ) );
 
-			_frameBuffer = new Image( outputVideo->getVideoDesc().getImageDesc() );
+			_frameBuffer = new VideoFrame( outputVideo->getVideoDesc().getVideoFrameDesc() );
 			
 			_transform = new VideoEssenceTransform();
 
@@ -170,12 +175,12 @@ StreamTranscoder::StreamTranscoder(
 		OutputVideo* outputVideo = new OutputVideo();
 		
 		_outputEssence = outputVideo;
-		ImageDesc inputImageDesc = static_cast<DummyVideo*>( _inputEssence )->getVideoDesc().getImageDesc();
-		outputVideo->setProfile( profile, inputImageDesc );
+		VideoFrameDesc inputVideoFrameDesc = static_cast<DummyVideo*>( _inputEssence )->getVideoDesc().getVideoFrameDesc();
+		outputVideo->setProfile( profile, inputVideoFrameDesc );
 
 		_outputStream = &outputFile.addVideoStream( outputVideo->getVideoDesc() );
-		_sourceBuffer = new Image( outputVideo->getVideoDesc().getImageDesc() );
-		_frameBuffer  = new Image( outputVideo->getVideoDesc().getImageDesc() );
+		_sourceBuffer = new VideoFrame( outputVideo->getVideoDesc().getVideoFrameDesc() );
+		_frameBuffer  = new VideoFrame( outputVideo->getVideoDesc().getVideoFrameDesc() );
 		
 		_transform = new VideoEssenceTransform();
 		

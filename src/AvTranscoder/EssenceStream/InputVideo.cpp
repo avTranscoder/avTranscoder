@@ -11,8 +11,8 @@ extern "C" {
 }
 
 #include <AvTranscoder/CodedStream/AvInputStream.hpp>
+#include <AvTranscoder/EssenceStructures/VideoFrame.hpp>
 
-#include <iostream>
 #include <stdexcept>
 
 namespace avtranscoder
@@ -124,7 +124,7 @@ bool InputVideo::readNextFrame( Frame& frameBuffer )
 		av_free_packet( &packet );
 	}
 
-	Image& imageBuffer = static_cast<Image&>( frameBuffer );
+	VideoFrame& imageBuffer = static_cast<VideoFrame&>( frameBuffer );
 
 	size_t decodedSize = avpicture_get_size( (AVPixelFormat)_frame->format, _frame->width, _frame->height );
 	if( imageBuffer.getBuffer().size() != decodedSize )

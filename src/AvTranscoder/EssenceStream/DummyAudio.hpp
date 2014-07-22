@@ -3,8 +3,9 @@
 
 #include "InputEssence.hpp"
 
-#include <AvTranscoder/DatasStructures/AudioDesc.hpp>
-#include <AvTranscoder/DatasStructures/Frame.hpp>
+#include <AvTranscoder/common.hpp>
+#include <AvTranscoder/CodedStructures/AudioDesc.hpp>
+#include <AvTranscoder/EssenceStructures/Frame.hpp>
 
 namespace avtranscoder
 {

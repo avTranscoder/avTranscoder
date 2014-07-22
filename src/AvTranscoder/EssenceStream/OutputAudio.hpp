@@ -3,9 +3,9 @@
 
 #include "OutputEssence.hpp"
 
-#include <AvTranscoder/DatasStructures/AudioDesc.hpp>
-#include <AvTranscoder/DatasStructures/DataStreamDesc.hpp>
-#include <AvTranscoder/DatasStructures/AudioFrame.hpp>
+#include <AvTranscoder/CodedStructures/DataStreamDesc.hpp>
+#include <AvTranscoder/CodedStructures/AudioDesc.hpp>
+#include <AvTranscoder/EssenceStructures/AudioFrame.hpp>
 
 #include <AvTranscoder/Profile.hpp>
 

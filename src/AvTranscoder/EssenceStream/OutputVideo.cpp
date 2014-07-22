@@ -7,14 +7,9 @@ extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
 #include <libavutil/avutil.h>
-#include <libavutil/pixdesc.h>
-#include <libavutil/imgutils.h>
-#include <libavutil/mathematics.h>
 }
 
-#include <AvTranscoder/DatasStructures/Image.hpp>
-#include <AvTranscoder/Profile.hpp>
-
+#include <iostream>
 #include <stdexcept>
 #include <cstdlib>
 
@@ -68,7 +63,7 @@ bool OutputVideo::encodeFrame( const Frame& sourceFrame, DataStream& codedFrame 
 	avcodec_get_frame_defaults( frame );
 #endif
 
-	const Image& sourceImageFrame = static_cast<const Image&>( sourceFrame );
+	const VideoFrame& sourceImageFrame = static_cast<const VideoFrame&>( sourceFrame );
 
 	frame->width  = codecContext->width;
 	frame->height = codecContext->height;
@@ -186,7 +181,7 @@ bool OutputVideo::encodeFrame( DataStream& codedFrame )
 #endif
 }
 
-void OutputVideo::setProfile( const Profile::ProfileDesc& desc, const avtranscoder::ImageDesc& imageDesc )
+void OutputVideo::setProfile( const Profile::ProfileDesc& desc, const avtranscoder::VideoFrameDesc& VideoFrameDesc )
 {
 	if( ! desc.count( Profile::avProfileCodec ) ||
 		! desc.count( Profile::avProfilePixelFormat ) || 
@@ -200,7 +195,7 @@ void OutputVideo::setProfile( const Profile::ProfileDesc& desc, const avtranscod
 	const size_t frameRate = std::strtoul( desc.find( Profile::avProfileFrameRate )->second.c_str(), NULL, 0 );
 	_videoDesc.setTimeBase( 1, frameRate );
 	
-	_videoDesc.setImageParameters( imageDesc );
+	_videoDesc.setImageParameters( VideoFrameDesc );
 
 	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
 	{

@@ -6,17 +6,17 @@ namespace avtranscoder
 {
 
 AudioDesc::AudioDesc( const std::string& codecName )
-	: EssenceDesc( codecName )
+	: CodedDesc( codecName )
 {
 }
 
 AudioDesc::AudioDesc( const AVCodecID codecId )
-	: EssenceDesc( codecId )
+	: CodedDesc( codecId )
 {
 }
 
-AudioDesc::AudioDesc( const EssenceDesc& essenceDesc )
-	: EssenceDesc( essenceDesc.getCodecId() )
+AudioDesc::AudioDesc( const CodedDesc& essenceDesc )
+	: CodedDesc( essenceDesc.getCodecId() )
 {
 	m_codec = essenceDesc.getCodec();
 	m_codecContext = essenceDesc.getCodecContext();

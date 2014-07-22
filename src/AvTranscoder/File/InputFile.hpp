@@ -1,21 +1,21 @@
 #ifndef _AV_TRANSCODER_FILE_INPUT_FILE_HPP_
 #define _AV_TRANSCODER_FILE_INPUT_FILE_HPP_
 
-#include <AvTranscoder/DatasStructures/DataStreamDesc.hpp>
-#include <AvTranscoder/DatasStructures/AudioDesc.hpp>
-#include <AvTranscoder/DatasStructures/VideoDesc.hpp>
+#include <AvTranscoder/common.hpp>
+
+#include <AvTranscoder/CodedStructures/DataStreamDesc.hpp>
+#include <AvTranscoder/CodedStructures/AudioDesc.hpp>
+#include <AvTranscoder/CodedStructures/VideoDesc.hpp>
+
 #include <AvTranscoder/CodedStream/AvInputStream.hpp>
+
 #include <AvTranscoder/Metadatas/MediaMetadatasStructures.hpp>
 #include <AvTranscoder/ProgressListener.hpp>
 
 #include <string>
 #include <vector>
 
-class AVInputFormat;
 class AVFormatContext;
-class AVStream;
-class AVCodec;
-class AVCodecContext;
 
 namespace avtranscoder
 {

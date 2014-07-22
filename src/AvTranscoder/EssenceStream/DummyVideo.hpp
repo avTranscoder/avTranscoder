@@ -3,8 +3,9 @@
 
 #include "InputEssence.hpp"
 
-#include <AvTranscoder/DatasStructures/VideoDesc.hpp>
-#include <AvTranscoder/DatasStructures/Frame.hpp>
+#include <AvTranscoder/common.hpp>
+#include <AvTranscoder/CodedStructures/VideoDesc.hpp>
+#include <AvTranscoder/EssenceStructures/Frame.hpp>
 
 namespace avtranscoder
 {
@@ -31,7 +32,7 @@ public:
 private:
 	Frame*    _inputFrame;
 	VideoDesc _videoDesc;
-	ImageDesc _imageDesc;
+	VideoFrameDesc _VideoFrameDesc;
 
 	size_t    _numberOfView;
 };

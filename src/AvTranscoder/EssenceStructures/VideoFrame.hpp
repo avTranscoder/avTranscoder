@@ -11,12 +11,9 @@ extern "C" {
 	#define INT64_C(c) (c ## LL)
 	#define UINT64_C(c) (c ## ULL)
 #endif
-#include <libavcodec/avcodec.h>
+#include <libavutil/pixdesc.h>
 }
 
-#include <iostream>
-#include <string>
-#include <vector>
 #include <stdexcept>
 
 #include "Pixel.hpp"
@@ -33,7 +30,7 @@ namespace avtranscoder
 // 	//EColorRange     eColorRange;
 // };
 
-class AvExport ImageDesc
+class AvExport VideoFrameDesc
 {
 public:
 	void setWidth ( const size_t width     ) { m_width = width; }
@@ -75,25 +72,25 @@ private:
 
 //template< template<typename> Alloc >
 //class AvExport ImageBase
-class AvExport Image : public Frame
+class AvExport VideoFrame : public Frame
 {
 public:
-	Image( const ImageDesc& ref )
-		: m_imageDesc( ref )
+	VideoFrame( const VideoFrameDesc& ref )
+		: m_videoFrameDesc( ref )
 	{
 		m_dataBuffer = DataBuffer( ref.getDataSize(), 0 );
 	}
 
-	virtual ~Image()
+	virtual ~VideoFrame()
 	{};
 
-	const ImageDesc&     desc() const    { return m_imageDesc; }
+	const VideoFrameDesc&     desc() const    { return m_videoFrameDesc; }
 
 private:
-	const ImageDesc m_imageDesc;
+	const VideoFrameDesc m_videoFrameDesc;
 };
 
-//typedef ImageBase<std::allocator> Image;
+//typedef ImageBase<std::allocator> VideoFrame;
 
 }
 

@@ -16,10 +16,8 @@ extern "C" {
 #include <libavformat/avformat.h>
 #include <libavutil/avutil.h>
 #include <libavutil/pixdesc.h>
-#include <libavutil/avstring.h>
 }
 
-#include <iostream>
 #include <stdexcept>
 #include <cassert>
 
@@ -124,7 +122,6 @@ InputFile& InputFile::analyse( ProgressListener& progress, const EAnalyseLevel l
 			}
 			case AVMEDIA_TYPE_NB:
 			{
-				// std::cout << "NB" << std::endl;
 				break;
 			}
 		}

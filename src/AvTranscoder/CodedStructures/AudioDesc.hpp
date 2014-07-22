@@ -3,30 +3,22 @@
 
 #include <string>
 
-extern "C" {
-#ifndef __STDC_CONSTANT_MACROS
-	#define __STDC_CONSTANT_MACROS
-#endif
-#ifndef INT64_C
-	#define INT64_C(c) (c ## LL)
-	#define UINT64_C(c) (c ## ULL)
-#endif
-#include <libavcodec/avcodec.h>
-}
-
 #include <AvTranscoder/common.hpp>
-#include <AvTranscoder/DatasStructures/EssenceDesc.hpp>
-#include <AvTranscoder/DatasStructures/AudioFrame.hpp>
+#include <AvTranscoder/EssenceStructures/AudioFrame.hpp>
+
+#include "CodedDesc.hpp"
+
+class AVCodec;
 
 namespace avtranscoder
 {
 
-class AvExport AudioDesc : public EssenceDesc
+class AvExport AudioDesc : public CodedDesc
 {
 public:
 	AudioDesc( const std::string& codecName = "" );
 	AudioDesc( const AVCodecID codecId );
-	AudioDesc( const EssenceDesc& essenceDesc );
+	AudioDesc( const CodedDesc& essenceDesc );
 
 	AudioFrameDesc getFrameDesc() const;
 	const size_t getSampleRate() const;

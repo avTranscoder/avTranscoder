@@ -1,12 +1,9 @@
 #ifndef _AV_TRANSCODER_MEDIA_HPP_
 #define _AV_TRANSCODER_MEDIA_HPP_
 
-#include <AvTranscoder/common.hpp>
-
 #include <string>
 #include <vector>
 
-class AVFormatContext;
 
 namespace avtranscoder
 {

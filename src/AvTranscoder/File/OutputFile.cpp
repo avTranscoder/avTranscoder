@@ -8,7 +8,6 @@ extern "C" {
 #include <libavformat/avformat.h>
 #include <libavutil/avutil.h>
 #include <libavutil/pixdesc.h>
-#include <libavutil/avstring.h>
 }
 
 #include <iostream>

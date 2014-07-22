@@ -1,8 +1,5 @@
 #include "DummyAudio.hpp"
 
-#include <cassert>
-#include <cstring>
-
 namespace avtranscoder
 {
 
