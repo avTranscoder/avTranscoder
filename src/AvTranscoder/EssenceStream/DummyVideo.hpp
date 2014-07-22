@@ -32,7 +32,7 @@ public:
 private:
 	Frame*    _inputFrame;
 	VideoDesc _videoDesc;
-	VideoFrameDesc _VideoFrameDesc;
+	VideoFrameDesc _videoFrameDesc;
 
 	size_t    _numberOfView;
 };
