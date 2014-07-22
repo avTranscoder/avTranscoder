@@ -18,6 +18,7 @@ before_script:
   - sudo apt-get update -qq
   - sudo apt-get install -qq gcc g++ scons swig swig2.0
   - sudo apt-get install -qq libavdevice-dev libavformat-dev libavcodec-dev libavutil-dev libswscale-dev libavresample-dev python-dev freeglut3-dev doxygen
+  - rm -Rf build
 
 script:
   - scons
@@ -37,6 +38,5 @@ addons:
       name: "avTranscoder/avTranscoder"
       description: "[avTranscoder] Build submitted via Travis CI"
     notification_email: arnaud.marcantoine@gmail.com
-    build_command_prepend: "rm -Rf build"
     build_command:   "scons -j 4"
     branch_pattern: coverity_scan
