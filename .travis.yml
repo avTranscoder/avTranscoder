@@ -37,5 +37,6 @@ addons:
       name: "avTranscoder/avTranscoder"
       description: "[avTranscoder] Build submitted via Travis CI"
     notification_email: arnaud.marcantoine@gmail.com
+    build_command_prepend: "rm -Rf build"
     build_command:   "scons -j 4"
     branch_pattern: coverity_scan
