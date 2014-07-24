@@ -143,10 +143,10 @@ bool InputAudio::readNextFrame( Frame& frameBuffer, const size_t subStreamIndex 
 	const int output_align = 1;
 	size_t decodedSize = av_samples_get_buffer_size(NULL, output_nbChannels, _frame->nb_samples, _codecContext->sample_fmt, output_align);
 	
-	size_t nbChannels = _codecContext->channels;
+	size_t nbSubStreams = _codecContext->channels;
 	size_t bytePerSample = av_get_bytes_per_sample( (AVSampleFormat)_frame->format );
 
-	if( subStreamIndex > nbChannels - 1 )
+	if( subStreamIndex > nbSubStreams - 1 )
 	{
 		throw std::runtime_error( "The subStream doesn't exist");
 	}
@@ -164,7 +164,7 @@ bool InputAudio::readNextFrame( Frame& frameBuffer, const size_t subStreamIndex 
 		unsigned char* dst = audioBuffer.getPtr();
 
 		// offset
-		src += ( nbChannels - 1 - subStreamIndex ) * bytePerSample;
+		src += ( nbSubStreams - 1 - subStreamIndex ) * bytePerSample;
 		
 		for( int sample = 0; sample < _frame->nb_samples; ++sample )
 		{
@@ -173,7 +173,7 @@ bool InputAudio::readNextFrame( Frame& frameBuffer, const size_t subStreamIndex 
 			// std::cout << "dst " << static_cast<void *>(dst) << std::endl;
 			memcpy( dst, src, bytePerSample );
 			dst += bytePerSample;
-			src += bytePerSample * nbChannels;
+			src += bytePerSample * nbSubStreams;
 		}
 	}
 	return true;
