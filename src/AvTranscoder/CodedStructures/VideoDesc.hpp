@@ -23,7 +23,7 @@ public:
 	VideoFrameDesc getVideoFrameDesc() const;
 	std::pair< size_t, size_t > getTimeBase() const;
 	
-	void setImageParameters( const VideoFrameDesc& VideoFrameDesc );
+	void setImageParameters( const VideoFrameDesc& videoFrameDesc );
 	void setImageParameters( const size_t width, const size_t height, const Pixel& pixel );
 	void setImageParameters( const size_t width, const size_t height, const AVPixelFormat& pixel );
 
