@@ -158,8 +158,7 @@ bool InputAudio::readNextFrame( Frame& frameBuffer, const size_t subStreamIndex 
 		unsigned char* src = _frame->data[0];
 		unsigned char* dst = audioBuffer.getPtr();
 
-		// @todo check little / big endian
-		// offset for little endian
+		// offset
 		src += ( nbChannels - 1 - subStreamIndex ) * bytePerSample;
 		
 		for( int sample = 0; sample < _frame->nb_samples; ++sample )
