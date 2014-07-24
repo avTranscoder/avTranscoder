@@ -11,7 +11,6 @@ extern "C" {
 
 #include <iostream>
 #include <stdexcept>
-#include <cstdlib>
 
 namespace avtranscoder
 {
@@ -186,10 +185,8 @@ void OutputAudio::setProfile( const Profile::ProfileDesc& desc, const AudioFrame
 	
 	_audioDesc.setCodec( desc.find( Profile::avProfileCodec )->second );
 	
-	size_t sample_rate = std::strtoul( desc.find( Profile::avProfileSampleRate )->second.c_str(), NULL, 0 );
-	size_t channels = std::strtoul( desc.find( Profile::avProfileChannel )->second.c_str(), NULL, 0 );
-	_audioDesc.setAudioParameters( sample_rate, channels, av_get_sample_fmt( desc.find( Profile::avProfileSampleFormat )->second.c_str() ) );
-	
+	_audioDesc.setAudioParameters( frameDesc );
+
 	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
 	{
 		if( (*it).first == Profile::avProfileIdentificator ||
