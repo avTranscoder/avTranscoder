@@ -1,12 +1,11 @@
 #ifndef _AV_TRANSCODER_DATA_AUDIO_DESC_HPP_
 #define _AV_TRANSCODER_DATA_AUDIO_DESC_HPP_
 
-#include <string>
-
-#include <AvTranscoder/common.hpp>
 #include <AvTranscoder/EssenceStructures/AudioFrame.hpp>
-
 #include "CodedDesc.hpp"
+#include <AvTranscoder/common.hpp>
+
+#include <string>
 
 class AVCodec;
 
