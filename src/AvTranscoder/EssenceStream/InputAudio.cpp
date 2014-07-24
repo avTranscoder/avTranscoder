@@ -146,6 +146,11 @@ bool InputAudio::readNextFrame( Frame& frameBuffer, const size_t subStreamIndex 
 	size_t nbChannels = _codecContext->channels;
 	size_t bytePerSample = av_get_bytes_per_sample( (AVSampleFormat)_frame->format );
 
+	if( subStreamIndex > nbChannels - 1 )
+	{
+		throw std::runtime_error( "The subStream doesn't exist");
+	}
+	
 	AudioFrame& audioBuffer = static_cast<AudioFrame&>( frameBuffer );
 	audioBuffer.setNbSamples( _frame->nb_samples );
 	
