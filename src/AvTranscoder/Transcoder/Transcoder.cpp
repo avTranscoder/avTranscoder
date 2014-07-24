@@ -239,11 +239,6 @@ void Transcoder::addTranscodeStream( const std::string& filename, const size_t s
 	switch( referenceFile->getStreamType( streamIndex ) )
 	{
 		case AVMEDIA_TYPE_VIDEO:
-		{
-			_streamTranscoders.push_back( new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile, profile ) );
-			_inputStreams.push_back( &referenceFile->getStream( streamIndex ) );
-			break;
-		}
 		case AVMEDIA_TYPE_AUDIO:
 		{
 			_streamTranscoders.push_back( new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile, profile ) );
@@ -267,11 +262,6 @@ void Transcoder::addTranscodeStream( const std::string& filename, const size_t s
 	switch( referenceFile->getStreamType( streamIndex ) )
 	{
 		case AVMEDIA_TYPE_VIDEO:
-		{
-			_streamTranscoders.push_back( new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile, profile, subStreamIndex ) );
-			_inputStreams.push_back( &referenceFile->getStream( streamIndex ) );
-			break;
-		}
 		case AVMEDIA_TYPE_AUDIO:
 		{
 			_streamTranscoders.push_back( new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile, profile, subStreamIndex ) );
