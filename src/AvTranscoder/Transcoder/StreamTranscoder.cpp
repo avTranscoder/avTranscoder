@@ -81,18 +81,13 @@ StreamTranscoder::StreamTranscoder(
 
 			_outputEssence = outputVideo;
 
-			VideoFrameDesc outputVideoFrameDesc = _inputStream->getVideoDesc().getVideoFrameDesc();
-
-			outputVideoFrameDesc.setPixel( Pixel( profile.find( Profile::avProfilePixelFormat )->second.c_str() ) );
-
-			outputVideo->setProfile( profile, outputVideoFrameDesc );
+			VideoFrameDesc outputFrameDesc = _inputStream->getVideoDesc().getVideoFrameDesc();
+			outputFrameDesc.setParameters( profile );
+			outputVideo->setProfile( profile, outputFrameDesc );
 			
 			_outputStream = &outputFile.addVideoStream( outputVideo->getVideoDesc() );
 
 			_sourceBuffer = new VideoFrame( _inputStream->getVideoDesc().getVideoFrameDesc() );
-
-			// outputVideo->getVideoDesc().setImageParameters( _inputStream->getVideoDesc().getVideoFrameDesc().getWidth(), _inputStream->getVideoDesc().getVideoFrameDesc().getHeight(), av_get_pix_fmt( desc[ Profile::avProfilePixelFormat ].c_str() ) );
-
 			_frameBuffer = new VideoFrame( outputVideo->getVideoDesc().getVideoFrameDesc() );
 			
 			_transform = new VideoEssenceTransform();
