@@ -61,6 +61,8 @@ namespace std {
 %template(GopPair)         pair< char, bool >;
 %template(GopVector)       vector< pair< char, bool > >;
 %template(ChannelVector)   vector< avtranscoder::Channel >;
+%template(ProfileMap)      map< string, string >;
+%template(ProfilesVector)  vector< map< string, string > >;
 }
 
 %include <AvTranscoder/common.hpp>
