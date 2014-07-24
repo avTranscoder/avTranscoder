@@ -1,6 +1,7 @@
 #ifndef _AV_TRANSCODER_DATA_IMAGE_HPP_
 #define _AV_TRANSCODER_DATA_IMAGE_HPP_
 
+#include <AvTranscoder/Profile.hpp>
 #include <AvTranscoder/common.hpp>
 
 extern "C" {
@@ -47,6 +48,12 @@ public:
 	void setPixel ( const Pixel  pixel     ) { m_pixel = pixel; }
 	void setDar   ( const size_t num, const size_t den ) { m_displayAspectRatio.num = num; m_displayAspectRatio.den = den; }
 	void setDar   ( const Ratio  ratio     ) { m_displayAspectRatio = ratio; }
+	
+	void setParameters( const Profile::ProfileDesc& desc )
+	{
+		if( desc.find( Profile::avProfilePixelFormat ) != desc.end() )
+			setPixel( Pixel( desc.find( Profile::avProfilePixelFormat )->second.c_str() ) );
+	}
 
 	size_t               getWidth ()    const { return m_width;  }
 	size_t               getHeight()    const { return m_height; }

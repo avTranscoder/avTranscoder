@@ -11,6 +11,8 @@
 %{
 #include <AvTranscoder/common.hpp>
 
+#include <AvTranscoder/Profile.hpp>
+
 #include <AvTranscoder/EssenceStructures/Pixel.hpp>
 #include <AvTranscoder/EssenceStructures/Frame.hpp>
 #include <AvTranscoder/EssenceStructures/VideoFrame.hpp>
@@ -42,8 +44,6 @@
 #include <AvTranscoder/File/InputFile.hpp>
 #include <AvTranscoder/File/OutputFile.hpp>
 
-#include <AvTranscoder/Profile.hpp>
-
 #include <AvTranscoder/Transcoder/StreamTranscoder.hpp>
 #include <AvTranscoder/Transcoder/Transcoder.hpp>
 
@@ -64,6 +64,8 @@ namespace std {
 }
 
 %include <AvTranscoder/common.hpp>
+
+%include <AvTranscoder/Profile.hpp>
 
 %include <AvTranscoder/EssenceStructures/Pixel.hpp>
 %include <AvTranscoder/EssenceStructures/Frame.hpp>
@@ -95,8 +97,6 @@ namespace std {
 
 %include <AvTranscoder/File/InputFile.hpp>
 %include <AvTranscoder/File/OutputFile.hpp>
-
-%include <AvTranscoder/Profile.hpp>
 
 %include <AvTranscoder/Transcoder/StreamTranscoder.hpp>
 %include <AvTranscoder/Transcoder/Transcoder.hpp>
