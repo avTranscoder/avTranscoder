@@ -33,6 +33,15 @@ namespace avtranscoder
 class AvExport VideoFrameDesc
 {
 public:
+	VideoFrameDesc()
+		: m_width( 0 )
+		, m_height( 0 )
+		, m_displayAspectRatio()
+		, m_pixel()
+		, m_interlaced( false )
+		, m_topFieldFirst( false )
+	{};
+	
 	void setWidth ( const size_t width     ) { m_width = width; }
 	void setHeight( const size_t height    ) { m_height = height; }
 	void setPixel ( const Pixel  pixel     ) { m_pixel = pixel; }

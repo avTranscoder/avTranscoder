@@ -44,9 +44,9 @@ std::pair< size_t, size_t > VideoDesc::getTimeBase() const
 	return timeBase;
 }
 
-void VideoDesc::setImageParameters( const VideoFrameDesc& VideoFrameDesc )
+void VideoDesc::setImageParameters( const VideoFrameDesc& videoFrameDesc )
 {
-	setImageParameters( VideoFrameDesc.getWidth(), VideoFrameDesc.getHeight(), VideoFrameDesc.getPixelDesc() );
+	setImageParameters( videoFrameDesc.getWidth(), videoFrameDesc.getHeight(), videoFrameDesc.getPixelDesc() );
 }
 
 
