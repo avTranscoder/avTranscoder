@@ -31,7 +31,7 @@ public:
 	 */
 	bool encodeFrame( DataStream& codedFrame );
 
-	void setProfile( const Profile::ProfileDesc& desc, const avtranscoder::VideoFrameDesc& VideoFrameDesc );
+	void setProfile( const Profile::ProfileDesc& desc, const avtranscoder::VideoFrameDesc& videoFrameDesc );
 	
 	VideoDesc& getVideoDesc() { return _videoDesc; }
 
