@@ -4,6 +4,7 @@
 #include <AvTranscoder/common.hpp>
 
 #include "Frame.hpp"
+#include <AvTranscoder/Profile.hpp>
 
 namespace avtranscoder
 {
@@ -27,6 +28,12 @@ public:
 	size_t getDataSize() const
 	{
 		return ( m_sampleRate / m_fps ) * m_channels * av_get_bytes_per_sample( m_sampleFormat );
+	}
+	
+	void setParameters( const Profile::ProfileDesc& desc )
+	{
+		if( desc.find( Profile::avProfileSampleFormat ) != desc.end() )
+			setSampleFormat( desc.find( Profile::avProfileSampleFormat )->second );
 	}
 
 	size_t getSampleRate() const { return m_sampleRate; }
