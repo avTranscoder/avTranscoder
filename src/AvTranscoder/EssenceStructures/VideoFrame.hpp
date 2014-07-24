@@ -1,6 +1,8 @@
 #ifndef _AV_TRANSCODER_DATA_IMAGE_HPP_
 #define _AV_TRANSCODER_DATA_IMAGE_HPP_
 
+#include "Pixel.hpp"
+#include "Frame.hpp"
 #include <AvTranscoder/Profile.hpp>
 #include <AvTranscoder/common.hpp>
 
@@ -17,8 +19,6 @@ extern "C" {
 
 #include <stdexcept>
 
-#include "Pixel.hpp"
-#include "Frame.hpp"
 
 namespace avtranscoder
 {

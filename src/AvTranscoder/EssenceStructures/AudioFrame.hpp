@@ -1,10 +1,9 @@
 #ifndef _AV_TRANSCODER_DATA_AUDIO_FRAME_HPP_
 #define _AV_TRANSCODER_DATA_AUDIO_FRAME_HPP_
 
-#include <AvTranscoder/common.hpp>
-
 #include "Frame.hpp"
 #include <AvTranscoder/Profile.hpp>
+#include <AvTranscoder/common.hpp>
 
 namespace avtranscoder
 {
