@@ -139,19 +139,14 @@ bool InputAudio::readNextFrame( Frame& frameBuffer, const size_t subStreamIndex 
 	if( ! getNextFrame() )
 		return false;
 
-	size_t decodedSize = av_samples_get_buffer_size(NULL, 1,
-													_frame->nb_samples,
-													_codecContext->sample_fmt, 1);
+	const int output_nbChannels = 1;
+	const int output_align = 1;
+	size_t decodedSize = av_samples_get_buffer_size(NULL, output_nbChannels, _frame->nb_samples, _codecContext->sample_fmt, output_align);
 	
 	size_t nbChannels = _codecContext->channels;
 	size_t bytePerSample = av_get_bytes_per_sample( (AVSampleFormat)_frame->format );
 
 	AudioFrame& audioBuffer = static_cast<AudioFrame&>( frameBuffer );
-
-	// std::cout << "needed size " << audioBuffer.desc().getDataSize() << std::endl;
-
-	// std::cout << _frame->nb_samples * bytePerSample << std::endl;
-	//audioBuffer.getBuffer().resize( _frame->nb_samples * bytePerSample );
 	audioBuffer.setNbSamples( _frame->nb_samples );
 	
 	if( decodedSize )
@@ -159,11 +154,9 @@ bool InputAudio::readNextFrame( Frame& frameBuffer, const size_t subStreamIndex 
 		if( audioBuffer.getSize() != decodedSize )
 			audioBuffer.getBuffer().resize( decodedSize, 0 );
 
-		unsigned char* src = *_frame->data;
+		// @todo manage cases with data of frame not only on data[0] (use _frame.linesize)
+		unsigned char* src = _frame->data[0];
 		unsigned char* dst = audioBuffer.getPtr();
-
-		// std::cout << "frame samples count " << _frame->nb_samples << std::endl;
-		// std::cout << "frame data size " << audioBuffer.getSize() << std::endl;
 
 		// @todo check little / big endian
 		// offset for little endian
