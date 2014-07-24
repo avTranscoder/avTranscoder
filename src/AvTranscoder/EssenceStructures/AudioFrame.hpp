@@ -21,6 +21,7 @@ public:
 	void setSampleRate  ( const size_t sampleRate ){ m_sampleRate = sampleRate; }
 	void setChannels    ( const size_t channels   ){ m_channels   = channels;   }
 	void setFps         ( const size_t fps        ){ m_fps        = fps;        }
+	void setSampleFormat( const std::string& sampleFormatName ){ m_sampleFormat = av_get_sample_fmt( sampleFormatName.c_str() ); }
 	void setSampleFormat( const AVSampleFormat sampleFormat ){ m_sampleFormat = sampleFormat; }
 
 	size_t getDataSize() const
