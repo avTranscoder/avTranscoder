@@ -53,6 +53,10 @@ const AVSampleFormat AudioDesc::getSampleFormat() const
 	return m_codecContext->sample_fmt;
 }
 
+void AudioDesc::setAudioParameters( const AudioFrameDesc& audioFrameDesc )
+{
+	setAudioParameters( audioFrameDesc.getSampleRate(), audioFrameDesc.getChannels(), audioFrameDesc.getSampleFormat() );
+}
 
 void AudioDesc::setAudioParameters( const size_t sampleRate, const size_t channels, const AVSampleFormat sampleFormat )
 {
