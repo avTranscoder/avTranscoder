@@ -55,6 +55,11 @@ namespace avtranscoder
 
 struct Ratio
 {
+	Ratio()
+		: num( 0 )
+		, den( 0 )
+	{}
+
 	size_t num;
 	size_t den;
 };
