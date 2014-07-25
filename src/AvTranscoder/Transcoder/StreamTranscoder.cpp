@@ -81,18 +81,13 @@ StreamTranscoder::StreamTranscoder(
 
 			_outputEssence = outputVideo;
 
-			VideoFrameDesc outputVideoFrameDesc = _inputStream->getVideoDesc().getVideoFrameDesc();
-
-			outputVideoFrameDesc.setPixel( Pixel( profile.find( Profile::avProfilePixelFormat )->second.c_str() ) );
-
-			outputVideo->setProfile( profile, outputVideoFrameDesc );
+			VideoFrameDesc outputFrameDesc = _inputStream->getVideoDesc().getVideoFrameDesc();
+			outputFrameDesc.setParameters( profile );
+			outputVideo->setProfile( profile, outputFrameDesc );
 			
 			_outputStream = &outputFile.addVideoStream( outputVideo->getVideoDesc() );
 
 			_sourceBuffer = new VideoFrame( _inputStream->getVideoDesc().getVideoFrameDesc() );
-
-			// outputVideo->getVideoDesc().setImageParameters( _inputStream->getVideoDesc().getVideoFrameDesc().getWidth(), _inputStream->getVideoDesc().getVideoFrameDesc().getHeight(), av_get_pix_fmt( desc[ Profile::avProfilePixelFormat ].c_str() ) );
-
 			_frameBuffer = new VideoFrame( outputVideo->getVideoDesc().getVideoFrameDesc() );
 			
 			_transform = new VideoEssenceTransform();
@@ -107,16 +102,23 @@ StreamTranscoder::StreamTranscoder(
 			OutputAudio* outputAudio = new OutputAudio();
 
 			_outputEssence = outputAudio;
-			AudioFrameDesc audioFrameDesc( _inputStream->getAudioDesc().getFrameDesc() );
 			
+			AudioFrameDesc outputFrameDesc( _inputStream->getAudioDesc().getFrameDesc() );
+			outputFrameDesc.setParameters( profile );
 			if( subStreamIndex > -1 )
-				audioFrameDesc.setChannels( 1 );
-
-			outputAudio->setProfile( profile, audioFrameDesc );
+			{
+				// @todo manage downmix ?
+				outputFrameDesc.setChannels( 1 );
+			}
+			outputAudio->setProfile( profile, outputFrameDesc );
 
 			_outputStream = &outputFile.addAudioStream( outputAudio->getAudioDesc() );
 
-			_sourceBuffer = new AudioFrame( audioFrameDesc );
+			AudioFrameDesc inputFrameDesc( _inputStream->getAudioDesc().getFrameDesc() );
+			if( subStreamIndex > -1 )
+				inputFrameDesc.setChannels( 1 );
+			
+			_sourceBuffer = new AudioFrame( inputFrameDesc );
 			_frameBuffer  = new AudioFrame( outputAudio->getAudioDesc().getFrameDesc() );
 			
 			_transform = new AudioEssenceTransform();

@@ -181,7 +181,7 @@ bool OutputVideo::encodeFrame( DataStream& codedFrame )
 #endif
 }
 
-void OutputVideo::setProfile( const Profile::ProfileDesc& desc, const avtranscoder::VideoFrameDesc& videoFrameDesc )
+void OutputVideo::setProfile( const Profile::ProfileDesc& desc, const avtranscoder::VideoFrameDesc& frameDesc )
 {
 	if( ! desc.count( Profile::avProfileCodec ) ||
 		! desc.count( Profile::avProfilePixelFormat ) || 
@@ -195,7 +195,7 @@ void OutputVideo::setProfile( const Profile::ProfileDesc& desc, const avtranscod
 	const size_t frameRate = std::strtoul( desc.find( Profile::avProfileFrameRate )->second.c_str(), NULL, 0 );
 	_videoDesc.setTimeBase( 1, frameRate );
 	
-	_videoDesc.setImageParameters( videoFrameDesc );
+	_videoDesc.setImageParameters( frameDesc );
 
 	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
 	{

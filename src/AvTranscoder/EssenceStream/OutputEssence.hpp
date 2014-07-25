@@ -2,7 +2,7 @@
 #define _AV_TRANSCODER_ESSENCE_STREAM_OUTPUT_ESSENCE_HPP_
 
 #include <AvTranscoder/EssenceStructures/Frame.hpp>
-#include <AvTranscoder/CodedStructures/DataStreamDesc.hpp>
+#include <AvTranscoder/CodedStructures/DataStream.hpp>
 
 namespace avtranscoder
 {

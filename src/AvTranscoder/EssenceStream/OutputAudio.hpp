@@ -3,7 +3,7 @@
 
 #include "OutputEssence.hpp"
 
-#include <AvTranscoder/CodedStructures/DataStreamDesc.hpp>
+#include <AvTranscoder/CodedStructures/DataStream.hpp>
 #include <AvTranscoder/CodedStructures/AudioDesc.hpp>
 #include <AvTranscoder/EssenceStructures/AudioFrame.hpp>
 

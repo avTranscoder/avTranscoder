@@ -11,6 +11,8 @@
 %{
 #include <AvTranscoder/common.hpp>
 
+#include <AvTranscoder/Profile.hpp>
+
 #include <AvTranscoder/EssenceStructures/Pixel.hpp>
 #include <AvTranscoder/EssenceStructures/Frame.hpp>
 #include <AvTranscoder/EssenceStructures/VideoFrame.hpp>
@@ -19,7 +21,7 @@
 #include <AvTranscoder/CodedStructures/CodedDesc.hpp>
 #include <AvTranscoder/CodedStructures/VideoDesc.hpp>
 #include <AvTranscoder/CodedStructures/AudioDesc.hpp>
-#include <AvTranscoder/CodedStructures/DataStreamDesc.hpp>
+#include <AvTranscoder/CodedStructures/DataStream.hpp>
 
 #include <AvTranscoder/Metadatas/MediaMetadatasStructures.hpp>
 
@@ -41,8 +43,6 @@
 
 #include <AvTranscoder/File/InputFile.hpp>
 #include <AvTranscoder/File/OutputFile.hpp>
-
-#include <AvTranscoder/Profile.hpp>
 
 #include <AvTranscoder/Transcoder/StreamTranscoder.hpp>
 #include <AvTranscoder/Transcoder/Transcoder.hpp>
@@ -67,6 +67,8 @@ namespace std {
 
 %include <AvTranscoder/common.hpp>
 
+%include <AvTranscoder/Profile.hpp>
+
 %include <AvTranscoder/EssenceStructures/Pixel.hpp>
 %include <AvTranscoder/EssenceStructures/Frame.hpp>
 %include <AvTranscoder/EssenceStructures/VideoFrame.hpp>
@@ -75,7 +77,7 @@ namespace std {
 %include <AvTranscoder/CodedStructures/CodedDesc.hpp>
 %include <AvTranscoder/CodedStructures/VideoDesc.hpp>
 %include <AvTranscoder/CodedStructures/AudioDesc.hpp>
-%include <AvTranscoder/CodedStructures/DataStreamDesc.hpp>
+%include <AvTranscoder/CodedStructures/DataStream.hpp>
 
 %include <AvTranscoder/Metadatas/MediaMetadatasStructures.hpp>
 
@@ -97,8 +99,6 @@ namespace std {
 
 %include <AvTranscoder/File/InputFile.hpp>
 %include <AvTranscoder/File/OutputFile.hpp>
-
-%include <AvTranscoder/Profile.hpp>
 
 %include <AvTranscoder/Transcoder/StreamTranscoder.hpp>
 %include <AvTranscoder/Transcoder/Transcoder.hpp>
