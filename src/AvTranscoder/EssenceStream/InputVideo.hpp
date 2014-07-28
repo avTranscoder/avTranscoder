@@ -3,6 +3,8 @@
 
 #include "InputEssence.hpp"
 
+#include <AvTranscoder/Profile.hpp>
+
 class AVCodec;
 class AVCodecContext;
 class AVFrame;
@@ -24,7 +26,9 @@ public:
 	bool readNextFrame( Frame& frameBuffer, const size_t subStreamIndex );
 
 	void flushDecoder();
-
+	
+	void setProfile( const Profile::ProfileDesc& desc );
+	
 private:
 	AvInputStream*     _inputStream;
 	AVCodec*           _codec;

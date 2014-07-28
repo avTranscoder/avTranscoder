@@ -14,6 +14,7 @@ extern "C" {
 #include <AvTranscoder/EssenceStructures/VideoFrame.hpp>
 
 #include <stdexcept>
+#include <iostream>
 
 namespace avtranscoder
 {
@@ -144,6 +145,28 @@ bool InputVideo::readNextFrame( Frame& frameBuffer, const size_t subStreamIndex 
 void InputVideo::flushDecoder()
 {
 	avcodec_flush_buffers( _codecContext );
+}
+
+void InputVideo::setProfile( const Profile::ProfileDesc& desc )
+{
+	VideoDesc videoDesc = CodedDesc( *_codec, *_codecContext );
+
+	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
+	{
+		if( (*it).first == Profile::avProfileIdentificator ||
+			(*it).first == Profile::avProfileIdentificatorHuman ||
+			(*it).first == Profile::avProfileType )
+			continue;
+
+		try
+		{
+			videoDesc.set( (*it).first, (*it).second );
+		}
+		catch( std::exception& e )
+		{
+			std::cout << "warning: " << e.what() << std::endl;
+		}
+	}
 }
 
 }
