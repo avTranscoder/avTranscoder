@@ -31,6 +31,13 @@ CodedDesc::CodedDesc( const AVCodecID codecId )
 	setCodec( codecId );
 }
 
+CodedDesc::CodedDesc( AVCodec& avCodec, AVCodecContext& avCodecContext )
+	: m_codec( &avCodec )
+	, m_codecContext( &avCodecContext )
+{
+	
+}
+
 std::string CodedDesc::getCodecName() const
 {
 	assert( m_codecContext != NULL );

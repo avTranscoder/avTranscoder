@@ -16,6 +16,7 @@ class AvExport CodedDesc
 public:
 	CodedDesc( const std::string& codecName );
 	CodedDesc( const AVCodecID codecId );
+	CodedDesc( AVCodec& avCodec, AVCodecContext& avCodecContext );
 	
 	virtual ~CodedDesc() {}
 	
