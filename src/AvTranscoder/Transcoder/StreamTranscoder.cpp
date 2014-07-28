@@ -153,6 +153,23 @@ StreamTranscoder::StreamTranscoder(
 	if( ! profile.count( Profile::avProfileType ) )
 		throw std::runtime_error( "unable to found stream type (audio, video, etc.)" );
 
+	if( profile.find( Profile::avProfileType )->second == Profile::avProfileTypeVideo )
+	{
+		OutputVideo* outputVideo = new OutputVideo();
+		
+		_outputEssence = outputVideo;
+		VideoFrameDesc inputVideoFrameDesc = static_cast<DummyVideo*>( _inputEssence )->getVideoDesc().getVideoFrameDesc();
+		outputVideo->setProfile( profile, inputVideoFrameDesc );
+
+		_outputStream = &outputFile.addVideoStream( outputVideo->getVideoDesc() );
+		_sourceBuffer = new VideoFrame( outputVideo->getVideoDesc().getVideoFrameDesc() );
+		_frameBuffer  = new VideoFrame( outputVideo->getVideoDesc().getVideoFrameDesc() );
+		
+		_transform = new VideoEssenceTransform();
+		
+		return;
+	}
+
 	if( profile.find( Profile::avProfileType )->second == Profile::avProfileTypeAudio )
 	{
 		OutputAudio* outputAudio = new OutputAudio();
@@ -168,23 +185,6 @@ StreamTranscoder::StreamTranscoder(
 		_frameBuffer  = new AudioFrame( outputAudio->getAudioDesc().getFrameDesc() );
 
 		_transform = new AudioEssenceTransform();
-		
-		return;
-	}
-
-	if( profile.find( Profile::avProfileType )->second == Profile::avProfileTypeVideo )
-	{
-		OutputVideo* outputVideo = new OutputVideo();
-		
-		_outputEssence = outputVideo;
-		VideoFrameDesc inputVideoFrameDesc = static_cast<DummyVideo*>( _inputEssence )->getVideoDesc().getVideoFrameDesc();
-		outputVideo->setProfile( profile, inputVideoFrameDesc );
-
-		_outputStream = &outputFile.addVideoStream( outputVideo->getVideoDesc() );
-		_sourceBuffer = new VideoFrame( outputVideo->getVideoDesc().getVideoFrameDesc() );
-		_frameBuffer  = new VideoFrame( outputVideo->getVideoDesc().getVideoFrameDesc() );
-		
-		_transform = new VideoEssenceTransform();
 		
 		return;
 	}
