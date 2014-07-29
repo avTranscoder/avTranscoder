@@ -42,6 +42,7 @@ public:
 	
 	const ProfilesDesc& getProfiles();
 
+	ProfilesDesc getFormatProfiles();
 	ProfilesDesc getVideoProfiles();
 	ProfilesDesc getAudioProfiles();
 

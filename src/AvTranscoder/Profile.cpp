@@ -114,6 +114,19 @@ const Profile::ProfilesDesc& Profile::getProfiles()
 	return _profiles;
 }
 
+Profile::ProfilesDesc Profile::getFormatProfiles()
+{
+	ProfilesDesc profiles;
+
+	for( ProfilesDesc::iterator it = _profiles.begin(); it != _profiles.end(); ++it )
+	{
+		if( (*it).find( avProfileType )->second == avProfileTypeFormat )
+			profiles.push_back( *it );
+	}
+
+	return profiles;
+}
+
 Profile::ProfilesDesc Profile::getVideoProfiles()
 {
 	ProfilesDesc profiles;
