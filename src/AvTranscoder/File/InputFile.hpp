@@ -12,6 +12,8 @@
 #include <AvTranscoder/Metadatas/MediaMetadatasStructures.hpp>
 #include <AvTranscoder/ProgressListener.hpp>
 
+#include <AvTranscoder/Profile.hpp>
+
 #include <string>
 #include <vector>
 
@@ -114,6 +116,12 @@ public:
 	 * @return the reading status of the streamIndex
 	 **/
 	bool getReadStream( const size_t streamIndex );
+	
+	/**
+	 * @brief Set the format of the input file
+     * @param desc: the profile of the input format
+     */
+	virtual void setProfile( const Profile::ProfileDesc& desc );
 
 protected:
 	AVFormatContext*            _formatContext;

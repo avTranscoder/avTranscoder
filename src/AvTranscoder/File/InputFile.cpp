@@ -211,4 +211,26 @@ bool InputFile::getReadStream( const size_t streamIndex )
 	return _inputStreams.at( streamIndex )->getBufferred();
 }
 
+void InputFile::setProfile( const Profile::ProfileDesc& desc )
+{	
+	ParamSet paramSet( _formatContext );
+	
+	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
+	{
+		if( (*it).first == Profile::avProfileIdentificator ||
+			(*it).first == Profile::avProfileIdentificatorHuman ||
+			(*it).first == Profile::avProfileType )
+			continue;
+		
+		try
+		{
+			paramSet.set( (*it).first, (*it).second );
+		}
+		catch( std::exception& e )
+		{
+			std::cout << "InputFile warning: " << e.what() << std::endl;
+		}
+	}
+}
+
 }
