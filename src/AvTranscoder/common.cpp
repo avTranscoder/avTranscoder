@@ -172,4 +172,11 @@ std::string getFormat( const std::string& filename )
 	return format;
 }
 
+bool matchFormat( const std::string& format, const std::string& filename )
+{
+	AVOutputFormat* avOutputFormat = av_guess_format( format.c_str(), filename.c_str(), NULL);
+	return avOutputFormat != NULL;
+}
+
+
 }
