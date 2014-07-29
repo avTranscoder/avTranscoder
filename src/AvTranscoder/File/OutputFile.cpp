@@ -183,4 +183,46 @@ bool OutputFile::endWrap( )
 	return true;
 }
 
+
+void OutputFile::setProfile( const Profile::ProfileDesc& desc )
+{	
+	ParamSet paramSet( _formatContext );
+	
+	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
+	{
+		if( (*it).first == Profile::avProfileIdentificator ||
+			(*it).first == Profile::avProfileIdentificatorHuman ||
+			(*it).first == Profile::avProfileType )
+			continue;
+		
+		try
+		{
+			paramSet.set( (*it).first, (*it).second );
+		}
+		catch( std::exception& e )
+		{
+			std::cout << "OutputFile warning: " << e.what() << std::endl;
+		}
+	}
+	
+	setup();
+	
+	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
+	{
+		if( (*it).first == Profile::avProfileIdentificator ||
+			(*it).first == Profile::avProfileIdentificatorHuman ||
+			(*it).first == Profile::avProfileType )
+			continue;
+
+		try
+		{
+			paramSet.set( (*it).first, (*it).second );
+		}
+		catch( std::exception& e )
+		{
+			std::cout << "OutputFile 2.warning: " << e.what() << std::endl;
+		}
+	}
+}
+
 }

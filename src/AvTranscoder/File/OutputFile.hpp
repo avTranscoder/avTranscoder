@@ -9,6 +9,8 @@
 
 #include <AvTranscoder/CodedStream/AvOutputStream.hpp>
 
+#include <AvTranscoder/Profile.hpp>
+
 #include <string>
 #include <vector>
 
@@ -82,6 +84,12 @@ public:
 	 * @note this method write the footer of file if necessary
 	**/
 	virtual bool endWrap( );
+	
+	/**
+	 * @brief Set the format of the output file
+     * @param desc: the profile of the output format
+     */
+	virtual void setProfile( const Profile::ProfileDesc& desc );
 
 private:
 	std::vector<AvOutputStream*> _outputStreams;
