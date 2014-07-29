@@ -16,6 +16,7 @@ public:
 	static const std::string avProfileIdentificatorHuman;
 	static const std::string avProfileType;
 
+	static const std::string avProfileTypeFormat;
 	static const std::string avProfileTypeVideo;
 	static const std::string avProfileTypeAudio;
 	
