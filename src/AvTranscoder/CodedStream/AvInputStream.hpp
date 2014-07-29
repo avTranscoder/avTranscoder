@@ -30,7 +30,7 @@ public:
 
 	bool readNextPacket( DataStream& data );
 
-	// Stream propeerties
+	// Stream properties
 	VideoDesc getVideoDesc() const;
 	AudioDesc getAudioDesc() const;
 
