@@ -5,6 +5,8 @@
 #include <AvTranscoder/Profiles/XdCamHd422.hpp>
 #include <AvTranscoder/Profiles/DNxHD.hpp>
 #include <AvTranscoder/Profiles/Wave.hpp>
+#include <AvTranscoder/Profiles/Avi.hpp>
+#include <AvTranscoder/Profiles/Mkv.hpp>
 
 #include <iostream>
 #include <fstream>
@@ -69,6 +71,8 @@ void Profile::loadProfiles( const std::string& avProfilesPath )
 	loadXdCamHD422( _profiles );
 	loadDNxHD( _profiles );
 	loadWave( _profiles );
+	loadAvi( _profiles );
+	loadMkv( _profiles );
 	
 	std::string realAvProfilesPath = avProfilesPath;
 	if( realAvProfilesPath.empty() )
