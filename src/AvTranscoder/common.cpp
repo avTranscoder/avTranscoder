@@ -5,6 +5,7 @@ extern "C" {
 	#define __STDC_CONSTANT_MACROS
 #endif
 #include <libavcodec/avcodec.h>
+#include <libavformat/avformat.h>
 #include <libavutil/opt.h>
 #include <libavutil/error.h>
 }
@@ -154,6 +155,21 @@ int getFilesInDir( const std::string& dir, std::vector< std::string >& files )
     }
     closedir( dp );
     return 0;
+}
+
+std::string getFormat( const std::string& filename )
+{
+	std::string format( "" );
+	
+	av_register_all();
+	AVOutputFormat* avOutputFormat = av_guess_format( NULL, filename.c_str(), NULL);
+	if( avOutputFormat )
+	{
+		if( avOutputFormat->name )
+			format = std::string( avOutputFormat->name );
+	}
+	
+	return format;
 }
 
 }

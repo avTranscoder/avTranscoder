@@ -86,6 +86,9 @@ void split( std::vector< std::string >& splitedString, const std::string& inputS
 
 int getFilesInDir( const std::string& dir, std::vector< std::string >& files );
 
+
+std::string getFormat( const std::string& filename );
+
 }
 
 #endif
