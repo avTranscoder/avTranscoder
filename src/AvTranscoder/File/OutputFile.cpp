@@ -26,6 +26,10 @@ OutputFile::OutputFile( const std::string& filename )
 	, _filename      ( filename )
 	, _packetCount   ( 0 )
 {
+	if( ( _formatContext = avformat_alloc_context() ) == NULL )
+	{
+		throw std::runtime_error( "unable to create format context" );
+	}
 }
 
 bool OutputFile::setup()
@@ -36,11 +40,6 @@ bool OutputFile::setup()
 	if( ! _outputFormat )
 	{
 		throw std::runtime_error( "unable to find format" );
-	}
-
-	if( ( _formatContext = avformat_alloc_context() ) == NULL )
-	{
-		throw std::runtime_error( "unable to create format context" );
 	}
 
 	_formatContext->oformat = _outputFormat;
