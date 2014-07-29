@@ -20,6 +20,7 @@ public:
 	static const std::string avProfileTypeVideo;
 	static const std::string avProfileTypeAudio;
 	
+	static const std::string avProfileFormat;
 	static const std::string avProfileCodec;
 	static const std::string avProfilePixelFormat;
 	static const std::string avProfileSampleFormat;
