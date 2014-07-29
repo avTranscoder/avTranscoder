@@ -149,7 +149,7 @@ void InputVideo::flushDecoder()
 
 void InputVideo::setProfile( const Profile::ProfileDesc& desc )
 {
-	VideoDesc videoDesc = CodedDesc( *_codec, *_codecContext );
+	ParamSet paramSet( _codecContext );
 
 	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
 	{
@@ -160,11 +160,11 @@ void InputVideo::setProfile( const Profile::ProfileDesc& desc )
 
 		try
 		{
-			videoDesc.set( (*it).first, (*it).second );
+			paramSet.set( (*it).first, (*it).second );
 		}
 		catch( std::exception& e )
 		{
-			std::cout << "warning: " << e.what() << std::endl;
+			std::cout << "InputVideo warning: " << e.what() << std::endl;
 		}
 	}
 }

@@ -197,6 +197,8 @@ void OutputVideo::setProfile( const Profile::ProfileDesc& desc, const avtranscod
 	
 	_videoDesc.setImageParameters( frameDesc );
 
+	ParamSet paramSet( _videoDesc.getCodecContext() );
+	
 	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
 	{
 		if( (*it).first == Profile::avProfileIdentificator ||
@@ -209,11 +211,11 @@ void OutputVideo::setProfile( const Profile::ProfileDesc& desc, const avtranscod
 
 		try
 		{
-			_videoDesc.set( (*it).first, (*it).second );
+			paramSet.set( (*it).first, (*it).second );
 		}
 		catch( std::exception& e )
 		{
-			std::cout << "warning: " << e.what() << std::endl;
+			std::cout << "OutputVideo warning: " << e.what() << std::endl;
 		}
 	}
 
@@ -231,11 +233,11 @@ void OutputVideo::setProfile( const Profile::ProfileDesc& desc, const avtranscod
 
 		try
 		{
-			_videoDesc.set( (*it).first, (*it).second );
+			paramSet.set( (*it).first, (*it).second );
 		}
 		catch( std::exception& e )
 		{
-			std::cout << "2.warning: " << e.what() << std::endl;
+			std::cout << "OutputVideo 2.warning: " << e.what() << std::endl;
 		}
 	}
 }

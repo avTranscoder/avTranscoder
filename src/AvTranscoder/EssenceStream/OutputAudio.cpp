@@ -185,6 +185,8 @@ void OutputAudio::setProfile( const Profile::ProfileDesc& desc, const AudioFrame
 	
 	_audioDesc.setAudioParameters( frameDesc );
 
+	ParamSet paramSet( _audioDesc.getCodecContext() );
+	
 	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
 	{
 		if( (*it).first == Profile::avProfileIdentificator ||
@@ -196,11 +198,11 @@ void OutputAudio::setProfile( const Profile::ProfileDesc& desc, const AudioFrame
 
 		try
 		{
-			_audioDesc.set( (*it).first, (*it).second );
+			paramSet.set( (*it).first, (*it).second );
 		}
 		catch( std::exception& e )
 		{
-			std::cout << "warning: " << e.what() << std::endl;
+			std::cout << "OutputAudio warning: " << e.what() << std::endl;
 		}
 	}
 
@@ -217,11 +219,11 @@ void OutputAudio::setProfile( const Profile::ProfileDesc& desc, const AudioFrame
 
 		try
 		{
-			_audioDesc.set( (*it).first, (*it).second );
+			paramSet.set( (*it).first, (*it).second );
 		}
 		catch( std::exception& e )
 		{
-			std::cout << "2.warning: " << e.what() << std::endl;
+			std::cout << "OutputAudio 2.warning: " << e.what() << std::endl;
 		}
 	}
 }
