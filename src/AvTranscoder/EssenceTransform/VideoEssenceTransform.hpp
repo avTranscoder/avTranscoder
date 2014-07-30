@@ -1,10 +1,11 @@
 #ifndef _AV_TRANSCODER_ESSENCE_TRANSFORM_VIDEO_ESSENCE_TRANSFORM_HPP
 #define _AV_TRANSCODER_ESSENCE_TRANSFORM_VIDEO_ESSENCE_TRANSFORM_HPP
 
-#include <AvTranscoder/DatasStructures/Frame.hpp>
+#include <vector>
+
 #include "EssenceTransform.hpp"
 
-#include <vector>
+#include <AvTranscoder/EssenceStructures/Frame.hpp>
 
 class SwsContext;
 

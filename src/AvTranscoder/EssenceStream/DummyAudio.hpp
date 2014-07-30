@@ -3,8 +3,9 @@
 
 #include "InputEssence.hpp"
 
-#include <AvTranscoder/DatasStructures/AudioDesc.hpp>
-#include <AvTranscoder/DatasStructures/Frame.hpp>
+#include <AvTranscoder/common.hpp>
+#include <AvTranscoder/CodedStructures/AudioDesc.hpp>
+#include <AvTranscoder/EssenceStructures/Frame.hpp>
 
 namespace avtranscoder
 {
@@ -22,6 +23,8 @@ public:
 	AudioDesc getAudioDesc() const;
 	
 	void setup() {}
+	
+	void setFrame( Frame& inputFrame );
 
 	bool readNextFrame( Frame& frameBuffer );
 	bool readNextFrame( Frame& frameBuffer, const size_t subStreamIndex );
@@ -29,6 +32,8 @@ public:
 private:
 	AudioDesc      _audioDesc;
 	AudioFrameDesc _frameDesc;
+	
+	Frame*    _inputFrame;
 };
 
 }

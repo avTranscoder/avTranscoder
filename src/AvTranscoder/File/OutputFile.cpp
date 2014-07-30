@@ -6,9 +6,6 @@ extern "C" {
 #endif
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
-#include <libavutil/avutil.h>
-#include <libavutil/pixdesc.h>
-#include <libavutil/avstring.h>
 }
 
 #include <iostream>
@@ -27,21 +24,21 @@ OutputFile::OutputFile( const std::string& filename )
 	, _filename      ( filename )
 	, _packetCount   ( 0 )
 {
+	if( ( _formatContext = avformat_alloc_context() ) == NULL )
+	{
+		throw std::runtime_error( "unable to create format context" );
+	}
 }
 
 bool OutputFile::setup()
 {
 	av_register_all();
-	_outputFormat = av_guess_format( NULL, _filename.c_str(), NULL);
+	if( ! _outputFormat )
+		_outputFormat = av_guess_format( NULL, _filename.c_str(), NULL);
 
 	if( ! _outputFormat )
 	{
 		throw std::runtime_error( "unable to find format" );
-	}
-
-	if( ( _formatContext = avformat_alloc_context() ) == NULL )
-	{
-		throw std::runtime_error( "unable to create format context" );
 	}
 
 	_formatContext->oformat = _outputFormat;
@@ -182,6 +179,61 @@ bool OutputFile::endWrap( )
 	//freeFormat();
 	
 	return true;
+}
+
+
+void OutputFile::setProfile( const Profile::ProfileDesc& desc )
+{
+	if( ! desc.count( Profile::avProfileFormat ) )
+	{
+		throw std::runtime_error( "The profile " + desc.find( Profile::avProfileIdentificatorHuman )->second + " is invalid." );
+	}
+	
+	if( ! matchFormat( desc.find( Profile::avProfileFormat )->second, _filename ) )
+	{
+		throw std::runtime_error( "Invalid format according to the file extension." );
+	}
+	_outputFormat = av_guess_format( desc.find( Profile::avProfileFormat )->second.c_str(), _filename.c_str(), NULL);
+	
+	ParamSet paramSet( _formatContext );
+	
+	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
+	{
+		if( (*it).first == Profile::avProfileIdentificator ||
+			(*it).first == Profile::avProfileIdentificatorHuman ||
+			(*it).first == Profile::avProfileType ||
+			(*it).first == Profile::avProfileFormat )
+			continue;
+		
+		try
+		{
+			paramSet.set( (*it).first, (*it).second );
+		}
+		catch( std::exception& e )
+		{
+			std::cout << "OutputFile warning: " << e.what() << std::endl;
+		}
+	}
+	
+	setup();
+	
+	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
+	{
+		if( (*it).first == Profile::avProfileIdentificator ||
+			(*it).first == Profile::avProfileIdentificatorHuman ||
+			(*it).first == Profile::avProfileType ||
+			(*it).first == Profile::avProfileFormat )
+			continue;
+
+		try
+		{
+			paramSet.set( (*it).first, (*it).second );
+		}
+		catch( std::exception& e )
+		{
+			std::cout << "OutputFile 2.warning: " << e.what() << std::endl;
+		}
+	}
 }
 
 }

@@ -11,13 +11,17 @@
 %{
 #include <AvTranscoder/common.hpp>
 
-#include <AvTranscoder/DatasStructures/Pixel.hpp>
-#include <AvTranscoder/DatasStructures/Frame.hpp>
-#include <AvTranscoder/DatasStructures/Image.hpp>
-#include <AvTranscoder/DatasStructures/AudioFrame.hpp>
-#include <AvTranscoder/DatasStructures/VideoDesc.hpp>
-#include <AvTranscoder/DatasStructures/AudioDesc.hpp>
-#include <AvTranscoder/DatasStructures/DataStreamDesc.hpp>
+#include <AvTranscoder/Profile.hpp>
+
+#include <AvTranscoder/EssenceStructures/Pixel.hpp>
+#include <AvTranscoder/EssenceStructures/Frame.hpp>
+#include <AvTranscoder/EssenceStructures/VideoFrame.hpp>
+#include <AvTranscoder/EssenceStructures/AudioFrame.hpp>
+	
+#include <AvTranscoder/CodedStructures/CodedDesc.hpp>
+#include <AvTranscoder/CodedStructures/VideoDesc.hpp>
+#include <AvTranscoder/CodedStructures/AudioDesc.hpp>
+#include <AvTranscoder/CodedStructures/DataStream.hpp>
 
 #include <AvTranscoder/Metadatas/MediaMetadatasStructures.hpp>
 
@@ -40,8 +44,6 @@
 #include <AvTranscoder/File/InputFile.hpp>
 #include <AvTranscoder/File/OutputFile.hpp>
 
-#include <AvTranscoder/Profile.hpp>
-
 #include <AvTranscoder/Transcoder/StreamTranscoder.hpp>
 #include <AvTranscoder/Transcoder/Transcoder.hpp>
 
@@ -59,17 +61,23 @@ namespace std {
 %template(GopPair)         pair< char, bool >;
 %template(GopVector)       vector< pair< char, bool > >;
 %template(ChannelVector)   vector< avtranscoder::Channel >;
+%template(ProfileMap)      map< string, string >;
+%template(ProfilesVector)  vector< map< string, string > >;
 }
 
 %include <AvTranscoder/common.hpp>
 
-%include <AvTranscoder/DatasStructures/Pixel.hpp>
-%include <AvTranscoder/DatasStructures/Frame.hpp>
-%include <AvTranscoder/DatasStructures/Image.hpp>
-%include <AvTranscoder/DatasStructures/AudioFrame.hpp>
-%include <AvTranscoder/DatasStructures/VideoDesc.hpp>
-%include <AvTranscoder/DatasStructures/AudioDesc.hpp>
-%include <AvTranscoder/DatasStructures/DataStreamDesc.hpp>
+%include <AvTranscoder/Profile.hpp>
+
+%include <AvTranscoder/EssenceStructures/Pixel.hpp>
+%include <AvTranscoder/EssenceStructures/Frame.hpp>
+%include <AvTranscoder/EssenceStructures/VideoFrame.hpp>
+%include <AvTranscoder/EssenceStructures/AudioFrame.hpp>
+	
+%include <AvTranscoder/CodedStructures/CodedDesc.hpp>
+%include <AvTranscoder/CodedStructures/VideoDesc.hpp>
+%include <AvTranscoder/CodedStructures/AudioDesc.hpp>
+%include <AvTranscoder/CodedStructures/DataStream.hpp>
 
 %include <AvTranscoder/Metadatas/MediaMetadatasStructures.hpp>
 
@@ -91,8 +99,6 @@ namespace std {
 
 %include <AvTranscoder/File/InputFile.hpp>
 %include <AvTranscoder/File/OutputFile.hpp>
-
-%include <AvTranscoder/Profile.hpp>
 
 %include <AvTranscoder/Transcoder/StreamTranscoder.hpp>
 %include <AvTranscoder/Transcoder/Transcoder.hpp>

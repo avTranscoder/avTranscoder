@@ -29,7 +29,7 @@ public:
 		
 		m_inputVideo->setup();
 
-		m_sourceImage = new avtranscoder::Image( m_inputFile.getStream( m_videoStream ).getVideoDesc().getImageDesc() );
+		m_sourceImage = new avtranscoder::VideoFrame( m_inputFile.getStream( m_videoStream ).getVideoDesc().getVideoFrameDesc() );
 
 		pixel.setBitsPerPixel( getComponents() * getBitDepth() );
 		pixel.setComponents( getComponents() );
@@ -38,13 +38,13 @@ public:
 		pixel.setAlpha( false );
 		pixel.setPlanar( false );
 
-		imageDescToDisplay.setWidth( m_sourceImage->desc().getWidth() );
-		imageDescToDisplay.setHeight( m_sourceImage->desc().getHeight() );
-		imageDescToDisplay.setDar( m_sourceImage->desc().getDar() );
+		VideoFrameDescToDisplay.setWidth( m_sourceImage->desc().getWidth() );
+		VideoFrameDescToDisplay.setHeight( m_sourceImage->desc().getHeight() );
+		VideoFrameDescToDisplay.setDar( m_sourceImage->desc().getDar() );
 		
-		imageDescToDisplay.setPixel( pixel.findPixel() );
+		VideoFrameDescToDisplay.setPixel( pixel.findPixel() );
 		
-		m_imageToDisplay = new avtranscoder::Image( imageDescToDisplay );
+		m_imageToDisplay = new avtranscoder::VideoFrame( VideoFrameDescToDisplay );
 	}
 
 	~AvReader()
@@ -106,11 +106,11 @@ private:
 	
 	avtranscoder::InputVideo* m_inputVideo;
 
-	avtranscoder::Image* m_sourceImage;
-	avtranscoder::Image* m_imageToDisplay;
+	avtranscoder::VideoFrame* m_sourceImage;
+	avtranscoder::VideoFrame* m_imageToDisplay;
 
 	avtranscoder::Pixel pixel;
-	avtranscoder::ImageDesc imageDescToDisplay;
+	avtranscoder::VideoFrameDesc VideoFrameDescToDisplay;
 
 	avtranscoder::VideoEssenceTransform m_videoEssenceTransform;
 	size_t m_videoStream;

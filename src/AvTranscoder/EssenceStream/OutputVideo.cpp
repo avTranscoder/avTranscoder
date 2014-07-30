@@ -7,14 +7,9 @@ extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
 #include <libavutil/avutil.h>
-#include <libavutil/pixdesc.h>
-#include <libavutil/imgutils.h>
-#include <libavutil/mathematics.h>
 }
 
-#include <AvTranscoder/DatasStructures/Image.hpp>
-#include <AvTranscoder/Profile.hpp>
-
+#include <iostream>
 #include <stdexcept>
 #include <cstdlib>
 
@@ -68,7 +63,7 @@ bool OutputVideo::encodeFrame( const Frame& sourceFrame, DataStream& codedFrame 
 	avcodec_get_frame_defaults( frame );
 #endif
 
-	const Image& sourceImageFrame = static_cast<const Image&>( sourceFrame );
+	const VideoFrame& sourceImageFrame = static_cast<const VideoFrame&>( sourceFrame );
 
 	frame->width  = codecContext->width;
 	frame->height = codecContext->height;
@@ -186,71 +181,63 @@ bool OutputVideo::encodeFrame( DataStream& codedFrame )
 #endif
 }
 
-void OutputVideo::setProfile( Profile::ProfileDesc& desc, const avtranscoder::ImageDesc& imageDesc )
+void OutputVideo::setProfile( const Profile::ProfileDesc& desc, const avtranscoder::VideoFrameDesc& frameDesc )
 {
 	if( ! desc.count( Profile::avProfileCodec ) ||
 		! desc.count( Profile::avProfilePixelFormat ) || 
 		! desc.count( Profile::avProfileFrameRate ) )
 	{
-		throw std::runtime_error( "The profile " + desc[ Profile::avProfileIdentificatorHuman ] + " is invalid." );
+		throw std::runtime_error( "The profile " + desc.find( Profile::avProfileIdentificatorHuman )->second + " is invalid." );
 	}
 	
-	if( ( desc.count( Profile::avProfileWidth ) && std::strtoul( desc[ Profile::avProfileWidth ].c_str(), NULL, 0 ) != imageDesc.getWidth() ) || 
-		( desc.count( Profile::avProfileHeight ) && std::strtoul( desc[ Profile::avProfileHeight ].c_str(), NULL, 0 ) != imageDesc.getHeight() ) )
-	{
-		throw std::runtime_error( "Invalid imageDesc with the profile " + desc[ Profile::avProfileIdentificatorHuman ] + "." );
-	}
+	_videoDesc.setCodec( desc.find( Profile::avProfileCodec )->second );
 	
-	_videoDesc.setVideoCodec( desc[ Profile::avProfileCodec ] );
-	
-	const size_t frameRate = std::strtoul( desc[ Profile::avProfileFrameRate ].c_str(), NULL, 0 );
+	const size_t frameRate = std::strtoul( desc.find( Profile::avProfileFrameRate )->second.c_str(), NULL, 0 );
 	_videoDesc.setTimeBase( 1, frameRate );
 	
-	_videoDesc.setImageParameters( imageDesc );
+	_videoDesc.setImageParameters( frameDesc );
 
-	for( Profile::ProfileDesc::iterator it = desc.begin(); it != desc.end(); ++it )
+	ParamSet paramSet( _videoDesc.getCodecContext() );
+	
+	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
 	{
 		if( (*it).first == Profile::avProfileIdentificator ||
 			(*it).first == Profile::avProfileIdentificatorHuman ||
 			(*it).first == Profile::avProfileType ||
 			(*it).first == Profile::avProfileCodec ||
 			(*it).first == Profile::avProfilePixelFormat ||
-			(*it).first == Profile::avProfileWidth ||
-			(*it).first == Profile::avProfileHeight ||
 			(*it).first == Profile::avProfileFrameRate )
 			continue;
 
 		try
 		{
-			_videoDesc.set( (*it).first, (*it).second );
+			paramSet.set( (*it).first, (*it).second );
 		}
 		catch( std::exception& e )
 		{
-			std::cout << "warning: " << e.what() << std::endl;
+			std::cout << "OutputVideo warning: " << e.what() << std::endl;
 		}
 	}
 
 	setup();
 
-	for( Profile::ProfileDesc::iterator it = desc.begin(); it != desc.end(); ++it )
+	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
 	{
 		if( (*it).first == Profile::avProfileIdentificator ||
 			(*it).first == Profile::avProfileIdentificatorHuman ||
 			(*it).first == Profile::avProfileType ||
 			(*it).first == Profile::avProfileCodec ||
 			(*it).first == Profile::avProfilePixelFormat ||
-			(*it).first == Profile::avProfileWidth ||
-			(*it).first == Profile::avProfileHeight ||
 			(*it).first == Profile::avProfileFrameRate )
 			continue;
 
 		try
 		{
-			_videoDesc.set( (*it).first, (*it).second );
+			paramSet.set( (*it).first, (*it).second );
 		}
 		catch( std::exception& e )
 		{
-			std::cout << "2.warning: " << e.what() << std::endl;
+			std::cout << "OutputVideo 2.warning: " << e.what() << std::endl;
 		}
 	}
 }

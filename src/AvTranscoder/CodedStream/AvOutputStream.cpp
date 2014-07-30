@@ -3,7 +3,6 @@
 #include <AvTranscoder/File/OutputFile.hpp>
 
 #include <cassert>
-#include <iostream>
 
 namespace avtranscoder
 {

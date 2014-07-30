@@ -3,9 +3,9 @@
 
 #include "OutputEssence.hpp"
 
-#include <AvTranscoder/DatasStructures/AudioDesc.hpp>
-#include <AvTranscoder/DatasStructures/DataStreamDesc.hpp>
-#include <AvTranscoder/DatasStructures/AudioFrame.hpp>
+#include <AvTranscoder/CodedStructures/DataStream.hpp>
+#include <AvTranscoder/CodedStructures/AudioDesc.hpp>
+#include <AvTranscoder/EssenceStructures/AudioFrame.hpp>
 
 #include <AvTranscoder/Profile.hpp>
 
@@ -29,7 +29,7 @@ public:
 	 */
 	bool encodeFrame( DataStream& codedFrame );
 	
-	void setProfile( Profile::ProfileDesc& desc, const AudioFrameDesc& frameDesc );
+	void setProfile( const Profile::ProfileDesc& desc, const AudioFrameDesc& frameDesc );
 
 	AudioDesc& getAudioDesc() { return _audioDesc; }
 

@@ -1,21 +1,24 @@
 #ifndef _AV_TRANSCODER_FILE_OUTPUT_FILE_HPP_
 #define _AV_TRANSCODER_FILE_OUTPUT_FILE_HPP_
 
-#include <AvTranscoder/DatasStructures/Image.hpp>
-#include <AvTranscoder/DatasStructures/DataStreamDesc.hpp>
-#include <AvTranscoder/DatasStructures/VideoDesc.hpp>
-#include <AvTranscoder/DatasStructures/AudioDesc.hpp>
+#include <AvTranscoder/common.hpp>
+
+#include <AvTranscoder/CodedStructures/DataStream.hpp>
+#include <AvTranscoder/CodedStructures/VideoDesc.hpp>
+#include <AvTranscoder/CodedStructures/AudioDesc.hpp>
+
 #include <AvTranscoder/CodedStream/AvOutputStream.hpp>
 
+#include <AvTranscoder/Profile.hpp>
 
 #include <string>
 #include <vector>
 
 class AVOutputFormat;
 class AVFormatContext;
-class AVStream;
 class AVCodec;
 class AVCodecContext;
+class AVStream;
 
 namespace avtranscoder
 {
@@ -81,6 +84,12 @@ public:
 	 * @note this method write the footer of file if necessary
 	**/
 	virtual bool endWrap( );
+	
+	/**
+	 * @brief Set the format of the output file
+     * @param desc: the profile of the output format
+     */
+	virtual void setProfile( const Profile::ProfileDesc& desc );
 
 private:
 	std::vector<AvOutputStream*> _outputStreams;

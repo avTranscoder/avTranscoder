@@ -1,4 +1,7 @@
 #include "VideoEssenceTransform.hpp"
+
+#include <AvTranscoder/EssenceStructures/Pixel.hpp>
+#include <AvTranscoder/EssenceStructures/VideoFrame.hpp>
 #include <AvTranscoder/common.hpp>
 
 extern "C" {
@@ -13,9 +16,6 @@ extern "C" {
 	#include <libavutil/frame.h>
 #endif
 }
-
-#include <AvTranscoder/DatasStructures/Pixel.hpp>
-#include <AvTranscoder/DatasStructures/Image.hpp>
 
 #include <iostream>
 #include <iomanip>
@@ -39,8 +39,8 @@ VideoEssenceTransform::VideoEssenceTransform()
 
 bool VideoEssenceTransform::init( const Frame& srcFrame, const Frame& dstFrame )
 {
-	const Image& src = static_cast<const Image&>( srcFrame );
-	const Image& dst = static_cast<const Image&>( dstFrame );
+	const VideoFrame& src = static_cast<const VideoFrame&>( srcFrame );
+	const VideoFrame& dst = static_cast<const VideoFrame&>( dstFrame );
 
 	assert( src.desc().getWidth()  != 0 );
 	assert( src.desc().getHeight() != 0 );
@@ -84,8 +84,8 @@ bool VideoEssenceTransform::init( const Frame& srcFrame, const Frame& dstFrame )
 
 void VideoEssenceTransform::convert( const Frame& srcFrame, Frame& dstFrame )
 {
-	const Image& src = static_cast<const Image&>( srcFrame );
-	Image& dst = static_cast<Image&>( dstFrame );
+	const VideoFrame& src = static_cast<const VideoFrame&>( srcFrame );
+	VideoFrame& dst = static_cast<VideoFrame&>( dstFrame );
 
 	assert( src.desc().getWidth()  != 0 );
 	assert( src.desc().getHeight() != 0 );

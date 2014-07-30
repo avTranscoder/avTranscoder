@@ -1,13 +1,12 @@
 #ifndef _AV_TRANSCODER_STREAM_TRANSCODER_HPP_
 #define _AV_TRANSCODER_STREAM_TRANSCODER_HPP_
 
+#include <AvTranscoder/common.hpp>
+
 #include <AvTranscoder/CodedStream/InputStream.hpp>
 
 #include <AvTranscoder/EssenceStream/InputVideo.hpp>
 #include <AvTranscoder/EssenceStream/OutputVideo.hpp>
-
-#include <AvTranscoder/EssenceStream/InputAudio.hpp>
-#include <AvTranscoder/EssenceStream/OutputAudio.hpp>
 
 #include <AvTranscoder/File/OutputFile.hpp>
 
@@ -29,12 +28,12 @@ public:
 	/**
 	 * @brief transcode stream
 	 **/
-	StreamTranscoder( InputStream& inputStream, OutputFile& outputFile, Profile::ProfileDesc& profile, const int subStreamIndex = -1 );
+	StreamTranscoder( InputStream& inputStream, OutputFile& outputFile, const Profile::ProfileDesc& profile, const int subStreamIndex = -1 );
 
 	/**
 	 * @brief encode from dummy stream
 	 **/
-	StreamTranscoder( InputEssence& inputEssence, OutputFile& outputFile, Profile::ProfileDesc& profile );
+	StreamTranscoder( InputEssence& inputEssence, OutputFile& outputFile, const Profile::ProfileDesc& profile );
 
 	~StreamTranscoder();
 

@@ -4,6 +4,8 @@ extern "C" {
 #ifndef __STDC_CONSTANT_MACROS
 	#define __STDC_CONSTANT_MACROS
 #endif
+#include <libavcodec/avcodec.h>
+#include <libavformat/avformat.h>
 #include <libavutil/opt.h>
 #include <libavutil/pixfmt.h>
 #include <libavutil/pixdesc.h>
@@ -351,6 +353,16 @@ std::vector<std::string> OptionLoader::getSampleFormats( const std::string& audi
 	}
 	
 	return sampleFormats;
+}
+
+AVPixelFormat OptionLoader::getAVPixelFormat( const std::string& pixelFormat )
+{
+	return av_get_pix_fmt( pixelFormat.c_str() );
+}
+
+AVSampleFormat OptionLoader::getAVSampleFormat( const std::string& sampleFormat )
+{
+	return av_get_sample_fmt( sampleFormat.c_str() );
 }
 
 }

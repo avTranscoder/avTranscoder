@@ -1,6 +1,9 @@
 #ifndef _AV_TRANSCODER_DATA_IMAGE_HPP_
 #define _AV_TRANSCODER_DATA_IMAGE_HPP_
 
+#include "Pixel.hpp"
+#include "Frame.hpp"
+#include <AvTranscoder/Profile.hpp>
 #include <AvTranscoder/common.hpp>
 
 extern "C" {
@@ -11,16 +14,11 @@ extern "C" {
 	#define INT64_C(c) (c ## LL)
 	#define UINT64_C(c) (c ## ULL)
 #endif
-#include <libavcodec/avcodec.h>
+#include <libavutil/pixdesc.h>
 }
 
-#include <iostream>
-#include <string>
-#include <vector>
 #include <stdexcept>
 
-#include "Pixel.hpp"
-#include "Frame.hpp"
 
 namespace avtranscoder
 {
@@ -33,14 +31,29 @@ namespace avtranscoder
 // 	//EColorRange     eColorRange;
 // };
 
-class AvExport ImageDesc
+class AvExport VideoFrameDesc
 {
 public:
+	VideoFrameDesc()
+		: m_width( 0 )
+		, m_height( 0 )
+		, m_displayAspectRatio()
+		, m_pixel()
+		, m_interlaced( false )
+		, m_topFieldFirst( false )
+	{};
+	
 	void setWidth ( const size_t width     ) { m_width = width; }
 	void setHeight( const size_t height    ) { m_height = height; }
 	void setPixel ( const Pixel  pixel     ) { m_pixel = pixel; }
 	void setDar   ( const size_t num, const size_t den ) { m_displayAspectRatio.num = num; m_displayAspectRatio.den = den; }
 	void setDar   ( const Ratio  ratio     ) { m_displayAspectRatio = ratio; }
+	
+	void setParameters( const Profile::ProfileDesc& desc )
+	{
+		if( desc.find( Profile::avProfilePixelFormat ) != desc.end() )
+			setPixel( Pixel( desc.find( Profile::avProfilePixelFormat )->second.c_str() ) );
+	}
 
 	size_t               getWidth ()    const { return m_width;  }
 	size_t               getHeight()    const { return m_height; }
@@ -75,25 +88,25 @@ private:
 
 //template< template<typename> Alloc >
 //class AvExport ImageBase
-class AvExport Image : public Frame
+class AvExport VideoFrame : public Frame
 {
 public:
-	Image( const ImageDesc& ref )
-		: m_imageDesc( ref )
+	VideoFrame( const VideoFrameDesc& ref )
+		: m_videoFrameDesc( ref )
 	{
 		m_dataBuffer = DataBuffer( ref.getDataSize(), 0 );
 	}
 
-	virtual ~Image()
+	virtual ~VideoFrame()
 	{};
 
-	const ImageDesc&     desc() const    { return m_imageDesc; }
+	const VideoFrameDesc&     desc() const    { return m_videoFrameDesc; }
 
 private:
-	const ImageDesc m_imageDesc;
+	const VideoFrameDesc m_videoFrameDesc;
 };
 
-//typedef ImageBase<std::allocator> Image;
+//typedef ImageBase<std::allocator> VideoFrame;
 
 }
 

@@ -9,11 +9,8 @@ extern "C" {
 #include <libavutil/avutil.h>
 }
 
-#include <AvTranscoder/DatasStructures/AudioFrame.hpp>
-#include <AvTranscoder/Profile.hpp>
-
+#include <iostream>
 #include <stdexcept>
-#include <cstdlib>
 
 namespace avtranscoder
 {
@@ -176,63 +173,57 @@ bool OutputAudio::encodeFrame( DataStream& codedFrame )
 #endif
 }
 
-void OutputAudio::setProfile( Profile::ProfileDesc& desc, const AudioFrameDesc& frameDesc  )
+void OutputAudio::setProfile( const Profile::ProfileDesc& desc, const AudioFrameDesc& frameDesc  )
 {
 	if( ! desc.count( Profile::avProfileCodec ) || 		
-		! desc.count( Profile::avProfileSampleFormat ) || 
-		! desc.count( Profile::avProfileSampleRate ) || 
-		! desc.count( Profile::avProfileChannel ) )
+		! desc.count( Profile::avProfileSampleFormat ) )
 	{
-		throw std::runtime_error( "The profile " + desc[ Profile::avProfileIdentificatorHuman ] + " is invalid." );
+		throw std::runtime_error( "The profile " + desc.find( Profile::avProfileIdentificatorHuman )->second + " is invalid." );
 	}
 	
-	_audioDesc.setAudioCodec( desc[ Profile::avProfileCodec ] );
+	_audioDesc.setCodec( desc.find( Profile::avProfileCodec )->second );
 	
-	size_t sample_rate = std::strtoul( desc[ Profile::avProfileSampleRate ].c_str(), NULL, 0 );
-	size_t channels = std::strtoul( desc[ Profile::avProfileChannel ].c_str(), NULL, 0 );
-	_audioDesc.setAudioParameters( sample_rate, channels, av_get_sample_fmt( desc[ Profile::avProfileSampleFormat ].c_str() ) );
+	_audioDesc.setAudioParameters( frameDesc );
+
+	ParamSet paramSet( _audioDesc.getCodecContext() );
 	
-	for( Profile::ProfileDesc::iterator it = desc.begin(); it != desc.end(); ++it )
+	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
 	{
 		if( (*it).first == Profile::avProfileIdentificator ||
 			(*it).first == Profile::avProfileIdentificatorHuman ||
 			(*it).first == Profile::avProfileType ||
 			(*it).first == Profile::avProfileCodec ||
-			(*it).first == Profile::avProfileSampleFormat ||
-			(*it).first == Profile::avProfileSampleRate ||
-			(*it).first == Profile::avProfileChannel )
+			(*it).first == Profile::avProfileSampleFormat )
 			continue;
 
 		try
 		{
-			_audioDesc.set( (*it).first, (*it).second );
+			paramSet.set( (*it).first, (*it).second );
 		}
 		catch( std::exception& e )
 		{
-			std::cout << "warning: " << e.what() << std::endl;
+			std::cout << "OutputAudio warning: " << e.what() << std::endl;
 		}
 	}
 
 	setup();
 
-	for( Profile::ProfileDesc::iterator it = desc.begin(); it != desc.end(); ++it )
+	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
 	{
 		if( (*it).first == Profile::avProfileIdentificator ||
 			(*it).first == Profile::avProfileIdentificatorHuman ||
 			(*it).first == Profile::avProfileType ||
 			(*it).first == Profile::avProfileCodec ||
-			(*it).first == Profile::avProfileSampleFormat ||
-			(*it).first == Profile::avProfileSampleRate ||
-			(*it).first == Profile::avProfileChannel )
+			(*it).first == Profile::avProfileSampleFormat )
 			continue;
 
 		try
 		{
-			_audioDesc.set( (*it).first, (*it).second );
+			paramSet.set( (*it).first, (*it).second );
 		}
 		catch( std::exception& e )
 		{
-			std::cout << "2.warning: " << e.what() << std::endl;
+			std::cout << "OutputAudio 2.warning: " << e.what() << std::endl;
 		}
 	}
 }

@@ -1,13 +1,11 @@
 #include "DummyVideo.hpp"
 
-#include <cassert>
-#include <cstring>
-
 namespace avtranscoder
 {
 
 DummyVideo::DummyVideo( )
 	: InputEssence( )
+	, _inputFrame( NULL )
 	, _numberOfView( 1 )
 {
 }
@@ -16,10 +14,10 @@ DummyVideo::~DummyVideo( )
 {
 }
 
-void DummyVideo::setVideoDesc( VideoDesc& videoDesc )
+void DummyVideo::setVideoDesc( const VideoDesc& videoDesc )
 {
 	_videoDesc = videoDesc;
-	_imageDesc = _videoDesc.getImageDesc();
+	_videoFrameDesc = _videoDesc.getVideoFrameDesc();
 }
 
 VideoDesc DummyVideo::getVideoDesc() const
@@ -27,13 +25,25 @@ VideoDesc DummyVideo::getVideoDesc() const
 	return _videoDesc;
 }
 
+void DummyVideo::setFrame( Frame& inputFrame )
+{
+	_inputFrame = &inputFrame;
+}
+
 bool DummyVideo::readNextFrame( Frame& frameBuffer )
 {
-	frameBuffer.getBuffer().resize( _imageDesc.getDataSize() );
+	frameBuffer.getBuffer().resize( _videoFrameDesc.getDataSize() );
 
-	int fillChar = 0; // fill images with black
-	memset( frameBuffer.getPtr(), fillChar, frameBuffer.getSize() );
-
+	if( ! _inputFrame )
+	{
+		int fillChar = 0; // fill images with black
+		memset( frameBuffer.getPtr(), fillChar, frameBuffer.getSize() );
+		return true;
+	}
+	
+	if( frameBuffer.getSize() != _inputFrame->getSize() )
+		frameBuffer.getBuffer().resize( _inputFrame->getSize() );
+	std::memcpy( frameBuffer.getPtr(), _inputFrame->getPtr(), _inputFrame->getSize() );
 	return true;
 }
 

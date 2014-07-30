@@ -16,10 +16,8 @@ extern "C" {
 #include <libavformat/avformat.h>
 #include <libavutil/avutil.h>
 #include <libavutil/pixdesc.h>
-#include <libavutil/avstring.h>
 }
 
-#include <iostream>
 #include <stdexcept>
 #include <cassert>
 
@@ -124,7 +122,6 @@ InputFile& InputFile::analyse( ProgressListener& progress, const EAnalyseLevel l
 			}
 			case AVMEDIA_TYPE_NB:
 			{
-				// std::cout << "NB" << std::endl;
 				break;
 			}
 		}
@@ -212,6 +209,28 @@ void InputFile::readStream( const size_t streamIndex, bool readStream )
 bool InputFile::getReadStream( const size_t streamIndex )
 {
 	return _inputStreams.at( streamIndex )->getBufferred();
+}
+
+void InputFile::setProfile( const Profile::ProfileDesc& desc )
+{	
+	ParamSet paramSet( _formatContext );
+	
+	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
+	{
+		if( (*it).first == Profile::avProfileIdentificator ||
+			(*it).first == Profile::avProfileIdentificatorHuman ||
+			(*it).first == Profile::avProfileType )
+			continue;
+		
+		try
+		{
+			paramSet.set( (*it).first, (*it).second );
+		}
+		catch( std::exception& e )
+		{
+			std::cout << "InputFile warning: " << e.what() << std::endl;
+		}
+	}
 }
 
 }

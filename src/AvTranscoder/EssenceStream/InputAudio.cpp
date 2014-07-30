@@ -12,6 +12,7 @@ extern "C" {
 }
 
 #include <AvTranscoder/CodedStream/AvInputStream.hpp>
+#include <AvTranscoder/EssenceStructures/AudioFrame.hpp>
 
 #include <iostream>
 #include <stdexcept>
@@ -57,7 +58,7 @@ void InputAudio::setup()
 {
 	avcodec_register_all();
 
-	_codec = avcodec_find_decoder( _inputStream->getAudioDesc().getAudioCodecId() );
+	_codec = avcodec_find_decoder( _inputStream->getAudioDesc().getCodecId() );
 	if( _codec == NULL )
 	{
 		throw std::runtime_error( "codec not supported" );
@@ -138,19 +139,19 @@ bool InputAudio::readNextFrame( Frame& frameBuffer, const size_t subStreamIndex 
 	if( ! getNextFrame() )
 		return false;
 
-	size_t decodedSize = av_samples_get_buffer_size(NULL, 1,
-													_frame->nb_samples,
-													_codecContext->sample_fmt, 1);
+	const int output_nbChannels = 1;
+	const int output_align = 1;
+	size_t decodedSize = av_samples_get_buffer_size(NULL, output_nbChannels, _frame->nb_samples, _codecContext->sample_fmt, output_align);
 	
-	size_t nbChannels = _codecContext->channels;
+	size_t nbSubStreams = _codecContext->channels;
 	size_t bytePerSample = av_get_bytes_per_sample( (AVSampleFormat)_frame->format );
 
+	if( subStreamIndex > nbSubStreams - 1 )
+	{
+		throw std::runtime_error( "The subStream doesn't exist");
+	}
+	
 	AudioFrame& audioBuffer = static_cast<AudioFrame&>( frameBuffer );
-
-	// std::cout << "needed size " << audioBuffer.desc().getDataSize() << std::endl;
-
-	// std::cout << _frame->nb_samples * bytePerSample << std::endl;
-	//audioBuffer.getBuffer().resize( _frame->nb_samples * bytePerSample );
 	audioBuffer.setNbSamples( _frame->nb_samples );
 	
 	if( decodedSize )
@@ -158,14 +159,13 @@ bool InputAudio::readNextFrame( Frame& frameBuffer, const size_t subStreamIndex 
 		if( audioBuffer.getSize() != decodedSize )
 			audioBuffer.getBuffer().resize( decodedSize, 0 );
 
-		unsigned char* src = *_frame->data;
+		// @todo manage cases with data of frame not only on data[0] (use _frame.linesize)
+		unsigned char* src = _frame->data[0];
 		unsigned char* dst = audioBuffer.getPtr();
 
-		src += ( nbChannels - 1 ) - ( subStreamIndex * bytePerSample );
-
-		// std::cout << "frame samples count " << _frame->nb_samples << std::endl;
-		// std::cout << "frame data size " << audioBuffer.getSize() << std::endl;
-
+		// offset
+		src += ( nbSubStreams - 1 - subStreamIndex ) * bytePerSample;
+		
 		for( int sample = 0; sample < _frame->nb_samples; ++sample )
 		{
 			// std::cout << "sample " << sample << " ==| ";
@@ -173,7 +173,7 @@ bool InputAudio::readNextFrame( Frame& frameBuffer, const size_t subStreamIndex 
 			// std::cout << "dst " << static_cast<void *>(dst) << std::endl;
 			memcpy( dst, src, bytePerSample );
 			dst += bytePerSample;
-			src += bytePerSample * nbChannels;
+			src += bytePerSample * nbSubStreams;
 		}
 	}
 	return true;

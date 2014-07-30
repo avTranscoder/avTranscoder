@@ -4,6 +4,12 @@ import os
 import sys
 import ConfigParser
 
+mymode = ARGUMENTS.get('mode', 'release')
+
+if not (mymode in ['debug', 'release']):
+    print "Error: expected 'debug' or 'release', found: " + mymode
+    Exit(1)
+
 config = ConfigParser.RawConfigParser()
 
 config.read( [
@@ -162,7 +168,18 @@ Export( "resampleLibraryName" )
 VariantDir( 'build/src', 'src', duplicate = 0 )
 VariantDir( 'build/app', 'app', duplicate = 0 )
 
-SConscript( [
+
+if mymode == "release":
+	env.Append(CCFLAGS = ['-O3'])
+if mymode == "debug":
+	env.Append(CCFLAGS = ['-pg'])
+
+sconscripts = [
     'build/src/SConscript',
     'build/app/SConscript',
-] )
+]
+ 
+SConscript('src/SConscript', variant_dir='build/'+mymode+'/src', exports={'env':env})
+SConscript('app/SConscript', variant_dir='build/'+mymode+'/app', exports={'env':env})
+
+

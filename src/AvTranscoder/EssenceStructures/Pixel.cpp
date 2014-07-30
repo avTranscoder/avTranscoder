@@ -5,7 +5,6 @@ extern "C" {
 	#define __STDC_CONSTANT_MACROS
 #endif
 #include <libavformat/avformat.h>
-#include <libavutil/pixfmt.h>
 #include <libswscale/swscale.h>
 #include <libavutil/imgutils.h>
 #include <libavutil/pixdesc.h>
@@ -48,7 +47,7 @@ AVPixelFormat Pixel::findPixel() const
 			m_endianess    == ( pix_desc->flags & PIX_FMT_BE ) &&
 #if LIBAVUTIL_VERSION_MAJOR > 51
 			m_withAlpha    == ( pix_desc->flags & PIX_FMT_ALPHA ) &&
-			// TODO: what need todo if libavutil <= 51 ?
+			// @todo what need todo if libavutil <= 51 ?
 #endif
 			m_planar       == ( ( pix_desc->flags & PIX_FMT_PLANAR ) != 0 ) &&
 			asCorrectColorComponents( pix_desc, m_componentType ) &&

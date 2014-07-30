@@ -3,7 +3,6 @@
 
 #include <AvTranscoder/common.hpp>
 
-#include <string>
 #include <vector>
 
 namespace avtranscoder
