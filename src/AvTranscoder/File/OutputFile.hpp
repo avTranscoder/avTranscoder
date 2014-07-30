@@ -83,6 +83,8 @@ public:
 	**/
 	virtual bool endWrap( );
 
+	virtual void setVerbose( bool verbose = false ){ _verbose = verbose; }
+
 private:
 	std::vector<AvOutputStream*> _outputStreams;
 	AVOutputFormat*  _outputFormat;
@@ -92,9 +94,13 @@ private:
 	AVCodecContext*  _codecContext;
 	AVStream*        _stream;
 
+	std::vector<size_t> _frameCount;
+
 	std::string      _filename;
 
 	size_t           _packetCount;
+
+	bool             _verbose;
 };
 
 }
