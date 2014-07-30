@@ -23,6 +23,13 @@
 namespace avtranscoder
 {
 
+enum EProcessMethod
+{
+	eProcessMethodShortest = 0,
+	eProcessMethodLongest,
+	eProcessMethodInfinity,
+};
+
 class Transcoder
 {
 public:
@@ -75,6 +82,8 @@ public:
 
 	void process( ProgressListener& progress );
 
+	void setProcessMethod( const EProcessMethod eProcessMethod );
+
 	void setVerbose( bool verbose = true );
 
 private:
@@ -100,6 +109,9 @@ private:
 	std::vector< DummyVideo* > _dummyVideo;
 
 	Profile _profile;
+
+	size_t _finalisedStreams;
+	EProcessMethod _eProcessMethod;
 
 	bool    _verbose;
 };

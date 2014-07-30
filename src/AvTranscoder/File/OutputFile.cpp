@@ -23,6 +23,7 @@ OutputFile::OutputFile( const std::string& filename )
 	, _stream        ( NULL )
 	, _filename      ( filename )
 	, _packetCount   ( 0 )
+	, _verbose       ( false )
 {
 	if( ( _formatContext = avformat_alloc_context() ) == NULL )
 	{
@@ -127,12 +128,15 @@ bool OutputFile::beginWrap( )
 		msg += err;
 		throw std::runtime_error( msg );
 	}
+	_frameCount.clear();
+	_frameCount.resize( _outputStreams.size(), 0 );
 	return true;
 }
 
 bool OutputFile::wrap( const DataStream& data, const size_t streamId )
 {
-	// std::cout << "wrap on stream " << streamId << " (" << data.getSize() << ")" << std::endl;
+	if( _verbose )
+		std::cout << "wrap on stream " << streamId << " (" << data.getSize() << " bytes for frame " << _frameCount.at( streamId ) << ")" << std::endl;
 	AVPacket packet;
 	av_init_packet( &packet );
 
@@ -142,10 +146,11 @@ bool OutputFile::wrap( const DataStream& data, const size_t streamId )
 
 	packet.data = (uint8_t*)data.getPtr();
 	packet.size = data.getSize();
-	packet.dts = 0;
-	packet.pts = _packetCount;
+	// packet.dts = _frameCount.at( streamId );
+	// packet.pts = ;
 
-	int ret = av_interleaved_write_frame( _formatContext, &packet );
+	int ret = av_write_frame( _formatContext, &packet );
+	// int ret = av_interleaved_write_frame( _formatContext, &packet );
 
 	if( ret != 0 )
 	{
@@ -161,6 +166,7 @@ bool OutputFile::wrap( const DataStream& data, const size_t streamId )
 	av_free_packet( &packet );
 
 	_packetCount++;
+	_frameCount.at( streamId )++;
 	return true;
 }
 

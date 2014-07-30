@@ -6,6 +6,8 @@ namespace avtranscoder
 Transcoder::Transcoder( OutputFile& outputFile )
 	: _outputFile( outputFile )
 	, _profile( true )
+	, _finalisedStreams( 0 )
+	, _eProcessMethod ( eProcessMethodLongest )
 	, _verbose( false )
 {
 	_outputFile.setup();
@@ -50,8 +52,8 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, Pro
 	_profile.update( profileDesc );
 	if( ! filename.length() )
 	{
-		if( _verbose )
-			std::cerr << "can't add a stream with no filename indicated" << std::endl;
+		// if( _verbose )
+		std::cerr << "can't add a stream with no filename indicated" << std::endl;
 		return;
 	}
 
@@ -161,9 +163,29 @@ bool Transcoder::processFrame()
 		if( _verbose )
 			std::cout << "process stream " << streamIndex << "/" << _streamTranscoders.size() - 1 << std::endl;
 
-		if( ! _streamTranscoders.at( streamIndex )->processFrame() )
+		bool streamProcessStatus = _streamTranscoders.at( streamIndex )->processFrame();
+
+		if( streamProcessStatus )
+			continue;
+
+		switch( _eProcessMethod )
 		{
-			_streamTranscoders.clear();
+			case eProcessMethodShortest :
+				_streamTranscoders.clear();
+				break;
+			case eProcessMethodLongest :
+				++_finalisedStreams;
+				_streamTranscoders.at( streamIndex )->switchToDummyEssence();
+				if( _verbose )
+					std::cout << "-> switch to dummy for stream " << streamIndex << std::endl;
+				if( _finalisedStreams == _streamTranscoders.size() )
+					_streamTranscoders.clear();
+				break;
+			case eProcessMethodInfinity :
+				if( _verbose )
+					std::cout << "-> infinity processing: switch to dummy for stream " << streamIndex << std::endl;
+				_streamTranscoders.at( streamIndex )->switchToDummyEssence();
+				break;
 		}
 	}
 	return true;
@@ -172,7 +194,6 @@ bool Transcoder::processFrame()
 void Transcoder::process( ProgressListener& progress )
 {
 	size_t frame = 0;
-
 
 	std::vector< DataStream > dataStreams;
 
@@ -196,15 +217,20 @@ void Transcoder::process( ProgressListener& progress )
 
 	double totalDuration = _inputStreams.at( 0 )->getDuration();
 
+	if( _verbose )
+		av_log_set_level( AV_LOG_DEBUG );
+
 	while( 1 )
 	{
-		if( progress.progress( _inputStreams.at( 0 )->getPacketDuration() * ( frame + 1 ), totalDuration ) == eJobStatusCancel )
+		if( _verbose )
+			std::cout << "process frame " << frame << std::endl;
+		if( ! processFrame() )
+			break;
+		
+		if( progress.progress( _inputStreams.at( 0 )->getPacketDuration() * ( frame ), totalDuration ) == eJobStatusCancel )
 		{
 			break;
 		}
-
-		if( ! processFrame() )
-			break;
 
 		++frame;
 	}
@@ -215,6 +241,15 @@ void Transcoder::process( ProgressListener& progress )
 	_outputFile.endWrap();
 }
 
+void Transcoder::setProcessMethod( const EProcessMethod eProcessMethod )
+{
+	_eProcessMethod	= eProcessMethod;
+	for( std::vector< StreamTranscoder* >::iterator it = _streamTranscoders.begin(); it != _streamTranscoders.end(); ++it )
+	{
+		(*it)->setInfinityProcess( eProcessMethod == eProcessMethodInfinity );
+	}
+}
+
 void Transcoder::setVerbose( bool verbose )
 {
 	_verbose = verbose;
@@ -222,12 +257,12 @@ void Transcoder::setVerbose( bool verbose )
 	{
 		(*it)->setVerbose( _verbose );
 	}
+	_outputFile.setVerbose( _verbose );
 }
 
 void Transcoder::addRewrapStream( const std::string& filename, const size_t streamIndex )
 {
 	InputFile* referenceFile = addInputFile( filename, streamIndex );
-
 	_streamTranscoders.push_back( new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile ) );
 	_inputStreams.push_back( &referenceFile->getStream( streamIndex ) );
 }
@@ -285,6 +320,8 @@ void Transcoder::addDummyStream( const Profile::ProfileDesc& profile, const Code
 
 	if( profile.find( Profile::avProfileType )->second == Profile::avProfileTypeAudio )
 	{
+		if( _verbose )
+			std::cout << "add dummy audio" << std::endl;
 		_dummyAudio.push_back( new DummyAudio() );
 		_dummyAudio.back()->setAudioDesc( static_cast<AudioDesc>( essenceDesc ) );
 		
@@ -293,6 +330,8 @@ void Transcoder::addDummyStream( const Profile::ProfileDesc& profile, const Code
 
 	if( profile.find( Profile::avProfileType )->second == Profile::avProfileTypeVideo )
 	{
+		if( _verbose )
+			std::cout << "add dummy video" << std::endl;
 		_dummyVideo.push_back( new DummyVideo() );
 		_dummyVideo.back()->setVideoDesc( static_cast<VideoDesc>( essenceDesc ) );
 		

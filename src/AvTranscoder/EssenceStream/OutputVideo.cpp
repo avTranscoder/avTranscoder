@@ -215,7 +215,7 @@ void OutputVideo::setProfile( const Profile::ProfileDesc& desc, const avtranscod
 		}
 		catch( std::exception& e )
 		{
-			std::cout << "OutputVideo warning: " << e.what() << std::endl;
+			//std::cout << "[OutputVideo] warning: " << e.what() << std::endl;
 		}
 	}
 
@@ -237,7 +237,7 @@ void OutputVideo::setProfile( const Profile::ProfileDesc& desc, const avtranscod
 		}
 		catch( std::exception& e )
 		{
-			std::cout << "OutputVideo 2.warning: " << e.what() << std::endl;
+			std::cout << "[OutputVideo] warning: " << e.what() << std::endl;
 		}
 	}
 }
