@@ -47,6 +47,10 @@ public:
 
 	void setVerbose( bool verbose = true ){ _verbose = verbose; }
 
+	void switchToDummyEssence();
+	void switchToInputEssence();
+	void setInfinityProcess( bool infinity = true ){ _infiniteProcess = infinity; }
+
 private:
 	bool processRewrap();
 	bool processRewrap( const int subStreamIndex );
@@ -61,12 +65,17 @@ private:
 	Frame*         _frameBuffer;
 
 	InputEssence*  _inputEssence;
+	InputEssence*  _dummyEssence;
+	InputEssence*  _currentEssence;
 	OutputEssence* _outputEssence;
 
 	EssenceTransform* _transform;
 
 	int  _subStreamIndex;
 	bool _transcodeStream;
+	bool _takeFromDummy;
+	bool _infiniteProcess;
+
 	bool _verbose;
 };
 	
