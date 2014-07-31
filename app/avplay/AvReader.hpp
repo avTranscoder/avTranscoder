@@ -98,7 +98,7 @@ public:
 
 	void printMetadatas()
 	{
-		displayMetadatas( m_inputFile );
+		std::cout << m_inputFile << std::endl;
 	}
 
 private:
