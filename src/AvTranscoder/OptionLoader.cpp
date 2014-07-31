@@ -244,8 +244,6 @@ OptionLoader::OptionArray OptionLoader::loadOptions( void* av_class, int req_fla
 
 		OptionType optionType = Option::getTypeFromAVOption( avOption->unit, avOption->type );
 
-		//std::cout << "The option is " << avOption->name << " of type : " << avOption->type << std::endl;
-
 		if( optionType == TypeChild )
 		{
 			childOptions.push_back( Option( *avOption, optionType ) );
