@@ -223,7 +223,7 @@ OptionLoader::OptionArray OptionLoader::loadOptions( void* av_class, int req_fla
 {
 	OptionArray options;
 	
-	std::map<std::string, int> optionUnitToIndex;
+	std::multimap<std::string, int> optionUnitToIndex;
 	std::vector<Option> childOptions;
 	
 	const AVOption* avOption = NULL;
@@ -244,8 +244,6 @@ OptionLoader::OptionArray OptionLoader::loadOptions( void* av_class, int req_fla
 
 		OptionType optionType = Option::getTypeFromAVOption( avOption->unit, avOption->type );
 
-		//std::cout << "The option is " << avOption->name << " of type : " << avOption->type << std::endl;
-
 		if( optionType == TypeChild )
 		{
 			childOptions.push_back( Option( *avOption, optionType ) );
@@ -262,19 +260,25 @@ OptionLoader::OptionArray OptionLoader::loadOptions( void* av_class, int req_fla
 	}
 
 	// iterate on child options
-	for( std::vector<Option>::iterator it = childOptions.begin(); it != childOptions.end(); ++it )
+	for( std::vector<Option>::iterator itOption = childOptions.begin(); itOption != childOptions.end(); ++itOption )
 	{
-		int indexParentOption = optionUnitToIndex.at( it->getUnit() );
-		Option& parentOption = options.at( indexParentOption );
-		
-		parentOption.appendChild( *it );
-		
-		// child of a Choice
-		if( parentOption.getType() == TypeChoice )
+		for( std::multimap<std::string, int>::iterator itUnit = optionUnitToIndex.begin(); itUnit != optionUnitToIndex.end(); ++itUnit )
 		{
-			if( it->getDefaultValueInt() == parentOption.getDefaultValueInt() )
-				parentOption.setDefaultChildIndex( parentOption.getNbChilds() - 1 );
-		}
+			if( itUnit->first == itOption->getUnit() )
+			{
+				int indexParentOption = itUnit->second;
+				Option& parentOption = options.at( indexParentOption );
+
+				parentOption.appendChild( *itOption );
+
+				// child of a Choice
+				if( parentOption.getType() == TypeChoice )
+				{
+					if( itOption->getDefaultValueInt() == parentOption.getDefaultValueInt() )
+						parentOption.setDefaultChildIndex( parentOption.getNbChilds() - 1 );
+				}
+			}
+        }
 	}
 	return options;
 }
