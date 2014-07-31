@@ -132,6 +132,30 @@ std::ostream& operator<<( std::ostream& flux, const DataProperties& dataProperti
 	return flux;
 }
 
+std::ostream& operator<<( std::ostream& flux, const SubtitleProperties& subtitleProperties )
+{
+	flux << separator << " Subtitle stream " << separator << std::endl;
+	flux << std::setw( keyWidth ) << "stream id" << ": " << subtitleProperties.streamId << std::endl;
+
+	return flux;
+}
+
+std::ostream& operator<<( std::ostream& flux, const AttachementProperties& attachementProperties )
+{
+	flux << separator << " Attachement stream " << separator << std::endl;
+	flux << std::setw( keyWidth ) << "stream id" << ": " << attachementProperties.streamId << std::endl;
+
+	return flux;
+}
+
+std::ostream& operator<<( std::ostream& flux, const UnknownProperties& unknownProperties )
+{
+	flux << separator << " Unknown stream " << separator << std::endl;
+	flux << std::setw( keyWidth ) << "stream id" << ": " << unknownProperties.streamId << std::endl;
+
+	return flux;
+}
+
 std::ostream& operator<<( std::ostream& flux, const InputFile& input )
 {
 	// wrapper
@@ -154,7 +178,25 @@ std::ostream& operator<<( std::ostream& flux, const InputFile& input )
 	{
 		flux << input.getProperties().dataStreams.at( dataStreamIndex ) << std::endl;
 	}
-	
+
+	// subtitle streams
+	for( size_t subtitleStreamIndex = 0; subtitleStreamIndex < input.getProperties().subtitleStreams.size(); ++subtitleStreamIndex )
+	{
+		flux << input.getProperties().subtitleStreams.at( subtitleStreamIndex ) << std::endl;
+	}
+
+	// attachement streams
+	for( size_t attachementStreamIndex = 0; attachementStreamIndex < input.getProperties().attachementStreams.size(); ++attachementStreamIndex )
+	{
+		flux << input.getProperties().attachementStreams.at( attachementStreamIndex ) << std::endl;
+	}
+
+	// unknown streams
+	for( size_t unknownStreamIndex = 0; unknownStreamIndex < input.getProperties().unknownStreams.size(); ++unknownStreamIndex )
+	{
+		flux << input.getProperties().unknownStreams.at( unknownStreamIndex ) << std::endl;
+	}
+
 	return flux;
 }
 
