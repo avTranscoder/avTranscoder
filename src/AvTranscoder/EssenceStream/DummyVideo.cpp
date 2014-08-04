@@ -6,6 +6,8 @@ namespace avtranscoder
 DummyVideo::DummyVideo( )
 	: InputEssence( )
 	, _inputFrame( NULL )
+	, _videoDesc()
+	, _videoFrameDesc()
 	, _numberOfView( 1 )
 {
 }
