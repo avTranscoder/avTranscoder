@@ -109,6 +109,7 @@ int main( int argc, char** argv )
 
 		avtranscoder::Transcoder transcoder( outputFile );
 		transcoder.setVerbose( verbose );
+		transcoder.setProcessMethod( avtranscoder::eProcessMethodShortest );
 
 		if( verbose )
 			std::cout << "parse config file" << std::endl;
