@@ -43,6 +43,11 @@ public:
 	 * @note If profileName is empty, rewrap.
 	 */
 	void add( const std::string& filename, const size_t streamIndex, const std::string& profileName = "" );
+	/*
+	 * @note If filename is empty, add a dummy stream.
+	 * @note If filename is empty, profileName can't be empty (no sens to rewrap a dummy stream).
+	 */
+	void add( const std::string& filename, const size_t streamIndex, const std::string& profileName, CodedDesc& essenceDesc );
 
 	/**
 	 * @brief Add a stream and set a custom profile

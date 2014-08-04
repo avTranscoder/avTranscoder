@@ -47,6 +47,27 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 	add( filename, streamIndex, transcodeProfile );
 }
 
+void Transcoder::add( const std::string& filename, const size_t streamIndex, const std::string& profileName, CodedDesc& essenceDesc )
+{
+	if( profileName.length() == 0 ) // no profile, only re-wrap stream
+	{
+		if( _verbose )
+			std::cout << "add re-wrap stream" << std::endl;
+		
+		if( filename.length() == 0 )
+		{
+			std::cerr << "can't add a dummy stream with no profileName indicated" << std::endl;
+			return;
+		}
+		
+		addRewrapStream( filename, streamIndex );
+		return;
+	}
+	
+	Profile::ProfileDesc& transcodeProfile = _profile.getProfile( profileName );
+	add( filename, streamIndex, transcodeProfile, essenceDesc );
+}
+
 void Transcoder::add( const std::string& filename, const size_t streamIndex, Profile::ProfileDesc& profileDesc )
 {
 	_profile.update( profileDesc );
