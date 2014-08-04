@@ -5,6 +5,11 @@ namespace avtranscoder
 
 Transcoder::Transcoder( OutputFile& outputFile )
 	: _outputFile( outputFile )
+	, _inputFiles()
+	, _inputStreams()
+	, _streamTranscoders()
+	, _dummyAudio()
+	, _dummyVideo()
 	, _profile( true )
 	, _finalisedStreams( 0 )
 	, _eProcessMethod ( eProcessMethodLongest )
