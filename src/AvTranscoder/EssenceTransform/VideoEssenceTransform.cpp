@@ -34,6 +34,7 @@ VideoEssenceTransform::VideoEssenceTransform()
 	, _srcOffsets  ( MAX_SWS_PLANE, 0 )
 	, _dstOffsets  ( MAX_SWS_PLANE, 0 )
 	, _isInit      ( false )
+	, _verbose( false )
 {
 }
 
