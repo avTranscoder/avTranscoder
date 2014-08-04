@@ -34,12 +34,13 @@ void DummyVideo::setFrame( Frame& inputFrame )
 
 bool DummyVideo::readNextFrame( Frame& frameBuffer )
 {
-	frameBuffer.getBuffer().resize( _videoFrameDesc.getDataSize() );
-
 	if( ! _inputFrame )
 	{
 		int fillChar = 0; // fill images with black
-		memset( frameBuffer.getPtr(), fillChar, frameBuffer.getSize() );
+		
+		if( frameBuffer.getSize() != _videoFrameDesc.getDataSize() )
+			frameBuffer.getBuffer().resize( _videoFrameDesc.getDataSize() );
+		memset( frameBuffer.getPtr(), fillChar, _videoFrameDesc.getDataSize() );
 		return true;
 	}
 	
