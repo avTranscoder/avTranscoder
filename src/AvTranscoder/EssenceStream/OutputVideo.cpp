@@ -68,7 +68,7 @@ bool OutputVideo::encodeFrame( const Frame& sourceFrame, DataStream& codedFrame 
 	frame->width  = codecContext->width;
 	frame->height = codecContext->height;
 	frame->format = codecContext->pix_fmt;
-	avpicture_fill( (AVPicture*)frame, const_cast< unsigned char * >( sourceImageFrame.getPtr() ), codecContext->pix_fmt, codecContext->width, codecContext->height );
+	avpicture_fill( (AVPicture*)frame, sourceImageFrame.getPtr(), codecContext->pix_fmt, codecContext->width, codecContext->height );
 
 	AVPacket packet;
 	av_init_packet( &packet );
