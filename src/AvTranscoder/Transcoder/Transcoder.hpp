@@ -23,6 +23,12 @@
 namespace avtranscoder
 {
 
+/**
+ * @brief: Enum to set a policy of how we manage the transcode in case of several streams.
+ * eProcessMethodShortest: stop transcode at the end of the shortest stream.
+ * eProcessMethodLongest: stop transcode at the end of the longest stream (default method).
+ * eProcessMethodInfinity: stop transcode by outside of avTranscoder.
+ */
 enum EProcessMethod
 {
 	eProcessMethodShortest = 0,
