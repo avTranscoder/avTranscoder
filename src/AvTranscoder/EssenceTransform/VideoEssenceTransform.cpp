@@ -99,7 +99,7 @@ void VideoEssenceTransform::convert( const Frame& srcFrame, Frame& dstFrame )
 
 	for( size_t plane = 0; plane < MAX_SWS_PLANE; ++plane )
 	{
-		_srcData.at( plane ) = (uint8_t*) const_cast< unsigned char* >( src.getPtr() + _srcOffsets.at( plane ) );
+		_srcData.at( plane ) = (uint8_t*) src.getPtr() + _srcOffsets.at( plane );
 		_dstData.at( plane ) = (uint8_t*) dst.getPtr() + _dstOffsets.at( plane );
 	}
 	
