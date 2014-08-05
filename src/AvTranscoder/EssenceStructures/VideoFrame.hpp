@@ -97,9 +97,6 @@ public:
 		m_dataBuffer = DataBuffer( ref.getDataSize(), 0 );
 	}
 
-	virtual ~VideoFrame()
-	{};
-
 	const VideoFrameDesc&     desc() const    { return m_videoFrameDesc; }
 
 private:
