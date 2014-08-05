@@ -176,13 +176,17 @@ StreamTranscoder::StreamTranscoder(
 		OutputVideo* outputVideo = new OutputVideo();
 		
 		_outputEssence = outputVideo;
-		VideoFrameDesc inputVideoFrameDesc = static_cast<DummyVideo*>( _inputEssence )->getVideoDesc().getVideoFrameDesc();
-		outputVideo->setProfile( profile, inputVideoFrameDesc );
+
+		VideoFrameDesc inputFrameDesc = static_cast<DummyVideo*>( _inputEssence )->getVideoDesc().getVideoFrameDesc();
+
+		VideoFrameDesc outputFrameDesc = inputFrameDesc;
+		outputFrameDesc.setParameters( profile );
+		outputVideo->setProfile( profile, outputFrameDesc );
 
 		_outputStream = &outputFile.addVideoStream( outputVideo->getVideoDesc() );
-		_sourceBuffer = new VideoFrame( outputVideo->getVideoDesc().getVideoFrameDesc() );
-		_frameBuffer  = new VideoFrame( outputVideo->getVideoDesc().getVideoFrameDesc() );
-		
+		_sourceBuffer = new VideoFrame( inputFrameDesc );
+		_frameBuffer  = new VideoFrame( outputFrameDesc );
+
 		_transform = new VideoEssenceTransform();
 
 		_currentEssence = _inputEssence;		
@@ -195,14 +199,16 @@ StreamTranscoder::StreamTranscoder(
 		OutputAudio* outputAudio = new OutputAudio();
 
 		_outputEssence = outputAudio;
-		AudioFrameDesc inputAudioFrameDesc = static_cast<DummyAudio*>( _inputEssence )->getAudioDesc().getFrameDesc();
-		outputAudio->setProfile( profile, inputAudioFrameDesc );
-		
-		static_cast<DummyAudio*>( _inputEssence )->setAudioDesc( outputAudio->getAudioDesc() );
-		
+
+		AudioFrameDesc inputFrameDesc = static_cast<DummyAudio*>( _inputEssence )->getAudioDesc().getFrameDesc();
+
+		AudioFrameDesc outputFrameDesc = inputFrameDesc;
+		outputFrameDesc.setParameters( profile );
+		outputAudio->setProfile( profile, outputFrameDesc );
+
 		_outputStream = &outputFile.addAudioStream( outputAudio->getAudioDesc() );
-		_sourceBuffer = new AudioFrame( outputAudio->getAudioDesc().getFrameDesc() );
-		_frameBuffer  = new AudioFrame( outputAudio->getAudioDesc().getFrameDesc() );
+		_sourceBuffer = new AudioFrame( inputFrameDesc );
+		_frameBuffer  = new AudioFrame( outputFrameDesc );
 
 		_transform = new AudioEssenceTransform();
 		
