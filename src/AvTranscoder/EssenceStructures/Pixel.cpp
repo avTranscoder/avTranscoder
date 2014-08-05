@@ -10,6 +10,8 @@ extern "C" {
 #include <libavutil/pixdesc.h>
 }
 
+#include <stdexcept>
+
 namespace avtranscoder
 {
 
@@ -65,7 +67,13 @@ AVPixelFormat Pixel::findPixel() const
 
 void Pixel::init( const AVPixelFormat avPixelFormat )
 {
-	const AVPixFmtDescriptor *pix_desc = av_pix_fmt_desc_get( avPixelFormat );
+	const AVPixFmtDescriptor* pix_desc = av_pix_fmt_desc_get( avPixelFormat );
+	
+	if( ! pix_desc )
+	{
+		throw std::runtime_error( "unable to find pixel format." ); 
+	}
+	
 	setBitsPerPixel   ( av_get_bits_per_pixel( pix_desc ) );
 	setBigEndian      ( pix_desc->flags & PIX_FMT_BE );
 	setComponents     ( pix_desc->nb_components );
