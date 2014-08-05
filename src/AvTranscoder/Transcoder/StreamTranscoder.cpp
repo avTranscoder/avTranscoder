@@ -298,7 +298,7 @@ bool StreamTranscoder::processTranscode()
 	if( _verbose )
 		std::cout << "transcode a frame " << std::endl;
 	if( _currentEssence->readNextFrame( *_sourceBuffer ) )
-	{ 
+	{
 		if( _verbose )
 			std::cout << "convert " << _sourceBuffer->getSize() << std::endl;
 		_transform->convert( *_sourceBuffer, *_frameBuffer );
