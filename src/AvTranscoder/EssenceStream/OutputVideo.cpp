@@ -68,7 +68,7 @@ bool OutputVideo::encodeFrame( const Frame& sourceFrame, DataStream& codedFrame 
 	frame->width  = codecContext->width;
 	frame->height = codecContext->height;
 	frame->format = codecContext->pix_fmt;
-	avpicture_fill( (AVPicture*)frame, const_cast< unsigned char * >( sourceImageFrame.getPtr() ), codecContext->pix_fmt, codecContext->width, codecContext->height );
+	avpicture_fill( (AVPicture*)frame, sourceImageFrame.getPtr(), codecContext->pix_fmt, codecContext->width, codecContext->height );
 
 	AVPacket packet;
 	av_init_packet( &packet );
@@ -80,12 +80,7 @@ bool OutputVideo::encodeFrame( const Frame& sourceFrame, DataStream& codedFrame 
 	if( ( codecContext->coded_frame ) &&
 		( codecContext->coded_frame->pts != (int)AV_NOPTS_VALUE ) )
 	{
-		// why need to do that ?
-		//packet.pts = av_rescale_q( codecContext->coded_frame->pts, codecContext->time_base, codecContext->time_base );
-
-		//std::cout << "pts with rescale " << (int)packet.pts << std::endl;
 		packet.pts = codecContext->coded_frame->pts;
-		//std::cout << "pts without rescale " << (int)packet.pts << std::endl;
 	}
 
 	if( codecContext->coded_frame &&
@@ -93,7 +88,6 @@ bool OutputVideo::encodeFrame( const Frame& sourceFrame, DataStream& codedFrame 
 	{
 		packet.flags |= AV_PKT_FLAG_KEY;
 	}
-
 
 #if LIBAVCODEC_VERSION_MAJOR > 53
 	int gotPacket = 0;
@@ -144,7 +138,6 @@ bool OutputVideo::encodeFrame( const Frame& sourceFrame, DataStream& codedFrame 
 #endif
 	return ret == 0;
 }
-
 
 bool OutputVideo::encodeFrame( DataStream& codedFrame )
 {

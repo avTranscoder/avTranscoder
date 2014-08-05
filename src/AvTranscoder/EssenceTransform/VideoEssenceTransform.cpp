@@ -99,11 +99,11 @@ void VideoEssenceTransform::convert( const Frame& srcFrame, Frame& dstFrame )
 
 	for( size_t plane = 0; plane < MAX_SWS_PLANE; ++plane )
 	{
-		_srcData.at( plane ) = (uint8_t*) const_cast< unsigned char* >( src.getPtr() + _srcOffsets.at( plane ) );
+		_srcData.at( plane ) = (uint8_t*) src.getPtr() + _srcOffsets.at( plane );
 		_dstData.at( plane ) = (uint8_t*) dst.getPtr() + _dstOffsets.at( plane );
 	}
 	
-	if( !_imageConvertContext )
+	if( ! _imageConvertContext )
 	{
 		throw std::runtime_error( "unknown color convert context" );
 	}
@@ -112,7 +112,7 @@ void VideoEssenceTransform::convert( const Frame& srcFrame, Frame& dstFrame )
 		&_srcData[0], &_srcLineSize[0], 0, src.desc().getHeight(),
 		&_dstData[0], &_dstLineSize[0] );
 
-	if( ret != (int) src.desc().getHeight() )
+	if( ret != (int) dst.desc().getHeight() )
 		throw std::runtime_error( "error in color converter" );
 }
 
