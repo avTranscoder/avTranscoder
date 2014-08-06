@@ -1,4 +1,5 @@
 #include "Transcoder.hpp"
+#include <limits>
 
 namespace avtranscoder
 {
@@ -11,6 +12,7 @@ Transcoder::Transcoder( OutputFile& outputFile )
 	, _dummyAudio()
 	, _dummyVideo()
 	, _profile( true )
+	, _outputFps( 25 )
 	, _finalisedStreams( 0 )
 	, _eProcessMethod ( eProcessMethodLongest )
 	, _verbose( false )
@@ -258,7 +260,9 @@ void Transcoder::process( ProgressListener& progress )
 		dataStreams.push_back( dataStream );
 	}
 
-	if( ! _inputStreams.size() )
+	if( ! _inputStreams.size() &&
+		! _dummyVideo.size() && 
+		! _dummyAudio.size() )
 	{
 		throw std::runtime_error( "missing input streams in transcoder" );
 	}
@@ -268,7 +272,27 @@ void Transcoder::process( ProgressListener& progress )
 	
 	_outputFile.beginWrap();
 
-	double totalDuration = _inputStreams.at( 0 )->getDuration();
+	double totalDuration = std::numeric_limits<double>::max();
+	double minTotalDuration = std::numeric_limits<double>::max();
+	double maxTotalDuration = 0;
+	
+	for( size_t i = 0; i < _inputStreams.size(); ++i )
+	{
+		minTotalDuration = std::min( _inputStreams.at( i )->getDuration(), minTotalDuration );
+		maxTotalDuration = std::max( _inputStreams.at( i )->getDuration(), maxTotalDuration );
+	}
+	switch( _eProcessMethod )
+	{
+		case eProcessMethodShortest :
+			totalDuration = minTotalDuration;
+			break;
+		case eProcessMethodLongest :
+			totalDuration = maxTotalDuration;
+			break;
+		case eProcessMethodInfinity :
+			totalDuration = std::numeric_limits<double>::max();
+			break;
+	}
 
 	if( _verbose )
 		av_log_set_level( AV_LOG_DEBUG );
@@ -280,7 +304,7 @@ void Transcoder::process( ProgressListener& progress )
 		if( ! processFrame() )
 			break;
 		
-		if( progress.progress( _inputStreams.at( 0 )->getPacketDuration() * ( frame ), totalDuration ) == eJobStatusCancel )
+		if( progress.progress( 1 / _outputFps * ( frame ), totalDuration ) == eJobStatusCancel )
 		{
 			break;
 		}
