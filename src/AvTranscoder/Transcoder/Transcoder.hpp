@@ -126,6 +126,8 @@ private:
 
 	Profile _profile;
 
+	double _outputFps;
+
 	size_t _finalisedStreams;
 	EProcessMethod _eProcessMethod;
 
