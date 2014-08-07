@@ -102,6 +102,8 @@ public:
 
 	void setVerbose( bool verbose = true );
 
+	void setOutputFps( double fps ) { _outputFps = fps; }
+
 private:
 
 	void addRewrapStream( const std::string& filename, const size_t streamIndex );
