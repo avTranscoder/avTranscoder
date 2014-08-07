@@ -116,6 +116,17 @@ private:
 
 	InputFile* addInputFile( const std::string& filename, const size_t streamIndex );
 
+	/**
+     * @brief Get the duration of the shortest stream.
+	 * @note if there is only dummy, return limit of double.
+     */
+	double getMinTotalDuration() const;
+	/**
+     * @brief Get the duration of the longest stream.
+	 * @note if there is only dummy, return limit of double.
+     */
+	double getMaxTotalDuration() const;
+
 private:
 	OutputFile&                      _outputFile;
 	std::vector< InputFile* >        _inputFiles;

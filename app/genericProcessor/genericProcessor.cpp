@@ -108,13 +108,16 @@ int main( int argc, char** argv )
 		avtranscoder::OutputFile outputFile( argv[2] );
 
 		avtranscoder::Transcoder transcoder( outputFile );
-		transcoder.setVerbose( verbose );
-		transcoder.setProcessMethod( avtranscoder::eProcessMethodShortest );
 
 		if( verbose )
 			std::cout << "parse config file" << std::endl;
 		parseConfigFile( inputConfigFile, transcoder, profiles );
 
+		// set verbose of all stream
+		transcoder.setVerbose( verbose );
+		transcoder.setProcessMethod( avtranscoder::eProcessMethodInfinity );
+		//transcoder.setOutputFps( 12 );
+		
 		if( verbose )
 			std::cout << "start Transcode" << std::endl;
 

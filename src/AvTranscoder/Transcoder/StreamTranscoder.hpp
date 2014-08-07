@@ -53,7 +53,14 @@ public:
 	void switchToDummyEssence();
 	void switchToInputEssence();
 
+	void setInfinityStream( bool isInfinity ) { _infinityStream = isInfinity; }
 	void setOffset( bool offset = true ){ _offset = offset; }
+
+	/**
+     * @brief Get the duration of the stream.
+	 * @note if it's a dummy stream, return limit of double.
+     */
+	double getDuration() const;
 
 private:
 	bool processRewrap();
@@ -92,6 +99,12 @@ private:
 	bool _verbose;
 
 	bool _offsetPassed;
+
+	/**
+	 * @brief Automatic switch to dummy
+	 * @note not applicable when rewrap
+	 */
+	bool _infinityStream;
 };
 	
 }

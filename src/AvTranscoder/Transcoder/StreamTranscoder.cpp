@@ -15,6 +15,7 @@
 
 #include <cassert>
 #include <iostream>
+#include <limits>
 
 namespace avtranscoder
 {
@@ -38,6 +39,7 @@ StreamTranscoder::StreamTranscoder(
 	, _takeFromDummy( false )
 	, _verbose( false )
 	, _offsetPassed( false )
+	, _infinityStream( false )
 {
 	// create a re-wrapping case
 	switch( _inputStream->getStreamType() )
@@ -79,6 +81,7 @@ StreamTranscoder::StreamTranscoder(
 	, _takeFromDummy( false )
 	, _verbose( false )
 	, _offsetPassed( false )
+	, _infinityStream( false )
 {
 	// create a transcode case
 	switch( _inputStream->getStreamType() )
@@ -174,6 +177,7 @@ StreamTranscoder::StreamTranscoder(
 	, _takeFromDummy( false )
 	, _verbose( false )
 	, _offsetPassed( false )
+	, _infinityStream( false )
 {
 	// create a coding case based on a InputEssence (aka dummy reader)
 	if( ! profile.count( Profile::avProfileType ) )
@@ -331,6 +335,11 @@ bool StreamTranscoder::processTranscode()
 			std::cout << "encode last frame(s)" << std::endl;
 		if( ! _outputEssence->encodeFrame( dataStream ) )
 		{
+			if( _infinityStream )
+			{
+				switchToDummyEssence();
+				return processTranscode();
+			}
 			return false;
 		}
 	}
@@ -376,6 +385,11 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 	{
 		if( ! _outputEssence->encodeFrame( dataStream ) )
 		{
+			if( _infinityStream )
+			{
+				switchToDummyEssence();
+				return processTranscode();
+			}
 			return false;
 		}
 	}
@@ -400,6 +414,20 @@ void StreamTranscoder::switchToDummyEssence()
 void StreamTranscoder::switchToInputEssence()
 {
 	switchEssence( false );
+}
+
+double StreamTranscoder::getDuration() const
+{	
+	if( _inputStream )
+	{
+		double totalDuration = 0;
+		totalDuration += _inputStream->getDuration();
+		// @todo add offset
+		return totalDuration;
+	}
+	// dummy
+	else
+		return std::numeric_limits<double>::max();
 }
 
 }
