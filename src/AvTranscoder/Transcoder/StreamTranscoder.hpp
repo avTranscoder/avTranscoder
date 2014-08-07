@@ -52,7 +52,6 @@ public:
 	void switchEssence( bool swithToDummy = true );
 	void switchToDummyEssence();
 	void switchToInputEssence();
-	void setInfinityProcess( bool infinity = true ){ _infiniteProcess = infinity; }
 
 	void setOffset( bool offset = true ){ _offset = offset; }
 
@@ -89,7 +88,6 @@ private:
 
 	bool _transcodeStream;
 	bool _takeFromDummy;
-	bool _infiniteProcess;
 
 	bool _verbose;
 

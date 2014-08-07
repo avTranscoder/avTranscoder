@@ -321,10 +321,6 @@ void Transcoder::process( ProgressListener& progress )
 void Transcoder::setProcessMethod( const EProcessMethod eProcessMethod )
 {
 	_eProcessMethod	= eProcessMethod;
-	for( std::vector< StreamTranscoder* >::iterator it = _streamTranscoders.begin(); it != _streamTranscoders.end(); ++it )
-	{
-		(*it)->setInfinityProcess( eProcessMethod == eProcessMethodInfinity );
-	}
 }
 
 void Transcoder::setVerbose( bool verbose )

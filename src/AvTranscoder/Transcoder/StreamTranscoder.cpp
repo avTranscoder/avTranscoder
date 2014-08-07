@@ -36,7 +36,6 @@ StreamTranscoder::StreamTranscoder(
 	, _offset( 0 )
 	, _transcodeStream( false )
 	, _takeFromDummy( false )
-	, _infiniteProcess( false )
 	, _verbose( false )
 	, _offsetPassed( false )
 {
@@ -78,7 +77,6 @@ StreamTranscoder::StreamTranscoder(
 	, _offset( offset )
 	, _transcodeStream( true )
 	, _takeFromDummy( false )
-	, _infiniteProcess( false )
 	, _verbose( false )
 	, _offsetPassed( false )
 {
@@ -174,7 +172,6 @@ StreamTranscoder::StreamTranscoder(
 	, _offset( 0 )
 	, _transcodeStream( true )
 	, _takeFromDummy( false )
-	, _infiniteProcess( false )
 	, _verbose( false )
 	, _offsetPassed( false )
 {
@@ -330,12 +327,6 @@ bool StreamTranscoder::processTranscode()
 	}
 	else
 	{
-		if( _infiniteProcess )
-		{
-			switchToDummyEssence();
-			return processTranscode( );
-		}
-
 		if( _verbose )
 			std::cout << "encode last frame(s)" << std::endl;
 		if( ! _outputEssence->encodeFrame( dataStream ) )
@@ -383,12 +374,6 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 	}
 	else
 	{
-		if( _infiniteProcess )
-		{
-			switchToDummyEssence();
-			return processTranscode( );
-		}
-
 		if( ! _outputEssence->encodeFrame( dataStream ) )
 		{
 			return false;
