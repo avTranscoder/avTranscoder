@@ -45,15 +45,14 @@ public:
 	 */
 	bool processFrame();
 
-	bool isTranscodeStream() const { return _transcodeStream; }
-
-	void setVerbose( bool verbose = true ){ _verbose = verbose; }
-
 	void switchEssence( bool swithToDummy = true );
 	void switchToDummyEssence();
 	void switchToInputEssence();
 
+	void setVerbose( bool verbose = true ){ _verbose = verbose; }
+
 	void setInfinityStream( bool isInfinity ) { _infinityStream = isInfinity; }
+
 	void setOffset( bool offset = true ){ _offset = offset; }
 
 	/**
@@ -93,7 +92,6 @@ private:
 	 */
 	size_t _offset;
 
-	bool _transcodeStream;
 	bool _takeFromDummy;
 
 	bool _verbose;

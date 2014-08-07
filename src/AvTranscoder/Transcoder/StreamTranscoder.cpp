@@ -35,7 +35,6 @@ StreamTranscoder::StreamTranscoder(
 	, _subStreamIndex( -1 )
 	, _frameProcessed( 0 )
 	, _offset( 0 )
-	, _transcodeStream( false )
 	, _takeFromDummy( false )
 	, _verbose( false )
 	, _offsetPassed( false )
@@ -77,7 +76,6 @@ StreamTranscoder::StreamTranscoder(
 	, _subStreamIndex( subStreamIndex )
 	, _frameProcessed( 0 )
 	, _offset( offset )
-	, _transcodeStream( true )
 	, _takeFromDummy( false )
 	, _verbose( false )
 	, _offsetPassed( false )
@@ -153,7 +151,6 @@ StreamTranscoder::StreamTranscoder(
 			break;
 		}
 	}
-	
 	switchEssence( offset != 0 );
 }
 
@@ -173,7 +170,6 @@ StreamTranscoder::StreamTranscoder(
 	, _subStreamIndex( -1 )
 	, _frameProcessed( 0 )
 	, _offset( 0 )
-	, _transcodeStream( true )
 	, _takeFromDummy( false )
 	, _verbose( false )
 	, _offsetPassed( false )
@@ -250,7 +246,7 @@ StreamTranscoder::~StreamTranscoder()
 bool StreamTranscoder::processFrame()
 {
 	++_frameProcessed;
-	if( _transcodeStream )
+	if( _transform )
 	{
 		if( _subStreamIndex < 0 )
 		{
@@ -288,12 +284,10 @@ bool StreamTranscoder::processRewrap( const int subStreamIndex )
 	assert( _outputStream != NULL );
 	
 	DataStream dataStream;
-	// std::vector<DataStream> dataStream;
 
 	if( ! _inputStream->readNextPacket( dataStream ) )
 		return false;
 	_outputStream->wrap( dataStream );
-	// outputStream.wrap( dataStream.at( subStreamIndex ) );
 
 	return true;
 }
@@ -383,6 +377,8 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 	}
 	else
 	{
+		if( _verbose )
+			std::cout << "encode last frame(s)" << std::endl;
 		if( ! _outputEssence->encodeFrame( dataStream ) )
 		{
 			if( _infinityStream )

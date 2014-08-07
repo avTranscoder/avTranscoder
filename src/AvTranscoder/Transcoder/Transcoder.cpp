@@ -80,7 +80,6 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, Pro
 	_profile.update( profileDesc );
 	if( ! filename.length() )
 	{
-		// if( _verbose )
 		std::cerr << "can't add a stream with no filename indicated" << std::endl;
 		return;
 	}
