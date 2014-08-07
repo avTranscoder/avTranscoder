@@ -48,71 +48,101 @@ public:
 	 * @brief Add a stream and set a profile
 	 * @note If profileName is empty, rewrap.
 	 */
-	void add( const std::string& filename, const size_t streamIndex, const std::string& profileName = "" );
+	void add( const std::string& filename, const size_t streamIndex, const std::string& profileName = "", const size_t offset = 0 );
 	/*
 	 * @note If filename is empty, add a dummy stream.
 	 * @note If filename is empty, profileName can't be empty (no sens to rewrap a dummy stream).
 	 */
-	void add( const std::string& filename, const size_t streamIndex, const std::string& profileName, CodedDesc& essenceDesc );
+	void add( const std::string& filename, const size_t streamIndex, const std::string& profileName, CodedDesc& essenceDesc, const size_t offset = 0 );
 
 	/**
 	 * @brief Add a stream and set a custom profile
 	 * @note Profile will be updated, be sure to pass unique profile name.
 	 */
-	void add( const std::string& filename, const size_t streamIndex, Profile::ProfileDesc& profileDesc );
+	void add( const std::string& filename, const size_t streamIndex, Profile::ProfileDesc& profileDesc, const size_t offset = 0 );
 	/*
 	 * @note If filename is empty, add a dummy stream.
 	 */
-	void add( const std::string& filename, const size_t streamIndex, Profile::ProfileDesc& profileDesc, CodedDesc& essenceDesc );
+	void add( const std::string& filename, const size_t streamIndex, Profile::ProfileDesc& profileDesc, CodedDesc& essenceDesc, const size_t offset = 0  );
 	
 	/**
 	 * @brief Add a stream and set a profile
 	 * @note If profileName is empty, rewrap.
 	 * @note If subStreamIndex is negative, no substream is selected it's the stream. 
 	 */
-	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const std::string& profileName = "" );
+	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const std::string& profileName = "", const size_t offset = 0 );
 	/**
 	 * @note If filename is empty, add a dummy stream.
 	 * @note If filename is empty, profileName can't be empty (no sens to rewrap a dummy stream).
 	 */
-	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const std::string& profileName, CodedDesc& essenceDesc );
+	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const std::string& profileName, CodedDesc& essenceDesc, const size_t offset = 0  );
 
 	/**
 	 * @brief Add a stream and set a custom profile
 	 * @note Profile will be updated, be sure to pass unique profile name.
 	 * @note If subStreamIndex is negative, no substream is selected it's the stream.
 	 */
-	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, Profile::ProfileDesc& profileDesc );
+	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, Profile::ProfileDesc& profileDesc, const size_t offset = 0 );
 	/**
 	 * @note If filename is empty, add a dummy stream.
 	 */
-	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, Profile::ProfileDesc& profileDesc, CodedDesc& essenceDesc );
+	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, Profile::ProfileDesc& profileDesc, CodedDesc& essenceDesc, const size_t offset = 0  );
 
 	/**
 	 * @brief Add the stream
 	 * @note The stream will be deleted in Transcoder's destructor.
 	 */
 	void add( StreamTranscoder& stream );
-	
+
+	/**
+	 * @brief Process the next frame of all streams.
+     * @return if a frame was processed or not.
+     */
 	bool processFrame();
 
+	/**
+	 * @brief Process all the streams, and ended the process depending on the transcode politic.
+     * @param progress
+     */
 	void process( ProgressListener& progress );
 
+	/**
+	 * @brief Set the transcodage politic.
+	 * @note If you call it before adding the streams, the process will stop at the end of the shortest stream.
+     */
 	void setProcessMethod( const EProcessMethod eProcessMethod );
 
+	/**
+	 * @brief Set verbose mode for the Transcoder and his streams.
+	 * @note If you call it before adding the streams, no verbose mode will be set for the new streams.
+     */
 	void setVerbose( bool verbose = true );
+
+	void setOutputFps( double fps ) { _outputFps = fps; }
 
 private:
 
 	void addRewrapStream( const std::string& filename, const size_t streamIndex );
 
-	void addTranscodeStream( const std::string& filename, const size_t streamIndex, Profile::ProfileDesc& profile );
+	void addTranscodeStream( const std::string& filename, const size_t streamIndex, Profile::ProfileDesc& profile, const size_t offset = 0 );
 
-	void addTranscodeStream( const std::string& filename, const size_t streamIndex, const size_t subStreamIndex, Profile::ProfileDesc& profile );
+	void addTranscodeStream( const std::string& filename, const size_t streamIndex, const size_t subStreamIndex, Profile::ProfileDesc& profile, const size_t offset = 0 );
 
 	void addDummyStream( const Profile::ProfileDesc& profile, const CodedDesc& essenceDesc );
 
 	InputFile* addInputFile( const std::string& filename, const size_t streamIndex );
+
+	/**
+     * @brief Get the duration of the shortest stream.
+	 * @note if there is only dummy, return limit of double.
+     */
+	double getMinTotalDuration() const;
+
+	/**
+     * @brief Get the duration of the longest stream.
+	 * @note if there is only dummy, return limit of double.
+     */
+	double getMaxTotalDuration() const;
 
 private:
 	OutputFile&                      _outputFile;

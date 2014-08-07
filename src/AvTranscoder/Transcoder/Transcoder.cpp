@@ -40,7 +40,7 @@ Transcoder::~Transcoder()
 	}
 }
 
-void Transcoder::add( const std::string& filename, const size_t streamIndex, const std::string& profileName )
+void Transcoder::add( const std::string& filename, const size_t streamIndex, const std::string& profileName, const size_t offset )
 {
 	if( profileName.length() == 0 ) // no profile, only re-wrap stream
 	{
@@ -51,10 +51,10 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 	}
 
 	Profile::ProfileDesc& transcodeProfile = _profile.getProfile( profileName );
-	add( filename, streamIndex, transcodeProfile );
+	add( filename, streamIndex, transcodeProfile, offset );
 }
 
-void Transcoder::add( const std::string& filename, const size_t streamIndex, const std::string& profileName, CodedDesc& essenceDesc )
+void Transcoder::add( const std::string& filename, const size_t streamIndex, const std::string& profileName, CodedDesc& essenceDesc, const size_t offset )
 {
 	if( profileName.length() == 0 ) // no profile, only re-wrap stream
 	{
@@ -72,25 +72,24 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 	}
 	
 	Profile::ProfileDesc& transcodeProfile = _profile.getProfile( profileName );
-	add( filename, streamIndex, transcodeProfile, essenceDesc );
+	add( filename, streamIndex, transcodeProfile, essenceDesc, offset );
 }
 
-void Transcoder::add( const std::string& filename, const size_t streamIndex, Profile::ProfileDesc& profileDesc )
+void Transcoder::add( const std::string& filename, const size_t streamIndex, Profile::ProfileDesc& profileDesc, const size_t offset )
 {
 	_profile.update( profileDesc );
 	if( ! filename.length() )
 	{
-		// if( _verbose )
 		std::cerr << "can't add a stream with no filename indicated" << std::endl;
 		return;
 	}
 
 	if( _verbose )
 		std::cout << "add transcoding stream" << std::endl;
-	addTranscodeStream( filename, streamIndex, profileDesc );
+	addTranscodeStream( filename, streamIndex, profileDesc, offset );
 }
 
-void Transcoder::add( const std::string& filename, const size_t streamIndex, Profile::ProfileDesc& profileDesc, CodedDesc& essenceDesc )
+void Transcoder::add( const std::string& filename, const size_t streamIndex, Profile::ProfileDesc& profileDesc, CodedDesc& essenceDesc, const size_t offset )
 {
 	_profile.update( profileDesc );
 	if( ! filename.length() )
@@ -103,14 +102,14 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, Pro
 	
 	if( _verbose )
 		std::cout << "add transcoding stream" << std::endl;
-	addTranscodeStream( filename, streamIndex, profileDesc );
+	addTranscodeStream( filename, streamIndex, profileDesc, offset );
 }
 
-void Transcoder::add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const std::string& profileName )
+void Transcoder::add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const std::string& profileName, const size_t offset )
 {
 	if( subStreamIndex < 0 )
 	{
-		add( filename, streamIndex, profileName );
+		add( filename, streamIndex, profileName, offset );
 		return;
 	}
 
@@ -124,10 +123,10 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 	}
 
 	Profile::ProfileDesc& transcodeProfile = _profile.getProfile( profileName );
-	add( filename, streamIndex, subStreamIndex, transcodeProfile );
+	add( filename, streamIndex, subStreamIndex, transcodeProfile, offset );
 }
 
-void Transcoder::add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const std::string& profileName, CodedDesc& essenceDesc )
+void Transcoder::add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const std::string& profileName, CodedDesc& essenceDesc, const size_t offset )
 {
 	if( subStreamIndex < 0 )
 	{
@@ -151,16 +150,16 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 	}
 
 	Profile::ProfileDesc& transcodeProfile = _profile.getProfile( profileName );
-	add( filename, streamIndex, subStreamIndex, transcodeProfile, essenceDesc );
+	add( filename, streamIndex, subStreamIndex, transcodeProfile, essenceDesc, offset );
 }
 
-void Transcoder::add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, Profile::ProfileDesc& profileDesc )
+void Transcoder::add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, Profile::ProfileDesc& profileDesc, const size_t offset )
 {
 	_profile.update( profileDesc );
 	
 	if( subStreamIndex < 0 )
 	{
-		add( filename, streamIndex, profileDesc );
+		add( filename, streamIndex, profileDesc, offset );
 		return;
 	}
 	
@@ -173,10 +172,10 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 
 	if( _verbose )
 		std::cout << "add transcoding stream for substream " << subStreamIndex << std::endl;
-	addTranscodeStream( filename, streamIndex, subStreamIndex, profileDesc );
+	addTranscodeStream( filename, streamIndex, subStreamIndex, profileDesc, offset );
 }
 
-void Transcoder::add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, Profile::ProfileDesc& profileDesc, CodedDesc& essenceDesc )
+void Transcoder::add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, Profile::ProfileDesc& profileDesc, CodedDesc& essenceDesc, const size_t offset )
 {
 	_profile.update( profileDesc );
 	
@@ -196,7 +195,7 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 
 	if( _verbose )
 		std::cout << "add transcoding stream for substream " << subStreamIndex << std::endl;
-	addTranscodeStream( filename, streamIndex, subStreamIndex, profileDesc );
+	addTranscodeStream( filename, streamIndex, subStreamIndex, profileDesc, offset );
 }
 
 void Transcoder::add( StreamTranscoder& stream )
@@ -220,27 +219,10 @@ bool Transcoder::processFrame()
 
 		bool streamProcessStatus = _streamTranscoders.at( streamIndex )->processFrame();
 
-		if( streamProcessStatus )
-			continue;
-
-		switch( _eProcessMethod )
+		if( ! streamProcessStatus )
 		{
-			case eProcessMethodShortest :
-				_streamTranscoders.clear();
-				break;
-			case eProcessMethodLongest :
-				++_finalisedStreams;
-				_streamTranscoders.at( streamIndex )->switchToDummyEssence();
-				if( _verbose )
-					std::cout << "-> switch to dummy for stream " << streamIndex << std::endl;
-				if( _finalisedStreams == _streamTranscoders.size() )
-					_streamTranscoders.clear();
-				break;
-			case eProcessMethodInfinity :
-				if( _verbose )
-					std::cout << "-> infinity processing: switch to dummy for stream " << streamIndex << std::endl;
-				_streamTranscoders.at( streamIndex )->switchToDummyEssence();
-				break;
+			_streamTranscoders.clear();
+			return false;
 		}
 	}
 	return true;
@@ -273,21 +255,13 @@ void Transcoder::process( ProgressListener& progress )
 	_outputFile.beginWrap();
 
 	double totalDuration = std::numeric_limits<double>::max();
-	double minTotalDuration = std::numeric_limits<double>::max();
-	double maxTotalDuration = 0;
-	
-	for( size_t i = 0; i < _inputStreams.size(); ++i )
-	{
-		minTotalDuration = std::min( _inputStreams.at( i )->getDuration(), minTotalDuration );
-		maxTotalDuration = std::max( _inputStreams.at( i )->getDuration(), maxTotalDuration );
-	}
 	switch( _eProcessMethod )
 	{
 		case eProcessMethodShortest :
-			totalDuration = minTotalDuration;
+			totalDuration = getMinTotalDuration();
 			break;
 		case eProcessMethodLongest :
-			totalDuration = maxTotalDuration;
+			totalDuration = getMaxTotalDuration();
 			break;
 		case eProcessMethodInfinity :
 			totalDuration = std::numeric_limits<double>::max();
@@ -321,9 +295,27 @@ void Transcoder::process( ProgressListener& progress )
 void Transcoder::setProcessMethod( const EProcessMethod eProcessMethod )
 {
 	_eProcessMethod	= eProcessMethod;
-	for( std::vector< StreamTranscoder* >::iterator it = _streamTranscoders.begin(); it != _streamTranscoders.end(); ++it )
+
+	for( size_t i = 0; i < _streamTranscoders.size(); ++i )
 	{
-		(*it)->setInfinityProcess( eProcessMethod == eProcessMethodInfinity );
+		switch( _eProcessMethod )
+		{
+			case eProcessMethodShortest :
+				if( _streamTranscoders.at( i )->getDuration() == getMinTotalDuration() )
+					_streamTranscoders.at( i )->setInfinityStream( false );
+				else
+					_streamTranscoders.at( i )->setInfinityStream( true );
+				break;
+			case eProcessMethodLongest :
+				if( _streamTranscoders.at( i )->getDuration() == getMaxTotalDuration() )
+					_streamTranscoders.at( i )->setInfinityStream( false );
+				else
+					_streamTranscoders.at( i )->setInfinityStream( true );
+				break;
+			case eProcessMethodInfinity :
+				_streamTranscoders.at( i )->setInfinityStream( true );
+				break;
+		}
 	}
 }
 
@@ -344,7 +336,7 @@ void Transcoder::addRewrapStream( const std::string& filename, const size_t stre
 	_inputStreams.push_back( &referenceFile->getStream( streamIndex ) );
 }
 
-void Transcoder::addTranscodeStream( const std::string& filename, const size_t streamIndex, Profile::ProfileDesc& profile )
+void Transcoder::addTranscodeStream( const std::string& filename, const size_t streamIndex, Profile::ProfileDesc& profile, const size_t offset )
 {
 	InputFile* referenceFile = addInputFile( filename, streamIndex );
 
@@ -353,7 +345,7 @@ void Transcoder::addTranscodeStream( const std::string& filename, const size_t s
 		case AVMEDIA_TYPE_VIDEO:
 		case AVMEDIA_TYPE_AUDIO:
 		{
-			_streamTranscoders.push_back( new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile, profile ) );
+			_streamTranscoders.push_back( new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile, profile, -1 , offset ) );
 			_inputStreams.push_back( &referenceFile->getStream( streamIndex ) );
 			break;
 		}
@@ -367,7 +359,7 @@ void Transcoder::addTranscodeStream( const std::string& filename, const size_t s
 	}
 }
 
-void Transcoder::addTranscodeStream( const std::string& filename, const size_t streamIndex, const size_t subStreamIndex, Profile::ProfileDesc& profile )
+void Transcoder::addTranscodeStream( const std::string& filename, const size_t streamIndex, const size_t subStreamIndex, Profile::ProfileDesc& profile, const size_t offset )
 {
 	InputFile* referenceFile = addInputFile( filename, streamIndex );
 
@@ -376,7 +368,7 @@ void Transcoder::addTranscodeStream( const std::string& filename, const size_t s
 		case AVMEDIA_TYPE_VIDEO:
 		case AVMEDIA_TYPE_AUDIO:
 		{
-			_streamTranscoders.push_back( new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile, profile, subStreamIndex ) );
+			_streamTranscoders.push_back( new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile, profile, subStreamIndex, offset ) );
 			_inputStreams.push_back( &referenceFile->getStream( streamIndex ) );
 			break;
 		}
@@ -441,6 +433,28 @@ InputFile* Transcoder::addInputFile( const std::string& filename, const size_t s
 	referenceFile->readStream( streamIndex );
 
 	return referenceFile;
+}
+
+double Transcoder::getMinTotalDuration() const
+{
+	double minTotalDuration = std::numeric_limits<double>::max();
+	
+	for( size_t i = 0; i < _streamTranscoders.size(); ++i )
+	{
+		minTotalDuration = std::min( _streamTranscoders.at( i )->getDuration(), minTotalDuration );
+	}
+	return minTotalDuration;
+}
+
+double Transcoder::getMaxTotalDuration() const
+{
+	double maxTotalDuration = 0;
+	
+	for( size_t i = 0; i < _streamTranscoders.size(); ++i )
+	{
+		maxTotalDuration = std::max( _streamTranscoders.at( i )->getDuration(), maxTotalDuration );
+	}
+	return maxTotalDuration;
 }
 
 }

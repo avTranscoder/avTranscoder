@@ -22,16 +22,18 @@ class StreamTranscoder
 public:
 	/**
 	 * @brief rewrap stream
+	 * @note offset feature when rewrap a stream is not supported
 	 **/
 	StreamTranscoder( InputStream& inputStream, OutputFile& outputFile );
 
 	/**
 	 * @brief transcode stream
 	 **/
-	StreamTranscoder( InputStream& inputStream, OutputFile& outputFile, const Profile::ProfileDesc& profile, const int subStreamIndex = -1 );
+	StreamTranscoder( InputStream& inputStream, OutputFile& outputFile, const Profile::ProfileDesc& profile, const int subStreamIndex = -1, const size_t offset = 0 );
 
 	/**
 	 * @brief encode from dummy stream
+	 * @note offset feature has no sense here
 	 **/
 	StreamTranscoder( InputEssence& inputEssence, OutputFile& outputFile, const Profile::ProfileDesc& profile );
 
@@ -43,13 +45,21 @@ public:
 	 */
 	bool processFrame();
 
-	bool isTranscodeStream() const { return _transcodeStream; }
+	void switchEssence( bool swithToDummy = true );
+	void switchToDummyEssence();
+	void switchToInputEssence();
 
 	void setVerbose( bool verbose = true ){ _verbose = verbose; }
 
-	void switchToDummyEssence();
-	void switchToInputEssence();
-	void setInfinityProcess( bool infinity = true ){ _infiniteProcess = infinity; }
+	void setInfinityStream( bool isInfinity ) { _infinityStream = isInfinity; }
+
+	void setOffset( bool offset = true ){ _offset = offset; }
+
+	/**
+     * @brief Get the duration of the stream.
+	 * @note if it's a dummy stream, return limit of double.
+     */
+	double getDuration() const;
 
 private:
 	bool processRewrap();
@@ -72,11 +82,27 @@ private:
 	EssenceTransform* _transform;
 
 	int  _subStreamIndex;
-	bool _transcodeStream;
+
+	/**
+	 * @brief How many frame processed for this StreamTranscoder.
+	 */
+	size_t _frameProcessed;
+	/**
+	 * @brief Offset, in frame, at the beginning of the StreamTranscoder.
+	 */
+	size_t _offset;
+
 	bool _takeFromDummy;
-	bool _infiniteProcess;
 
 	bool _verbose;
+
+	bool _offsetPassed;
+
+	/**
+	 * @brief Automatic switch to dummy
+	 * @note not applicable when rewrap
+	 */
+	bool _infinityStream;
 };
 	
 }
