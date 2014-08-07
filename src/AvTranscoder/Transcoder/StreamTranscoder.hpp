@@ -22,16 +22,18 @@ class StreamTranscoder
 public:
 	/**
 	 * @brief rewrap stream
+	 * @note offset feature when rewrap a stream is not supported
 	 **/
 	StreamTranscoder( InputStream& inputStream, OutputFile& outputFile );
 
 	/**
 	 * @brief transcode stream
 	 **/
-	StreamTranscoder( InputStream& inputStream, OutputFile& outputFile, const Profile::ProfileDesc& profile, const int subStreamIndex = -1 );
+	StreamTranscoder( InputStream& inputStream, OutputFile& outputFile, const Profile::ProfileDesc& profile, const int subStreamIndex = -1, const size_t offset = 0 );
 
 	/**
 	 * @brief encode from dummy stream
+	 * @note offset feature has no sense here
 	 **/
 	StreamTranscoder( InputEssence& inputEssence, OutputFile& outputFile, const Profile::ProfileDesc& profile );
 
@@ -47,9 +49,12 @@ public:
 
 	void setVerbose( bool verbose = true ){ _verbose = verbose; }
 
+	void switchEssence( bool swithToDummy = true );
 	void switchToDummyEssence();
 	void switchToInputEssence();
 	void setInfinityProcess( bool infinity = true ){ _infiniteProcess = infinity; }
+
+	void setOffset( bool offset = true ){ _offset = offset; }
 
 private:
 	bool processRewrap();
@@ -72,11 +77,23 @@ private:
 	EssenceTransform* _transform;
 
 	int  _subStreamIndex;
+
+	/**
+	 * @brief How many frame processed for this StreamTranscoder.
+	 */
+	size_t _frameProcessed;
+	/**
+	 * @brief Offset, in frame, at the beginning of the StreamTranscoder.
+	 */
+	size_t _offset;
+
 	bool _transcodeStream;
 	bool _takeFromDummy;
 	bool _infiniteProcess;
 
 	bool _verbose;
+
+	bool _offsetPassed;
 };
 	
 }

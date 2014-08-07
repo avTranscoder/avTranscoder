@@ -48,45 +48,45 @@ public:
 	 * @brief Add a stream and set a profile
 	 * @note If profileName is empty, rewrap.
 	 */
-	void add( const std::string& filename, const size_t streamIndex, const std::string& profileName = "" );
+	void add( const std::string& filename, const size_t streamIndex, const std::string& profileName = "", const size_t offset = 0 );
 	/*
 	 * @note If filename is empty, add a dummy stream.
 	 * @note If filename is empty, profileName can't be empty (no sens to rewrap a dummy stream).
 	 */
-	void add( const std::string& filename, const size_t streamIndex, const std::string& profileName, CodedDesc& essenceDesc );
+	void add( const std::string& filename, const size_t streamIndex, const std::string& profileName, CodedDesc& essenceDesc, const size_t offset = 0 );
 
 	/**
 	 * @brief Add a stream and set a custom profile
 	 * @note Profile will be updated, be sure to pass unique profile name.
 	 */
-	void add( const std::string& filename, const size_t streamIndex, Profile::ProfileDesc& profileDesc );
+	void add( const std::string& filename, const size_t streamIndex, Profile::ProfileDesc& profileDesc, const size_t offset = 0 );
 	/*
 	 * @note If filename is empty, add a dummy stream.
 	 */
-	void add( const std::string& filename, const size_t streamIndex, Profile::ProfileDesc& profileDesc, CodedDesc& essenceDesc );
+	void add( const std::string& filename, const size_t streamIndex, Profile::ProfileDesc& profileDesc, CodedDesc& essenceDesc, const size_t offset = 0  );
 	
 	/**
 	 * @brief Add a stream and set a profile
 	 * @note If profileName is empty, rewrap.
 	 * @note If subStreamIndex is negative, no substream is selected it's the stream. 
 	 */
-	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const std::string& profileName = "" );
+	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const std::string& profileName = "", const size_t offset = 0 );
 	/**
 	 * @note If filename is empty, add a dummy stream.
 	 * @note If filename is empty, profileName can't be empty (no sens to rewrap a dummy stream).
 	 */
-	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const std::string& profileName, CodedDesc& essenceDesc );
+	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const std::string& profileName, CodedDesc& essenceDesc, const size_t offset = 0  );
 
 	/**
 	 * @brief Add a stream and set a custom profile
 	 * @note Profile will be updated, be sure to pass unique profile name.
 	 * @note If subStreamIndex is negative, no substream is selected it's the stream.
 	 */
-	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, Profile::ProfileDesc& profileDesc );
+	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, Profile::ProfileDesc& profileDesc, const size_t offset = 0 );
 	/**
 	 * @note If filename is empty, add a dummy stream.
 	 */
-	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, Profile::ProfileDesc& profileDesc, CodedDesc& essenceDesc );
+	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, Profile::ProfileDesc& profileDesc, CodedDesc& essenceDesc, const size_t offset = 0  );
 
 	/**
 	 * @brief Add the stream
@@ -106,9 +106,9 @@ private:
 
 	void addRewrapStream( const std::string& filename, const size_t streamIndex );
 
-	void addTranscodeStream( const std::string& filename, const size_t streamIndex, Profile::ProfileDesc& profile );
+	void addTranscodeStream( const std::string& filename, const size_t streamIndex, Profile::ProfileDesc& profile, const size_t offset = 0 );
 
-	void addTranscodeStream( const std::string& filename, const size_t streamIndex, const size_t subStreamIndex, Profile::ProfileDesc& profile );
+	void addTranscodeStream( const std::string& filename, const size_t streamIndex, const size_t subStreamIndex, Profile::ProfileDesc& profile, const size_t offset = 0 );
 
 	void addDummyStream( const Profile::ProfileDesc& profile, const CodedDesc& essenceDesc );
 

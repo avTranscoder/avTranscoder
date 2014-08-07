@@ -40,7 +40,7 @@ Transcoder::~Transcoder()
 	}
 }
 
-void Transcoder::add( const std::string& filename, const size_t streamIndex, const std::string& profileName )
+void Transcoder::add( const std::string& filename, const size_t streamIndex, const std::string& profileName, const size_t offset )
 {
 	if( profileName.length() == 0 ) // no profile, only re-wrap stream
 	{
@@ -51,10 +51,10 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 	}
 
 	Profile::ProfileDesc& transcodeProfile = _profile.getProfile( profileName );
-	add( filename, streamIndex, transcodeProfile );
+	add( filename, streamIndex, transcodeProfile, offset );
 }
 
-void Transcoder::add( const std::string& filename, const size_t streamIndex, const std::string& profileName, CodedDesc& essenceDesc )
+void Transcoder::add( const std::string& filename, const size_t streamIndex, const std::string& profileName, CodedDesc& essenceDesc, const size_t offset )
 {
 	if( profileName.length() == 0 ) // no profile, only re-wrap stream
 	{
@@ -72,10 +72,10 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 	}
 	
 	Profile::ProfileDesc& transcodeProfile = _profile.getProfile( profileName );
-	add( filename, streamIndex, transcodeProfile, essenceDesc );
+	add( filename, streamIndex, transcodeProfile, essenceDesc, offset );
 }
 
-void Transcoder::add( const std::string& filename, const size_t streamIndex, Profile::ProfileDesc& profileDesc )
+void Transcoder::add( const std::string& filename, const size_t streamIndex, Profile::ProfileDesc& profileDesc, const size_t offset )
 {
 	_profile.update( profileDesc );
 	if( ! filename.length() )
@@ -87,10 +87,10 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, Pro
 
 	if( _verbose )
 		std::cout << "add transcoding stream" << std::endl;
-	addTranscodeStream( filename, streamIndex, profileDesc );
+	addTranscodeStream( filename, streamIndex, profileDesc, offset );
 }
 
-void Transcoder::add( const std::string& filename, const size_t streamIndex, Profile::ProfileDesc& profileDesc, CodedDesc& essenceDesc )
+void Transcoder::add( const std::string& filename, const size_t streamIndex, Profile::ProfileDesc& profileDesc, CodedDesc& essenceDesc, const size_t offset )
 {
 	_profile.update( profileDesc );
 	if( ! filename.length() )
@@ -103,14 +103,14 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, Pro
 	
 	if( _verbose )
 		std::cout << "add transcoding stream" << std::endl;
-	addTranscodeStream( filename, streamIndex, profileDesc );
+	addTranscodeStream( filename, streamIndex, profileDesc, offset );
 }
 
-void Transcoder::add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const std::string& profileName )
+void Transcoder::add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const std::string& profileName, const size_t offset )
 {
 	if( subStreamIndex < 0 )
 	{
-		add( filename, streamIndex, profileName );
+		add( filename, streamIndex, profileName, offset );
 		return;
 	}
 
@@ -124,10 +124,10 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 	}
 
 	Profile::ProfileDesc& transcodeProfile = _profile.getProfile( profileName );
-	add( filename, streamIndex, subStreamIndex, transcodeProfile );
+	add( filename, streamIndex, subStreamIndex, transcodeProfile, offset );
 }
 
-void Transcoder::add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const std::string& profileName, CodedDesc& essenceDesc )
+void Transcoder::add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const std::string& profileName, CodedDesc& essenceDesc, const size_t offset )
 {
 	if( subStreamIndex < 0 )
 	{
@@ -151,16 +151,16 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 	}
 
 	Profile::ProfileDesc& transcodeProfile = _profile.getProfile( profileName );
-	add( filename, streamIndex, subStreamIndex, transcodeProfile, essenceDesc );
+	add( filename, streamIndex, subStreamIndex, transcodeProfile, essenceDesc, offset );
 }
 
-void Transcoder::add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, Profile::ProfileDesc& profileDesc )
+void Transcoder::add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, Profile::ProfileDesc& profileDesc, const size_t offset )
 {
 	_profile.update( profileDesc );
 	
 	if( subStreamIndex < 0 )
 	{
-		add( filename, streamIndex, profileDesc );
+		add( filename, streamIndex, profileDesc, offset );
 		return;
 	}
 	
@@ -173,10 +173,10 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 
 	if( _verbose )
 		std::cout << "add transcoding stream for substream " << subStreamIndex << std::endl;
-	addTranscodeStream( filename, streamIndex, subStreamIndex, profileDesc );
+	addTranscodeStream( filename, streamIndex, subStreamIndex, profileDesc, offset );
 }
 
-void Transcoder::add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, Profile::ProfileDesc& profileDesc, CodedDesc& essenceDesc )
+void Transcoder::add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, Profile::ProfileDesc& profileDesc, CodedDesc& essenceDesc, const size_t offset )
 {
 	_profile.update( profileDesc );
 	
@@ -196,7 +196,7 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 
 	if( _verbose )
 		std::cout << "add transcoding stream for substream " << subStreamIndex << std::endl;
-	addTranscodeStream( filename, streamIndex, subStreamIndex, profileDesc );
+	addTranscodeStream( filename, streamIndex, subStreamIndex, profileDesc, offset );
 }
 
 void Transcoder::add( StreamTranscoder& stream )
@@ -344,7 +344,7 @@ void Transcoder::addRewrapStream( const std::string& filename, const size_t stre
 	_inputStreams.push_back( &referenceFile->getStream( streamIndex ) );
 }
 
-void Transcoder::addTranscodeStream( const std::string& filename, const size_t streamIndex, Profile::ProfileDesc& profile )
+void Transcoder::addTranscodeStream( const std::string& filename, const size_t streamIndex, Profile::ProfileDesc& profile, const size_t offset )
 {
 	InputFile* referenceFile = addInputFile( filename, streamIndex );
 
@@ -353,7 +353,7 @@ void Transcoder::addTranscodeStream( const std::string& filename, const size_t s
 		case AVMEDIA_TYPE_VIDEO:
 		case AVMEDIA_TYPE_AUDIO:
 		{
-			_streamTranscoders.push_back( new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile, profile ) );
+			_streamTranscoders.push_back( new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile, profile, -1 , offset ) );
 			_inputStreams.push_back( &referenceFile->getStream( streamIndex ) );
 			break;
 		}
@@ -367,7 +367,7 @@ void Transcoder::addTranscodeStream( const std::string& filename, const size_t s
 	}
 }
 
-void Transcoder::addTranscodeStream( const std::string& filename, const size_t streamIndex, const size_t subStreamIndex, Profile::ProfileDesc& profile )
+void Transcoder::addTranscodeStream( const std::string& filename, const size_t streamIndex, const size_t subStreamIndex, Profile::ProfileDesc& profile, const size_t offset )
 {
 	InputFile* referenceFile = addInputFile( filename, streamIndex );
 
@@ -376,7 +376,7 @@ void Transcoder::addTranscodeStream( const std::string& filename, const size_t s
 		case AVMEDIA_TYPE_VIDEO:
 		case AVMEDIA_TYPE_AUDIO:
 		{
-			_streamTranscoders.push_back( new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile, profile, subStreamIndex ) );
+			_streamTranscoders.push_back( new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile, profile, subStreamIndex, offset ) );
 			_inputStreams.push_back( &referenceFile->getStream( streamIndex ) );
 			break;
 		}
