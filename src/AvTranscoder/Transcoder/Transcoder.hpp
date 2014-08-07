@@ -93,13 +93,29 @@ public:
 	 * @note The stream will be deleted in Transcoder's destructor.
 	 */
 	void add( StreamTranscoder& stream );
-	
+
+	/**
+	 * @brief Process the next frame of all streams.
+     * @return if a frame was processed or not.
+     */
 	bool processFrame();
 
+	/**
+	 * @brief Process all the streams, and ended the process depending on the transcode politic.
+     * @param progress
+     */
 	void process( ProgressListener& progress );
 
+	/**
+	 * @brief Set the transcodage politic.
+	 * @note If you call it before adding the streams, the process will stop at the end of the shortest stream.
+     */
 	void setProcessMethod( const EProcessMethod eProcessMethod );
 
+	/**
+	 * @brief Set verbose mode for the Transcoder and his streams.
+	 * @note If you call it before adding the streams, no verbose mode will be set for the new streams.
+     */
 	void setVerbose( bool verbose = true );
 
 	void setOutputFps( double fps ) { _outputFps = fps; }
@@ -121,6 +137,7 @@ private:
 	 * @note if there is only dummy, return limit of double.
      */
 	double getMinTotalDuration() const;
+
 	/**
      * @brief Get the duration of the longest stream.
 	 * @note if there is only dummy, return limit of double.
