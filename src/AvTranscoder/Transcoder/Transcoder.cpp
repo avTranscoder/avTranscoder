@@ -219,10 +219,11 @@ bool Transcoder::processFrame()
 
 		bool streamProcessStatus = _streamTranscoders.at( streamIndex )->processFrame();
 
-		if( streamProcessStatus )
-			continue;
-
-		_streamTranscoders.clear();
+		if( ! streamProcessStatus )
+		{
+			_streamTranscoders.clear();
+			return false;
+		}
 	}
 	return true;
 }
