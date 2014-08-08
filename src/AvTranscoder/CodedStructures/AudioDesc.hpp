@@ -1,5 +1,5 @@
-#ifndef _AV_TRANSCODER_DATA_AUDIO_DESC_HPP_
-#define _AV_TRANSCODER_DATA_AUDIO_DESC_HPP_
+#ifndef _AV_TRANSCODER_CODED_STRUCTURES_AUDIO_DESC_HPP_
+#define _AV_TRANSCODER_CODED_STRUCTURES_AUDIO_DESC_HPP_
 
 #include <AvTranscoder/EssenceStructures/AudioFrame.hpp>
 #include "CodedDesc.hpp"
