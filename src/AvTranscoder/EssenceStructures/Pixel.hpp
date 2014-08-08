@@ -74,7 +74,6 @@ private:
 
 	size_t           m_pixelSize;
 	size_t           m_components;
-	double           m_gamma;
 	EComponentType   m_componentType;
 	ESubsamplingType m_subsamplingType;
 	bool             m_endianess;

@@ -95,8 +95,8 @@ public:
 	
 	/**
 	 * @brief Set the format of the output file
-     * @param desc: the profile of the output format
-     */
+	 * @param desc: the profile of the output format
+	 */
 	virtual void setProfile( const Profile::ProfileDesc& desc );
 
 	virtual void setVerbose( bool verbose = false ){ _verbose = verbose; }

@@ -56,9 +56,9 @@ public:
 	void setOffset( bool offset = true ){ _offset = offset; }
 
 	/**
-     * @brief Get the duration of the stream.
+	 * @brief Get the duration of the stream.
 	 * @note if it's a dummy stream, return limit of double.
-     */
+	 */
 	double getDuration() const;
 
 private:
