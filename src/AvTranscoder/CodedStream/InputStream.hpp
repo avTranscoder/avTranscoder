@@ -4,6 +4,7 @@
 #include <AvTranscoder/CodedStructures/DataStream.hpp>
 #include <AvTranscoder/CodedStructures/AudioDesc.hpp>
 #include <AvTranscoder/CodedStructures/VideoDesc.hpp>
+#include <AvTranscoder/CodedStructures/DataDesc.hpp>
 
 namespace avtranscoder
 {

@@ -198,7 +198,7 @@ StreamTranscoder::StreamTranscoder(
 		AudioFrameDesc inputAudioFrameDesc = static_cast<DummyAudio*>( _inputEssence )->getAudioDesc().getFrameDesc();
 		outputAudio->setProfile( profile, inputAudioFrameDesc );
 		
-		static_cast<DummyAudio*>( _inputEssence )->setAudioDesc( outputAudio->getAudioDesc() );
+		static_cast<DummyAudio*>( _dummyEssence )->setAudioDesc( outputAudio->getAudioDesc() );
 		
 		_outputStream = &outputFile.addAudioStream( outputAudio->getAudioDesc() );
 		_sourceBuffer = new AudioFrame( outputAudio->getAudioDesc().getFrameDesc() );
@@ -206,7 +206,7 @@ StreamTranscoder::StreamTranscoder(
 
 		_transform = new AudioEssenceTransform();
 		
-		_currentEssence = _inputEssence;
+		_currentEssence = _dummyEssence;
 		return;
 	}
 

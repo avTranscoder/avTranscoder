@@ -6,6 +6,7 @@
 #include <AvTranscoder/CodedStructures/DataStream.hpp>
 #include <AvTranscoder/CodedStructures/VideoDesc.hpp>
 #include <AvTranscoder/CodedStructures/AudioDesc.hpp>
+#include <AvTranscoder/CodedStructures/DataDesc.hpp>
 
 #include <AvTranscoder/CodedStream/AvOutputStream.hpp>
 
@@ -58,6 +59,13 @@ public:
 	 * @param audioDesc description of output stream
 	**/
 	virtual OutputStream& addAudioStream( const AudioDesc& audioDesc );
+
+	/**
+	 * @brief Add an data output stream using the description.
+	 * @note call setup() before adding any stream
+	 * @param dataDesc description of output stream
+	**/
+	virtual OutputStream& addDataStream( const DataDesc& dataDesc );
 
 	/**
 	 * @brief get the output stream description.

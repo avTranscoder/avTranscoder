@@ -43,12 +43,17 @@ public:
 	 */
 	bool processFrame();
 
+	bool processLastFrame();
+
 	bool isTranscodeStream() const { return _transcodeStream; }
 
 	void setVerbose( bool verbose = true ){ _verbose = verbose; }
 
 	void switchToDummyEssence();
 	void switchToInputEssence();
+
+	bool isDummyEssence() { return _dummyEssence == _currentEssence; }
+
 	void setInfinityProcess( bool infinity = true ){ _infiniteProcess = infinity; }
 
 private:

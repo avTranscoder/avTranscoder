@@ -33,6 +33,7 @@ public:
 	// Stream properties
 	VideoDesc getVideoDesc() const;
 	AudioDesc getAudioDesc() const;
+	DataDesc  getDataDesc()  const;
 
 	AVMediaType getStreamType() const;
 

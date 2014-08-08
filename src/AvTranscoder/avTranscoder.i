@@ -21,6 +21,7 @@
 #include <AvTranscoder/CodedStructures/CodedDesc.hpp>
 #include <AvTranscoder/CodedStructures/VideoDesc.hpp>
 #include <AvTranscoder/CodedStructures/AudioDesc.hpp>
+#include <AvTranscoder/CodedStructures/DataDesc.hpp>
 #include <AvTranscoder/CodedStructures/DataStream.hpp>
 
 #include <AvTranscoder/Metadatas/MediaMetadatasStructures.hpp>
@@ -77,6 +78,7 @@ namespace std {
 %include <AvTranscoder/CodedStructures/CodedDesc.hpp>
 %include <AvTranscoder/CodedStructures/VideoDesc.hpp>
 %include <AvTranscoder/CodedStructures/AudioDesc.hpp>
+%include <AvTranscoder/CodedStructures/DataDesc.hpp>
 %include <AvTranscoder/CodedStructures/DataStream.hpp>
 
 %include <AvTranscoder/Metadatas/MediaMetadatasStructures.hpp>

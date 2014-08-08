@@ -110,6 +110,21 @@ OutputStream& OutputFile::addAudioStream( const AudioDesc& audioDesc )
 	return *_outputStreams.back();
 }
 
+OutputStream& OutputFile::addDataStream( const DataDesc& dataDesc )
+{
+	assert( _formatContext != NULL );
+
+	if( ( _stream = avformat_new_stream( _formatContext, dataDesc.getCodec() ) ) == NULL )
+	{
+		throw std::runtime_error( "unable to add new data stream" );
+	}
+
+	AvOutputStream* avOutputStream = new AvOutputStream( *this, _formatContext->nb_streams - 1 );
+	_outputStreams.push_back( avOutputStream );
+
+	return *_outputStreams.back();
+}
+
 OutputStream& OutputFile::getStream( const size_t streamId )
 {
 	if( streamId >= _outputStreams.size() )
@@ -135,6 +150,8 @@ bool OutputFile::beginWrap( )
 
 bool OutputFile::wrap( const DataStream& data, const size_t streamId )
 {
+	if( ! data.getSize() )
+		return true;
 	if( _verbose )
 		std::cout << "wrap on stream " << streamId << " (" << data.getSize() << " bytes for frame " << _frameCount.at( streamId ) << ")" << std::endl;
 	AVPacket packet;
@@ -149,8 +166,8 @@ bool OutputFile::wrap( const DataStream& data, const size_t streamId )
 	// packet.dts = _frameCount.at( streamId );
 	// packet.pts = ;
 
-	int ret = av_write_frame( _formatContext, &packet );
-	// int ret = av_interleaved_write_frame( _formatContext, &packet );
+	// int ret = av_write_frame( _formatContext, &packet );
+	int ret = av_interleaved_write_frame( _formatContext, &packet );
 
 	if( ret != 0 )
 	{
