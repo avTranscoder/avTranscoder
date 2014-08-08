@@ -32,7 +32,7 @@ public:
 	**/
 	InputFile( const std::string& filename );
 
-	~InputFile();
+	virtual ~InputFile();
 
 	enum EAnalyseLevel
 	{
