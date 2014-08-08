@@ -281,7 +281,7 @@ VideoProperties videoStreamInfo(
 	const AVPixFmtDescriptor* pixFmt = av_pix_fmt_desc_get( codec_context->pix_fmt );
 #else
 	const AVPixFmtDescriptor* pixFmt = NULL;
-	if( codec_context->pix_fmt > 0 && codec_context->pix_fmt < PIX_FMT_NB )
+	if( codec_context->pix_fmt >= 0 && codec_context->pix_fmt < PIX_FMT_NB )
 		pixFmt = &av_pix_fmt_descriptors[ codec_context->pix_fmt ];
 #endif
 

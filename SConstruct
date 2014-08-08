@@ -162,7 +162,7 @@ envPy.Append(
 if mymode == "release":
         env.Append(CCFLAGS = ['-O3'])
 if mymode == "debug":
-        env.Append(CCFLAGS = ['-pg'])
+        env.Append(CCFLAGS = ['-pg', '-g'])
 
 Export( "env" )
 Export( "envJava" )
