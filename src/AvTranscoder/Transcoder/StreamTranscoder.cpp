@@ -53,6 +53,11 @@ StreamTranscoder::StreamTranscoder(
 			_outputStream = &outputFile.addAudioStream( _inputStream->getAudioDesc() );
 			break;
 		}
+		case AVMEDIA_TYPE_DATA :
+		{
+			_outputStream = &outputFile.addDataStream( _inputStream->getDataDesc() );
+			break;
+		}
 		default:
 			break;
 	}
