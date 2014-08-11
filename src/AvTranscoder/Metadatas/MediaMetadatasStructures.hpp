@@ -1,12 +1,19 @@
 #ifndef _AV_TRANSCODER_MEDIA_HPP_
 #define _AV_TRANSCODER_MEDIA_HPP_
 
+#include <AvTranscoder/common.hpp>
+
 #include <string>
 #include <vector>
-
+#include <map>
 
 namespace avtranscoder
 {
+
+/**
+ * @brief Can get all data of Properties structures by getDataMap(), which return a MetadatasMap.
+ */
+typedef std::map<std::string, std::string> MetadatasMap;
 
 struct Channel {
 	size_t id;
@@ -67,6 +74,9 @@ struct VideoProperties {
 	// ( frame type / is key frame )
 	std::vector< std::pair< char, bool > > gopStructure;
 	std::vector<Channel> channels;
+
+public:
+	MetadatasMap getDataMap() const;
 };
 
 struct AudioProperties {
@@ -81,22 +91,37 @@ struct AudioProperties {
 	size_t      sampleRate;
 	size_t      channels;
 	size_t      bit_rate;
+
+public:
+	MetadatasMap getDataMap() const;
 };
 
 struct DataProperties {
 	size_t      streamId;
+
+public:
+	MetadatasMap getDataMap() const;
 };
 
 struct SubtitleProperties {
 	size_t      streamId;
+
+public:
+	MetadatasMap getDataMap() const;
 };
 
 struct AttachementProperties {
 	size_t      streamId;
+
+public:
+	MetadatasMap getDataMap() const;
 };
 
 struct UnknownProperties {
 	size_t      streamId;
+
+public:
+	MetadatasMap getDataMap() const;
 };
 
 struct Properties {
@@ -118,6 +143,9 @@ struct Properties {
 	std::vector< UnknownProperties >     unknownStreams;
 
 	std::vector< std::pair< std::string, std::string > > metadatas; // ( key, value )
+
+public:
+	MetadatasMap getDataMap() const;
 };
 
 }
