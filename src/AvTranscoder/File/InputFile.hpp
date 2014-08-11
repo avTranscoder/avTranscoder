@@ -119,8 +119,8 @@ public:
 	
 	/**
 	 * @brief Set the format of the input file
-     * @param desc: the profile of the input format
-     */
+	 * @param desc: the profile of the input format
+	 */
 	virtual void setProfile( const Profile::ProfileDesc& desc );
 
 protected:
