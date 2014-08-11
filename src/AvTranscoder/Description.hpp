@@ -12,7 +12,7 @@ namespace avtranscoder
 class Library
 {
 public:
-	Library( const std::string& name, const std::string& licence, const size_t major, const size_t minor, const size_t release );
+	Library( const std::string& name, const std::string& license, const size_t major, const size_t minor, const size_t release );
 
 	std::string getName();
 
@@ -22,7 +22,7 @@ public:
 	size_t getMinorVersion();
 	size_t getReleaseVersion();
 
-	std::string getLicence();
+	std::string getLicense();
 private:
 	std::string _name;
 	std::string _licence;
