@@ -23,6 +23,7 @@ public:
 	// Stream properties
 	virtual VideoDesc getVideoDesc() const = 0;
 	virtual AudioDesc getAudioDesc() const = 0;
+	virtual DataDesc  getDataDesc()  const = 0;
 	
 	virtual AVMediaType getStreamType() const = 0;
 
