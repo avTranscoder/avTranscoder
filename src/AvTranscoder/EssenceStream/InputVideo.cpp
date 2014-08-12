@@ -164,7 +164,7 @@ void InputVideo::setProfile( const Profile::ProfileDesc& desc )
 		}
 		catch( std::exception& e )
 		{
-			std::cout << "InputVideo warning: " << e.what() << std::endl;
+			std::cout << "[InputVideo] warning: " << e.what() << std::endl;
 		}
 	}
 }
