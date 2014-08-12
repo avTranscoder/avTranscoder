@@ -15,6 +15,14 @@ namespace avtranscoder
  */
 typedef std::vector< std::pair<std::string, std::string> > MetadatasMap;
 
+namespace detail
+{
+	/**
+	 * @brief Fill metadata parameter with the given AVDictionary.
+     */
+	void fillMetadataDictionnary( AVDictionary* avdictionnary, MetadatasMap& metadata );
+}
+
 struct Channel
 {
 	size_t id;

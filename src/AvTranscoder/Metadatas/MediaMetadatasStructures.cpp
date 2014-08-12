@@ -1,5 +1,12 @@
 #include "MediaMetadatasStructures.hpp"
 
+extern "C" {
+#ifndef __STDC_CONSTANT_MACROS
+    #define __STDC_CONSTANT_MACROS
+#endif
+#include <libavutil/dict.h>
+}
+
 #include <sstream>
 #include <utility>
 
@@ -28,6 +35,14 @@ void add( MetadatasMap& dataMap, const std::string& key, const bool& value )
 {
 	add( dataMap, key, value ? "True" : "False" );
 }
+
+void fillMetadataDictionnary( AVDictionary* avdictionnary, MetadatasMap& metadata )
+{
+	AVDictionaryEntry* tag = NULL;
+	while( ( tag = av_dict_get( avdictionnary, "", tag, AV_DICT_IGNORE_SUFFIX ) ) )
+	{
+		metadata.push_back( std::pair<std::string, std::string>( tag->key, tag->value ) );
+	}
 }
 
 }

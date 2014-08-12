@@ -80,11 +80,7 @@ InputFile& InputFile::analyse( ProgressListener& progress, const EAnalyseLevel l
 	_properties.bitRate = _formatContext->bit_rate;
 	_properties.packetSize = _formatContext->packet_size;
 
-	AVDictionaryEntry *tag = NULL;
-	while( ( tag = av_dict_get( _formatContext->metadata, "", tag, AV_DICT_IGNORE_SUFFIX ) ) )
-	{
-		_properties.metadatas.push_back( std::pair<std::string, std::string>( tag->key, tag->value ) );
-	}
+	detail::fillMetadataDictionnary( _formatContext->metadata, _properties.metadatas );
 
 	for( size_t streamId = 0; streamId < _formatContext->nb_streams; streamId++ )
 	{
