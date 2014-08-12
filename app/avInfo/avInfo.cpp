@@ -13,7 +13,7 @@ int main( int argc, char** argv )
 		std::cout << std::left;
 		std::cout << std::setw( 15 ) << (*library).getName();
 		std::cout << std::setw( 10 ) << (*library).getStringVersion();
-		std::cout << std::setw( 30 ) << (*library).getLicence();
+		std::cout << std::setw( 30 ) << (*library).getLicense();
 		std::cout << std::endl;
 	}
 

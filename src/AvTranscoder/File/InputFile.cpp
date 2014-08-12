@@ -80,11 +80,7 @@ InputFile& InputFile::analyse( ProgressListener& progress, const EAnalyseLevel l
 	_properties.bitRate = _formatContext->bit_rate;
 	_properties.packetSize = _formatContext->packet_size;
 
-	AVDictionaryEntry *tag = NULL;
-	while( ( tag = av_dict_get( _formatContext->metadata, "", tag, AV_DICT_IGNORE_SUFFIX ) ) )
-	{
-		_properties.metadatas.push_back( std::pair<std::string, std::string>( tag->key, tag->value ) );
-	}
+	detail::fillMetadataDictionnary( _formatContext->metadata, _properties.metadatas );
 
 	for( size_t streamId = 0; streamId < _formatContext->nb_streams; streamId++ )
 	{
@@ -93,31 +89,37 @@ InputFile& InputFile::analyse( ProgressListener& progress, const EAnalyseLevel l
 			case AVMEDIA_TYPE_VIDEO:
 			{
 				_properties.videoStreams.push_back( videoStreamInfo( _formatContext, streamId, progress, level ) );
+				detail::fillMetadataDictionnary( _formatContext->streams[streamId]->metadata, _properties.videoStreams.back().metadatas );
 				break;
 			}
 			case AVMEDIA_TYPE_AUDIO:
 			{
 				_properties.audioStreams.push_back( audioStreamInfo( _formatContext, streamId ) );
+				detail::fillMetadataDictionnary( _formatContext->streams[streamId]->metadata, _properties.audioStreams.back().metadatas );
 				break;
 			}
 			case AVMEDIA_TYPE_DATA:
 			{
 				_properties.dataStreams.push_back( dataStreamInfo( _formatContext, streamId ) );
+				detail::fillMetadataDictionnary( _formatContext->streams[streamId]->metadata, _properties.dataStreams.back().metadatas );
 				break;
 			}
 			case AVMEDIA_TYPE_SUBTITLE:
 			{
 				_properties.subtitleStreams.push_back( subtitleStreamInfo( _formatContext, streamId ) );
+				detail::fillMetadataDictionnary( _formatContext->streams[streamId]->metadata, _properties.subtitleStreams.back().metadatas );
 				break;
 			}
 			case AVMEDIA_TYPE_ATTACHMENT:
 			{
 				_properties.attachementStreams.push_back( attachementStreamInfo( _formatContext, streamId ) );
+				detail::fillMetadataDictionnary( _formatContext->streams[streamId]->metadata, _properties.attachementStreams.back().metadatas );
 				break;
 			}
 			case AVMEDIA_TYPE_UNKNOWN:
 			{
 				_properties.unknownStreams.push_back( unknownStreamInfo( _formatContext, streamId ) );
+				detail::fillMetadataDictionnary( _formatContext->streams[streamId]->metadata, _properties.unknownStreams.back().metadatas );
 				break;
 			}
 			case AVMEDIA_TYPE_NB:
