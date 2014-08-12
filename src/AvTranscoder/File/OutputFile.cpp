@@ -204,6 +204,24 @@ bool OutputFile::endWrap( )
 	return true;
 }
 
+void OutputFile::addMetadata( const MetadatasMap& dataMap )
+{
+	for( MetadatasMap::const_iterator it = dataMap.begin(); it != dataMap.end(); ++it )
+	{
+		addMetadata( it->first, it->second );
+	}
+}
+
+void OutputFile::addMetadata( const std::string& key, const std::string& value )
+{
+	int ret = av_dict_set( &_formatContext->metadata, key.c_str(), value.c_str(), 0 );
+	if( ret < 0 )
+	{
+		char err[250];
+		av_strerror( ret, err, 250 );
+		std::cout << err << std::endl;
+	}
+}
 
 void OutputFile::setProfile( const Profile::ProfileDesc& desc )
 {

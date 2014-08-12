@@ -3,6 +3,8 @@
 
 #include <AvTranscoder/common.hpp>
 
+#include <AvTranscoder/Metadatas/MediaMetadatasStructures.hpp>
+
 #include <AvTranscoder/CodedStructures/DataStream.hpp>
 #include <AvTranscoder/CodedStructures/VideoDesc.hpp>
 #include <AvTranscoder/CodedStructures/AudioDesc.hpp>
@@ -98,6 +100,13 @@ public:
 	 * @param desc: the profile of the output format
 	 */
 	virtual void setProfile( const Profile::ProfileDesc& desc );
+	
+	/**
+	 * @brief Add metadata to the output file.
+	 * @note Depending on the format, you are not sure to find your metadata after the transcode.
+     */
+	virtual void addMetadata( const MetadatasMap& dataMap );
+	virtual void addMetadata( const std::string& key, const std::string& value );
 
 	virtual void setVerbose( bool verbose = false ){ _verbose = verbose; }
 
