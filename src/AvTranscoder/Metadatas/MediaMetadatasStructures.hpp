@@ -13,7 +13,7 @@ namespace avtranscoder
 /**
  * @brief Can get all data of Properties structures by getDataMap(), which return a MetadatasMap.
  */
-typedef std::map<std::string, std::string> MetadatasMap;
+typedef std::vector< std::pair<std::string, std::string> > MetadatasMap;
 
 struct Channel
 {
@@ -150,7 +150,7 @@ struct Properties
 	std::vector< AttachementProperties > attachementStreams;
 	std::vector< UnknownProperties >     unknownStreams;
 
-	std::vector< std::pair< std::string, std::string > > metadatas; // ( key, value )
+	MetadatasMap metadatas;
 
 public:
 	MetadatasMap getDataMap() const;

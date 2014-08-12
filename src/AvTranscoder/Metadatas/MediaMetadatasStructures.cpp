@@ -1,6 +1,7 @@
 #include "MediaMetadatasStructures.hpp"
 
 #include <sstream>
+#include <utility>
 
 namespace avtranscoder
 {
@@ -13,19 +14,20 @@ void add( MetadatasMap& dataMap, const std::string& key, const T& value )
 {
 	std::stringstream ss;
 	ss << value;
-	dataMap[key]= ss.str();
+	add( dataMap, key, ss.str() );
 }
 
 template<>
 void add( MetadatasMap& dataMap, const std::string& key, const std::string& value )
 {
-	dataMap[key]= value;
+	dataMap.push_back( std::pair<std::string, std::string>( key, value ) );
 }
 
 template<>
 void add( MetadatasMap& dataMap, const std::string& key, const bool& value )
 {
-	dataMap[key]= ( value ? "True" : "False" );
+	add( dataMap, key, value ? "True" : "False" );
+}
 }
 
 }
