@@ -1,9 +1,9 @@
 #ifndef _AV_TRANSCODER_CODED_STRUCTURES_ESSENCE_DESC_HPP_
 #define	_AV_TRANSCODER_CODED_STRUCTURES_ESSENCE_DESC_HPP_
 
-#include <string>
-
 #include <AvTranscoder/common.hpp>
+
+#include <string>
 
 class AVCodec;
 class AVCodecContext;
