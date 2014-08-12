@@ -15,13 +15,15 @@ namespace avtranscoder
  */
 typedef std::map<std::string, std::string> MetadatasMap;
 
-struct Channel {
+struct Channel
+{
 	size_t id;
 	size_t chromaHeight;
 	size_t bitStep;
 };
 
-struct VideoProperties {
+struct VideoProperties
+{
 	std::string codecName;
 	std::string codecLongName;
 	std::string profileName;
@@ -79,7 +81,8 @@ public:
 	MetadatasMap getDataMap() const;
 };
 
-struct AudioProperties {
+struct AudioProperties
+{
 	std::string codecName;
 	std::string codecLongName;
 	std::string sampleFormat;
@@ -96,35 +99,40 @@ public:
 	MetadatasMap getDataMap() const;
 };
 
-struct DataProperties {
+struct DataProperties
+{
 	size_t      streamId;
 
 public:
 	MetadatasMap getDataMap() const;
 };
 
-struct SubtitleProperties {
+struct SubtitleProperties
+{
 	size_t      streamId;
 
 public:
 	MetadatasMap getDataMap() const;
 };
 
-struct AttachementProperties {
+struct AttachementProperties
+{
 	size_t      streamId;
 
 public:
 	MetadatasMap getDataMap() const;
 };
 
-struct UnknownProperties {
+struct UnknownProperties
+{
 	size_t      streamId;
 
 public:
 	MetadatasMap getDataMap() const;
 };
 
-struct Properties {
+struct Properties
+{
 	std::string filename;
 	std::string formatName;
 	std::string formatLongName;
