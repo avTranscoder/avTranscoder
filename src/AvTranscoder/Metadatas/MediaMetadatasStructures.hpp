@@ -85,6 +85,8 @@ struct VideoProperties
 	std::vector< std::pair< char, bool > > gopStructure;
 	std::vector<Channel> channels;
 
+	MetadatasMap metadatas;
+
 public:
 	MetadatasMap getDataMap() const;
 };
@@ -103,6 +105,8 @@ struct AudioProperties
 	size_t      channels;
 	size_t      bit_rate;
 
+	MetadatasMap metadatas;
+
 public:
 	MetadatasMap getDataMap() const;
 };
@@ -110,6 +114,7 @@ public:
 struct DataProperties
 {
 	size_t      streamId;
+	MetadatasMap metadatas;
 
 public:
 	MetadatasMap getDataMap() const;
@@ -118,6 +123,7 @@ public:
 struct SubtitleProperties
 {
 	size_t      streamId;
+	MetadatasMap metadatas;
 
 public:
 	MetadatasMap getDataMap() const;
@@ -126,6 +132,7 @@ public:
 struct AttachementProperties
 {
 	size_t      streamId;
+	MetadatasMap metadatas;
 
 public:
 	MetadatasMap getDataMap() const;
@@ -134,6 +141,7 @@ public:
 struct UnknownProperties
 {
 	size_t      streamId;
+	MetadatasMap metadatas;
 
 public:
 	MetadatasMap getDataMap() const;

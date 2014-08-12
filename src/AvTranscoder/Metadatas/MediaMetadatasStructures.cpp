@@ -101,6 +101,11 @@ MetadatasMap VideoProperties::getDataMap() const
 	detail::add( dataMap, "has B frames", hasBFrames );
 	detail::add( dataMap, "references frames", referencesFrames );
 
+	for( size_t metadataIndex = 0; metadataIndex < metadatas.size(); ++metadataIndex )
+	{
+		detail::add( dataMap, metadatas.at( metadataIndex ).first, metadatas.at( metadataIndex ).second );
+	}
+
 	return dataMap;
 }
 
@@ -120,6 +125,10 @@ MetadatasMap AudioProperties::getDataMap() const
 	detail::add( dataMap, "channel name", channelName );
 	detail::add( dataMap, "channel description", channelDescription );
 
+	for( size_t metadataIndex = 0; metadataIndex < metadatas.size(); ++metadataIndex )
+	{
+		detail::add( dataMap, metadatas.at( metadataIndex ).first, metadatas.at( metadataIndex ).second );
+	}
 
 	return dataMap;
 }
@@ -130,6 +139,11 @@ MetadatasMap DataProperties::getDataMap() const
 
 	detail::add( dataMap, "streamId", streamId );
 
+	for( size_t metadataIndex = 0; metadataIndex < metadatas.size(); ++metadataIndex )
+	{
+		detail::add( dataMap, metadatas.at( metadataIndex ).first, metadatas.at( metadataIndex ).second );
+	}
+
 	return dataMap;
 }
 
@@ -138,6 +152,11 @@ MetadatasMap SubtitleProperties::getDataMap() const
 	MetadatasMap dataMap;
 
 	detail::add( dataMap, "streamId", streamId );
+
+	for( size_t metadataIndex = 0; metadataIndex < metadatas.size(); ++metadataIndex )
+	{
+		detail::add( dataMap, metadatas.at( metadataIndex ).first, metadatas.at( metadataIndex ).second );
+	}
 
 	return dataMap;
 }
@@ -148,6 +167,11 @@ MetadatasMap AttachementProperties::getDataMap() const
 
 	detail::add( dataMap, "streamId", streamId );
 
+	for( size_t metadataIndex = 0; metadataIndex < metadatas.size(); ++metadataIndex )
+	{
+		detail::add( dataMap, metadatas.at( metadataIndex ).first, metadatas.at( metadataIndex ).second );
+	}
+
 	return dataMap;
 }
 
@@ -156,6 +180,11 @@ MetadatasMap UnknownProperties::getDataMap() const
 	MetadatasMap dataMap;
 
 	detail::add( dataMap, "streamId", streamId );
+
+	for( size_t metadataIndex = 0; metadataIndex < metadatas.size(); ++metadataIndex )
+	{
+		detail::add( dataMap, metadatas.at( metadataIndex ).first, metadatas.at( metadataIndex ).second );
+	}
 
 	return dataMap;
 }
