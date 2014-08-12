@@ -111,42 +111,42 @@ std::ostream& operator<<( std::ostream& flux, const UnknownProperties& unknownPr
 std::ostream& operator<<( std::ostream& flux, const InputFile& input )
 {
 	// wrapper
-	flux << input.getProperties() << std::endl;
+	flux << input.getProperties();
 
 	// video streams
 	for( size_t videoStreamIndex = 0; videoStreamIndex < input.getProperties().videoStreams.size(); ++videoStreamIndex )
 	{
-		flux << input.getProperties().videoStreams.at( videoStreamIndex ) << std::endl;
+		flux << input.getProperties().videoStreams.at( videoStreamIndex );
 	}
 
 	// audio streams
 	for( size_t audioStreamIndex = 0; audioStreamIndex < input.getProperties().audioStreams.size(); ++audioStreamIndex )
 	{
-		flux << input.getProperties().audioStreams.at( audioStreamIndex ) << std::endl;
+		flux << input.getProperties().audioStreams.at( audioStreamIndex );
 	}
 
 	// data streams
 	for( size_t dataStreamIndex = 0; dataStreamIndex < input.getProperties().dataStreams.size(); ++dataStreamIndex )
 	{
-		flux << input.getProperties().dataStreams.at( dataStreamIndex ) << std::endl;
+		flux << input.getProperties().dataStreams.at( dataStreamIndex );
 	}
 
 	// subtitle streams
 	for( size_t subtitleStreamIndex = 0; subtitleStreamIndex < input.getProperties().subtitleStreams.size(); ++subtitleStreamIndex )
 	{
-		flux << input.getProperties().subtitleStreams.at( subtitleStreamIndex ) << std::endl;
+		flux << input.getProperties().subtitleStreams.at( subtitleStreamIndex );
 	}
 
 	// attachement streams
 	for( size_t attachementStreamIndex = 0; attachementStreamIndex < input.getProperties().attachementStreams.size(); ++attachementStreamIndex )
 	{
-		flux << input.getProperties().attachementStreams.at( attachementStreamIndex ) << std::endl;
+		flux << input.getProperties().attachementStreams.at( attachementStreamIndex );
 	}
 
 	// unknown streams
 	for( size_t unknownStreamIndex = 0; unknownStreamIndex < input.getProperties().unknownStreams.size(); ++unknownStreamIndex )
 	{
-		flux << input.getProperties().unknownStreams.at( unknownStreamIndex ) << std::endl;
+		flux << input.getProperties().unknownStreams.at( unknownStreamIndex );
 	}
 
 	return flux;
