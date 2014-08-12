@@ -225,7 +225,7 @@ StreamTranscoder::StreamTranscoder(
 
 		_transform = new AudioEssenceTransform();
 		
-		_currentEssence = _dummyEssence;
+		_currentEssence = _inputEssence;
 		return;
 	}
 
