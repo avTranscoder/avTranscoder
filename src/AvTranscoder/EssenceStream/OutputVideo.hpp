@@ -19,8 +19,6 @@ public:
 
 	void setup();
 
-	//void setVideoDesc( const VideoDesc& videoDesc );
-
 	/**
 	 * @param[out] codedFrame blabla
 	 */
