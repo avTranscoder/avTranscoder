@@ -274,22 +274,21 @@ void StreamTranscoder::init()
 bool StreamTranscoder::processFrame()
 {
 	++_frameProcessed;
-	if( _transform )
+
+	if( ! _inputEssence )
 	{
 		if( _subStreamIndex < 0 )
 		{
-			return processTranscode();
+			return processRewrap();
 		}
-
-		return processTranscode( _subStreamIndex );
+		return processRewrap( _subStreamIndex );
 	}
 
 	if( _subStreamIndex < 0 )
 	{
-		return processRewrap();
+		return processTranscode();
 	}
-
-	return processRewrap( _subStreamIndex );	
+	return processTranscode( _subStreamIndex );	
 }
 
 bool StreamTranscoder::processRewrap()

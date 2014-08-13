@@ -252,7 +252,7 @@ void OutputFile::setProfile( const Profile::ProfileDesc& desc )
 		}
 		catch( std::exception& e )
 		{
-			std::cout << "OutputFile warning: " << e.what() << std::endl;
+			//std::cout << "[OutputFile] warning: " << e.what() << std::endl;
 		}
 	}
 	
@@ -272,7 +272,7 @@ void OutputFile::setProfile( const Profile::ProfileDesc& desc )
 		}
 		catch( std::exception& e )
 		{
-			std::cout << "OutputFile 2.warning: " << e.what() << std::endl;
+			std::cout << "[OutputFile] warning: " << e.what() << std::endl;
 		}
 	}
 }

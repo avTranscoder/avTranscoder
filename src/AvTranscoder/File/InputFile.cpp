@@ -230,7 +230,7 @@ void InputFile::setProfile( const Profile::ProfileDesc& desc )
 		}
 		catch( std::exception& e )
 		{
-			std::cout << "InputFile warning: " << e.what() << std::endl;
+			std::cout << "[InputFile] warning: " << e.what() << std::endl;
 		}
 	}
 }

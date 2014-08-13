@@ -38,7 +38,7 @@ bool DummyVideo::readNextFrame( Frame& frameBuffer )
 {
 	if( ! _inputFrame )
 	{
-		// @todo support PAL (0 to 255) and NTFC (16 to 235)
+		// @todo support PAL (0 to 255) and NTFS (16 to 235)
 		int fillChar = 0;
 
 		if( frameBuffer.getSize() != _videoFrameDesc.getDataSize() )

@@ -201,7 +201,7 @@ void OutputAudio::setProfile( const Profile::ProfileDesc& desc, const AudioFrame
 		}
 		catch( std::exception& e )
 		{
-			std::cout << "OutputAudio warning: " << e.what() << std::endl;
+			//std::cout << "[OutputAudio] warning: " << e.what() << std::endl;
 		}
 	}
 
@@ -222,7 +222,7 @@ void OutputAudio::setProfile( const Profile::ProfileDesc& desc, const AudioFrame
 		}
 		catch( std::exception& e )
 		{
-			std::cout << "OutputAudio 2.warning: " << e.what() << std::endl;
+			std::cout << "[OutputAudio] warning: " << e.what() << std::endl;
 		}
 	}
 }

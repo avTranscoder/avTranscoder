@@ -72,12 +72,6 @@ void InputAudio::setup()
 	
 	_codecContext->channels = _inputStream->getAudioDesc().getChannels();
 	
-	// std::cout << "Audio codec Id : " << _codecContext->codec_id << std::endl;
-	// std::cout << "Audio codec Id : " << _codec->name << std::endl;
-	// std::cout << "Audio codec Id : " << _codec->long_name << std::endl;
-
-	_codecContext->channels = _inputStream->getAudioDesc().getCodecContext()->channels;
-	
 	int ret = avcodec_open2( _codecContext, _codec, NULL );
 
 	if( ret < 0 || _codecContext == NULL || _codec == NULL )
