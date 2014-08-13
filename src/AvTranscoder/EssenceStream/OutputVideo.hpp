@@ -33,10 +33,7 @@ public:
 
 	void setProfile( const Profile::ProfileDesc& desc, const avtranscoder::VideoFrameDesc& frameDesc );
 	
-	VideoDesc& getVideoDesc() { return _videoDesc; }
-
-private:
-	VideoDesc _videoDesc;
+	VideoDesc getVideoDesc() { return _codedDesc; }
 };
 
 }

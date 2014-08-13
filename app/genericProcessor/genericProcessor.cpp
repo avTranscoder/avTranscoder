@@ -117,6 +117,7 @@ int main( int argc, char** argv )
 		transcoder.setVerbose( verbose );
 		transcoder.setProcessMethod( avtranscoder::eProcessMethodInfinity );
 		//transcoder.setOutputFps( 12 );
+		transcoder.init();
 		
 		if( verbose )
 			std::cout << "start Transcode" << std::endl;

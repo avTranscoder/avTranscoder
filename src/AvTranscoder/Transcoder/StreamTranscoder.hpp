@@ -40,6 +40,13 @@ public:
 	~StreamTranscoder();
 
 	/**
+	 * @brief Init before encoding to pre-process frames necessary to delete the latency.
+	 * @note This can be called several times with no side effects.
+	 * @note Can take a little bit of time.
+	 */
+	void init();
+	
+	/**
 	 * @brief process a single frame for the current stream
 	 * @return the process status result
 	 */

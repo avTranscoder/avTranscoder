@@ -3,6 +3,7 @@
 
 #include <AvTranscoder/EssenceStructures/Frame.hpp>
 #include <AvTranscoder/CodedStructures/DataStream.hpp>
+#include <AvTranscoder/CodedStructures/CodedDesc.hpp>
 
 namespace avtranscoder
 {
@@ -10,7 +11,8 @@ namespace avtranscoder
 class AvExport OutputEssence
 {
 public:
-	OutputEssence()
+	OutputEssence( const std::string& codecName )
+	: _codedDesc( codecName )
 	{}
 
 	virtual ~OutputEssence()
@@ -35,6 +37,11 @@ public:
 	 * @return status of encoding
 	 */
 	virtual bool encodeFrame( DataStream& codedFrame ) = 0;
+
+	CodedDesc& getCodedDesc() { return _codedDesc; }
+
+protected:
+	CodedDesc _codedDesc;
 
 };
 

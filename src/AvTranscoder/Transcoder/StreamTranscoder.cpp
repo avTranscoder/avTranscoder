@@ -248,6 +248,26 @@ StreamTranscoder::~StreamTranscoder()
 		delete _transform;
 }
 
+void StreamTranscoder::init()
+{
+	// rewrap
+	if( ! _inputEssence )
+		return;
+
+	int latency = _outputEssence->getCodedDesc().getLatency();
+	if( _verbose )
+		std::cout << "latency of stream: " << latency << std::endl;
+
+	if( ! latency ||
+		latency < _outputEssence->getCodedDesc().getCodecContext()->frame_number )
+		return;
+
+	while( ( --latency ) > 0 )
+	{
+		processFrame();
+	}
+}
+
 bool StreamTranscoder::processFrame()
 {
 	++_frameProcessed;
