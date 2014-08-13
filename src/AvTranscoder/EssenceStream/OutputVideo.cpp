@@ -17,8 +17,7 @@ namespace avtranscoder
 {
 
 OutputVideo::OutputVideo( )
-	: OutputEssence( )
-	, _videoDesc( "mpeg2video" )
+	: OutputEssence( "mpeg2video" )
 {
 }
 
@@ -26,7 +25,7 @@ void OutputVideo::setup( )
 {
 	av_register_all();  // Warning: should be called only once
 
-	AVCodecContext* codecContext( _videoDesc.getCodecContext() );
+	AVCodecContext* codecContext( _codedDesc.getCodecContext() );
 
 	if( codecContext == NULL )
 	{
@@ -34,7 +33,7 @@ void OutputVideo::setup( )
 	}
 
 	// try to open encoder with parameters
-	int ret = avcodec_open2( codecContext, _videoDesc.getCodec(), NULL );
+	int ret = avcodec_open2( codecContext, _codedDesc.getCodec(), NULL );
 	if( ret < 0 )
 	{
 		char err[250];
@@ -54,7 +53,7 @@ bool OutputVideo::encodeFrame( const Frame& sourceFrame, DataStream& codedFrame 
 	AVFrame* frame = avcodec_alloc_frame();
 #endif
 
-	AVCodecContext* codecContext = _videoDesc.getCodecContext();
+	AVCodecContext* codecContext = this->_codedDesc.getCodecContext();
 
 	// Set default frame parameters
 #if LIBAVCODEC_VERSION_MAJOR > 54
@@ -141,7 +140,7 @@ bool OutputVideo::encodeFrame( const Frame& sourceFrame, DataStream& codedFrame 
 
 bool OutputVideo::encodeFrame( DataStream& codedFrame )
 {
-	AVCodecContext* codecContext = _videoDesc.getCodecContext();
+	AVCodecContext* codecContext = _codedDesc.getCodecContext();
 
 	AVPacket packet;
 	av_init_packet( &packet );
@@ -183,14 +182,14 @@ void OutputVideo::setProfile( const Profile::ProfileDesc& desc, const avtranscod
 		throw std::runtime_error( "The profile " + desc.find( Profile::avProfileIdentificatorHuman )->second + " is invalid." );
 	}
 	
-	_videoDesc.setCodec( desc.find( Profile::avProfileCodec )->second );
+	_codedDesc.setCodec( desc.find( Profile::avProfileCodec )->second );
 	
 	const size_t frameRate = std::strtoul( desc.find( Profile::avProfileFrameRate )->second.c_str(), NULL, 0 );
-	_videoDesc.setTimeBase( 1, frameRate );
+	static_cast<VideoDesc>( _codedDesc ).setTimeBase( 1, frameRate );
 	
-	_videoDesc.setImageParameters( frameDesc );
+	static_cast<VideoDesc>( _codedDesc ).setImageParameters( frameDesc );
 
-	ParamSet paramSet( _videoDesc.getCodecContext() );
+	ParamSet paramSet( _codedDesc.getCodecContext() );
 	
 	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
 	{

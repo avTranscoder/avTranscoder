@@ -95,6 +95,13 @@ public:
 	void add( StreamTranscoder& stream );
 
 	/**
+	 * @brief Initialize all streams added, by ensure process necessary frames in case of latency.
+	 * @note This can be called several times with no side effects.
+	 * @note Can take a little bit of time.
+	 */
+	void init();
+	
+	/**
 	 * @brief Process the next frame of all streams.
 	 * @return if a frame was processed or not.
 	 */

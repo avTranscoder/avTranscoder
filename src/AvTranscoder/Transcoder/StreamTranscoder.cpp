@@ -30,6 +30,7 @@ StreamTranscoder::StreamTranscoder(
 	, _frameBuffer( NULL )
 	, _inputEssence( NULL )
 	, _dummyEssence( NULL )
+	, _currentEssence( NULL )
 	, _outputEssence( NULL )
 	, _transform( NULL )
 	, _subStreamIndex( -1 )
@@ -76,6 +77,7 @@ StreamTranscoder::StreamTranscoder(
 	, _frameBuffer( NULL )
 	, _inputEssence( NULL )
 	, _dummyEssence( NULL )
+	, _currentEssence( NULL )
 	, _outputEssence( NULL )
 	, _transform( NULL )
 	, _subStreamIndex( subStreamIndex )
@@ -170,6 +172,7 @@ StreamTranscoder::StreamTranscoder(
 	, _frameBuffer( NULL )
 	, _inputEssence( &inputEssence )
 	, _dummyEssence( NULL )
+	, _currentEssence( NULL )
 	, _outputEssence( NULL )
 	, _transform( NULL )
 	, _subStreamIndex( -1 )
@@ -246,6 +249,26 @@ StreamTranscoder::~StreamTranscoder()
 		delete _outputEssence;
 	if( _transform )
 		delete _transform;
+}
+
+void StreamTranscoder::init()
+{
+	// rewrap
+	if( ! _inputEssence )
+		return;
+
+	int latency = _outputEssence->getCodedDesc().getLatency();
+	if( _verbose )
+		std::cout << "latency of stream: " << latency << std::endl;
+
+	if( ! latency ||
+		latency < _outputEssence->getCodedDesc().getCodecContext()->frame_number )
+		return;
+
+	while( ( --latency ) > 0 )
+	{
+		processFrame();
+	}
 }
 
 bool StreamTranscoder::processFrame()

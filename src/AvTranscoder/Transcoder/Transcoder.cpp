@@ -203,6 +203,16 @@ void Transcoder::add( StreamTranscoder& stream )
 	_streamTranscoders.push_back( &stream );
 }
 
+void Transcoder::init()
+{
+	for( size_t streamIndex = 0; streamIndex < _streamTranscoders.size(); ++streamIndex )
+	{
+		if( _verbose )
+			std::cout << "init stream " << streamIndex << std::endl;
+		_streamTranscoders.at( streamIndex )->init();
+	}
+}
+
 bool Transcoder::processFrame()
 {
 	if( _streamTranscoders.size() == 0 )

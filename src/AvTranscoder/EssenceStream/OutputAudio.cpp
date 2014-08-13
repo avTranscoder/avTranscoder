@@ -16,8 +16,7 @@ namespace avtranscoder
 {
 
 OutputAudio::OutputAudio()
-	: OutputEssence()
-	, _audioDesc( "pcm_s16le" )
+	: OutputEssence( "pcm_s16le" )
 {
 }
 
@@ -25,7 +24,7 @@ void OutputAudio::setup()
 {
 	av_register_all();  // Warning: should be called only once
 
-	AVCodecContext* codecContext( _audioDesc.getCodecContext() );
+	AVCodecContext* codecContext( _codedDesc.getCodecContext() );
 
 	if( codecContext == NULL )
 	{
@@ -33,7 +32,7 @@ void OutputAudio::setup()
 	}
 	
 	// try to open encoder with parameters.
-	int ret = avcodec_open2( codecContext, _audioDesc.getCodec(), NULL );
+	int ret = avcodec_open2( codecContext, _codedDesc.getCodec(), NULL );
 	if( ret < 0 )
 	{
 		char err[250];
@@ -52,7 +51,7 @@ bool OutputAudio::encodeFrame( const Frame& sourceFrame, DataStream& codedFrame 
 	AVFrame* frame = avcodec_alloc_frame();
 #endif
 
-	AVCodecContext* codecContext = _audioDesc.getCodecContext();
+	AVCodecContext* codecContext = _codedDesc.getCodecContext();
 
 	// Set default frame parameters
 #if LIBAVCODEC_VERSION_MAJOR > 54
@@ -140,7 +139,7 @@ bool OutputAudio::encodeFrame( const Frame& sourceFrame, DataStream& codedFrame 
 
 bool OutputAudio::encodeFrame( DataStream& codedFrame )
 {
-	AVCodecContext* codecContext = _audioDesc.getCodecContext();
+	AVCodecContext* codecContext = _codedDesc.getCodecContext();
 
 	AVPacket packet;
 	av_init_packet( &packet );
@@ -181,11 +180,11 @@ void OutputAudio::setProfile( const Profile::ProfileDesc& desc, const AudioFrame
 		throw std::runtime_error( "The profile " + desc.find( Profile::avProfileIdentificatorHuman )->second + " is invalid." );
 	}
 	
-	_audioDesc.setCodec( desc.find( Profile::avProfileCodec )->second );
+	_codedDesc.setCodec( desc.find( Profile::avProfileCodec )->second );
 	
-	_audioDesc.setAudioParameters( frameDesc );
+	static_cast<AudioDesc>( _codedDesc ).setAudioParameters( frameDesc );
 
-	ParamSet paramSet( _audioDesc.getCodecContext() );
+	ParamSet paramSet( _codedDesc.getCodecContext() );
 	
 	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
 	{

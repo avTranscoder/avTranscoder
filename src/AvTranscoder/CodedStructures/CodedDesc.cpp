@@ -39,6 +39,12 @@ AVCodecID CodedDesc::getCodecId() const
 	return m_codecContext->codec_id;
 }
 
+int CodedDesc::getLatency()  const
+{
+	assert( m_codecContext != NULL );
+	return m_codecContext->delay;
+}
+
 void CodedDesc::setCodec( const std::string& codecName )
 {
 	avcodec_register_all();  // Warning: should be called only once
