@@ -114,7 +114,8 @@ if not javaAvTranscoder_class:
 	print "Java binding: can't generate JAR file while first build, because java classes are not already generated. Relaunch the build to generate it."
 else:
 	javaAvTranscoder_jar = env.Jar(
-		target = 'jAvTranscoderJar',
+		# Add version to the JAR name
+		target = 'jAvTranscoder.' + avTranscoderVersion,
 		source = javaAvTranscoder_class
 	)
 	env.Depends( javaAvTranscoder_jar, javaAvTranscoder_class )
