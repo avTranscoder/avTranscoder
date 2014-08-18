@@ -7,7 +7,19 @@ Import( "envPy" )
 Import( "installPrefix" )
 Import( "resampleLibraryName" )
 
-avTranscoderVersion = "0.0.1"
+try:
+	import git
+	# Get last tag of git repository
+	repo = git.Repo( "." )
+	tags = repo.tags
+	if tags:
+		lastTag = tags[-1]
+		avTranscoderVersion = lastTag.name[1:]
+	else:
+		raise
+except Exception:
+	# Set a default version
+	avTranscoderVersion = "0.0.1"
 
 env.Append(
     SHLIBVERSION = avTranscoderVersion
