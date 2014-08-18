@@ -51,6 +51,7 @@ javaAvTranscoder = envJava.SharedLibrary(
 		'swscale',
 		resampleLibraryName,
 	],
+    SHLIBVERSION = avTranscoderVersion,
 )
 
 pythonAvTranscoder = envPy.SharedLibrary(
@@ -64,30 +65,36 @@ pythonAvTranscoder = envPy.SharedLibrary(
 		'swscale',
 		resampleLibraryName,
 	],
+    SHLIBVERSION = avTranscoderVersion,
 )
 
-#avTranscoder_class = env.Java(
-#    target='AvTranscoderClass',
-#    source=Glob( envJava['JARCHDIR'] )
-#)
+javaAvTranscoder_class = env.Java(
+    target = 'jAvTranscoderClass',
+    source = Glob( envJava['JARCHDIR'] )
+)
 
-#avTranscoder_jar = env.Jar(
-#    target='jAvTranscoder.jar',
-#    source=avTranscoder_class,
-#)
+javaAvTranscoder_jar = env.Jar(
+    target = 'jAvTranscoderJar',
+    source = javaAvTranscoder_class
+)
 
+env.Depends( javaAvTranscoder_class, javaAvTranscoder )
+env.Depends( javaAvTranscoder_jar, javaAvTranscoder_class )
 
-# env.Depends( avTranscoder_class, jAvTranscoder )
-# env.Depends( avTranscoder_jar, avTranscoder_class )
 Export( { 'sAvTranscoder' : staticAvTranscoder } )
 Export( { 'AvTranscoder'  : sharedAvTranscoder } )
+Export( { 'jAvTranscoder'  : javaAvTranscoder } )
+Export( { 'pyAvTranscoder'  : pythonAvTranscoder } )
 
-# Export( { 'AvTranscoder_jar': avTranscoder_class } )
+Export( { 'jAvTranscoderClass'  : javaAvTranscoder_class } )
+Export( { 'jAvTranscoderJar'  : javaAvTranscoder_jar } )
 
 env.Alias( "install", env.InstallVersionedLib( os.path.join( installPrefix, "lib" ), sharedAvTranscoder) )
 env.Alias( "install", env.Install( os.path.join( installPrefix, "lib" ), staticAvTranscoder ) )
 env.Alias( "install", env.InstallVersionedLib( os.path.join( installPrefix, "lib" ), javaAvTranscoder ) )
+env.Alias( "install", env.InstallVersionedLib( os.path.join( installPrefix, "lib" ), pythonAvTranscoder ) )
 
+env.Alias( "install", env.Install( os.path.join( installPrefix, "jar" ), javaAvTranscoder_jar) )
 
 env.Alias( "install", env.Install(os.path.join( installPrefix, "include/AvTranscoder" ), Glob( 'AvTranscoder/*.hpp' ) ) )
 env.Alias( "install", env.Install(os.path.join( installPrefix, "include/AvTranscoder/CodedStream" ), Glob( 'AvTranscoder/CodedStream/*.hpp' ) ) )
@@ -98,6 +105,4 @@ env.Alias( "install", env.Install(os.path.join( installPrefix, "include/AvTransc
 env.Alias( "install", env.Install(os.path.join( installPrefix, "include/AvTranscoder/File" ), Glob( 'AvTranscoder/File/*.hpp' ) ) )
 env.Alias( "install", env.Install(os.path.join( installPrefix, "include/AvTranscoder/Metadatas" ), Glob( 'AvTranscoder/Metadatas/MediaMetadatasStructures.hpp' ) ) )
 env.Alias( "install", env.Install(os.path.join( installPrefix, "include/AvTranscoder/Metadatas" ), Glob( 'AvTranscoder/Metadatas/Print.hpp' ) ) )
-#env.Alias( "install", env.Install(os.path.join( installPrefix, "include/AvTranscoder/Profiles" ), Glob( 'AvTranscoder/Profiles/*.hpp' ) ) )
 env.Alias( "install", env.Install(os.path.join( installPrefix, "include/AvTranscoder/Transcoder" ), Glob( 'AvTranscoder/Transcoder/*.hpp' ) ) )
-
