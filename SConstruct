@@ -16,7 +16,7 @@ config.read( [
     'scons.cfg',
 ] )
 
-icommonInclude = []
+commonInclude = []
 commonLibDir   = []
 installPrefix  = "/usr/local"
 
