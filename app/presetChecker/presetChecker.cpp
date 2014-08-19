@@ -25,7 +25,7 @@ int main( int argc, char** argv )
 		if( profile.find( avtranscoder::Profile::avProfileType )->second == avtranscoder::Profile::avProfileTypeVideo )
 		{
 			avtranscoder::OutputVideo outputVideo;
-			outputVideo.setProfile( profile, outputVideo.getVideoDesc().getImageDesc() );
+			outputVideo.setProfile( profile, outputVideo.getVideoDesc().getVideoFrameDesc() );
 		}
 
 		if( profile.find( avtranscoder::Profile::avProfileType )->second == avtranscoder::Profile::avProfileTypeAudio )

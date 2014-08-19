@@ -16,9 +16,11 @@ public:
 	static const std::string avProfileIdentificatorHuman;
 	static const std::string avProfileType;
 
+	static const std::string avProfileTypeFormat;
 	static const std::string avProfileTypeVideo;
 	static const std::string avProfileTypeAudio;
 	
+	static const std::string avProfileFormat;
 	static const std::string avProfileCodec;
 	static const std::string avProfilePixelFormat;
 	static const std::string avProfileSampleFormat;
@@ -41,6 +43,7 @@ public:
 	
 	const ProfilesDesc& getProfiles();
 
+	ProfilesDesc getFormatProfiles();
 	ProfilesDesc getVideoProfiles();
 	ProfilesDesc getAudioProfiles();
 

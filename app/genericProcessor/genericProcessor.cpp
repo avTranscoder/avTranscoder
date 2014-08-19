@@ -8,6 +8,12 @@
 #include <sstream>
 #include <cstdlib>
 
+static const size_t dummyWidth = 1920;
+static const size_t dummyHeight = 1080;
+static const std::string dummyPixelFormat = "yuv420p";
+static const std::string dummyVideoCodec = "mpeg2video";
+static const std::string dummyAudioCodec = "pcm_s16le";
+
 // bool verbose = false;
 bool verbose = true;
 
@@ -47,9 +53,27 @@ void parseConfigFile( const std::string& configFilename, avtranscoder::Transcode
 					std::cout << ( transcodeProfile.length() ? transcodeProfile : "rewrap" );
 					std::cout << std::endl;
 				}
+				
+				// dummy stream, need a CodedDesc (audio or video)
+				if( ! filename.length() )
+				{
+					// video
+					avtranscoder::VideoFrameDesc imageDesc;
+					imageDesc.setWidth( dummyWidth );
+					imageDesc.setHeight( dummyHeight );
+					imageDesc.setDar( dummyWidth, dummyHeight );
+					avtranscoder::Pixel inputPixel( dummyPixelFormat );
+					imageDesc.setPixel( inputPixel );
 
-				transcoder.add( filename, streamIndex, subStreamIndex, transcodeProfile );
-
+					avtranscoder::VideoDesc inputVideoDesc( dummyVideoCodec );
+					inputVideoDesc.setImageParameters( imageDesc );
+					
+					transcoder.add( filename, streamIndex, subStreamIndex, transcodeProfile, inputVideoDesc );
+				}
+				else
+				{
+					transcoder.add( filename, streamIndex, subStreamIndex, transcodeProfile );
+				}
 			}
 		}
 	}
@@ -84,12 +108,17 @@ int main( int argc, char** argv )
 		avtranscoder::OutputFile outputFile( argv[2] );
 
 		avtranscoder::Transcoder transcoder( outputFile );
-		transcoder.setVerbose( verbose );
 
 		if( verbose )
 			std::cout << "parse config file" << std::endl;
 		parseConfigFile( inputConfigFile, transcoder, profiles );
 
+		// set verbose of all stream
+		transcoder.setVerbose( verbose );
+		transcoder.setProcessMethod( avtranscoder::eProcessMethodInfinity );
+		//transcoder.setOutputFps( 12 );
+		transcoder.init();
+		
 		if( verbose )
 			std::cout << "start Transcode" << std::endl;
 

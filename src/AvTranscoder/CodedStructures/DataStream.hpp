@@ -1,19 +1,8 @@
-#ifndef _AV_TRANSCODER_DATA_DATA_STREAM_DESC_HPP_
-#define _AV_TRANSCODER_DATA_DATA_STREAM_DESC_HPP_
+#ifndef _AV_TRANSCODER_CODED_STRUCTURES_DATA_STREAM_DESC_HPP_
+#define _AV_TRANSCODER_CODED_STRUCTURES_DATA_STREAM_DESC_HPP_
 
-#include <string>
 #include <vector>
-
-extern "C" {
-#ifndef __STDC_CONSTANT_MACROS
-	#define __STDC_CONSTANT_MACROS
-#endif
-#ifndef INT64_C
-	#define INT64_C(c) (c ## LL)
-	#define UINT64_C(c) (c ## ULL)
-#endif
-#include <libavcodec/avcodec.h>
-}
+#include <cstring>
 
 namespace avtranscoder
 {

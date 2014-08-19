@@ -6,17 +6,17 @@ namespace avtranscoder
 {
 
 AudioDesc::AudioDesc( const std::string& codecName )
-	: EssenceDesc( codecName )
+	: CodedDesc( codecName )
 {
 }
 
 AudioDesc::AudioDesc( const AVCodecID codecId )
-	: EssenceDesc( codecId )
+	: CodedDesc( codecId )
 {
 }
 
-AudioDesc::AudioDesc( const EssenceDesc& essenceDesc )
-	: EssenceDesc( essenceDesc.getCodecId() )
+AudioDesc::AudioDesc( const CodedDesc& essenceDesc )
+	: CodedDesc( essenceDesc.getCodecId() )
 {
 	m_codec = essenceDesc.getCodec();
 	m_codecContext = essenceDesc.getCodecContext();
@@ -53,6 +53,10 @@ const AVSampleFormat AudioDesc::getSampleFormat() const
 	return m_codecContext->sample_fmt;
 }
 
+void AudioDesc::setAudioParameters( const AudioFrameDesc& audioFrameDesc )
+{
+	setAudioParameters( audioFrameDesc.getSampleRate(), audioFrameDesc.getChannels(), audioFrameDesc.getSampleFormat() );
+}
 
 void AudioDesc::setAudioParameters( const size_t sampleRate, const size_t channels, const AVSampleFormat sampleFormat )
 {

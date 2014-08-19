@@ -3,6 +3,10 @@
 
 #include <AvTranscoder/CodedStream/AvInputStream.hpp>
 
+#include <AvTranscoder/EssenceStream/InputVideo.hpp>
+#include <AvTranscoder/EssenceStream/InputAudio.hpp>
+#include <AvTranscoder/EssenceStream/OutputVideo.hpp>
+#include <AvTranscoder/EssenceStream/OutputAudio.hpp>
 #include <AvTranscoder/EssenceStream/DummyVideo.hpp>
 #include <AvTranscoder/EssenceStream/DummyAudio.hpp>
 
@@ -10,6 +14,8 @@
 #include <AvTranscoder/EssenceTransform/VideoEssenceTransform.hpp>
 
 #include <cassert>
+#include <iostream>
+#include <limits>
 
 namespace avtranscoder
 {
@@ -23,11 +29,17 @@ StreamTranscoder::StreamTranscoder(
 	, _sourceBuffer( NULL )
 	, _frameBuffer( NULL )
 	, _inputEssence( NULL )
+	, _dummyEssence( NULL )
+	, _currentEssence( NULL )
 	, _outputEssence( NULL )
 	, _transform( NULL )
 	, _subStreamIndex( -1 )
-	, _transcodeStream( false )
+	, _frameProcessed( 0 )
+	, _offset( 0 )
+	, _takeFromDummy( false )
 	, _verbose( false )
+	, _offsetPassed( false )
+	, _infinityStream( false )
 {
 	// create a re-wrapping case
 	switch( _inputStream->getStreamType() )
@@ -42,6 +54,11 @@ StreamTranscoder::StreamTranscoder(
 			_outputStream = &outputFile.addAudioStream( _inputStream->getAudioDesc() );
 			break;
 		}
+		case AVMEDIA_TYPE_DATA :
+		{
+			_outputStream = &outputFile.addDataStream( _inputStream->getDataDesc() );
+			break;
+		}
 		default:
 			break;
 	}
@@ -51,18 +68,25 @@ StreamTranscoder::StreamTranscoder(
 		InputStream& inputStream,
 		OutputFile& outputFile,
 		const Profile::ProfileDesc& profile,
-		const int subStreamIndex
+		const int subStreamIndex,
+		const size_t offset
 	)
 	: _inputStream( &inputStream )
 	, _outputStream( NULL )
 	, _sourceBuffer( NULL )
 	, _frameBuffer( NULL )
 	, _inputEssence( NULL )
+	, _dummyEssence( NULL )
+	, _currentEssence( NULL )
 	, _outputEssence( NULL )
 	, _transform( NULL )
 	, _subStreamIndex( subStreamIndex )
-	, _transcodeStream( true )
+	, _frameProcessed( 0 )
+	, _offset( offset )
+	, _takeFromDummy( false )
 	, _verbose( false )
+	, _offsetPassed( false )
+	, _infinityStream( false )
 {
 	// create a transcode case
 	switch( _inputStream->getStreamType() )
@@ -76,22 +100,21 @@ StreamTranscoder::StreamTranscoder(
 
 			_outputEssence = outputVideo;
 
-			ImageDesc outputImageDesc = _inputStream->getVideoDesc().getImageDesc();
-
-			outputImageDesc.setPixel( Pixel( profile.find( Profile::avProfilePixelFormat )->second.c_str() ) );
-
-			outputVideo->setProfile( profile, outputImageDesc );
+			VideoFrameDesc outputFrameDesc = _inputStream->getVideoDesc().getVideoFrameDesc();
+			outputFrameDesc.setParameters( profile );
+			outputVideo->setProfile( profile, outputFrameDesc );
 			
 			_outputStream = &outputFile.addVideoStream( outputVideo->getVideoDesc() );
 
-			_sourceBuffer = new Image( _inputStream->getVideoDesc().getImageDesc() );
-
-			// outputVideo->getVideoDesc().setImageParameters( _inputStream->getVideoDesc().getImageDesc().getWidth(), _inputStream->getVideoDesc().getImageDesc().getHeight(), av_get_pix_fmt( desc[ Profile::avProfilePixelFormat ].c_str() ) );
-
-			_frameBuffer = new Image( outputVideo->getVideoDesc().getImageDesc() );
+			_sourceBuffer = new VideoFrame( _inputStream->getVideoDesc().getVideoFrameDesc() );
+			_frameBuffer = new VideoFrame( outputVideo->getVideoDesc().getVideoFrameDesc() );
 			
 			_transform = new VideoEssenceTransform();
 
+			DummyVideo* dummyVideo = new DummyVideo();
+			dummyVideo->setVideoDesc( outputVideo->getVideoDesc() );
+			_dummyEssence = dummyVideo;
+			
 			break;
 		}
 		case AVMEDIA_TYPE_AUDIO :
@@ -102,19 +125,30 @@ StreamTranscoder::StreamTranscoder(
 			OutputAudio* outputAudio = new OutputAudio();
 
 			_outputEssence = outputAudio;
-			AudioFrameDesc audioFrameDesc( _inputStream->getAudioDesc().getFrameDesc() );
 			
+			AudioFrameDesc outputFrameDesc( _inputStream->getAudioDesc().getFrameDesc() );
+			outputFrameDesc.setParameters( profile );
 			if( subStreamIndex > -1 )
-				audioFrameDesc.setChannels( 1 );
-
-			outputAudio->setProfile( profile, audioFrameDesc );
+			{
+				// @todo manage downmix ?
+				outputFrameDesc.setChannels( 1 );
+			}
+			outputAudio->setProfile( profile, outputFrameDesc );
 
 			_outputStream = &outputFile.addAudioStream( outputAudio->getAudioDesc() );
 
-			_sourceBuffer = new AudioFrame( audioFrameDesc );
+			AudioFrameDesc inputFrameDesc( _inputStream->getAudioDesc().getFrameDesc() );
+			if( subStreamIndex > -1 )
+				inputFrameDesc.setChannels( 1 );
+			
+			_sourceBuffer = new AudioFrame( inputFrameDesc );
 			_frameBuffer  = new AudioFrame( outputAudio->getAudioDesc().getFrameDesc() );
 			
 			_transform = new AudioEssenceTransform();
+
+			DummyAudio* dummyAudio = new DummyAudio();
+			dummyAudio->setAudioDesc( outputAudio->getAudioDesc() );
+			_dummyEssence = dummyAudio;
 
 			break;
 		}
@@ -124,6 +158,7 @@ StreamTranscoder::StreamTranscoder(
 			break;
 		}
 	}
+	switchEssence( offset != 0 );
 }
 
 StreamTranscoder::StreamTranscoder(
@@ -136,49 +171,64 @@ StreamTranscoder::StreamTranscoder(
 	, _sourceBuffer( NULL )
 	, _frameBuffer( NULL )
 	, _inputEssence( &inputEssence )
+	, _dummyEssence( NULL )
+	, _currentEssence( NULL )
 	, _outputEssence( NULL )
 	, _transform( NULL )
 	, _subStreamIndex( -1 )
-	, _transcodeStream( true )
+	, _frameProcessed( 0 )
+	, _offset( 0 )
+	, _takeFromDummy( false )
 	, _verbose( false )
+	, _offsetPassed( false )
+	, _infinityStream( false )
 {
 	// create a coding case based on a InputEssence (aka dummy reader)
 	if( ! profile.count( Profile::avProfileType ) )
 		throw std::runtime_error( "unable to found stream type (audio, video, etc.)" );
-
-	if( profile.find( Profile::avProfileType )->second == Profile::avProfileTypeAudio )
-	{
-		OutputAudio* outputAudio = new OutputAudio();
-
-		_outputEssence = outputAudio;
-		AudioFrameDesc inputAudioFrameDesc = static_cast<DummyAudio*>( _inputEssence )->getAudioDesc().getFrameDesc();
-		outputAudio->setProfile( profile, inputAudioFrameDesc );
-		
-		static_cast<DummyAudio*>( _inputEssence )->setAudioDesc( outputAudio->getAudioDesc() );
-		
-		_outputStream = &outputFile.addAudioStream( outputAudio->getAudioDesc() );
-		_sourceBuffer = new AudioFrame( outputAudio->getAudioDesc().getFrameDesc() );
-		_frameBuffer  = new AudioFrame( outputAudio->getAudioDesc().getFrameDesc() );
-
-		_transform = new AudioEssenceTransform();
-		
-		return;
-	}
 
 	if( profile.find( Profile::avProfileType )->second == Profile::avProfileTypeVideo )
 	{
 		OutputVideo* outputVideo = new OutputVideo();
 		
 		_outputEssence = outputVideo;
-		ImageDesc inputImageDesc = static_cast<DummyVideo*>( _inputEssence )->getVideoDesc().getImageDesc();
-		outputVideo->setProfile( profile, inputImageDesc );
+
+		VideoFrameDesc inputFrameDesc = static_cast<DummyVideo*>( _inputEssence )->getVideoDesc().getVideoFrameDesc();
+
+		VideoFrameDesc outputFrameDesc = inputFrameDesc;
+		outputFrameDesc.setParameters( profile );
+		outputVideo->setProfile( profile, outputFrameDesc );
 
 		_outputStream = &outputFile.addVideoStream( outputVideo->getVideoDesc() );
-		_sourceBuffer = new Image( outputVideo->getVideoDesc().getImageDesc() );
-		_frameBuffer  = new Image( outputVideo->getVideoDesc().getImageDesc() );
-		
+		_sourceBuffer = new VideoFrame( inputFrameDesc );
+		_frameBuffer  = new VideoFrame( outputFrameDesc );
+
 		_transform = new VideoEssenceTransform();
+
+		_currentEssence = _inputEssence;		
+
+		return;
+	}
+
+	if( profile.find( Profile::avProfileType )->second == Profile::avProfileTypeAudio )
+	{
+		OutputAudio* outputAudio = new OutputAudio();
+
+		_outputEssence = outputAudio;
+
+		AudioFrameDesc inputFrameDesc = static_cast<DummyAudio*>( _inputEssence )->getAudioDesc().getFrameDesc();
+
+		AudioFrameDesc outputFrameDesc = inputFrameDesc;
+		outputFrameDesc.setParameters( profile );
+		outputAudio->setProfile( profile, outputFrameDesc );
+
+		_outputStream = &outputFile.addAudioStream( outputAudio->getAudioDesc() );
+		_sourceBuffer = new AudioFrame( inputFrameDesc );
+		_frameBuffer  = new AudioFrame( outputFrameDesc );
+
+		_transform = new AudioEssenceTransform();
 		
+		_currentEssence = _inputEssence;
 		return;
 	}
 
@@ -193,30 +243,52 @@ StreamTranscoder::~StreamTranscoder()
 		delete _sourceBuffer;
 	if( _inputEssence && _inputStream )
 		delete _inputEssence;
+	if( _dummyEssence )
+		delete _dummyEssence;
 	if( _outputEssence )
 		delete _outputEssence;
 	if( _transform )
 		delete _transform;
 }
 
+void StreamTranscoder::init()
+{
+	// rewrap
+	if( ! _inputEssence )
+		return;
+
+	int latency = _outputEssence->getCodedDesc().getLatency();
+	if( _verbose )
+		std::cout << "latency of stream: " << latency << std::endl;
+
+	if( ! latency ||
+		latency < _outputEssence->getCodedDesc().getCodecContext()->frame_number )
+		return;
+
+	while( ( --latency ) > 0 )
+	{
+		processFrame();
+	}
+}
+
 bool StreamTranscoder::processFrame()
 {
-	if( _transcodeStream )
+	++_frameProcessed;
+
+	if( ! _inputEssence )
 	{
 		if( _subStreamIndex < 0 )
 		{
-			return processTranscode();
+			return processRewrap();
 		}
-
-		return processTranscode( _subStreamIndex );
+		return processRewrap( _subStreamIndex );
 	}
 
 	if( _subStreamIndex < 0 )
 	{
-		return processRewrap();
+		return processTranscode();
 	}
-
-	return processRewrap( _subStreamIndex );	
+	return processTranscode( _subStreamIndex );	
 }
 
 bool StreamTranscoder::processRewrap()
@@ -239,29 +311,38 @@ bool StreamTranscoder::processRewrap( const int subStreamIndex )
 	assert( _outputStream != NULL );
 	
 	DataStream dataStream;
-	// std::vector<DataStream> dataStream;
 
 	if( ! _inputStream->readNextPacket( dataStream ) )
 		return false;
 	_outputStream->wrap( dataStream );
-	// outputStream.wrap( dataStream.at( subStreamIndex ) );
 
 	return true;
 }
 
 bool StreamTranscoder::processTranscode()
 {
-	assert( _inputEssence  != NULL );
-	assert( _outputEssence != NULL );
-	assert( _sourceBuffer  != NULL );
-	assert( _frameBuffer   != NULL );
-	assert( _transform     != NULL );
+	assert( _inputEssence   != NULL );
+	assert( _currentEssence != NULL );
+	assert( _outputEssence  != NULL );
+	assert( _sourceBuffer   != NULL );
+	assert( _frameBuffer    != NULL );
+	assert( _transform      != NULL );
 
 	DataStream dataStream;
 	if( _verbose )
 		std::cout << "transcode a frame " << std::endl;
-	if( _inputEssence->readNextFrame( *_sourceBuffer ) )
-	{ 
+
+	if( _offset &&
+		_frameProcessed > _offset &&
+		! _offsetPassed &&
+		_takeFromDummy )
+	{
+		switchToInputEssence();
+		_offsetPassed = true;
+	}
+
+	if( _currentEssence->readNextFrame( *_sourceBuffer ) )
+	{
 		if( _verbose )
 			std::cout << "convert " << _sourceBuffer->getSize() << std::endl;
 		_transform->convert( *_sourceBuffer, *_frameBuffer );
@@ -275,6 +356,11 @@ bool StreamTranscoder::processTranscode()
 			std::cout << "encode last frame(s)" << std::endl;
 		if( ! _outputEssence->encodeFrame( dataStream ) )
 		{
+			if( _infinityStream )
+			{
+				switchToDummyEssence();
+				return processTranscode();
+			}
 			return false;
 		}
 	}
@@ -287,16 +373,27 @@ bool StreamTranscoder::processTranscode()
 
 bool StreamTranscoder::processTranscode( const int subStreamIndex )
 {
-	assert( _inputEssence  != NULL );
-	assert( _outputEssence != NULL );
-	assert( _sourceBuffer  != NULL );
-	assert( _frameBuffer   != NULL );
-	assert( _transform     != NULL );
+	assert( _inputEssence   != NULL );
+	assert( _currentEssence != NULL );
+	assert( _outputEssence  != NULL );
+	assert( _sourceBuffer   != NULL );
+	assert( _frameBuffer    != NULL );
+	assert( _transform      != NULL );
 
 	DataStream dataStream;
 	if( _verbose )
 		std::cout << "transcode a frame " << std::endl;
-	if( _inputEssence->readNextFrame( *_sourceBuffer, subStreamIndex ) )
+
+	if( _offset &&
+		_frameProcessed > _offset &&
+		! _offsetPassed &&
+		_takeFromDummy )
+	{
+		switchToInputEssence();
+		_offsetPassed = true;
+	}
+
+	if( _currentEssence->readNextFrame( *_sourceBuffer, subStreamIndex ) )
 	{
 		if( _verbose )
 			std::cout << "convert " << std::endl;
@@ -307,8 +404,15 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 	}
 	else
 	{
+		if( _verbose )
+			std::cout << "encode last frame(s)" << std::endl;
 		if( ! _outputEssence->encodeFrame( dataStream ) )
 		{
+			if( _infinityStream )
+			{
+				switchToDummyEssence();
+				return processTranscode();
+			}
 			return false;
 		}
 	}
@@ -316,6 +420,37 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 		std::cout << "wrap (" << dataStream.getSize() << ")" << std::endl;
 	_outputStream->wrap( dataStream );
 	return true;
+}
+
+void StreamTranscoder::switchEssence( bool swithToDummy )
+{
+	_takeFromDummy = swithToDummy;
+	_currentEssence = swithToDummy ? _dummyEssence : _inputEssence;
+	assert( _currentEssence != NULL );
+}
+
+void StreamTranscoder::switchToDummyEssence()
+{
+	switchEssence( true );
+}
+
+void StreamTranscoder::switchToInputEssence()
+{
+	switchEssence( false );
+}
+
+double StreamTranscoder::getDuration() const
+{	
+	if( _inputStream )
+	{
+		double totalDuration = 0;
+		totalDuration += _inputStream->getDuration();
+		// @todo add offset
+		return totalDuration;
+	}
+	// dummy
+	else
+		return std::numeric_limits<double>::max();
 }
 
 }

@@ -9,9 +9,6 @@ extern "C" {
 
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
-#include <libavutil/avutil.h>
-#include <libavutil/pixdesc.h>
-#include <libavutil/avstring.h>
 }
 
 #include <stdexcept>
@@ -131,6 +128,12 @@ AudioDesc AvInputStream::getAudioDesc() const
 
 	desc.setAudioParameters( codecContext->sample_rate, codecContext->channels, codecContext->sample_fmt );
 
+	return desc;
+}
+
+DataDesc AvInputStream::getDataDesc() const
+{
+	DataDesc desc;
 	return desc;
 }
 

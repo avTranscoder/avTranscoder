@@ -1,10 +1,11 @@
 #ifndef _AV_TRANSCODER_ESSENCE_TRANSFORM_VIDEO_ESSENCE_TRANSFORM_HPP
 #define _AV_TRANSCODER_ESSENCE_TRANSFORM_VIDEO_ESSENCE_TRANSFORM_HPP
 
-#include <AvTranscoder/DatasStructures/Frame.hpp>
+#include <vector>
+
 #include "EssenceTransform.hpp"
 
-#include <vector>
+#include <AvTranscoder/EssenceStructures/Frame.hpp>
 
 class SwsContext;
 
@@ -17,6 +18,8 @@ public:
 	VideoEssenceTransform();
 
 	void convert( const Frame& srcFrame, Frame& dstFrame );
+
+	void setVerbose( bool verbose = false ){ _verbose = verbose; }
 
 private:
 	bool init( const Frame& srcFrame, const Frame& dstFrame );
@@ -31,6 +34,8 @@ private:
 	std::vector<size_t>    _dstOffsets;
 
 	bool _isInit;
+
+	bool _verbose;
 };
 
 }

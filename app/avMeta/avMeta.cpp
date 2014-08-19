@@ -17,5 +17,5 @@ int main( int argc, char** argv )
 	input.analyse( p, avtranscoder::InputFile::eAnalyseLevelFull );
 
 	// a simply metadata display
-	displayMetadatas( input );
+	std::cout << input;
 }

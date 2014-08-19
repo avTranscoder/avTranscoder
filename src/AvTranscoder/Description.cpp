@@ -22,9 +22,9 @@ extern "C" {
 namespace avtranscoder
 {
 
-Library::Library( const std::string& name, const std::string& licence, const size_t major, const size_t minor, const size_t release )
+Library::Library( const std::string& name, const std::string& license, const size_t major, const size_t minor, const size_t release )
 	: _name( name )
-	, _licence( licence )
+	, _licence( license )
 	, _major( major )
 	, _minor( minor )
 	, _release( release )
@@ -69,7 +69,7 @@ size_t Library::getReleaseVersion()
 	return _release;
 }
 
-std::string Library::getLicence()
+std::string Library::getLicense()
 {
 	return _licence;
 }

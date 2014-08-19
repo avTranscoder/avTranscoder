@@ -4,6 +4,12 @@ import os
 import sys
 import ConfigParser
 
+mymode = ARGUMENTS.get('mode', 'release')
+
+if not (mymode in ['debug', 'release']):
+    print "Error: expected 'debug' or 'release', found: " + mymode
+    Exit(1)
+
 config = ConfigParser.RawConfigParser()
 
 config.read( [
@@ -85,7 +91,7 @@ envJava.Replace(
         libavLibDir,
         "#src",
     ],
-    JARCHDIR = env.Dir('#build/src/AvTranscoder').get_abspath(),
+    JARCHDIR = env.Dir('#build/'+mymode+'/src/AvTranscoder').get_abspath(),
 )
 
 envJava.Append(
@@ -153,16 +159,25 @@ envPy.Append(
     CXXFLAGS = resampleLibraryFlag
 )
 
+if mymode == "release":
+        env.Append(CCFLAGS = ['-O3'])
+if mymode == "debug":
+        env.Append(CCFLAGS = ['-pg', '-g'])
+
 Export( "env" )
 Export( "envJava" )
 Export( "envPy" )
 Export( "installPrefix" )
 Export( "resampleLibraryName" )
 
-VariantDir( 'build/src', 'src', duplicate = 0 )
-VariantDir( 'build/app', 'app', duplicate = 0 )
+VariantDir( 'build/'+mymode+'/src', 'src', duplicate = 0 )
+VariantDir( 'build/'+mymode+'/app', 'app', duplicate = 0 )
 
-SConscript( [
+sconscripts = [
     'build/src/SConscript',
     'build/app/SConscript',
-] )
+]
+ 
+SConscript('src/SConscript', variant_dir='build/'+mymode+'/src')
+SConscript('app/SConscript', variant_dir='build/'+mymode+'/app')
+

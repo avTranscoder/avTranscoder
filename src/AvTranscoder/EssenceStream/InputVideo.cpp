@@ -11,9 +11,10 @@ extern "C" {
 }
 
 #include <AvTranscoder/CodedStream/AvInputStream.hpp>
+#include <AvTranscoder/EssenceStructures/VideoFrame.hpp>
 
-#include <iostream>
 #include <stdexcept>
+#include <iostream>
 
 namespace avtranscoder
 {
@@ -124,7 +125,7 @@ bool InputVideo::readNextFrame( Frame& frameBuffer )
 		av_free_packet( &packet );
 	}
 
-	Image& imageBuffer = static_cast<Image&>( frameBuffer );
+	VideoFrame& imageBuffer = static_cast<VideoFrame&>( frameBuffer );
 
 	size_t decodedSize = avpicture_get_size( (AVPixelFormat)_frame->format, _frame->width, _frame->height );
 	if( imageBuffer.getBuffer().size() != decodedSize )
@@ -144,6 +145,28 @@ bool InputVideo::readNextFrame( Frame& frameBuffer, const size_t subStreamIndex 
 void InputVideo::flushDecoder()
 {
 	avcodec_flush_buffers( _codecContext );
+}
+
+void InputVideo::setProfile( const Profile::ProfileDesc& desc )
+{
+	ParamSet paramSet( _codecContext );
+
+	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
+	{
+		if( (*it).first == Profile::avProfileIdentificator ||
+			(*it).first == Profile::avProfileIdentificatorHuman ||
+			(*it).first == Profile::avProfileType )
+			continue;
+
+		try
+		{
+			paramSet.set( (*it).first, (*it).second );
+		}
+		catch( std::exception& e )
+		{
+			std::cout << "[InputVideo] warning: " << e.what() << std::endl;
+		}
+	}
 }
 
 }

@@ -5,19 +5,33 @@
 
 #include <string>
 #include <vector>
-
-class AVFormatContext;
+#include <map>
 
 namespace avtranscoder
 {
 
-struct Channel {
+/**
+ * @brief Can get all data of Properties structures by getDataMap(), which return a MetadatasMap.
+ */
+typedef std::vector< std::pair<std::string, std::string> > MetadatasMap;
+
+namespace detail
+{
+	/**
+	 * @brief Fill metadata parameter with the given AVDictionary.
+     */
+	void fillMetadataDictionnary( AVDictionary* avdictionnary, MetadatasMap& metadata );
+}
+
+struct Channel
+{
 	size_t id;
 	size_t chromaHeight;
 	size_t bitStep;
 };
 
-struct VideoProperties {
+struct VideoProperties
+{
 	std::string codecName;
 	std::string codecLongName;
 	std::string profileName;
@@ -70,9 +84,15 @@ struct VideoProperties {
 	// ( frame type / is key frame )
 	std::vector< std::pair< char, bool > > gopStructure;
 	std::vector<Channel> channels;
+
+	MetadatasMap metadatas;
+
+public:
+	MetadatasMap getDataMap() const;
 };
 
-struct AudioProperties {
+struct AudioProperties
+{
 	std::string codecName;
 	std::string codecLongName;
 	std::string sampleFormat;
@@ -84,25 +104,51 @@ struct AudioProperties {
 	size_t      sampleRate;
 	size_t      channels;
 	size_t      bit_rate;
+
+	MetadatasMap metadatas;
+
+public:
+	MetadatasMap getDataMap() const;
 };
 
-struct DataProperties {
+struct DataProperties
+{
 	size_t      streamId;
+	MetadatasMap metadatas;
+
+public:
+	MetadatasMap getDataMap() const;
 };
 
-struct SubtitleProperties {
+struct SubtitleProperties
+{
 	size_t      streamId;
+	MetadatasMap metadatas;
+
+public:
+	MetadatasMap getDataMap() const;
 };
 
-struct AttachementProperties {
+struct AttachementProperties
+{
 	size_t      streamId;
+	MetadatasMap metadatas;
+
+public:
+	MetadatasMap getDataMap() const;
 };
 
-struct UnknownProperties {
+struct UnknownProperties
+{
 	size_t      streamId;
+	MetadatasMap metadatas;
+
+public:
+	MetadatasMap getDataMap() const;
 };
 
-struct Properties {
+struct Properties
+{
 	std::string filename;
 	std::string formatName;
 	std::string formatLongName;
@@ -120,7 +166,10 @@ struct Properties {
 	std::vector< AttachementProperties > attachementStreams;
 	std::vector< UnknownProperties >     unknownStreams;
 
-	std::vector< std::pair< std::string, std::string > > metadatas; // ( key, value )
+	MetadatasMap metadatas;
+
+public:
+	MetadatasMap getDataMap() const;
 };
 
 }

@@ -2,11 +2,9 @@
 #define _AV_TRANSCODER_ESSENCE_STREAM_INPUT_VIDEO_HPP_
 
 #include "InputEssence.hpp"
-#include <AvTranscoder/DatasStructures/Image.hpp>
 
-#include <vector>
+#include <AvTranscoder/Profile.hpp>
 
-class AVFormatContext;
 class AVCodec;
 class AVCodecContext;
 class AVFrame;
@@ -28,7 +26,9 @@ public:
 	bool readNextFrame( Frame& frameBuffer, const size_t subStreamIndex );
 
 	void flushDecoder();
-
+	
+	void setProfile( const Profile::ProfileDesc& desc );
+	
 private:
 	AvInputStream*     _inputStream;
 	AVCodec*           _codec;

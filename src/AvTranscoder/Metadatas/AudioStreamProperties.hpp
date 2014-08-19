@@ -1,6 +1,8 @@
 #ifndef _AV_TRANSCODER_AUDIO_STREAM_PROPERTIES_HPP_
 #define _AV_TRANSCODER_AUDIO_STREAM_PROPERTIES_HPP_
 
+//#include <AvTranscoder/Metadatas/MediaMetadatasStructures.hpp>
+
 extern "C" {
 #ifndef __STDC_CONSTANT_MACROS
 	#define __STDC_CONSTANT_MACROS
@@ -15,7 +17,7 @@ extern "C" {
 namespace avtranscoder
 {
 
-AudioProperties audioStreamInfo( const AVFormatContext* formatContext, const size_t index )
+avtranscoder::AudioProperties audioStreamInfo( const AVFormatContext* formatContext, const size_t index )
 {
 	AudioProperties ap;
 	AVCodecContext* codec_context = formatContext->streams[index]->codec;

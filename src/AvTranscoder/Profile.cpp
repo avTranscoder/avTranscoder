@@ -1,10 +1,12 @@
 #include "Profile.hpp"
 
-#include <AvTranscoder/common.hpp>
+#include "common.hpp"
 
 #include <AvTranscoder/Profiles/XdCamHd422.hpp>
 #include <AvTranscoder/Profiles/DNxHD.hpp>
 #include <AvTranscoder/Profiles/Wave.hpp>
+#include <AvTranscoder/Profiles/Avi.hpp>
+#include <AvTranscoder/Profiles/Mkv.hpp>
 
 #include <iostream>
 #include <fstream>
@@ -16,9 +18,13 @@ namespace avtranscoder
 
 const std::string Profile::avProfileIdentificator( "avProfile" );
 const std::string Profile::avProfileIdentificatorHuman( "avProfileLong" );
+
 const std::string Profile::avProfileType( "avProfileType" );
+const std::string Profile::avProfileTypeFormat( "avProfileTypeFormat" );
 const std::string Profile::avProfileTypeVideo( "avProfileTypeVideo" );
 const std::string Profile::avProfileTypeAudio( "avProfileTypeAudio" );
+
+const std::string Profile::avProfileFormat( "format" );
 const std::string Profile::avProfileCodec( "codec" );
 const std::string Profile::avProfilePixelFormat( "pix_fmt" );
 const std::string Profile::avProfileSampleFormat( "sample_fmt" );
@@ -65,6 +71,8 @@ void Profile::loadProfiles( const std::string& avProfilesPath )
 	loadXdCamHD422( _profiles );
 	loadDNxHD( _profiles );
 	loadWave( _profiles );
+	loadAvi( _profiles );
+	loadMkv( _profiles );
 	
 	std::string realAvProfilesPath = avProfilesPath;
 	if( realAvProfilesPath.empty() )
@@ -111,6 +119,19 @@ void Profile::update( const ProfileDesc& profile )
 const Profile::ProfilesDesc& Profile::getProfiles()
 {
 	return _profiles;
+}
+
+Profile::ProfilesDesc Profile::getFormatProfiles()
+{
+	ProfilesDesc profiles;
+
+	for( ProfilesDesc::iterator it = _profiles.begin(); it != _profiles.end(); ++it )
+	{
+		if( (*it).find( avProfileType )->second == avProfileTypeFormat )
+			profiles.push_back( *it );
+	}
+
+	return profiles;
 }
 
 Profile::ProfilesDesc Profile::getVideoProfiles()
