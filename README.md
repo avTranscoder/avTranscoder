@@ -11,6 +11,13 @@ You can also use it in Java & Python for simpliest integration in projects.
 ###### Drone.io  
 [![Build Status](https://drone.io/github.com/avTranscoder/avTranscoder/status.png)](https://drone.io/github.com/avTranscoder/avTranscoder/latest)
 
+
+###### Coverity Scan  
+<a href="https://scan.coverity.com/projects/2626">
+  <img alt="Coverity Scan Build Status"
+       src="https://scan.coverity.com/projects/2626/badge.svg"/>
+</a>
+
 #### Packaging
 
 ###### Build openSUSE  
