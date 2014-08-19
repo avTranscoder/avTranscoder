@@ -120,3 +120,4 @@ else:
 	)
 	env.Depends( javaAvTranscoder_jar, javaAvTranscoder_class )
 	Export( { 'jAvTranscoderJar'  : javaAvTranscoder_jar } )
+	env.Alias( "install", env.Install( os.path.join( installPrefix, "jar" ), javaAvTranscoder_jar ) )
