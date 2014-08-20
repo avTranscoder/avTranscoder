@@ -167,6 +167,7 @@ if mymode == "debug":
 Export( "env" )
 Export( "envJava" )
 Export( "envPy" )
+Export( "mymode" )
 Export( "installPrefix" )
 Export( "resampleLibraryName" )
 
@@ -180,4 +181,3 @@ sconscripts = [
  
 SConscript('src/SConscript', variant_dir='build/'+mymode+'/src')
 SConscript('app/SConscript', variant_dir='build/'+mymode+'/app')
-
