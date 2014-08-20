@@ -1,121 +1,28 @@
 import os
 import platform
 
+Import( 'env' )
+Import( 'envJava' )
+Import( 'envPy' )
+Import( 'mymode' )
 Import( 'AvTranscoder' )
 Import( 'sAvTranscoder' )
-#Import( 'AvTranscoder_jar' )
-Import( 'installPrefix' )
-Import( "resampleLibraryName" )
+Import( 'jAvTranscoder' )
+Import( 'jAvTranscoderClass' )
+Import( 'pyAvTranscoder' )
+Import( 'resampleLibraryName' )
 
-env = Environment().Clone()
+Export( 'env' )
+Export( 'envJava' )
+Export( 'envPy' )
+Export( 'mymode' )
+Export( 'AvTranscoder' )
+Export( 'sAvTranscoder' )
+Export( 'jAvTranscoder' )
+Export( 'jAvTranscoderClass' )
+Export( 'pyAvTranscoder' )
+Export( 'resampleLibraryName' )
 
-Import( 'env' )
-
-avinfo = env.Program(
-        'avinfo',
-        Glob( 'avInfo/*.cpp' ),
-        LIBS = [
-                sAvTranscoder,
-                'avutil',
-                'avformat',
-                'avcodec',
-                'swscale',
-                resampleLibraryName,
-                ]
-        )
-
-avmeta = env.Program(
-        'avmeta',
-        Glob( 'avMeta/*.cpp' ),
-        LIBS = [
-                sAvTranscoder,
-                'avutil',
-                'avformat',
-                'avcodec',
-                'swscale',
-                resampleLibraryName,
-                ]
-        )
-
-avtransform = env.Program(
-        'av++',
-        Glob( 'avTranscoder/*.cpp' ),
-        LIBS = [
-                sAvTranscoder,
-                'avutil',
-                'avformat',
-                'avcodec',
-                'swscale',
-                resampleLibraryName,
-                ]
-        )
-
-avprocessor = env.Program(
-        'avprocessor',
-        Glob( 'genericProcessor/*.cpp' ),
-        LIBS = [
-                sAvTranscoder,
-                'avutil',
-                'avformat',
-                'avcodec',
-                'swscale',
-                resampleLibraryName,
-                ],
-        CXXFLAGS = [
-                '-std=c++0x'
-                ],
-        )
-
-if platform.system() != 'Windows':
-        avplayer = env.Program(
-                'avplayer',
-                Glob( 'avplay/*.cpp' ),
-                LIBS = [
-                        sAvTranscoder,
-                        'avutil',
-                        'avformat',
-                        'avcodec',
-                        'swscale',
-                        resampleLibraryName,
-                        'GL',
-                        'glut',
-                        ]
-                )
-        
-        avprofiles = env.Program(
-                'avprofiles',
-                Glob( 'presetChecker/*.cpp' ),
-                LIBS = [
-                        sAvTranscoder,
-                        'avutil',
-                        'avformat',
-                        'avcodec',
-                        'swscale',
-                        resampleLibraryName,
-                        ],
-                CXXFLAGS = [
-                        '-std=c++0x'
-                        ],
-        )
-
-        avprofiles = env.Program(
-                'avoptions',
-                Glob( 'optionChecker/*.cpp' ),
-                LIBS = [
-                        sAvTranscoder,
-                        'avutil',
-                        'avformat',
-                        'avcodec',
-                        'swscale',
-                        resampleLibraryName,
-                        ],
-                CXXFLAGS = [
-                        '-std=c++0x'
-                        ],
-                )
-
-env.Depends( avmeta, sAvTranscoder )
-
-env.Alias( "install", env.Install(os.path.join( installPrefix, "bin" ), avmeta ) )
-env.Alias( "install", env.Install(os.path.join( installPrefix, "bin" ), avprocessor ) )
-env.Alias( "install", env.Install(os.path.join( installPrefix, "bin" ), avtransform ) )
+SConscript('cpp/SConscript')
+SConscript('java/SConscript')
+SConscript('python/SConscript')
