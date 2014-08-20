@@ -124,6 +124,7 @@ VideoProperties videoStreamInfo(
 	vp.maxBitRate       = codec_context->rc_max_rate;
 	vp.minBitRate       = codec_context->rc_min_rate;
 	vp.isInterlaced     = false;
+	vp.topFieldFirst    = false;
 
 	vp.ticksPerFrame    = codec_context->ticks_per_frame,
 	vp.width            = codec_context->width,
