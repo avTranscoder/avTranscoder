@@ -33,9 +33,8 @@ void ParamSet::set( const std::string& key, const std::string& flag, const bool 
 	error = av_opt_get_int( _objContext, key.c_str(), AV_OPT_SEARCH_CHILDREN, &optVal );
 	if( error != 0 )
 	{
-		std::string err( "", AV_ERROR_MAX_STRING_SIZE );
-		//av_make_error_string( const_cast<char*>(err.c_str()), err.size(), error );
-		av_strerror( error, const_cast<char*>(err.c_str()), err.size() );
+		char err[AV_ERROR_MAX_STRING_SIZE];
+		av_strerror( error, err, AV_ERROR_MAX_STRING_SIZE );
 		throw std::runtime_error( "unknown key " + key + ": " + err );
 	}
 
@@ -47,9 +46,8 @@ void ParamSet::set( const std::string& key, const std::string& flag, const bool 
 	error = av_opt_set_int( _objContext, key.c_str(), optVal, AV_OPT_SEARCH_CHILDREN );
 	if( error != 0 )
 	{
-		std::string err( "", AV_ERROR_MAX_STRING_SIZE );
-		//av_make_error_string( const_cast<char*>(err.c_str()), err.size(), error );
-		av_strerror( error, const_cast<char*>(err.c_str()), err.size() );
+		char err[AV_ERROR_MAX_STRING_SIZE];
+		av_strerror( error, err, AV_ERROR_MAX_STRING_SIZE );
 		throw std::runtime_error( "setting " + key + " parameter to " + flag + ": " + err );
 	}
 }
@@ -59,9 +57,8 @@ void ParamSet::set( const std::string& key, const bool value )
 	int error = av_opt_set_int( _objContext, key.c_str(), value, AV_OPT_SEARCH_CHILDREN );
 	if( error != 0 )
 	{
-		std::string err( "", AV_ERROR_MAX_STRING_SIZE );
-		//av_make_error_string( const_cast<char*>(err.c_str()), err.size(), error );
-		av_strerror( error, const_cast<char*>(err.c_str()), err.size() );
+		char err[AV_ERROR_MAX_STRING_SIZE];
+		av_strerror( error, err, AV_ERROR_MAX_STRING_SIZE );
 		throw std::runtime_error( "setting " + key + " parameter to " + ( value ? "true" : "false" ) + ": " + err );
 	}
 }
@@ -75,9 +72,8 @@ void ParamSet::set( const std::string& key, const int value )
 	{
 		std::ostringstream os;
 		os << value;
-		std::string err( "", AV_ERROR_MAX_STRING_SIZE );
-		//av_make_error_string( const_cast<char*>(err.c_str()), err.size(), error );
-		av_strerror( error, const_cast<char*>(err.c_str()), err.size() );
+		char err[AV_ERROR_MAX_STRING_SIZE];
+		av_strerror( error, err, AV_ERROR_MAX_STRING_SIZE );
 		throw std::runtime_error( "setting " + key + " parameter to " + os.str() + ": " + err );
 	}
 }
@@ -92,9 +88,8 @@ void ParamSet::set( const std::string& key, const int num, const int den )
 	{
 		std::ostringstream os;
 		os << num << "/" << den;
-		std::string err( "", AV_ERROR_MAX_STRING_SIZE );
-		//av_make_error_string( const_cast<char*>(err.c_str()), err.size(), error );
-		av_strerror( error, const_cast<char*>(err.c_str()), err.size() );
+		char err[AV_ERROR_MAX_STRING_SIZE];
+		av_strerror( error, err, AV_ERROR_MAX_STRING_SIZE );
 		throw std::runtime_error( "setting " + key + " parameter to " + os.str() + ": " + err );
 	}
 }
@@ -106,9 +101,8 @@ void ParamSet::set( const std::string& key, const double value )
 	{
 		std::ostringstream os;
 		os << value;
-		std::string err( "", AV_ERROR_MAX_STRING_SIZE );
-		//av_make_error_string( const_cast<char*>(err.c_str()), err.size(), error );
-		av_strerror( error, const_cast<char*>(err.c_str()), err.size() );
+		char err[AV_ERROR_MAX_STRING_SIZE];
+		av_strerror( error, err, AV_ERROR_MAX_STRING_SIZE );
 		throw std::runtime_error( "setting " + key + " parameter to " + os.str() + ": " + err );
 	}
 }
@@ -118,9 +112,8 @@ void ParamSet::set( const std::string& key, const std::string& value )
 	int error = av_opt_set( _objContext, key.c_str(), value.c_str(), AV_OPT_SEARCH_CHILDREN );
 	if( error != 0 )
 	{
-		std::string err( "", AV_ERROR_MAX_STRING_SIZE );
-		//av_make_error_string( const_cast<char*>(err.c_str()), err.size(), error );
-		av_strerror( error, const_cast<char*>(err.c_str()), err.size() );
+		char err[AV_ERROR_MAX_STRING_SIZE];
+		av_strerror( error, err, AV_ERROR_MAX_STRING_SIZE );
 		throw std::runtime_error( "setting " + key + " parameter to " + value + ": " + err );
 	}
 }
