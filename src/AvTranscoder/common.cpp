@@ -27,7 +27,6 @@ void ParamSet::set( const std::string& key, const std::string& flag, const bool 
 
 	if( ! flagOpt )
 	{
-		std::cout << flag << std::endl << " : " << flagOpt->default_val.i64 << std::endl;
 		throw std::runtime_error( "unknown flag " + flag );
 	}
 
