@@ -65,7 +65,7 @@ env.Append(
     LIBPATH = [
         libavLibDir,
         "#src",
-        "#build/src"
+        "#build/"+mymode+"/src"
     ],
 )
 
