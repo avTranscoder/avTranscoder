@@ -48,9 +48,7 @@ pyInclude    = config.get( 'PYTHON', 'inc' ).split( splitChar )
 libavInclude = config.get( 'LIBAV', 'inc' ).split( splitChar )
 libavLibDir  = config.get( 'LIBAV', 'libdir' ).split( splitChar )
 
-env     = Environment().Clone()
-envJava = Environment().Clone()
-envPy   = Environment().Clone()
+env = Environment( ENV = { 'PATH' : os.environ[ 'PATH' ] } )
 
 # C++ environment
 env.Append(
@@ -69,8 +67,37 @@ env.Append(
     ] + commonLibDir,
 )
 
+if os.name == "nt" and sys.platform.startswith("win"): # detect windows plateform
+    env.AppendUnique( CPPDEFINES = 'WIN' )
+    env.AppendUnique( CPPDEFINES = 'WIN32' )
+    env.AppendUnique( CPPDEFINES = 'WINDOWS' )
+    env.AppendUnique( CPPDEFINES = '_WINDOWS' )
+    env.AppendUnique( CPPDEFINES = '__WINDOWS__' )
+    env.AppendUnique( CPPDEFINES = '__STDC_CONSTANT_MACROS' )
+    bits = 64
+    if 'PROGRAMFILES(X86)' not in os.environ:
+        bits = 32
+    env.AppendUnique( CPPDEFINES = 'WIN'+str(bits) )
+    env.AppendUnique( TMP = os.environ['TMP'].split( splitChar ) )
+
+    if 'LIB' not in os.environ or 'LIBPATH' not in os.environ :
+        print "Compiler environment not set."
+        sys.exit( -1 )
+    env.AppendUnique( LIB = os.environ['LIB'].split( splitChar ) )
+    env.AppendUnique( LIBPATH = os.environ['LIBPATH'].split( splitChar ) )
+    env.AppendUnique( TMP = os.environ['TMP'].split( splitChar ) )
+else:
+    env.AppendUnique( CPPDEFINES = 'UNIX' )
+    env.AppendUnique( CPPDEFINES = '__UNIX__' )
+    env.AppendUnique( CXXFLAGS = '-fPIC' ),
+    if sys.platform.startswith( "darwin" ): # for disabling macros such as check, verify, require ... ( AssertMacros.h )
+        env.AppendUnique( CPPDEFINES = '__ASSERT_MACROS_DEFINE_VERSIONS_WITHOUT_UNDERSCORES=0' )
+
+envJava = Environment().Clone()
+envPy   = Environment().Clone()
+
 # Java environment
-envJava.Replace(
+envJava.AppendUnique(
     CPPPATH = [
         javaInclude,
         libavInclude,
@@ -93,11 +120,10 @@ envJava.Replace(
     ],
     JARCHDIR = env.Dir('#build/'+mymode+'/src/AvTranscoder').get_abspath(),
 )
-
 envJava.Append(
     SWIGPATH = envJava['CPPPATH'],
     SWIGFLAGS = [ '-package', 'org.AvTranscoder' ],
-    )
+)
 
 # Python environment
 envPy.Replace(
@@ -123,7 +149,6 @@ envPy.Replace(
         "#src",
     ],
 )
-
 envPy.Append( SWIGPATH = envPy['CPPPATH'] )
 
 conf = Configure( env )
@@ -131,23 +156,40 @@ conf = Configure( env )
 resampleLibraryFlag = '-DAV_RESAMPLE_LIBRARY'
 resampleLibraryName = 'avresample'
 
-if not conf.CheckLibWithHeader('avutil', 'libavutil/avutil.h', 'c'):
-    sys.exit( 0 )
+if os.name == "nt" and sys.platform.startswith("win"): # detect windows plateform
+    if not conf.CheckLibWithHeader('avutil', 'libavutil/avutil.h', 'c++'):
+        sys.exit( -1 )
 
-if not conf.CheckLibWithHeader('avresample', 'libavresample/avresample.h', 'c'):
-    if conf.CheckLibWithHeader('swresample', 'libswresample/swresample.h', 'c'):
-        resampleLibraryFlag = '-DFF_RESAMPLE_LIBRARY'
-        resampleLibraryName = 'swresample'
+    if not conf.CheckLibWithHeader('avcodec', 'libavcodec/avcodec.h', 'c++'):
+        sys.exit( -1 )
 
-if not conf.CheckLibWithHeader('avcodec', 'libavcodec/avcodec.h', 'c'):
-    sys.exit( 0 )
+    if not conf.CheckLibWithHeader('avformat', 'libavformat/avformat.h', 'c++'):
+        sys.exit( -1 )
 
-if not conf.CheckLibWithHeader('avformat', 'libavformat/avformat.h', 'c'):
-    sys.exit( 0 )
+    if not conf.CheckLibWithHeader('swscale', 'libswscale/swscale.h', 'c++'):
+        sys.exit( -1 )
 
-if not conf.CheckLibWithHeader('swscale', 'libswscale/swscale.h', 'c'):
-    sys.exit( 0 )
+    if not conf.CheckLibWithHeader('avresample', 'libavresample/avresample.h', 'c++'):
+        if conf.CheckLibWithHeader('swresample', 'libswresample/swresample.h', 'c++'):
+            resampleLibraryFlag = '-DFF_RESAMPLE_LIBRARY'
+            resampleLibraryName = 'swresample'
+else:
+    if not conf.CheckLibWithHeader('avutil', 'libavutil/avutil.h', 'c'):
+        sys.exit( -1 )
 
+    if not conf.CheckLibWithHeader('avcodec', 'libavcodec/avcodec.h', 'c'):
+        sys.exit( -1 )
+
+    if not conf.CheckLibWithHeader('avformat', 'libavformat/avformat.h', 'c'):
+        sys.exit( -1 )
+
+    if not conf.CheckLibWithHeader('swscale', 'libswscale/swscale.h', 'c'):
+        sys.exit( -1 )
+
+    if not conf.CheckLibWithHeader('avresample', 'libavresample/avresample.h', 'c'):
+        if conf.CheckLibWithHeader('swresample', 'libswresample/swresample.h', 'c'):
+            resampleLibraryFlag = '-DFF_RESAMPLE_LIBRARY'
+            resampleLibraryName = 'swresample'
 
 env.Append(
     CXXFLAGS = resampleLibraryFlag
