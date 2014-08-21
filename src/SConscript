@@ -93,7 +93,7 @@ if not javaAvTranscoder_class:
 else:
 	javaAvTranscoder_jar = env.Jar(
 		# Add version to the JAR name
-		target = 'jAvTranscoder.' + avTranscoderVersion,
+		target =  os.path.join( 'jAvTranscoderJar', 'jAvTranscoder.' + avTranscoderVersion),
 		source = javaAvTranscoder_class
 	)
 	env.Depends( javaAvTranscoder_jar, javaAvTranscoder_class )
