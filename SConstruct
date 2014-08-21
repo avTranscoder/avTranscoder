@@ -169,10 +169,11 @@ Export( "envJava" )
 Export( "envPy" )
 Export( "installPrefix" )
 Export( "resampleLibraryName" )
+Export( "mymode" )
 
 VariantDir( 'build/'+mymode+'/src', 'src', duplicate = 0 )
 VariantDir( 'build/'+mymode+'/app', 'app', duplicate = 0 )
  
 SConscript('src/SConscript', variant_dir='build/'+mymode+'/src')
 SConscript('app/cpp/SConscript', variant_dir='build/'+mymode+'/app/cpp')
-
+#SConscript('app/java/SConscript', variant_dir='build/'+mymode+'/app/java')
