@@ -57,7 +57,7 @@ env.Append(
     CPPPATH = [
         libavInclude,
         "#src",
-    ],
+    ] + commonInclude,
     CXXFLAGS = [
         '-Wall',
         '-fPIC',
@@ -66,7 +66,7 @@ env.Append(
         libavLibDir,
         "#src",
         "#build/src"
-    ],
+    ] + commonLibDir,
 )
 
 # Java environment
