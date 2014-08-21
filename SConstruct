@@ -155,20 +155,20 @@ if os.name == "nt" and sys.platform.startswith("win"): # detect windows platefor
             resampleLibraryFlag = '-DFF_RESAMPLE_LIBRARY'
             resampleLibraryName = 'swresample'
 else:
-    if not conf.CheckLibWithHeader('avutil', 'libavutil/avutil.h', 'c'):
+    if not conf.CheckCHeader('libavutil/avutil.h'):
         sys.exit( -1 )
 
-    if not conf.CheckLibWithHeader('avcodec', 'libavcodec/avcodec.h', 'c'):
+    if not conf.CheckCHeader('libavcodec/avcodec.h'):
         sys.exit( -1 )
 
-    if not conf.CheckLibWithHeader('avformat', 'libavformat/avformat.h', 'c'):
+    if not conf.CheckCHeader('libavformat/avformat.h'):
         sys.exit( -1 )
 
-    if not conf.CheckLibWithHeader('swscale', 'libswscale/swscale.h', 'c'):
+    if not conf.CheckCHeader('libswscale/swscale.h'):
         sys.exit( -1 )
 
-    if not conf.CheckLibWithHeader('avresample', 'libavresample/avresample.h', 'c'):
-        if conf.CheckLibWithHeader('swresample', 'libswresample/swresample.h', 'c'):
+    if not conf.CheckCHeader('libavresample/avresample.h'):
+        if conf.CheckCHeader('libswresample/swresample.h'):
             resampleLibraryFlag = '-DFF_RESAMPLE_LIBRARY'
             resampleLibraryName = 'swresample'
 
