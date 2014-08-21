@@ -93,63 +93,39 @@ else:
     if sys.platform.startswith( "darwin" ): # for disabling macros such as check, verify, require ... ( AssertMacros.h )
         env.AppendUnique( CPPDEFINES = '__ASSERT_MACROS_DEFINE_VERSIONS_WITHOUT_UNDERSCORES=0' )
 
-envJava = Environment().Clone()
-envPy   = Environment().Clone()
+envJava = env.Clone()
+envPy   = env.Clone()
 
 # Java environment
-envJava.AppendUnique(
-    CPPPATH = [
-        javaInclude,
-        libavInclude,
-        ".",
-    ],
+envJava.Replace(
     SWIGCXXFILESUFFIX= '_wrapJava$CXXFILESUFFIX',
-    CXXFLAGS = [
-        '-Wall',
-    ],
     SWIGFLAGS = [
         '-java',
         '-c++',
         '-fcompact',
     ],
-    LINKFLAGS = [
-    ],
-    LIBPATH = [
-        libavLibDir,
-        "#src",
-    ],
-    JARCHDIR = env.Dir('#build/'+mymode+'/src/AvTranscoder').get_abspath(),
 )
-envJava.Append(
+envJava.AppendUnique(
+    CPPPATH = javaInclude,
     SWIGPATH = envJava['CPPPATH'],
     SWIGFLAGS = [ '-package', 'org.AvTranscoder' ],
+    JARCHDIR = env.Dir('#build/'+mymode+'/src/AvTranscoder').get_abspath(),
 )
 
 # Python environment
 envPy.Replace(
-    CPPPATH = [
-        pyInclude,
-        libavInclude,
-        ".",
-    ],
     SWIGCXXFILESUFFIX= '_wrapPython$CXXFILESUFFIX',
     SHLIBPREFIX= '_',
-    CXXFLAGS = [
-        '-Wall',
-    ],
     SWIGFLAGS = [
         '-python',
         '-c++',
         '-fcompact',
     ],
-    LINKFLAGS = [
-    ],
-    LIBPATH = [
-        libavLibDir,
-        "#src",
-    ],
 )
-envPy.Append( SWIGPATH = envPy['CPPPATH'] )
+envPy.AppendUnique(
+    CPPPATH = pyInclude,
+    SWIGPATH = envPy['CPPPATH']
+)
 
 conf = Configure( env )
 
