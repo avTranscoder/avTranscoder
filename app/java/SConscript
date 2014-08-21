@@ -1,0 +1,20 @@
+import os
+import platform
+
+Import( 'env' )
+Import( 'envJava' )
+Import( 'mymode' )
+Import( 'jAvTranscoder' )
+Import( 'jAvTranscoderClass' )
+Import( 'installPrefix' )
+
+if jAvTranscoderClass:
+	envJava.Append( 
+		JAVACLASSPATH = '.:build/'+mymode+'/src/jAvTranscoderClass/'
+	)
+
+	javTranscoder_class = envJava.Java(
+		target = 'javTranscoderClass',
+		source = Glob( 'jTranscoder/*.java')
+	)
+	env.Depends( javTranscoder_class, jAvTranscoder )
