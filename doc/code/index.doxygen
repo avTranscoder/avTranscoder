@@ -1,16 +1,80 @@
 /** @mainpage AvTranscoder
  *
- * See the website for a full presentation and the general documentation.
+ * An High Level API for transform medias.<br/>
+ * Based on FFMpeg / libav projects.
  *
- * https://github.com/MarcAntoine-Arnaud/avTranscoder
+ * <h2>Links</h2>
+ * <table style="border-width:0">
+ * <tr><td>github:</td><td>https://github.com/avTranscoder/avTranscoder</td></tr>
+ * <tr><td>openhub:</td><td>https://www.openhub.net/p/avTranscoder</td></tr>
+ * <tr><td>travis-ci:</td><td>https://travis-ci.org/avTranscoder/avTranscoder</td></tr>
+ * <tr><td>drone-io:</td><td>https://drone.io/github.com/avTranscoder/avTranscoder/latest</td></tr>
+ * <tr><td>coverity-scan:</td><td>https://scan.coverity.com/projects/2626</td></tr>
+ * </table>
  *
- *  - using C++ API on FFMpeg / LibAV
- *  - participate to the project developpement
- *
- * Authors
- * - Marc-Antoine Arnaud
- * - Valentin Noël
- * - Clément Champetier
+ * <h2>Authors</h2>
+ * <ul>
+ *  <li>Marc-Antoine Arnaud</li>
+ *  <li>Valentin Noël</li>
+ *  <li>Clément Champetier</li>
+ * </ul>
  * 
+ * <h2>Main features</h2>
+ * The library is here to provide a simple managment of the Transform process.<br/>
+ * Main features attending are:
+ * <ul>
+ *  <li>process each stream without different calls</li>
+ *  <li>specify stream process before the begin of the process</li>
+ *  <li>minimize process: only rewrap, or transcode without transformation if possible</li>
+ *  <li>manage different length of stream (generate silence/black)</li>
+ *  <li>overload of each sub-component for specific integration, like proprietary wrapper</li>
+ *  <li>multi-languages usages (C++, Java, Python)</li>
+ * </ul>
+ *
+ * <h2>High Level API</h2>
+ * <h3>Transcoder</h3>
+ * The library provide the <b>Transcoder</b> class, which was the highest level of managment.<br/>
+ * This classe manage progress of process for each <b>StreamTranscoder</b>.<br/>
+ * Each <b>StreamTranscoder</b> definition can be added to the <b>Transcoder</b>.<br/>
+ * After declaration, the process() method can process file, which call processFrame() in loop.<br/>
+ * 
+ * <h3>StreamTranscoder</h3>
+ * The <b>StreamTranscoder</b> will be here to abstract call for different case as:
+ * <ul>
+ *  <li>simple rewrap stream</li>
+ *  <li>transcode stream (decoding, transform and encoding)</li>
+ *  <li>encode from dummy (silence/black or external input source), without decoding step</li>
+ * </ul>
+ * Each <b>StreamTranscoder</b> is able to process a frame, and in background process a rewrap or the transcode process.<br/>
+ * 
+ * <h2>Lowest API</h2>
+ * <h3>InputFile</h3>
+ * This object manage the input media, providing the analisys methods to get metadatas on wrapper and each streams.<br/>
+ * It also the entry point to get the <b>InputStream</b> which was the coded stream.<br/>
+ *
+ * <h3>OutputFile</h3>
+ * The equivalent to the <b>InputFile</b> is the <b>OutputFile</b>. Each output stream require a decalaration, needed to wrote headers of files (wrote during the beginWrap() call).<br/>
+ * As the <b>InputFile</b> provide the <b>InputStream</b> to describe stream, the <b>OutputFile</b> as his <b>OutputStream</b> to put coded stream into the output file.<br/>
+ * Using one <b>InputStream</b> and one <b>OutputStream</b>, each <b>DataStream</b> can be passed to provide a rewrap process.<br/>
+ *
+ * <h3>InputEssence</h3>
+ * The <b>InputEssence</b> provide every time an image, from a coded stream or from an external buffer.<br/>
+ * It's allow the possiblity to generate silence or black stream, or also switch between the coded stream and a factice (to complete stream with different durations).<br/>
+ * The switch between source was managed inside the <b>StreamTranscoder</b> class.
+ * 
+ * <h3>OutputEssence</h3>
+ * As the <b>InputEssence</b> can decode the stream, the <b>OutputEssence</b> will encode our images to provide the coded stream.<br/>
+ * It's the encoder cofigured with some <b>Profile</b>.
+ * 
+ * <h3>EssenceTransform</h3>
+ * For adapt some images to the output format, some transformation can be done.<br/>
+ * This step will only provide pixel/sample transformation (point to point transform). No resize, resampling can be applyed in this step.
+ * 
+ * <h2>Low API</h2>
+ * Each component of the Lowest API call method present in the libav/ffmpeg API. You can depend on one of these project.<br/>
+ * Newest versions of libav/ffmpeg are recommended.<br/>
+ * <br/>
+ * <br/>
+ *
  */
 
