@@ -1,4 +1,3 @@
-
 #include <AvTranscoder/Transcoder/Transcoder.hpp>
 
 #include <iostream>
@@ -10,8 +9,12 @@
 
 static const size_t dummyWidth = 1920;
 static const size_t dummyHeight = 1080;
-static const std::string dummyPixelFormat = "yuv420p";
-static const std::string dummyVideoCodec = "mpeg2video";
+static const std::string dummyPixelFormat = "rgb24";
+static const std::string dummyVideoCodec = "png";
+
+static const size_t dummyChannel = 1;
+static const size_t dummySampleRate = 48000;
+static const std::string dummySampleFormat = "s16";
 static const std::string dummyAudioCodec = "pcm_s16le";
 
 // bool verbose = false;
@@ -69,6 +72,17 @@ void parseConfigFile( const std::string& configFilename, avtranscoder::Transcode
 					inputVideoDesc.setImageParameters( imageDesc );
 					
 					transcoder.add( filename, streamIndex, subStreamIndex, transcodeProfile, inputVideoDesc );
+					
+					// audio
+//					avtranscoder::AudioFrameDesc audioDesc;
+//					audioDesc.setChannels( dummyChannel );
+//					audioDesc.setSampleRate( dummySampleRate );
+//					audioDesc.setSampleFormat( dummySampleFormat );
+//					
+//					avtranscoder::AudioDesc inputAudioDesc( dummyAudioCodec );
+//					inputAudioDesc.setAudioParameters( audioDesc );
+//					
+//					transcoder.add( filename, streamIndex, subStreamIndex, transcodeProfile, inputAudioDesc );
 				}
 				else
 				{
@@ -115,8 +129,7 @@ int main( int argc, char** argv )
 
 		// set verbose of all stream
 		transcoder.setVerbose( verbose );
-		transcoder.setProcessMethod( avtranscoder::eProcessMethodInfinity );
-		//transcoder.setOutputFps( 12 );
+		transcoder.setProcessMethod( avtranscoder::eProcessMethodLongest );
 		transcoder.init();
 		
 		if( verbose )

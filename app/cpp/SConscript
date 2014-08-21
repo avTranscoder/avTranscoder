@@ -1,0 +1,119 @@
+import os
+import platform
+
+Import( 'env' )
+Import( 'AvTranscoder' )
+Import( 'sAvTranscoder' )
+Import( 'installPrefix' )
+Import( "resampleLibraryName" )
+
+avinfo = env.Program(
+	'avinfo',
+	Glob( 'avInfo/*.cpp' ),
+	LIBS = [
+			sAvTranscoder,
+			'avutil',
+			'avformat',
+			'avcodec',
+			'swscale',
+			resampleLibraryName,
+			]
+	)
+
+avmeta = env.Program(
+	'avmeta',
+	Glob( 'avMeta/*.cpp' ),
+	LIBS = [
+			sAvTranscoder,
+			'avutil',
+			'avformat',
+			'avcodec',
+			'swscale',
+			resampleLibraryName,
+			]
+	)
+
+avtransform = env.Program(
+	'av++',
+	Glob( 'avTranscoder/*.cpp' ),
+	LIBS = [
+			sAvTranscoder,
+			'avutil',
+			'avformat',
+			'avcodec',
+			'swscale',
+			resampleLibraryName,
+			]
+	)
+
+avprocessor = env.Program(
+	'avprocessor',
+	Glob( 'genericProcessor/*.cpp' ),
+	LIBS = [
+			sAvTranscoder,
+			'avutil',
+			'avformat',
+			'avcodec',
+			'swscale',
+			resampleLibraryName,
+			],
+	CXXFLAGS = [
+			'-std=c++0x'
+			],
+	)
+
+if platform.system() != 'Windows':
+	avplayer = env.Program(
+		'avplayer',
+		Glob( 'avplay/*.cpp' ),
+		LIBS = [
+				sAvTranscoder,
+				'avutil',
+				'avformat',
+				'avcodec',
+				'swscale',
+				resampleLibraryName,
+				'GL',
+				'glut',
+				]
+		)
+        
+	avprofiles = env.Program(
+		'avprofiles',
+		Glob( 'presetChecker/*.cpp' ),
+		LIBS = [
+				sAvTranscoder,
+				'avutil',
+				'avformat',
+				'avcodec',
+				'swscale',
+				resampleLibraryName,
+				],
+		CXXFLAGS = [
+				'-std=c++0x'
+				],
+	)
+
+	avprofiles = env.Program(
+		'avoptions',
+		Glob( 'optionChecker/*.cpp' ),
+		LIBS = [
+				sAvTranscoder,
+				'avutil',
+				'avformat',
+				'avcodec',
+				'swscale',
+				resampleLibraryName,
+				],
+		CXXFLAGS = [
+				'-std=c++0x'
+				],
+		)
+
+env.Depends( avmeta, sAvTranscoder )
+env.Depends( avprocessor, sAvTranscoder )
+env.Depends( avtransform, sAvTranscoder )
+
+env.Alias( "install", env.Install(os.path.join( installPrefix, "bin" ), avmeta ) )
+env.Alias( "install", env.Install(os.path.join( installPrefix, "bin" ), avprocessor ) )
+env.Alias( "install", env.Install(os.path.join( installPrefix, "bin" ), avtransform ) )
