@@ -44,7 +44,12 @@ if not config.has_section( 'PYTHON' ):
 
 
 javaInclude  = config.get( 'JAVA', 'inc' ).split( splitChar )
+
 pyInclude    = config.get( 'PYTHON', 'inc' ).split( splitChar )
+pyLibrary    = []
+if config.has_option( 'PYTHON', 'libdir' ):
+    pyLibrary = config.get( 'PYTHON', 'libdir' ).split( splitChar )
+
 libavInclude = config.get( 'LIBAV', 'inc' ).split( splitChar )
 libavLibDir  = config.get( 'LIBAV', 'libdir' ).split( splitChar )
 
@@ -124,6 +129,7 @@ envPy.Replace(
 )
 envPy.AppendUnique(
     CPPPATH = pyInclude,
+    LIBPATH = pyLibrary,
     SWIGPATH = envPy['CPPPATH']
 )
 
