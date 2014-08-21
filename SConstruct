@@ -94,7 +94,6 @@ if os.name == "nt" and sys.platform.startswith("win"): # detect windows platefor
 else:
     env.AppendUnique( CPPDEFINES = 'UNIX' )
     env.AppendUnique( CPPDEFINES = '__UNIX__' )
-    env.AppendUnique( CXXFLAGS = '-fPIC' ),
     if sys.platform.startswith( "darwin" ): # for disabling macros such as check, verify, require ... ( AssertMacros.h )
         env.AppendUnique( CPPDEFINES = '__ASSERT_MACROS_DEFINE_VERSIONS_WITHOUT_UNDERSCORES=0' )
 
