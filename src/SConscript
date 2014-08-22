@@ -40,8 +40,12 @@ staticAvTranscoder = env.StaticLibrary(
     ]
 )
 
+sharedAvTranscoderName = 'AvTranscoder'
+# if windows plateform, add version to the name
+if os.name == "nt" and sys.platform.startswith("win"):
+    sharedAvTranscoderName += '.'+ avTranscoderVersion
 sharedAvTranscoder = env.SharedLibrary(
-    'AvTranscoder',
+    sharedAvTranscoderName,
     Glob( 'AvTranscoder/*.cpp' ) +
     Glob( 'AvTranscoder/*/*.cpp' ),
     LIBS = [
@@ -54,8 +58,12 @@ sharedAvTranscoder = env.SharedLibrary(
     SHLIBVERSION = avTranscoderVersion,
 )
 
+javaAvTranscoderName = 'jAvTranscoder'
+# if windows plateform, add version to the name
+if os.name == "nt" and sys.platform.startswith("win"):
+    javaAvTranscoderName += '.'+ avTranscoderVersion
 javaAvTranscoder = envJava.SharedLibrary(
-	'jAvTranscoder',
+	javaAvTranscoderName,
 	source=['AvTranscoder/avTranscoder.i'],
 	LIBS=[ 
 		staticAvTranscoder,
@@ -68,8 +76,12 @@ javaAvTranscoder = envJava.SharedLibrary(
     SHLIBVERSION = avTranscoderVersion,
 )
 
+pythonAvTranscoderName = 'pyAvTranscoder'
+# if windows plateform, add version to the name
+if os.name == "nt" and sys.platform.startswith("win"):
+    pythonAvTranscoderName += '.'+ avTranscoderVersion
 pythonAvTranscoder = envPy.SharedLibrary(
-	'pyAvTranscoder',
+	pythonAvTranscoderName,
 	source='AvTranscoder/avTranscoder.i',
 	LIBS=[
 		staticAvTranscoder,
