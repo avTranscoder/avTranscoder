@@ -6,6 +6,9 @@ Based on library to support various video formats, avTrasncoder provide the high
 
 You can also use it in Java & Python for simpliest integration in projects.
 
+#### Requirements
+* GitPython (>=0.3.2)
+
 #### Continuous Integration
 
 ###### Drone.io  
