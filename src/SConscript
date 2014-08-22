@@ -1,6 +1,7 @@
 import glob, re
 import os
 import sys
+import git
 
 Import( "env" )
 Import( "envJava" )
@@ -8,21 +9,14 @@ Import( "envPy" )
 Import( "installPrefix" )
 Import( "resampleLibraryName" )
 
-# Set a default version
-avTranscoderVersion = "0.0.1"
-
-try:
-	import git
-	# Get last tag of git repository
-	repo = git.Repo( "." )
-	tags = repo.tags
-	if tags:
-		lastTag = tags[-1]
-		avTranscoderVersion = lastTag.name[1:]
-	else:
-		raise
-except Exception:
-	print "Warning: Can't access the last tag of git repository ; default version will be '0.0.1'."
+# Get version from last tag of git repository
+repo = git.Repo( "." )
+tags = repo.tags
+if tags:
+	lastTag = tags[-1]
+	avTranscoderVersion = lastTag.name[1:]
+else:
+	raise Exception( "Can't get last version of AvTranscoder." )
 
 env.Append(
     SHLIBVERSION = avTranscoderVersion
