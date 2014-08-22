@@ -19,6 +19,9 @@ before_script:
   - sudo apt-get install -qq gcc g++ scons swig swig2.0
   - sudo apt-get install -qq libavdevice-dev libavformat-dev libavcodec-dev libavutil-dev libswscale-dev libavresample-dev python-dev freeglut3-dev doxygen
 
+install:
+  - sudo pip install gitpython
+
 script:
   - scons
 
