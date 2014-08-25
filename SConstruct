@@ -18,7 +18,6 @@ config.read( [
 
 commonInclude = []
 commonLibDir   = []
-installPrefix  = "/usr/local"
 
 splitChar = ";"
 
@@ -190,7 +189,6 @@ if mymode == "debug":
 Export( "env" )
 Export( "envJava" )
 Export( "envPy" )
-Export( "installPrefix" )
 Export( "resampleLibraryName" )
 Export( "mymode" )
 

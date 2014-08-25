@@ -6,7 +6,6 @@ Import( 'envJava' )
 Import( 'mymode' )
 Import( 'jAvTranscoder' )
 Import( 'jAvTranscoderClass' )
-Import( 'installPrefix' )
 
 if jAvTranscoderClass:
 	envJava.Append( 

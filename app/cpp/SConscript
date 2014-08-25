@@ -4,7 +4,6 @@ import platform
 Import( 'AvTranscoder' )
 Import( 'sAvTranscoder' )
 #Import( 'AvTranscoder_jar' )
-Import( 'installPrefix' )
 Import( "resampleLibraryName" )
 
 env = Environment().Clone()
@@ -116,6 +115,6 @@ if platform.system() != 'Windows':
 
 env.Depends( avmeta, sAvTranscoder )
 
-env.Alias( "install", env.Install(os.path.join( installPrefix, "bin" ), avmeta ) )
-env.Alias( "install", env.Install(os.path.join( installPrefix, "bin" ), avprocessor ) )
-env.Alias( "install", env.Install(os.path.join( installPrefix, "bin" ), avtransform ) )
+env.Alias( "install", env.Install("bin", avmeta ) )
+env.Alias( "install", env.Install("bin", avprocessor ) )
+env.Alias( "install", env.Install("bin", avtransform ) )
