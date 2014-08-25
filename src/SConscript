@@ -88,6 +88,11 @@ pythonAvTranscoder = envPy.SharedLibrary(
     SHLIBVERSION = avTranscoderVersion,
 )
 
+initFile = envPy.Command( os.path.join( 'AvTranscoder/__init__.py' ), '', Touch('$TARGET') )
+envPy.Requires( pythonAvTranscoder, initFile )
+
+Touch('AvTranscoder/__init__.py')
+
 javaAvTranscoder_class = env.Java(
     target = 'jAvTranscoderClass',
     source = Glob( envJava['JARCHDIR'] )
@@ -126,3 +131,5 @@ env.Alias( "install", env.Install("include/AvTranscoder/File", Glob( 'AvTranscod
 env.Alias( "install", env.Install("include/AvTranscoder/Metadatas", Glob( 'AvTranscoder/Metadatas/MediaMetadatasStructures.hpp' ) ) )
 env.Alias( "install", env.Install("include/AvTranscoder/Metadatas", Glob( 'AvTranscoder/Metadatas/Print.hpp' ) ) )
 env.Alias( "install", env.Install("include/AvTranscoder/Transcoder", Glob( 'AvTranscoder/Transcoder/*.hpp' ) ) )
+env.Alias( "install", env.Install(os.path.join("lib/python2.7/site-packages/AvTranscoder"), initFile ) )
+env.Alias( "install", env.Install(os.path.join("lib/python2.7/site-packages/AvTranscoder"), Glob('AvTranscoder/AvTranscoder.py') ) )
