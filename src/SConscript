@@ -1,21 +1,12 @@
 import glob, re
 import os
 import sys
-import git
 
 Import( "env" )
 Import( "envJava" )
 Import( "envPy" )
 Import( "resampleLibraryName" )
-
-# Get version from last tag of git repository
-repo = git.Repo( "." )
-tags = repo.tags
-if tags:
-	lastTag = tags[-1]
-	avTranscoderVersion = lastTag.name[1:]
-else:
-	raise Exception( "Can't get last version of AvTranscoder." )
+Import( "avTranscoderVersion" )
 
 env.Append(
     SHLIBVERSION = avTranscoderVersion
@@ -90,8 +81,6 @@ pythonAvTranscoder = envPy.SharedLibrary(
 
 initFile = envPy.Command( os.path.join( 'AvTranscoder/__init__.py' ), '', Touch('$TARGET') )
 envPy.Requires( pythonAvTranscoder, initFile )
-
-Touch('AvTranscoder/__init__.py')
 
 javaAvTranscoder_class = env.Java(
     target = 'jAvTranscoderClass',

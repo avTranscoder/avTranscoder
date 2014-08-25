@@ -3,11 +3,8 @@ import platform
 
 Import( 'AvTranscoder' )
 Import( 'sAvTranscoder' )
-#Import( 'AvTranscoder_jar' )
-Import( "resampleLibraryName" )
-
-env = Environment().Clone()
-
+Import( 'resampleLibraryName' )
+Import( 'avTranscoderVersion' )
 Import( 'env' )
 
 avinfo = env.Program(
@@ -24,7 +21,7 @@ avinfo = env.Program(
         )
 
 avmeta = env.Program(
-        'avmeta',
+        'avmeta-' + avTranscoderVersion,
         Glob( 'avMeta/*.cpp' ),
         LIBS = [
                 sAvTranscoder,
@@ -37,7 +34,7 @@ avmeta = env.Program(
         )
 
 avtransform = env.Program(
-        'av++',
+        'av++-' + avTranscoderVersion,
         Glob( 'avTranscoder/*.cpp' ),
         LIBS = [
                 sAvTranscoder,
@@ -50,7 +47,7 @@ avtransform = env.Program(
         )
 
 avprocessor = env.Program(
-        'avprocessor',
+        'avprocessor-' + avTranscoderVersion,
         Glob( 'genericProcessor/*.cpp' ),
         LIBS = [
                 sAvTranscoder,
@@ -67,7 +64,7 @@ avprocessor = env.Program(
 
 if platform.system() != 'Windows':
         avplayer = env.Program(
-                'avplayer',
+                'avplayer-' + avTranscoderVersion,
                 Glob( 'avplay/*.cpp' ),
                 LIBS = [
                         sAvTranscoder,
@@ -82,7 +79,7 @@ if platform.system() != 'Windows':
                 )
         
         avprofiles = env.Program(
-                'avprofiles',
+                'avprofiles-' + avTranscoderVersion,
                 Glob( 'presetChecker/*.cpp' ),
                 LIBS = [
                         sAvTranscoder,
@@ -97,8 +94,8 @@ if platform.system() != 'Windows':
                         ],
         )
 
-        avprofiles = env.Program(
-                'avoptions',
+        avoptions = env.Program(
+                'avoptions-' + avTranscoderVersion,
                 Glob( 'optionChecker/*.cpp' ),
                 LIBS = [
                         sAvTranscoder,
@@ -115,6 +112,29 @@ if platform.system() != 'Windows':
 
 env.Depends( avmeta, sAvTranscoder )
 
-env.Alias( "install", env.Install("bin", avmeta ) )
-env.Alias( "install", env.Install("bin", avprocessor ) )
-env.Alias( "install", env.Install("bin", avtransform ) )
+env.Alias( "install", env.Install("bin", avinfo) )
+env.Alias( "install", env.Install("bin", avmeta) )
+env.Alias( "install", env.Install("bin", avprocessor) )
+env.Alias( "install", env.Install("share/man/man1", File("avInfo/avinfo.man") ) )
+env.Alias( "install", env.Install("share/man/man1", File("avMeta/avmeta.man") ) )
+env.Alias( "install", env.Install("share/man/man1", File("genericProcessor/avprocessor.man") ) )
+if platform.system() != 'Windows':
+        env.Alias( "install", env.Install("bin", avplayer) )
+        env.Alias( "install", env.Install("bin", avprofiles) )
+        env.Alias( "install", env.Install("share/man/man1", File("avplay/avplayer.man") ) )
+        env.Alias( "install", env.Install("share/man/man1", File("presetChecker/avprofiles.man") ) )
+
+        def SymLink(target, source, env):
+            os.symlink(os.path.basename(str(source[0])), str(target[0]))
+
+        avinfolink = env.Command( 'avinfo', avinfo, SymLink )
+        avmetalink = env.Command( 'avmeta', avmeta, SymLink )
+        avprocessorlink = env.Command( 'avprocessor', avprocessor, SymLink )
+        avplayerlink = env.Command( 'avplayer', avplayer, SymLink )
+        avprofileslink = env.Command( 'avprofiles', avprofiles, SymLink )
+
+        env.Alias( "install", env.Install("bin", avinfolink) )
+        env.Alias( "install", env.Install("bin", avmetalink) )
+        env.Alias( "install", env.Install("bin", avprocessorlink) )
+        env.Alias( "install", env.Install("bin", avplayerlink) )
+        env.Alias( "install", env.Install("bin", avprofileslink) )
