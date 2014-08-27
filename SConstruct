@@ -7,8 +7,23 @@ import ConfigParser
 mymode = ARGUMENTS.get('mode', 'release')
 
 if not (mymode in ['debug', 'release']):
-    print "Error: expected 'debug' or 'release', found: " + mymode
-    Exit(1)
+    raise Exception("Can't select build mode ['debug', 'release']")
+
+avTranscoderVersion = ARGUMENTS.get('version', None)
+
+if not avTranscoderVersion:
+    import git
+    # Get version from last tag of git repository
+    repo = git.Repo( "." )
+    tags = repo.tags
+    if tags:
+        lastTag = tags[-1]
+        avTranscoderVersion = lastTag.name[1:]
+    else:
+        raise Exception( "Can't get last version of AvTranscoder." )
+
+if not avTranscoderVersion:
+    raise Exception( "Can't get last version of AvTranscoder." )
 
 config = ConfigParser.RawConfigParser()
 
@@ -18,7 +33,6 @@ config.read( [
 
 commonInclude = []
 commonLibDir   = []
-installPrefix  = "/usr/local"
 
 splitChar = ";"
 
@@ -190,9 +204,9 @@ if mymode == "debug":
 Export( "env" )
 Export( "envJava" )
 Export( "envPy" )
-Export( "installPrefix" )
 Export( "resampleLibraryName" )
 Export( "mymode" )
+Export( "avTranscoderVersion" )
 
 VariantDir( 'build/'+mymode+'/src', 'src', duplicate = 0 )
 VariantDir( 'build/'+mymode+'/app', 'app', duplicate = 0 )
