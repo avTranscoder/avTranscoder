@@ -8,7 +8,7 @@ Import( 'avTranscoderVersion' )
 Import( 'env' )
 
 avinfo = env.Program(
-        'avinfo',
+        'avinfo-' + avTranscoderVersion,
         Glob( 'avInfo/*.cpp' ),
         LIBS = [
                 sAvTranscoder,
