@@ -1,0 +1,143 @@
+from nose.tools import *
+
+from AvTranscoder import AvTranscoder as av
+
+def testRewrapAudioStream():
+	"""
+	Rewrap one audio stream.
+	"""
+	inputFileName = "../data/audio/audio.wav"
+	outputFileName = "testRewrapAudioStream.wav"
+
+	ouputFile = av.OutputFile( outputFileName )
+	transcoder = av.Transcoder( ouputFile )
+
+	transcoder.add( inputFileName, 0, "" )
+
+	transcoder.setProcessMethod( av.eProcessMethodLongest )
+	progress = av.ProgressListener()
+	transcoder.process( progress )
+
+	# get src file of wrap
+	src_inputFile = av.InputFile( inputFileName )
+	src_inputFile.analyse( progress, av.InputFile.eAnalyseLevelFast )
+	src_properties = src_inputFile.getProperties()
+	src_audioStream = src_properties.audioStreams[0]
+
+	# get dst file of wrap
+	dst_inputFile = av.InputFile( outputFileName )
+	dst_inputFile.analyse( progress, av.InputFile.eAnalyseLevelFast )
+	dst_properties = dst_inputFile.getProperties()
+	dst_audioStream = dst_properties.audioStreams[0]
+
+	assert_equals( src_properties.formatName, dst_properties.formatName )
+	assert_equals( src_properties.formatLongName, dst_properties.formatLongName )
+	assert_equals( src_properties.streamsCount, dst_properties.streamsCount )
+	assert_equals( src_properties.startTime, dst_properties.startTime )
+	assert_equals( src_properties.duration, dst_properties.duration )
+	assert_almost_equals( src_properties.bitRate, dst_properties.bitRate, delta=10 )
+	assert_equals( src_properties.packetSize, dst_properties.packetSize )
+
+	assert_equals( len( src_properties.audioStreams ), len( dst_properties.audioStreams ) )
+
+	assert_equals( src_audioStream.codecName, dst_audioStream.codecName )
+	assert_equals( src_audioStream.codecLongName, dst_audioStream.codecLongName )
+	assert_equals( src_audioStream.sampleFormat, dst_audioStream.sampleFormat )
+	assert_equals( src_audioStream.channelLayout, dst_audioStream.channelLayout )
+	assert_equals( src_audioStream.channelName, dst_audioStream.channelName )
+	assert_equals( src_audioStream.channelDescription, dst_audioStream.channelDescription )
+	assert_equals( src_audioStream.streamId, dst_audioStream.streamId )
+	assert_equals( src_audioStream.codecId, dst_audioStream.codecId )
+	assert_equals( src_audioStream.sampleRate, dst_audioStream.sampleRate )
+	assert_equals( src_audioStream.channels, dst_audioStream.channels )
+	assert_equals( src_audioStream.bit_rate, dst_audioStream.bit_rate )
+
+	assert_equals( len( src_audioStream.metadatas ), len( dst_audioStream.metadatas ) )
+
+def testRewrapVideoStream():
+	"""
+	Rewrap one video stream.
+	"""
+	inputFileName = "../data/video/video.mxf"
+	outputFileName = "testRewrapVideoStream.mxf"
+
+	ouputFile = av.OutputFile( outputFileName )
+	transcoder = av.Transcoder( ouputFile )
+
+	transcoder.add( inputFileName, 0, "" )
+
+	transcoder.setProcessMethod( av.eProcessMethodLongest )
+	progress = av.ProgressListener()
+	transcoder.process( progress )
+
+	# get src file of wrap
+	src_inputFile = av.InputFile( inputFileName )
+	src_inputFile.analyse( progress, av.InputFile.eAnalyseLevelFull )
+	src_properties = src_inputFile.getProperties()
+	src_videoStream = src_properties.videoStreams[0]
+
+	# get dst file of wrap
+	dst_inputFile = av.InputFile( outputFileName )
+	dst_inputFile.analyse( progress, av.InputFile.eAnalyseLevelFast )
+	dst_properties = dst_inputFile.getProperties()
+	dst_videoStream = dst_properties.videoStreams[0]
+
+	assert_equals( len( src_properties.videoStreams ), len( dst_properties.videoStreams ) )
+
+	assert_equals( src_videoStream.codecName, dst_videoStream.codecName )
+	assert_equals( src_videoStream.codecLongName, dst_videoStream.codecLongName )
+	assert_equals( src_videoStream.profileName, dst_videoStream.profileName )
+	assert_equals( src_videoStream.colorTransfert, dst_videoStream.colorTransfert )
+	assert_equals( src_videoStream.colorspace, dst_videoStream.colorspace )
+	assert_equals( src_videoStream.colorRange, dst_videoStream.colorRange )
+	assert_equals( src_videoStream.colorPrimaries, dst_videoStream.colorPrimaries )
+	assert_equals( src_videoStream.chromaSampleLocation, dst_videoStream.chromaSampleLocation )
+	assert_equals( src_videoStream.fieldOrder, dst_videoStream.fieldOrder )
+	
+	assert_equals( src_videoStream.pixelName, dst_videoStream.pixelName )
+	assert_equals( src_videoStream.endianess, dst_videoStream.endianess )
+	
+	assert_equals( src_videoStream.startTimecode, dst_videoStream.startTimecode )
+
+	assert_equals( src_videoStream.timeBase.num, dst_videoStream.timeBase.num )
+	assert_equals( src_videoStream.timeBase.den, dst_videoStream.timeBase.den )
+	assert_equals( src_videoStream.sar.num, dst_videoStream.sar.num )
+	assert_equals( src_videoStream.sar.den, dst_videoStream.sar.den )
+	assert_equals( src_videoStream.dar.num, dst_videoStream.dar.num )
+	assert_equals( src_videoStream.dar.den, dst_videoStream.dar.den )
+	
+	assert_equals( src_videoStream.streamId, dst_videoStream.streamId )
+	assert_equals( src_videoStream.codecId, dst_videoStream.codecId )
+	assert_equals( src_videoStream.bitRate, dst_videoStream.bitRate )
+	assert_equals( src_videoStream.maxBitRate, dst_videoStream.maxBitRate )
+	assert_equals( src_videoStream.minBitRate, dst_videoStream.minBitRate )
+	assert_equals( src_videoStream.ticksPerFrame, dst_videoStream.ticksPerFrame )
+	assert_equals( src_videoStream.width, dst_videoStream.width )
+	assert_equals( src_videoStream.height, dst_videoStream.height )
+	assert_equals( src_videoStream.gopSize, dst_videoStream.gopSize )
+	assert_equals( src_videoStream.dtgActiveFormat, dst_videoStream.dtgActiveFormat )
+	assert_equals( src_videoStream.referencesFrames, dst_videoStream.referencesFrames )
+	assert_equals( src_videoStream.profile, dst_videoStream.profile )
+	assert_equals( src_videoStream.level, dst_videoStream.level )
+	assert_equals( src_videoStream.componentsCount, dst_videoStream.componentsCount )
+	assert_equals( src_videoStream.chromaWidth, dst_videoStream.chromaWidth )
+	assert_equals( src_videoStream.chromaHeight, dst_videoStream.chromaHeight )
+	
+	assert_equals( src_videoStream.fps, dst_videoStream.fps )
+	
+	assert_equals( src_videoStream.hasBFrames, dst_videoStream.hasBFrames )
+	assert_equals( src_videoStream.indexedColors, dst_videoStream.indexedColors )
+	assert_equals( src_videoStream.bitWisePacked, dst_videoStream.bitWisePacked )
+	assert_equals( src_videoStream.hardwareAcceleration, dst_videoStream.hardwareAcceleration )
+	assert_equals( src_videoStream.notFirstPlane, dst_videoStream.notFirstPlane )
+	assert_equals( src_videoStream.rgbPixelData, dst_videoStream.rgbPixelData )
+	assert_equals( src_videoStream.pseudoPaletted, dst_videoStream.pseudoPaletted )
+	assert_equals( src_videoStream.asAlpha, dst_videoStream.asAlpha )
+	assert_equals( src_videoStream.isInterlaced, dst_videoStream.isInterlaced )
+	assert_equals( src_videoStream.topFieldFirst, dst_videoStream.topFieldFirst )
+	
+
+	assert_equals( len( src_videoStream.gopStructure ), len( dst_videoStream.gopStructure ) )
+	assert_equals( len( src_videoStream.channels ), len( dst_videoStream.channels ) )
+
+	assert_equals( len( src_videoStream.metadatas ), len( dst_videoStream.metadatas ) )
