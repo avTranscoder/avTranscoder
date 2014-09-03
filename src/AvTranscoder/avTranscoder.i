@@ -7,6 +7,7 @@
 
 
 %include "AvTranscoder/avException.i"
+%include "AvTranscoder/avExport.i"
 
 %{
 #include <AvTranscoder/common.hpp>
