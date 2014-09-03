@@ -11,6 +11,13 @@ set(FFMPEG_INCLUDE_DIR "/path/to/ffmpeg/include/" CACHE STRING "")
 set(FFMPEG_LIBRARY_DIR "/path/to/ffmpeg/lib/" CACHE STRING "")
 file(GLOB_RECURSE FFMPEG_LIBS "${FFMPEG_LIBRARY_DIR}/*.so")
 
+# Check if FFmpeg or libav dependency
+if(EXISTS "${FFMPEG_INCLUDE_DIR}/libavresample/avresample.h")
+	add_definitions(-DAV_RESAMPLE_LIBRARY=1)
+else()
+	add_definitions(-DFF_RESAMPLE_LIBRARY=1)
+endif()
+
 # Include AvTranscoder and FFmpeg
 include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${FFMPEG_INCLUDE_DIR})
 
