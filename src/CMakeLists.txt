@@ -69,7 +69,11 @@ if(SWIG_FOUND)
 	install(FILES ${AVTRANSCODER_PYTHON_BINDING_FILE} DESTINATION "lib/python2.7/site-packages/AvTranscoder/")
 
 	### JAVA BINDING
-	set(ENV{JAVA_HOME} "/usr/java/jdk1.6.0_43") # fix find java SDK
+	set(JAVADIST "/usr/java/jdk1.6.0_43" )
+	set(JAVAC "${JAVADIST}/bin/javac")
+	set(JAR "${JAVADIST}/bin/jar")
+	
+	set(ENV{JAVA_HOME} ${JAVADIST}) # fix find java SDK
 	find_package(Java REQUIRED)
 	find_package(JNI REQUIRED)
 	include(UseJava)
@@ -83,15 +87,19 @@ if(SWIG_FOUND)
 	swig_add_module(avtranscoder-java java ${AVTRANSCODER_BINDING_FILE})
 	swig_link_libraries(avtranscoder-java avtranscoder-shared)
 
-	# Need to generate java files before class files and jar
+	# Post build of java binding : compile java files (generate class files) and create jar
 	set(AVTRANSCODER_JAVA_OUTPUT_PATH "${PROJECT_BINARY_DIR}/src/AvTranscoder")
-	if(EXISTS "${AVTRANSCODER_JAVA_OUTPUT_PATH}/Transcoder.java")
-		file(GLOB AVTRANSCODER_JAVA_BINDING_FILES "${AVTRANSCODER_JAVA_OUTPUT_PATH}/*.java")
-		add_jar(avtranscoder-jar ${AVTRANSCODER_JAVA_BINDING_FILES})
+	set(AVTRANSCODER_JAR_PATH "${PROJECT_BINARY_DIR}/src")
+	set(AVTRANSCODER_JAR_NAME "avtranscoder-jar.jar")
+	ADD_CUSTOM_COMMAND(
+		TARGET avtranscoder-java
+		POST_BUILD
+		COMMAND ${JAVAC} ${AVTRANSCODER_JAVA_CLASS_OUTPUT_PATH} "${AVTRANSCODER_JAVA_OUTPUT_PATH}/*.java"
+		COMMAND ${JAR} cvf ${AVTRANSCODER_JAR_NAME} "${AVTRANSCODER_JAVA_OUTPUT_PATH}/*.class"
+	)
 
-		# Install jar
-		install_jar(avtranscoder-jar "share/java/")
-	endif()
+	# Install jar file
+	install(FILES ${AVTRANSCODER_JAR_PATH}/${AVTRANSCODER_JAR_NAME} DESTINATION "share/java/")
 
 else(SWIG_FOUND)
 	message("SWIG not found, will not build python and java bindings.")
