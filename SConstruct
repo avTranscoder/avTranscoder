@@ -9,21 +9,13 @@ mymode = ARGUMENTS.get('mode', 'release')
 if not (mymode in ['debug', 'release']):
     raise Exception("Can't select build mode ['debug', 'release']")
 
-avTranscoderVersion = ARGUMENTS.get('version', None)
+avtVersionMajor = "0"
+avtVersionMinor = "2"
+avtVersionMicro = "1"
 
-if not avTranscoderVersion:
-    import git
-    # Get version from last tag of git repository
-    repo = git.Repo( "." )
-    tags = repo.tags
-    if tags:
-        lastTag = tags[-1]
-        avTranscoderVersion = lastTag.name[1:]
-    else:
-        raise Exception( "Can't get last version of AvTranscoder." )
+avtVersion = [avtVersionMajor, avtVersionMinor, avtVersionMicro]
 
-if not avTranscoderVersion:
-    raise Exception( "Can't get last version of AvTranscoder." )
+avtVersionStr = ".".join( avtVersion )
 
 config = ConfigParser.RawConfigParser()
 
@@ -78,6 +70,9 @@ env.Append(
     CXXFLAGS = [
         '-Wall',
         '-fPIC',
+        '-DAVTRANSCODER_VERSION_MAJOR=' + avtVersionMajor,
+        '-DAVTRANSCODER_VERSION_MINOR=' + avtVersionMinor,
+        '-DAVTRANSCODER_VERSION_MICRO=' + avtVersionMicro,
     ],
     LIBPATH = [
         libavLibDir,
@@ -206,7 +201,7 @@ Export( "envJava" )
 Export( "envPy" )
 Export( "resampleLibraryName" )
 Export( "mymode" )
-Export( "avTranscoderVersion" )
+Export( "avtVersionStr" )
 
 VariantDir( 'build/'+mymode+'/src', 'src', duplicate = 0 )
 VariantDir( 'build/'+mymode+'/app', 'app', duplicate = 0 )
