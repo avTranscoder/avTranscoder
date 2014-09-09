@@ -8,9 +8,9 @@ find_package(FFmpeg
 
 # Check if FFmpeg or libav dependency
 if(EXISTS "${FFMPEG_INCLUDE_DIR}/libavresample/avresample.h")
-	add_definitions(-DAV_RESAMPLE_LIBRARY=1)
+	add_definitions(-DAV_RESAMPLE_LIBRARY)
 else()
-	add_definitions(-DFF_RESAMPLE_LIBRARY=1)
+	add_definitions(-DFF_RESAMPLE_LIBRARY)
 endif()
 
 # Include AvTranscoder and FFmpeg
