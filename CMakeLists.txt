@@ -9,7 +9,7 @@ add_definitions(-DAVTRANSCODER_VERSION_MICRO=1)
 set(AVTRANSCODER_VERSION "0.2.1")
 
 # Diplay commands being ran by CMake
-set(CMAKE_VERBOSE_MAKEFILE ON)
+set(CMAKE_VERBOSE_MAKEFILE OFF)
 
 # CPP flags on debug / release mode
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -fPIC -pg -g")
