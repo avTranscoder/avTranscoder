@@ -5,6 +5,7 @@
 # FFMPEG_FOUND
 # FFMPEG_INCLUDE_DIR - The FFmpeg include directory.
 # FFMPEG_LIBRARIES - The FFmpeg libraries.
+# FFMPEG_DEFINITIONS - The FFmpeg compile flags.
 # 
 # For each component:
 # ${COMPONENT}_FOUND
