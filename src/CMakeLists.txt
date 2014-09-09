@@ -87,7 +87,7 @@ if(SWIG_FOUND)
 	# Post build of java binding : compile java files (generate class files) and create jar
 	set(AVTRANSCODER_JAVA_OUTPUT_PATH "${PROJECT_BINARY_DIR}/src/AvTranscoder")
 	set(AVTRANSCODER_JAR_PATH "${PROJECT_BINARY_DIR}/src")
-	set(AVTRANSCODER_JAR_NAME "avtranscoder-jar.jar")
+	set(AVTRANSCODER_JAR_NAME "avtranscoder.jar")
 	ADD_CUSTOM_COMMAND(
 		TARGET avtranscoder-java
 		POST_BUILD
