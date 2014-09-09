@@ -88,16 +88,14 @@ if(SWIG_FOUND)
 	swig_link_libraries(avtranscoder-java avtranscoder-shared)
 
 	# Post build of java binding : compile java files (generate class files) and create jar
-	set(JAVAC "ENV{JAVA_HOME}/bin/javac")
-	set(JAR "ENV{JAVA_HOME}/bin/jar")
 	set(AVTRANSCODER_JAVA_OUTPUT_PATH "${PROJECT_BINARY_DIR}/src/AvTranscoder")
 	set(AVTRANSCODER_JAR_PATH "${PROJECT_BINARY_DIR}/src")
 	set(AVTRANSCODER_JAR_NAME "avtranscoder-jar.jar")
 	ADD_CUSTOM_COMMAND(
 		TARGET avtranscoder-java
 		POST_BUILD
-		COMMAND ${JAVAC} ${AVTRANSCODER_JAVA_CLASS_OUTPUT_PATH} "${AVTRANSCODER_JAVA_OUTPUT_PATH}/*.java"
-		COMMAND ${JAR} cvf ${AVTRANSCODER_JAR_NAME} "${AVTRANSCODER_JAVA_OUTPUT_PATH}/*.class"
+		COMMAND ${Java_JAVAC_EXECUTABLE} ${AVTRANSCODER_JAVA_CLASS_OUTPUT_PATH} "${AVTRANSCODER_JAVA_OUTPUT_PATH}/*.java"
+		COMMAND ${Java_JAR_EXECUTABLE} cvf ${AVTRANSCODER_JAR_NAME} "${AVTRANSCODER_JAVA_OUTPUT_PATH}/*.class"
 	)
 
 	# Install jar file
