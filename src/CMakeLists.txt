@@ -6,9 +6,6 @@ include(AvTranscoderMacros)
 find_package(FFmpeg
 	COMPONENTS avcodec avformat avutil swscale swresample avresample)
 
-# get FFmpeg / libav libraries from path
-file(GLOB FFMPEG_LIBRARIES "${FFMPEG_LIBRARIES}/*.so")
-
 # Check if FFmpeg or libav dependency
 if(EXISTS "${FFMPEG_INCLUDE_DIR}/libavresample/avresample.h")
 	add_definitions(-DAV_RESAMPLE_LIBRARY=1)
