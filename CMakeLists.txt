@@ -11,9 +11,6 @@ set(AVTRANSCODER_VERSION "0.2.1")
 # Diplay commands being ran by CMake
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
-# Choose compiler
-set(CMAKE_CXX_COMPILER "g++")
-
 # CPP flags on debug / release mode
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -fPIC -pg -g")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fPIC -O3")
