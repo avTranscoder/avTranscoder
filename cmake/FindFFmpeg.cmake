@@ -112,5 +112,6 @@ else()
 	# Build the include path with duplicates removed.
 	if(FFMPEG_INCLUDE_DIR)
 		list(REMOVE_DUPLICATES FFMPEG_INCLUDE_DIR)
+		set(FFMPEG_FOUND TRUE)
 	endif()
 endif()
