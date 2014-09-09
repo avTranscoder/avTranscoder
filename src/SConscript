@@ -6,14 +6,14 @@ Import( "env" )
 Import( "envJava" )
 Import( "envPy" )
 Import( "resampleLibraryName" )
-Import( "avTranscoderVersion" )
+Import( "avtVersionStr" )
 
 env.Append(
-    SHLIBVERSION = avTranscoderVersion
+    SHLIBVERSION = avtVersionStr
 )
 
 staticAvTranscoder = env.StaticLibrary(
-    'sAvTranscoder',
+    'savtranscoder',
     Glob( 'AvTranscoder/*.cpp' ) +
     Glob( 'AvTranscoder/*/*.cpp' ),
     LIBS = [
@@ -25,10 +25,10 @@ staticAvTranscoder = env.StaticLibrary(
     ]
 )
 
-sharedAvTranscoderName = 'AvTranscoder'
+sharedAvTranscoderName = 'avtranscoder'
 # if windows plateform, add version to the name
 if os.name == "nt" and sys.platform.startswith("win"):
-    sharedAvTranscoderName += '.'+ avTranscoderVersion
+    sharedAvTranscoderName += '-'+ avtVersionStr
 sharedAvTranscoder = env.SharedLibrary(
     sharedAvTranscoderName,
     Glob( 'AvTranscoder/*.cpp' ) +
@@ -40,13 +40,13 @@ sharedAvTranscoder = env.SharedLibrary(
         'swscale',
         resampleLibraryName,
     ],
-    SHLIBVERSION = avTranscoderVersion,
+    SHLIBVERSION = avtVersionStr,
 )
 
-javaAvTranscoderName = 'jAvTranscoder'
+javaAvTranscoderName = 'avtranscoder-java'
 # if windows plateform, add version to the name
 if os.name == "nt" and sys.platform.startswith("win"):
-    javaAvTranscoderName += '.'+ avTranscoderVersion
+    javaAvTranscoderName += '-'+ avtVersionStr
 javaAvTranscoder = envJava.SharedLibrary(
 	javaAvTranscoderName,
 	source=['AvTranscoder/avTranscoder.i'],
@@ -58,13 +58,13 @@ javaAvTranscoder = envJava.SharedLibrary(
 		'swscale',
 		resampleLibraryName,
 	],
-    SHLIBVERSION = avTranscoderVersion,
+    SHLIBVERSION = avtVersionStr,
 )
 
-pythonAvTranscoderName = 'pyAvTranscoder'
+pythonAvTranscoderName = 'pyavtranscoder'
 # if windows plateform, add version to the name
 if os.name == "nt" and sys.platform.startswith("win"):
-    pythonAvTranscoderName += '.'+ avTranscoderVersion
+    pythonAvTranscoderName += '-'+ avtVersionStr
 pythonAvTranscoder = envPy.SharedLibrary(
 	pythonAvTranscoderName,
 	source='AvTranscoder/avTranscoder.i',
@@ -76,7 +76,7 @@ pythonAvTranscoder = envPy.SharedLibrary(
 		'swscale',
 		resampleLibraryName,
 	],
-    SHLIBVERSION = avTranscoderVersion,
+    SHLIBVERSION = avtVersionStr,
 )
 
 initFile = envPy.Command( os.path.join( 'AvTranscoder/__init__.py' ), '', Touch('$TARGET') )
@@ -93,7 +93,7 @@ if not javaAvTranscoder_class:
 else:
 	javaAvTranscoder_jar = env.Jar(
 		# Add version to the JAR name
-		target =  os.path.join( 'jAvTranscoderJar', 'jAvTranscoder.' + avTranscoderVersion),
+		target =  os.path.join( 'jAvTranscoderJar', 'jAvTranscoder.' + avtVersionStr),
 		source = javaAvTranscoder_class
 	)
 	env.Depends( javaAvTranscoder_jar, javaAvTranscoder_class )

@@ -78,15 +78,16 @@ Libraries getLibraries()
 {
 	Libraries libs;
 
-	libs.push_back( Library( "avutil",     avutil_license(),     LIBAVUTIL_VERSION_MAJOR,     LIBAVUTIL_VERSION_MINOR,     LIBAVUTIL_VERSION_MICRO     ) );
-	libs.push_back( Library( "avformat",   avformat_license(),   LIBAVFORMAT_VERSION_MAJOR,   LIBAVFORMAT_VERSION_MINOR,   LIBAVFORMAT_VERSION_MICRO   ) );
-	libs.push_back( Library( "avcodec",    avcodec_license(),    LIBAVCODEC_VERSION_MAJOR,    LIBAVCODEC_VERSION_MINOR,    LIBAVCODEC_VERSION_MICRO    ) );
+	libs.push_back( Library( "avtranscoder", avutil_license(),     AVTRANSCODER_VERSION_MAJOR,  AVTRANSCODER_VERSION_MINOR,  AVTRANSCODER_VERSION_MICRO  ) );
+	libs.push_back( Library( "avutil",       avutil_license(),     LIBAVUTIL_VERSION_MAJOR,     LIBAVUTIL_VERSION_MINOR,     LIBAVUTIL_VERSION_MICRO     ) );
+	libs.push_back( Library( "avformat",     avformat_license(),   LIBAVFORMAT_VERSION_MAJOR,   LIBAVFORMAT_VERSION_MINOR,   LIBAVFORMAT_VERSION_MICRO   ) );
+	libs.push_back( Library( "avcodec",      avcodec_license(),    LIBAVCODEC_VERSION_MAJOR,    LIBAVCODEC_VERSION_MINOR,    LIBAVCODEC_VERSION_MICRO    ) );
 #ifdef AV_RESAMPLE_LIBRARY
-	libs.push_back( Library( "avresample", avutil_license(),     LIBAVRESAMPLE_VERSION_MAJOR, LIBAVRESAMPLE_VERSION_MINOR, LIBAVRESAMPLE_VERSION_MICRO ) );
+	libs.push_back( Library( "avresample",   avutil_license(),     LIBAVRESAMPLE_VERSION_MAJOR, LIBAVRESAMPLE_VERSION_MINOR, LIBAVRESAMPLE_VERSION_MICRO ) );
 #else
-	libs.push_back( Library( "swresample", avutil_license(),     LIBSWRESAMPLE_VERSION_MAJOR, LIBSWRESAMPLE_VERSION_MINOR, LIBSWRESAMPLE_VERSION_MICRO ) );
+	libs.push_back( Library( "swresample",   avutil_license(),     LIBSWRESAMPLE_VERSION_MAJOR, LIBSWRESAMPLE_VERSION_MINOR, LIBSWRESAMPLE_VERSION_MICRO ) );
 #endif
-	libs.push_back( Library( "swscale",    avutil_license(),     LIBSWSCALE_VERSION_MAJOR,    LIBSWSCALE_VERSION_MINOR,    LIBSWSCALE_VERSION_MICRO    ) );
+	libs.push_back( Library( "swscale",      avutil_license(),     LIBSWSCALE_VERSION_MAJOR,    LIBSWSCALE_VERSION_MINOR,    LIBSWSCALE_VERSION_MICRO    ) );
 
 	return libs;
 }
