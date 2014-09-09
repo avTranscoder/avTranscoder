@@ -1,15 +1,13 @@
-# Load project cmake
+# Load custom cmake utilities
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+include(AvTranscoderMacros)
 
-# Get useful variables
-set(AVTRANSCODER_APP_PATH "${PROJECT_SOURCE_DIR}/app" PARENT_SCOPE)
-set(AVTRANSCODER_SRC_PATH "${PROJECT_SOURCE_DIR}/src" PARENT_SCOPE)
-file(GLOB_RECURSE AVTRANSCODER_SRC_FILES "AvTranscoder/*.cpp" "AvTranscoder/*.hpp")
+##find_package(FFmpeg)
+find_package(FFmpeg
+	COMPONENTS REQUIRED avcodec avformat avutil swscale swresample)
 
-# Get FFMPEG from parameters
-set(FFMPEG_INCLUDE_DIR "/path/to/ffmpeg/include/" CACHE STRING "")
-set(FFMPEG_LIBRARY_DIR "/path/to/ffmpeg/lib/" CACHE STRING "")
-file(GLOB_RECURSE FFMPEG_LIBS "${FFMPEG_LIBRARY_DIR}/*.so")
+# get FFmpeg / libav libraries from path
+file(GLOB FFMPEG_LIBRARIES "${FFMPEG_LIBRARIES}/*.so")
 
 # Check if FFmpeg or libav dependency
 if(EXISTS "${FFMPEG_INCLUDE_DIR}/libavresample/avresample.h")
@@ -25,14 +23,14 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${FFMPEG_INCLUDE_DIR})
 add_library(avtranscoder-static STATIC ${AVTRANSCODER_SRC_FILES})
 set_target_properties(avtranscoder-static PROPERTIES LINKER_LANGUAGE CXX)
 set_target_properties(avtranscoder-static PROPERTIES OUTPUT_NAME avtranscoder)
-target_link_libraries(avtranscoder-static ${FFMPEG_LIBS})
+target_link_libraries(avtranscoder-static ${FFMPEG_LIBRARIES})
 
 # Create 'avtranscoder' shared lib
 add_library(avtranscoder-shared SHARED ${AVTRANSCODER_SRC_FILES})
 set_target_properties(avtranscoder-shared PROPERTIES LINKER_LANGUAGE CXX)
 set_target_properties(avtranscoder-shared PROPERTIES OUTPUT_NAME avtranscoder)
 set_target_properties(avtranscoder-shared PROPERTIES SOVERSION ${AVTRANSCODER_VERSION})
-target_link_libraries(avtranscoder-shared ${FFMPEG_LIBS})
+target_link_libraries(avtranscoder-shared ${FFMPEG_LIBRARIES})
 
 ### Install AvTranscoder libs and include
 install(
