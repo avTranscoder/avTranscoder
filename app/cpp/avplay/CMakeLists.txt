@@ -16,9 +16,13 @@ add_executable(avplay ${AVPLAY_SRC_FILES})
 target_link_libraries(avplay avtranscoder-shared ${OPENGL_LIBRARIES} ${GLUT_LIBRARY})
 
 # Install app
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/avplayer.man DESTINATION "share/man/man1/")
 install(
 	FILES ${CMAKE_CURRENT_BINARY_DIR}/avplay
 	PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ WORLD_READ WORLD_EXECUTE
 	DESTINATION "bin/"
+)
+install(
+	FILES ${CMAKE_CURRENT_SOURCE_DIR}/avplayer.man
+	RENAME avplayer.1
+	DESTINATION "share/man/man1/"
 )
