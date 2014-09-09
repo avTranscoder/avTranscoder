@@ -36,13 +36,13 @@ endmacro()
 # then looking up the libraries and include directories.
 # @todo: WIN and MAC OSX.
 #
-macro(find_component COMPONENT PKGCONFIG PKGOPTION LIBRARY HEADER)
+macro(find_component COMPONENT PKGCONFIG LIBRARY HEADER)
 	if(NOT WIN32)
 		# use pkg-config to get the directories and then use these values
 		# in the FIND_PATH() and FIND_LIBRARY() calls
 		find_package(PkgConfig)
 		if(PKG_CONFIG_FOUND)
-			pkg_check_modules(PC_${COMPONENT} ${PKGCONFIG} ${PKGOPTION})
+			pkg_check_modules(PC_${COMPONENT} ${PKGCONFIG})
 		endif()
 	endif()
 
@@ -93,7 +93,7 @@ else()
 	foreach(COMPONENT ${FFmpeg_FIND_COMPONENTS})
 		# Get component name is lower cases.
 		string(TOLOWER ${COMPONENT} LOWERCOMPONENT)
-		find_component(${COMPONENT} lib${LOWERCOMPONENT} REQUIRED ${LOWERCOMPONENT} lib${LOWERCOMPONENT}/${LOWERCOMPONENT}.h)
+		find_component(${COMPONENT} lib${LOWERCOMPONENT} ${LOWERCOMPONENT} lib${LOWERCOMPONENT}/${LOWERCOMPONENT}.h)
 		# If the component is found.
 		if(${COMPONENT}_FOUND)
 			message(STATUS "Required component ${COMPONENT} present.")
@@ -101,7 +101,7 @@ else()
 			set(FFMPEG_DEFINITIONS ${FFMPEG_DEFINITIONS} ${${COMPONENT}_DEFINITIONS})
 			list(APPEND FFMPEG_INCLUDE_DIR ${${COMPONENT}_INCLUDE_DIR})
 		else()
-			message(SEND_ERROR "Required component ${COMPONENT} missing.")
+			message(STATUS "Required component ${COMPONENT} missing.")
 		endif()
 	endforeach()
 

@@ -4,7 +4,7 @@ include(AvTranscoderMacros)
 
 ##find_package(FFmpeg)
 find_package(FFmpeg
-	COMPONENTS REQUIRED avcodec avformat avutil swscale swresample)
+	COMPONENTS avcodec avformat avutil swscale swresample avresample)
 
 # get FFmpeg / libav libraries from path
 file(GLOB FFMPEG_LIBRARIES "${FFMPEG_LIBRARIES}/*.so")
