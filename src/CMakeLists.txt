@@ -74,11 +74,6 @@ if(SWIG_FOUND)
 	install(FILES ${AVTRANSCODER_PYTHON_BINDING_FILE} DESTINATION "lib/python2.7/site-packages/AvTranscoder/")
 
 	### JAVA BINDING
-	set(JAVADIST "/usr/java/jdk1.6.0_43" )
-	set(JAVAC "${JAVADIST}/bin/javac")
-	set(JAR "${JAVADIST}/bin/jar")
-	
-	set(ENV{JAVA_HOME} ${JAVADIST}) # fix find java SDK
 	find_package(Java REQUIRED)
 	find_package(JNI REQUIRED)
 	include(UseJava)
@@ -93,6 +88,8 @@ if(SWIG_FOUND)
 	swig_link_libraries(avtranscoder-java avtranscoder-shared)
 
 	# Post build of java binding : compile java files (generate class files) and create jar
+	set(JAVAC "ENV{JAVA_HOME}/bin/javac")
+	set(JAR "ENV{JAVA_HOME}/bin/jar")
 	set(AVTRANSCODER_JAVA_OUTPUT_PATH "${PROJECT_BINARY_DIR}/src/AvTranscoder")
 	set(AVTRANSCODER_JAR_PATH "${PROJECT_BINARY_DIR}/src")
 	set(AVTRANSCODER_JAR_NAME "avtranscoder-jar.jar")
