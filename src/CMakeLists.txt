@@ -71,7 +71,11 @@ if(SWIG_FOUND)
 
 	# Install python interface
 	file(GLOB AVTRANSCODER_PYTHON_BINDING_FILE "${CMAKE_SWIG_OUTDIR}/*.py")
-	install(FILES ${AVTRANSCODER_PYTHON_BINDING_FILE} DESTINATION "lib/python2.7/site-packages/AvTranscoder/")
+	install(
+		FILES ${AVTRANSCODER_PYTHON_BINDING_FILE}
+		RENAME "avtranscoder.py"
+		DESTINATION "lib/python2.7/site-packages/avtranscoder/"
+	)
 
 	### JAVA BINDING
 	find_package(Java REQUIRED)
