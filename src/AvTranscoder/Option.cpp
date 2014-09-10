@@ -16,7 +16,7 @@ OptionType Option::getTypeFromAVOption( const char* unit, AVOptionType avType )
 {
 	if( unit && avType == AV_OPT_TYPE_FLAGS )
 		return TypeGroup;
-	else if( unit && avType == AV_OPT_TYPE_INT )
+	else if( unit && ( avType == AV_OPT_TYPE_INT || avType == AV_OPT_TYPE_INT64 ) )
 		return TypeChoice;
 	else if( unit && avType == AV_OPT_TYPE_CONST )
 		return TypeChild;
