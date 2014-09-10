@@ -85,6 +85,8 @@ if(SWIG_FOUND)
 
 	# Create 'avtranscoder-java' shared lib
 	swig_add_module(avtranscoder-java java ${AVTRANSCODER_BINDING_FILE})
+	set_target_properties(${SWIG_MODULE_avtranscoder-java_REAL_NAME} PROPERTIES SOVERSION ${AVTRANSCODER_VERSION_MAJOR})
+	set_target_properties(${SWIG_MODULE_avtranscoder-java_REAL_NAME} PROPERTIES VERSION ${AVTRANSCODER_VERSION})
 	swig_link_libraries(avtranscoder-java avtranscoder-shared)
 
 	# Post build of java binding : compile java files (generate class files) and create jar
