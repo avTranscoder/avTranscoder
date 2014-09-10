@@ -85,6 +85,7 @@ OutputStream& OutputFile::addVideoStream( const VideoDesc& videoDesc )
 	_stream->time_base = _stream->codec->time_base;
 	
 	AvOutputStream* avOutputStream = new AvOutputStream( *this, _formatContext->nb_streams - 1 );
+
 	_outputStreams.push_back( avOutputStream );
 
 	return *_outputStreams.back();
@@ -105,6 +106,7 @@ OutputStream& OutputFile::addAudioStream( const AudioDesc& audioDesc )
 
 	AvOutputStream* avOutputStream = new AvOutputStream( *this, _formatContext->nb_streams - 1 );
 	_outputStreams.push_back( avOutputStream );
+
 	return *_outputStreams.back();
 }
 
