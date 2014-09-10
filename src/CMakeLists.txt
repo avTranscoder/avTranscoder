@@ -26,7 +26,8 @@ target_link_libraries(avtranscoder-static ${FFMPEG_LIBRARIES})
 add_library(avtranscoder-shared SHARED ${AVTRANSCODER_SRC_FILES})
 set_target_properties(avtranscoder-shared PROPERTIES LINKER_LANGUAGE CXX)
 set_target_properties(avtranscoder-shared PROPERTIES OUTPUT_NAME avtranscoder)
-set_target_properties(avtranscoder-shared PROPERTIES SOVERSION ${AVTRANSCODER_VERSION})
+set_target_properties(avtranscoder-shared PROPERTIES SOVERSION ${AVTRANSCODER_VERSION_MAJOR})
+set_target_properties(avtranscoder-shared PROPERTIES VERSION ${AVTRANSCODER_VERSION})
 target_link_libraries(avtranscoder-shared ${FFMPEG_LIBRARIES})
 
 ### Install AvTranscoder libs and include
