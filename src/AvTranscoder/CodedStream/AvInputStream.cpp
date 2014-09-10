@@ -9,9 +9,6 @@ extern "C" {
 
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
-#include <libavutil/avutil.h>
-#include <libavutil/pixdesc.h>
-#include <libavutil/avstring.h>
 }
 
 #include <stdexcept>
@@ -36,8 +33,16 @@ AvInputStream::AvInputStream( InputFile& inputFile, const size_t streamIndex )
 		, _streamIndex( streamIndex )
 		, _bufferized( false )
 {
-	if( _inputFile->getFormatContext().streams[_streamIndex]->codec->codec_type == AVMEDIA_TYPE_AUDIO )
-		_inputFile->getFormatContext().streams[_streamIndex]->codec->block_align = 5760;
+	AVCodecContext* context = _inputFile->getFormatContext().streams[_streamIndex]->codec;
+	if( context->codec_type == AVMEDIA_TYPE_AUDIO )
+	{
+		double outputFps = 25;
+		size_t bytePerSample = av_get_bytes_per_sample( context->sample_fmt );
+
+		context->block_align = 1.0 * context->sample_rate * context->channels * bytePerSample / outputFps;
+		// std::cout << "channels " << context->channel_layout << std::endl;
+		// std::cout << "audio buffer read size " << context->block_align << std::endl;
+	}
 }
 
 AvInputStream::~AvInputStream( )
@@ -123,6 +128,12 @@ AudioDesc AvInputStream::getAudioDesc() const
 
 	desc.setAudioParameters( codecContext->sample_rate, codecContext->channels, codecContext->sample_fmt );
 
+	return desc;
+}
+
+DataDesc AvInputStream::getDataDesc() const
+{
+	DataDesc desc;
 	return desc;
 }
 

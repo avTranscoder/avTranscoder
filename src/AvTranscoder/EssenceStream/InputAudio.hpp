@@ -2,9 +2,7 @@
 #define _AV_TRANSCODER_ESSENCE_STREAM_INPUT_AUDIO_HPP_
 
 #include "InputEssence.hpp"
-#include <AvTranscoder/DatasStructures/AudioFrame.hpp>
 
-class AVFormatContext;
 class AVCodec;
 class AVCodecContext;
 class AVFrame;
@@ -23,7 +21,7 @@ public:
 	void setup();
 
 	bool readNextFrame( Frame& frameBuffer );
-	bool readNextFrame( std::vector<Frame>& frameBuffer );
+	bool readNextFrame( Frame& frameBuffer, const size_t subStreamIndex );
 
 private:
 	bool getNextFrame();

@@ -1,20 +1,19 @@
 import glob, re
 import os
+import sys
 
 Import( "env" )
 Import( "envJava" )
 Import( "envPy" )
-Import( "installPrefix" )
 Import( "resampleLibraryName" )
-
-AvTranscoderVersion = "0.0.1"
+Import( "avtVersionStr" )
 
 env.Append(
-    SHLIBVERSION = AvTranscoderVersion
+    SHLIBVERSION = avtVersionStr
 )
 
-sAvTranscoder = env.StaticLibrary(
-    'sAvTranscoder',
+staticAvTranscoder = env.StaticLibrary(
+    'savtranscoder',
     Glob( 'AvTranscoder/*.cpp' ) +
     Glob( 'AvTranscoder/*/*.cpp' ),
     LIBS = [
@@ -26,8 +25,12 @@ sAvTranscoder = env.StaticLibrary(
     ]
 )
 
-SharedAvTranscoder = env.SharedLibrary(
-    'AvTranscoder',
+sharedAvTranscoderName = 'avtranscoder'
+# if windows plateform, add version to the name
+if os.name == "nt" and sys.platform.startswith("win"):
+    sharedAvTranscoderName += '-'+ avtVersionStr
+sharedAvTranscoder = env.SharedLibrary(
+    sharedAvTranscoderName,
     Glob( 'AvTranscoder/*.cpp' ) +
     Glob( 'AvTranscoder/*/*.cpp' ),
     LIBS = [
@@ -37,58 +40,85 @@ SharedAvTranscoder = env.SharedLibrary(
         'swscale',
         resampleLibraryName,
     ],
-    SHLIBVERSION = AvTranscoderVersion,
+    SHLIBVERSION = avtVersionStr,
 )
 
-jAvTranscoder = envJava.SharedLibrary(
-        'jAvTranscoder',
-        source=['AvTranscoder/avTranscoder.i'],
-        LIBS=[ 
-            sAvTranscoder,
-            'avutil',
-            'avcodec',
-            'avformat',
-            'swscale',
-            resampleLibraryName,
-        ],
-    )
+javaAvTranscoderName = 'avtranscoder-java'
+# if windows plateform, add version to the name
+if os.name == "nt" and sys.platform.startswith("win"):
+    javaAvTranscoderName += '-'+ avtVersionStr
+javaAvTranscoder = envJava.SharedLibrary(
+	javaAvTranscoderName,
+	source=['AvTranscoder/avTranscoder.i'],
+	LIBS=[ 
+		staticAvTranscoder,
+		'avutil',
+		'avcodec',
+		'avformat',
+		'swscale',
+		resampleLibraryName,
+	],
+    SHLIBVERSION = avtVersionStr,
+)
 
-pyAvTranscoder = envPy.SharedLibrary(
-        'pyAvTranscoder',
-        source='AvTranscoder/avTranscoder.i',
-        LIBS=[
-            sAvTranscoder,
-            'avutil',
-            'avcodec',
-            'avformat',
-            'swscale',
-            resampleLibraryName,
-        ],
-    )
+pythonAvTranscoderName = 'pyavtranscoder'
+# if windows plateform, add version to the name
+if os.name == "nt" and sys.platform.startswith("win"):
+    pythonAvTranscoderName += '-'+ avtVersionStr
+pythonAvTranscoder = envPy.SharedLibrary(
+	pythonAvTranscoderName,
+	source='AvTranscoder/avTranscoder.i',
+	LIBS=[
+		staticAvTranscoder,
+		'avutil',
+		'avcodec',
+		'avformat',
+		'swscale',
+		resampleLibraryName,
+	],
+    SHLIBVERSION = avtVersionStr,
+)
 
-# avTranscoder_class = env.Java(
-#       target='AvTranscoderClass',
-#       source= Glob( envJava['JARCHDIR'] ) )
+initFile = envPy.Command( os.path.join( 'AvTranscoder/__init__.py' ), '', Touch('$TARGET') )
+envPy.Requires( pythonAvTranscoder, initFile )
 
-# avTranscoder_jar = env.Jar(
-#     target='jAvTranscoder.jar',
-#     source=avTranscoder_class )
-    #source= Glob( '#build/src/AvTranscoderClass' ) )
+javaAvTranscoder_class = env.Java(
+    target = 'jAvTranscoderClass',
+    source = Glob( envJava['JARCHDIR'] )
+)
+env.Depends( javaAvTranscoder_class, javaAvTranscoder )
 
+if not javaAvTranscoder_class:
+	print "Java binding: can't generate JAR file while first build, because java classes are not already generated. Relaunch the build to generate it."
+else:
+	javaAvTranscoder_jar = env.Jar(
+		# Add version to the JAR name
+		target =  os.path.join( 'jAvTranscoderJar', 'jAvTranscoder.' + avtVersionStr),
+		source = javaAvTranscoder_class
+	)
+	env.Depends( javaAvTranscoder_jar, javaAvTranscoder_class )
+	env.Alias( "install", env.Install( os.path.join("share", "java"), javaAvTranscoder_jar ) )
 
-# env.Depends( avTranscoder_class, jAvTranscoder )
-# env.Depends( avTranscoder_jar, avTranscoder_class )
+Export( { 'sAvTranscoder' : staticAvTranscoder } )
+Export( { 'AvTranscoder'  : sharedAvTranscoder } )
+Export( { 'jAvTranscoder'  : javaAvTranscoder } )
+Export( { 'pyAvTranscoder'  : pythonAvTranscoder } )
+Export( { 'jAvTranscoderClass'  : javaAvTranscoder_class } )
 
-Export( { 'sAvTranscoder' : sAvTranscoder } )
-Export( { 'AvTranscoder'  : 'AvTranscoder' } )
-# Export( { 'AvTranscoder_jar': avTranscoder_class } )
+env.Alias( "install", env.InstallVersionedLib( "lib", sharedAvTranscoder) )
+env.Alias( "install", env.Install( "lib", staticAvTranscoder ) )
+env.Alias( "install", env.InstallVersionedLib( "lib", javaAvTranscoder ) )
+env.Alias( "install", env.InstallVersionedLib( "lib", pythonAvTranscoder ) )
 
-installSharedLib = env.InstallVersionedLib( os.path.join( installPrefix, "lib" ), SharedAvTranscoder)
-
-env.Alias( "install", env.Install(os.path.join( installPrefix, "lib" ), sAvTranscoder ) )
-env.Alias( "install", installSharedLib )
-env.Alias( "install", env.Install(os.path.join( installPrefix, "lib" ), jAvTranscoder ) )
-
-env.Alias( "install", env.Install(os.path.join( installPrefix, "include/AvTranscoder" ), Glob( 'AvTranscoder/*.hpp' ) ) )
-env.Alias( "install", env.Install(os.path.join( installPrefix, "include/AvTranscoder/Metadatas" ), Glob( 'AvTranscoder/Metadatas/MediaMetadatasStructures.hpp' ) ) )
-env.Alias( "install", env.Install(os.path.join( installPrefix, "include/AvTranscoder/DatasStructures" ), Glob( 'AvTranscoder/DatasStructures/*.hpp' ) ) )
+env.Alias( "install", env.Install("include/AvTranscoder", Glob( 'AvTranscoder/*.hpp' ) ) )
+env.Alias( "install", env.Install("include/AvTranscoder/CodedStream", Glob( 'AvTranscoder/CodedStream/*.hpp' ) ) )
+env.Alias( "install", env.Install("include/AvTranscoder/CodedStructures", Glob( 'AvTranscoder/CodedStructures/*.hpp' ) ) )
+env.Alias( "install", env.Install("include/AvTranscoder/EssenceStream", Glob( 'AvTranscoder/EssenceStream/*.hpp' ) ) )
+env.Alias( "install", env.Install("include/AvTranscoder/EssenceStructures", Glob( 'AvTranscoder/EssenceStructures/*.hpp' ) ) )
+env.Alias( "install", env.Install("include/AvTranscoder/EssenceTransform", Glob( 'AvTranscoder/EssenceTransform/*.hpp' ) ) )
+env.Alias( "install", env.Install("include/AvTranscoder/File", Glob( 'AvTranscoder/File/*.hpp' ) ) )
+env.Alias( "install", env.Install("include/AvTranscoder/Metadatas", Glob( 'AvTranscoder/Metadatas/MediaMetadatasStructures.hpp' ) ) )
+env.Alias( "install", env.Install("include/AvTranscoder/Metadatas", Glob( 'AvTranscoder/Metadatas/Print.hpp' ) ) )
+env.Alias( "install", env.Install("include/AvTranscoder/Transcoder", Glob( 'AvTranscoder/Transcoder/*.hpp' ) ) )
+env.Alias( "install", env.Install(os.path.join("lib/python2.7/site-packages/AvTranscoder"), initFile ) )
+env.Alias( "install", env.Install(os.path.join("lib/python2.7/site-packages/AvTranscoder"), Glob('AvTranscoder/AvTranscoder.py') ) )

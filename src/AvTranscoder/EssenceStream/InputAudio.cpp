@@ -12,6 +12,7 @@ extern "C" {
 }
 
 #include <AvTranscoder/CodedStream/AvInputStream.hpp>
+#include <AvTranscoder/EssenceStructures/AudioFrame.hpp>
 
 #include <iostream>
 #include <stdexcept>
@@ -20,7 +21,7 @@ namespace avtranscoder
 {
 
 InputAudio::InputAudio( AvInputStream& inputStream ) 
-	: InputEssence   ( inputStream )
+	: InputEssence()
 	, _inputStream   ( &inputStream )
 	, _codec         ( NULL )
 	, _codecContext  ( NULL )
@@ -57,7 +58,7 @@ void InputAudio::setup()
 {
 	avcodec_register_all();
 
-	_codec = avcodec_find_decoder( _inputStream->getAudioDesc().getAudioCodecId() );
+	_codec = avcodec_find_decoder( _inputStream->getAudioDesc().getCodecId() );
 	if( _codec == NULL )
 	{
 		throw std::runtime_error( "codec not supported" );
@@ -70,12 +71,6 @@ void InputAudio::setup()
 	}
 	
 	_codecContext->channels = _inputStream->getAudioDesc().getChannels();
-	
-	// std::cout << "Audio codec Id : " << _codecContext->codec_id << std::endl;
-	// std::cout << "Audio codec Id : " << _codec->name << std::endl;
-	// std::cout << "Audio codec Id : " << _codec->long_name << std::endl;
-
-	_codecContext->channels = _inputStream->getAudioDesc().getCodecContext()->channels;
 	
 	int ret = avcodec_open2( _codecContext, _codec, NULL );
 
@@ -133,29 +128,46 @@ bool InputAudio::readNextFrame( Frame& frameBuffer )
 	return true;
 }
 
-bool InputAudio::readNextFrame( std::vector<Frame>& frameBuffer )
+bool InputAudio::readNextFrame( Frame& frameBuffer, const size_t subStreamIndex )
 {
 	if( ! getNextFrame() )
 		return false;
 
-	size_t nbChannels = av_get_channel_layout_nb_channels( _frame->channel_layout );
+	const int output_nbChannels = 1;
+	const int output_align = 1;
+	size_t decodedSize = av_samples_get_buffer_size(NULL, output_nbChannels, _frame->nb_samples, _codecContext->sample_fmt, output_align);
+	
+	size_t nbSubStreams = _codecContext->channels;
 	size_t bytePerSample = av_get_bytes_per_sample( (AVSampleFormat)_frame->format );
 
-	frameBuffer.resize( nbChannels );
-
-	for( size_t channel = 0; channel < nbChannels; ++ channel )
+	if( subStreamIndex > nbSubStreams - 1 )
 	{
-		AudioFrame& audioBuffer = static_cast<AudioFrame&>( frameBuffer.at( channel ) );
-		audioBuffer.setNbSamples( _frame->nb_samples );
+		throw std::runtime_error( "The subStream doesn't exist");
+	}
+	
+	AudioFrame& audioBuffer = static_cast<AudioFrame&>( frameBuffer );
+	audioBuffer.setNbSamples( _frame->nb_samples );
+	
+	if( decodedSize )
+	{
+		if( audioBuffer.getSize() != decodedSize )
+			audioBuffer.getBuffer().resize( decodedSize, 0 );
 
-		unsigned char* src = *_frame->data;
+		// @todo manage cases with data of frame not only on data[0] (use _frame.linesize)
+		unsigned char* src = _frame->data[0];
 		unsigned char* dst = audioBuffer.getPtr();
 
+		// offset
+		src += ( nbSubStreams - 1 - subStreamIndex ) * bytePerSample;
+		
 		for( int sample = 0; sample < _frame->nb_samples; ++sample )
 		{
+			// std::cout << "sample " << sample << " ==| ";
+			// std::cout << "src " << static_cast<void *>(src) << " -> ";
+			// std::cout << "dst " << static_cast<void *>(dst) << std::endl;
 			memcpy( dst, src, bytePerSample );
 			dst += bytePerSample;
-			src += bytePerSample * nbChannels;
+			src += bytePerSample * nbSubStreams;
 		}
 	}
 	return true;
@@ -182,7 +194,7 @@ bool InputAudio::getNextFrame()
 		if( ret < 0 )
 		{
 			char err[250];
-			av_strerror( ret, err, 250);
+			av_strerror( ret, err, 250 );
 			
 			throw std::runtime_error( "an error occured during audio decoding" + std::string( err ) );
 		}

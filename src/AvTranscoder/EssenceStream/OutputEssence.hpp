@@ -1,20 +1,9 @@
 #ifndef _AV_TRANSCODER_ESSENCE_STREAM_OUTPUT_ESSENCE_HPP_
 #define _AV_TRANSCODER_ESSENCE_STREAM_OUTPUT_ESSENCE_HPP_
 
-extern "C" {
-#ifndef __STDC_CONSTANT_MACROS
-    #define __STDC_CONSTANT_MACROS
-#endif
-#include <libavutil/pixfmt.h>
-}
-
-#include <string>
-#include <vector>
-
-#include <AvTranscoder/DatasStructures/Frame.hpp>
-#include <AvTranscoder/DatasStructures/DataStreamDesc.hpp>
-
-#include <AvTranscoder/Profile.hpp>
+#include <AvTranscoder/EssenceStructures/Frame.hpp>
+#include <AvTranscoder/CodedStructures/DataStream.hpp>
+#include <AvTranscoder/CodedStructures/CodedDesc.hpp>
 
 namespace avtranscoder
 {
@@ -22,7 +11,8 @@ namespace avtranscoder
 class AvExport OutputEssence
 {
 public:
-	OutputEssence()
+	OutputEssence( const std::string& codecName )
+	: _codedDesc( codecName )
 	{}
 
 	virtual ~OutputEssence()
@@ -30,9 +20,8 @@ public:
 
 	/**
 	 * @brief Setup the encoder
-	 * @return status of setup
 	 */
-	virtual bool setup() = 0;
+	virtual void setup() = 0;
 
 	/**
 	 * @brief Encode a new frame, and get coded frame
@@ -49,12 +38,10 @@ public:
 	 */
 	virtual bool encodeFrame( DataStream& codedFrame ) = 0;
 
-	/**
-	 * @brief Set the profile for the encoder
-	 * @note see Profile to get list of supported profiles
-	 * @param desc description of the selected profile
-	 */
-	virtual void setProfile( Profile::ProfileDesc& desc ) = 0;
+	CodedDesc& getCodedDesc() { return _codedDesc; }
+
+protected:
+	CodedDesc _codedDesc;
 
 };
 

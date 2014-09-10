@@ -6,9 +6,6 @@ extern "C" {
 #endif
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
-#include <libavutil/avutil.h>
-#include <libavutil/pixdesc.h>
-#include <libavutil/avstring.h>
 }
 
 #include <iostream>
@@ -26,22 +23,23 @@ OutputFile::OutputFile( const std::string& filename )
 	, _stream        ( NULL )
 	, _filename      ( filename )
 	, _packetCount   ( 0 )
+	, _verbose       ( false )
 {
+	if( ( _formatContext = avformat_alloc_context() ) == NULL )
+	{
+		throw std::runtime_error( "unable to create format context" );
+	}
 }
 
 bool OutputFile::setup()
 {
 	av_register_all();
-	_outputFormat = av_guess_format( NULL, _filename.c_str(), NULL);
+	if( ! _outputFormat )
+		_outputFormat = av_guess_format( NULL, _filename.c_str(), NULL);
 
 	if( ! _outputFormat )
 	{
 		throw std::runtime_error( "unable to find format" );
-	}
-
-	if( ( _formatContext = avformat_alloc_context() ) == NULL )
-	{
-		throw std::runtime_error( "unable to create format context" );
 	}
 
 	_formatContext->oformat = _outputFormat;
@@ -86,8 +84,10 @@ OutputStream& OutputFile::addVideoStream( const VideoDesc& videoDesc )
 
 	_stream->time_base = _stream->codec->time_base;
 	
-	_outputStreams.push_back( AvOutputStream( *this, _formatContext->nb_streams ) );
-	return _outputStreams.back();
+	AvOutputStream* avOutputStream = new AvOutputStream( *this, _formatContext->nb_streams - 1 );
+	_outputStreams.push_back( avOutputStream );
+
+	return *_outputStreams.back();
 }
 
 OutputStream& OutputFile::addAudioStream( const AudioDesc& audioDesc )
@@ -103,13 +103,31 @@ OutputStream& OutputFile::addAudioStream( const AudioDesc& audioDesc )
 	_stream->codec->channels = audioDesc.getCodecContext()->channels;
 	_stream->codec->sample_fmt = audioDesc.getCodecContext()->sample_fmt;
 
-	_outputStreams.push_back( AvOutputStream( *this, _formatContext->nb_streams ) );
-	return _outputStreams.back();
+	AvOutputStream* avOutputStream = new AvOutputStream( *this, _formatContext->nb_streams - 1 );
+	_outputStreams.push_back( avOutputStream );
+	return *_outputStreams.back();
+}
+
+OutputStream& OutputFile::addDataStream( const DataDesc& dataDesc )
+{
+	assert( _formatContext != NULL );
+
+	if( ( _stream = avformat_new_stream( _formatContext, dataDesc.getCodec() ) ) == NULL )
+	{
+		throw std::runtime_error( "unable to add new data stream" );
+	}
+
+	AvOutputStream* avOutputStream = new AvOutputStream( *this, _formatContext->nb_streams - 1 );
+	_outputStreams.push_back( avOutputStream );
+
+	return *_outputStreams.back();
 }
 
 OutputStream& OutputFile::getStream( const size_t streamId )
 {
-	return _outputStreams.at( streamId );
+	if( streamId >= _outputStreams.size() )
+		throw std::runtime_error( "unable to get output stream (out of range)" );
+	return *_outputStreams.at( streamId );
 }
 
 bool OutputFile::beginWrap( )
@@ -123,11 +141,17 @@ bool OutputFile::beginWrap( )
 		msg += err;
 		throw std::runtime_error( msg );
 	}
+	_frameCount.clear();
+	_frameCount.resize( _outputStreams.size(), 0 );
 	return true;
 }
 
 bool OutputFile::wrap( const DataStream& data, const size_t streamId )
 {
+	if( ! data.getSize() )
+		return true;
+	if( _verbose )
+		std::cout << "wrap on stream " << streamId << " (" << data.getSize() << " bytes for frame " << _frameCount.at( streamId ) << ")" << std::endl;
 	AVPacket packet;
 	av_init_packet( &packet );
 
@@ -137,18 +161,27 @@ bool OutputFile::wrap( const DataStream& data, const size_t streamId )
 
 	packet.data = (uint8_t*)data.getPtr();
 	packet.size = data.getSize();
-	packet.dts = 0;
-	packet.pts = _packetCount;
+	// packet.dts = _frameCount.at( streamId );
+	// packet.pts = ;
 
-	if( av_interleaved_write_frame( _formatContext, &packet ) != 0 )
+	// int ret = av_write_frame( _formatContext, &packet );
+	int ret = av_interleaved_write_frame( _formatContext, &packet );
+
+	if( ret != 0 )
 	{
-		std::cout << "error when writting packet in stream" << std::endl;
+		char err[250];
+		av_strerror( ret, err, 250);
+		std::string msg = "error when writting packet in stream: ";
+		msg += err;
+		// throw std::runtime_error( msg );
+		std::cout << msg << std::endl;
 		return false;
 	}
 
 	av_free_packet( &packet );
 
 	_packetCount++;
+	_frameCount.at( streamId )++;
 	return true;
 }
 
@@ -167,6 +200,79 @@ bool OutputFile::endWrap( )
 	//freeFormat();
 	
 	return true;
+}
+
+void OutputFile::addMetadata( const MetadatasMap& dataMap )
+{
+	for( MetadatasMap::const_iterator it = dataMap.begin(); it != dataMap.end(); ++it )
+	{
+		addMetadata( it->first, it->second );
+	}
+}
+
+void OutputFile::addMetadata( const std::string& key, const std::string& value )
+{
+	int ret = av_dict_set( &_formatContext->metadata, key.c_str(), value.c_str(), 0 );
+	if( ret < 0 )
+	{
+		char err[250];
+		av_strerror( ret, err, 250 );
+		std::cout << err << std::endl;
+	}
+}
+
+void OutputFile::setProfile( const Profile::ProfileDesc& desc )
+{
+	if( ! desc.count( Profile::avProfileFormat ) )
+	{
+		throw std::runtime_error( "The profile " + desc.find( Profile::avProfileIdentificatorHuman )->second + " is invalid." );
+	}
+	
+	if( ! matchFormat( desc.find( Profile::avProfileFormat )->second, _filename ) )
+	{
+		throw std::runtime_error( "Invalid format according to the file extension." );
+	}
+	_outputFormat = av_guess_format( desc.find( Profile::avProfileFormat )->second.c_str(), _filename.c_str(), NULL);
+	
+	ParamSet paramSet( _formatContext );
+	
+	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
+	{
+		if( (*it).first == Profile::avProfileIdentificator ||
+			(*it).first == Profile::avProfileIdentificatorHuman ||
+			(*it).first == Profile::avProfileType ||
+			(*it).first == Profile::avProfileFormat )
+			continue;
+		
+		try
+		{
+			paramSet.set( (*it).first, (*it).second );
+		}
+		catch( std::exception& e )
+		{
+			//std::cout << "[OutputFile] warning: " << e.what() << std::endl;
+		}
+	}
+	
+	setup();
+	
+	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
+	{
+		if( (*it).first == Profile::avProfileIdentificator ||
+			(*it).first == Profile::avProfileIdentificatorHuman ||
+			(*it).first == Profile::avProfileType ||
+			(*it).first == Profile::avProfileFormat )
+			continue;
+
+		try
+		{
+			paramSet.set( (*it).first, (*it).second );
+		}
+		catch( std::exception& e )
+		{
+			std::cout << "[OutputFile] warning: " << e.what() << std::endl;
+		}
+	}
 }
 
 }

@@ -1,0 +1,27 @@
+os:
+  - linux
+
+language: cpp
+
+compiler:
+  - gcc
+  - clang
+
+before_script:
+  - date -u
+  - uname -a
+  - lsb_release -a
+  - ln -s tools/scons.travis.cfg scons.cfg
+  - sudo apt-add-repository "deb http://archive.ubuntu.com/ubuntu trusty main restricted universe multiverse"
+  - sudo apt-add-repository "deb http://archive.ubuntu.com/ubuntu trusty-updates main restricted universe multiverse"
+  - sudo apt-add-repository "deb http://security.ubuntu.com/ubuntu trusty-security main restricted universe multiverse"
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq gcc g++ scons swig swig2.0
+  - sudo apt-get install -qq libavdevice-dev libavformat-dev libavcodec-dev libavutil-dev libswscale-dev libavresample-dev python-dev freeglut3-dev doxygen python-git
+
+script:
+  - scons
+
+after_failure:
+  - cat config.log
+

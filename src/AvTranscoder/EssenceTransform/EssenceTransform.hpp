@@ -1,7 +1,8 @@
 #ifndef _AV_TRANSCODER_ESSENCE_TRANSFORM_ESSENCE_TRANSFORM_HPP_
 #define _AV_TRANSCODER_ESSENCE_TRANSFORM_ESSENCE_TRANSFORM_HPP_
 
-#include <AvTranscoder/DatasStructures/Frame.hpp>
+#include <AvTranscoder/common.hpp>
+#include <AvTranscoder/EssenceStructures/Frame.hpp>
 
 namespace avtranscoder
 {

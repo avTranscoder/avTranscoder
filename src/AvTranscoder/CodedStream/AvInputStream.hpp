@@ -3,6 +3,8 @@
 
 #include "InputStream.hpp"
 
+#include <AvTranscoder/CodedStructures/DataStream.hpp>
+
 namespace avtranscoder
 {
 
@@ -28,9 +30,10 @@ public:
 
 	bool readNextPacket( DataStream& data );
 
-	// Stream propeerties
+	// Stream properties
 	VideoDesc getVideoDesc() const;
 	AudioDesc getAudioDesc() const;
+	DataDesc  getDataDesc()  const;
 
 	AVMediaType getStreamType() const;
 
@@ -40,6 +43,7 @@ public:
 	void addPacket( AVPacket& packet );
 
 	void setBufferred( const bool bufferized ){ _bufferized = bufferized; };
+	bool getBufferred() const { return _bufferized; };
 
 	void clearBuffering();
 

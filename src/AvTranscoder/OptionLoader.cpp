@@ -4,9 +4,12 @@ extern "C" {
 #ifndef __STDC_CONSTANT_MACROS
 	#define __STDC_CONSTANT_MACROS
 #endif
+#include <libavcodec/avcodec.h>
+#include <libavformat/avformat.h>
 #include <libavutil/opt.h>
 #include <libavutil/pixfmt.h>
 #include <libavutil/pixdesc.h>
+#include <libavutil/samplefmt.h>
 }
 
 #ifndef AV_OPT_FLAG_FILTERING_PARAM
@@ -65,11 +68,11 @@ OptionLoader::OptionLoader()
 	AVCodec* c = NULL;
 	while( ( c = av_codec_next( c ) ) != NULL )
 	{
-#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 53, 34, 0 )
-		if( ! c->encode2 )
+#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT( 53, 34, 0 )
+		if( ! c->encode )
 			continue;
 #else
-		if( ! c->encode )
+		if( ! c->encode2 )
 			continue;
 #endif
 		switch( c->type )
@@ -153,10 +156,10 @@ OptionLoader::OptionMap OptionLoader::loadVideoCodecOptions()
 	// iterate on codecs
 	while( _codec )
 	{
-#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 53, 34, 0 )
-		if( _codec->encode2 )
-#else
+#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT( 53, 34, 0 )
 		if( _codec->encode )
+#else
+		if( _codec->encode2 )
 #endif
 		{
 			// add only video codec
@@ -189,10 +192,10 @@ OptionLoader::OptionMap OptionLoader::loadAudioCodecOptions()
 	// iterate on codecs
 	while( _codec )
 	{
-#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 53, 34, 0 )
-		if( _codec->encode2 )
-#else
+#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT( 53, 34, 0 )
 		if( _codec->encode )
+#else
+		if( _codec->encode2 )
 #endif
 		{
 			// add only audio codec
@@ -220,7 +223,7 @@ OptionLoader::OptionArray OptionLoader::loadOptions( void* av_class, int req_fla
 {
 	OptionArray options;
 	
-	std::map<std::string, int> optionUnitToIndex;
+	std::multimap<std::string, int> optionUnitToIndex;
 	std::vector<Option> childOptions;
 	
 	const AVOption* avOption = NULL;
@@ -241,8 +244,6 @@ OptionLoader::OptionArray OptionLoader::loadOptions( void* av_class, int req_fla
 
 		OptionType optionType = Option::getTypeFromAVOption( avOption->unit, avOption->type );
 
-		//std::cout << "The option is " << avOption->name << " of type : " << avOption->type << std::endl;
-
 		if( optionType == TypeChild )
 		{
 			childOptions.push_back( Option( *avOption, optionType ) );
@@ -259,24 +260,30 @@ OptionLoader::OptionArray OptionLoader::loadOptions( void* av_class, int req_fla
 	}
 
 	// iterate on child options
-	for( std::vector<Option>::iterator it = childOptions.begin(); it != childOptions.end(); ++it )
+	for( std::vector<Option>::iterator itOption = childOptions.begin(); itOption != childOptions.end(); ++itOption )
 	{
-		int indexParentOption = optionUnitToIndex.at( it->getUnit() );
-		Option& parentOption = options.at( indexParentOption );
-		
-		parentOption.appendChild( *it );
-		
-		// child of a Choice
-		if( parentOption.getType() == TypeChoice )
+		for( std::multimap<std::string, int>::iterator itUnit = optionUnitToIndex.begin(); itUnit != optionUnitToIndex.end(); ++itUnit )
 		{
-			if( it->getDefaultValueInt() == parentOption.getDefaultValueInt() )
-				parentOption.setDefaultChildIndex( parentOption.getNbChilds() - 1 );
-		}
+			if( itUnit->first == itOption->getUnit() )
+			{
+				int indexParentOption = itUnit->second;
+				Option& parentOption = options.at( indexParentOption );
+
+				parentOption.appendChild( *itOption );
+
+				// child of a Choice
+				if( parentOption.getType() == TypeChoice )
+				{
+					if( itOption->getDefaultValueInt() == parentOption.getDefaultValueInt() )
+						parentOption.setDefaultChildIndex( parentOption.getNbChilds() - 1 );
+				}
+			}
+        }
 	}
 	return options;
 }
 
-std::vector<std::string> OptionLoader::getPixelFormats ( const std::string& videoCodecName ) const
+std::vector<std::string> OptionLoader::getPixelFormats( const std::string& videoCodecName )
 {
 	std::vector<std::string> pixelFormats;
 	
@@ -284,7 +291,13 @@ std::vector<std::string> OptionLoader::getPixelFormats ( const std::string& vide
 	if( videoCodecName == "" )
 	{
 		const AVPixFmtDescriptor* pixFmtDesc = NULL; 
+
+#if LIBAVUTIL_VERSION_INT < AV_VERSION_INT( 51, 44, 0 )
+		for( int pix_fmt = 0; pix_fmt < PIX_FMT_NB; ++pix_fmt )
+			pixFmtDesc = &av_pix_fmt_descriptors[pix_fmt];
+#else
 		while( ( pixFmtDesc = av_pix_fmt_desc_next( pixFmtDesc ) ) != NULL )
+#endif
 		{
 			if( ! pixFmtDesc->name )
 				continue;
@@ -294,14 +307,18 @@ std::vector<std::string> OptionLoader::getPixelFormats ( const std::string& vide
 	// specific video codec
 	else
 	{
-		AVCodec* videoCodec = avcodec_find_encoder_by_name( videoCodecName.c_str() );
+		const AVCodec* videoCodec = avcodec_find_encoder_by_name( videoCodecName.c_str() );
 
-		if( videoCodec->pix_fmts != NULL )
+		if( videoCodec && videoCodec->pix_fmts != NULL )
 		{
 			size_t pix_fmt = 0;
 			while( videoCodec->pix_fmts[pix_fmt] != -1 )
 			{
+#if LIBAVUTIL_VERSION_INT < AV_VERSION_INT( 51, 44, 0 )
+				const AVPixFmtDescriptor* pix_desc = &av_pix_fmt_descriptors[ videoCodec->pix_fmts[pix_fmt] ];
+#else
 				const AVPixFmtDescriptor* pix_desc = av_pix_fmt_desc_get( videoCodec->pix_fmts[pix_fmt] );
+#endif
 				if( ! pix_desc->name )
 					continue;
 				pixelFormats.push_back( std::string( pix_desc->name ) );
@@ -310,6 +327,46 @@ std::vector<std::string> OptionLoader::getPixelFormats ( const std::string& vide
 		}
 	}
 	return pixelFormats;
+}
+
+std::vector<std::string> OptionLoader::getSampleFormats( const std::string& audioCodecName )
+{
+	std::vector<std::string> sampleFormats;
+	
+	if( audioCodecName.empty() )
+	{
+		for( size_t sampleFormat = 0; sampleFormat < AV_SAMPLE_FMT_NB; ++sampleFormat)
+		{
+			sampleFormats.push_back( av_get_sample_fmt_name( static_cast<AVSampleFormat>( sampleFormat ) ) );
+		}
+	}
+	else
+	{
+		const AVCodec* audioCodec = avcodec_find_encoder_by_name( audioCodecName.c_str() );
+		if( audioCodec && audioCodec->sample_fmts != NULL )
+		{
+			size_t sample_fmt = 0;
+			while( audioCodec->sample_fmts[sample_fmt] != -1 )
+			{
+				const char* sampleFormatName = av_get_sample_fmt_name( audioCodec->sample_fmts[sample_fmt] );
+				if( sampleFormatName )
+					sampleFormats.push_back( std::string( sampleFormatName ) );
+				sample_fmt++;
+			}
+		}
+	}
+	
+	return sampleFormats;
+}
+
+AVPixelFormat OptionLoader::getAVPixelFormat( const std::string& pixelFormat )
+{
+	return av_get_pix_fmt( pixelFormat.c_str() );
+}
+
+AVSampleFormat OptionLoader::getAVSampleFormat( const std::string& sampleFormat )
+{
+	return av_get_sample_fmt( sampleFormat.c_str() );
 }
 
 }

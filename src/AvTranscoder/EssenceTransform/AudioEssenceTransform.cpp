@@ -1,6 +1,6 @@
 #include "AudioEssenceTransform.hpp"
-#include <AvTranscoder/DatasStructures/AudioFrame.hpp>
-#include <AvTranscoder/common.hpp>
+
+#include <stdexcept>
 
 extern "C" {
 #ifndef __STDC_CONSTANT_MACROS
@@ -28,7 +28,7 @@ extern "C" {
 #endif
 }
 
-#include <stdexcept>
+#include <AvTranscoder/EssenceStructures/AudioFrame.hpp>
 
 namespace avtranscoder
 {
@@ -39,8 +39,11 @@ AudioEssenceTransform::AudioEssenceTransform()
 {
 }
 
-bool AudioEssenceTransform::init( const AudioFrame& src, const AudioFrame& dst )
+bool AudioEssenceTransform::init( const Frame& srcFrame, const Frame& dstFrame )
 {
+	const AudioFrame& src = static_cast<const AudioFrame&>( srcFrame );
+	const AudioFrame& dst = static_cast<const AudioFrame&>( dstFrame );
+
 	_audioConvertContext = AllocResampleContext();
 
 	if( !_audioConvertContext )
@@ -64,27 +67,24 @@ bool AudioEssenceTransform::init( const AudioFrame& src, const AudioFrame& dst )
 	return true;
 }
 
-void AudioEssenceTransform::convert( const AudioFrame& src, AudioFrame& dst )
+void AudioEssenceTransform::convert( const Frame& srcFrame, Frame& dstFrame )
 {
 	if( ! _isInit )
-	{
-		_isInit = init( src, dst );
-		_isInit = true;
-	}
+		_isInit = init( srcFrame, dstFrame );
 		
-	if( dst.getSize() != src.getSize() )
-		dst.getBuffer().resize( src.getSize(), 0 );
+	if( dstFrame.getSize() != srcFrame.getSize() )
+		dstFrame.getBuffer().resize( srcFrame.getSize(), 0 );
 
-	const unsigned char* srcData = src.getPtr();
-	unsigned char* dstData = dst.getPtr();
+	const unsigned char* srcData = srcFrame.getPtr();
+	unsigned char* dstData = dstFrame.getPtr();
 	
 #ifdef AV_RESAMPLE_LIBRARY
-	avresample_convert( _audioConvertContext, (uint8_t**)&dstData, 0, dst.getSize(), (uint8_t**)&srcData, 0, src.getSize() );
+	avresample_convert( _audioConvertContext, (uint8_t**)&dstData, 0, dstFrame.getSize(), (uint8_t**)&srcData, 0, srcFrame.getSize() );
 #else
-	swr_convert( _audioConvertContext, &dstData, dst.getSize(), &srcData, src.getSize() );
+	swr_convert( _audioConvertContext, &dstData, dstFrame.getSize(), &srcData, srcFrame.getSize() );
 #endif
 
-	dst.setNbSamples( src.getNbSamples() );
+	static_cast<AudioFrame&>( dstFrame ).setNbSamples( static_cast<const AudioFrame&>( srcFrame ).getNbSamples() );
 }
 
 }

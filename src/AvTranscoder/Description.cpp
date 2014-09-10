@@ -16,64 +16,80 @@ extern "C" {
 }
 
 #include <cstring>
-#include <algorithm> //sort, unique
+#include <sstream>
+#include <algorithm>
 
 namespace avtranscoder
 {
 
-std::map< std::string, std::vector<size_t> > getVersion()
+Library::Library( const std::string& name, const std::string& license, const size_t major, const size_t minor, const size_t release )
+	: _name( name )
+	, _licence( license )
+	, _major( major )
+	, _minor( minor )
+	, _release( release )
 {
-	std::map< std::string, std::vector<size_t> > version;
+}
 
-	std::vector<size_t> avutilVersion;
-	avutilVersion.push_back( LIBAVUTIL_VERSION_MAJOR );
-	avutilVersion.push_back( LIBAVUTIL_VERSION_MINOR );
-	avutilVersion.push_back( LIBAVUTIL_VERSION_MICRO );
+std::string Library::getName()
+{
+	return _name;
+}
 
-	std::vector<size_t> avformatVersion;
-	avformatVersion.push_back( LIBAVFORMAT_VERSION_MAJOR );
-	avformatVersion.push_back( LIBAVFORMAT_VERSION_MINOR );
-	avformatVersion.push_back( LIBAVFORMAT_VERSION_MICRO );
-
-	std::vector<size_t> avcodecVersion;
-	avcodecVersion.push_back( LIBAVCODEC_VERSION_MAJOR );
-	avcodecVersion.push_back( LIBAVCODEC_VERSION_MINOR );
-	avcodecVersion.push_back( LIBAVCODEC_VERSION_MICRO );
-
-	std::vector<size_t> swscaleVersion;
-	swscaleVersion.push_back( LIBSWSCALE_VERSION_MAJOR );
-	swscaleVersion.push_back( LIBSWSCALE_VERSION_MINOR );
-	swscaleVersion.push_back( LIBSWSCALE_VERSION_MICRO );
-
-#ifdef AV_RESAMPLE_LIBRARY
-	std::vector<size_t> avresampleVersion;
-	avresampleVersion.push_back( LIBAVRESAMPLE_VERSION_MAJOR );
-	avresampleVersion.push_back( LIBAVRESAMPLE_VERSION_MINOR );
-	avresampleVersion.push_back( LIBAVRESAMPLE_VERSION_MICRO );
-#else
-	std::vector<size_t> swresampleVersion;
-	swresampleVersion.push_back( LIBSWRESAMPLE_VERSION_MAJOR );
-	swresampleVersion.push_back( LIBSWRESAMPLE_VERSION_MINOR );
-	swresampleVersion.push_back( LIBSWRESAMPLE_VERSION_MICRO );
-#endif
-
-	version[ "avutil" ] = avutilVersion;
-	version[ "avformat" ] = avformatVersion;
-	version[ "avcodec" ] = avcodecVersion;
-	version[ "swscale" ] = swscaleVersion;
-#ifdef AV_RESAMPLE_LIBRARY
-	version[ "avresample" ] = avresampleVersion;
-#else
-	version[ "swresample" ] = swresampleVersion;
-#endif
-
+std::vector<size_t> Library::getVersion()
+{
+	std::vector<size_t> version;
+	version.push_back( _major );
+	version.push_back( _minor );
+	version.push_back( _release );
 	return version;
 }
 
-std::string getLicence()
+std::string Library::getStringVersion()
 {
-	std::string licence( avutil_license() );
-	return licence;
+	std::stringstream version;
+	version << _major << ".";
+	version << _minor << ".";
+	version << _release;
+	return version.str();
+}
+
+size_t Library::getMajorVersion()
+{
+	return _major;
+}
+
+size_t Library::getMinorVersion()
+{
+	return _minor;
+}
+
+size_t Library::getReleaseVersion()
+{
+	return _release;
+}
+
+std::string Library::getLicense()
+{
+	return _licence;
+}
+
+Libraries getLibraries()
+{
+	Libraries libs;
+
+	libs.push_back( Library( "avtranscoder", avutil_license(),     AVTRANSCODER_VERSION_MAJOR,  AVTRANSCODER_VERSION_MINOR,  AVTRANSCODER_VERSION_MICRO  ) );
+	libs.push_back( Library( "avutil",       avutil_license(),     LIBAVUTIL_VERSION_MAJOR,     LIBAVUTIL_VERSION_MINOR,     LIBAVUTIL_VERSION_MICRO     ) );
+	libs.push_back( Library( "avformat",     avformat_license(),   LIBAVFORMAT_VERSION_MAJOR,   LIBAVFORMAT_VERSION_MINOR,   LIBAVFORMAT_VERSION_MICRO   ) );
+	libs.push_back( Library( "avcodec",      avcodec_license(),    LIBAVCODEC_VERSION_MAJOR,    LIBAVCODEC_VERSION_MINOR,    LIBAVCODEC_VERSION_MICRO    ) );
+#ifdef AV_RESAMPLE_LIBRARY
+	libs.push_back( Library( "avresample",   avutil_license(),     LIBAVRESAMPLE_VERSION_MAJOR, LIBAVRESAMPLE_VERSION_MINOR, LIBAVRESAMPLE_VERSION_MICRO ) );
+#else
+	libs.push_back( Library( "swresample",   avutil_license(),     LIBSWRESAMPLE_VERSION_MAJOR, LIBSWRESAMPLE_VERSION_MINOR, LIBSWRESAMPLE_VERSION_MICRO ) );
+#endif
+	libs.push_back( Library( "swscale",      avutil_license(),     LIBSWSCALE_VERSION_MAJOR,    LIBSWSCALE_VERSION_MINOR,    LIBSWSCALE_VERSION_MICRO    ) );
+
+	return libs;
 }
 
 std::vector<std::string> getInputExtensions()

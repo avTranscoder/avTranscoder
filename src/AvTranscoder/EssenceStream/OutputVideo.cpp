@@ -7,37 +7,41 @@ extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
 #include <libavutil/avutil.h>
-#include <libavutil/pixdesc.h>
-#include <libavutil/imgutils.h>
-#include <libavutil/mathematics.h>
 }
 
-#include <AvTranscoder/DatasStructures/Image.hpp>
-#include <AvTranscoder/Profile.hpp>
+#include <iostream>
+#include <stdexcept>
+#include <cstdlib>
 
 namespace avtranscoder
 {
 
 OutputVideo::OutputVideo( )
-	: OutputEssence( )
-	, _videoDesc( "mpeg2video" )
+	: OutputEssence( "mpeg2video" )
 {
 }
 
-bool OutputVideo::setup( )
+void OutputVideo::setup( )
 {
 	av_register_all();  // Warning: should be called only once
 
-	AVCodecContext* codecContext( _videoDesc.getCodecContext() );
+	AVCodecContext* codecContext( _codedDesc.getCodecContext() );
 
 	if( codecContext == NULL )
-		return false;
+	{
+		throw std::runtime_error( "could not allocate video codec context" );
+	}
 
 	// try to open encoder with parameters
-	if( avcodec_open2( codecContext, _videoDesc.getCodec(), NULL ) < 0 )
-		return false;
-
-	return true;
+	int ret = avcodec_open2( codecContext, _codedDesc.getCodec(), NULL );
+	if( ret < 0 )
+	{
+		char err[250];
+		av_strerror( ret, err, 250);
+		std::string msg = "could not open video encoder: ";
+		msg += err;
+		throw std::runtime_error( msg );
+	}
 }
 
 
@@ -49,7 +53,7 @@ bool OutputVideo::encodeFrame( const Frame& sourceFrame, DataStream& codedFrame 
 	AVFrame* frame = avcodec_alloc_frame();
 #endif
 
-	AVCodecContext* codecContext = _videoDesc.getCodecContext();
+	AVCodecContext* codecContext = this->_codedDesc.getCodecContext();
 
 	// Set default frame parameters
 #if LIBAVCODEC_VERSION_MAJOR > 54
@@ -58,7 +62,7 @@ bool OutputVideo::encodeFrame( const Frame& sourceFrame, DataStream& codedFrame 
 	avcodec_get_frame_defaults( frame );
 #endif
 
-	const Image& sourceImageFrame = static_cast<const Image&>( sourceFrame );
+	const VideoFrame& sourceImageFrame = static_cast<const VideoFrame&>( sourceFrame );
 
 	frame->width  = codecContext->width;
 	frame->height = codecContext->height;
@@ -75,12 +79,7 @@ bool OutputVideo::encodeFrame( const Frame& sourceFrame, DataStream& codedFrame 
 	if( ( codecContext->coded_frame ) &&
 		( codecContext->coded_frame->pts != (int)AV_NOPTS_VALUE ) )
 	{
-		// why need to do that ?
-		//packet.pts = av_rescale_q( codecContext->coded_frame->pts, codecContext->time_base, codecContext->time_base );
-
-		//std::cout << "pts with rescale " << (int)packet.pts << std::endl;
 		packet.pts = codecContext->coded_frame->pts;
-		//std::cout << "pts without rescale " << (int)packet.pts << std::endl;
 	}
 
 	if( codecContext->coded_frame &&
@@ -88,7 +87,6 @@ bool OutputVideo::encodeFrame( const Frame& sourceFrame, DataStream& codedFrame 
 	{
 		packet.flags |= AV_PKT_FLAG_KEY;
 	}
-
 
 #if LIBAVCODEC_VERSION_MAJOR > 53
 	int gotPacket = 0;
@@ -140,10 +138,9 @@ bool OutputVideo::encodeFrame( const Frame& sourceFrame, DataStream& codedFrame 
 	return ret == 0;
 }
 
-
 bool OutputVideo::encodeFrame( DataStream& codedFrame )
 {
-	AVCodecContext* codecContext = _videoDesc.getCodecContext();
+	AVCodecContext* codecContext = _codedDesc.getCodecContext();
 
 	AVPacket packet;
 	av_init_packet( &packet );
@@ -176,65 +173,63 @@ bool OutputVideo::encodeFrame( DataStream& codedFrame )
 #endif
 }
 
-void OutputVideo::setProfile( Profile::ProfileDesc& desc )
+void OutputVideo::setProfile( const Profile::ProfileDesc& desc, const avtranscoder::VideoFrameDesc& frameDesc )
 {
-	_videoDesc.setVideoCodec( desc[ "codec" ] );
-	_videoDesc.setTimeBase( 1, 25 ); // 25 fps
-	_videoDesc.setImageParameters( 1920, 1080, av_get_pix_fmt( desc[ "pix_fmt" ].c_str() ) );
-
-	for( Profile::ProfileDesc::iterator it = desc.begin(); it != desc.end(); ++it )
+	if( ! desc.count( Profile::avProfileCodec ) ||
+		! desc.count( Profile::avProfilePixelFormat ) || 
+		! desc.count( Profile::avProfileFrameRate ) )
 	{
-		if( (*it).first == Profile::avProfileIdentificator )
-			continue;
-		if( (*it).first == Profile::avProfileIdentificatorHuman )
-			continue;
-		if( (*it).first == Profile::avProfileType )
-			continue;
-		if( (*it).first == "codec" )
-			continue;
-		if( (*it).first == "pix_fmt" )
-			continue;
-		if( (*it).first == "width" )
-			continue;
-		if( (*it).first == "height" )
+		throw std::runtime_error( "The profile " + desc.find( Profile::avProfileIdentificatorHuman )->second + " is invalid." );
+	}
+	
+	_codedDesc.setCodec( desc.find( Profile::avProfileCodec )->second );
+	
+	const size_t frameRate = std::strtoul( desc.find( Profile::avProfileFrameRate )->second.c_str(), NULL, 0 );
+	static_cast<VideoDesc>( _codedDesc ).setTimeBase( 1, frameRate );
+	
+	static_cast<VideoDesc>( _codedDesc ).setImageParameters( frameDesc );
+
+	ParamSet paramSet( _codedDesc.getCodecContext() );
+	
+	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
+	{
+		if( (*it).first == Profile::avProfileIdentificator ||
+			(*it).first == Profile::avProfileIdentificatorHuman ||
+			(*it).first == Profile::avProfileType ||
+			(*it).first == Profile::avProfileCodec ||
+			(*it).first == Profile::avProfilePixelFormat ||
+			(*it).first == Profile::avProfileFrameRate )
 			continue;
 
 		try
 		{
-			_videoDesc.set( (*it).first, (*it).second );
+			paramSet.set( (*it).first, (*it).second );
 		}
 		catch( std::exception& e )
 		{
-			std::cout << "warning: " << e.what() << std::endl;
+			//std::cout << "[OutputVideo] warning: " << e.what() << std::endl;
 		}
 	}
 
 	setup();
 
-	for( Profile::ProfileDesc::iterator it = desc.begin(); it != desc.end(); ++it )
+	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
 	{
-		if( (*it).first == Profile::avProfileIdentificator )
-			continue;
-		if( (*it).first == Profile::avProfileIdentificatorHuman )
-			continue;
-		if( (*it).first == Profile::avProfileType )
-			continue;
-		if( (*it).first == "codec" )
-			continue;
-		if( (*it).first == "pix_fmt" )
-			continue;
-		if( (*it).first == "width" )
-			continue;
-		if( (*it).first == "height" )
+		if( (*it).first == Profile::avProfileIdentificator ||
+			(*it).first == Profile::avProfileIdentificatorHuman ||
+			(*it).first == Profile::avProfileType ||
+			(*it).first == Profile::avProfileCodec ||
+			(*it).first == Profile::avProfilePixelFormat ||
+			(*it).first == Profile::avProfileFrameRate )
 			continue;
 
 		try
 		{
-			_videoDesc.set( (*it).first, (*it).second );
+			paramSet.set( (*it).first, (*it).second );
 		}
 		catch( std::exception& e )
 		{
-			std::cout << "2.warning: " << e.what() << std::endl;
+			std::cout << "[OutputVideo] warning: " << e.what() << std::endl;
 		}
 	}
 }

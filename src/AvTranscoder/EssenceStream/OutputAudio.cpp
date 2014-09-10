@@ -9,33 +9,38 @@ extern "C" {
 #include <libavutil/avutil.h>
 }
 
-#include <AvTranscoder/DatasStructures/AudioFrame.hpp>
-#include <AvTranscoder/Profile.hpp>
-#include <sstream>
+#include <iostream>
+#include <stdexcept>
 
 namespace avtranscoder
 {
 
 OutputAudio::OutputAudio()
-	: OutputEssence()
-	, _audioDesc( "pcm_s16le" )
+	: OutputEssence( "pcm_s16le" )
 {
 }
 
-bool OutputAudio::setup()
+void OutputAudio::setup()
 {
 	av_register_all();  // Warning: should be called only once
 
-	AVCodecContext* codecContext( _audioDesc.getCodecContext() );
+	AVCodecContext* codecContext( _codedDesc.getCodecContext() );
 
 	if( codecContext == NULL )
-		return false;
+	{
+		throw std::runtime_error( "could not allocate audio codec context" );
+	}
 	
 	// try to open encoder with parameters.
-	if( avcodec_open2( codecContext, _audioDesc.getCodec(), NULL ) < 0 )
-		return false;
-
-	return true;
+	int ret = avcodec_open2( codecContext, _codedDesc.getCodec(), NULL );
+	if( ret < 0 )
+	{
+		char err[250];
+		av_strerror( ret, err, 250);
+		std::string msg = "could not open audio encoder: ";
+		msg += err;
+		throw std::runtime_error( msg );
+	}
 }
 
 bool OutputAudio::encodeFrame( const Frame& sourceFrame, DataStream& codedFrame )
@@ -46,7 +51,7 @@ bool OutputAudio::encodeFrame( const Frame& sourceFrame, DataStream& codedFrame 
 	AVFrame* frame = avcodec_alloc_frame();
 #endif
 
-	AVCodecContext* codecContext = _audioDesc.getCodecContext();
+	AVCodecContext* codecContext = _codedDesc.getCodecContext();
 
 	// Set default frame parameters
 #if LIBAVCODEC_VERSION_MAJOR > 54
@@ -134,7 +139,7 @@ bool OutputAudio::encodeFrame( const Frame& sourceFrame, DataStream& codedFrame 
 
 bool OutputAudio::encodeFrame( DataStream& codedFrame )
 {
-	AVCodecContext* codecContext = _audioDesc.getCodecContext();
+	AVCodecContext* codecContext = _codedDesc.getCodecContext();
 
 	AVPacket packet;
 	av_init_packet( &packet );
@@ -167,32 +172,59 @@ bool OutputAudio::encodeFrame( DataStream& codedFrame )
 #endif
 }
 
-void OutputAudio::setProfile( Profile::ProfileDesc& desc )
+void OutputAudio::setProfile( const Profile::ProfileDesc& desc, const AudioFrameDesc& frameDesc  )
 {
-	checkProfileKey( desc, "codec" );
-	checkProfileKey( desc, "sample_fmt" );
-	checkProfileKey( desc, "sample_rate" );
-	checkProfileKey( desc, "channels" );
+	if( ! desc.count( Profile::avProfileCodec ) || 		
+		! desc.count( Profile::avProfileSampleFormat ) )
+	{
+		throw std::runtime_error( "The profile " + desc.find( Profile::avProfileIdentificatorHuman )->second + " is invalid." );
+	}
+	
+	_codedDesc.setCodec( desc.find( Profile::avProfileCodec )->second );
+	
+	static_cast<AudioDesc>( _codedDesc ).setAudioParameters( frameDesc );
 
-	size_t sample_rate;
-	size_t channels;
-	std::istringstream( desc["sample_rate"] ) >> sample_rate;
-	std::istringstream( desc["channels"] ) >> channels;
+	ParamSet paramSet( _codedDesc.getCodecContext() );
+	
+	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
+	{
+		if( (*it).first == Profile::avProfileIdentificator ||
+			(*it).first == Profile::avProfileIdentificatorHuman ||
+			(*it).first == Profile::avProfileType ||
+			(*it).first == Profile::avProfileCodec ||
+			(*it).first == Profile::avProfileSampleFormat )
+			continue;
 
-	_audioDesc.setAudioCodec( desc["codec"] );
-	_audioDesc.setAudioParameters( sample_rate, channels, av_get_sample_fmt( desc["sample_fmt"].c_str() ) );
+		try
+		{
+			paramSet.set( (*it).first, (*it).second );
+		}
+		catch( std::exception& e )
+		{
+			//std::cout << "[OutputAudio] warning: " << e.what() << std::endl;
+		}
+	}
 
 	setup();
-}
 
-bool OutputAudio::checkProfileKey( Profile::ProfileDesc& profDesc, const std::string& key )
-{
-	if( profDesc[ key ].empty() )
+	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
 	{
-		throw std::runtime_error( key + " not specified into profile: " + profDesc[ Profile::avProfileIdentificator ] );
-		return false;
+		if( (*it).first == Profile::avProfileIdentificator ||
+			(*it).first == Profile::avProfileIdentificatorHuman ||
+			(*it).first == Profile::avProfileType ||
+			(*it).first == Profile::avProfileCodec ||
+			(*it).first == Profile::avProfileSampleFormat )
+			continue;
+
+		try
+		{
+			paramSet.set( (*it).first, (*it).second );
+		}
+		catch( std::exception& e )
+		{
+			std::cout << "[OutputAudio] warning: " << e.what() << std::endl;
+		}
 	}
-	return true;
 }
 
 }

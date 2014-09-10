@@ -1,25 +1,13 @@
 #ifndef _AV_TRANSCODER_ESSENCE_STREAM_OUTPUT_VIDEO_HPP_
 #define _AV_TRANSCODER_ESSENCE_STREAM_OUTPUT_VIDEO_HPP_
 
-extern "C" {
-#ifndef __STDC_CONSTANT_MACROS
-    #define __STDC_CONSTANT_MACROS
-#endif
-#include <libavutil/pixfmt.h>
-}
-
 #include "OutputEssence.hpp"
 
-#include <AvTranscoder/DatasStructures/VideoDesc.hpp>
-#include <AvTranscoder/DatasStructures/DataStreamDesc.hpp>
+#include <AvTranscoder/CodedStructures/DataStream.hpp>
+#include <AvTranscoder/CodedStructures/VideoDesc.hpp>
+#include <AvTranscoder/EssenceStructures/VideoFrame.hpp>
 
 #include <AvTranscoder/Profile.hpp>
-
-#include <string>
-#include <vector>
-
-class AVFormatContext;
-class AVCodecContext;
 
 namespace avtranscoder
 {
@@ -29,9 +17,7 @@ class AvExport OutputVideo : public OutputEssence
 public:
 	OutputVideo();
 
-	bool setup();
-
-	//void setVideoDesc( const VideoDesc& videoDesc );
+	void setup();
 
 	/**
 	 * @param[out] codedFrame blabla
@@ -43,12 +29,9 @@ public:
 	 */
 	bool encodeFrame( DataStream& codedFrame );
 
-	void setProfile( Profile::ProfileDesc& desc );
+	void setProfile( const Profile::ProfileDesc& desc, const avtranscoder::VideoFrameDesc& frameDesc );
 	
-	VideoDesc& getVideoDesc() { return _videoDesc; }
-
-private:
-	VideoDesc _videoDesc;
+	VideoDesc getVideoDesc() { return _codedDesc; }
 };
 
 }

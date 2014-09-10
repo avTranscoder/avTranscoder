@@ -1,20 +1,19 @@
 #ifndef _AV_TRANSCODER_OPTION_LOADER_HPP
 #define	_AV_TRANSCODER_OPTION_LOADER_HPP
 
-#include <AvTranscoder/Option.hpp>
-
-extern "C" {
-#ifndef __STDC_CONSTANT_MACROS
-	#define __STDC_CONSTANT_MACROS
-#endif
-	#include <libavcodec/avcodec.h>
-	#include <libavformat/avformat.h>
-}
 
 #include <string>
 #include <vector>
 #include <map>
 #include <utility> //pair
+
+#include "common.hpp"
+#include "Option.hpp"
+
+class AVFormatContext;
+class AVCodecContext;
+class AVOutputFormat;
+class AVCodec;
 
 namespace avtranscoder
 {
@@ -60,12 +59,31 @@ public:
 	
 	std::vector<std::string>& getAudioCodecsLongNames() { return _audioCodecsLongNames; }
 	std::vector<std::string>& getAudioCodecsShortNames() { return _audioCodecsShortNames; }
-	
+
+public:
 	/**
-	 *  Get array of pixel format supported by video codec.
+	 *  @brief Get array of pixel format supported by video codec.
 	 *  @param videoCodecName: the video codec name (empty if not indicated, and so get all pixel formats supported by all video codecs).
 	 */
-	std::vector<std::string> getPixelFormats( const std::string& videoCodecName = "" ) const;
+	static std::vector<std::string> getPixelFormats( const std::string& videoCodecName = "" );
+	
+	/**
+	 *  @brief Get array of sample format supported by an audio codec.
+	 *  @param audioCodecName: the audio codec name (empty if not indicated, and so get all sample formats supported by all audio codecs).
+	 */
+	static std::vector<std::string> getSampleFormats( const std::string& audioCodecName = "" );
+	
+	/**
+	 * @brief Get the corresponding AVPixelFormat from the pixel format name
+	 * @param pixelFormat the name of the pixel format
+     */
+	static AVPixelFormat getAVPixelFormat( const std::string& pixelFormat );
+	
+	/**
+	 * @brief Get the corresponding AVSampleFormat from the sample format name
+	 * @param sampleFormat the name of the sample format
+     */
+	static AVSampleFormat getAVSampleFormat( const std::string& sampleFormat );
 	
 private:
 	/**

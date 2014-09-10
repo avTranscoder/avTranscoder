@@ -1,21 +1,27 @@
 #ifndef _AV_TRANSCODER_FILE_OUTPUT_FILE_HPP_
 #define _AV_TRANSCODER_FILE_OUTPUT_FILE_HPP_
 
-#include <AvTranscoder/DatasStructures/Image.hpp>
-#include <AvTranscoder/DatasStructures/DataStreamDesc.hpp>
-#include <AvTranscoder/DatasStructures/VideoDesc.hpp>
-#include <AvTranscoder/DatasStructures/AudioDesc.hpp>
+#include <AvTranscoder/common.hpp>
+
+#include <AvTranscoder/Metadatas/MediaMetadatasStructures.hpp>
+
+#include <AvTranscoder/CodedStructures/DataStream.hpp>
+#include <AvTranscoder/CodedStructures/VideoDesc.hpp>
+#include <AvTranscoder/CodedStructures/AudioDesc.hpp>
+#include <AvTranscoder/CodedStructures/DataDesc.hpp>
+
 #include <AvTranscoder/CodedStream/AvOutputStream.hpp>
 
+#include <AvTranscoder/Profile.hpp>
 
 #include <string>
 #include <vector>
 
 class AVOutputFormat;
 class AVFormatContext;
-class AVStream;
 class AVCodec;
 class AVCodecContext;
+class AVStream;
 
 namespace avtranscoder
 {
@@ -57,6 +63,13 @@ public:
 	virtual OutputStream& addAudioStream( const AudioDesc& audioDesc );
 
 	/**
+	 * @brief Add an data output stream using the description.
+	 * @note call setup() before adding any stream
+	 * @param dataDesc description of output stream
+	**/
+	virtual OutputStream& addDataStream( const DataDesc& dataDesc );
+
+	/**
 	 * @brief get the output stream description.
 	 * @param streamId select the output stream
 	 * @return the output stream reference
@@ -81,9 +94,24 @@ public:
 	 * @note this method write the footer of file if necessary
 	**/
 	virtual bool endWrap( );
+	
+	/**
+	 * @brief Set the format of the output file
+	 * @param desc: the profile of the output format
+	 */
+	virtual void setProfile( const Profile::ProfileDesc& desc );
+	
+	/**
+	 * @brief Add metadata to the output file.
+	 * @note Depending on the format, you are not sure to find your metadata after the transcode.
+     */
+	virtual void addMetadata( const MetadatasMap& dataMap );
+	virtual void addMetadata( const std::string& key, const std::string& value );
+
+	virtual void setVerbose( bool verbose = false ){ _verbose = verbose; }
 
 private:
-	std::vector<AvOutputStream> _outputStreams;
+	std::vector<AvOutputStream*> _outputStreams;
 	AVOutputFormat*  _outputFormat;
 	AVFormatContext* _formatContext;
 
@@ -91,9 +119,13 @@ private:
 	AVCodecContext*  _codecContext;
 	AVStream*        _stream;
 
+	std::vector<size_t> _frameCount;
+
 	std::string      _filename;
 
 	size_t           _packetCount;
+
+	bool             _verbose;
 };
 
 }

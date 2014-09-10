@@ -124,6 +124,7 @@ VideoProperties videoStreamInfo(
 	vp.maxBitRate       = codec_context->rc_max_rate;
 	vp.minBitRate       = codec_context->rc_min_rate;
 	vp.isInterlaced     = false;
+	vp.topFieldFirst    = false;
 
 	vp.ticksPerFrame    = codec_context->ticks_per_frame,
 	vp.width            = codec_context->width,
@@ -203,6 +204,7 @@ VideoProperties videoStreamInfo(
  #endif
 #endif
 		case AVCOL_TRC_NB:           vp.colorTransfert = "Not ABI"; break;
+		default: break;
 	}
 	switch( codec_context->colorspace )
 	{
@@ -227,6 +229,7 @@ VideoProperties videoStreamInfo(
  #endif
 #endif
 		case AVCOL_SPC_NB:          vp.colorspace = "Not ABI"; break;
+		default: break;
 	}
 	switch( codec_context->color_range )
 	{
@@ -234,6 +237,7 @@ VideoProperties videoStreamInfo(
 		case AVCOL_RANGE_MPEG:        vp.colorRange = "Head"; break;
 		case AVCOL_RANGE_JPEG:        vp.colorRange = "Full"; break;
 		case AVCOL_RANGE_NB:          vp.colorRange = "Not ABI"; break;
+		default: break;
 	}
 	switch( codec_context->color_primaries )
 	{
@@ -250,6 +254,7 @@ VideoProperties videoStreamInfo(
  #endif
 #endif
 		case AVCOL_PRI_NB:          vp.colorPrimaries = "Not ABI"; break;
+		default: break;
 	}
 	switch( codec_context->chroma_sample_location )
 	{
@@ -261,6 +266,7 @@ VideoProperties videoStreamInfo(
 		case AVCHROMA_LOC_BOTTOMLEFT:  vp.chromaSampleLocation = "bottom left"; break;
 		case AVCHROMA_LOC_BOTTOM:      vp.chromaSampleLocation = "bottom"; break;
 		case AVCHROMA_LOC_NB:          vp.chromaSampleLocation = "Not ABI"; break;
+		default: break;
 	}
 	switch( codec_context->field_order )
 	{
@@ -270,12 +276,13 @@ VideoProperties videoStreamInfo(
 		case AV_FIELD_BB:          vp.fieldOrder = "bottom bottom"; break;
 		case AV_FIELD_TB:          vp.fieldOrder = "top bottom"; break;
 		case AV_FIELD_BT:          vp.fieldOrder = "bottom top"; break;
+		default: break;
 	}
 #if LIBAVUTIL_VERSION_MAJOR > 51
 	const AVPixFmtDescriptor* pixFmt = av_pix_fmt_desc_get( codec_context->pix_fmt );
 #else
 	const AVPixFmtDescriptor* pixFmt = NULL;
-	if( codec_context->pix_fmt > 0 && codec_context->pix_fmt < PIX_FMT_NB )
+	if( codec_context->pix_fmt >= 0 && codec_context->pix_fmt < PIX_FMT_NB )
 		pixFmt = &av_pix_fmt_descriptors[ codec_context->pix_fmt ];
 #endif
 

@@ -3,17 +3,37 @@
 
 #include <vector>
 #include <string>
-#include <map>
 
 #include "common.hpp"
 
 namespace avtranscoder
 {
 
-typedef std::map< std::string, std::vector<size_t> > AvVersions;
+class Library
+{
+public:
+	Library( const std::string& name, const std::string& license, const size_t major, const size_t minor, const size_t release );
 
-AvVersions  getVersion();
-std::string getLicence();
+	std::string getName();
+
+	std::vector<size_t> getVersion();
+	std::string getStringVersion();
+	size_t getMajorVersion();
+	size_t getMinorVersion();
+	size_t getReleaseVersion();
+
+	std::string getLicense();
+private:
+	std::string _name;
+	std::string _licence;
+	size_t      _major;
+	size_t      _minor;
+	size_t      _release;
+};
+
+typedef std::vector< Library > Libraries;
+
+Libraries getLibraries();
 
 std::vector<std::string> getInputExtensions();
 

@@ -10,7 +10,7 @@ extern "C" {
 
 #include <vector>
 #include <string>
-#include <utility> //pair
+#include <utility>
 
 namespace avtranscoder
 {
@@ -24,7 +24,7 @@ enum OptionType
 	TypeRatio,
 	TypeChoice,
 	TypeGroup,
-	TypeChild, // Option which brelongs to Choice or Group
+	TypeChild, // Option which belongs to Choice or Group
 	TypeUnknown
 };
 
