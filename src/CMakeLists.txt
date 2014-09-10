@@ -61,6 +61,13 @@ if(SWIG_FOUND)
 	if(PYTHONLIBS_FOUND)
 		include_directories(${PYTHON_INCLUDE_PATH})
 
+		if(NOT DEFINED PYTHONLIBS_VERSION_STRING) # Since CMake 2.8.8
+			# Get Python version from include path
+			string(LENGTH ${PYTHON_INCLUDE_DIRS} PYTHON_INCLUDE_DIRS_LENGTH)
+			math(EXPR PYTHON_INCLUDE_DIRS_LENGTH "${PYTHON_INCLUDE_DIRS_LENGTH} - 3" )
+			string(SUBSTRING ${PYTHON_INCLUDE_DIRS} ${PYTHON_INCLUDE_DIRS_LENGTH} 3 PYTHONLIBS_VERSION_STRING)
+		endif()
+
 		# Swig flags
 		set(CMAKE_SWIG_FLAGS -c++ -fcompact)
 
@@ -75,7 +82,7 @@ if(SWIG_FOUND)
 		install(
 			FILES ${AVTRANSCODER_PYTHON_BINDING_FILE}
 			RENAME "avtranscoder.py"
-			DESTINATION "lib/python2.7/site-packages/avtranscoder/"
+			DESTINATION "lib/python${PYTHONLIBS_VERSION_STRING}/site-packages/avtranscoder/"
 		)
 	else()
 		message("PYTHON not found, will not build python binding.")
