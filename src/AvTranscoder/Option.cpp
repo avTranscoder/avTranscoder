@@ -9,7 +9,6 @@ Option::Option( const AVOption& avOption, OptionType type )
 	, _options()
 	, _defaultChildIndex( 0 )
 {
-	
 }
 
 OptionType Option::getTypeFromAVOption( const char* unit, AVOptionType avType )

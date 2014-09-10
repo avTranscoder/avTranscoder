@@ -35,19 +35,19 @@ class AvExport VideoFrameDesc
 {
 public:
 	VideoFrameDesc()
-		: m_width( 0 )
-		, m_height( 0 )
-		, m_displayAspectRatio()
-		, m_pixel()
-		, m_interlaced( false )
-		, m_topFieldFirst( false )
+		: _width( 0 )
+		, _height( 0 )
+		, _displayAspectRatio()
+		, _pixel()
+		, _interlaced( false )
+		, _topFieldFirst( false )
 	{};
 	
-	void setWidth ( const size_t width     ) { m_width = width; }
-	void setHeight( const size_t height    ) { m_height = height; }
-	void setPixel ( const Pixel  pixel     ) { m_pixel = pixel; }
-	void setDar   ( const size_t num, const size_t den ) { m_displayAspectRatio.num = num; m_displayAspectRatio.den = den; }
-	void setDar   ( const Ratio  ratio     ) { m_displayAspectRatio = ratio; }
+	void setWidth ( const size_t width     ) { _width = width; }
+	void setHeight( const size_t height    ) { _height = height; }
+	void setPixel ( const Pixel  pixel     ) { _pixel = pixel; }
+	void setDar   ( const size_t num, const size_t den ) { _displayAspectRatio.num = num; _displayAspectRatio.den = den; }
+	void setDar   ( const Ratio  ratio     ) { _displayAspectRatio = ratio; }
 	
 	void setParameters( const Profile::ProfileDesc& desc )
 	{
@@ -55,19 +55,19 @@ public:
 			setPixel( Pixel( desc.find( Profile::avProfilePixelFormat )->second.c_str() ) );
 	}
 
-	size_t               getWidth ()    const { return m_width;  }
-	size_t               getHeight()    const { return m_height; }
-	Ratio                getDar()       const { return m_displayAspectRatio; }
-	Pixel                getPixelDesc() const { return m_pixel; }
+	size_t               getWidth ()    const { return _width;  }
+	size_t               getHeight()    const { return _height; }
+	Ratio                getDar()       const { return _displayAspectRatio; }
+	Pixel                getPixelDesc() const { return _pixel; }
 
 	size_t getDataSize() const
 	{
-		AVPixelFormat pixelFormat = m_pixel.findPixel();
+		AVPixelFormat pixelFormat = _pixel.findPixel();
 		if( pixelFormat == AV_PIX_FMT_NONE )
 		{
 			throw std::runtime_error( "incorrect pixel description" );
 		}
-		size_t size = avpicture_get_size( pixelFormat, m_width, m_height );
+		size_t size = avpicture_get_size( pixelFormat, _width, _height );
 		if( size == 0 )
 		{
 			throw std::runtime_error( "unable to determine image buffer size" );
@@ -76,14 +76,14 @@ public:
 	}
 
 private:
-	size_t          m_width;
-	size_t          m_height;
-	Ratio           m_displayAspectRatio;
-	Pixel           m_pixel;
-	// ColorProperties m_color;
+	size_t          _width;
+	size_t          _height;
+	Ratio           _displayAspectRatio;
+	Pixel           _pixel;
+	// ColorProperties _color;
 
-	bool            m_interlaced;
-	bool            m_topFieldFirst;
+	bool            _interlaced;
+	bool            _topFieldFirst;
 };
 
 //template< template<typename> Alloc >
@@ -92,15 +92,15 @@ class AvExport VideoFrame : public Frame
 {
 public:
 	VideoFrame( const VideoFrameDesc& ref )
-		: m_videoFrameDesc( ref )
+		: _videoFrameDesc( ref )
 	{
-		m_dataBuffer = DataBuffer( ref.getDataSize(), 0 );
+		_dataBuffer = DataBuffer( ref.getDataSize(), 0 );
 	}
 
-	const VideoFrameDesc&     desc() const    { return m_videoFrameDesc; }
+	const VideoFrameDesc&     desc() const    { return _videoFrameDesc; }
 
 private:
-	const VideoFrameDesc m_videoFrameDesc;
+	const VideoFrameDesc _videoFrameDesc;
 };
 
 //typedef ImageBase<std::allocator> VideoFrame;

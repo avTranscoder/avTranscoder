@@ -13,18 +13,18 @@ public:
 	typedef std::vector< unsigned char > DataBuffer;
 
 	DataStream( )
-		: m_dataBuffer( 0, 0 )
+		: _dataBuffer( 0, 0 )
 	{ }
 
-	DataBuffer&           getBuffer()     { return m_dataBuffer; }
-	unsigned char*        getPtr()        { return &m_dataBuffer[0]; }
+	DataBuffer&           getBuffer()     { return _dataBuffer; }
+	unsigned char*        getPtr()        { return &_dataBuffer[0]; }
 #ifndef SWIG
-	const unsigned char*  getPtr()  const { return &m_dataBuffer[0]; }
+	const unsigned char*  getPtr()  const { return &_dataBuffer[0]; }
 #endif
-	size_t                getSize() const { return m_dataBuffer.size(); }
+	size_t                getSize() const { return _dataBuffer.size(); }
 
 private:
-	DataBuffer m_dataBuffer;
+	DataBuffer _dataBuffer;
 };
 
 }

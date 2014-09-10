@@ -278,7 +278,7 @@ OptionLoader::OptionArray OptionLoader::loadOptions( void* av_class, int req_fla
 						parentOption.setDefaultChildIndex( parentOption.getNbChilds() - 1 );
 				}
 			}
-        }
+		}
 	}
 	return options;
 }

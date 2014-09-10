@@ -89,7 +89,7 @@ void AvInputStream::addPacket( AVPacket& packet )
 
 	// remove reference on packet because it's passed to DataStream
 	// packet.data = NULL;
- 	// packet.size = 0;
+	// packet.size = 0;
 
 	// std::cout << this << " buffer size " << _streamCache.size() << std::endl;
 }

@@ -30,11 +30,11 @@ public:
 	bool readNextFrame( Frame& frameBuffer, const size_t subStreamIndex );
 
 private:
-	Frame*    _inputFrame;
-	VideoDesc _videoDesc;
+	Frame*         _inputFrame;
+	VideoDesc      _videoDesc;
 	VideoFrameDesc _videoFrameDesc;
 
-	size_t    _numberOfView;
+	size_t         _numberOfView;
 };
 
 }

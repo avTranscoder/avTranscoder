@@ -8,7 +8,7 @@
 class Window
 {
 public:
-	Window( Reader& reader);
+	Window( Reader& reader );
 
 	void launch();
 
@@ -43,39 +43,39 @@ private:
 
 	static void loopPlaying( int value );
 
-	static Reader* m_reader;
+	static Reader* _reader;
 
-	static size_t m_width;
-	static size_t m_height;
+	static size_t _width;
+	static size_t _height;
 
-	static int m_x1;
-	static int m_x2;
-	static int m_y1;
-	static int m_y2;
+	static int _x1;
+	static int _x2;
+	static int _y1;
+	static int _y2;
 
-	static int m_xMinViewport;
-	static int m_yMinViewport;
+	static int _xMinViewport;
+	static int _yMinViewport;
 
-	static int m_xMouseRef;
-	static int m_yMouseRef;
+	static int _xMouseRef;
+	static int _yMouseRef;
 
-	static int m_windowId;
+	static int _windowId;
 
 	// viewing properties - zoom
-	static float m_currentZoom;
-	static float m_factorZoom;
+	static float _currentZoom;
+	static float _factorZoom;
 
-	static float m_scale;
+	static float _scale;
 
-	static bool m_play;
+	static bool _play;
 	
-	static bool m_flip;
-	static bool m_flop;
+	static bool _flip;
+	static bool _flop;
 
-	static bool m_showRedChannel;
-	static bool m_showGreenChannel;
-	static bool m_showBlueChannel;
-	static bool m_showAlphaChannel;
+	static bool _showRedChannel;
+	static bool _showGreenChannel;
+	static bool _showBlueChannel;
+	static bool _showAlphaChannel;
 };
 
 #endif

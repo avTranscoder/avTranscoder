@@ -18,29 +18,29 @@ VideoDesc::VideoDesc( const AVCodecID codecId )
 VideoDesc::VideoDesc( const CodedDesc& essenceDesc )
 	: CodedDesc( essenceDesc.getCodecId() )
 {
-	m_codec = essenceDesc.getCodec();
-	m_codecContext = essenceDesc.getCodecContext();
+	_codec = essenceDesc.getCodec();
+	_codecContext = essenceDesc.getCodecContext();
 }
 
 VideoFrameDesc VideoDesc::getVideoFrameDesc() const
 {
-	assert( m_codecContext != NULL );
+	assert( _codecContext != NULL );
 	VideoFrameDesc VideoFrameDesc;
-	Pixel pixel( m_codecContext->pix_fmt );
+	Pixel pixel( _codecContext->pix_fmt );
 
-	VideoFrameDesc.setWidth ( m_codecContext->width  );
-	VideoFrameDesc.setHeight( m_codecContext->height );
+	VideoFrameDesc.setWidth ( _codecContext->width  );
+	VideoFrameDesc.setHeight( _codecContext->height );
 	VideoFrameDesc.setPixel ( pixel );
-	VideoFrameDesc.setDar   ( m_codecContext->height, m_codecContext->width );
+	VideoFrameDesc.setDar   ( _codecContext->height, _codecContext->width );
 	return VideoFrameDesc;
 }
 
 std::pair< size_t, size_t > VideoDesc::getTimeBase() const
 {
-	assert( m_codecContext != NULL );
+	assert( _codecContext != NULL );
 	std::pair< size_t, size_t > timeBase;
-	timeBase.first = m_codecContext->time_base.num;
-	timeBase.second = m_codecContext->time_base.den;
+	timeBase.first = _codecContext->time_base.num;
+	timeBase.second = _codecContext->time_base.den;
 	return timeBase;
 }
 
@@ -57,16 +57,16 @@ void VideoDesc::setImageParameters( const size_t width, const size_t height, con
 
 void VideoDesc::setImageParameters( const size_t width, const size_t height, const AVPixelFormat& pixel )
 {
-	m_codecContext->width   = width;
-	m_codecContext->height  = height;
-	m_codecContext->pix_fmt = pixel;
+	_codecContext->width   = width;
+	_codecContext->height  = height;
+	_codecContext->pix_fmt = pixel;
 }
 
 void VideoDesc::setTimeBase( const size_t num, const size_t den, const size_t ticksPerFrame )
 {
-	m_codecContext->time_base.num = num;
-	m_codecContext->time_base.den = den;
-	m_codecContext->ticks_per_frame = ticksPerFrame;
+	_codecContext->time_base.num = num;
+	_codecContext->time_base.den = den;
+	_codecContext->ticks_per_frame = ticksPerFrame;
 }
 
 }

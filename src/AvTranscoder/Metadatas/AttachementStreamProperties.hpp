@@ -9,7 +9,7 @@ namespace avtranscoder
 AttachementProperties attachementStreamInfo( const AVFormatContext* formatContext, const size_t index )
 {
 	AttachementProperties ap;
-	ap.streamId      = index;
+	ap.streamId = index;
 	return ap;
 }
 
