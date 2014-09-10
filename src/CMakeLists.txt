@@ -65,6 +65,8 @@ if(SWIG_FOUND)
 
 	# Create 'avtranscoder-py' shared lib
 	swig_add_module(avtranscoder-py python ${AVTRANSCODER_BINDING_FILE})
+	set_target_properties(${SWIG_MODULE_avtranscoder-py_REAL_NAME} PROPERTIES SOVERSION ${AVTRANSCODER_VERSION_MAJOR})
+	set_target_properties(${SWIG_MODULE_avtranscoder-py_REAL_NAME} PROPERTIES VERSION ${AVTRANSCODER_VERSION})
 	swig_link_libraries(avtranscoder-py avtranscoder-shared ${PYTHON_LIBRARIES})
 
 	# Install python interface
