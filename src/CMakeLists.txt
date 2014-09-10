@@ -58,54 +58,62 @@ if(SWIG_FOUND)
 
 	### PYTHON BINDING
 	find_package(PythonLibs)
-	include_directories(${PYTHON_INCLUDE_PATH})
+	if(PYTHONLIBS_FOUND)
+		include_directories(${PYTHON_INCLUDE_PATH})
 
-	# Swig flags
-	set(CMAKE_SWIG_FLAGS -c++ -fcompact)
+		# Swig flags
+		set(CMAKE_SWIG_FLAGS -c++ -fcompact)
 
-	# Create 'avtranscoder-py' shared lib
-	swig_add_module(avtranscoder-py python ${AVTRANSCODER_BINDING_FILE})
-	set_target_properties(${SWIG_MODULE_avtranscoder-py_REAL_NAME} PROPERTIES SOVERSION ${AVTRANSCODER_VERSION_MAJOR})
-	set_target_properties(${SWIG_MODULE_avtranscoder-py_REAL_NAME} PROPERTIES VERSION ${AVTRANSCODER_VERSION})
-	swig_link_libraries(avtranscoder-py avtranscoder-shared ${PYTHON_LIBRARIES})
+		# Create 'avtranscoder-py' shared lib
+		swig_add_module(avtranscoder-py python ${AVTRANSCODER_BINDING_FILE})
+		set_target_properties(${SWIG_MODULE_avtranscoder-py_REAL_NAME} PROPERTIES SOVERSION ${AVTRANSCODER_VERSION_MAJOR})
+		set_target_properties(${SWIG_MODULE_avtranscoder-py_REAL_NAME} PROPERTIES VERSION ${AVTRANSCODER_VERSION})
+		swig_link_libraries(avtranscoder-py avtranscoder-shared ${PYTHON_LIBRARIES})
 
-	# Install python interface
-	file(GLOB AVTRANSCODER_PYTHON_BINDING_FILE "${CMAKE_SWIG_OUTDIR}/*.py")
-	install(
-		FILES ${AVTRANSCODER_PYTHON_BINDING_FILE}
-		RENAME "avtranscoder.py"
-		DESTINATION "lib/python2.7/site-packages/avtranscoder/"
-	)
+		# Install python interface
+		file(GLOB AVTRANSCODER_PYTHON_BINDING_FILE "${CMAKE_SWIG_OUTDIR}/*.py")
+		install(
+			FILES ${AVTRANSCODER_PYTHON_BINDING_FILE}
+			RENAME "avtranscoder.py"
+			DESTINATION "lib/python2.7/site-packages/avtranscoder/"
+		)
+	else()
+		message("PYTHON not found, will not build python binding.")
+	endif()
 
 	### JAVA BINDING
-	find_package(Java REQUIRED)
-	find_package(JNI REQUIRED)
-	include(UseJava)
-	include_directories(${JAVA_INCLUDE_PATH})
-	include_directories(${JNI_INCLUDE_DIRS})
+	find_package(Java)
+	find_package(JNI)
+	if(JAVA_FOUND AND JNI_FOUND)
+		include(UseJava)
+		include_directories(${JAVA_INCLUDE_PATH})
+		include_directories(${JNI_INCLUDE_DIRS})
 
-	# Swig flags
-	set(CMAKE_SWIG_FLAGS -c++ -fcompact -package org.AvTranscoder)
+		# Swig flags
+		set(CMAKE_SWIG_FLAGS -c++ -fcompact -package org.AvTranscoder)
 
-	# Create 'avtranscoder-java' shared lib
-	swig_add_module(avtranscoder-java java ${AVTRANSCODER_BINDING_FILE})
-	set_target_properties(${SWIG_MODULE_avtranscoder-java_REAL_NAME} PROPERTIES SOVERSION ${AVTRANSCODER_VERSION_MAJOR})
-	set_target_properties(${SWIG_MODULE_avtranscoder-java_REAL_NAME} PROPERTIES VERSION ${AVTRANSCODER_VERSION})
-	swig_link_libraries(avtranscoder-java avtranscoder-shared)
+		# Create 'avtranscoder-java' shared lib
+		swig_add_module(avtranscoder-java java ${AVTRANSCODER_BINDING_FILE})
+		set_target_properties(${SWIG_MODULE_avtranscoder-java_REAL_NAME} PROPERTIES SOVERSION ${AVTRANSCODER_VERSION_MAJOR})
+		set_target_properties(${SWIG_MODULE_avtranscoder-java_REAL_NAME} PROPERTIES VERSION ${AVTRANSCODER_VERSION})
+		swig_link_libraries(avtranscoder-java avtranscoder-shared)
 
-	# Post build of java binding : compile java files (generate class files) and create jar
-	set(AVTRANSCODER_JAVA_OUTPUT_PATH "${PROJECT_BINARY_DIR}/src/AvTranscoder")
-	set(AVTRANSCODER_JAR_PATH "${PROJECT_BINARY_DIR}/src")
-	set(AVTRANSCODER_JAR_NAME "avtranscoder.jar")
-	ADD_CUSTOM_COMMAND(
-		TARGET avtranscoder-java
-		POST_BUILD
-		COMMAND ${Java_JAVAC_EXECUTABLE} ${AVTRANSCODER_JAVA_CLASS_OUTPUT_PATH} "${AVTRANSCODER_JAVA_OUTPUT_PATH}/*.java"
-		COMMAND ${Java_JAR_EXECUTABLE} cvf ${AVTRANSCODER_JAR_NAME} "${AVTRANSCODER_JAVA_OUTPUT_PATH}/*.class"
-	)
+		# Post build of java binding : compile java files (generate class files) and create jar
+		set(AVTRANSCODER_JAVA_OUTPUT_PATH "${PROJECT_BINARY_DIR}/src/AvTranscoder")
+		set(AVTRANSCODER_JAR_PATH "${PROJECT_BINARY_DIR}/src")
+		set(AVTRANSCODER_JAR_NAME "avtranscoder.jar")
+		ADD_CUSTOM_COMMAND(
+			TARGET avtranscoder-java
+			POST_BUILD
+			COMMAND ${Java_JAVAC_EXECUTABLE} ${AVTRANSCODER_JAVA_CLASS_OUTPUT_PATH} "${AVTRANSCODER_JAVA_OUTPUT_PATH}/*.java"
+			COMMAND ${Java_JAR_EXECUTABLE} cvf ${AVTRANSCODER_JAR_NAME} "${AVTRANSCODER_JAVA_OUTPUT_PATH}/*.class"
+		)
 
-	# Install jar file
-	install(FILES ${AVTRANSCODER_JAR_PATH}/${AVTRANSCODER_JAR_NAME} DESTINATION "share/java/")
+		# Install jar file
+		install(FILES ${AVTRANSCODER_JAR_PATH}/${AVTRANSCODER_JAR_NAME} DESTINATION "share/java/")
+	else()
+		message("JAVA not found, will not build java binding.")
+	endif()
 
 else(SWIG_FOUND)
 	message("SWIG not found, will not build python and java bindings.")
