@@ -31,31 +31,31 @@ void loadWave( Profile::ProfilesDesc& profiles )
 	profiles.push_back( wave24b48kMono );
 	profiles.push_back( wave16b48kMono );
 
-	wave16bits48kstereo[ Profile::avProfileIdentificator ] = "wave16bits48kstereo";
-	wave16bits48kstereo[ Profile::avProfileIdentificatorHuman ] = "Wave 16bits 48k stereo";
-	wave16bits48kstereo[ Profile::avProfileType ] = Profile::avProfileTypeAudio;
 
-	wave16bits48kstereo[ "codec" ] = "pcm_s16le";
-	wave16bits48kstereo[ "sample_fmt" ] = "s16";
-	wave16bits48kstereo[ "channels" ] = "2";
-	wave16bits48kstereo[ "sample_rate" ] = "48000";
+	Profile::ProfileDesc wave16b48kStereo;
 
-	Profile::ProfileDesc wave24bits48kstereo;
+	wave16b48kStereo[ Profile::avProfileIdentificator ] = "wave16b48kstereo";
+	wave16b48kStereo[ Profile::avProfileIdentificatorHuman ] = "Wave 16bits 48k stereo";
+	wave16b48kStereo[ Profile::avProfileType ] = Profile::avProfileTypeAudio;
 
-	wave24bits48kstereo[ Profile::avProfileIdentificator ] = "wave24bits48kstereo";
-	wave24bits48kstereo[ Profile::avProfileIdentificatorHuman ] = "Wave 24bits 48k stereo";
-	wave24bits48kstereo[ Profile::avProfileType ] = Profile::avProfileTypeAudio;
+	wave16b48kStereo[ Profile::avProfileCodec ] = "pcm_s16le";
+	wave16b48kStereo[ Profile::avProfileSampleFormat ] = "s16";
+	wave16b48kStereo[ Profile::avProfileSampleRate ] = "48000";
+	wave16b48kStereo[ Profile::avProfileChannel ] = "2";
 
-	wave24bits48kstereo[ "codec" ] = "pcm_s24le";
-	wave24bits48kstereo[ "sample_fmt" ] = "s32";
-	wave24bits48kstereo[ "channels" ] = "2";
-	wave24bits48kstereo[ "sample_rate" ] = "48000";
+	Profile::ProfileDesc wave24b48kStereo;
 
+	wave24b48kStereo[ Profile::avProfileIdentificator ] = "wave24b48kstereo";
+	wave24b48kStereo[ Profile::avProfileIdentificatorHuman ] = "Wave 24bits 48k stereo";
+	wave24b48kStereo[ Profile::avProfileType ] = Profile::avProfileTypeAudio;
 
-	profiles.push_back( wave16bits48kmono );
-	profiles.push_back( wave24bits48kmono );
-	profiles.push_back( wave16bits48kstereo );
-	profiles.push_back( wave24bits48kstereo );
+	wave24b48kStereo[ Profile::avProfileCodec ] = "pcm_s24le";
+	wave24b48kStereo[ Profile::avProfileSampleFormat ] = "s32";
+	wave24b48kStereo[ Profile::avProfileSampleRate ] = "48000";
+	wave24b48kStereo[ Profile::avProfileChannel ] = "2";
+
+	profiles.push_back( wave16b48kStereo );
+	profiles.push_back( wave24b48kStereo );
 }
 
 }
