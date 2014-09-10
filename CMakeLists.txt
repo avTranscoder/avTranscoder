@@ -1,0 +1,24 @@
+cmake_minimum_required(VERSION 2.8) 
+
+project(AvTranscoder)
+
+# Set AvTranscoder versions
+set(AVTRANSCODER_VERSION_MAJOR "0")
+set(AVTRANSCODER_VERSION_MINOR "2")
+set(AVTRANSCODER_VERSION_MICRO "1")
+set(AVTRANSCODER_VERSION ${AVTRANSCODER_VERSION_MAJOR}.${AVTRANSCODER_VERSION_MINOR}.${AVTRANSCODER_VERSION_MICRO})
+
+# Define AvTranscoder versions
+add_definitions(-DAVTRANSCODER_VERSION_MAJOR=${AVTRANSCODER_VERSION_MAJOR})
+add_definitions(-DAVTRANSCODER_VERSION_MINOR=${AVTRANSCODER_VERSION_MINOR})
+add_definitions(-DAVTRANSCODER_VERSION_MICRO=${AVTRANSCODER_VERSION_MICRO})
+
+# Diplay commands being ran by CMake
+set(CMAKE_VERBOSE_MAKEFILE OFF)
+
+# CPP flags on debug / release mode
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -fPIC -pg -g")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fPIC -O3")
+
+add_subdirectory(src)
+add_subdirectory(app)
