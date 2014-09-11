@@ -21,7 +21,7 @@ public:
 
 	// Stream properties
 	virtual VideoDesc getVideoDesc() const = 0;
-	virtual AudioDesc getAudioDesc() const = 0;	
+	virtual AudioDesc getAudioDesc() const = 0;
 };
 
 }

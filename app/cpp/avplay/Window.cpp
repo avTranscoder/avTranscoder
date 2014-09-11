@@ -14,38 +14,38 @@
 #include <iomanip>
 #include <cstring>
 
-Reader* Window::m_reader = NULL;
+Reader* Window::_reader = NULL;
 
-size_t Window::m_width = 0;
-size_t Window::m_height = 0;
+size_t Window::_width = 0;
+size_t Window::_height = 0;
 
-int Window::m_x1 = -1.0;
-int Window::m_x2 =  1.0;
-int Window::m_y1 =  1.0;
-int Window::m_y2 = -1.0;
+int Window::_x1 = -1.0;
+int Window::_x2 =  1.0;
+int Window::_y1 =  1.0;
+int Window::_y2 = -1.0;
 
-int Window::m_xMinViewport = 0;
-int Window::m_yMinViewport = 0;
-int Window::m_xMouseRef = 0;
-int Window::m_yMouseRef = 0;
+int Window::_xMinViewport = 0;
+int Window::_yMinViewport = 0;
+int Window::_xMouseRef = 0;
+int Window::_yMouseRef = 0;
 
-int Window::m_windowId = 0;
+int Window::_windowId = 0;
 
-float Window::m_currentZoom = 1.0;
-float Window::m_factorZoom = 1.25;
+float Window::_currentZoom = 1.0;
+float Window::_factorZoom = 1.25;
 
-float Window::m_scale = 1.0;
+float Window::_scale = 1.0;
 
-bool Window::m_play = false;
+bool Window::_play = false;
 
-bool Window::m_flip = false;
-bool Window::m_flop = false;
+bool Window::_flip = false;
+bool Window::_flop = false;
 
 // channel properties
-bool Window::m_showRedChannel   = false;
-bool Window::m_showGreenChannel = false;
-bool Window::m_showBlueChannel  = false;
-bool Window::m_showAlphaChannel = false;
+bool Window::_showRedChannel   = false;
+bool Window::_showGreenChannel = false;
+bool Window::_showBlueChannel  = false;
+bool Window::_showAlphaChannel = false;
 
 // image properties
 struct ImgProperties
@@ -59,7 +59,7 @@ struct ImgProperties
 	size_t component;
 };
 
-ImgProperties m_imageProperties;
+ImgProperties _imageProperties;
 
 
 void loadNewTexture( const ImgProperties& properties )
@@ -77,40 +77,40 @@ void loadNewTexture( const ImgProperties& properties )
 
 void loadNewTexture( const char* data, GLint internalFormat, size_t width, size_t height, GLenum format, GLenum type )
 {
-	m_imageProperties.data   = data;
-	m_imageProperties.internalFormat = internalFormat;
-	m_imageProperties.width  = width;
-	m_imageProperties.height = height;
-	m_imageProperties.format = format;
-	m_imageProperties.type   = type;
+	_imageProperties.data   = data;
+	_imageProperties.internalFormat = internalFormat;
+	_imageProperties.width  = width;
+	_imageProperties.height = height;
+	_imageProperties.format = format;
+	_imageProperties.type   = type;
 
-	switch( m_imageProperties.format )
+	switch( _imageProperties.format )
 	{
-		case GL_LUMINANCE : m_imageProperties.component = 1; break;
-		case GL_RGB       : m_imageProperties.component = 3; break;
-		case GL_RGBA      : m_imageProperties.component = 4; break;
+		case GL_LUMINANCE : _imageProperties.component = 1; break;
+		case GL_RGB       : _imageProperties.component = 3; break;
+		case GL_RGBA      : _imageProperties.component = 4; break;
 	}
 
-	loadNewTexture( m_imageProperties );
+	loadNewTexture( _imageProperties );
 }
 
 Window::Window( Reader& reader )
 {
-	m_reader = &reader;
-	m_width  = m_reader->getWidth();
-	m_height = m_reader->getHeight();
+	_reader = &reader;
+	_width  = _reader->getWidth();
+	_height = _reader->getHeight();
 
 	char *argv[2] = { (char*)"", NULL };
 	int   argc    = 1;
 	glutInit( &argc, argv );
 	glutInitDisplayMode( GLUT_DOUBLE | GLUT_RGB | GLUT_RGBA | GLUT_MULTISAMPLE );
-	glutInitWindowSize( m_width, m_height );
+	glutInitWindowSize( _width, _height );
 	glutInitWindowPosition( 0, 0 );
 #ifdef GLUT_ACTION_ON_WINDOW_CLOSE
 	glutSetOption( GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION );
 #endif
 
-	m_windowId = glutCreateWindow("AV Player Viewer");
+	_windowId = glutCreateWindow("AV Player Viewer");
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f );
 	glClear( GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT );
 
@@ -136,18 +136,18 @@ void Window::display()
 
 	glBegin (GL_QUADS);
 
-	float x1 = m_x1;
-	float x2 = m_x2;
+	float x1 = _x1;
+	float x2 = _x2;
 
-	float y1 = m_y1;
-	float y2 = m_y2;
+	float y1 = _y1;
+	float y2 = _y2;
 
-	if( m_flip )
+	if( _flip )
 	{
 		y1 = -y1;
 		y2 = -y2;
 	}
-	if( m_flop )
+	if( _flop )
 	{
 		x1 = -x1;
 		x2 = -x2;
@@ -181,30 +181,30 @@ void Window::keyboard( unsigned char k, int x, int y )
 	switch( k )
 	{
 		case '\r':
-			glutDestroyWindow( m_windowId );
-			m_windowId = 0;
+			glutDestroyWindow( _windowId );
+			_windowId = 0;
 			break;
 		case 27: // ESCAPE key
-			glutDestroyWindow( m_windowId );
-			m_windowId = 0;
+			glutDestroyWindow( _windowId );
+			_windowId = 0;
 			break;
 		case 'i':
 			displayInformations();
 			break;
 		case 'z':
-			glutReshapeWindow( m_width, m_height );
-			m_currentZoom = 1.0;
-			m_x1 = -1.0;
-			m_x2 =  1.0;
-			m_y1 =  1.0;
-			m_y2 = -1.0;
+			glutReshapeWindow( _width, _height );
+			_currentZoom = 1.0;
+			_x1 = -1.0;
+			_x2 =  1.0;
+			_y1 =  1.0;
+			_y2 = -1.0;
 			glutPostRedisplay();
 			break;
 		case 'h':
 			displayHelp();
 			break;
 		case 32: // spacebar
-			m_play = !m_play;
+			_play = ! _play;
 			loopPlaying(0);
 			break;
 
@@ -222,20 +222,20 @@ void Window::keyboard( unsigned char k, int x, int y )
 			break;
 
 		case 'm':
-			m_reader->printMetadatas();
+			_reader->printMetadatas();
 			break;
 
 		case 'H':
 			if( shift )
 			{
-				m_flop = !m_flop;
+				_flop = ! _flop;
 				glutPostRedisplay();
 			}
 			break;
 		case 'V':
 			if( shift )
 			{
-				m_flip = !m_flip;
+				_flip = ! _flip;
 				glutPostRedisplay();
 			}
 			break;
@@ -279,31 +279,31 @@ void Window::mouse( int button, int state, int x, int y )
 
 		mapToImage(x, y, iX, iY);
 
-		if( iX < 0 || iY < 0 || iX >= (int)m_imageProperties.width || iY >= (int)m_imageProperties.height )
+		if( iX < 0 || iY < 0 || iX >= (int)_imageProperties.width || iY >= (int)_imageProperties.height )
 			return;
 
-		std::cout << "at " << std::setw(4) << iX << "," << std::setw(4) << (int)m_imageProperties.height - iY << ": ";
+		std::cout << "at " << std::setw(4) << iX << "," << std::setw(4) << (int)_imageProperties.height - iY << ": ";
 
-		for( size_t i = 0; i < m_imageProperties.component; i++ )
+		for( size_t i = 0; i < _imageProperties.component; i++ )
 		{
-			size_t idx = ( iX + iY * m_imageProperties.width ) * m_imageProperties.component + i;
-			switch( m_imageProperties.type )
+			size_t idx = ( iX + iY * _imageProperties.width ) * _imageProperties.component + i;
+			switch( _imageProperties.type )
 			{
 				case GL_UNSIGNED_BYTE:
 				{
-					const unsigned char* d = (const unsigned char*) m_imageProperties.data;
+					const unsigned char* d = (const unsigned char*) _imageProperties.data;
 					std::cout << std::setw(5) << (unsigned int) d[idx] ;
 					break;
 				}
 				case GL_UNSIGNED_SHORT:
 				{
-					const unsigned short* d = (const unsigned short*) m_imageProperties.data;
+					const unsigned short* d = (const unsigned short*) _imageProperties.data;
 					std::cout << std::setw(7) << d[idx] ;
 					break;
 				}
 				case GL_FLOAT:
 				{
-					const float* d = (const float*) m_imageProperties.data;
+					const float* d = (const float*) _imageProperties.data;
 					std::cout << std::setw(10) << d[idx] ;
 					break;
 				}
@@ -319,49 +319,49 @@ void Window::mouse( int button, int state, int x, int y )
 
 		if(button == 3)
 		{
-			m_currentZoom *= m_factorZoom;
-			zoom( m_factorZoom );
+			_currentZoom *= _factorZoom;
+			zoom( _factorZoom );
 		}
 		else
 		{
-			m_currentZoom /= m_factorZoom;
-			zoom( 1.0 / m_factorZoom );
+			_currentZoom /= _factorZoom;
+			zoom( 1.0 / _factorZoom );
 		}
 
 		mapToImage(x, y, iX2, iY2);
 
-		move( ( m_currentZoom / m_imageProperties.width * 2) * (iX2 - iX),
-		      ( m_currentZoom / m_imageProperties.height * 2) * (iY2 - iY));
+		move( ( _currentZoom / _imageProperties.width * 2) * (iX2 - iX),
+		      ( _currentZoom / _imageProperties.height * 2) * (iY2 - iY));
 
 		glutPostRedisplay ();
 	}
 
-	m_xMouseRef = x;
-	m_yMouseRef = y;
+	_xMouseRef = x;
+	_yMouseRef = y;
 }
 
 void Window::motion( int x, int y )
 {
 	float x_diff, y_diff;
 
-	x_diff = ( x - m_xMouseRef ) / m_currentZoom;
-	y_diff = ( m_yMouseRef - y ) / m_currentZoom;
+	x_diff = ( x - _xMouseRef ) / _currentZoom;
+	y_diff = ( _yMouseRef - y ) / _currentZoom;
 
-	if( m_flip )
+	if( _flip )
 	{
 		y_diff *= -1.0;
 	}
 
-	if( m_flop )
+	if( _flop )
 	{
 		x_diff *= -1.0;
 	}
 
-	move( m_currentZoom / m_imageProperties.width  * 2 * x_diff,
-	      m_currentZoom / m_imageProperties.height * 2 * y_diff );
+	move( _currentZoom / _imageProperties.width  * 2 * x_diff,
+	      _currentZoom / _imageProperties.height * 2 * y_diff );
 
-	m_xMouseRef = x;
-	m_yMouseRef = y;
+	_xMouseRef = x;
+	_yMouseRef = y;
 
 	glutPostRedisplay();
 }
@@ -370,25 +370,25 @@ void Window::reshape( int width, int height )
 {
 	float w, h, xPos, yPos;
 
-	if( (float) m_width / m_height > (float) width / height )
+	if( (float) _width / _height > (float) width / height )
 	{
 		w = width;
-		h = 1.0f * m_height / m_width * (float)width;
+		h = 1.0f * _height / _width * (float)width;
 		xPos = 0.0;
 		yPos = 0.5f * (height - h);
 	}
 	else
 	{
-		w = 1.0f * m_width / m_height * (float)height;
+		w = 1.0f * _width / _height * (float)height;
 		h = height;
 		xPos = 0.5f * (width - w);
 		yPos = 0.0;
 	}
 
-	m_xMinViewport = xPos;
-	m_yMinViewport = yPos;
+	_xMinViewport = xPos;
+	_yMinViewport = yPos;
 
-	m_scale = w / m_width;
+	_scale = w / _width;
 
 	glViewport( (GLsizei) xPos, (GLsizei) yPos, (GLsizei) w, (GLsizei) h );
 	glutReshapeWindow( width, height );
@@ -412,35 +412,35 @@ void Window::displayHelp()
 void Window::displayInformations()
 {
 	std::string textureType;
-	switch( m_imageProperties.format )
+	switch( _imageProperties.format )
 	{
 		case GL_LUMINANCE : textureType = "Gray "; break;
 		case GL_RGB       : textureType = "RGB  "; break;
 		case GL_RGBA      : textureType = "RGBA "; break;
 	}
-	switch( m_imageProperties.type )
+	switch( _imageProperties.type )
 	{
 		case GL_UNSIGNED_BYTE  : textureType += "8 bits"; break;
 		case GL_UNSIGNED_SHORT : textureType += "16 bits"; break;
 		case GL_FLOAT          : textureType += "32 float"; break;
 	}
-	std::cout << textureType << " " << m_width << "x" << m_height << std::endl;
+	std::cout << textureType << " " << _width << "x" << _height << std::endl;
 }
 
 void Window::move( float x, float y )
 {
-	m_x1 += x;
-	m_x2 += x;
-	m_y1 += y;
-	m_y2 += y;
+	_x1 += x;
+	_x2 += x;
+	_y1 += y;
+	_y2 += y;
 }
 
 void Window::zoom(float factor)
 {
-	m_x1 *= factor;
-	m_x2 *= factor;
-	m_y1 *= factor;
-	m_y2 *= factor;
+	_x1 *= factor;
+	_x2 *= factor;
+	_y1 *= factor;
+	_y2 *= factor;
 }
 
 void Window::mapToImage(int x, int y, int &iX, int &iY)
@@ -448,29 +448,29 @@ void Window::mapToImage(int x, int y, int &iX, int &iY)
 	int mapX, mapY;
 	float mx, my;
 
-	mapX = ( x - m_xMinViewport ) / m_scale;
-	mapY = ( y - m_yMinViewport ) / m_scale;
+	mapX = ( x - _xMinViewport ) / _scale;
+	mapY = ( y - _yMinViewport ) / _scale;
 
-	if( !m_flip )
+	if( ! _flip )
 	{
-		mapY = m_imageProperties.height - mapY;
+		mapY = _imageProperties.height - mapY;
 	}
 
-	if( m_flop )
+	if( _flop )
 	{
-		mapX = m_imageProperties.width - mapX;
+		mapX = _imageProperties.width - mapX;
 	}
 
-	mx = (float)mapX / (float)m_imageProperties.width * 2.0 - 1.0;
-	iX = ((m_x1 - mx) / (m_currentZoom * 2.0) * (float)m_imageProperties.width * -1.0) + 0.5;
+	mx = (float)mapX / (float)_imageProperties.width * 2.0 - 1.0;
+	iX = ((_x1 - mx) / (_currentZoom * 2.0) * (float)_imageProperties.width * -1.0) + 0.5;
 
-	my = (float)mapY / (float)m_imageProperties.height * 2.0 - 1.0;
-	iY = ((m_y1 - my) / (m_currentZoom * 2.0) * (float)m_imageProperties.height * -1.0) + 0.5;	
+	my = (float)mapY / (float)_imageProperties.height * 2.0 - 1.0;
+	iY = ((_y1 - my) / (_currentZoom * 2.0) * (float)_imageProperties.height * -1.0) + 0.5;	
 }
 
 void Window::setTransfert( float red, float green, float blue, float alpha )
 {
-	switch( m_imageProperties.format )
+	switch( _imageProperties.format )
 	{
 		case GL_LUMINANCE :
 			return;
@@ -490,14 +490,14 @@ void Window::setTransfert( float red, float green, float blue, float alpha )
 
 void Window::displayChannelTexture( bool& channel, const float red, const float green, const float blue )
 {
-	ImgProperties p = m_imageProperties;
+	ImgProperties p = _imageProperties;
 	if( ! channel )
 	{
 		setTransfert( red, green, blue );
-		m_showRedChannel   = false;
-		m_showGreenChannel = false;
-		m_showBlueChannel  = false;
-		m_showAlphaChannel = false;
+		_showRedChannel   = false;
+		_showGreenChannel = false;
+		_showBlueChannel  = false;
+		_showAlphaChannel = false;
 		channel = true;
 	}
 	else
@@ -512,17 +512,17 @@ void Window::displayChannelTexture( bool& channel, const float red, const float 
 
 void Window::showRedChannelTexture( )
 {
-	displayChannelTexture( m_showRedChannel, 1.f, 0.f, 0.f );
+	displayChannelTexture( _showRedChannel, 1.f, 0.f, 0.f );
 }
 
 void Window::showGreenChannelTexture( )
 {
-	displayChannelTexture( m_showGreenChannel, 0.f, 1.f, 0.f );
+	displayChannelTexture( _showGreenChannel, 0.f, 1.f, 0.f );
 }
 
 void Window::showBlueChannelTexture( )
 {
-	displayChannelTexture( m_showBlueChannel, 0.f, 0.f, 1.f );
+	displayChannelTexture( _showBlueChannel, 0.f, 0.f, 1.f );
 }
 
 void Window::showAlphaChannelTexture( )
@@ -532,14 +532,14 @@ void Window::showAlphaChannelTexture( )
 
 void Window::displayNextFrame()
 {
-	const char* buffer = m_reader->readNextFrame();
-	loadNewTexture( buffer, m_reader->getComponents(), m_reader->getWidth(), m_reader->getHeight(), GL_RGB, GL_UNSIGNED_BYTE );
+	const char* buffer = _reader->readNextFrame();
+	loadNewTexture( buffer, _reader->getComponents(), _reader->getWidth(), _reader->getHeight(), GL_RGB, GL_UNSIGNED_BYTE );
 }
 
 void Window::displayPrevFrame()
 {
-	const char* buffer = m_reader->readPrevFrame();
-	loadNewTexture( buffer, m_reader->getComponents(), m_reader->getWidth(), m_reader->getHeight(), GL_RGB, GL_UNSIGNED_BYTE );
+	const char* buffer = _reader->readPrevFrame();
+	loadNewTexture( buffer, _reader->getComponents(), _reader->getWidth(), _reader->getHeight(), GL_RGB, GL_UNSIGNED_BYTE );
 }
 
 void Window::displayFirstFrame()
@@ -549,13 +549,13 @@ void Window::displayFirstFrame()
 
 void Window::displayAtFrame( const size_t frame )
 {
-	const char* buffer = m_reader->readFrameAt( frame );
-	loadNewTexture( buffer, m_reader->getComponents(), m_reader->getWidth(), m_reader->getHeight(), GL_RGB, GL_UNSIGNED_BYTE );
+	const char* buffer = _reader->readFrameAt( frame );
+	loadNewTexture( buffer, _reader->getComponents(), _reader->getWidth(), _reader->getHeight(), GL_RGB, GL_UNSIGNED_BYTE );
 }
 
 void Window::loopPlaying( int value )
 {
-	if( m_play )
+	if( _play )
 		glutTimerFunc( 40, &loopPlaying, 0 );
 	displayNextFrame();
 }

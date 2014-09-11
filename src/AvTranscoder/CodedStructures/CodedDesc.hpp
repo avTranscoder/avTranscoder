@@ -29,8 +29,8 @@ public:
 	void setCodec( const AVCodecID codecId );
 	
 #ifndef SWIG
-	AVCodec*        getCodec()        const { return m_codec; }
-	AVCodecContext* getCodecContext() const { return m_codecContext; }
+	AVCodec*        getCodec()        const { return _codec; }
+	AVCodecContext* getCodecContext() const { return _codecContext; }
 #endif
 
 private:
@@ -39,8 +39,8 @@ private:
 	void checkError( int error );
 
 protected:
-	AVCodec*        m_codec;
-	AVCodecContext* m_codecContext;
+	AVCodec*        _codec;
+	AVCodecContext* _codecContext;
 };
 
 }

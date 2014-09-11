@@ -76,13 +76,13 @@ public:
 	/**
 	 * @brief Get the corresponding AVPixelFormat from the pixel format name
 	 * @param pixelFormat the name of the pixel format
-     */
+	 */
 	static AVPixelFormat getAVPixelFormat( const std::string& pixelFormat );
 	
 	/**
 	 * @brief Get the corresponding AVSampleFormat from the sample format name
 	 * @param sampleFormat the name of the sample format
-     */
+	 */
 	static AVSampleFormat getAVSampleFormat( const std::string& sampleFormat );
 	
 private:

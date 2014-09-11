@@ -17,15 +17,15 @@ public:
 	
 	virtual ~Frame(){};
 
-	virtual DataBuffer& getBuffer() { return m_dataBuffer; }
-	virtual unsigned char* getPtr() { return &m_dataBuffer[0]; }
+	virtual DataBuffer& getBuffer() { return _dataBuffer; }
+	virtual unsigned char* getPtr() { return &_dataBuffer[0]; }
 #ifndef SWIG
-	virtual const unsigned char* getPtr() const { return &m_dataBuffer[0]; }
+	virtual const unsigned char* getPtr() const { return &_dataBuffer[0]; }
 #endif
-	virtual size_t getSize() const { return m_dataBuffer.size(); }
+	virtual size_t getSize() const { return _dataBuffer.size(); }
 	
 protected:
-	DataBuffer m_dataBuffer;
+	DataBuffer _dataBuffer;
 
 };
 

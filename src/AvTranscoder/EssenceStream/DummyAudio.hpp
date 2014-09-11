@@ -33,7 +33,7 @@ private:
 	AudioDesc      _audioDesc;
 	AudioFrameDesc _frameDesc;
 	
-	Frame*    _inputFrame;
+	Frame*         _inputFrame;
 };
 
 }

@@ -9,7 +9,7 @@ namespace avtranscoder
 SubtitleProperties subtitleStreamInfo( const AVFormatContext* formatContext, const size_t index )
 {
 	SubtitleProperties sp;
-	sp.streamId      = index;
+	sp.streamId = index;
 
 	return sp;
 }
