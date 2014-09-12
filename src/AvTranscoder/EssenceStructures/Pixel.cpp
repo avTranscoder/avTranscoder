@@ -21,13 +21,13 @@ Pixel::Pixel( const std::string& avPixelFormat )
 }
 
 Pixel::Pixel( const AVPixelFormat avPixelFormat )
-	: m_pixelSize  ( 24 )
-	, m_components ( 3 )
-	, m_componentType ( eComponentYuv )
-	, m_subsamplingType ( eSubsamplingNone )
-	, m_endianess  ( false )
-	, m_withAlpha  ( false )
-	, m_planar     ( true )
+	: _pixelSize  ( 24 )
+	, _components ( 3 )
+	, _componentType ( eComponentYuv )
+	, _subsamplingType ( eSubsamplingNone )
+	, _endianess  ( false )
+	, _withAlpha  ( false )
+	, _planar     ( true )
 {
 	init( avPixelFormat );
 }
@@ -44,16 +44,16 @@ AVPixelFormat Pixel::findPixel() const
 	{
 		const AVPixFmtDescriptor *pix_desc = &av_pix_fmt_descriptors[ pixFmtIndex ];
 #endif
-		if( m_components   == (size_t) pix_desc->nb_components &&
-			m_pixelSize    == (size_t) av_get_bits_per_pixel( pix_desc ) &&
-			m_endianess    == ( pix_desc->flags & PIX_FMT_BE ) &&
+		if( _components   == (size_t) pix_desc->nb_components &&
+			_pixelSize    == (size_t) av_get_bits_per_pixel( pix_desc ) &&
+			_endianess    == ( pix_desc->flags & PIX_FMT_BE ) &&
 #if LIBAVUTIL_VERSION_MAJOR > 51
-			m_withAlpha    == ( pix_desc->flags & PIX_FMT_ALPHA ) &&
+			_withAlpha    == ( pix_desc->flags & PIX_FMT_ALPHA ) &&
 			// @todo what need todo if libavutil <= 51 ?
 #endif
-			m_planar       == ( ( pix_desc->flags & PIX_FMT_PLANAR ) != 0 ) &&
-			asCorrectColorComponents( pix_desc, m_componentType ) &&
-			asCorrectSubsampling( pix_desc, m_subsamplingType ) )
+			_planar       == ( ( pix_desc->flags & PIX_FMT_PLANAR ) != 0 ) &&
+			asCorrectColorComponents( pix_desc, _componentType ) &&
+			asCorrectSubsampling( pix_desc, _subsamplingType ) )
 		{
 #if LIBAVUTIL_VERSION_MAJOR > 51
 			return av_pix_fmt_desc_get_id( pix_desc );

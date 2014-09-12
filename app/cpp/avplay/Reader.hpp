@@ -5,7 +5,7 @@ class Reader
 {
 public:
 	Reader()
-		: currentFrame( 0 )
+		: _currentFrame( 0 )
 	{}
 
 	virtual size_t getWidth() = 0;
@@ -21,7 +21,7 @@ public:
 
 protected:
 
-	size_t currentFrame;
+	size_t _currentFrame;
 };
 
 #endif

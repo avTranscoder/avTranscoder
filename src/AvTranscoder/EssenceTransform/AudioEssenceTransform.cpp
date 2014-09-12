@@ -71,19 +71,26 @@ void AudioEssenceTransform::convert( const Frame& srcFrame, Frame& dstFrame )
 {
 	if( ! _isInit )
 		_isInit = init( srcFrame, dstFrame );
-		
-	if( dstFrame.getSize() != srcFrame.getSize() )
-		dstFrame.getBuffer().resize( srcFrame.getSize(), 0 );
 
 	const unsigned char* srcData = srcFrame.getPtr();
 	unsigned char* dstData = dstFrame.getPtr();
-	
+
+	int nbOutputSamplesPerChannel;
 #ifdef AV_RESAMPLE_LIBRARY
-	avresample_convert( _audioConvertContext, (uint8_t**)&dstData, 0, dstFrame.getSize(), (uint8_t**)&srcData, 0, srcFrame.getSize() );
+	nbOutputSamplesPerChannel = avresample_convert( _audioConvertContext, (uint8_t**)&dstData, 0, dstFrame.getSize(), (uint8_t**)&srcData, 0, srcFrame.getSize() );
 #else
-	swr_convert( _audioConvertContext, &dstData, dstFrame.getSize(), &srcData, srcFrame.getSize() );
+	nbOutputSamplesPerChannel = swr_convert( _audioConvertContext, &dstData, dstFrame.getSize(), &srcData, srcFrame.getSize() );
 #endif
 
+	if( nbOutputSamplesPerChannel < 0 )
+	{
+		throw std::runtime_error( "unable to convert audio samples" );
+	}
+
+	int nbOutputSamples = nbOutputSamplesPerChannel * static_cast<const AudioFrame&>( dstFrame ).desc().getChannels();
+	
+	if( dstFrame.getSize() != nbOutputSamples )
+		dstFrame.getBuffer().resize( nbOutputSamples, 0 );
 	static_cast<AudioFrame&>( dstFrame ).setNbSamples( static_cast<const AudioFrame&>( srcFrame ).getNbSamples() );
 }
 

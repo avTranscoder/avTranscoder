@@ -1,0 +1,7 @@
+add_subdirectory(cpp/avInfo)
+add_subdirectory(cpp/avMeta)
+add_subdirectory(cpp/avplay)
+add_subdirectory(cpp/avTranscoder)
+add_subdirectory(cpp/genericProcessor)
+add_subdirectory(cpp/optionChecker)
+add_subdirectory(cpp/presetChecker)

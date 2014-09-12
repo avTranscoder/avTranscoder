@@ -13,60 +13,60 @@ class AvReader : public Reader
 {
 public:
 	AvReader( const std::string& filename )
-		: m_inputFile( filename )
-		, m_inputVideo( NULL )
-		, m_sourceImage( NULL )
-		, m_imageToDisplay( NULL )
+		: _inputFile( filename )
+		, _inputVideo( NULL )
+		, _sourceImage( NULL )
+		, _imageToDisplay( NULL )
 	{
 		avtranscoder::ProgressListener p;
 
-		m_inputFile.analyse( p );
-		m_videoStream = m_inputFile.getProperties().videoStreams.at(0).streamId;
+		_inputFile.analyse( p );
+		_videoStream = _inputFile.getProperties().videoStreams.at(0).streamId;
 
-		m_inputFile.readStream( m_videoStream );
+		_inputFile.readStream( _videoStream );
 
-		m_inputVideo = new avtranscoder::InputVideo( m_inputFile.getStream( m_videoStream ) );
+		_inputVideo = new avtranscoder::InputVideo( _inputFile.getStream( _videoStream ) );
 		
-		m_inputVideo->setup();
+		_inputVideo->setup();
 
-		m_sourceImage = new avtranscoder::VideoFrame( m_inputFile.getStream( m_videoStream ).getVideoDesc().getVideoFrameDesc() );
+		_sourceImage = new avtranscoder::VideoFrame( _inputFile.getStream( _videoStream ).getVideoDesc().getVideoFrameDesc() );
 
-		pixel.setBitsPerPixel( getComponents() * getBitDepth() );
-		pixel.setComponents( getComponents() );
-		pixel.setColorComponents( avtranscoder::eComponentRgb );
-		pixel.setSubsampling( avtranscoder::eSubsamplingNone );
-		pixel.setAlpha( false );
-		pixel.setPlanar( false );
+		_pixel.setBitsPerPixel( getComponents() * getBitDepth() );
+		_pixel.setComponents( getComponents() );
+		_pixel.setColorComponents( avtranscoder::eComponentRgb );
+		_pixel.setSubsampling( avtranscoder::eSubsamplingNone );
+		_pixel.setAlpha( false );
+		_pixel.setPlanar( false );
 
-		VideoFrameDescToDisplay.setWidth( m_sourceImage->desc().getWidth() );
-		VideoFrameDescToDisplay.setHeight( m_sourceImage->desc().getHeight() );
-		VideoFrameDescToDisplay.setDar( m_sourceImage->desc().getDar() );
+		_videoFrameDescToDisplay.setWidth( _sourceImage->desc().getWidth() );
+		_videoFrameDescToDisplay.setHeight( _sourceImage->desc().getHeight() );
+		_videoFrameDescToDisplay.setDar( _sourceImage->desc().getDar() );
 		
-		VideoFrameDescToDisplay.setPixel( pixel.findPixel() );
+		_videoFrameDescToDisplay.setPixel( _pixel.findPixel() );
 		
-		m_imageToDisplay = new avtranscoder::VideoFrame( VideoFrameDescToDisplay );
+		_imageToDisplay = new avtranscoder::VideoFrame( _videoFrameDescToDisplay );
 	}
 
 	~AvReader()
 	{
-		delete m_inputVideo;
-		delete m_sourceImage;
-		delete m_imageToDisplay;
+		delete _inputVideo;
+		delete _sourceImage;
+		delete _imageToDisplay;
 	}
 
 	size_t getWidth()
 	{
-		return m_inputFile.getProperties().videoStreams.at(0).width;
+		return _inputFile.getProperties().videoStreams.at(0).width;
 	};
 
 	size_t getHeight()
 	{
-		return m_inputFile.getProperties().videoStreams.at(0).height;
+		return _inputFile.getProperties().videoStreams.at(0).height;
 	}
 
 	size_t getComponents()
 	{
-		return m_inputFile.getProperties().videoStreams.at(0).componentsCount;
+		return _inputFile.getProperties().videoStreams.at(0).componentsCount;
 	}
 
 	size_t getBitDepth()
@@ -76,44 +76,44 @@ public:
 
 	const char* readNextFrame()
 	{
-		++currentFrame;
-		m_inputVideo->readNextFrame( *m_sourceImage );
-		m_videoEssenceTransform.convert( *m_sourceImage, *m_imageToDisplay );
-		return (const char*)m_imageToDisplay->getPtr();
+		++_currentFrame;
+		_inputVideo->readNextFrame( *_sourceImage );
+		_videoEssenceTransform.convert( *_sourceImage, *_imageToDisplay );
+		return (const char*)_imageToDisplay->getPtr();
 	}
 
 	const char* readPrevFrame()
 	{
-		--currentFrame;
-		return readFrameAt( currentFrame );
+		--_currentFrame;
+		return readFrameAt( _currentFrame );
 	}
 
 	const char* readFrameAt( const size_t frame )
 	{
 		// /std::cout << "seek at " << frame << std::endl;
-		m_inputFile.seekAtFrame( frame );
-		m_inputVideo->flushDecoder();
+		_inputFile.seekAtFrame( frame );
+		_inputVideo->flushDecoder();
 		return readNextFrame();
 	}
 
 	void printMetadatas()
 	{
-		std::cout << m_inputFile << std::endl;
+		std::cout << _inputFile << std::endl;
 	}
 
 private:
-	avtranscoder::InputFile m_inputFile;
+	avtranscoder::InputFile   _inputFile;
 	
-	avtranscoder::InputVideo* m_inputVideo;
+	avtranscoder::InputVideo* _inputVideo;
 
-	avtranscoder::VideoFrame* m_sourceImage;
-	avtranscoder::VideoFrame* m_imageToDisplay;
+	avtranscoder::VideoFrame* _sourceImage;
+	avtranscoder::VideoFrame* _imageToDisplay;
 
-	avtranscoder::Pixel pixel;
-	avtranscoder::VideoFrameDesc VideoFrameDescToDisplay;
+	avtranscoder::Pixel          _pixel;
+	avtranscoder::VideoFrameDesc _videoFrameDescToDisplay;
 
-	avtranscoder::VideoEssenceTransform m_videoEssenceTransform;
-	size_t m_videoStream;
+	avtranscoder::VideoEssenceTransform _videoEssenceTransform;
+	size_t _videoStream;
 };
 
 #endif

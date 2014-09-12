@@ -106,9 +106,10 @@ bool InputAudio::readNextFrame( Frame& frameBuffer )
 	if( ! getNextFrame() )
 		return false;
 	
-	size_t decodedSize = av_samples_get_buffer_size(NULL, _codecContext->channels,
-													_frame->nb_samples,
-													_codecContext->sample_fmt, 1);
+	size_t decodedSize = av_samples_get_buffer_size(
+		NULL, _codecContext->channels,
+		_frame->nb_samples,
+		_codecContext->sample_fmt, 1 );
 	
 	AudioFrame& audioBuffer = static_cast<AudioFrame&>( frameBuffer );
 
@@ -120,9 +121,10 @@ bool InputAudio::readNextFrame( Frame& frameBuffer )
 			audioBuffer.getBuffer().resize( decodedSize, 0 );
 		
 		unsigned char* dst = audioBuffer.getPtr();
-		av_samples_copy(&dst, (uint8_t* const* )_frame->data, 0,
-						0, _frame->nb_samples, _codecContext->channels,
-						_codecContext->sample_fmt);
+		av_samples_copy(
+			&dst, (uint8_t* const* )_frame->data, 0,
+			0, _frame->nb_samples, _codecContext->channels,
+			_codecContext->sample_fmt );
 	}
 
 	return true;

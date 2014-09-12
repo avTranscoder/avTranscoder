@@ -19,7 +19,7 @@ namespace detail
 {
 	/**
 	 * @brief Fill metadata parameter with the given AVDictionary.
-     */
+	 */
 	void fillMetadataDictionnary( AVDictionary* avdictionnary, MetadatasMap& metadata );
 }
 
@@ -98,7 +98,7 @@ struct AudioProperties
 	std::string sampleFormat;
 	std::string channelLayout;
 	std::string channelName;
- 	std::string channelDescription;
+	std::string channelDescription;
 	size_t      streamId;
 	size_t      codecId;
 	size_t      sampleRate;

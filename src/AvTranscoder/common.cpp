@@ -130,23 +130,23 @@ void split( std::vector< std::string >& splitedString, const std::string& inputS
 
 int getFilesInDir( const std::string& dir, std::vector< std::string >& files )
 {
-    DIR *dp;
-    struct dirent *dirp;
-    if( ( dp  = opendir( dir.c_str() ) ) == NULL )
-    {
-        std::cerr << "Error(" << errno << ") opening " << dir << std::endl;
-        return errno;
-    }
+	DIR *dp;
+	struct dirent *dirp;
+	if( ( dp  = opendir( dir.c_str() ) ) == NULL )
+	{
+		std::cerr << "Error(" << errno << ") opening " << dir << std::endl;
+		return errno;
+	}
 
-    while( ( dirp = readdir( dp ) ) != NULL )
-    {
-        std::string filename( dirp->d_name );
+	while( ( dirp = readdir( dp ) ) != NULL )
+	{
+		std::string filename( dirp->d_name );
 		if( filename == "." || filename == ".." )
 			continue;
-        files.push_back( filename );
-    }
-    closedir( dp );
-    return 0;
+		files.push_back( filename );
+	}
+	closedir( dp );
+	return 0;
 }
 
 std::string getFormat( const std::string& filename )

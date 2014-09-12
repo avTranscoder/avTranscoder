@@ -9,7 +9,7 @@ namespace avtranscoder
 UnknownProperties unknownStreamInfo( const AVFormatContext* formatContext, const size_t index )
 {
 	UnknownProperties up;
-	up.streamId      = index;
+	up.streamId = index;
 
 	return up;
 }

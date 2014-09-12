@@ -111,7 +111,7 @@ private:
 	 */
 	bool _infinityStream;
 };
-	
+
 }
 
 #endif

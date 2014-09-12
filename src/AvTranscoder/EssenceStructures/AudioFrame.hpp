@@ -12,21 +12,21 @@ class AvExport AudioFrameDesc
 {
 public:
 	AudioFrameDesc()
-		: m_sampleRate( 0 )
-		, m_channels( 0 )
-		, m_fps( 1.0 )
-		, m_sampleFormat( AV_SAMPLE_FMT_NONE )
+		: _sampleRate( 0 )
+		, _channels( 0 )
+		, _fps( 1.0 )
+		, _sampleFormat( AV_SAMPLE_FMT_NONE )
 	{};
 
-	void setSampleRate  ( const size_t sampleRate ){ m_sampleRate = sampleRate; }
-	void setChannels    ( const size_t channels   ){ m_channels   = channels;   }
-	void setFps         ( const size_t fps        ){ m_fps        = fps;        }
-	void setSampleFormat( const std::string& sampleFormatName ){ m_sampleFormat = av_get_sample_fmt( sampleFormatName.c_str() ); }
-	void setSampleFormat( const AVSampleFormat sampleFormat ){ m_sampleFormat = sampleFormat; }
+	void setSampleRate  ( const size_t sampleRate ){ _sampleRate = sampleRate; }
+	void setChannels    ( const size_t channels   ){ _channels   = channels;   }
+	void setFps         ( const size_t fps        ){ _fps        = fps;        }
+	void setSampleFormat( const std::string& sampleFormatName ){ _sampleFormat = av_get_sample_fmt( sampleFormatName.c_str() ); }
+	void setSampleFormat( const AVSampleFormat sampleFormat ){ _sampleFormat = sampleFormat; }
 
 	size_t getDataSize() const
 	{
-		return ( m_sampleRate / m_fps ) * m_channels * av_get_bytes_per_sample( m_sampleFormat );
+		return ( _sampleRate / _fps ) * _channels * av_get_bytes_per_sample( _sampleFormat );
 	}
 	
 	void setParameters( const Profile::ProfileDesc& desc )
@@ -35,37 +35,37 @@ public:
 			setSampleFormat( desc.find( Profile::avProfileSampleFormat )->second );
 	}
 
-	size_t getSampleRate() const { return m_sampleRate; }
-	size_t getChannels  () const { return m_channels; }
-	size_t getFps       () const { return m_fps; }
-	AVSampleFormat getSampleFormat() const { return m_sampleFormat; }
+	size_t getSampleRate() const { return _sampleRate; }
+	size_t getChannels  () const { return _channels; }
+	size_t getFps       () const { return _fps; }
+	AVSampleFormat getSampleFormat() const { return _sampleFormat; }
 
 private:
-	size_t m_sampleRate;
-	size_t m_channels;
-	double m_fps;
+	size_t _sampleRate;
+	size_t _channels;
+	double _fps;
 
-	AVSampleFormat m_sampleFormat;
+	AVSampleFormat _sampleFormat;
 };
 
 class AvExport AudioFrame : public Frame
 {
 public:
 	AudioFrame( const AudioFrameDesc& ref )
-		: m_audioFrameDesc( ref )
-		, m_nbSamples( 0 )
+		: _audioFrameDesc( ref )
+		, _nbSamples( 0 )
 	{
-		 m_dataBuffer = DataBuffer( ref.getDataSize(), (unsigned char) 0 );
+		_dataBuffer = DataBuffer( ref.getDataSize(), (unsigned char) 0 );
 	}
 
-	const AudioFrameDesc& desc() const    { return m_audioFrameDesc; }
+	const AudioFrameDesc& desc() const    { return _audioFrameDesc; }
 	
-	size_t getNbSamples() const { return m_nbSamples; }
-	void setNbSamples( size_t nbSamples ) { m_nbSamples = nbSamples; }
+	size_t getNbSamples() const { return _nbSamples; }
+	void setNbSamples( size_t nbSamples ) { _nbSamples = nbSamples; }
 
 private:
-	const AudioFrameDesc m_audioFrameDesc;
-	size_t m_nbSamples;
+	const AudioFrameDesc _audioFrameDesc;
+	size_t _nbSamples;
 };
 
 }

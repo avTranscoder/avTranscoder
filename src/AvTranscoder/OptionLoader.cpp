@@ -262,6 +262,7 @@ OptionLoader::OptionArray OptionLoader::loadOptions( void* av_class, int req_fla
 	// iterate on child options
 	for( std::vector<Option>::iterator itOption = childOptions.begin(); itOption != childOptions.end(); ++itOption )
 	{
+		bool parentFound = false;
 		for( std::multimap<std::string, int>::iterator itUnit = optionUnitToIndex.begin(); itUnit != optionUnitToIndex.end(); ++itUnit )
 		{
 			if( itUnit->first == itOption->getUnit() )
@@ -277,8 +278,16 @@ OptionLoader::OptionArray OptionLoader::loadOptions( void* av_class, int req_fla
 					if( itOption->getDefaultValueInt() == parentOption.getDefaultValueInt() )
 						parentOption.setDefaultChildIndex( parentOption.getNbChilds() - 1 );
 				}
+
+				parentFound = true;
+				break;
 			}
         }
+
+		if( ! parentFound )
+		{
+			std::cout << "Warning: Can't find a choice option for " << itOption->getName() << std::endl;
+		}
 	}
 	return options;
 }
