@@ -115,7 +115,7 @@ int main( int argc, char** argv )
 
 		// set verbose of all stream
 		transcoder.setVerbose( verbose );
-		transcoder.setProcessMethod( avtranscoder::eProcessMethodInfinity );
+		transcoder.setProcessMethod( avtranscoder::eProcessMethodLongest );
 		//transcoder.setOutputFps( 12 );
 		transcoder.init();
 		
