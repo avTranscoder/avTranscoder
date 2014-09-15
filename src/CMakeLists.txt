@@ -80,7 +80,7 @@ if(SWIG_FOUND)
 		swig_link_libraries(avtranscoder-py avtranscoder-shared ${PYTHON_LIBRARIES})
 
 		# Install python interface
-		file(GLOB AVTRANSCODER_PYTHON_BINDING_FILE "${CMAKE_SWIG_OUTDIR}/*.py")
+		set(AVTRANSCODER_PYTHON_BINDING_FILE "${CMAKE_SWIG_OUTDIR}/AvTranscoder.py")
 		install(
 			FILES ${AVTRANSCODER_PYTHON_BINDING_FILE}
 			RENAME "avtranscoder.py"
