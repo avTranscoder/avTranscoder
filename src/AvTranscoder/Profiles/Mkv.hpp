@@ -11,7 +11,7 @@ void loadMkv( Profile::ProfilesDesc& profiles )
 	mkv[ Profile::avProfileIdentificatorHuman ] = "Matroska";
 	mkv[ Profile::avProfileType ] = Profile::avProfileTypeFormat;
 
-	mkv[ "format" ] = "mastroka";
+	mkv[ Profile::avProfileFormat ] = "matroska";
 
 	profiles.push_back( mkv );
 }

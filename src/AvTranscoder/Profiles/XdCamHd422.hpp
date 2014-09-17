@@ -70,9 +70,8 @@ void loadXdCamHD422( Profile::ProfilesDesc& profiles )
 	xdCamHd422[ "b_qfactor" ] = "1.25";
 	xdCamHd422[ "i_qoffset" ] = "0";
 	xdCamHd422[ "i_qfactor" ] = "-0.8";
-	xdCamHd422[ "flags" ] = "-cgop"; // open GOP
 
-	xdCamHd422[ "flags" ] = "+ilme+ildct";  // use interlaced motion estimation + use interlaced DCT
+	xdCamHd422[ "flags" ] = "-cgop+ilme+ildct";  // open GOP + use interlaced motion estimation + use interlaced DCT
 
 	xdCamHd422[ "field_order" ] = "tt";
 
