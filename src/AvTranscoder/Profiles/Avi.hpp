@@ -11,7 +11,7 @@ void loadAvi( Profile::ProfilesDesc& profiles )
 	avi[ Profile::avProfileIdentificatorHuman ] = "AVI (Audio Video Interleaved)";
 	avi[ Profile::avProfileType ] = Profile::avProfileTypeFormat;
 
-	avi[ "format" ] = "avi";
+	avi[ Profile::avProfileFormat ] = "avi";
 
 	profiles.push_back( avi );
 }
