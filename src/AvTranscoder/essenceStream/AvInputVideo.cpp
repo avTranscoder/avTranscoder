@@ -1,5 +1,9 @@
 #include "AvInputVideo.hpp"
 
+#include <AvTranscoder/option/Context.hpp>
+#include <AvTranscoder/codedStream/AvInputStream.hpp>
+#include <AvTranscoder/essenceStructures/VideoFrame.hpp>
+
 extern "C" {
 #ifndef __STDC_CONSTANT_MACROS
 	#define __STDC_CONSTANT_MACROS
@@ -9,9 +13,6 @@ extern "C" {
 #include <libavutil/avutil.h>
 #include <libavutil/pixdesc.h>
 }
-
-#include <AvTranscoder/codedStream/AvInputStream.hpp>
-#include <AvTranscoder/essenceStructures/VideoFrame.hpp>
 
 #include <stdexcept>
 #include <iostream>
@@ -149,7 +150,7 @@ void AvInputVideo::flushDecoder()
 
 void AvInputVideo::setProfile( const Profile::ProfileDesc& desc )
 {
-	ParamSet paramSet( _codecContext );
+	Context codecContext( _codecContext );
 
 	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
 	{
@@ -160,7 +161,7 @@ void AvInputVideo::setProfile( const Profile::ProfileDesc& desc )
 
 		try
 		{
-			paramSet.set( (*it).first, (*it).second );
+			codecContext.set( (*it).first, (*it).second );
 		}
 		catch( std::exception& e )
 		{

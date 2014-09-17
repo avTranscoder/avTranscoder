@@ -1,5 +1,7 @@
 #include "OutputFile.hpp"
 
+#include <AvTranscoder/option/Context.hpp>
+
 extern "C" {
 #ifndef __STDC_CONSTANT_MACROS
     #define __STDC_CONSTANT_MACROS
@@ -236,7 +238,7 @@ void OutputFile::setProfile( const Profile::ProfileDesc& desc )
 	}
 	_outputFormat = av_guess_format( desc.find( Profile::avProfileFormat )->second.c_str(), _filename.c_str(), NULL);
 	
-	ParamSet paramSet( _formatContext );
+	Context formatContext( _formatContext );
 	
 	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
 	{
@@ -248,7 +250,7 @@ void OutputFile::setProfile( const Profile::ProfileDesc& desc )
 		
 		try
 		{
-			paramSet.set( (*it).first, (*it).second );
+			formatContext.set( (*it).first, (*it).second );
 		}
 		catch( std::exception& e )
 		{
@@ -268,7 +270,7 @@ void OutputFile::setProfile( const Profile::ProfileDesc& desc )
 
 		try
 		{
-			paramSet.set( (*it).first, (*it).second );
+			formatContext.set( (*it).first, (*it).second );
 		}
 		catch( std::exception& e )
 		{

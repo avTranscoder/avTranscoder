@@ -1,11 +1,13 @@
 #include "InputFile.hpp"
 
+#include <AvTranscoder/option/Context.hpp>
 #include <AvTranscoder/mediaProperty/VideoStreamProperty.hpp>
 #include <AvTranscoder/mediaProperty/AudioStreamProperty.hpp>
 #include <AvTranscoder/mediaProperty/DataStreamProperty.hpp>
 #include <AvTranscoder/mediaProperty/SubtitleStreamProperty.hpp>
 #include <AvTranscoder/mediaProperty/AttachementStreamProperty.hpp>
 #include <AvTranscoder/mediaProperty/UnknownStreamProperty.hpp>
+
 
 
 extern "C" {
@@ -215,7 +217,7 @@ bool InputFile::getReadStream( const size_t streamIndex )
 
 void InputFile::setProfile( const Profile::ProfileDesc& desc )
 {	
-	ParamSet paramSet( _formatContext );
+	Context formatContext( _formatContext );
 	
 	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
 	{
@@ -226,7 +228,7 @@ void InputFile::setProfile( const Profile::ProfileDesc& desc )
 		
 		try
 		{
-			paramSet.set( (*it).first, (*it).second );
+			formatContext.set( (*it).first, (*it).second );
 		}
 		catch( std::exception& e )
 		{

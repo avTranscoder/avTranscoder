@@ -1,5 +1,7 @@
 #include "AvOutputAudio.hpp"
 
+#include <AvTranscoder/option/Context.hpp>
+
 extern "C" {
 #ifndef __STDC_CONSTANT_MACROS
 	#define __STDC_CONSTANT_MACROS
@@ -184,7 +186,7 @@ void AvOutputAudio::setProfile( const Profile::ProfileDesc& desc, const AudioFra
 	
 	static_cast<AudioDesc>( _codedDesc ).setAudioParameters( frameDesc );
 
-	ParamSet paramSet( _codedDesc.getCodecContext() );
+	Context codecContext( _codedDesc.getCodecContext() );
 	
 	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
 	{
@@ -197,7 +199,7 @@ void AvOutputAudio::setProfile( const Profile::ProfileDesc& desc, const AudioFra
 
 		try
 		{
-			paramSet.set( (*it).first, (*it).second );
+			codecContext.set( (*it).first, (*it).second );
 		}
 		catch( std::exception& e )
 		{
@@ -218,7 +220,7 @@ void AvOutputAudio::setProfile( const Profile::ProfileDesc& desc, const AudioFra
 
 		try
 		{
-			paramSet.set( (*it).first, (*it).second );
+			codecContext.set( (*it).first, (*it).second );
 		}
 		catch( std::exception& e )
 		{
