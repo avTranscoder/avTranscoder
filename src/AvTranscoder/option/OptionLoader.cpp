@@ -242,15 +242,15 @@ OptionLoader::OptionArray OptionLoader::loadOptions( void* av_class, int req_fla
 			continue;
 		}
 
-		OptionType optionType = Option::getTypeFromAVOption( avOption->unit, avOption->type );
+		Option option( *avOption );
 
-		if( optionType == TypeChild )
+		if( option.getType() == TypeChild )
 		{
-			childOptions.push_back( Option( *avOption, optionType ) );
+			childOptions.push_back( option );
 		}
 		else
 		{
-			options.push_back( Option( *avOption, optionType ) );
+			options.push_back( option );
 			optionUnitToIndex.insert( 
 				std::pair<std::string, int>( 
 					std::string( avOption->unit ? avOption->unit : "" ), 

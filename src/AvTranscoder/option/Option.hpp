@@ -36,10 +36,7 @@ enum OptionType
 class Option
 {
 public:
-	static OptionType getTypeFromAVOption( const char* unit, AVOptionType avType );
-	
-public:
-	Option( const AVOption& avOption, OptionType type );
+	Option( const AVOption& avOption );
 	~Option() {}
 	
 	OptionType getType() const;
@@ -76,6 +73,9 @@ public:
 	void setDefaultChildIndex( size_t index ) { _defaultChildIndex = index; }
 	void appendChild( const Option& child );
 	
+private:
+	OptionType getTypeFromAVOption( const std::string& unit, const AVOptionType avType );
+
 private:
 	AVOption _avOption;
 	OptionType _type;

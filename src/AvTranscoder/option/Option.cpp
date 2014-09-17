@@ -3,21 +3,21 @@
 namespace avtranscoder
 {
 
-Option::Option( const AVOption& avOption, OptionType type )
+Option::Option( const AVOption& avOption )
 	: _avOption( avOption )
-	, _type( type )
 	, _options()
 	, _defaultChildIndex( 0 )
 {
+	_type = getTypeFromAVOption( getUnit(), _avOption.type );
 }
 
-OptionType Option::getTypeFromAVOption( const char* unit, AVOptionType avType )
+OptionType Option::getTypeFromAVOption( const std::string& unit, const AVOptionType avType )
 {
-	if( unit && avType == AV_OPT_TYPE_FLAGS )
+	if( ! unit.empty() && avType == AV_OPT_TYPE_FLAGS )
 		return TypeGroup;
-	else if( unit && ( avType == AV_OPT_TYPE_INT || avType == AV_OPT_TYPE_INT64 ) )
+	else if( ! unit.empty() && ( avType == AV_OPT_TYPE_INT || avType == AV_OPT_TYPE_INT64 ) )
 		return TypeChoice;
-	else if( unit && avType == AV_OPT_TYPE_CONST )
+	else if( ! unit.empty() && avType == AV_OPT_TYPE_CONST )
 		return TypeChild;
 	
 	switch( avType )
