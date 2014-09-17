@@ -15,17 +15,17 @@ extern "C" {
 namespace avtranscoder
 {
 
-enum OptionType
+enum EOptionBaseType
 {
-	TypeBool,
-	TypeInt,
-	TypeDouble,
-	TypeString,
-	TypeRatio,
-	TypeChoice,
-	TypeGroup,
-	TypeChild, // Option which belongs to Choice or Group
-	TypeUnknown
+	eOptionBaseTypeBool,
+	eOptionBaseTypeInt,
+	eOptionBaseTypeDouble,
+	eOptionBaseTypeString,
+	eOptionBaseTypeRatio,
+	eOptionBaseTypeChoice,
+	eOptionBaseTypeGroup,
+	eOptionBaseTypeChild, // Option which belongs to Choice or Group
+	eOptionBaseTypeUnknown
 };
 
 /**
@@ -39,7 +39,7 @@ public:
 	Option( const AVOption& avOption );
 	~Option() {}
 	
-	OptionType getType() const;
+	EOptionBaseType getType() const;
 
 	std::string getName() const { return std::string( _avOption.name ? _avOption.name : "" ); }
 	std::string getHelp() const { return std::string( _avOption.help ? _avOption.help : "" ); }
@@ -74,11 +74,11 @@ public:
 	void appendChild( const Option& child );
 	
 private:
-	OptionType getTypeFromAVOption( const std::string& unit, const AVOptionType avType );
+	EOptionBaseType getTypeFromAVOption( const std::string& unit, const AVOptionType avType );
 
 private:
 	AVOption _avOption;
-	OptionType _type;
+	EOptionBaseType _type;
 	
 	/**
 	 * If the option corresponds to a Choice or a Group, it can contain childs,

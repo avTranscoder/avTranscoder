@@ -20,27 +20,27 @@ void displayOptions( avtranscoder::OptionLoader::OptionArray& options )
 		
 		// get default value
 		
-		if( option.getType() == avtranscoder::TypeInt )
+		if( option.getType() == avtranscoder::eOptionBaseTypeInt )
 		{
 			std::cout << "DefaultValue: " << option.getDefaultValueInt() << std::endl;
 		}
-		else if( option.getType() == avtranscoder::TypeBool )
+		else if( option.getType() == avtranscoder::eOptionBaseTypeBool )
 		{
 			std::cout << "DefaultValue: " << option.getDefaultValueBool() << std::endl;
 		}
-		else if( option.getType() == avtranscoder::TypeDouble )
+		else if( option.getType() == avtranscoder::eOptionBaseTypeDouble )
 		{
 			std::cout << "DefaultValue: " << option.getDefaultValueDouble() << std::endl;
 		}
-		else if( option.getType() == avtranscoder::TypeRatio )
+		else if( option.getType() == avtranscoder::eOptionBaseTypeRatio )
 		{
 			std::cout << "DefaultValue: " << option.getDefaultValueRatio().first << ", " << option.getDefaultValueRatio().second << std::endl;
 		}
-		else if( option.getType() == avtranscoder::TypeString )
+		else if( option.getType() == avtranscoder::eOptionBaseTypeString )
 		{
 			std::cout << "DefaultValue: " << option.getDefaultValueString() << std::endl;
 		}
-		else if( option.getType() == avtranscoder::TypeChoice )
+		else if( option.getType() == avtranscoder::eOptionBaseTypeChoice )
 		{
 			std::cout << "Nb choices: " << option.getNbChilds() << std::endl;
 			std::cout << "Default choice index: " << option.getDefaultChildIndex() << std::endl;
@@ -49,7 +49,7 @@ void displayOptions( avtranscoder::OptionLoader::OptionArray& options )
 					option.getChild( i ).getName() << " // " << 
 					option.getChild( i ).getHelp() << std::endl;
 		}
-		else if( option.getType() == avtranscoder::TypeGroup )
+		else if( option.getType() == avtranscoder::eOptionBaseTypeGroup )
 		{
 			std::cout << "Nb choices: " << option.getNbChilds() << std::endl;
 			for(size_t i = 0; i < option.getNbChilds(); ++i )

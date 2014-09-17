@@ -244,7 +244,7 @@ OptionLoader::OptionArray OptionLoader::loadOptions( void* av_class, int req_fla
 
 		Option option( *avOption );
 
-		if( option.getType() == TypeChild )
+		if( option.getType() == eOptionBaseTypeChild )
 		{
 			childOptions.push_back( option );
 		}
@@ -273,7 +273,7 @@ OptionLoader::OptionArray OptionLoader::loadOptions( void* av_class, int req_fla
 				parentOption.appendChild( *itOption );
 
 				// child of a Choice
-				if( parentOption.getType() == TypeChoice )
+				if( parentOption.getType() == eOptionBaseTypeChoice )
 				{
 					if( itOption->getDefaultValueInt() == parentOption.getDefaultValueInt() )
 						parentOption.setDefaultChildIndex( parentOption.getNbChilds() - 1 );

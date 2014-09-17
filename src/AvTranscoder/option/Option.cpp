@@ -11,49 +11,49 @@ Option::Option( const AVOption& avOption )
 	_type = getTypeFromAVOption( getUnit(), _avOption.type );
 }
 
-OptionType Option::getTypeFromAVOption( const std::string& unit, const AVOptionType avType )
+EOptionBaseType Option::getTypeFromAVOption( const std::string& unit, const AVOptionType avType )
 {
 	if( ! unit.empty() && avType == AV_OPT_TYPE_FLAGS )
-		return TypeGroup;
+		return eOptionBaseTypeGroup;
 	else if( ! unit.empty() && ( avType == AV_OPT_TYPE_INT || avType == AV_OPT_TYPE_INT64 ) )
-		return TypeChoice;
+		return eOptionBaseTypeChoice;
 	else if( ! unit.empty() && avType == AV_OPT_TYPE_CONST )
-		return TypeChild;
+		return eOptionBaseTypeChild;
 	
 	switch( avType )
 	{
 		case AV_OPT_TYPE_FLAGS:
 		{
-			return TypeBool;
+			return eOptionBaseTypeBool;
 		}
 		case AV_OPT_TYPE_INT:
 		case AV_OPT_TYPE_INT64:
 		{
-			return TypeInt;
+			return eOptionBaseTypeInt;
 		}
 		case AV_OPT_TYPE_DOUBLE:
 		case AV_OPT_TYPE_FLOAT:
 		{
-			return TypeDouble;
+			return eOptionBaseTypeDouble;
 		}
 		case AV_OPT_TYPE_STRING:
 		case AV_OPT_TYPE_BINARY:
 		{
-			return TypeString;
+			return eOptionBaseTypeString;
 		}
 		case AV_OPT_TYPE_RATIONAL:
 		{
-			return TypeRatio;
+			return eOptionBaseTypeRatio;
 		}
 		default:
 		{
-			return TypeUnknown;
+			return eOptionBaseTypeUnknown;
 		}
 	}
-	return TypeUnknown;
+	return eOptionBaseTypeUnknown;
 }
 
-OptionType Option::getType() const
+EOptionBaseType Option::getType() const
 {
 	return _type;
 }
