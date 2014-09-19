@@ -24,12 +24,12 @@ public:
 	 * @brief rewrap stream
 	 * @note offset feature when rewrap a stream is not supported
 	 **/
-	StreamTranscoder( InputStream& inputStream, OutputFile& outputFile );
+	StreamTranscoder( IInputStream& inputStream, OutputFile& outputFile );
 
 	/**
 	 * @brief transcode stream
 	 **/
-	StreamTranscoder( InputStream& inputStream, OutputFile& outputFile, const Profile::ProfileDesc& profile, const int subStreamIndex = -1, const size_t offset = 0 );
+	StreamTranscoder( IInputStream& inputStream, OutputFile& outputFile, const Profile::ProfileDesc& profile, const int subStreamIndex = -1, const size_t offset = 0 );
 
 	/**
 	 * @brief encode from dummy stream
@@ -75,8 +75,8 @@ private:
 	bool processTranscode( const int subStreamIndex );
 
 private:
-	InputStream*   _inputStream;
-	OutputStream*  _outputStream;
+	IInputStream*   _inputStream;
+	IOutputStream*  _outputStream;
 
 	Frame*         _sourceBuffer;
 	Frame*         _frameBuffer;

@@ -18,7 +18,7 @@ namespace avtranscoder
 {
 
 AvInputStream::AvInputStream( )
-	: InputStream( )
+	: IInputStream( )
 	, _inputFile( NULL )
 	, _packetDuration( 0 )
 	, _streamIndex( 0 )
@@ -27,7 +27,7 @@ AvInputStream::AvInputStream( )
 }
 
 AvInputStream::AvInputStream( InputFile& inputFile, const size_t streamIndex )
-		: InputStream( )
+		: IInputStream( )
 		, _inputFile( &inputFile )
 		, _packetDuration( 0 )
 		, _streamIndex( streamIndex )

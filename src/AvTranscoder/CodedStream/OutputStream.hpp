@@ -1,5 +1,5 @@
-#ifndef _AV_TRANSCODER_CODED_STREAM_OUTPUT_STREAM_HPP_
-#define _AV_TRANSCODER_CODED_STREAM_OUTPUT_STREAM_HPP_
+#ifndef _AV_TRANSCODER_CODED_STREAM_I_OUTPUT_STREAM_HPP_
+#define _AV_TRANSCODER_CODED_STREAM_I_OUTPUT_STREAM_HPP_
 
 #include <AvTranscoder/CodedStructures/DataStream.hpp>
 #include <AvTranscoder/CodedStructures/AudioDesc.hpp>
@@ -8,12 +8,12 @@
 namespace avtranscoder
 {
 
-class OutputStream
+class IOutputStream
 {
 public:
-	OutputStream( ) {};
+	IOutputStream( ) {};
 
-	virtual ~OutputStream() {};
+	virtual ~IOutputStream() {};
 
 	virtual size_t getStreamIndex() const = 0;
 

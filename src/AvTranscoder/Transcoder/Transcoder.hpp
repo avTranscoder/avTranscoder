@@ -155,7 +155,7 @@ private:
 	OutputFile&                      _outputFile;
 	std::vector< InputFile* >        _inputFiles;
 
-	std::vector< InputStream* >      _inputStreams;
+	std::vector< IInputStream* >      _inputStreams;
 	std::vector< StreamTranscoder* > _streamTranscoders;
 	
 	std::vector< DummyAudio* > _dummyAudio;

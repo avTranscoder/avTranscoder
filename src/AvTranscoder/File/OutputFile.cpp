@@ -57,7 +57,7 @@ bool OutputFile::setup()
 	return _formatContext != NULL;
 }
 
-OutputStream& OutputFile::addVideoStream( const VideoDesc& videoDesc )
+IOutputStream& OutputFile::addVideoStream( const VideoDesc& videoDesc )
 {
 	assert( _formatContext != NULL );
 
@@ -91,7 +91,7 @@ OutputStream& OutputFile::addVideoStream( const VideoDesc& videoDesc )
 	return *_outputStreams.back();
 }
 
-OutputStream& OutputFile::addAudioStream( const AudioDesc& audioDesc )
+IOutputStream& OutputFile::addAudioStream( const AudioDesc& audioDesc )
 {
 	assert( _formatContext != NULL );
 
@@ -110,7 +110,7 @@ OutputStream& OutputFile::addAudioStream( const AudioDesc& audioDesc )
 	return *_outputStreams.back();
 }
 
-OutputStream& OutputFile::addDataStream( const DataDesc& dataDesc )
+IOutputStream& OutputFile::addDataStream( const DataDesc& dataDesc )
 {
 	assert( _formatContext != NULL );
 
@@ -125,7 +125,7 @@ OutputStream& OutputFile::addDataStream( const DataDesc& dataDesc )
 	return *_outputStreams.back();
 }
 
-OutputStream& OutputFile::getStream( const size_t streamId )
+IOutputStream& OutputFile::getStream( const size_t streamId )
 {
 	if( streamId >= _outputStreams.size() )
 		throw std::runtime_error( "unable to get output stream (out of range)" );

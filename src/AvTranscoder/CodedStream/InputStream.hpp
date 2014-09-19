@@ -1,5 +1,5 @@
-#ifndef _AV_TRANSCODER_CODED_STREAM_INPUT_STREAM_HPP_
-#define _AV_TRANSCODER_CODED_STREAM_INPUT_STREAM_HPP_
+#ifndef _AV_TRANSCODER_CODED_STREAM_I_INPUT_STREAM_HPP_
+#define _AV_TRANSCODER_CODED_STREAM_I_INPUT_STREAM_HPP_
 
 #include <AvTranscoder/CodedStructures/DataStream.hpp>
 #include <AvTranscoder/CodedStructures/AudioDesc.hpp>
@@ -9,12 +9,12 @@
 namespace avtranscoder
 {
 
-class InputStream
+class IInputStream
 {
 public:
-	InputStream() {}
+	IInputStream() {}
 
-	virtual ~InputStream() {};
+	virtual ~IInputStream() {};
 
 	virtual size_t getStreamIndex() const = 0;
 

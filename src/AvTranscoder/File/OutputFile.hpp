@@ -53,28 +53,28 @@ public:
 	 * @note call setup() before adding any stream
 	 * @param videoDesc description of output stream
 	**/
-	virtual OutputStream& addVideoStream( const VideoDesc& videoDesc );
+	virtual IOutputStream& addVideoStream( const VideoDesc& videoDesc );
 
 	/**
 	 * @brief Add an audio output stream using the description.
 	 * @note call setup() before adding any stream
 	 * @param audioDesc description of output stream
 	**/
-	virtual OutputStream& addAudioStream( const AudioDesc& audioDesc );
+	virtual IOutputStream& addAudioStream( const AudioDesc& audioDesc );
 
 	/**
 	 * @brief Add an data output stream using the description.
 	 * @note call setup() before adding any stream
 	 * @param dataDesc description of output stream
 	**/
-	virtual OutputStream& addDataStream( const DataDesc& dataDesc );
+	virtual IOutputStream& addDataStream( const DataDesc& dataDesc );
 
 	/**
 	 * @brief get the output stream description.
 	 * @param streamId select the output stream
 	 * @return the output stream reference
 	**/
-	virtual OutputStream& getStream( const size_t streamId );
+	virtual IOutputStream& getStream( const size_t streamId );
 
 	/**
 	 * @brief Initialise the wrapping

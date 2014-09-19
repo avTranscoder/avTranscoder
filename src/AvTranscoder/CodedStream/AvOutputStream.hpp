@@ -8,7 +8,7 @@ namespace avtranscoder
 
 class OutputFile;
 
-class AvExport AvOutputStream : public OutputStream
+class AvExport AvOutputStream : public IOutputStream
 {
 public:
 	AvOutputStream( );
@@ -17,7 +17,7 @@ public:
 	~AvOutputStream( );
 
 	AvOutputStream( const AvOutputStream& outputStream )
-		: OutputStream( )
+		: IOutputStream( )
 		, _outputFile( outputStream._outputFile )
 		, _streamIndex( outputStream._streamIndex )
 	{

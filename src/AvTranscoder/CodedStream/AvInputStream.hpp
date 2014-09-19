@@ -10,7 +10,7 @@ namespace avtranscoder
 
 class InputFile;
 
-class AvExport AvInputStream : public InputStream
+class AvExport AvInputStream : public IInputStream
 {
 public:
 	AvInputStream( );
@@ -19,7 +19,7 @@ public:
 	~AvInputStream( );
 
 	AvInputStream( const AvInputStream& inputStream )
-		: InputStream( )
+		: IInputStream( )
 		, _inputFile( inputStream._inputFile )
 		, _streamIndex( inputStream._streamIndex )
 		, _bufferized( inputStream._bufferized )
