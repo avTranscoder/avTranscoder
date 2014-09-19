@@ -29,10 +29,10 @@
 
 #include <AvTranscoder/Profile.hpp>
 
-#include <AvTranscoder/CodedStream/OutputStream.hpp>
+#include <AvTranscoder/CodedStream/IOutputStream.hpp>
 #include <AvTranscoder/CodedStream/AvOutputStream.hpp>
 
-#include <AvTranscoder/CodedStream/InputStream.hpp>
+#include <AvTranscoder/CodedStream/IInputStream.hpp>
 #include <AvTranscoder/CodedStream/AvInputStream.hpp>
 
 #include <AvTranscoder/EssenceStream/OutputEssence.hpp>
@@ -84,10 +84,10 @@ namespace std {
 
 %include <AvTranscoder/Profile.hpp>
 
-%include <AvTranscoder/CodedStream/OutputStream.hpp>
+%include <AvTranscoder/CodedStream/IOutputStream.hpp>
 %include <AvTranscoder/CodedStream/AvOutputStream.hpp>
 
-%include <AvTranscoder/CodedStream/InputStream.hpp>
+%include <AvTranscoder/CodedStream/IInputStream.hpp>
 %include <AvTranscoder/CodedStream/AvInputStream.hpp>
 
 %include <AvTranscoder/EssenceStream/OutputEssence.hpp>

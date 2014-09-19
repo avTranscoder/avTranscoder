@@ -1,7 +1,7 @@
 #ifndef _AV_TRANSCODER_CODED_STREAM_AV_INPUT_STREAM_HPP_
 #define _AV_TRANSCODER_CODED_STREAM_AV_INPUT_STREAM_HPP_
 
-#include "InputStream.hpp"
+#include "IInputStream.hpp"
 
 #include <AvTranscoder/CodedStructures/DataStream.hpp>
 
