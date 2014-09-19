@@ -15,18 +15,17 @@ class AvExport Frame
 public:
 	Frame(){};
 	
-	virtual ~Frame(){};
+	~Frame(){};
 
-	virtual DataBuffer& getBuffer() { return _dataBuffer; }
-	virtual unsigned char* getPtr() { return &_dataBuffer[0]; }
+	DataBuffer& getBuffer() { return _dataBuffer; }
+	unsigned char* getPtr() { return &_dataBuffer[0]; }
 #ifndef SWIG
-	virtual const unsigned char* getPtr() const { return &_dataBuffer[0]; }
+	const unsigned char* getPtr() const { return &_dataBuffer[0]; }
 #endif
-	virtual size_t getSize() const { return _dataBuffer.size(); }
+	size_t getSize() const { return _dataBuffer.size(); }
 	
 protected:
 	DataBuffer _dataBuffer;
-
 };
 
 }
