@@ -4,10 +4,21 @@
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 include(AvTranscoderMacros)
 
-# Build app
-find_package(OpenGL REQUIRED)
-find_package(GLUT REQUIRED)
+# Check OpenGL
+find_package(OpenGL)
+if(NOT OPENGL_FOUND)
+	message("OpenGL not found, will not build avplay app.")
+	return()
+endif()
 
+# Check GLUT
+find_package(GLUT)
+if(NOT GLUT_FOUND)
+	message("GLUT not found, will not build avplay app.")
+	return()
+endif()
+
+# Build app
 include_directories(${AVTRANSCODER_SRC_PATH} ${FFMPEG_INCLUDE_DIR})
 include_directories( ${OPENGL_INCLUDE_DIRS}  ${GLUT_INCLUDE_DIRS} )
 
