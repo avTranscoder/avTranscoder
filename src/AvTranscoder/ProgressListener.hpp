@@ -38,10 +38,10 @@ public:
 /**
  * @brief Implementation of IProgress, to display a progress bar in console.
  */
-class ProgressListener: public IProgress
+class ConsoleProgress : public IProgress
 {
 public:
-	~ProgressListener()
+	~ConsoleProgress()
 	{}
 
 	EJobStatus progress( const double processedDuration, const double programDuration )
