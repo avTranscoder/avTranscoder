@@ -1,9 +1,6 @@
 #ifndef _AV_TRANSCODER_PROGRESS_LISTENER_HPP_
 #define _AV_TRANSCODER_PROGRESS_LISTENER_HPP_
 
-#include <iostream>
-#include <iomanip>
-
 namespace avtranscoder
 {
 
@@ -24,7 +21,7 @@ enum EJobStatus
 class IProgress
 {
 public:
-	virtual ~IProgress() {};
+	virtual ~IProgress() = 0;
 	
 	/**
 	 * @brief Manage the progress.
@@ -41,22 +38,20 @@ public:
 class ConsoleProgress : public IProgress
 {
 public:
-	~ConsoleProgress()
-	{}
+	~ConsoleProgress();
 
-	EJobStatus progress( const double processedDuration, const double programDuration )
-	{
-		std::string progress( 80, '-' );
-		std::string done( 80.0 * processedDuration / programDuration, '#' );
-		progress.replace( 0, done.size(), done );
+	EJobStatus progress( const double processedDuration, const double programDuration );
+};
 
-		std::cout  << std::setprecision(2) << std::fixed << "\r[" << progress << "] " << processedDuration << "/" << programDuration << std::flush;
+/**
+ * @brief Implementation of IProgress, to manage cases when we need an IProgress but don't care of a progress bar.
+ */
+class NoDisplayProgress : public IProgress
+{
+public:
+	~NoDisplayProgress();
 
-		// if( processedFrames >= 100 )
-		// 	return avtranscoder::eJobStatusCancel;
-
-		return eJobStatusContinue;
-	}
+	EJobStatus progress( const double processedDuration, const double programDuration );
 };
 
 }
