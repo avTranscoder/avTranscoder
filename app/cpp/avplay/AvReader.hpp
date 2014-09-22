@@ -18,7 +18,7 @@ public:
 		, _sourceImage( NULL )
 		, _imageToDisplay( NULL )
 	{
-		avtranscoder::ProgressListener p;
+		avtranscoder::ConsoleProgress p;
 
 		_inputFile.analyse( p );
 		_videoStream = _inputFile.getProperties().videoStreams.at(0).streamId;

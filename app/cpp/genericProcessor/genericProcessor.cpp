@@ -122,7 +122,7 @@ int main( int argc, char** argv )
 		if( verbose )
 			std::cout << "start Transcode" << std::endl;
 
-		avtranscoder::ProgressListener progress;
+		avtranscoder::ConsoleProgress progress;
 
 		// video re-wrapping or transcoding if necessary
 		transcoder.process( progress );
