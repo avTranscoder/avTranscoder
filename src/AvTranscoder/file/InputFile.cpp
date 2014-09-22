@@ -64,7 +64,7 @@ InputFile::~InputFile()
 	}
 }
 
-InputFile& InputFile::analyse( ProgressListener& progress, const EAnalyseLevel level )
+InputFile& InputFile::analyse( IProgress& progress, const EAnalyseLevel level )
 {
 	assert( _formatContext != NULL );
 
@@ -134,7 +134,7 @@ InputFile& InputFile::analyse( ProgressListener& progress, const EAnalyseLevel l
 	return *this;
 }
 
-Properties InputFile::analyseFile( const std::string& filename, ProgressListener& progress, const EAnalyseLevel level )
+Properties InputFile::analyseFile( const std::string& filename, IProgress& progress, const EAnalyseLevel level )
 {
 	InputFile file( filename );
 	file.analyse( progress, level );
