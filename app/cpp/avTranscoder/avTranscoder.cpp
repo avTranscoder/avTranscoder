@@ -17,7 +17,7 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 	// av_log_set_level( AV_LOG_DEBUG );
 
 	Profile profile( true );
-	ProgressListener p;
+	ConsoleProgress p;
 
 	InputFile input( inputfilename );
 	input.analyse( p );
