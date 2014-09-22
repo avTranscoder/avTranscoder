@@ -238,7 +238,7 @@ bool Transcoder::processFrame()
 	return true;
 }
 
-void Transcoder::process( ProgressListener& progress )
+void Transcoder::process( IProgress& progress )
 {
 	size_t frame = 0;
 

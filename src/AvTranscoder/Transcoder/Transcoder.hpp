@@ -111,7 +111,7 @@ public:
 	 * @brief Process all the streams, and ended the process depending on the transcode politic.
 	 * @param progress
 	 */
-	void process( ProgressListener& progress );
+	void process( IProgress& progress );
 
 	/**
 	 * @brief Set the transcodage politic.

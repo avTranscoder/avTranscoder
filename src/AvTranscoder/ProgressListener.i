@@ -5,7 +5,7 @@
  #include <AvTranscoder/ProgressListener.hpp>
 %}
 
-/* turn on director wrapping ProgressListener */
-%feature("director") ProgressListener;
+/* turn on director wrapping for IProgress */
+%feature("director") IProgress;
 
 %include <AvTranscoder/ProgressListener.hpp>
