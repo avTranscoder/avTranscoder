@@ -50,7 +50,7 @@
 #include <AvTranscoder/Transcoder/Transcoder.hpp>
 %}
 
-%include "AvTranscoder/ProgressListener.i"
+%include "AvTranscoder/progress.i"
 
 namespace std {
 %template(IntPair)         pair< size_t, size_t >;

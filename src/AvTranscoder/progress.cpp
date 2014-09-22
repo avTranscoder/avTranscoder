@@ -1,4 +1,4 @@
-#include "ProgressListener.hpp"
+#include "progress.hpp"
 
 #include <iostream>
 #include <iomanip>
