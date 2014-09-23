@@ -11,7 +11,7 @@ int main( int argc, char** argv )
 		return( -1 );
 	}
 
-	avtranscoder::ConsoleProgress p;
+	avtranscoder::NoDisplayProgress p;
 
 	avtranscoder::InputFile input( argv[1] );
 	input.analyse( p, avtranscoder::InputFile::eAnalyseLevelFull );
