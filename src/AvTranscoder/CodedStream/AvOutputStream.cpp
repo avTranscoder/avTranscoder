@@ -7,13 +7,6 @@
 namespace avtranscoder
 {
 
-AvOutputStream::AvOutputStream( )
-	: IOutputStream()
-	, _outputFile( NULL )
-	, _streamIndex( 0 )
-{
-}
-
 AvOutputStream::AvOutputStream( OutputFile& outputFile, const size_t streamIndex )
 	: IOutputStream()
 	, _outputFile( &outputFile )

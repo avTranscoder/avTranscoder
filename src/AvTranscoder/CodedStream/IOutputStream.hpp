@@ -11,8 +11,6 @@ namespace avtranscoder
 class IOutputStream
 {
 public:
-	IOutputStream( ) {};
-
 	virtual ~IOutputStream() {};
 
 	virtual size_t getStreamIndex() const = 0;
