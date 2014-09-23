@@ -10,8 +10,8 @@
 #include <AvTranscoder/essenceStream/DummyVideo.hpp>
 #include <AvTranscoder/essenceStream/DummyAudio.hpp>
 
-#include <AvTranscoder/EssenceTransform/AudioEssenceTransform.hpp>
-#include <AvTranscoder/EssenceTransform/VideoEssenceTransform.hpp>
+#include <AvTranscoder/essenceTransform/AudioEssenceTransform.hpp>
+#include <AvTranscoder/essenceTransform/VideoEssenceTransform.hpp>
 
 #include <cassert>
 #include <iostream>

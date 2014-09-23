@@ -1,6 +1,6 @@
 #include "DummyVideo.hpp"
 
-#include <AvTranscoder/EssenceTransform/VideoEssenceTransform.hpp>
+#include <AvTranscoder/essenceTransform/VideoEssenceTransform.hpp>
 
 namespace avtranscoder
 {

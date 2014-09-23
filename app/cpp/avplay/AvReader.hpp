@@ -4,7 +4,7 @@
 #include <AvTranscoder/File/InputFile.hpp>
 #include <AvTranscoder/essenceStream/InputAudio.hpp>
 #include <AvTranscoder/essenceStream/InputVideo.hpp>
-#include <AvTranscoder/EssenceTransform/VideoEssenceTransform.hpp>
+#include <AvTranscoder/essenceTransform/VideoEssenceTransform.hpp>
 #include <AvTranscoder/Metadatas/Print.hpp>
 
 #include "Reader.hpp"
