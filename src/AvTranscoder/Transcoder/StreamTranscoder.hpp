@@ -8,7 +8,7 @@
 #include <AvTranscoder/essenceStream/InputVideo.hpp>
 #include <AvTranscoder/essenceStream/OutputVideo.hpp>
 
-#include <AvTranscoder/File/OutputFile.hpp>
+#include <AvTranscoder/file/OutputFile.hpp>
 
 #include <AvTranscoder/Profile.hpp>
 

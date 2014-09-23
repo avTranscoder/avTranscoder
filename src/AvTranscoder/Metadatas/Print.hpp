@@ -1,7 +1,7 @@
 #ifndef _AV_TRANSCODER_PRINT_HPP_
 #define _AV_TRANSCODER_PRINT_HPP_
 
-#include <AvTranscoder/File/InputFile.hpp>
+#include <AvTranscoder/file/InputFile.hpp>
 
 #include <iostream>
 #include <iomanip>

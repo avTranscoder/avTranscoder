@@ -43,8 +43,8 @@
 #include <AvTranscoder/essenceStream/InputAudio.hpp>
 #include <AvTranscoder/essenceStream/InputVideo.hpp>
 
-#include <AvTranscoder/File/InputFile.hpp>
-#include <AvTranscoder/File/OutputFile.hpp>
+#include <AvTranscoder/file/InputFile.hpp>
+#include <AvTranscoder/file/OutputFile.hpp>
 
 #include <AvTranscoder/Transcoder/StreamTranscoder.hpp>
 #include <AvTranscoder/Transcoder/Transcoder.hpp>
@@ -98,8 +98,8 @@ namespace std {
 %include <AvTranscoder/essenceStream/InputAudio.hpp>
 %include <AvTranscoder/essenceStream/InputVideo.hpp>
 
-%include <AvTranscoder/File/InputFile.hpp>
-%include <AvTranscoder/File/OutputFile.hpp>
+%include <AvTranscoder/file/InputFile.hpp>
+%include <AvTranscoder/file/OutputFile.hpp>
 
 %include <AvTranscoder/Transcoder/StreamTranscoder.hpp>
 %include <AvTranscoder/Transcoder/Transcoder.hpp>

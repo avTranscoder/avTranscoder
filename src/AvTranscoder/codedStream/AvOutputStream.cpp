@@ -1,6 +1,6 @@
 #include "AvOutputStream.hpp"
 
-#include <AvTranscoder/File/OutputFile.hpp>
+#include <AvTranscoder/file/OutputFile.hpp>
 
 #include <cassert>
 
