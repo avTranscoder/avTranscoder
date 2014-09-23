@@ -5,6 +5,7 @@
 #include <AvTranscoder/EssenceStream/InputAudio.hpp>
 #include <AvTranscoder/EssenceStream/InputVideo.hpp>
 #include <AvTranscoder/EssenceTransform/VideoEssenceTransform.hpp>
+#include <AvTranscoder/progress/ConsoleProgress.hpp>
 #include <AvTranscoder/Metadatas/Print.hpp>
 
 #include "Reader.hpp"

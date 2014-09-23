@@ -1,5 +1,5 @@
-#ifndef _AV_TRANSCODER_PROGRESS_HPP_
-#define _AV_TRANSCODER_PROGRESS_HPP_
+#ifndef _AV_TRANSCODER_IPROGRESS_HPP_
+#define _AV_TRANSCODER_IPROGRESS_HPP_
 
 namespace avtranscoder
 {
@@ -21,7 +21,7 @@ enum EJobStatus
 class IProgress
 {
 public:
-	virtual ~IProgress() = 0;
+	virtual ~IProgress() {};
 	
 	/**
 	 * @brief Manage the progress.
@@ -30,28 +30,6 @@ public:
 	 * @return eJobStatusContinue if we continue the progress or eJobStatusCancel to stop it.
 	 */
 	virtual EJobStatus progress( const double processedDuration, const double programDuration ) = 0;
-};
-
-/**
- * @brief Implementation of IProgress, to display a progress bar in console.
- */
-class ConsoleProgress : public IProgress
-{
-public:
-	~ConsoleProgress();
-
-	EJobStatus progress( const double processedDuration, const double programDuration );
-};
-
-/**
- * @brief Implementation of IProgress, to manage cases when we need an IProgress but don't care of a progress bar.
- */
-class NoDisplayProgress : public IProgress
-{
-public:
-	~NoDisplayProgress();
-
-	EJobStatus progress( const double processedDuration, const double programDuration );
 };
 
 }

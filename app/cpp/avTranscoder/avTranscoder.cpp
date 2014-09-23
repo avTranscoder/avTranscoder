@@ -8,6 +8,7 @@
 #include <AvTranscoder/EssenceStream/InputVideo.hpp>
 #include <AvTranscoder/EssenceStream/OutputAudio.hpp>
 #include <AvTranscoder/EssenceStream/OutputVideo.hpp>
+#include <AvTranscoder/progress/ConsoleProgress.hpp>
 #include <AvTranscoder/EssenceTransform/VideoEssenceTransform.hpp>
 
 void transcodeVideo( const char* inputfilename, const char* outputFilename )

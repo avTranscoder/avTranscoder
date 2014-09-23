@@ -1,14 +1,10 @@
-#include "progress.hpp"
+#include "ConsoleProgress.hpp"
 
 #include <iostream>
 #include <iomanip>
 
 namespace avtranscoder
 {
-
-IProgress::~IProgress()
-{
-}
 
 ConsoleProgress::~ConsoleProgress()
 {
@@ -25,14 +21,6 @@ EJobStatus ConsoleProgress::progress( const double processedDuration, const doub
 	// if( processedFrames >= 100 )
 	// 	return avtranscoder::eJobStatusCancel;
 
-	return eJobStatusContinue;
-}
-
-NoDisplayProgress::~NoDisplayProgress()
-{}
-
-EJobStatus NoDisplayProgress::progress( const double processedDuration, const double programDuration )
-{
 	return eJobStatusContinue;
 }
 
