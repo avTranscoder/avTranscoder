@@ -7,13 +7,13 @@
 namespace avtranscoder
 {
 
-class AvExport EssenceTransform
+class AvExport IEssenceTransform
 {
 public:
-	EssenceTransform()
+	IEssenceTransform()
 	{}
 
-	virtual ~EssenceTransform()
+	virtual ~IEssenceTransform()
 	{}
 
 	virtual void convert( const Frame& src, Frame& dst ) = 0;

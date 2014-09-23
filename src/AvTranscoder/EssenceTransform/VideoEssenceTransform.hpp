@@ -12,7 +12,7 @@ class SwsContext;
 namespace avtranscoder
 {
 
-class AvExport VideoEssenceTransform : public EssenceTransform
+class AvExport VideoEssenceTransform : public IEssenceTransform
 {
 public:
 	VideoEssenceTransform();

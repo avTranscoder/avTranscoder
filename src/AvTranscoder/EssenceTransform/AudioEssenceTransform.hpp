@@ -17,7 +17,7 @@ class ResampleContext;
 namespace avtranscoder
 {
 
-class AvExport AudioEssenceTransform : public EssenceTransform
+class AvExport AudioEssenceTransform : public IEssenceTransform
 {
 public:
 	AudioEssenceTransform();
