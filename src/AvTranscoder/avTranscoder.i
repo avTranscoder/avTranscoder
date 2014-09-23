@@ -46,8 +46,8 @@
 #include <AvTranscoder/file/InputFile.hpp>
 #include <AvTranscoder/file/OutputFile.hpp>
 
-#include <AvTranscoder/Transcoder/StreamTranscoder.hpp>
-#include <AvTranscoder/Transcoder/Transcoder.hpp>
+#include <AvTranscoder/transcoder/StreamTranscoder.hpp>
+#include <AvTranscoder/transcoder/Transcoder.hpp>
 %}
 
 %include "AvTranscoder/ProgressListener.i"
@@ -101,5 +101,5 @@ namespace std {
 %include <AvTranscoder/file/InputFile.hpp>
 %include <AvTranscoder/file/OutputFile.hpp>
 
-%include <AvTranscoder/Transcoder/StreamTranscoder.hpp>
-%include <AvTranscoder/Transcoder/Transcoder.hpp>
+%include <AvTranscoder/transcoder/StreamTranscoder.hpp>
+%include <AvTranscoder/transcoder/Transcoder.hpp>

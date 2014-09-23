@@ -1,5 +1,4 @@
-
-#include <AvTranscoder/Transcoder/Transcoder.hpp>
+#include <AvTranscoder/transcoder/Transcoder.hpp>
 
 #include <iostream>
 #include <iomanip>
