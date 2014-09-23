@@ -6,8 +6,8 @@
 %include "std_map.i"
 
 
-%include "AvTranscoder/avException.i"
-%include "AvTranscoder/avExport.i"
+%include "AvTranscoder/swig/avException.i"
+%include "AvTranscoder/swig/avExport.i"
 
 %{
 #include <AvTranscoder/common.hpp>
