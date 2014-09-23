@@ -17,15 +17,6 @@ extern "C" {
 namespace avtranscoder
 {
 
-AvInputStream::AvInputStream( )
-	: IInputStream( )
-	, _inputFile( NULL )
-	, _packetDuration( 0 )
-	, _streamIndex( 0 )
-	, _bufferized( false )
-{
-}
-
 AvInputStream::AvInputStream( InputFile& inputFile, const size_t streamIndex )
 		: IInputStream( )
 		, _inputFile( &inputFile )

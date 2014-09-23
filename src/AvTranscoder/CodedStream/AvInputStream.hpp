@@ -15,8 +15,6 @@ class InputFile;
 class AvExport AvInputStream : public IInputStream
 {
 public:
-	AvInputStream( );
-
 	AvInputStream( InputFile& inputFile, const size_t streamIndex );
 	~AvInputStream( );
 
