@@ -1,4 +1,4 @@
-#include "MediaMetadatasStructures.hpp"
+#include "mediaProperties.hpp"
 
 extern "C" {
 #ifndef __STDC_CONSTANT_MACROS
