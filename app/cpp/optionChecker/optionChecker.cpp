@@ -1,5 +1,5 @@
-#include <AvTranscoder/OptionLoader.hpp>
-#include <AvTranscoder/Option.hpp>
+#include <AvTranscoder/option/OptionLoader.hpp>
+#include <AvTranscoder/option/Option.hpp>
 
 #include <string>
 #include <iostream>

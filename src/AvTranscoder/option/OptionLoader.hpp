@@ -1,13 +1,13 @@
 #ifndef _AV_TRANSCODER_OPTION_LOADER_HPP
 #define	_AV_TRANSCODER_OPTION_LOADER_HPP
 
-
 #include <string>
 #include <vector>
 #include <map>
 #include <utility> //pair
 
-#include "common.hpp"
+#include <AvTranscoder/common.hpp>
+
 #include "Option.hpp"
 
 class AVFormatContext;
