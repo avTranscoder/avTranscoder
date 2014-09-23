@@ -1,7 +1,7 @@
 #ifndef _AV_TRANSCODER_ESSENCE_TRANSFORM_AUDIO_ESSENCE_TRANSFORM_HPP
 #define _AV_TRANSCODER_ESSENCE_TRANSFORM_AUDIO_ESSENCE_TRANSFORM_HPP
 
-#include "EssenceTransform.hpp"
+#include "IEssenceTransform.hpp"
 
 #include <AvTranscoder/common.hpp>
 #include <AvTranscoder/EssenceStructures/Frame.hpp>

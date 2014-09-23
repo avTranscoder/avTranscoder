@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "EssenceTransform.hpp"
+#include "IEssenceTransform.hpp"
 
 #include <AvTranscoder/EssenceStructures/Frame.hpp>
 
