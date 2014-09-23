@@ -11,7 +11,7 @@
 #include <AvTranscoder/EssenceStream/DummyAudio.hpp>
 #include <AvTranscoder/EssenceStream/DummyVideo.hpp>
 
-#include <AvTranscoder/ProgressListener.hpp>
+#include <AvTranscoder/progress/IProgress.hpp>
 
 #include <AvTranscoder/Profile.hpp>
 
@@ -111,7 +111,7 @@ public:
 	 * @brief Process all the streams, and ended the process depending on the transcode politic.
 	 * @param progress
 	 */
-	void process( ProgressListener& progress );
+	void process( IProgress& progress );
 
 	/**
 	 * @brief Set the transcodage politic.

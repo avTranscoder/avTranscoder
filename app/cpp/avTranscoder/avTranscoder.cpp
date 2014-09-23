@@ -8,6 +8,7 @@
 #include <AvTranscoder/EssenceStream/InputVideo.hpp>
 #include <AvTranscoder/EssenceStream/OutputAudio.hpp>
 #include <AvTranscoder/EssenceStream/OutputVideo.hpp>
+#include <AvTranscoder/progress/ConsoleProgress.hpp>
 #include <AvTranscoder/EssenceTransform/VideoEssenceTransform.hpp>
 
 void transcodeVideo( const char* inputfilename, const char* outputFilename )
@@ -17,7 +18,7 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 	// av_log_set_level( AV_LOG_DEBUG );
 
 	Profile profile( true );
-	ProgressListener p;
+	ConsoleProgress p;
 
 	InputFile input( inputfilename );
 	input.analyse( p );

@@ -33,7 +33,7 @@ void getGopProperties(
 	AVCodecContext* codecContext,
 	AVCodec* codec,
 	const int videoStreamIndex,
-	ProgressListener& progress
+	IProgress& progress
 	)
 {
 	AVPacket pkt;
@@ -108,7 +108,7 @@ std::string makeTimecodeMpegToString( uint32_t tc25bit )
 VideoProperties videoStreamInfo(
 	AVFormatContext* formatContext,
 	const size_t videoStreamIndex,
-	ProgressListener& progress,
+	IProgress& progress,
 	const InputFile::EAnalyseLevel level
 	)
 {

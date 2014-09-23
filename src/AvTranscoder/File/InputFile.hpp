@@ -10,7 +10,7 @@
 #include <AvTranscoder/CodedStream/AvInputStream.hpp>
 
 #include <AvTranscoder/Metadatas/MediaMetadatasStructures.hpp>
-#include <AvTranscoder/ProgressListener.hpp>
+#include <AvTranscoder/progress/IProgress.hpp>
 
 #include <AvTranscoder/Profile.hpp>
 
@@ -50,7 +50,7 @@ public:
 	 *        call this function before getProperties().
 	 * @param progress callback to get analysis progression
 	 **/
-	InputFile& analyse( ProgressListener& progress, const EAnalyseLevel level = eAnalyseLevelFull );
+	InputFile& analyse( IProgress& progress, const EAnalyseLevel level = eAnalyseLevelFull );
 	
 	/**
 	 * @brief Return media properties on the current InputFile.
@@ -67,7 +67,7 @@ public:
 	 * @param progress callback to get analysis progression
 	 * @return structure of media metadatas
 	 **/
-	static Properties analyseFile( const std::string& filename, ProgressListener& progress, const EAnalyseLevel level = eAnalyseLevelFull );
+	static Properties analyseFile( const std::string& filename, IProgress& progress, const EAnalyseLevel level = eAnalyseLevelFull );
 
 	/**
 	 * @brief Get stream type: video, audio, subtitle, etc.
