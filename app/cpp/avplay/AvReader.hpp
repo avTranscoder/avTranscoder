@@ -2,8 +2,8 @@
 #define _AVPLAYER_AVREADER_
 
 #include <AvTranscoder/File/InputFile.hpp>
-#include <AvTranscoder/EssenceStream/InputAudio.hpp>
-#include <AvTranscoder/EssenceStream/InputVideo.hpp>
+#include <AvTranscoder/essenceStream/InputAudio.hpp>
+#include <AvTranscoder/essenceStream/InputVideo.hpp>
 #include <AvTranscoder/EssenceTransform/VideoEssenceTransform.hpp>
 #include <AvTranscoder/Metadatas/Print.hpp>
 

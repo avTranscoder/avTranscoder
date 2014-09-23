@@ -4,10 +4,10 @@
 
 #include <AvTranscoder/File/InputFile.hpp>
 #include <AvTranscoder/File/OutputFile.hpp>
-#include <AvTranscoder/EssenceStream/InputAudio.hpp>
-#include <AvTranscoder/EssenceStream/InputVideo.hpp>
-#include <AvTranscoder/EssenceStream/OutputAudio.hpp>
-#include <AvTranscoder/EssenceStream/OutputVideo.hpp>
+#include <AvTranscoder/essenceStream/InputAudio.hpp>
+#include <AvTranscoder/essenceStream/InputVideo.hpp>
+#include <AvTranscoder/essenceStream/OutputAudio.hpp>
+#include <AvTranscoder/essenceStream/OutputVideo.hpp>
 #include <AvTranscoder/EssenceTransform/VideoEssenceTransform.hpp>
 
 void transcodeVideo( const char* inputfilename, const char* outputFilename )

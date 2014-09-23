@@ -8,8 +8,8 @@
 
 #include <AvTranscoder/codedStream/IInputStream.hpp>
 
-#include <AvTranscoder/EssenceStream/DummyAudio.hpp>
-#include <AvTranscoder/EssenceStream/DummyVideo.hpp>
+#include <AvTranscoder/essenceStream/DummyAudio.hpp>
+#include <AvTranscoder/essenceStream/DummyVideo.hpp>
 
 #include <AvTranscoder/ProgressListener.hpp>
 

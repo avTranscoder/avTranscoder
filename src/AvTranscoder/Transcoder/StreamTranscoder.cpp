@@ -3,12 +3,12 @@
 
 #include <AvTranscoder/codedStream/AvInputStream.hpp>
 
-#include <AvTranscoder/EssenceStream/InputVideo.hpp>
-#include <AvTranscoder/EssenceStream/InputAudio.hpp>
-#include <AvTranscoder/EssenceStream/OutputVideo.hpp>
-#include <AvTranscoder/EssenceStream/OutputAudio.hpp>
-#include <AvTranscoder/EssenceStream/DummyVideo.hpp>
-#include <AvTranscoder/EssenceStream/DummyAudio.hpp>
+#include <AvTranscoder/essenceStream/InputVideo.hpp>
+#include <AvTranscoder/essenceStream/InputAudio.hpp>
+#include <AvTranscoder/essenceStream/OutputVideo.hpp>
+#include <AvTranscoder/essenceStream/OutputAudio.hpp>
+#include <AvTranscoder/essenceStream/DummyVideo.hpp>
+#include <AvTranscoder/essenceStream/DummyAudio.hpp>
 
 #include <AvTranscoder/EssenceTransform/AudioEssenceTransform.hpp>
 #include <AvTranscoder/EssenceTransform/VideoEssenceTransform.hpp>
