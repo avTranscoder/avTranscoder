@@ -5,7 +5,7 @@
 #include <AvTranscoder/essenceStream/InputAudio.hpp>
 #include <AvTranscoder/essenceStream/InputVideo.hpp>
 #include <AvTranscoder/essenceTransform/VideoEssenceTransform.hpp>
-#include <AvTranscoder/Metadatas/Print.hpp>
+#include <AvTranscoder/mediaProperty/Print.hpp>
 
 #include "Reader.hpp"
 

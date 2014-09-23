@@ -3,7 +3,7 @@
 
 #include <AvTranscoder/common.hpp>
 
-#include <AvTranscoder/Metadatas/MediaMetadatasStructures.hpp>
+#include <AvTranscoder/mediaProperty/MediaMetadatasStructures.hpp>
 
 #include <AvTranscoder/CodedStructures/DataStream.hpp>
 #include <AvTranscoder/CodedStructures/VideoDesc.hpp>
