@@ -5,6 +5,8 @@
 
 #include <AvTranscoder/CodedStructures/DataStream.hpp>
 
+struct AVStream;
+
 namespace avtranscoder
 {
 
@@ -46,6 +48,9 @@ public:
 	bool getBufferred() const { return _bufferized; };
 
 	void clearBuffering();
+
+private:
+	AVStream* getAVStream() const;
 
 private:
 	InputFile*       _inputFile;

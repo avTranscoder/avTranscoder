@@ -98,7 +98,7 @@ VideoDesc AvInputStream::getVideoDesc() const
 {
 	assert( _streamIndex <= _inputFile->getFormatContext().nb_streams );
 
-	if( _inputFile->getFormatContext().streams[_streamIndex]->codec->codec_type != AVMEDIA_TYPE_VIDEO )
+	if( getAVStream()->codec->codec_type != AVMEDIA_TYPE_VIDEO )
 	{
 		throw std::runtime_error( "unable to get video descriptor on non-video stream" );
 	}
@@ -117,7 +117,7 @@ AudioDesc AvInputStream::getAudioDesc() const
 {
 	assert( _streamIndex <= _inputFile->getFormatContext().nb_streams );
 
-	if( _inputFile->getFormatContext().streams[_streamIndex]->codec->codec_type != AVMEDIA_TYPE_AUDIO )
+	if( getAVStream()->codec->codec_type != AVMEDIA_TYPE_AUDIO )
 	{
 		throw std::runtime_error( "unable to get audio descriptor on non-audio stream" );
 	}
@@ -155,6 +155,11 @@ double AvInputStream::getPacketDuration() const
 void AvInputStream::clearBuffering()
 {
 	_streamCache.clear();
+}
+
+AVStream* AvInputStream::getAVStream() const
+{
+	return _inputFile->getFormatContext().streams[_streamIndex];
 }
 
 }
