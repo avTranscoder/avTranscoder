@@ -11,7 +11,7 @@
 #include <AvTranscoder/EssenceStream/DummyAudio.hpp>
 #include <AvTranscoder/EssenceStream/DummyVideo.hpp>
 
-#include <AvTranscoder/progress.hpp>
+#include <AvTranscoder/progress/progress.hpp>
 
 #include <AvTranscoder/Profile.hpp>
 

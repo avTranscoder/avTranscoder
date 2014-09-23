@@ -10,7 +10,7 @@
 #include <AvTranscoder/CodedStream/AvInputStream.hpp>
 
 #include <AvTranscoder/Metadatas/MediaMetadatasStructures.hpp>
-#include <AvTranscoder/progress.hpp>
+#include <AvTranscoder/progress/progress.hpp>
 
 #include <AvTranscoder/Profile.hpp>
 
