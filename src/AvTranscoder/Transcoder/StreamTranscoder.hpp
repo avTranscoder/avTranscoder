@@ -3,7 +3,7 @@
 
 #include <AvTranscoder/common.hpp>
 
-#include <AvTranscoder/CodedStream/IInputStream.hpp>
+#include <AvTranscoder/codedStream/IInputStream.hpp>
 
 #include <AvTranscoder/EssenceStream/InputVideo.hpp>
 #include <AvTranscoder/EssenceStream/OutputVideo.hpp>

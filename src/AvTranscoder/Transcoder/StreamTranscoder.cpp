@@ -1,7 +1,7 @@
 
 #include "StreamTranscoder.hpp"
 
-#include <AvTranscoder/CodedStream/AvInputStream.hpp>
+#include <AvTranscoder/codedStream/AvInputStream.hpp>
 
 #include <AvTranscoder/EssenceStream/InputVideo.hpp>
 #include <AvTranscoder/EssenceStream/InputAudio.hpp>

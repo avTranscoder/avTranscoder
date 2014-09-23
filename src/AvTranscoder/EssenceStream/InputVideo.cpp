@@ -10,7 +10,7 @@ extern "C" {
 #include <libavutil/pixdesc.h>
 }
 
-#include <AvTranscoder/CodedStream/AvInputStream.hpp>
+#include <AvTranscoder/codedStream/AvInputStream.hpp>
 #include <AvTranscoder/EssenceStructures/VideoFrame.hpp>
 
 #include <stdexcept>

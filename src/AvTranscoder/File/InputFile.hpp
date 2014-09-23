@@ -7,7 +7,7 @@
 #include <AvTranscoder/CodedStructures/AudioDesc.hpp>
 #include <AvTranscoder/CodedStructures/VideoDesc.hpp>
 
-#include <AvTranscoder/CodedStream/AvInputStream.hpp>
+#include <AvTranscoder/codedStream/AvInputStream.hpp>
 
 #include <AvTranscoder/Metadatas/MediaMetadatasStructures.hpp>
 #include <AvTranscoder/ProgressListener.hpp>

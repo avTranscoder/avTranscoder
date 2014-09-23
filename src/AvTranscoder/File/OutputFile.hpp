@@ -10,7 +10,7 @@
 #include <AvTranscoder/CodedStructures/AudioDesc.hpp>
 #include <AvTranscoder/CodedStructures/DataDesc.hpp>
 
-#include <AvTranscoder/CodedStream/AvOutputStream.hpp>
+#include <AvTranscoder/codedStream/AvOutputStream.hpp>
 
 #include <AvTranscoder/Profile.hpp>
 
