@@ -1,4 +1,4 @@
-
+#include <AvTranscoder/progress/ConsoleProgress.hpp>
 #include <AvTranscoder/Transcoder/Transcoder.hpp>
 
 #include <iostream>

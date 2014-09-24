@@ -6,6 +6,7 @@
 #include <AvTranscoder/EssenceStream/InputVideo.hpp>
 #include <AvTranscoder/EssenceTransform/VideoEssenceTransform.hpp>
 #include <AvTranscoder/Metadatas/Print.hpp>
+#include <AvTranscoder/progress/ConsoleProgress.hpp>
 
 #include "Reader.hpp"
 

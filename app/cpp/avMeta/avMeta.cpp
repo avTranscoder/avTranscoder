@@ -1,5 +1,6 @@
 #include <AvTranscoder/File/InputFile.hpp>
 #include <AvTranscoder/Metadatas/Print.hpp>
+#include <AvTranscoder/progress/NoDisplayProgress.hpp>
 
 #include <iostream>
 

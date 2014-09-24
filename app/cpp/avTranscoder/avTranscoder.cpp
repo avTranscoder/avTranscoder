@@ -4,6 +4,7 @@
 
 #include <AvTranscoder/File/InputFile.hpp>
 #include <AvTranscoder/File/OutputFile.hpp>
+#include <AvTranscoder/progress/ConsoleProgress.hpp>
 #include <AvTranscoder/EssenceStream/InputAudio.hpp>
 #include <AvTranscoder/EssenceStream/InputVideo.hpp>
 #include <AvTranscoder/EssenceStream/OutputAudio.hpp>
