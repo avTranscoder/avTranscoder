@@ -1,5 +1,7 @@
 %module AvTranscoder
 
+%module(directors="1") AvTranscoder
+
 %include "std_string.i"
 %include "std_vector.i"
 %include "std_pair.i"
