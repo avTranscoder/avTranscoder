@@ -1,5 +1,7 @@
 #include "Transcoder.hpp"
+
 #include <limits>
+#include <iostream>
 
 namespace avtranscoder
 {
