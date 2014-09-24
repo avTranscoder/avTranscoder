@@ -32,6 +32,7 @@ public:
 	void setProfile( const Profile::ProfileDesc& desc, const AudioFrameDesc& frameDesc );
 
 	AudioDesc getAudioDesc() { return _codedDesc; }
+
 };
 
 }

@@ -160,7 +160,7 @@ bool InputAudio::readNextFrame( Frame& frameBuffer, const size_t subStreamIndex 
 		unsigned char* dst = audioBuffer.getPtr();
 
 		// offset
-		src += ( nbSubStreams - 1 - subStreamIndex ) * bytePerSample;
+		src += subStreamIndex * bytePerSample;
 		
 		for( int sample = 0; sample < _frame->nb_samples; ++sample )
 		{
