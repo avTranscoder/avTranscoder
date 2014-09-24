@@ -17,7 +17,7 @@ namespace avtranscoder
 {
 
 OutputVideo::OutputVideo( )
-	: OutputEssence( "mpeg2video" )
+	: IOutputEssence( "mpeg2video" )
 {
 }
 

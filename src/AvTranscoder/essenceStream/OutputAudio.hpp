@@ -12,7 +12,7 @@
 namespace avtranscoder
 {
 
-class OutputAudio : public OutputEssence
+class OutputAudio : public IOutputEssence
 {
 public:
 	OutputAudio();

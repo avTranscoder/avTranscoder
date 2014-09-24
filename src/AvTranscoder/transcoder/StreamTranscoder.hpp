@@ -84,7 +84,7 @@ private:
 	IInputEssence*  _inputEssence;
 	IInputEssence*  _generatorEssence;
 	IInputEssence*  _currentEssence;
-	OutputEssence* _outputEssence;
+	IOutputEssence* _outputEssence;
 
 	IEssenceTransform* _transform;
 

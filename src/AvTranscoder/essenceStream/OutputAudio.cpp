@@ -16,7 +16,7 @@ namespace avtranscoder
 {
 
 OutputAudio::OutputAudio()
-	: OutputEssence( "pcm_s16le" )
+	: IOutputEssence( "pcm_s16le" )
 {
 }
 

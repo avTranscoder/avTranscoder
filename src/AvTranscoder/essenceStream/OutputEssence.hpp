@@ -1,5 +1,5 @@
-#ifndef _AV_TRANSCODER_ESSENCE_STREAM_OUTPUT_ESSENCE_HPP_
-#define _AV_TRANSCODER_ESSENCE_STREAM_OUTPUT_ESSENCE_HPP_
+#ifndef _AV_TRANSCODER_ESSENCE_STREAM_IOUTPUT_ESSENCE_HPP_
+#define _AV_TRANSCODER_ESSENCE_STREAM_IOUTPUT_ESSENCE_HPP_
 
 #include <AvTranscoder/EssenceStructures/Frame.hpp>
 #include <AvTranscoder/CodedStructures/DataStream.hpp>
@@ -8,14 +8,14 @@
 namespace avtranscoder
 {
 
-class AvExport OutputEssence
+class AvExport IOutputEssence
 {
 public:
-	OutputEssence( const std::string& codecName )
+	IOutputEssence( const std::string& codecName )
 	: _codedDesc( codecName )
 	{}
 
-	virtual ~OutputEssence()
+	virtual ~IOutputEssence()
 	{}
 
 	/**

@@ -12,7 +12,7 @@
 namespace avtranscoder
 {
 
-class AvExport OutputVideo : public OutputEssence
+class AvExport OutputVideo : public IOutputEssence
 {
 public:
 	OutputVideo();
