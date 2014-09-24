@@ -15,10 +15,11 @@ extern "C" {
 	#define UINT64_C(c) (c ## ULL)
 #endif
 #include <libavutil/pixdesc.h>
+#include <libavutil/rational.h>
 }
 
 #include <stdexcept>
-
+#include <utility>
 
 namespace avtranscoder
 {
@@ -37,17 +38,19 @@ public:
 	VideoFrameDesc()
 		: _width( 0 )
 		, _height( 0 )
-		, _displayAspectRatio()
 		, _pixel()
 		, _interlaced( false )
 		, _topFieldFirst( false )
-	{};
+	{
+		_displayAspectRatio.num = 0;
+		_displayAspectRatio.den = 0;
+	}
 	
 	void setWidth ( const size_t width     ) { _width = width; }
 	void setHeight( const size_t height    ) { _height = height; }
 	void setPixel ( const Pixel  pixel     ) { _pixel = pixel; }
-	void setDar   ( const size_t num, const size_t den ) { _displayAspectRatio.num = num; _displayAspectRatio.den = den; }
-	void setDar   ( const Ratio  ratio     ) { _displayAspectRatio = ratio; }
+	void setDar( const size_t num, const size_t den ) { _displayAspectRatio.num = num; _displayAspectRatio.den = den; }
+	void setDar( const AVRational ratio ) { _displayAspectRatio = ratio; }
 	
 	void setParameters( const Profile::ProfileDesc& desc )
 	{
@@ -57,7 +60,9 @@ public:
 
 	size_t               getWidth ()    const { return _width;  }
 	size_t               getHeight()    const { return _height; }
-	Ratio                getDar()       const { return _displayAspectRatio; }
+	AVRational getDar() const { return _displayAspectRatio; }
+	int getDarNum() const { return _displayAspectRatio.num; }
+	int getDarDen() const { return _displayAspectRatio.den; }
 	Pixel                getPixelDesc() const { return _pixel; }
 
 	size_t getDataSize() const
@@ -78,7 +83,7 @@ public:
 private:
 	size_t          _width;
 	size_t          _height;
-	Ratio           _displayAspectRatio;
+	AVRational      _displayAspectRatio;
 	Pixel           _pixel;
 	// ColorProperties _color;
 

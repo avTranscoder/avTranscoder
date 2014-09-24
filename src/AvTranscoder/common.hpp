@@ -53,17 +53,6 @@ namespace avtranscoder
 
 #define MAX_SWS_PLANE 4
 
-struct Ratio
-{
-	Ratio()
-		: num( 0 )
-		, den( 0 )
-	{}
-
-	size_t num;
-	size_t den;
-};
-
 class ParamSet
 {
 public:

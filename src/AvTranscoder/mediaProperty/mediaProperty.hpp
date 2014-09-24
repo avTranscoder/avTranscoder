@@ -3,6 +3,13 @@
 
 #include <AvTranscoder/common.hpp>
 
+extern "C" {
+#ifndef __STDC_CONSTANT_MACROS
+	#define __STDC_CONSTANT_MACROS
+#endif
+#include <libavutil/rational.h>
+}
+
 #include <string>
 #include <vector>
 #include <map>
@@ -32,6 +39,17 @@ struct Channel
 
 struct VideoProperties
 {
+	VideoProperties()
+	{
+		timeBase.num = 0;
+		timeBase.den = 0;
+		sar.num = 0;
+		sar.den = 0;
+		dar.num = 0;
+		dar.den = 0;
+	}
+	
+public:
 	std::string codecName;
 	std::string codecLongName;
 	std::string profileName;
@@ -47,9 +65,9 @@ struct VideoProperties
 	
 	std::string startTimecode;
 
-	Ratio       timeBase;
-	Ratio       sar; // sample/pixel aspect ratio
-	Ratio       dar; // display aspect ratio
+	AVRational timeBase;
+	AVRational sar; // sample/pixel aspect ratio
+	AVRational dar; // display aspect ratio
 	
 	size_t      streamId;
 	size_t      codecId;
