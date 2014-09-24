@@ -1,5 +1,5 @@
-#ifndef _AV_TRANSCODER_ESSENCE_STREAM_DUMMY_AUDIO_HPP_
-#define _AV_TRANSCODER_ESSENCE_STREAM_DUMMY_AUDIO_HPP_
+#ifndef _AV_TRANSCODER_ESSENCE_STREAM_GENERATOR_AUDIO_HPP_
+#define _AV_TRANSCODER_ESSENCE_STREAM_GENERATOR_AUDIO_HPP_
 
 #include "IInputEssence.hpp"
 
@@ -10,12 +10,12 @@
 namespace avtranscoder
 {
 
-class AvExport DummyAudio : public IInputEssence
+class AvExport GeneratorAudio : public IInputEssence
 {
 public:
-	DummyAudio( );
+	GeneratorAudio( );
 
-	~DummyAudio( );
+	~GeneratorAudio( );
 
 	// Stream properties
 	void setAudioDesc( const AudioDesc& audioDesc );

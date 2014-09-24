@@ -1,5 +1,5 @@
-#ifndef _AV_TRANSCODER_ESSENCE_STREAM_DUMMY_VIDEO_HPP_
-#define _AV_TRANSCODER_ESSENCE_STREAM_DUMMY_VIDEO_HPP_
+#ifndef _AV_TRANSCODER_ESSENCE_STREAM_GENERATOR_VIDEO_HPP_
+#define _AV_TRANSCODER_ESSENCE_STREAM_GENERATOR_VIDEO_HPP_
 
 #include "IInputEssence.hpp"
 
@@ -10,12 +10,12 @@
 namespace avtranscoder
 {
 
-class AvExport DummyVideo : public IInputEssence
+class AvExport GeneratorVideo : public IInputEssence
 {
 public:
-	DummyVideo( );
+	GeneratorVideo( );
 
-	~DummyVideo( );
+	~GeneratorVideo( );
 
 	// Stream properties
 	void setVideoDesc( const VideoDesc& videoDesc );

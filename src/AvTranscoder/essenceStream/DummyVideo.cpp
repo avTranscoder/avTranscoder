@@ -5,7 +5,7 @@
 namespace avtranscoder
 {
 
-DummyVideo::DummyVideo( )
+GeneratorVideo::GeneratorVideo( )
 	: IInputEssence( )
 	, _inputFrame( NULL )
 	, _videoDesc()
@@ -14,27 +14,27 @@ DummyVideo::DummyVideo( )
 {
 }
 
-DummyVideo::~DummyVideo( )
+GeneratorVideo::~GeneratorVideo( )
 {
 }
 
-void DummyVideo::setVideoDesc( const VideoDesc& videoDesc )
+void GeneratorVideo::setVideoDesc( const VideoDesc& videoDesc )
 {
 	_videoDesc = videoDesc;
 	_videoFrameDesc = _videoDesc.getVideoFrameDesc();
 }
 
-VideoDesc DummyVideo::getVideoDesc() const
+VideoDesc GeneratorVideo::getVideoDesc() const
 {
 	return _videoDesc;
 }
 
-void DummyVideo::setFrame( Frame& inputFrame )
+void GeneratorVideo::setFrame( Frame& inputFrame )
 {
 	_inputFrame = &inputFrame;
 }
 
-bool DummyVideo::readNextFrame( Frame& frameBuffer )
+bool GeneratorVideo::readNextFrame( Frame& frameBuffer )
 {
 	if( ! _inputFrame )
 	{
@@ -66,7 +66,7 @@ bool DummyVideo::readNextFrame( Frame& frameBuffer )
 	return true;
 }
 
-bool DummyVideo::readNextFrame( Frame& frameBuffer, const size_t subStreamIndex )
+bool GeneratorVideo::readNextFrame( Frame& frameBuffer, const size_t subStreamIndex )
 {
 	return false;
 }

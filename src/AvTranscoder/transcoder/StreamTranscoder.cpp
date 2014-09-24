@@ -29,14 +29,14 @@ StreamTranscoder::StreamTranscoder(
 	, _sourceBuffer( NULL )
 	, _frameBuffer( NULL )
 	, _inputEssence( NULL )
-	, _dummyEssence( NULL )
+	, _generatorEssence( NULL )
 	, _currentEssence( NULL )
 	, _outputEssence( NULL )
 	, _transform( NULL )
 	, _subStreamIndex( -1 )
 	, _frameProcessed( 0 )
 	, _offset( 0 )
-	, _takeFromDummy( false )
+	, _takeFromGenerator( false )
 	, _verbose( false )
 	, _offsetPassed( false )
 	, _infinityStream( false )
@@ -76,14 +76,14 @@ StreamTranscoder::StreamTranscoder(
 	, _sourceBuffer( NULL )
 	, _frameBuffer( NULL )
 	, _inputEssence( NULL )
-	, _dummyEssence( NULL )
+	, _generatorEssence( NULL )
 	, _currentEssence( NULL )
 	, _outputEssence( NULL )
 	, _transform( NULL )
 	, _subStreamIndex( subStreamIndex )
 	, _frameProcessed( 0 )
 	, _offset( offset )
-	, _takeFromDummy( false )
+	, _takeFromGenerator( false )
 	, _verbose( false )
 	, _offsetPassed( false )
 	, _infinityStream( false )
@@ -111,9 +111,9 @@ StreamTranscoder::StreamTranscoder(
 			
 			_transform = new VideoEssenceTransform();
 
-			DummyVideo* dummyVideo = new DummyVideo();
-			dummyVideo->setVideoDesc( outputVideo->getVideoDesc() );
-			_dummyEssence = dummyVideo;
+			GeneratorVideo* generatorVideo = new GeneratorVideo();
+			generatorVideo->setVideoDesc( outputVideo->getVideoDesc() );
+			_generatorEssence = generatorVideo;
 			
 			break;
 		}
@@ -146,9 +146,9 @@ StreamTranscoder::StreamTranscoder(
 			
 			_transform = new AudioEssenceTransform();
 
-			DummyAudio* dummyAudio = new DummyAudio();
-			dummyAudio->setAudioDesc( outputAudio->getAudioDesc() );
-			_dummyEssence = dummyAudio;
+			GeneratorAudio* generatorAudio = new GeneratorAudio();
+			generatorAudio->setAudioDesc( outputAudio->getAudioDesc() );
+			_generatorEssence = generatorAudio;
 
 			break;
 		}
@@ -171,19 +171,19 @@ StreamTranscoder::StreamTranscoder(
 	, _sourceBuffer( NULL )
 	, _frameBuffer( NULL )
 	, _inputEssence( &inputEssence )
-	, _dummyEssence( NULL )
+	, _generatorEssence( NULL )
 	, _currentEssence( NULL )
 	, _outputEssence( NULL )
 	, _transform( NULL )
 	, _subStreamIndex( -1 )
 	, _frameProcessed( 0 )
 	, _offset( 0 )
-	, _takeFromDummy( false )
+	, _takeFromGenerator( false )
 	, _verbose( false )
 	, _offsetPassed( false )
 	, _infinityStream( false )
 {
-	// create a coding case based on a InputEssence (aka dummy reader)
+	// create a coding case based on a InputEssence (aka generator)
 	if( ! profile.count( Profile::avProfileType ) )
 		throw std::runtime_error( "unable to found stream type (audio, video, etc.)" );
 
@@ -193,7 +193,7 @@ StreamTranscoder::StreamTranscoder(
 		
 		_outputEssence = outputVideo;
 
-		VideoFrameDesc inputFrameDesc = static_cast<DummyVideo*>( _inputEssence )->getVideoDesc().getVideoFrameDesc();
+		VideoFrameDesc inputFrameDesc = static_cast<GeneratorVideo*>( _inputEssence )->getVideoDesc().getVideoFrameDesc();
 
 		VideoFrameDesc outputFrameDesc = inputFrameDesc;
 		outputFrameDesc.setParameters( profile );
@@ -216,7 +216,7 @@ StreamTranscoder::StreamTranscoder(
 
 		_outputEssence = outputAudio;
 
-		AudioFrameDesc inputFrameDesc = static_cast<DummyAudio*>( _inputEssence )->getAudioDesc().getFrameDesc();
+		AudioFrameDesc inputFrameDesc = static_cast<GeneratorAudio*>( _inputEssence )->getAudioDesc().getFrameDesc();
 
 		AudioFrameDesc outputFrameDesc = inputFrameDesc;
 		outputFrameDesc.setParameters( profile );
@@ -243,8 +243,8 @@ StreamTranscoder::~StreamTranscoder()
 		delete _sourceBuffer;
 	if( _inputEssence && _inputStream )
 		delete _inputEssence;
-	if( _dummyEssence )
-		delete _dummyEssence;
+	if( _generatorEssence )
+		delete _generatorEssence;
 	if( _outputEssence )
 		delete _outputEssence;
 	if( _transform )
@@ -335,7 +335,7 @@ bool StreamTranscoder::processTranscode()
 	if( _offset &&
 		_frameProcessed > _offset &&
 		! _offsetPassed &&
-		_takeFromDummy )
+		_takeFromGenerator )
 	{
 		switchToInputEssence();
 		_offsetPassed = true;
@@ -358,7 +358,7 @@ bool StreamTranscoder::processTranscode()
 		{
 			if( _infinityStream )
 			{
-				switchToDummyEssence();
+				switchToGeneratorEssence();
 				return processTranscode();
 			}
 			return false;
@@ -387,7 +387,7 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 	if( _offset &&
 		_frameProcessed > _offset &&
 		! _offsetPassed &&
-		_takeFromDummy )
+		_takeFromGenerator )
 	{
 		switchToInputEssence();
 		_offsetPassed = true;
@@ -410,7 +410,7 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 		{
 			if( _infinityStream )
 			{
-				switchToDummyEssence();
+				switchToGeneratorEssence();
 				return processTranscode();
 			}
 			return false;
@@ -422,14 +422,14 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 	return true;
 }
 
-void StreamTranscoder::switchEssence( bool swithToDummy )
+void StreamTranscoder::switchEssence( bool swithToGenerator )
 {
-	_takeFromDummy = swithToDummy;
-	_currentEssence = swithToDummy ? _dummyEssence : _inputEssence;
+	_takeFromGenerator = swithToGenerator;
+	_currentEssence = swithToGenerator ? _generatorEssence : _inputEssence;
 	assert( _currentEssence != NULL );
 }
 
-void StreamTranscoder::switchToDummyEssence()
+void StreamTranscoder::switchToGeneratorEssence()
 {
 	switchEssence( true );
 }
@@ -448,7 +448,6 @@ double StreamTranscoder::getDuration() const
 		// @todo add offset
 		return totalDuration;
 	}
-	// dummy
 	else
 		return std::numeric_limits<double>::max();
 }

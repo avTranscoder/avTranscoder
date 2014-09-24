@@ -9,8 +9,8 @@ Transcoder::Transcoder( OutputFile& outputFile )
 	, _inputFiles()
 	, _inputStreams()
 	, _streamTranscoders()
-	, _dummyAudio()
-	, _dummyVideo()
+	, _generatorAudio()
+	, _generatorVideo()
 	, _profile( true )
 	, _outputFps( 25 )
 	, _finalisedStreams( 0 )
@@ -30,11 +30,11 @@ Transcoder::~Transcoder()
 	{
 		delete (*it);
 	}
-	for( std::vector< DummyAudio* >::iterator it = _dummyAudio.begin(); it != _dummyAudio.end(); ++it )
+	for( std::vector< GeneratorAudio* >::iterator it = _generatorAudio.begin(); it != _generatorAudio.end(); ++it )
 	{
 		delete (*it);
 	}
-	for( std::vector< DummyVideo* >::iterator it = _dummyVideo.begin(); it != _dummyVideo.end(); ++it )
+	for( std::vector< GeneratorVideo* >::iterator it = _generatorVideo.begin(); it != _generatorVideo.end(); ++it )
 	{
 		delete (*it);
 	}
@@ -63,7 +63,7 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 		
 		if( filename.length() == 0 )
 		{
-			std::cerr << "can't add a dummy stream with no profileName indicated" << std::endl;
+			std::cerr << "can't add a generated stream with no profileName indicated" << std::endl;
 			return;
 		}
 		
@@ -95,7 +95,7 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, Pro
 	if( ! filename.length() )
 	{
 		if( _verbose )
-			std::cout << "add dummy stream" << std::endl;
+			std::cout << "add a generated stream" << std::endl;
 		addDummyStream( profileDesc, essenceDesc );
 		return;
 	}
@@ -141,7 +141,7 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 
 		if( filename.length() == 0 )
 		{
-			std::cerr << "can't add a dummy stream with no profileName indicated" << std::endl;
+			std::cerr << "can't add a generated stream with no profileName indicated" << std::endl;
 			return;
 		}
 		
@@ -188,7 +188,7 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 	if( ! filename.length() )
 	{
 		if( _verbose )
-			std::cout << "add dummy stream" << std::endl;
+			std::cout << "add a generated stream" << std::endl;
 		addDummyStream( profileDesc, essenceDesc );
 		return;
 	}
@@ -253,8 +253,8 @@ void Transcoder::process( ProgressListener& progress )
 	}
 
 	if( ! _inputStreams.size() &&
-		! _dummyVideo.size() && 
-		! _dummyAudio.size() )
+		! _generatorVideo.size() && 
+		! _generatorAudio.size() )
 	{
 		throw std::runtime_error( "missing input streams in transcoder" );
 	}
@@ -400,21 +400,21 @@ void Transcoder::addDummyStream( const Profile::ProfileDesc& profile, const Code
 	if( profile.find( Profile::avProfileType )->second == Profile::avProfileTypeAudio )
 	{
 		if( _verbose )
-			std::cout << "add dummy audio" << std::endl;
-		_dummyAudio.push_back( new DummyAudio() );
-		_dummyAudio.back()->setAudioDesc( static_cast<AudioDesc>( essenceDesc ) );
+			std::cout << "add a generated audio stream" << std::endl;
+		_generatorAudio.push_back( new GeneratorAudio() );
+		_generatorAudio.back()->setAudioDesc( static_cast<AudioDesc>( essenceDesc ) );
 		
-		_streamTranscoders.push_back( new StreamTranscoder( *_dummyAudio.back(), _outputFile, profile ) );
+		_streamTranscoders.push_back( new StreamTranscoder( *_generatorAudio.back(), _outputFile, profile ) );
 	}
 
 	if( profile.find( Profile::avProfileType )->second == Profile::avProfileTypeVideo )
 	{
 		if( _verbose )
-			std::cout << "add dummy video" << std::endl;
-		_dummyVideo.push_back( new DummyVideo() );
-		_dummyVideo.back()->setVideoDesc( static_cast<VideoDesc>( essenceDesc ) );
+			std::cout << "add generated video stream" << std::endl;
+		_generatorVideo.push_back( new GeneratorVideo() );
+		_generatorVideo.back()->setVideoDesc( static_cast<VideoDesc>( essenceDesc ) );
 		
-		_streamTranscoders.push_back( new StreamTranscoder( *_dummyVideo.back(), _outputFile, profile ) );
+		_streamTranscoders.push_back( new StreamTranscoder( *_generatorVideo.back(), _outputFile, profile ) );
 	}
 }
 

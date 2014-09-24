@@ -50,8 +50,8 @@ public:
 	 */
 	void add( const std::string& filename, const size_t streamIndex, const std::string& profileName = "", const size_t offset = 0 );
 	/*
-	 * @note If filename is empty, add a dummy stream.
-	 * @note If filename is empty, profileName can't be empty (no sens to rewrap a dummy stream).
+	 * @note If filename is empty, add a generated stream.
+	 * @note If filename is empty, profileName can't be empty (no sens to rewrap a generated stream).
 	 */
 	void add( const std::string& filename, const size_t streamIndex, const std::string& profileName, CodedDesc& essenceDesc, const size_t offset = 0 );
 
@@ -61,7 +61,7 @@ public:
 	 */
 	void add( const std::string& filename, const size_t streamIndex, Profile::ProfileDesc& profileDesc, const size_t offset = 0 );
 	/*
-	 * @note If filename is empty, add a dummy stream.
+	 * @note If filename is empty, add a generated stream.
 	 */
 	void add( const std::string& filename, const size_t streamIndex, Profile::ProfileDesc& profileDesc, CodedDesc& essenceDesc, const size_t offset = 0  );
 	
@@ -72,8 +72,8 @@ public:
 	 */
 	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const std::string& profileName = "", const size_t offset = 0 );
 	/**
-	 * @note If filename is empty, add a dummy stream.
-	 * @note If filename is empty, profileName can't be empty (no sens to rewrap a dummy stream).
+	 * @note If filename is empty, add a generated stream.
+	 * @note If filename is empty, profileName can't be empty (no sens to rewrap a generated stream).
 	 */
 	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const std::string& profileName, CodedDesc& essenceDesc, const size_t offset = 0  );
 
@@ -84,7 +84,7 @@ public:
 	 */
 	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, Profile::ProfileDesc& profileDesc, const size_t offset = 0 );
 	/**
-	 * @note If filename is empty, add a dummy stream.
+	 * @note If filename is empty, add a generated stream.
 	 */
 	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, Profile::ProfileDesc& profileDesc, CodedDesc& essenceDesc, const size_t offset = 0  );
 
@@ -141,13 +141,13 @@ private:
 
 	/**
 	* @brief Get the duration of the shortest stream.
-	 * @note if there is only dummy, return limit of double.
+	 * @note if there is only generated streams, return limit of double.
 	*/
 	double getMinTotalDuration() const;
 
 	/**
 	 * @brief Get the duration of the longest stream.
-	 * @note if there is only dummy, return limit of double.
+	 * @note if there is only generated streams, return limit of double.
 	 */
 	double getMaxTotalDuration() const;
 
@@ -158,8 +158,8 @@ private:
 	std::vector< IInputStream* >      _inputStreams;
 	std::vector< StreamTranscoder* > _streamTranscoders;
 	
-	std::vector< DummyAudio* > _dummyAudio;
-	std::vector< DummyVideo* > _dummyVideo;
+	std::vector< GeneratorAudio* > _generatorAudio;
+	std::vector< GeneratorVideo* > _generatorVideo;
 
 	Profile _profile;
 

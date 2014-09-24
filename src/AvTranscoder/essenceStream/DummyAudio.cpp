@@ -3,17 +3,17 @@
 namespace avtranscoder
 {
 
-DummyAudio::DummyAudio( )
+GeneratorAudio::GeneratorAudio( )
 	: IInputEssence( )
 	, _inputFrame( NULL )
 {
 }
 
-DummyAudio::~DummyAudio( )
+GeneratorAudio::~GeneratorAudio( )
 {
 }
 
-void DummyAudio::setAudioDesc( const AudioDesc& audioDesc )
+void GeneratorAudio::setAudioDesc( const AudioDesc& audioDesc )
 {
 	_audioDesc = audioDesc;
 	
@@ -23,17 +23,17 @@ void DummyAudio::setAudioDesc( const AudioDesc& audioDesc )
 	_frameDesc.setSampleFormat( _audioDesc.getCodecContext()->sample_fmt );
 }
 
-AudioDesc DummyAudio::getAudioDesc() const
+AudioDesc GeneratorAudio::getAudioDesc() const
 {
 	return _audioDesc;
 }
 
-void DummyAudio::setFrame( Frame& inputFrame )
+void GeneratorAudio::setFrame( Frame& inputFrame )
 {
 	_inputFrame = &inputFrame;
 }
 
-bool DummyAudio::readNextFrame( Frame& frameBuffer )
+bool GeneratorAudio::readNextFrame( Frame& frameBuffer )
 {
 	frameBuffer.getBuffer().resize( _frameDesc.getDataSize() );
 
@@ -58,7 +58,7 @@ bool DummyAudio::readNextFrame( Frame& frameBuffer )
 	return true;
 }
 
-bool DummyAudio::readNextFrame( Frame& frameBuffer, const size_t subStreamIndex )
+bool GeneratorAudio::readNextFrame( Frame& frameBuffer, const size_t subStreamIndex )
 {
 	return false;
 }

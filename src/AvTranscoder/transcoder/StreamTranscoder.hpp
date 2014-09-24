@@ -32,7 +32,7 @@ public:
 	StreamTranscoder( IInputStream& inputStream, OutputFile& outputFile, const Profile::ProfileDesc& profile, const int subStreamIndex = -1, const size_t offset = 0 );
 
 	/**
-	 * @brief encode from dummy stream
+	 * @brief encode from a generated stream
 	 * @note offset feature has no sense here
 	 **/
 	StreamTranscoder( IInputEssence& inputEssence, OutputFile& outputFile, const Profile::ProfileDesc& profile );
@@ -52,8 +52,8 @@ public:
 	 */
 	bool processFrame();
 
-	void switchEssence( bool swithToDummy = true );
-	void switchToDummyEssence();
+	void switchEssence( bool swithToGenerator = true );
+	void switchToGeneratorEssence();
 	void switchToInputEssence();
 
 	void setVerbose( bool verbose = true ){ _verbose = verbose; }
@@ -64,7 +64,7 @@ public:
 
 	/**
 	 * @brief Get the duration of the stream.
-	 * @note if it's a dummy stream, return limit of double.
+	 * @note if it's a generated stream, return limit of double.
 	 */
 	double getDuration() const;
 
@@ -82,7 +82,7 @@ private:
 	Frame*         _frameBuffer;
 
 	IInputEssence*  _inputEssence;
-	IInputEssence*  _dummyEssence;
+	IInputEssence*  _generatorEssence;
 	IInputEssence*  _currentEssence;
 	OutputEssence* _outputEssence;
 
@@ -99,14 +99,14 @@ private:
 	 */
 	size_t _offset;
 
-	bool _takeFromDummy;
+	bool _takeFromGenerator;
 
 	bool _verbose;
 
 	bool _offsetPassed;
 
 	/**
-	 * @brief Automatic switch to dummy
+	 * @brief Automatic switch to a generator
 	 * @note not applicable when rewrap
 	 */
 	bool _infinityStream;
