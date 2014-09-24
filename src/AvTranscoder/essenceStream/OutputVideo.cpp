@@ -16,12 +16,12 @@ extern "C" {
 namespace avtranscoder
 {
 
-OutputVideo::OutputVideo( )
+AvOutputVideo::AvOutputVideo( )
 	: IOutputEssence( "mpeg2video" )
 {
 }
 
-void OutputVideo::setup( )
+void AvOutputVideo::setup( )
 {
 	av_register_all();  // Warning: should be called only once
 
@@ -45,7 +45,7 @@ void OutputVideo::setup( )
 }
 
 
-bool OutputVideo::encodeFrame( const Frame& sourceFrame, DataStream& codedFrame )
+bool AvOutputVideo::encodeFrame( const Frame& sourceFrame, DataStream& codedFrame )
 {
 #if LIBAVCODEC_VERSION_MAJOR > 54
 	AVFrame* frame = av_frame_alloc();
@@ -138,7 +138,7 @@ bool OutputVideo::encodeFrame( const Frame& sourceFrame, DataStream& codedFrame 
 	return ret == 0;
 }
 
-bool OutputVideo::encodeFrame( DataStream& codedFrame )
+bool AvOutputVideo::encodeFrame( DataStream& codedFrame )
 {
 	AVCodecContext* codecContext = _codedDesc.getCodecContext();
 
@@ -173,7 +173,7 @@ bool OutputVideo::encodeFrame( DataStream& codedFrame )
 #endif
 }
 
-void OutputVideo::setProfile( const Profile::ProfileDesc& desc, const avtranscoder::VideoFrameDesc& frameDesc )
+void AvOutputVideo::setProfile( const Profile::ProfileDesc& desc, const avtranscoder::VideoFrameDesc& frameDesc )
 {
 	if( ! desc.count( Profile::avProfileCodec ) ||
 		! desc.count( Profile::avProfilePixelFormat ) || 

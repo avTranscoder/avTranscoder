@@ -15,12 +15,12 @@ extern "C" {
 namespace avtranscoder
 {
 
-OutputAudio::OutputAudio()
+AvOutputAudio::AvOutputAudio()
 	: IOutputEssence( "pcm_s16le" )
 {
 }
 
-void OutputAudio::setup()
+void AvOutputAudio::setup()
 {
 	av_register_all();  // Warning: should be called only once
 
@@ -43,7 +43,7 @@ void OutputAudio::setup()
 	}
 }
 
-bool OutputAudio::encodeFrame( const Frame& sourceFrame, DataStream& codedFrame )
+bool AvOutputAudio::encodeFrame( const Frame& sourceFrame, DataStream& codedFrame )
 {
 #if LIBAVCODEC_VERSION_MAJOR > 54
 	AVFrame* frame = av_frame_alloc();
@@ -137,7 +137,7 @@ bool OutputAudio::encodeFrame( const Frame& sourceFrame, DataStream& codedFrame 
 	return ret == 0;
 }
 
-bool OutputAudio::encodeFrame( DataStream& codedFrame )
+bool AvOutputAudio::encodeFrame( DataStream& codedFrame )
 {
 	AVCodecContext* codecContext = _codedDesc.getCodecContext();
 
@@ -172,7 +172,7 @@ bool OutputAudio::encodeFrame( DataStream& codedFrame )
 #endif
 }
 
-void OutputAudio::setProfile( const Profile::ProfileDesc& desc, const AudioFrameDesc& frameDesc  )
+void AvOutputAudio::setProfile( const Profile::ProfileDesc& desc, const AudioFrameDesc& frameDesc  )
 {
 	if( ! desc.count( Profile::avProfileCodec ) || 		
 		! desc.count( Profile::avProfileSampleFormat ) )

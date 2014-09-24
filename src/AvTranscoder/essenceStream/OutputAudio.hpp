@@ -1,5 +1,5 @@
-#ifndef _AV_TRANSCODER_ESSENCE_STREAM_OUTPUT_AUDIO_HPP_
-#define _AV_TRANSCODER_ESSENCE_STREAM_OUTPUT_AUDIO_HPP_
+#ifndef _AV_TRANSCODER_ESSENCE_STREAM_AV_OUTPUT_AUDIO_HPP_
+#define _AV_TRANSCODER_ESSENCE_STREAM_AV_OUTPUT_AUDIO_HPP_
 
 #include "IOutputEssence.hpp"
 
@@ -12,10 +12,10 @@
 namespace avtranscoder
 {
 
-class OutputAudio : public IOutputEssence
+class AvOutputAudio : public IOutputEssence
 {
 public:
-	OutputAudio();
+	AvOutputAudio();
 	
 	void setup();
 

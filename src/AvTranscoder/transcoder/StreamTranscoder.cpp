@@ -96,7 +96,7 @@ StreamTranscoder::StreamTranscoder(
 			_inputEssence = new AvInputVideo( *static_cast<AvInputStream*>( _inputStream ) );
 			_inputEssence->setup();
 
-			OutputVideo* outputVideo = new OutputVideo();
+			AvOutputVideo* outputVideo = new AvOutputVideo();
 
 			_outputEssence = outputVideo;
 
@@ -122,7 +122,7 @@ StreamTranscoder::StreamTranscoder(
 			_inputEssence = new AvInputAudio( *static_cast<AvInputStream*>( _inputStream ) );
 			_inputEssence->setup();
 			
-			OutputAudio* outputAudio = new OutputAudio();
+			AvOutputAudio* outputAudio = new AvOutputAudio();
 
 			_outputEssence = outputAudio;
 			
@@ -189,7 +189,7 @@ StreamTranscoder::StreamTranscoder(
 
 	if( profile.find( Profile::avProfileType )->second == Profile::avProfileTypeVideo )
 	{
-		OutputVideo* outputVideo = new OutputVideo();
+		AvOutputVideo* outputVideo = new AvOutputVideo();
 		
 		_outputEssence = outputVideo;
 
@@ -212,7 +212,7 @@ StreamTranscoder::StreamTranscoder(
 
 	if( profile.find( Profile::avProfileType )->second == Profile::avProfileTypeAudio )
 	{
-		OutputAudio* outputAudio = new OutputAudio();
+		AvOutputAudio* outputAudio = new AvOutputAudio();
 
 		_outputEssence = outputAudio;
 

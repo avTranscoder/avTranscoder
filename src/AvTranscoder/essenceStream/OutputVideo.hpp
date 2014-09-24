@@ -1,5 +1,5 @@
-#ifndef _AV_TRANSCODER_ESSENCE_STREAM_OUTPUT_VIDEO_HPP_
-#define _AV_TRANSCODER_ESSENCE_STREAM_OUTPUT_VIDEO_HPP_
+#ifndef _AV_TRANSCODER_ESSENCE_STREAM_AV_OUTPUT_VIDEO_HPP_
+#define _AV_TRANSCODER_ESSENCE_STREAM_AV_OUTPUT_VIDEO_HPP_
 
 #include "IOutputEssence.hpp"
 
@@ -12,10 +12,10 @@
 namespace avtranscoder
 {
 
-class AvExport OutputVideo : public IOutputEssence
+class AvExport AvOutputVideo : public IOutputEssence
 {
 public:
-	OutputVideo();
+	AvOutputVideo();
 
 	void setup();
 
