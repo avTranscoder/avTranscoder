@@ -1,4 +1,4 @@
-#include "mediaProperties.hpp"
+#include "mediaProperty.hpp"
 
 extern "C" {
 #ifndef __STDC_CONSTANT_MACROS

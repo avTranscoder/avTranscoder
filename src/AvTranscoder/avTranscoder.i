@@ -27,7 +27,7 @@
 #include <AvTranscoder/codedStructures/DataDesc.hpp>
 #include <AvTranscoder/codedStructures/DataStream.hpp>
 
-#include <AvTranscoder/mediaProperty/mediaProperties.hpp>
+#include <AvTranscoder/mediaProperty/mediaProperty.hpp>
 
 #include <AvTranscoder/Profile.hpp>
 
@@ -83,7 +83,7 @@ namespace std {
 %include <AvTranscoder/codedStructures/DataStream.hpp>
 
 
-%include <AvTranscoder/mediaProperty/mediaProperties.hpp>
+%include <AvTranscoder/mediaProperty/mediaProperty.hpp>
 
 %include <AvTranscoder/Profile.hpp>
 

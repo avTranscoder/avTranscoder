@@ -9,7 +9,7 @@
 
 #include <AvTranscoder/codedStream/AvInputStream.hpp>
 
-#include <AvTranscoder/mediaProperty/mediaProperties.hpp>
+#include <AvTranscoder/mediaProperty/mediaProperty.hpp>
 
 #include <AvTranscoder/progress/IProgress.hpp>
 
