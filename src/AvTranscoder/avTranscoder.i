@@ -39,7 +39,7 @@
 #include <AvTranscoder/essenceStream/OutputAudio.hpp>
 #include <AvTranscoder/essenceStream/OutputVideo.hpp>
 
-#include <AvTranscoder/essenceStream/InputEssence.hpp>
+#include <AvTranscoder/essenceStream/IInputEssence.hpp>
 #include <AvTranscoder/essenceStream/InputAudio.hpp>
 #include <AvTranscoder/essenceStream/InputVideo.hpp>
 
@@ -95,7 +95,7 @@ namespace std {
 %include <AvTranscoder/essenceStream/OutputAudio.hpp>
 %include <AvTranscoder/essenceStream/OutputVideo.hpp>
 
-%include <AvTranscoder/essenceStream/InputEssence.hpp>
+%include <AvTranscoder/essenceStream/IInputEssence.hpp>
 %include <AvTranscoder/essenceStream/InputAudio.hpp>
 %include <AvTranscoder/essenceStream/InputVideo.hpp>
 

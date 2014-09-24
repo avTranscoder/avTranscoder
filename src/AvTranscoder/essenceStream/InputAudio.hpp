@@ -1,7 +1,7 @@
 #ifndef _AV_TRANSCODER_ESSENCE_STREAM_INPUT_AUDIO_HPP_
 #define _AV_TRANSCODER_ESSENCE_STREAM_INPUT_AUDIO_HPP_
 
-#include "InputEssence.hpp"
+#include "IInputEssence.hpp"
 
 class AVCodec;
 class AVCodecContext;

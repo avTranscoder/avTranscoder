@@ -1,7 +1,7 @@
 #ifndef _AV_TRANSCODER_ESSENCE_STREAM_DUMMY_AUDIO_HPP_
 #define _AV_TRANSCODER_ESSENCE_STREAM_DUMMY_AUDIO_HPP_
 
-#include "InputEssence.hpp"
+#include "IInputEssence.hpp"
 
 #include <AvTranscoder/common.hpp>
 #include <AvTranscoder/CodedStructures/AudioDesc.hpp>
