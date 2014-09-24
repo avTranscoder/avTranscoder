@@ -2,11 +2,11 @@
 
 #include "common.hpp"
 
-#include <AvTranscoder/Profiles/XdCamHd422.hpp>
-#include <AvTranscoder/Profiles/DNxHD.hpp>
-#include <AvTranscoder/Profiles/Wave.hpp>
-#include <AvTranscoder/Profiles/Avi.hpp>
-#include <AvTranscoder/Profiles/Mkv.hpp>
+#include <AvTranscoder/profile/XdCamHd422.hpp>
+#include <AvTranscoder/profile/DNxHD.hpp>
+#include <AvTranscoder/profile/Wave.hpp>
+#include <AvTranscoder/profile/Avi.hpp>
+#include <AvTranscoder/profile/Mkv.hpp>
 
 #include <iostream>
 #include <fstream>

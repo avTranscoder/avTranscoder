@@ -1,6 +1,3 @@
-%module(directors="1") AvTranscoder
-
-
 %{
  #include <AvTranscoder/progress/IProgress.hpp>
  #include <AvTranscoder/progress/ConsoleProgress.hpp>

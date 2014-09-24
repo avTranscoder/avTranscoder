@@ -31,7 +31,7 @@ public:
 	 * @brief Manage the progress.
 	 * @param processedDuration: what is processed
 	 * @param programDuration: what you need to process (the totality)
-	 * @return eJobStatusContinue if we continue the progress or eJobStatusCancel to stop it.
+	 * @return return EJobStatus to manage the process (continuing, stopping, paused, etc)
 	 */
 	virtual EJobStatus progress( const double processedDuration, const double programDuration ) = 0;
 };
