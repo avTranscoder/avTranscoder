@@ -11,7 +11,7 @@
 #include <AvTranscoder/essenceStream/GeneratorAudio.hpp>
 #include <AvTranscoder/essenceStream/GeneratorVideo.hpp>
 
-#include <AvTranscoder/progress/ProgressListener.hpp>
+#include <AvTranscoder/progress/IProgress.hpp>
 
 #include <AvTranscoder/Profile.hpp>
 
