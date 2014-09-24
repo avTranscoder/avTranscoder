@@ -2,10 +2,10 @@
 
 
 %{
- #include <AvTranscoder/ProgressListener.hpp>
+ #include <AvTranscoder/progress/ProgressListener.hpp>
 %}
 
 /* turn on director wrapping for IProgress */
 %feature("director") IProgress;
 
-%include <AvTranscoder/ProgressListener.hpp>
+%include <AvTranscoder/progress/ProgressListener.hpp>
