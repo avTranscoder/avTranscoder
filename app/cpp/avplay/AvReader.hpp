@@ -25,7 +25,7 @@ public:
 
 		_inputFile.readStream( _videoStream );
 
-		_inputVideo = new avtranscoder::InputVideo( _inputFile.getStream( _videoStream ) );
+		_inputVideo = new avtranscoder::AvInputVideo( _inputFile.getStream( _videoStream ) );
 		
 		_inputVideo->setup();
 
@@ -104,7 +104,7 @@ public:
 private:
 	avtranscoder::InputFile   _inputFile;
 	
-	avtranscoder::InputVideo* _inputVideo;
+	avtranscoder::AvInputVideo* _inputVideo;
 
 	avtranscoder::VideoFrame* _sourceImage;
 	avtranscoder::VideoFrame* _imageToDisplay;

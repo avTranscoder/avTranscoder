@@ -25,7 +25,7 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 	input.readStream( input.getProperties().videoStreams.at( 0 ).streamId );
 
 	// init video decoders
-	InputVideo inputVideo( input.getStream( 0 ) );
+	AvInputVideo inputVideo( input.getStream( 0 ) );
 	VideoFrameDesc VideoFrameDesc = input.getStream( 0 ).getVideoDesc().getVideoFrameDesc();
 	VideoFrame sourceImage( VideoFrameDesc );
 

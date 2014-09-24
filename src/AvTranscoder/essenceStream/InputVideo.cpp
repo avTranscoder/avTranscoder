@@ -19,7 +19,7 @@ extern "C" {
 namespace avtranscoder
 {
 
-InputVideo::InputVideo( AvInputStream& inputStream )
+AvInputVideo::AvInputVideo( AvInputStream& inputStream )
 	: IInputEssence()
 	, _inputStream   ( &inputStream )
 	, _codec         ( NULL )
@@ -29,7 +29,7 @@ InputVideo::InputVideo( AvInputStream& inputStream )
 {
 }
 
-InputVideo::~InputVideo()
+AvInputVideo::~AvInputVideo()
 {
 	if( _codecContext != NULL )
 	{
@@ -52,7 +52,7 @@ InputVideo::~InputVideo()
 	}
 }
 
-void InputVideo::setup()
+void AvInputVideo::setup()
 {
 	av_register_all();
 
@@ -95,7 +95,7 @@ void InputVideo::setup()
 	}
 }
 
-bool InputVideo::readNextFrame( Frame& frameBuffer )
+bool AvInputVideo::readNextFrame( Frame& frameBuffer )
 {
 	int got_frame = 0;
 
@@ -137,17 +137,17 @@ bool InputVideo::readNextFrame( Frame& frameBuffer )
 	return true;
 }
 
-bool InputVideo::readNextFrame( Frame& frameBuffer, const size_t subStreamIndex )
+bool AvInputVideo::readNextFrame( Frame& frameBuffer, const size_t subStreamIndex )
 {
 	return false;
 }
 
-void InputVideo::flushDecoder()
+void AvInputVideo::flushDecoder()
 {
 	avcodec_flush_buffers( _codecContext );
 }
 
-void InputVideo::setProfile( const Profile::ProfileDesc& desc )
+void AvInputVideo::setProfile( const Profile::ProfileDesc& desc )
 {
 	ParamSet paramSet( _codecContext );
 

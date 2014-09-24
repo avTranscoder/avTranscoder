@@ -93,7 +93,7 @@ StreamTranscoder::StreamTranscoder(
 	{
 		case AVMEDIA_TYPE_VIDEO :
 		{
-			_inputEssence = new InputVideo( *static_cast<AvInputStream*>( _inputStream ) );
+			_inputEssence = new AvInputVideo( *static_cast<AvInputStream*>( _inputStream ) );
 			_inputEssence->setup();
 
 			OutputVideo* outputVideo = new OutputVideo();
@@ -119,7 +119,7 @@ StreamTranscoder::StreamTranscoder(
 		}
 		case AVMEDIA_TYPE_AUDIO :
 		{
-			_inputEssence = new InputAudio( *static_cast<AvInputStream*>( _inputStream ) );
+			_inputEssence = new AvInputAudio( *static_cast<AvInputStream*>( _inputStream ) );
 			_inputEssence->setup();
 			
 			OutputAudio* outputAudio = new OutputAudio();

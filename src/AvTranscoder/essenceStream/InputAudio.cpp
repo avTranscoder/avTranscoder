@@ -20,7 +20,7 @@ extern "C" {
 namespace avtranscoder
 {
 
-InputAudio::InputAudio( AvInputStream& inputStream ) 
+AvInputAudio::AvInputAudio( AvInputStream& inputStream ) 
 	: IInputEssence()
 	, _inputStream   ( &inputStream )
 	, _codec         ( NULL )
@@ -30,7 +30,7 @@ InputAudio::InputAudio( AvInputStream& inputStream )
 {
 }
 
-InputAudio::~InputAudio()
+AvInputAudio::~AvInputAudio()
 {
 	if( _codecContext != NULL )
 	{
@@ -54,7 +54,7 @@ InputAudio::~InputAudio()
 }
 
 
-void InputAudio::setup()
+void AvInputAudio::setup()
 {
 	avcodec_register_all();
 
@@ -101,7 +101,7 @@ void InputAudio::setup()
 	}
 }
 
-bool InputAudio::readNextFrame( Frame& frameBuffer )
+bool AvInputAudio::readNextFrame( Frame& frameBuffer )
 {
 	if( ! getNextFrame() )
 		return false;
@@ -130,7 +130,7 @@ bool InputAudio::readNextFrame( Frame& frameBuffer )
 	return true;
 }
 
-bool InputAudio::readNextFrame( Frame& frameBuffer, const size_t subStreamIndex )
+bool AvInputAudio::readNextFrame( Frame& frameBuffer, const size_t subStreamIndex )
 {
 	if( ! getNextFrame() )
 		return false;
@@ -175,7 +175,7 @@ bool InputAudio::readNextFrame( Frame& frameBuffer, const size_t subStreamIndex 
 	return true;
 }
 
-bool InputAudio::getNextFrame()
+bool AvInputAudio::getNextFrame()
 {
 	int got_frame = 0;
 	while( ! got_frame )

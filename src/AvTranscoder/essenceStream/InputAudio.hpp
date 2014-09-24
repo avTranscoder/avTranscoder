@@ -1,5 +1,5 @@
-#ifndef _AV_TRANSCODER_ESSENCE_STREAM_INPUT_AUDIO_HPP_
-#define _AV_TRANSCODER_ESSENCE_STREAM_INPUT_AUDIO_HPP_
+#ifndef _AV_TRANSCODER_ESSENCE_STREAM_AV_INPUT_AUDIO_HPP_
+#define _AV_TRANSCODER_ESSENCE_STREAM_AV_INPUT_AUDIO_HPP_
 
 #include "IInputEssence.hpp"
 
@@ -12,11 +12,11 @@ namespace avtranscoder
 
 class AvInputStream;
 
-class AvExport InputAudio : public IInputEssence
+class AvExport AvInputAudio : public IInputEssence
 {
 public:
-	InputAudio( AvInputStream& inputStream );
-	~InputAudio();
+	AvInputAudio( AvInputStream& inputStream );
+	~AvInputAudio();
 
 	void setup();
 
