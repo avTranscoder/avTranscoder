@@ -5,7 +5,7 @@
 #include <AvTranscoder/essenceStream/AvInputAudio.hpp>
 #include <AvTranscoder/essenceStream/AvInputVideo.hpp>
 #include <AvTranscoder/essenceTransform/VideoEssenceTransform.hpp>
-#include <AvTranscoder/mediaProperty/printMediaProperties.hpp>
+#include <AvTranscoder/mediaProperty/printMediaProperty.hpp>
 
 #include <AvTranscoder/progress/ConsoleProgress.hpp>
 
