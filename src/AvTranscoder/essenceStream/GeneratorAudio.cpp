@@ -1,4 +1,4 @@
-#include "DummyAudio.hpp"
+#include "GeneratorAudio.hpp"
 
 namespace avtranscoder
 {

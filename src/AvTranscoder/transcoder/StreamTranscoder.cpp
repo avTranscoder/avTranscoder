@@ -7,8 +7,8 @@
 #include <AvTranscoder/essenceStream/InputAudio.hpp>
 #include <AvTranscoder/essenceStream/OutputVideo.hpp>
 #include <AvTranscoder/essenceStream/OutputAudio.hpp>
-#include <AvTranscoder/essenceStream/DummyVideo.hpp>
-#include <AvTranscoder/essenceStream/DummyAudio.hpp>
+#include <AvTranscoder/essenceStream/GeneratorVideo.hpp>
+#include <AvTranscoder/essenceStream/GeneratorAudio.hpp>
 
 #include <AvTranscoder/essenceTransform/AudioEssenceTransform.hpp>
 #include <AvTranscoder/essenceTransform/VideoEssenceTransform.hpp>

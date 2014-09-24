@@ -1,4 +1,4 @@
-#include "DummyVideo.hpp"
+#include "GeneratorVideo.hpp"
 
 #include <AvTranscoder/essenceTransform/VideoEssenceTransform.hpp>
 
