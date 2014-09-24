@@ -6,6 +6,7 @@
 #include <AvTranscoder/EssenceStream/InputVideo.hpp>
 #include <AvTranscoder/EssenceTransform/VideoEssenceTransform.hpp>
 #include <AvTranscoder/Metadatas/Print.hpp>
+#include <AvTranscoder/progress/ConsoleProgress.hpp>
 
 #include "Reader.hpp"
 
@@ -18,7 +19,7 @@ public:
 		, _sourceImage( NULL )
 		, _imageToDisplay( NULL )
 	{
-		avtranscoder::ProgressListener p;
+		avtranscoder::ConsoleProgress p;
 
 		_inputFile.analyse( p );
 		_videoStream = _inputFile.getProperties().videoStreams.at(0).streamId;
