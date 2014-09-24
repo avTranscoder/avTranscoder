@@ -1,5 +1,5 @@
 #include <AvTranscoder/file/InputFile.hpp>
-#include <AvTranscoder/mediaProperty/Print.hpp>
+#include <AvTranscoder/mediaProperty/printMediaProperties.hpp>
 
 #include <iostream>
 
