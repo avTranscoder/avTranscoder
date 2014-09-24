@@ -162,7 +162,7 @@ StreamTranscoder::StreamTranscoder(
 }
 
 StreamTranscoder::StreamTranscoder(
-		InputEssence& inputEssence,
+		IInputEssence& inputEssence,
 		OutputFile& outputFile,
 		const Profile::ProfileDesc& profile
 	)

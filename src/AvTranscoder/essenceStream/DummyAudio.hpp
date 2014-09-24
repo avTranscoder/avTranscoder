@@ -10,7 +10,7 @@
 namespace avtranscoder
 {
 
-class AvExport DummyAudio : public InputEssence
+class AvExport DummyAudio : public IInputEssence
 {
 public:
 	DummyAudio( );

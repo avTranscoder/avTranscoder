@@ -12,7 +12,7 @@ namespace avtranscoder
 
 class AvInputStream;
 
-class AvExport InputAudio : public InputEssence
+class AvExport InputAudio : public IInputEssence
 {
 public:
 	InputAudio( AvInputStream& inputStream );

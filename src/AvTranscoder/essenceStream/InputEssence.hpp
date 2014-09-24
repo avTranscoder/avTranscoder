@@ -1,5 +1,5 @@
-#ifndef _AV_TRANSCODER_ESSENCE_STREAM_INPUT_ESSENCE_HPP_
-#define _AV_TRANSCODER_ESSENCE_STREAM_INPUT_ESSENCE_HPP_
+#ifndef _AV_TRANSCODER_ESSENCE_STREAM_IINPUT_ESSENCE_HPP_
+#define _AV_TRANSCODER_ESSENCE_STREAM_IINPUT_ESSENCE_HPP_
 
 #include <AvTranscoder/common.hpp>
 #include <AvTranscoder/EssenceStructures/Frame.hpp>
@@ -9,12 +9,10 @@ namespace avtranscoder
 
 class AvInputStream;
 
-class AvExport InputEssence
+class AvExport IInputEssence
 {
 public:
-	InputEssence() {};
-
-	virtual ~InputEssence() {};
+	virtual ~IInputEssence() {};
 	
 	virtual void setup() = 0;
 

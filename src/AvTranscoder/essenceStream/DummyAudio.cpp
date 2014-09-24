@@ -4,7 +4,7 @@ namespace avtranscoder
 {
 
 DummyAudio::DummyAudio( )
-	: InputEssence( )
+	: IInputEssence( )
 	, _inputFrame( NULL )
 {
 }

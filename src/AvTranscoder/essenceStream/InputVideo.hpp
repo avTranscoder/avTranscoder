@@ -14,7 +14,7 @@ namespace avtranscoder
 
 class AvInputStream;
 
-class AvExport InputVideo : public InputEssence
+class AvExport InputVideo : public IInputEssence
 {
 public:
 	InputVideo( AvInputStream& inputStream );

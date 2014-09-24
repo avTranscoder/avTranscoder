@@ -35,7 +35,7 @@ public:
 	 * @brief encode from dummy stream
 	 * @note offset feature has no sense here
 	 **/
-	StreamTranscoder( InputEssence& inputEssence, OutputFile& outputFile, const Profile::ProfileDesc& profile );
+	StreamTranscoder( IInputEssence& inputEssence, OutputFile& outputFile, const Profile::ProfileDesc& profile );
 
 	~StreamTranscoder();
 
@@ -81,9 +81,9 @@ private:
 	Frame*         _sourceBuffer;
 	Frame*         _frameBuffer;
 
-	InputEssence*  _inputEssence;
-	InputEssence*  _dummyEssence;
-	InputEssence*  _currentEssence;
+	IInputEssence*  _inputEssence;
+	IInputEssence*  _dummyEssence;
+	IInputEssence*  _currentEssence;
 	OutputEssence* _outputEssence;
 
 	IEssenceTransform* _transform;

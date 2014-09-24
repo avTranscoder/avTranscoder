@@ -20,7 +20,7 @@ namespace avtranscoder
 {
 
 InputVideo::InputVideo( AvInputStream& inputStream )
-	: InputEssence()
+	: IInputEssence()
 	, _inputStream   ( &inputStream )
 	, _codec         ( NULL )
 	, _codecContext  ( NULL )
