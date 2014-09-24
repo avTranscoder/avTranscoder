@@ -1,7 +1,7 @@
 #ifndef _AV_TRANSCODER_ESSENCE_STREAM_OUTPUT_AUDIO_HPP_
 #define _AV_TRANSCODER_ESSENCE_STREAM_OUTPUT_AUDIO_HPP_
 
-#include "OutputEssence.hpp"
+#include "IOutputEssence.hpp"
 
 #include <AvTranscoder/CodedStructures/DataStream.hpp>
 #include <AvTranscoder/CodedStructures/AudioDesc.hpp>
