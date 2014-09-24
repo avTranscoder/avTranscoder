@@ -3,8 +3,8 @@
 
 #include <AvTranscoder/codedStream/AvInputStream.hpp>
 
-#include <AvTranscoder/essenceStream/InputVideo.hpp>
-#include <AvTranscoder/essenceStream/InputAudio.hpp>
+#include <AvTranscoder/essenceStream/AvInputVideo.hpp>
+#include <AvTranscoder/essenceStream/AvInputAudio.hpp>
 #include <AvTranscoder/essenceStream/OutputVideo.hpp>
 #include <AvTranscoder/essenceStream/OutputAudio.hpp>
 #include <AvTranscoder/essenceStream/GeneratorVideo.hpp>
