@@ -5,10 +5,10 @@
 
 #include <AvTranscoder/mediaProperty/mediaProperties.hpp>
 
-#include <AvTranscoder/CodedStructures/DataStream.hpp>
-#include <AvTranscoder/CodedStructures/VideoDesc.hpp>
-#include <AvTranscoder/CodedStructures/AudioDesc.hpp>
-#include <AvTranscoder/CodedStructures/DataDesc.hpp>
+#include <AvTranscoder/codedStructures/DataStream.hpp>
+#include <AvTranscoder/codedStructures/VideoDesc.hpp>
+#include <AvTranscoder/codedStructures/AudioDesc.hpp>
+#include <AvTranscoder/codedStructures/DataDesc.hpp>
 
 #include <AvTranscoder/codedStream/AvOutputStream.hpp>
 

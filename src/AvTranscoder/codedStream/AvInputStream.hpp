@@ -3,7 +3,7 @@
 
 #include "IInputStream.hpp"
 
-#include <AvTranscoder/CodedStructures/DataStream.hpp>
+#include <AvTranscoder/codedStructures/DataStream.hpp>
 
 struct AVStream;
 

@@ -3,8 +3,8 @@
 
 #include "IOutputEssence.hpp"
 
-#include <AvTranscoder/CodedStructures/DataStream.hpp>
-#include <AvTranscoder/CodedStructures/AudioDesc.hpp>
+#include <AvTranscoder/codedStructures/DataStream.hpp>
+#include <AvTranscoder/codedStructures/AudioDesc.hpp>
 #include <AvTranscoder/EssenceStructures/AudioFrame.hpp>
 
 #include <AvTranscoder/Profile.hpp>

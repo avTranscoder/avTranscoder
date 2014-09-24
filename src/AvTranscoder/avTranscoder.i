@@ -19,11 +19,11 @@
 #include <AvTranscoder/EssenceStructures/VideoFrame.hpp>
 #include <AvTranscoder/EssenceStructures/AudioFrame.hpp>
 
-#include <AvTranscoder/CodedStructures/CodedDesc.hpp>
-#include <AvTranscoder/CodedStructures/VideoDesc.hpp>
-#include <AvTranscoder/CodedStructures/AudioDesc.hpp>
-#include <AvTranscoder/CodedStructures/DataDesc.hpp>
-#include <AvTranscoder/CodedStructures/DataStream.hpp>
+#include <AvTranscoder/codedStructures/CodedDesc.hpp>
+#include <AvTranscoder/codedStructures/VideoDesc.hpp>
+#include <AvTranscoder/codedStructures/AudioDesc.hpp>
+#include <AvTranscoder/codedStructures/DataDesc.hpp>
+#include <AvTranscoder/codedStructures/DataStream.hpp>
 
 #include <AvTranscoder/mediaProperty/mediaProperties.hpp>
 
@@ -74,11 +74,11 @@ namespace std {
 %include <AvTranscoder/EssenceStructures/VideoFrame.hpp>
 %include <AvTranscoder/EssenceStructures/AudioFrame.hpp>
 
-%include <AvTranscoder/CodedStructures/CodedDesc.hpp>
-%include <AvTranscoder/CodedStructures/VideoDesc.hpp>
-%include <AvTranscoder/CodedStructures/AudioDesc.hpp>
-%include <AvTranscoder/CodedStructures/DataDesc.hpp>
-%include <AvTranscoder/CodedStructures/DataStream.hpp>
+%include <AvTranscoder/codedStructures/CodedDesc.hpp>
+%include <AvTranscoder/codedStructures/VideoDesc.hpp>
+%include <AvTranscoder/codedStructures/AudioDesc.hpp>
+%include <AvTranscoder/codedStructures/DataDesc.hpp>
+%include <AvTranscoder/codedStructures/DataStream.hpp>
 
 
 %include <AvTranscoder/mediaProperty/mediaProperties.hpp>

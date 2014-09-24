@@ -4,7 +4,7 @@
 #include "IInputEssence.hpp"
 
 #include <AvTranscoder/common.hpp>
-#include <AvTranscoder/CodedStructures/VideoDesc.hpp>
+#include <AvTranscoder/codedStructures/VideoDesc.hpp>
 #include <AvTranscoder/EssenceStructures/Frame.hpp>
 
 namespace avtranscoder
