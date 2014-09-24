@@ -1,7 +1,7 @@
 #ifndef _AV_TRANSCODER_CODED_STRUCTURES_VIDEO_DESC_HPP_
 #define _AV_TRANSCODER_CODED_STRUCTURES_VIDEO_DESC_HPP_
 
-#include <AvTranscoder/EssenceStructures/VideoFrame.hpp>
+#include <AvTranscoder/essenceStructures/VideoFrame.hpp>
 #include "CodedDesc.hpp"
 #include <AvTranscoder/common.hpp>
 

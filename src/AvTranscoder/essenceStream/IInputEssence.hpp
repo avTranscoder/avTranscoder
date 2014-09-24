@@ -2,7 +2,7 @@
 #define _AV_TRANSCODER_ESSENCE_STREAM_IINPUT_ESSENCE_HPP_
 
 #include <AvTranscoder/common.hpp>
-#include <AvTranscoder/EssenceStructures/Frame.hpp>
+#include <AvTranscoder/essenceStructures/Frame.hpp>
 
 namespace avtranscoder
 {

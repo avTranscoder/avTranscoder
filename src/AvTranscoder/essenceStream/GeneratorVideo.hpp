@@ -5,7 +5,7 @@
 
 #include <AvTranscoder/common.hpp>
 #include <AvTranscoder/codedStructures/VideoDesc.hpp>
-#include <AvTranscoder/EssenceStructures/Frame.hpp>
+#include <AvTranscoder/essenceStructures/Frame.hpp>
 
 namespace avtranscoder
 {

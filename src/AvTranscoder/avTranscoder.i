@@ -14,10 +14,10 @@
 
 #include <AvTranscoder/Profile.hpp>
 
-#include <AvTranscoder/EssenceStructures/Pixel.hpp>
-#include <AvTranscoder/EssenceStructures/Frame.hpp>
-#include <AvTranscoder/EssenceStructures/VideoFrame.hpp>
-#include <AvTranscoder/EssenceStructures/AudioFrame.hpp>
+#include <AvTranscoder/essenceStructures/Pixel.hpp>
+#include <AvTranscoder/essenceStructures/Frame.hpp>
+#include <AvTranscoder/essenceStructures/VideoFrame.hpp>
+#include <AvTranscoder/essenceStructures/AudioFrame.hpp>
 
 #include <AvTranscoder/codedStructures/CodedDesc.hpp>
 #include <AvTranscoder/codedStructures/VideoDesc.hpp>
@@ -69,10 +69,10 @@ namespace std {
 
 %include <AvTranscoder/Profile.hpp>
 
-%include <AvTranscoder/EssenceStructures/Pixel.hpp>
-%include <AvTranscoder/EssenceStructures/Frame.hpp>
-%include <AvTranscoder/EssenceStructures/VideoFrame.hpp>
-%include <AvTranscoder/EssenceStructures/AudioFrame.hpp>
+%include <AvTranscoder/essenceStructures/Pixel.hpp>
+%include <AvTranscoder/essenceStructures/Frame.hpp>
+%include <AvTranscoder/essenceStructures/VideoFrame.hpp>
+%include <AvTranscoder/essenceStructures/AudioFrame.hpp>
 
 %include <AvTranscoder/codedStructures/CodedDesc.hpp>
 %include <AvTranscoder/codedStructures/VideoDesc.hpp>

@@ -12,7 +12,7 @@ extern "C" {
 }
 
 #include <AvTranscoder/codedStream/AvInputStream.hpp>
-#include <AvTranscoder/EssenceStructures/AudioFrame.hpp>
+#include <AvTranscoder/essenceStructures/AudioFrame.hpp>
 
 #include <iostream>
 #include <stdexcept>

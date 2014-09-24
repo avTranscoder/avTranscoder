@@ -1,7 +1,7 @@
 #include "VideoEssenceTransform.hpp"
 
-#include <AvTranscoder/EssenceStructures/Pixel.hpp>
-#include <AvTranscoder/EssenceStructures/VideoFrame.hpp>
+#include <AvTranscoder/essenceStructures/Pixel.hpp>
+#include <AvTranscoder/essenceStructures/VideoFrame.hpp>
 #include <AvTranscoder/common.hpp>
 
 extern "C" {
