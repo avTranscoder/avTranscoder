@@ -1,7 +1,12 @@
 #ifndef _AV_TRANSCODER_CONTEXT_HPP_
 #define _AV_TRANSCODER_CONTEXT_HPP_
 
+#include <AvTranscoder/common.hpp>
+
+#include <AvTranscoder/option/Option.hpp>
+
 #include <string>
+#include <map>
 
 namespace avtranscoder
 {
@@ -9,23 +14,25 @@ namespace avtranscoder
 /**
  * @brief Wrapper of AVContext.
  * Can access Options through the corresponding context.
+ * The context could be an AVFormatContext or an AVCodecContext.
  */
 class Context
 {
 public:
-	Context( void* objContext )
-		: _objContext( objContext )
-	{}
+	Context( void* avContext, int req_flags = 0 )
+		: _avContext( avContext )
+	{
+		loadOptions( avContext, req_flags );
+	}
 
-	void set( const std::string& key, const std::string& flag, const bool enable );
-	void set( const std::string& key, const bool value );
-	void set( const std::string& key, const int value );
-	void set( const std::string& key, const int num, const int den );
-	void set( const std::string& key, const double value );
-	void set( const std::string& key, const std::string& value );
-	
+	Option& getOption( const std::string& optionName ) { return _options.at(optionName); }
+
 private:
-	void* _objContext;
+	void loadOptions( void* av_class, int req_flags );
+
+private:
+	void* _avContext;  ///< Has link (no ownership)
+	std::map<std::string, Option> _options;
 };
 
 }

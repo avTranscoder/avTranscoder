@@ -7,109 +7,78 @@ extern "C" {
 #include <libavutil/opt.h>
 }
 
-#include <sstream>
-#include <stdexcept>
+#ifndef AV_OPT_FLAG_FILTERING_PARAM
+ #define AV_OPT_FLAG_FILTERING_PARAM (1<<16)
+#endif
+
+#include <iostream>
 
 namespace avtranscoder
 {
 
-void Context::set( const std::string& key, const std::string& flag, const bool enable )
-{
-	int error = 0;
-	int64_t optVal;
+void Context::loadOptions( void* av_class, int req_flags )
+{	
+	std::multimap<std::string, std::string> optionUnitToParentName;
+	std::vector<Option> childOptions;
 	
-	const AVOption* flagOpt = av_opt_find( _objContext, flag.c_str(), key.c_str(), 0, 0 );
-
-	if( ! flagOpt )
-	{
-		throw std::runtime_error( "unknown flag " + flag );
-	}
-
-	error = av_opt_get_int( _objContext, key.c_str(), AV_OPT_SEARCH_CHILDREN, &optVal );
-	if( error != 0 )
-	{
-		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( error, err, AV_ERROR_MAX_STRING_SIZE );
-		throw std::runtime_error( "unknown key " + key + ": " + err );
-	}
-
-	if( enable )
-		optVal = optVal |  flagOpt->default_val.i64;
-	else
-		optVal = optVal &~ flagOpt->default_val.i64;
+	const AVOption* avOption = NULL;
 	
-	error = av_opt_set_int( _objContext, key.c_str(), optVal, AV_OPT_SEARCH_CHILDREN );
-	if( error != 0 )
+	// iterate on options
+#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT( 51, 12, 0 )
+	while( ( avOption = av_next_option( av_class, avOption ) ) )
+#else
+	while( ( avOption = av_opt_next( av_class, avOption ) ) )
+#endif
 	{
-		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( error, err, AV_ERROR_MAX_STRING_SIZE );
-		throw std::runtime_error( "setting " + key + " parameter to " + flag + ": " + err );
+		if( ! avOption || 
+			! avOption->name ||
+			( avOption->flags & req_flags ) != req_flags )
+		{
+			continue;
+		}
+
+		Option option( const_cast<AVOption*>( avOption ), av_class );
+
+		if( option.getType() == eOptionBaseTypeChild )
+		{
+			childOptions.push_back( option );
+		}
+		else
+		{
+			_options.insert( std::make_pair( option.getName(), option ) );
+			optionUnitToParentName.insert( std::make_pair( option.getUnit(), option.getName() ) );
+		}
 	}
-}
 
-void Context::set( const std::string& key, const bool value )
-{
-	int error = av_opt_set_int( _objContext, key.c_str(), value, AV_OPT_SEARCH_CHILDREN );
-	if( error != 0 )
+	// iterate on child options
+	for( std::vector<Option>::iterator itOption = childOptions.begin(); itOption != childOptions.end(); ++itOption )
 	{
-		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( error, err, AV_ERROR_MAX_STRING_SIZE );
-		throw std::runtime_error( "setting " + key + " parameter to " + ( value ? "true" : "false" ) + ": " + err );
-	}
-}
+		bool parentFound = false;
+		for( std::multimap<std::string, std::string>::iterator itUnit = optionUnitToParentName.begin(); itUnit != optionUnitToParentName.end(); ++itUnit )
+		{
+			if( itUnit->first == itOption->getUnit() )
+			{
+				std::string nameParentOption = itUnit->second;
+				Option& parentOption = _options.at( nameParentOption );
 
-void Context::set( const std::string& key, const int value )
-{
-	//const AVOption* flagOpt = av_opt_find( _objContext, key.c_str(), NULL, 0, AV_OPT_SEARCH_CHILDREN );
+				parentOption.appendChild( *itOption );
 
-	int error = av_opt_set_int( _objContext, key.c_str(), value, AV_OPT_SEARCH_CHILDREN );
-	if( error != 0 )
-	{
-		std::ostringstream os;
-		os << value;
-		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( error, err, AV_ERROR_MAX_STRING_SIZE );
-		throw std::runtime_error( "setting " + key + " parameter to " + os.str() + ": " + err );
-	}
-}
+				// child of a Choice
+				if( parentOption.getType() == eOptionBaseTypeChoice )
+				{
+					if( itOption->getDefaultValueInt() == parentOption.getDefaultValueInt() )
+						parentOption.setDefaultChildIndex( parentOption.getNbChilds() - 1 );
+				}
 
-void Context::set( const std::string& key, const int num, const int den )
-{
-	AVRational ratio;
-	ratio.num = num;
-	ratio.den = den;
-	int error = av_opt_set_q( _objContext, key.c_str(), ratio, AV_OPT_SEARCH_CHILDREN );
-	if( error != 0 )
-	{
-		std::ostringstream os;
-		os << num << "/" << den;
-		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( error, err, AV_ERROR_MAX_STRING_SIZE );
-		throw std::runtime_error( "setting " + key + " parameter to " + os.str() + ": " + err );
-	}
-}
+				parentFound = true;
+				break;
+			}
+        }
 
-void Context::set( const std::string& key, const double value )
-{
-	int error = av_opt_set_double( _objContext, key.c_str(), value, AV_OPT_SEARCH_CHILDREN );
-	if( error != 0 )
-	{
-		std::ostringstream os;
-		os << value;
-		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( error, err, AV_ERROR_MAX_STRING_SIZE );
-		throw std::runtime_error( "setting " + key + " parameter to " + os.str() + ": " + err );
-	}
-}
-
-void Context::set( const std::string& key, const std::string& value )
-{
-	int error = av_opt_set( _objContext, key.c_str(), value.c_str(), AV_OPT_SEARCH_CHILDREN );
-	if( error != 0 )
-	{
-		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( error, err, AV_ERROR_MAX_STRING_SIZE );
-		throw std::runtime_error( "setting " + key + " parameter to " + value + ": " + err );
+		if( ! parentFound )
+		{
+			std::cout << "Warning: Can't find a choice option for " << itOption->getName() << std::endl;
+		}
 	}
 }
 

@@ -228,7 +228,8 @@ void InputFile::setProfile( const Profile::ProfileDesc& desc )
 		
 		try
 		{
-			formatContext.set( (*it).first, (*it).second );
+			Option& formatOption = formatContext.getOption( (*it).first );
+			formatOption.setValueString( (*it).second );
 		}
 		catch( std::exception& e )
 		{

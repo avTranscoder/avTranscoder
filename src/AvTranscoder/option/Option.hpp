@@ -36,25 +36,25 @@ enum EOptionBaseType
 class Option
 {
 public:
-	Option( const AVOption& avOption );
+	Option( AVOption* avOption, void* avContext );
 	~Option() {}
 	
 	EOptionBaseType getType() const;
 
-	std::string getName() const { return std::string( _avOption.name ? _avOption.name : "" ); }
-	std::string getHelp() const { return std::string( _avOption.help ? _avOption.help : "" ); }
-	std::string getUnit() const { return std::string( _avOption.unit ? _avOption.unit : "" ); }
-	int getOffset() const { return _avOption.offset; }
-	double getMin() const { return _avOption.min; }
-	double getMax() const { return _avOption.max; }
+	std::string getName() const { return std::string( _avOption->name ? _avOption->name : "" ); }
+	std::string getHelp() const { return std::string( _avOption->help ? _avOption->help : "" ); }
+	std::string getUnit() const { return std::string( _avOption->unit ? _avOption->unit : "" ); }
+	int getOffset() const { return _avOption->offset; }
+	double getMin() const { return _avOption->min; }
+	double getMax() const { return _avOption->max; }
 	
 	// flags
-	int getFlags() const { return _avOption.flags; }
-	bool isEncodingOpt() const { return _avOption.flags & AV_OPT_FLAG_ENCODING_PARAM; }
-	bool isDecodingOpt() const { return _avOption.flags & AV_OPT_FLAG_DECODING_PARAM; }
-	bool isAudioOpt() const { return _avOption.flags & AV_OPT_FLAG_AUDIO_PARAM; }
-	bool isVideoOpt() const { return _avOption.flags & AV_OPT_FLAG_VIDEO_PARAM; }
-	bool isSubtitleOpt() const { return _avOption.flags & AV_OPT_FLAG_SUBTITLE_PARAM; }
+	int getFlags() const { return _avOption->flags; }
+	bool isEncodingOpt() const { return _avOption->flags & AV_OPT_FLAG_ENCODING_PARAM; }
+	bool isDecodingOpt() const { return _avOption->flags & AV_OPT_FLAG_DECODING_PARAM; }
+	bool isAudioOpt() const { return _avOption->flags & AV_OPT_FLAG_AUDIO_PARAM; }
+	bool isVideoOpt() const { return _avOption->flags & AV_OPT_FLAG_VIDEO_PARAM; }
+	bool isSubtitleOpt() const { return _avOption->flags & AV_OPT_FLAG_SUBTITLE_PARAM; }
 	
 	// default value
 	bool getDefaultValueBool() const;
@@ -62,12 +62,20 @@ public:
 	double getDefaultValueDouble() const;
 	std::string getDefaultValueString() const;
 	std::pair<int, int> getDefaultValueRatio() const;
+
+	// setters
+	void setFlag( const std::string& flag, const bool enable );
+	void setValueBool( const bool value );
+	void setValueInt( const int value );
+	void setValueRatio( const int num, const int den );
+	void setValueDouble( const double value );
+	void setValueString( const std::string& value );
 	
 	// array of childs
-	bool hasChild() const { return ! _options.empty(); }
-	const std::vector<Option>& getChilds() { return _options; }
-	const Option& getChild( size_t index ) { return _options.at( index ); }
-	size_t getNbChilds() const { return _options.size(); }
+	bool hasChild() const { return ! _childOptions.empty(); }
+	const std::vector<Option>& getChilds() { return _childOptions; }
+	const Option& getChild( size_t index ) { return _childOptions.at( index ); }
+	size_t getNbChilds() const { return _childOptions.size(); }
 	int getDefaultChildIndex() const { return _defaultChildIndex; }
 	
 	void setDefaultChildIndex( size_t index ) { _defaultChildIndex = index; }
@@ -77,14 +85,20 @@ private:
 	EOptionBaseType getTypeFromAVOption( const std::string& unit, const AVOptionType avType );
 
 private:
-	AVOption _avOption;
+	AVOption* _avOption;
 	EOptionBaseType _type;
+
+	/**
+	 * @brief Pointer to the corresponding context.
+	 * Need it to set and get the option values.
+	 */
+	void* _avContext; ///< Has link (no ownership)
 	
 	/**
 	 * If the option corresponds to a Choice or a Group, it can contain childs,
 	 * which are also options.
 	 */
-	std::vector<Option> _options;
+	std::vector<Option> _childOptions;
 	size_t _defaultChildIndex;
 };
 

@@ -205,7 +205,8 @@ void AvOutputVideo::setProfile( const Profile::ProfileDesc& desc, const avtransc
 
 		try
 		{
-			codecContext.set( (*it).first, (*it).second );
+			Option& encodeOption = codecContext.getOption( (*it).first );
+			encodeOption.setValueString( (*it).second );
 		}
 		catch( std::exception& e )
 		{
@@ -227,7 +228,8 @@ void AvOutputVideo::setProfile( const Profile::ProfileDesc& desc, const avtransc
 
 		try
 		{
-			codecContext.set( (*it).first, (*it).second );
+			Option& encodeOption = codecContext.getOption( (*it).first );
+			encodeOption.setValueString( (*it).second );
 		}
 		catch( std::exception& e )
 		{

@@ -242,7 +242,7 @@ OptionLoader::OptionArray OptionLoader::loadOptions( void* av_class, int req_fla
 			continue;
 		}
 
-		Option option( *avOption );
+		Option option( const_cast<AVOption*>( avOption ), av_class );
 
 		if( option.getType() == eOptionBaseTypeChild )
 		{
