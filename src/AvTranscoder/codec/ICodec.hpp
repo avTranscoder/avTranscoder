@@ -5,8 +5,8 @@
 
 #include <string>
 
-class AVCodec;
-class AVCodecContext;
+struct AVCodec;
+struct AVCodecContext;
 
 namespace avtranscoder
 {
