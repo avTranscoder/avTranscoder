@@ -20,13 +20,6 @@ ICodec::ICodec( const AVCodecID codecId )
 	setCodec( codecId );
 }
 
-ICodec::ICodec( AVCodec& avCodec, AVCodecContext& avCodecContext )
-	: _codec( &avCodec )
-	, _codecContext( &avCodecContext )
-{
-	
-}
-
 std::string ICodec::getCodecName() const
 {
 	assert( _codecContext != NULL );

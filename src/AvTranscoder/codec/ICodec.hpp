@@ -16,7 +16,6 @@ class AvExport ICodec
 public:
 	ICodec( const std::string& codecName );
 	ICodec( const AVCodecID codecId );
-	ICodec( AVCodec& avCodec, AVCodecContext& avCodecContext );
 	
 	virtual ~ICodec() {};
 	
