@@ -17,10 +17,10 @@ endif()
 include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${FFMPEG_INCLUDE_DIR})
 
 # Create 'avtranscoder' static lib
-add_library(avtranscoder-static STATIC ${AVTRANSCODER_SRC_FILES})
-set_target_properties(avtranscoder-static PROPERTIES LINKER_LANGUAGE CXX)
-set_target_properties(avtranscoder-static PROPERTIES OUTPUT_NAME avtranscoder)
-target_link_libraries(avtranscoder-static ${FFMPEG_LIBRARIES})
+add_library(avtranscoder-dev STATIC ${AVTRANSCODER_SRC_FILES})
+set_target_properties(avtranscoder-dev PROPERTIES LINKER_LANGUAGE CXX)
+set_target_properties(avtranscoder-dev PROPERTIES OUTPUT_NAME avtranscoder)
+target_link_libraries(avtranscoder-dev ${FFMPEG_LIBRARIES})
 
 # Create 'avtranscoder' shared lib
 add_library(avtranscoder-shared SHARED ${AVTRANSCODER_SRC_FILES})
@@ -38,7 +38,7 @@ target_link_libraries(avtranscoder-shared ${FFMPEG_LIBRARIES})
 install(
 	DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/AvTranscoder"
 	DESTINATION "include"
-        COMPONENT "dev"
+	COMPONENT "dev"
 	FILES_MATCHING
 	PATTERN "*.hpp"
 	PATTERN "*.i"
@@ -48,9 +48,15 @@ install(
 set(LIBRARY_OUTPUT_PATH "${PROJECT_BINARY_DIR}/lib" )
 
 install(
-	DIRECTORY "${LIBRARY_OUTPUT_PATH}"
-	DESTINATION "."
-        COMPONENT "lib"
+	TARGETS avtranscoder-dev
+	DESTINATION "lib"
+	COMPONENT "dev"
+)
+
+install(
+	TARGETS avtranscoder-shared
+	DESTINATION "lib"
+	COMPONENT "lib"
 )
 
 ### SWIG
@@ -97,11 +103,18 @@ if(SWIG_FOUND)
 
 		# Install python interface
 		set(AVTRANSCODER_PYTHON_BINDING_FILE "${CMAKE_SWIG_OUTDIR}/AvTranscoder.py")
+
 		install(
 			FILES ${AVTRANSCODER_PYTHON_BINDING_FILE}
 			RENAME "avtranscoder.py"
 			DESTINATION "lib/python${PYTHONLIBS_VERSION_STRING}/site-packages/avtranscoder/"
-                        COMPONENT python
+			COMPONENT "python"
+		)
+
+		install(
+			TARGETS ${SWIG_MODULE_avtranscoder-py_REAL_NAME}
+			DESTINATION "lib"
+			COMPONENT "python"
 		)
 	else()
 		message("PYTHON not found, will not build python binding.")
@@ -132,7 +145,7 @@ if(SWIG_FOUND)
 		set(AVTRANSCODER_JAR_PATH "${PROJECT_BINARY_DIR}/src")
 		set(AVTRANSCODER_JAR_NAME "avtranscoder-${AVTRANSCODER_VERSION}.jar")
 		execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory ${AVTRANSCODER_JAVA_CLASS_OUTPUT_PATH})
-		
+
 		ADD_CUSTOM_COMMAND(
 			TARGET avtranscoder-java
 			POST_BUILD
@@ -142,10 +155,16 @@ if(SWIG_FOUND)
 
 		# Install jar file
 		install(
-                        FILES ${AVTRANSCODER_JAR_PATH}/${AVTRANSCODER_JAR_NAME}
-                        DESTINATION "share/java/"
-                        COMPONENT java
-                )
+			FILES ${AVTRANSCODER_JAR_PATH}/${AVTRANSCODER_JAR_NAME}
+			DESTINATION "share/java/"
+			COMPONENT "java"
+		)
+
+		install(
+			TARGETS avtranscoder-java
+			DESTINATION "lib"
+			COMPONENT "java"
+		)
 	else()
 		message("JAVA not found, will not build java binding.")
 	endif()
