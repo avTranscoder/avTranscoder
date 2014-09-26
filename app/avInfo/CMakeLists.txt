@@ -14,13 +14,13 @@ target_link_libraries(avinfo avtranscoder-shared)
 install(
 	FILES "${CMAKE_CURRENT_BINARY_DIR}/avinfo" "${CMAKE_CURRENT_BINARY_DIR}/avinfo-${AVTRANSCODER_VERSION}"
 	PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ WORLD_READ WORLD_EXECUTE
-	DESTINATION "bin/"
-        COMPONENT tools
+	DESTINATION "bin"
+	COMPONENT tools
 )
 
 install(
 	FILES ${CMAKE_CURRENT_SOURCE_DIR}/avinfo.man
 	RENAME "avinfo.1"
-	DESTINATION "share/man/man1/"
+	DESTINATION "share/man/man1"
 	COMPONENT tools
 )
