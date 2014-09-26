@@ -27,7 +27,7 @@ void AvOutputVideo::setup( )
 {
 	av_register_all();  // Warning: should be called only once
 
-	AVCodecContext* codecContext( _codedDesc.getCodecContext() );
+	AVCodecContext* codecContext( _codedDesc.getAVCodecContext() );
 
 	if( codecContext == NULL )
 	{
@@ -35,7 +35,7 @@ void AvOutputVideo::setup( )
 	}
 
 	// try to open encoder with parameters
-	int ret = avcodec_open2( codecContext, _codedDesc.getCodec(), NULL );
+	int ret = avcodec_open2( codecContext, _codedDesc.getAVCodec(), NULL );
 	if( ret < 0 )
 	{
 		char err[250];
@@ -55,7 +55,7 @@ bool AvOutputVideo::encodeFrame( const Frame& sourceFrame, DataStream& codedFram
 	AVFrame* frame = avcodec_alloc_frame();
 #endif
 
-	AVCodecContext* codecContext = this->_codedDesc.getCodecContext();
+	AVCodecContext* codecContext = this->_codedDesc.getAVCodecContext();
 
 	// Set default frame parameters
 #if LIBAVCODEC_VERSION_MAJOR > 54
@@ -142,7 +142,7 @@ bool AvOutputVideo::encodeFrame( const Frame& sourceFrame, DataStream& codedFram
 
 bool AvOutputVideo::encodeFrame( DataStream& codedFrame )
 {
-	AVCodecContext* codecContext = _codedDesc.getCodecContext();
+	AVCodecContext* codecContext = _codedDesc.getAVCodecContext();
 
 	AVPacket packet;
 	av_init_packet( &packet );
@@ -191,7 +191,7 @@ void AvOutputVideo::setProfile( const Profile::ProfileDesc& desc, const avtransc
 	
 	static_cast<VideoCodec>( _codedDesc ).setImageParameters( frameDesc );
 
-	Context codecContext( _codedDesc.getCodecContext() );
+	Context codecContext( _codedDesc.getAVCodecContext() );
 	
 	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
 	{

@@ -18,8 +18,8 @@ AudioCodec::AudioCodec( const AVCodecID codecId )
 AudioCodec::AudioCodec( const ICodec& essenceDesc )
 	: ICodec( essenceDesc.getCodecId() )
 {
-	_codec = essenceDesc.getCodec();
-	_codecContext = essenceDesc.getCodecContext();
+	_codec = essenceDesc.getAVCodec();
+	_codecContext = essenceDesc.getAVCodecContext();
 }
 
 AudioFrameDesc AudioCodec::getFrameDesc() const

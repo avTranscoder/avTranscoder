@@ -17,10 +17,10 @@ void GeneratorAudio::setAudioDesc( const AudioCodec& audioDesc )
 {
 	_audioDesc = audioDesc;
 	
-	_frameDesc.setSampleRate  ( _audioDesc.getCodecContext()->sample_rate );
-	_frameDesc.setChannels    ( _audioDesc.getCodecContext()->channels );
+	_frameDesc.setSampleRate  ( _audioDesc.getAVCodecContext()->sample_rate );
+	_frameDesc.setChannels    ( _audioDesc.getAVCodecContext()->channels );
 	_frameDesc.setFps         ( 25.0 );
-	_frameDesc.setSampleFormat( _audioDesc.getCodecContext()->sample_fmt );
+	_frameDesc.setSampleFormat( _audioDesc.getAVCodecContext()->sample_fmt );
 }
 
 AudioCodec GeneratorAudio::getAudioCodec() const
