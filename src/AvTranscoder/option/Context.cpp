@@ -16,6 +16,16 @@ extern "C" {
 namespace avtranscoder
 {
 
+std::vector<Option> Context::getOptions()
+{
+	std::vector<Option> optionsArray;
+	for( std::map<std::string, Option>::iterator it = _options.begin(); it != _options.end(); ++it )
+	{
+		optionsArray.push_back( it->second );
+	}
+	return optionsArray;
+}
+
 void Context::loadOptions( void* av_class, int req_flags )
 {	
 	std::multimap<std::string, std::string> optionUnitToParentName;

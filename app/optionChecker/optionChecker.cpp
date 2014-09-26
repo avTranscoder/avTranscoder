@@ -1,13 +1,21 @@
-#include <AvTranscoder/option/OptionLoader.hpp>
+#include <AvTranscoder/util.hpp>
+#include <AvTranscoder/option/Context.hpp>
 #include <AvTranscoder/option/Option.hpp>
+
+extern "C" {
+#ifndef __STDC_CONSTANT_MACROS
+	#define __STDC_CONSTANT_MACROS
+#endif
+#include <libavformat/avformat.h>
+}
 
 #include <string>
 #include <iostream>
 #include <map>
 #include <vector>
-#include <utility> //pair
+#include <utility>
 
-void displayOptions( avtranscoder::OptionLoader::OptionArray& options )
+void displayOptions( std::vector<avtranscoder::Option>& options )
 {
 	for( auto option : options )
 	{
@@ -60,37 +68,39 @@ void displayOptions( avtranscoder::OptionLoader::OptionArray& options )
 	}
 }
 
-void optionChecker( const std::string& inputfilename )
-{	
-	avtranscoder::OptionLoader optionLoader;
-	
-	//avtranscoder::OptionLoader::OptionArray optionsArray = optionLoader.loadOptions( AV_OPT_FLAG_AUDIO_PARAM );
-	avtranscoder::OptionLoader::OptionMap optionsMap = optionLoader.loadOutputFormatOptions();
-	
-	//displayOptions( optionsArray );
-	for( avtranscoder::OptionLoader::OptionMap::iterator it = optionsMap.begin();
-		it != optionsMap.end();
-		++it )
-	{
-		std::cout << "----- " << it->first << " -----" << std::endl;
-		displayOptions( it->second );
-	}
+void optionChecker()
+{
+	// format options
+	AVFormatContext* avFormatContext = avformat_alloc_context();
+	avtranscoder::Context formatContext( avFormatContext );
+	std::vector<avtranscoder::Option> formatOptions = formatContext.getOptions();
+	displayOptions( formatOptions );
+
+	// pixel formats
+//	std::vector<std::string> pixelFormats = avtranscoder::getPixelFormats();
+//	for( size_t i = 0; i < pixelFormats.size(); ++i )
+//	{
+//		std::cout << "----- " << pixelFormats[i] << " -----" << std::endl;
+//	}
+
+	// options per format
+//	std::map< std::string, std::vector<avtranscoder::Option> > optionsPerFormat = avtranscoder::getOutputFormatOptions();
+//	for( std::map< std::string, std::vector<avtranscoder::Option> >::iterator it = optionsPerFormat.begin();
+//		it != optionsPerFormat.end();
+//		++it )
+//	{
+//		std::cout << "----- " << it->first << " -----" << std::endl;
+//		displayOptions( it->second );
+//	}
 }
 
 int main( int argc, char** argv )
 {
-	if( argc <= 1 )
-	{
-		std::cout << "audiorewrapper require a media filename" << std::endl;
-		std::cout << "example: audioWrap file.ext" << std::endl;
-		return( -1 );
-	}
-
 	std::cout << "start ..." << std::endl;
 
 	try
 	{
-		optionChecker( argv[1] );
+		optionChecker();
 	}
 	catch( std::exception &e )
 	{
