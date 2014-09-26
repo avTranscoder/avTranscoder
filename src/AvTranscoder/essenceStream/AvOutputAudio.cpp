@@ -182,7 +182,7 @@ void AvOutputAudio::setProfile( const Profile::ProfileDesc& desc, const AudioFra
 		throw std::runtime_error( "The profile " + desc.find( Profile::avProfileIdentificatorHuman )->second + " is invalid." );
 	}
 	
-	_codedDesc.setCodec( desc.find( Profile::avProfileCodec )->second );
+	_codedDesc.setEncoderCodec( desc.find( Profile::avProfileCodec )->second );
 	
 	static_cast<AudioCodec>( _codedDesc ).setAudioParameters( frameDesc );
 

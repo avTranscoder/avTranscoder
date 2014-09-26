@@ -10,14 +10,14 @@ ICodec::ICodec( const std::string& codecName )
 	, _codecContext( NULL )
 {
 	if( codecName.size() )
-		setCodec( codecName );
+		setEncoderCodec( codecName );
 }
 
 ICodec::ICodec( const AVCodecID codecId )
 	: _codec( NULL )
 	, _codecContext( NULL )
 {
-	setCodec( codecId );
+	setEncoderCodec( codecId );
 }
 
 std::string ICodec::getCodecName() const
@@ -38,14 +38,14 @@ int ICodec::getLatency()  const
 	return _codecContext->delay;
 }
 
-void ICodec::setCodec( const std::string& codecName )
+void ICodec::setEncoderCodec( const std::string& codecName )
 {
 	avcodec_register_all();  // Warning: should be called only once
 	_codec = avcodec_find_encoder_by_name( codecName.c_str() );
 	initCodecContext();
 }
 
-void ICodec::setCodec( const AVCodecID codecId )
+void ICodec::setEncoderCodec( const AVCodecID codecId )
 {
 	avcodec_register_all();  // Warning: should be called only once
 	_codec = avcodec_find_encoder( codecId );
