@@ -31,13 +31,30 @@ SET(CPACK_DEB_COMPONENT_INSTALL 1)
 set(CPACK_INSTALL_PREFIX "/usr")
 set(CPACK_PACKAGING_INSTALL_PREFIX "/usr")
 
+
+set(CPACK_GENERATOR
+	"DEB")
+
+set(CPACK_DEBIAN_PACKAGE_MAINTAINER
+	"Marc-Antoine ARNAUD")
+
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY
+	"C++ API for LibAV / FFMpeg - provides the high level API to re-wrap or transcode media easily.")
+
+set(CPACK_DEBIAN_PACKAGE_DEPENDS
+	"${CPACK_DEBIAN_PACKAGE_AUTO_DEPENDS}, libavutil, libavcodec, libavformat, libavdevice, libswscale, libavresample")
+
+set(CPACK_COMPONENT_DEV_DESCRIPTION
+   "C/C++ header files for use with avtranscoder")
+
+# interconnected dependencies
+# set(CPACK_COMPONENT_TOOLS_DEPENDS lib)
+# set(CPACK_COMPONENT_DEV_DEPENDS lib)
+# set(CPACK_COMPONENT_PYTHON_DEPENDS lib)
+# set(CPACK_COMPONENT_JAVA_DEPENDS lib)
+
 add_subdirectory(src)
 add_subdirectory(app)
 
-SET(CPACK_GENERATOR "DEB")
-SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Marc-Antoine ARNAUD")
-SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "C++ API for LibAV / FFMpeg - provides the high level API to re-wrap or transcode media easily.")
-#SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libc6 (>= 2.3.1-6), libgcc1 (>= 1:3.4.2-12)")
- 
-INCLUDE(CPack)
+include(CPack)
 
