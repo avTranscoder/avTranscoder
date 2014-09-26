@@ -1,13 +1,7 @@
 #include <AvTranscoder/util.hpp>
-#include <AvTranscoder/option/Context.hpp>
+#include <AvTranscoder/option/context.hpp>
 #include <AvTranscoder/option/Option.hpp>
-
-extern "C" {
-#ifndef __STDC_CONSTANT_MACROS
-	#define __STDC_CONSTANT_MACROS
-#endif
-#include <libavformat/avformat.h>
-}
+#include <AvTranscoder/file/InputFile.hpp>
 
 #include <string>
 #include <iostream>
@@ -68,13 +62,19 @@ void displayOptions( std::vector<avtranscoder::Option>& options )
 	}
 }
 
-void optionChecker()
+void optionChecker( const std::string& inputfilename )
 {
+	avtranscoder::InputFile file( inputfilename );
+
 	// format options
-	AVFormatContext* avFormatContext = avformat_alloc_context();
-	avtranscoder::Context formatContext( avFormatContext );
+	avtranscoder::Context formatContext( &file.getFormatContext() );
 	std::vector<avtranscoder::Option> formatOptions = formatContext.getOptions();
 	displayOptions( formatOptions );
+
+	// codec options
+	avtranscoder::CodecContext codecContext( AV_OPT_FLAG_DECODING_PARAM | AV_OPT_FLAG_AUDIO_PARAM );
+	std::vector<avtranscoder::Option> codecOptions = codecContext.getOptions();
+	displayOptions( codecOptions );
 
 	// pixel formats
 //	std::vector<std::string> pixelFormats = avtranscoder::getPixelFormats();
@@ -98,9 +98,16 @@ int main( int argc, char** argv )
 {
 	std::cout << "start ..." << std::endl;
 
+	if( argc <= 1 )
+	{
+		std::cout << "audiorewrapper require a media filename" << std::endl;
+		std::cout << "example: audioWrap file.ext" << std::endl;
+		return( -1 );
+	}
+
 	try
 	{
-		optionChecker();
+		optionChecker( argv[1] );
 	}
 	catch( std::exception &e )
 	{

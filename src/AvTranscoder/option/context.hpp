@@ -44,8 +44,32 @@ private:
 	void loadOptions( void* av_class, int req_flags );
 
 private:
-	void* _avContext;  ///< Has link (no ownership)
 	std::map<std::string, Option> _options;
+
+protected:
+	void* _avContext;  ///< Has link (no ownership)
+};
+
+/**
+ * @brief Wrapper of an AVFormatContext.
+ * @note The AVFormatContext is allocated and free by the class. It is not the case of the base class.
+ */
+class FormatContext : public Context
+{
+public:
+	FormatContext( int req_flags = 0 );
+	~FormatContext();
+};
+
+/**
+ * @brief Wrapper of an AVCodecContext.
+ * @note The AVCodecContext is allocated and free by the class. It is not the case of the base class.
+ */
+class CodecContext : public Context
+{
+public:
+	CodecContext( int req_flags = 0 );
+	~CodecContext();
 };
 
 }

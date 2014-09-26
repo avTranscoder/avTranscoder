@@ -1,6 +1,6 @@
 #include "AvOutputAudio.hpp"
 
-#include <AvTranscoder/option/Context.hpp>
+#include <AvTranscoder/option/context.hpp>
 
 extern "C" {
 #ifndef __STDC_CONSTANT_MACROS

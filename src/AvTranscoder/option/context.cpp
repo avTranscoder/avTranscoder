@@ -1,9 +1,12 @@
-#include "Context.hpp"
+#include "context.hpp"
 
 extern "C" {
 #ifndef __STDC_CONSTANT_MACROS
 	#define __STDC_CONSTANT_MACROS
 #endif
+#include <libavformat/avformat.h>
+#include <libavcodec/avcodec.h>
+#include <libavutil/mem.h>
 #include <libavutil/opt.h>
 }
 
@@ -90,6 +93,26 @@ void Context::loadOptions( void* av_class, int req_flags )
 			std::cout << "Warning: Can't find a choice option for " << itOption->getName() << std::endl;
 		}
 	}
+}
+
+FormatContext::FormatContext( int req_flags )
+	: Context( avformat_alloc_context(), req_flags )
+{}
+
+FormatContext::~FormatContext()
+{
+	avformat_free_context( static_cast<AVFormatContext*>( _avContext ) );
+}
+
+CodecContext::CodecContext( int req_flags )
+	: Context( avcodec_alloc_context3( NULL ), req_flags )
+{
+}
+
+CodecContext::~CodecContext()
+{
+	avcodec_close( static_cast<AVCodecContext*>( _avContext ) );
+	av_free( _avContext );
 }
 
 }
