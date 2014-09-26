@@ -4,7 +4,7 @@
 #include "IInputEssence.hpp"
 
 #include <AvTranscoder/common.hpp>
-#include <AvTranscoder/codedStructures/AudioDesc.hpp>
+#include <AvTranscoder/codec/AudioCodec.hpp>
 #include <AvTranscoder/essenceStructures/Frame.hpp>
 
 namespace avtranscoder
@@ -18,9 +18,9 @@ public:
 	~GeneratorAudio( );
 
 	// Stream properties
-	void setAudioDesc( const AudioDesc& audioDesc );
+	void setAudioDesc( const AudioCodec& audioDesc );
 
-	AudioDesc getAudioDesc() const;
+	AudioCodec getAudioCodec() const;
 	
 	void setup() {}
 	
@@ -30,7 +30,7 @@ public:
 	bool readNextFrame( Frame& frameBuffer, const size_t subStreamIndex );
 
 private:
-	AudioDesc      _audioDesc;
+	AudioCodec      _audioDesc;
 	AudioFrameDesc _frameDesc;
 	
 	Frame*         _inputFrame;

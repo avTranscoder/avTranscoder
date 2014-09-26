@@ -25,12 +25,12 @@ bool AvOutputStream::wrap( DataStream& data )
 	return _outputFile->wrap( data, _streamIndex );
 }
 
-VideoDesc AvOutputStream::getVideoDesc() const
+VideoCodec AvOutputStream::getVideoCodec() const
 {
 	return _videoDesc;
 }
 
-AudioDesc AvOutputStream::getAudioDesc() const
+AudioCodec AvOutputStream::getAudioCodec() const
 {
 	return _audioDesc;
 }

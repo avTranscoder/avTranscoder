@@ -13,7 +13,7 @@ GeneratorAudio::~GeneratorAudio( )
 {
 }
 
-void GeneratorAudio::setAudioDesc( const AudioDesc& audioDesc )
+void GeneratorAudio::setAudioDesc( const AudioCodec& audioDesc )
 {
 	_audioDesc = audioDesc;
 	
@@ -23,7 +23,7 @@ void GeneratorAudio::setAudioDesc( const AudioDesc& audioDesc )
 	_frameDesc.setSampleFormat( _audioDesc.getCodecContext()->sample_fmt );
 }
 
-AudioDesc GeneratorAudio::getAudioDesc() const
+AudioCodec GeneratorAudio::getAudioCodec() const
 {
 	return _audioDesc;
 }

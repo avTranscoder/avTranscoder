@@ -2,8 +2,8 @@
 #define _AV_TRANSCODER_ESSENCE_STREAM_IOUTPUT_ESSENCE_HPP_
 
 #include <AvTranscoder/essenceStructures/Frame.hpp>
-#include <AvTranscoder/codedStructures/DataStream.hpp>
-#include <AvTranscoder/codedStructures/CodedDesc.hpp>
+#include <AvTranscoder/codec/DataStream.hpp>
+#include <AvTranscoder/codec/ICodec.hpp>
 
 namespace avtranscoder
 {
@@ -38,10 +38,10 @@ public:
 	 */
 	virtual bool encodeFrame( DataStream& codedFrame ) = 0;
 
-	CodedDesc& getCodedDesc() { return _codedDesc; }
+	ICodec& getCodedDesc() { return _codedDesc; }
 
 protected:
-	CodedDesc _codedDesc;
+	ICodec _codedDesc;
 
 };
 

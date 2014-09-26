@@ -26,14 +26,14 @@ public:
 	bool wrap( DataStream& data );
 
 	// Stream propeerties
-	VideoDesc getVideoDesc() const;
-	AudioDesc getAudioDesc() const;
+	VideoCodec getVideoCodec() const;
+	AudioCodec getAudioCodec() const;
 
 private:
 	OutputFile*      _outputFile;
 
-	VideoDesc        _videoDesc;
-	AudioDesc        _audioDesc;
+	VideoCodec        _videoDesc;
+	AudioCodec        _audioDesc;
 
 	size_t           _streamIndex;
 };

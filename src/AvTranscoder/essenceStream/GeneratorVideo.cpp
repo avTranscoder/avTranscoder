@@ -18,13 +18,13 @@ GeneratorVideo::~GeneratorVideo( )
 {
 }
 
-void GeneratorVideo::setVideoDesc( const VideoDesc& videoDesc )
+void GeneratorVideo::setVideoDesc( const VideoCodec& videoDesc )
 {
 	_videoDesc = videoDesc;
 	_videoFrameDesc = _videoDesc.getVideoFrameDesc();
 }
 
-VideoDesc GeneratorVideo::getVideoDesc() const
+VideoCodec GeneratorVideo::getVideoCodec() const
 {
 	return _videoDesc;
 }

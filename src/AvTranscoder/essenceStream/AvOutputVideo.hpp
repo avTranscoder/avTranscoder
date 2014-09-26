@@ -3,8 +3,8 @@
 
 #include "IOutputEssence.hpp"
 
-#include <AvTranscoder/codedStructures/DataStream.hpp>
-#include <AvTranscoder/codedStructures/VideoDesc.hpp>
+#include <AvTranscoder/codec/DataStream.hpp>
+#include <AvTranscoder/codec/VideoCodec.hpp>
 #include <AvTranscoder/essenceStructures/VideoFrame.hpp>
 
 #include <AvTranscoder/Profile.hpp>
@@ -31,7 +31,7 @@ public:
 
 	void setProfile( const Profile::ProfileDesc& desc, const avtranscoder::VideoFrameDesc& frameDesc );
 	
-	VideoDesc getVideoDesc() { return _codedDesc; }
+	VideoCodec getVideoCodec() { return _codedDesc; }
 };
 
 }

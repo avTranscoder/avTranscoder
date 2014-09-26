@@ -3,9 +3,9 @@
 
 #include <AvTranscoder/common.hpp>
 
-#include <AvTranscoder/codedStructures/DataStream.hpp>
-#include <AvTranscoder/codedStructures/AudioDesc.hpp>
-#include <AvTranscoder/codedStructures/VideoDesc.hpp>
+#include <AvTranscoder/codec/DataStream.hpp>
+#include <AvTranscoder/codec/AudioCodec.hpp>
+#include <AvTranscoder/codec/VideoCodec.hpp>
 
 #include <AvTranscoder/codedStream/AvInputStream.hpp>
 

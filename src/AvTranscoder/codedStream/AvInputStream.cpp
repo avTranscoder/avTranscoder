@@ -85,7 +85,7 @@ void AvInputStream::addPacket( AVPacket& packet )
 	// std::cout << this << " buffer size " << _streamCache.size() << std::endl;
 }
 
-VideoDesc AvInputStream::getVideoDesc() const
+VideoCodec AvInputStream::getVideoCodec() const
 {
 	assert( _streamIndex <= _inputFile->getFormatContext().nb_streams );
 
@@ -96,7 +96,7 @@ VideoDesc AvInputStream::getVideoDesc() const
 
 	AVCodecContext* codecContext = _inputFile->getFormatContext().streams[_streamIndex]->codec;
 
-	VideoDesc desc( codecContext->codec_id );
+	VideoCodec desc( codecContext->codec_id );
 
 	desc.setImageParameters( codecContext->width, codecContext->height, codecContext->pix_fmt );
 	desc.setTimeBase( codecContext->time_base.num, codecContext->time_base.den, codecContext->ticks_per_frame );
@@ -104,7 +104,7 @@ VideoDesc AvInputStream::getVideoDesc() const
 	return desc;
 }
 
-AudioDesc AvInputStream::getAudioDesc() const
+AudioCodec AvInputStream::getAudioCodec() const
 {
 	assert( _streamIndex <= _inputFile->getFormatContext().nb_streams );
 
@@ -115,16 +115,16 @@ AudioDesc AvInputStream::getAudioDesc() const
 
 	AVCodecContext* codecContext = _inputFile->getFormatContext().streams[_streamIndex]->codec;
 
-	AudioDesc desc( codecContext->codec_id );
+	AudioCodec desc( codecContext->codec_id );
 
 	desc.setAudioParameters( codecContext->sample_rate, codecContext->channels, codecContext->sample_fmt );
 
 	return desc;
 }
 
-DataDesc AvInputStream::getDataDesc() const
+DataCodec AvInputStream::getDataCodec() const
 {
-	DataDesc desc;
+	DataCodec desc;
 	return desc;
 }
 

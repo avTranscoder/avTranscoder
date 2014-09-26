@@ -184,7 +184,7 @@ void AvOutputAudio::setProfile( const Profile::ProfileDesc& desc, const AudioFra
 	
 	_codedDesc.setCodec( desc.find( Profile::avProfileCodec )->second );
 	
-	static_cast<AudioDesc>( _codedDesc ).setAudioParameters( frameDesc );
+	static_cast<AudioCodec>( _codedDesc ).setAudioParameters( frameDesc );
 
 	Context codecContext( _codedDesc.getCodecContext() );
 	

@@ -11,14 +11,14 @@ class AVCodecContext;
 namespace avtranscoder
 {
 
-class AvExport CodedDesc
+class AvExport ICodec
 {
 public:
-	CodedDesc( const std::string& codecName );
-	CodedDesc( const AVCodecID codecId );
-	CodedDesc( AVCodec& avCodec, AVCodecContext& avCodecContext );
+	ICodec( const std::string& codecName );
+	ICodec( const AVCodecID codecId );
+	ICodec( AVCodec& avCodec, AVCodecContext& avCodecContext );
 	
-	virtual ~CodedDesc() {}
+	virtual ~ICodec() {};
 	
 	std::string getCodecName()  const;
 	AVCodecID   getCodecId()  const;
@@ -39,8 +39,8 @@ private:
 	void checkError( int error );
 
 protected:
-	AVCodec*        _codec;
-	AVCodecContext* _codecContext;
+	AVCodec*        _codec; ///< Codec abstract description
+	AVCodecContext* _codecContext; ///< Full codec instance description
 };
 
 }

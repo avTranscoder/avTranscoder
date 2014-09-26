@@ -3,7 +3,7 @@
 
 #include "IInputStream.hpp"
 
-#include <AvTranscoder/codedStructures/DataStream.hpp>
+#include <AvTranscoder/codec/DataStream.hpp>
 
 struct AVStream;
 
@@ -31,9 +31,9 @@ public:
 	bool readNextPacket( DataStream& data );
 
 	// Stream properties
-	VideoDesc getVideoDesc() const;
-	AudioDesc getAudioDesc() const;
-	DataDesc  getDataDesc()  const;
+	VideoCodec getVideoCodec() const;
+	AudioCodec getAudioCodec() const;
+	DataCodec  getDataCodec()  const;
 
 	AVMediaType getStreamType() const;
 
@@ -54,8 +54,8 @@ private:
 	InputFile*       _inputFile;
 	std::vector<DataStream> _streamCache;
 
-	VideoDesc        _videoDesc;
-	AudioDesc        _audioDesc;
+	VideoCodec        _videoDesc;
+	AudioCodec        _audioDesc;
 
 	int              _packetDuration;
 	size_t           _streamIndex;

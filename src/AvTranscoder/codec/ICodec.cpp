@@ -1,11 +1,11 @@
-#include "CodedDesc.hpp"
+#include "ICodec.hpp"
 
 #include <stdexcept>
 #include <cassert>
 
 namespace avtranscoder {
 
-CodedDesc::CodedDesc( const std::string& codecName )
+ICodec::ICodec( const std::string& codecName )
 	: _codec( NULL )
 	, _codecContext( NULL )
 {
@@ -13,53 +13,53 @@ CodedDesc::CodedDesc( const std::string& codecName )
 		setCodec( codecName );
 }
 
-CodedDesc::CodedDesc( const AVCodecID codecId )
+ICodec::ICodec( const AVCodecID codecId )
 	: _codec( NULL )
 	, _codecContext( NULL )
 {
 	setCodec( codecId );
 }
 
-CodedDesc::CodedDesc( AVCodec& avCodec, AVCodecContext& avCodecContext )
+ICodec::ICodec( AVCodec& avCodec, AVCodecContext& avCodecContext )
 	: _codec( &avCodec )
 	, _codecContext( &avCodecContext )
 {
 	
 }
 
-std::string CodedDesc::getCodecName() const
+std::string ICodec::getCodecName() const
 {
 	assert( _codecContext != NULL );
 	return avcodec_descriptor_get( _codecContext->codec_id )->name;
 }
 
-AVCodecID CodedDesc::getCodecId() const
+AVCodecID ICodec::getCodecId() const
 {
 	assert( _codecContext != NULL );
 	return _codecContext->codec_id;
 }
 
-int CodedDesc::getLatency()  const
+int ICodec::getLatency()  const
 {
 	assert( _codecContext != NULL );
 	return _codecContext->delay;
 }
 
-void CodedDesc::setCodec( const std::string& codecName )
+void ICodec::setCodec( const std::string& codecName )
 {
 	avcodec_register_all();  // Warning: should be called only once
 	_codec = avcodec_find_encoder_by_name( codecName.c_str() );
 	initCodecContext();
 }
 
-void CodedDesc::setCodec( const AVCodecID codecId )
+void ICodec::setCodec( const AVCodecID codecId )
 {
 	avcodec_register_all();  // Warning: should be called only once
 	_codec = avcodec_find_encoder( codecId );
 	initCodecContext();
 }
 
-void CodedDesc::initCodecContext( )
+void ICodec::initCodecContext( )
 {
 	if( _codec == NULL )
 	{

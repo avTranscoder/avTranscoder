@@ -58,7 +58,7 @@ void AvInputAudio::setup()
 {
 	avcodec_register_all();
 
-	_codec = avcodec_find_decoder( _inputStream->getAudioDesc().getCodecId() );
+	_codec = avcodec_find_decoder( _inputStream->getAudioCodec().getCodecId() );
 	if( _codec == NULL )
 	{
 		throw std::runtime_error( "codec not supported" );
@@ -70,7 +70,7 @@ void AvInputAudio::setup()
 		throw std::runtime_error( "unable to find context for codec" );
 	}
 	
-	_codecContext->channels = _inputStream->getAudioDesc().getChannels();
+	_codecContext->channels = _inputStream->getAudioCodec().getChannels();
 	
 	int ret = avcodec_open2( _codecContext, _codec, NULL );
 

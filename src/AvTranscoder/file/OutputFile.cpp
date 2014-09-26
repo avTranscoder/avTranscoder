@@ -59,7 +59,7 @@ bool OutputFile::setup()
 	return _formatContext != NULL;
 }
 
-IOutputStream& OutputFile::addVideoStream( const VideoDesc& videoDesc )
+IOutputStream& OutputFile::addVideoStream( const VideoCodec& videoDesc )
 {
 	assert( _formatContext != NULL );
 
@@ -93,7 +93,7 @@ IOutputStream& OutputFile::addVideoStream( const VideoDesc& videoDesc )
 	return *_outputStreams.back();
 }
 
-IOutputStream& OutputFile::addAudioStream( const AudioDesc& audioDesc )
+IOutputStream& OutputFile::addAudioStream( const AudioCodec& audioDesc )
 {
 	assert( _formatContext != NULL );
 
@@ -112,7 +112,7 @@ IOutputStream& OutputFile::addAudioStream( const AudioDesc& audioDesc )
 	return *_outputStreams.back();
 }
 
-IOutputStream& OutputFile::addDataStream( const DataDesc& dataDesc )
+IOutputStream& OutputFile::addDataStream( const DataCodec& dataDesc )
 {
 	assert( _formatContext != NULL );
 

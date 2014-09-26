@@ -5,10 +5,10 @@
 
 #include <AvTranscoder/mediaProperty/mediaProperty.hpp>
 
-#include <AvTranscoder/codedStructures/DataStream.hpp>
-#include <AvTranscoder/codedStructures/VideoDesc.hpp>
-#include <AvTranscoder/codedStructures/AudioDesc.hpp>
-#include <AvTranscoder/codedStructures/DataDesc.hpp>
+#include <AvTranscoder/codec/DataStream.hpp>
+#include <AvTranscoder/codec/VideoCodec.hpp>
+#include <AvTranscoder/codec/AudioCodec.hpp>
+#include <AvTranscoder/codec/DataCodec.hpp>
 
 #include <AvTranscoder/codedStream/AvOutputStream.hpp>
 
@@ -53,21 +53,21 @@ public:
 	 * @note call setup() before adding any stream
 	 * @param videoDesc description of output stream
 	**/
-	virtual IOutputStream& addVideoStream( const VideoDesc& videoDesc );
+	virtual IOutputStream& addVideoStream( const VideoCodec& videoDesc );
 
 	/**
 	 * @brief Add an audio output stream using the description.
 	 * @note call setup() before adding any stream
 	 * @param audioDesc description of output stream
 	**/
-	virtual IOutputStream& addAudioStream( const AudioDesc& audioDesc );
+	virtual IOutputStream& addAudioStream( const AudioCodec& audioDesc );
 
 	/**
 	 * @brief Add an data output stream using the description.
 	 * @note call setup() before adding any stream
 	 * @param dataDesc description of output stream
 	**/
-	virtual IOutputStream& addDataStream( const DataDesc& dataDesc );
+	virtual IOutputStream& addDataStream( const DataCodec& dataDesc );
 
 	/**
 	 * @brief get the output stream description.

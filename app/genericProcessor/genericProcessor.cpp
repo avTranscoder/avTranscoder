@@ -55,7 +55,7 @@ void parseConfigFile( const std::string& configFilename, avtranscoder::Transcode
 					std::cout << std::endl;
 				}
 				
-				// dummy stream, need a CodedDesc (audio or video)
+				// dummy stream, need a ICodec (audio or video)
 				if( ! filename.length() )
 				{
 					// video
@@ -66,10 +66,10 @@ void parseConfigFile( const std::string& configFilename, avtranscoder::Transcode
 					avtranscoder::Pixel inputPixel( dummyPixelFormat );
 					imageDesc.setPixel( inputPixel );
 
-					avtranscoder::VideoDesc inputVideoDesc( dummyVideoCodec );
-					inputVideoDesc.setImageParameters( imageDesc );
+					avtranscoder::VideoCodec inputVideoCodec( dummyVideoCodec );
+					inputVideoCodec.setImageParameters( imageDesc );
 					
-					transcoder.add( filename, streamIndex, subStreamIndex, transcodeProfile, inputVideoDesc );
+					transcoder.add( filename, streamIndex, subStreamIndex, transcodeProfile, inputVideoCodec );
 				}
 				else
 				{

@@ -1,7 +1,7 @@
 #ifndef _AV_TRANSCODER_CODED_STRUCTURES_DATA_DESC_HPP_
 #define _AV_TRANSCODER_CODED_STRUCTURES_DATA_DESC_HPP_
 
-#include "CodedDesc.hpp"
+#include "ICodec.hpp"
 #include <AvTranscoder/common.hpp>
 
 #include <string>
@@ -9,12 +9,12 @@
 namespace avtranscoder
 {
 
-class AvExport DataDesc : public CodedDesc
+class AvExport DataCodec : public ICodec
 {
 public:
-	DataDesc( const std::string& codecName = "" );
-	DataDesc( const AVCodecID codecId );
-	DataDesc( const CodedDesc& essenceDesc );
+	DataCodec( const std::string& codecName = "" );
+	DataCodec( const AVCodecID codecId );
+	DataCodec( const ICodec& essenceDesc );
 };
 
 }

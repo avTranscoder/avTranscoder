@@ -28,13 +28,13 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 
 	// init video decoders
 	AvInputVideo inputVideo( input.getStream( 0 ) );
-	VideoFrameDesc VideoFrameDesc = input.getStream( 0 ).getVideoDesc().getVideoFrameDesc();
+	VideoFrameDesc VideoFrameDesc = input.getStream( 0 ).getVideoCodec().getVideoFrameDesc();
 	VideoFrame sourceImage( VideoFrameDesc );
 
 	// init video encoder
 	AvOutputVideo outputVideo;
 	outputVideo.setProfile( profile.getProfile( "xdcamhd422" ), VideoFrameDesc );
-	VideoFrame imageToEncode( outputVideo.getVideoDesc().getVideoFrameDesc() );
+	VideoFrame imageToEncode( outputVideo.getVideoCodec().getVideoFrameDesc() );
 	
 	DataStream codedImage;
 
@@ -49,7 +49,7 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 		exit( -1 );
 	}
 
-	of.addVideoStream( outputVideo.getVideoDesc() );
+	of.addVideoStream( outputVideo.getVideoCodec() );
 
 	of.beginWrap();
 

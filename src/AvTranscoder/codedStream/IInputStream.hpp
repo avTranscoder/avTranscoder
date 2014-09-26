@@ -1,10 +1,10 @@
 #ifndef _AV_TRANSCODER_CODED_STREAM_I_INPUT_STREAM_HPP_
 #define _AV_TRANSCODER_CODED_STREAM_I_INPUT_STREAM_HPP_
 
-#include <AvTranscoder/codedStructures/DataStream.hpp>
-#include <AvTranscoder/codedStructures/AudioDesc.hpp>
-#include <AvTranscoder/codedStructures/VideoDesc.hpp>
-#include <AvTranscoder/codedStructures/DataDesc.hpp>
+#include <AvTranscoder/codec/DataStream.hpp>
+#include <AvTranscoder/codec/AudioCodec.hpp>
+#include <AvTranscoder/codec/VideoCodec.hpp>
+#include <AvTranscoder/codec/DataCodec.hpp>
 
 namespace avtranscoder
 {
@@ -19,9 +19,9 @@ public:
 	virtual bool readNextPacket( DataStream& data ) = 0;
 
 	// Stream properties
-	virtual VideoDesc getVideoDesc() const = 0;
-	virtual AudioDesc getAudioDesc() const = 0;
-	virtual DataDesc  getDataDesc()  const = 0;
+	virtual VideoCodec getVideoCodec() const = 0;
+	virtual AudioCodec getAudioCodec() const = 0;
+	virtual DataCodec  getDataCodec()  const = 0;
 	
 	virtual AVMediaType getStreamType() const = 0;
 

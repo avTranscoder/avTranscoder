@@ -31,7 +31,7 @@ public:
 		
 		_inputVideo->setup();
 
-		_sourceImage = new avtranscoder::VideoFrame( _inputFile.getStream( _videoStream ).getVideoDesc().getVideoFrameDesc() );
+		_sourceImage = new avtranscoder::VideoFrame( _inputFile.getStream( _videoStream ).getVideoCodec().getVideoFrameDesc() );
 
 		_pixel.setBitsPerPixel( getComponents() * getBitDepth() );
 		_pixel.setComponents( getComponents() );

@@ -46,17 +46,17 @@ StreamTranscoder::StreamTranscoder(
 	{
 		case AVMEDIA_TYPE_VIDEO :
 		{
-			_outputStream = &outputFile.addVideoStream( _inputStream->getVideoDesc() );
+			_outputStream = &outputFile.addVideoStream( _inputStream->getVideoCodec() );
 			break;
 		}
 		case AVMEDIA_TYPE_AUDIO :
 		{
-			_outputStream = &outputFile.addAudioStream( _inputStream->getAudioDesc() );
+			_outputStream = &outputFile.addAudioStream( _inputStream->getAudioCodec() );
 			break;
 		}
 		case AVMEDIA_TYPE_DATA :
 		{
-			_outputStream = &outputFile.addDataStream( _inputStream->getDataDesc() );
+			_outputStream = &outputFile.addDataStream( _inputStream->getDataCodec() );
 			break;
 		}
 		default:
@@ -100,19 +100,19 @@ StreamTranscoder::StreamTranscoder(
 
 			_outputEssence = outputVideo;
 
-			VideoFrameDesc outputFrameDesc = _inputStream->getVideoDesc().getVideoFrameDesc();
+			VideoFrameDesc outputFrameDesc = _inputStream->getVideoCodec().getVideoFrameDesc();
 			outputFrameDesc.setParameters( profile );
 			outputVideo->setProfile( profile, outputFrameDesc );
 			
-			_outputStream = &outputFile.addVideoStream( outputVideo->getVideoDesc() );
+			_outputStream = &outputFile.addVideoStream( outputVideo->getVideoCodec() );
 
-			_sourceBuffer = new VideoFrame( _inputStream->getVideoDesc().getVideoFrameDesc() );
-			_frameBuffer = new VideoFrame( outputVideo->getVideoDesc().getVideoFrameDesc() );
+			_sourceBuffer = new VideoFrame( _inputStream->getVideoCodec().getVideoFrameDesc() );
+			_frameBuffer = new VideoFrame( outputVideo->getVideoCodec().getVideoFrameDesc() );
 			
 			_transform = new VideoEssenceTransform();
 
 			GeneratorVideo* generatorVideo = new GeneratorVideo();
-			generatorVideo->setVideoDesc( outputVideo->getVideoDesc() );
+			generatorVideo->setVideoDesc( outputVideo->getVideoCodec() );
 			_generatorEssence = generatorVideo;
 			
 			break;
@@ -126,7 +126,7 @@ StreamTranscoder::StreamTranscoder(
 
 			_outputEssence = outputAudio;
 			
-			AudioFrameDesc outputFrameDesc( _inputStream->getAudioDesc().getFrameDesc() );
+			AudioFrameDesc outputFrameDesc( _inputStream->getAudioCodec().getFrameDesc() );
 			outputFrameDesc.setParameters( profile );
 			if( subStreamIndex > -1 )
 			{
@@ -135,19 +135,19 @@ StreamTranscoder::StreamTranscoder(
 			}
 			outputAudio->setProfile( profile, outputFrameDesc );
 
-			_outputStream = &outputFile.addAudioStream( outputAudio->getAudioDesc() );
+			_outputStream = &outputFile.addAudioStream( outputAudio->getAudioCodec() );
 
-			AudioFrameDesc inputFrameDesc( _inputStream->getAudioDesc().getFrameDesc() );
+			AudioFrameDesc inputFrameDesc( _inputStream->getAudioCodec().getFrameDesc() );
 			if( subStreamIndex > -1 )
 				inputFrameDesc.setChannels( 1 );
 			
 			_sourceBuffer = new AudioFrame( inputFrameDesc );
-			_frameBuffer  = new AudioFrame( outputAudio->getAudioDesc().getFrameDesc() );
+			_frameBuffer  = new AudioFrame( outputAudio->getAudioCodec().getFrameDesc() );
 			
 			_transform = new AudioEssenceTransform();
 
 			GeneratorAudio* generatorAudio = new GeneratorAudio();
-			generatorAudio->setAudioDesc( outputAudio->getAudioDesc() );
+			generatorAudio->setAudioDesc( outputAudio->getAudioCodec() );
 			_generatorEssence = generatorAudio;
 
 			break;
@@ -193,13 +193,13 @@ StreamTranscoder::StreamTranscoder(
 		
 		_outputEssence = outputVideo;
 
-		VideoFrameDesc inputFrameDesc = static_cast<GeneratorVideo*>( _inputEssence )->getVideoDesc().getVideoFrameDesc();
+		VideoFrameDesc inputFrameDesc = static_cast<GeneratorVideo*>( _inputEssence )->getVideoCodec().getVideoFrameDesc();
 
 		VideoFrameDesc outputFrameDesc = inputFrameDesc;
 		outputFrameDesc.setParameters( profile );
 		outputVideo->setProfile( profile, outputFrameDesc );
 
-		_outputStream = &outputFile.addVideoStream( outputVideo->getVideoDesc() );
+		_outputStream = &outputFile.addVideoStream( outputVideo->getVideoCodec() );
 		_sourceBuffer = new VideoFrame( inputFrameDesc );
 		_frameBuffer  = new VideoFrame( outputFrameDesc );
 
@@ -216,13 +216,13 @@ StreamTranscoder::StreamTranscoder(
 
 		_outputEssence = outputAudio;
 
-		AudioFrameDesc inputFrameDesc = static_cast<GeneratorAudio*>( _inputEssence )->getAudioDesc().getFrameDesc();
+		AudioFrameDesc inputFrameDesc = static_cast<GeneratorAudio*>( _inputEssence )->getAudioCodec().getFrameDesc();
 
 		AudioFrameDesc outputFrameDesc = inputFrameDesc;
 		outputFrameDesc.setParameters( profile );
 		outputAudio->setProfile( profile, outputFrameDesc );
 
-		_outputStream = &outputFile.addAudioStream( outputAudio->getAudioDesc() );
+		_outputStream = &outputFile.addAudioStream( outputAudio->getAudioCodec() );
 		_sourceBuffer = new AudioFrame( inputFrameDesc );
 		_frameBuffer  = new AudioFrame( outputFrameDesc );
 

@@ -2,7 +2,7 @@
 #define _AV_TRANSCODER_CODED_STRUCTURES_AUDIO_DESC_HPP_
 
 #include <AvTranscoder/essenceStructures/AudioFrame.hpp>
-#include "CodedDesc.hpp"
+#include "ICodec.hpp"
 #include <AvTranscoder/common.hpp>
 
 #include <string>
@@ -12,12 +12,12 @@ class AVCodec;
 namespace avtranscoder
 {
 
-class AvExport AudioDesc : public CodedDesc
+class AvExport AudioCodec : public ICodec
 {
 public:
-	AudioDesc( const std::string& codecName = "" );
-	AudioDesc( const AVCodecID codecId );
-	AudioDesc( const CodedDesc& essenceDesc );
+	AudioCodec( const std::string& codecName = "" );
+	AudioCodec( const AVCodecID codecId );
+	AudioCodec( const ICodec& essenceDesc );
 
 	AudioFrameDesc getFrameDesc() const;
 	const size_t getSampleRate() const;

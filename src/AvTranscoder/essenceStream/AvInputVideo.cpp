@@ -57,7 +57,7 @@ void AvInputVideo::setup()
 {
 	av_register_all();
 
-	_codec = avcodec_find_decoder( _inputStream->getVideoDesc().getCodecId() );
+	_codec = avcodec_find_decoder( _inputStream->getVideoCodec().getCodecId() );
 	if( _codec == NULL )
 	{
 		throw std::runtime_error( "codec not supported" );
