@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8) 
 
-project(AvTranscoder)
+project(avtranscoder)
 
 # Set AvTranscoder versions
 set(AVTRANSCODER_VERSION_MAJOR "0")
@@ -26,5 +26,18 @@ else()
 endif()
 
 
+# CPack options
+SET(CPACK_DEB_COMPONENT_INSTALL 1)
+set(CPACK_INSTALL_PREFIX "/usr")
+set(CPACK_PACKAGING_INSTALL_PREFIX "/usr")
+
 add_subdirectory(src)
 add_subdirectory(app)
+
+SET(CPACK_GENERATOR "DEB")
+SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Marc-Antoine ARNAUD")
+SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "C++ API for LibAV / FFMpeg - provides the high level API to re-wrap or transcode media easily.")
+#SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libc6 (>= 2.3.1-6), libgcc1 (>= 1:3.4.2-12)")
+ 
+INCLUDE(CPack)
+

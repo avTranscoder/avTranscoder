@@ -37,20 +37,25 @@ target_link_libraries(avtranscoder-shared ${FFMPEG_LIBRARIES})
 ### Install AvTranscoder libs and include
 install(
 	DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/AvTranscoder"
-	DESTINATION "include/"
+	DESTINATION "include"
+        COMPONENT "dev"
 	FILES_MATCHING
 	PATTERN "*.hpp"
 	PATTERN "*.i"
 	PATTERN "Profiles" EXCLUDE
 )
-set(LIBRARY_OUTPUT_PATH "${PROJECT_BINARY_DIR}/lib")
+
+set(LIBRARY_OUTPUT_PATH "${PROJECT_BINARY_DIR}/lib" )
+
 install(
 	DIRECTORY "${LIBRARY_OUTPUT_PATH}"
-	DESTINATION "${CMAKE_INSTALL_PREFIX}"
+	DESTINATION "."
+        COMPONENT "lib"
 )
 
 ### SWIG
 find_package(SWIG)
+
 if(SWIG_FOUND)
 	# Load Modules/UseSWIG.cmake
 	include(${SWIG_USE_FILE})
@@ -96,6 +101,7 @@ if(SWIG_FOUND)
 			FILES ${AVTRANSCODER_PYTHON_BINDING_FILE}
 			RENAME "avtranscoder.py"
 			DESTINATION "lib/python${PYTHONLIBS_VERSION_STRING}/site-packages/avtranscoder/"
+                        COMPONENT python
 		)
 	else()
 		message("PYTHON not found, will not build python binding.")
@@ -135,7 +141,11 @@ if(SWIG_FOUND)
 		)
 
 		# Install jar file
-		install(FILES ${AVTRANSCODER_JAR_PATH}/${AVTRANSCODER_JAR_NAME} DESTINATION "share/java/")
+		install(
+                        FILES ${AVTRANSCODER_JAR_PATH}/${AVTRANSCODER_JAR_NAME}
+                        DESTINATION "share/java/"
+                        COMPONENT java
+                )
 	else()
 		message("JAVA not found, will not build java binding.")
 	endif()
