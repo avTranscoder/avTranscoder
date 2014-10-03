@@ -96,23 +96,28 @@ void Context::loadOptions( void* av_class, int req_flags )
 }
 
 FormatContext::FormatContext( int req_flags )
-	: Context( avformat_alloc_context(), req_flags )
-{}
+	: _avFormatContext( NULL )
+{
+	_avFormatContext = avformat_alloc_context();
+	loadOptions( _avFormatContext, req_flags );
+}
 
 FormatContext::~FormatContext()
 {
-	avformat_free_context( static_cast<AVFormatContext*>( _avContext ) );
+	avformat_free_context( _avFormatContext );
 }
 
 CodecContext::CodecContext( int req_flags )
-	: Context( avcodec_alloc_context3( NULL ), req_flags )
+	: _avCodecContext( NULL )
 {
+	_avCodecContext = avcodec_alloc_context3( NULL );
+	loadOptions( _avCodecContext, req_flags );
 }
 
 CodecContext::~CodecContext()
 {
-	avcodec_close( static_cast<AVCodecContext*>( _avContext ) );
-	av_free( _avContext );
+	avcodec_close( _avCodecContext );
+	av_free( _avCodecContext );
 }
 
 }

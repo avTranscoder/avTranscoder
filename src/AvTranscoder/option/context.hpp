@@ -8,6 +8,9 @@
 #include <string>
 #include <map>
 
+struct AVFormatContext;
+struct AVCodecContext;
+
 namespace avtranscoder
 {
 
@@ -18,6 +21,8 @@ namespace avtranscoder
 class Context
 {
 public:
+	Context() {}
+
 	/**
 	 * @param avContext: could be an AVFormatContext or an AVCodecContext.
 	 * @param req_flags: filter the AVOption loaded by the Context (default = 0: no flag restriction).
@@ -40,13 +45,11 @@ public:
 
 	Option& getOption( const std::string& optionName ) { return _options.at(optionName); }
 
-private:
+protected:
 	void loadOptions( void* av_class, int req_flags );
 
 private:
 	std::map<std::string, Option> _options;
-
-protected:
 	void* _avContext;  ///< Has link (no ownership)
 };
 
@@ -59,6 +62,9 @@ class FormatContext : public Context
 public:
 	FormatContext( int req_flags = 0 );
 	~FormatContext();
+
+private:
+	AVFormatContext* _avFormatContext;
 };
 
 /**
@@ -70,6 +76,9 @@ class CodecContext : public Context
 public:
 	CodecContext( int req_flags = 0 );
 	~CodecContext();
+	
+private:
+	AVCodecContext* _avCodecContext;
 };
 
 }
