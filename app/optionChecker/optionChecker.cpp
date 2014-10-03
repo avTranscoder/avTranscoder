@@ -9,7 +9,7 @@
 #include <vector>
 #include <utility>
 
-void displayOptions( std::vector<avtranscoder::Option>& options )
+void displayOptions( const std::vector<avtranscoder::Option>& options )
 {
 	for( auto option : options )
 	{
