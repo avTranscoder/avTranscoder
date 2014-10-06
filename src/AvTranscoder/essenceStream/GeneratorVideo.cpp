@@ -1,6 +1,6 @@
 #include "GeneratorVideo.hpp"
 
-#include <AvTranscoder/essenceTransform/VideoEssenceTransform.hpp>
+#include <AvTranscoder/transform/VideoTransform.hpp>
 
 namespace avtranscoder
 {
@@ -54,7 +54,7 @@ bool GeneratorVideo::readNextFrame( Frame& frameBuffer )
 		intermediateBuffer.getBuffer().resize( _videoFrameDesc.getDataSize() );
 		memset( intermediateBuffer.getPtr(), fillChar, _videoFrameDesc.getDataSize() );
 
-		VideoEssenceTransform videoEssenceTransform;
+		VideoTransform videoEssenceTransform;
 		videoEssenceTransform.convert( intermediateBuffer, frameBuffer );
 
 		return true;

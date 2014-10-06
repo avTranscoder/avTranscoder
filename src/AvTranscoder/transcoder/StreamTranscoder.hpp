@@ -15,7 +15,7 @@
 namespace avtranscoder
 {
 
-class IEssenceTransform;
+class ITransform;
 
 class StreamTranscoder
 {
@@ -86,7 +86,7 @@ private:
 	IInputEssence*  _currentEssence;
 	IOutputEssence* _outputEssence;
 
-	IEssenceTransform* _transform;
+	ITransform* _transform;
 
 	int  _subStreamIndex;
 

@@ -1,4 +1,4 @@
-#include "AudioEssenceTransform.hpp"
+#include "AudioTransform.hpp"
 
 #include <stdexcept>
 
@@ -33,13 +33,13 @@ extern "C" {
 namespace avtranscoder
 {
 
-AudioEssenceTransform::AudioEssenceTransform()
+AudioTransform::AudioTransform()
 	: _audioConvertContext( NULL )
 	, _isInit    ( false )
 {
 }
 
-bool AudioEssenceTransform::init( const Frame& srcFrame, const Frame& dstFrame )
+bool AudioTransform::init( const Frame& srcFrame, const Frame& dstFrame )
 {
 	const AudioFrame& src = static_cast<const AudioFrame&>( srcFrame );
 	const AudioFrame& dst = static_cast<const AudioFrame&>( dstFrame );
@@ -67,7 +67,7 @@ bool AudioEssenceTransform::init( const Frame& srcFrame, const Frame& dstFrame )
 	return true;
 }
 
-void AudioEssenceTransform::convert( const Frame& srcFrame, Frame& dstFrame )
+void AudioTransform::convert( const Frame& srcFrame, Frame& dstFrame )
 {
 	if( ! _isInit )
 		_isInit = init( srcFrame, dstFrame );

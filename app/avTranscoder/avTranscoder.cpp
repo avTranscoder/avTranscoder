@@ -8,7 +8,7 @@
 #include <AvTranscoder/essenceStream/AvInputVideo.hpp>
 #include <AvTranscoder/essenceStream/AvOutputAudio.hpp>
 #include <AvTranscoder/essenceStream/AvOutputVideo.hpp>
-#include <AvTranscoder/essenceTransform/VideoEssenceTransform.hpp>
+#include <AvTranscoder/transform/VideoTransform.hpp>
 
 #include <AvTranscoder/progress/ConsoleProgress.hpp>
 
@@ -53,7 +53,7 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 
 	of.beginWrap();
 
-	VideoEssenceTransform ct;
+	VideoTransform ct;
 
 
 	// Encodage/transcodage

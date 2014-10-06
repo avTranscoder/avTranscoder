@@ -10,8 +10,8 @@
 #include <AvTranscoder/essenceStream/GeneratorVideo.hpp>
 #include <AvTranscoder/essenceStream/GeneratorAudio.hpp>
 
-#include <AvTranscoder/essenceTransform/AudioEssenceTransform.hpp>
-#include <AvTranscoder/essenceTransform/VideoEssenceTransform.hpp>
+#include <AvTranscoder/transform/AudioTransform.hpp>
+#include <AvTranscoder/transform/VideoTransform.hpp>
 
 #include <cassert>
 #include <iostream>
@@ -109,7 +109,7 @@ StreamTranscoder::StreamTranscoder(
 			_sourceBuffer = new VideoFrame( _inputStream->getVideoCodec().getVideoFrameDesc() );
 			_frameBuffer = new VideoFrame( outputVideo->getVideoCodec().getVideoFrameDesc() );
 			
-			_transform = new VideoEssenceTransform();
+			_transform = new VideoTransform();
 
 			GeneratorVideo* generatorVideo = new GeneratorVideo();
 			generatorVideo->setVideoDesc( outputVideo->getVideoCodec() );
@@ -144,7 +144,7 @@ StreamTranscoder::StreamTranscoder(
 			_sourceBuffer = new AudioFrame( inputFrameDesc );
 			_frameBuffer  = new AudioFrame( outputAudio->getAudioCodec().getFrameDesc() );
 			
-			_transform = new AudioEssenceTransform();
+			_transform = new AudioTransform();
 
 			GeneratorAudio* generatorAudio = new GeneratorAudio();
 			generatorAudio->setAudioDesc( outputAudio->getAudioCodec() );
@@ -203,7 +203,7 @@ StreamTranscoder::StreamTranscoder(
 		_sourceBuffer = new VideoFrame( inputFrameDesc );
 		_frameBuffer  = new VideoFrame( outputFrameDesc );
 
-		_transform = new VideoEssenceTransform();
+		_transform = new VideoTransform();
 
 		_currentEssence = _inputEssence;		
 
@@ -226,7 +226,7 @@ StreamTranscoder::StreamTranscoder(
 		_sourceBuffer = new AudioFrame( inputFrameDesc );
 		_frameBuffer  = new AudioFrame( outputFrameDesc );
 
-		_transform = new AudioEssenceTransform();
+		_transform = new AudioTransform();
 		
 		_currentEssence = _inputEssence;
 		return;

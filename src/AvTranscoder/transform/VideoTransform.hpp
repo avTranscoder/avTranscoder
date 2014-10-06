@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "IEssenceTransform.hpp"
+#include "ITransform.hpp"
 
 #include <AvTranscoder/essenceStructures/Frame.hpp>
 
@@ -12,10 +12,10 @@ class SwsContext;
 namespace avtranscoder
 {
 
-class AvExport VideoEssenceTransform : public IEssenceTransform
+class AvExport VideoTransform : public ITransform
 {
 public:
-	VideoEssenceTransform();
+	VideoTransform();
 
 	void convert( const Frame& srcFrame, Frame& dstFrame );
 
