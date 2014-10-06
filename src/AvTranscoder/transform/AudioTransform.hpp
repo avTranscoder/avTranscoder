@@ -4,7 +4,7 @@
 #include "ITransform.hpp"
 
 #include <AvTranscoder/common.hpp>
-#include <AvTranscoder/essenceStructures/Frame.hpp>
+#include <AvTranscoder/frame/Frame.hpp>
 
 #ifdef AV_RESAMPLE_LIBRARY
  #define ResampleContext AVAudioResampleContext

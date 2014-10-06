@@ -2,7 +2,7 @@
 
 #include <AvTranscoder/option/context.hpp>
 #include <AvTranscoder/codedStream/AvInputStream.hpp>
-#include <AvTranscoder/essenceStructures/VideoFrame.hpp>
+#include <AvTranscoder/frame/VideoFrame.hpp>
 
 extern "C" {
 #ifndef __STDC_CONSTANT_MACROS

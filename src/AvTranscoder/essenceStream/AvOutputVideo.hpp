@@ -5,7 +5,7 @@
 
 #include <AvTranscoder/codec/DataStream.hpp>
 #include <AvTranscoder/codec/VideoCodec.hpp>
-#include <AvTranscoder/essenceStructures/VideoFrame.hpp>
+#include <AvTranscoder/frame/VideoFrame.hpp>
 
 #include <AvTranscoder/Profile.hpp>
 

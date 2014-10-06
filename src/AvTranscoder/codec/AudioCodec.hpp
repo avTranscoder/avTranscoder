@@ -1,7 +1,7 @@
 #ifndef _AV_TRANSCODER_CODED_STRUCTURES_AUDIO_DESC_HPP_
 #define _AV_TRANSCODER_CODED_STRUCTURES_AUDIO_DESC_HPP_
 
-#include <AvTranscoder/essenceStructures/AudioFrame.hpp>
+#include <AvTranscoder/frame/AudioFrame.hpp>
 #include "ICodec.hpp"
 #include <AvTranscoder/common.hpp>
 

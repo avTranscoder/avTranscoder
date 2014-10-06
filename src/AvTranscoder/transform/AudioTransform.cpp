@@ -28,7 +28,7 @@ extern "C" {
 #endif
 }
 
-#include <AvTranscoder/essenceStructures/AudioFrame.hpp>
+#include <AvTranscoder/frame/AudioFrame.hpp>
 
 namespace avtranscoder
 {

@@ -1,7 +1,7 @@
 #ifndef _AV_TRANSCODER_ESSENCE_STREAM_IOUTPUT_ESSENCE_HPP_
 #define _AV_TRANSCODER_ESSENCE_STREAM_IOUTPUT_ESSENCE_HPP_
 
-#include <AvTranscoder/essenceStructures/Frame.hpp>
+#include <AvTranscoder/frame/Frame.hpp>
 #include <AvTranscoder/codec/DataStream.hpp>
 #include <AvTranscoder/codec/ICodec.hpp>
 

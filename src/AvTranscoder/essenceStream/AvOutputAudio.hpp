@@ -5,7 +5,7 @@
 
 #include <AvTranscoder/codec/DataStream.hpp>
 #include <AvTranscoder/codec/AudioCodec.hpp>
-#include <AvTranscoder/essenceStructures/AudioFrame.hpp>
+#include <AvTranscoder/frame/AudioFrame.hpp>
 
 #include <AvTranscoder/Profile.hpp>
 
