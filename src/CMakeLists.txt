@@ -69,9 +69,11 @@ if(SWIG_FOUND)
 		# Swig flags
 		set(CMAKE_SWIG_FLAGS -c++ -fcompact)
 
-		# Create 'avtranscoder-py' shared lib
+		# Create '_avtranscoder' shared lib (python)
 		swig_add_module(avtranscoder-py python ${AVTRANSCODER_BINDING_FILE})
 		if(NOT APPLE)
+			# For Python binding, need to compile the wrapper into a lib called _<module_name>.so
+			set_target_properties(${SWIG_MODULE_avtranscoder-py_REAL_NAME} PROPERTIES OUTPUT_NAME _avtranscoder)
 			set_target_properties(${SWIG_MODULE_avtranscoder-py_REAL_NAME} PROPERTIES SOVERSION ${AVTRANSCODER_VERSION_MAJOR})
 			set_target_properties(${SWIG_MODULE_avtranscoder-py_REAL_NAME} PROPERTIES VERSION ${AVTRANSCODER_VERSION})
 		endif()
