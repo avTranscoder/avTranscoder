@@ -1,5 +1,9 @@
 #include "Option.hpp"
 
+extern "C" {
+#include <libavutil/error.h>
+}
+
 #include <sstream>
 #include <stdexcept>
 

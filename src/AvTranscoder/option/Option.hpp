@@ -1,10 +1,9 @@
 #ifndef _AV_TRANSCODER_OPTION_HPP
 #define	_AV_TRANSCODER_OPTION_HPP
 
+#include <AvTranscoder/common.hpp>
+
 extern "C" {
-#ifndef __STDC_CONSTANT_MACROS
-	#define __STDC_CONSTANT_MACROS
-#endif
 #include <libavutil/opt.h>
 }
 
