@@ -18,12 +18,12 @@ namespace avtranscoder
 {
 
 AvInputStream::AvInputStream( InputFile& inputFile, const size_t streamIndex )
-		: IInputStream( )
-		, _inputFile( &inputFile )
-		, _codec( NULL )
-		, _packetDuration( 0 )
-		, _streamIndex( streamIndex )
-		, _bufferized( false )
+	: IInputStream( )
+	, _inputFile( &inputFile )
+	, _codec( NULL )
+	, _packetDuration( 0 )
+	, _streamIndex( streamIndex )
+	, _bufferized( false )
 {
 	AVCodecContext* context = _inputFile->getFormatContext().streams[_streamIndex]->codec;
 
@@ -63,7 +63,15 @@ AvInputStream::AvInputStream( InputFile& inputFile, const size_t streamIndex )
 		default:
 			break;
 	}
-	
+}
+
+AvInputStream::AvInputStream( const AvInputStream& inputStream )
+	: IInputStream( )
+	, _inputFile( inputStream._inputFile )
+	, _codec( inputStream._codec )
+	, _streamIndex( inputStream._streamIndex )
+	, _bufferized( inputStream._bufferized )
+{
 }
 
 AvInputStream::~AvInputStream( )

@@ -14,16 +14,9 @@ class AvExport AvInputStream : public IInputStream
 {
 public:
 	AvInputStream( InputFile& inputFile, const size_t streamIndex );
-	~AvInputStream( );
+	AvInputStream( const AvInputStream& inputStream );
 
-	AvInputStream( const AvInputStream& inputStream )
-		: IInputStream( )
-		, _inputFile( inputStream._inputFile )
-		, _codec( inputStream._codec )
-		, _streamIndex( inputStream._streamIndex )
-		, _bufferized( inputStream._bufferized )
-	{
-	}
+	~AvInputStream( );
 
 	size_t getStreamIndex() const { return _streamIndex; }
 
