@@ -18,7 +18,7 @@ def testAddMetadataDate():
 	# add one metadata
 	ouputFile.addMetadata( "date", "metadata_to_check" )
 
-	progress = av.ProgressListener()
+	progress = av.NoDisplayProgress()
 	transcoder.process( progress )
 
 	inputFile = av.InputFile( outputFileName )
@@ -42,7 +42,7 @@ def testAddMetadataPlop():
 	# add one metadata
 	ouputFile.addMetadata( "plop", "metadata_to_check" )
 
-	progress = av.ProgressListener()
+	progress = av.NoDisplayProgress()
 	transcoder.process( progress )
 
 	inputFile = av.InputFile( outputFileName )
