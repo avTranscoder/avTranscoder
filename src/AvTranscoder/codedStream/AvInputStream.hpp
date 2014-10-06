@@ -2,7 +2,6 @@
 #define _AV_TRANSCODER_CODED_STREAM_AV_INPUT_STREAM_HPP_
 
 #include "IInputStream.hpp"
-#include <AvTranscoder/frame/Frame.hpp>
 
 struct AVStream;
 
@@ -20,6 +19,7 @@ public:
 	AvInputStream( const AvInputStream& inputStream )
 		: IInputStream( )
 		, _inputFile( inputStream._inputFile )
+		, _codec( inputStream._codec )
 		, _streamIndex( inputStream._streamIndex )
 		, _bufferized( inputStream._bufferized )
 	{
@@ -30,9 +30,9 @@ public:
 	bool readNextPacket( CodedData& data );
 
 	// Stream properties
-	VideoCodec getVideoCodec() const;
-	AudioCodec getAudioCodec() const;
-	DataCodec  getDataCodec()  const;
+	VideoCodec& getVideoCodec();
+	AudioCodec& getAudioCodec();
+	DataCodec& getDataCodec();
 
 	AVMediaType getStreamType() const;
 
@@ -53,8 +53,7 @@ private:
 	InputFile*       _inputFile;
 	std::vector<CodedData> _streamCache;
 
-	VideoCodec        _videoDesc;
-	AudioCodec        _audioDesc;
+	ICodec* _codec;  ///< Has ownership
 
 	int              _packetDuration;
 	size_t           _streamIndex;

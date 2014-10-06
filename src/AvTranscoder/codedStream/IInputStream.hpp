@@ -19,9 +19,9 @@ public:
 	virtual bool readNextPacket( CodedData& data ) = 0;
 
 	// Stream properties
-	virtual VideoCodec getVideoCodec() const = 0;
-	virtual AudioCodec getAudioCodec() const = 0;
-	virtual DataCodec  getDataCodec()  const = 0;
+	virtual VideoCodec& getVideoCodec() = 0;
+	virtual AudioCodec& getAudioCodec() = 0;
+	virtual DataCodec& getDataCodec() = 0;
 	
 	virtual AVMediaType getStreamType() const = 0;
 
