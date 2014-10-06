@@ -1,57 +1,58 @@
 %module AvTranscoder
 
+%module(directors="1") AvTranscoder
+
 %include "std_string.i"
 %include "std_vector.i"
 %include "std_pair.i"
 %include "std_map.i"
 
 
-%include "AvTranscoder/avException.i"
+%include "AvTranscoder/swig/avException.i"
+%include "AvTranscoder/swig/avExport.i"
 
 %{
 #include <AvTranscoder/common.hpp>
 
 #include <AvTranscoder/Profile.hpp>
 
-#include <AvTranscoder/EssenceStructures/Pixel.hpp>
-#include <AvTranscoder/EssenceStructures/Frame.hpp>
-#include <AvTranscoder/EssenceStructures/VideoFrame.hpp>
-#include <AvTranscoder/EssenceStructures/AudioFrame.hpp>
-	
-#include <AvTranscoder/CodedStructures/CodedDesc.hpp>
-#include <AvTranscoder/CodedStructures/VideoDesc.hpp>
-#include <AvTranscoder/CodedStructures/AudioDesc.hpp>
-#include <AvTranscoder/CodedStructures/DataDesc.hpp>
-#include <AvTranscoder/CodedStructures/DataStream.hpp>
+#include <AvTranscoder/essenceStructures/Pixel.hpp>
+#include <AvTranscoder/essenceStructures/Frame.hpp>
+#include <AvTranscoder/essenceStructures/VideoFrame.hpp>
+#include <AvTranscoder/essenceStructures/AudioFrame.hpp>
 
-#include <AvTranscoder/Metadatas/MediaMetadatasStructures.hpp>
+#include <AvTranscoder/codedStructures/CodedDesc.hpp>
+#include <AvTranscoder/codedStructures/VideoDesc.hpp>
+#include <AvTranscoder/codedStructures/AudioDesc.hpp>
+#include <AvTranscoder/codedStructures/DataDesc.hpp>
+#include <AvTranscoder/codedStructures/DataStream.hpp>
+
+#include <AvTranscoder/mediaProperty/mediaProperty.hpp>
 
 #include <AvTranscoder/Profile.hpp>
 
-#include <AvTranscoder/CodedStream/OutputStream.hpp>
-#include <AvTranscoder/CodedStream/AvOutputStream.hpp>
+#include <AvTranscoder/codedStream/IOutputStream.hpp>
+#include <AvTranscoder/codedStream/AvOutputStream.hpp>
 
-#include <AvTranscoder/CodedStream/InputStream.hpp>
-#include <AvTranscoder/CodedStream/AvInputStream.hpp>
+#include <AvTranscoder/codedStream/IInputStream.hpp>
+#include <AvTranscoder/codedStream/AvInputStream.hpp>
 
-#include <AvTranscoder/EssenceStream/OutputEssence.hpp>
-#include <AvTranscoder/EssenceStream/OutputAudio.hpp>
-#include <AvTranscoder/EssenceStream/OutputVideo.hpp>
+#include <AvTranscoder/essenceStream/IOutputEssence.hpp>
+#include <AvTranscoder/essenceStream/AvOutputAudio.hpp>
+#include <AvTranscoder/essenceStream/AvOutputVideo.hpp>
 
-#include <AvTranscoder/EssenceStream/InputEssence.hpp>
-#include <AvTranscoder/EssenceStream/InputAudio.hpp>
-#include <AvTranscoder/EssenceStream/InputVideo.hpp>
+#include <AvTranscoder/essenceStream/IInputEssence.hpp>
+#include <AvTranscoder/essenceStream/AvInputAudio.hpp>
+#include <AvTranscoder/essenceStream/AvInputVideo.hpp>
 
-#include <AvTranscoder/File/InputFile.hpp>
-#include <AvTranscoder/File/OutputFile.hpp>
+#include <AvTranscoder/file/InputFile.hpp>
+#include <AvTranscoder/file/OutputFile.hpp>
 
-#include <AvTranscoder/Transcoder/StreamTranscoder.hpp>
-#include <AvTranscoder/Transcoder/Transcoder.hpp>
-
-
+#include <AvTranscoder/transcoder/StreamTranscoder.hpp>
+#include <AvTranscoder/transcoder/Transcoder.hpp>
 %}
 
-%include "AvTranscoder/ProgressListener.i"
+%include "AvTranscoder/progress/progress.i"
 
 namespace std {
 %template(IntPair)         pair< size_t, size_t >;
@@ -70,38 +71,38 @@ namespace std {
 
 %include <AvTranscoder/Profile.hpp>
 
-%include <AvTranscoder/EssenceStructures/Pixel.hpp>
-%include <AvTranscoder/EssenceStructures/Frame.hpp>
-%include <AvTranscoder/EssenceStructures/VideoFrame.hpp>
-%include <AvTranscoder/EssenceStructures/AudioFrame.hpp>
-	
-%include <AvTranscoder/CodedStructures/CodedDesc.hpp>
-%include <AvTranscoder/CodedStructures/VideoDesc.hpp>
-%include <AvTranscoder/CodedStructures/AudioDesc.hpp>
-%include <AvTranscoder/CodedStructures/DataDesc.hpp>
-%include <AvTranscoder/CodedStructures/DataStream.hpp>
+%include <AvTranscoder/essenceStructures/Pixel.hpp>
+%include <AvTranscoder/essenceStructures/Frame.hpp>
+%include <AvTranscoder/essenceStructures/VideoFrame.hpp>
+%include <AvTranscoder/essenceStructures/AudioFrame.hpp>
 
-%include <AvTranscoder/Metadatas/MediaMetadatasStructures.hpp>
+%include <AvTranscoder/codedStructures/CodedDesc.hpp>
+%include <AvTranscoder/codedStructures/VideoDesc.hpp>
+%include <AvTranscoder/codedStructures/AudioDesc.hpp>
+%include <AvTranscoder/codedStructures/DataDesc.hpp>
+%include <AvTranscoder/codedStructures/DataStream.hpp>
+
+
+%include <AvTranscoder/mediaProperty/mediaProperty.hpp>
 
 %include <AvTranscoder/Profile.hpp>
 
-%include <AvTranscoder/CodedStream/OutputStream.hpp>
-%include <AvTranscoder/CodedStream/AvOutputStream.hpp>
+%include <AvTranscoder/codedStream/IOutputStream.hpp>
+%include <AvTranscoder/codedStream/AvOutputStream.hpp>
 
-%include <AvTranscoder/CodedStream/InputStream.hpp>
-%include <AvTranscoder/CodedStream/AvInputStream.hpp>
+%include <AvTranscoder/codedStream/IInputStream.hpp>
+%include <AvTranscoder/codedStream/AvInputStream.hpp>
 
-%include <AvTranscoder/EssenceStream/OutputEssence.hpp>
-%include <AvTranscoder/EssenceStream/OutputAudio.hpp>
-%include <AvTranscoder/EssenceStream/OutputVideo.hpp>
+%include <AvTranscoder/essenceStream/IOutputEssence.hpp>
+%include <AvTranscoder/essenceStream/AvOutputAudio.hpp>
+%include <AvTranscoder/essenceStream/AvOutputVideo.hpp>
 
-%include <AvTranscoder/EssenceStream/InputEssence.hpp>
-%include <AvTranscoder/EssenceStream/InputAudio.hpp>
-%include <AvTranscoder/EssenceStream/InputVideo.hpp>
+%include <AvTranscoder/essenceStream/IInputEssence.hpp>
+%include <AvTranscoder/essenceStream/AvInputAudio.hpp>
+%include <AvTranscoder/essenceStream/AvInputVideo.hpp>
 
-%include <AvTranscoder/File/InputFile.hpp>
-%include <AvTranscoder/File/OutputFile.hpp>
+%include <AvTranscoder/file/InputFile.hpp>
+%include <AvTranscoder/file/OutputFile.hpp>
 
-%include <AvTranscoder/Transcoder/StreamTranscoder.hpp>
-%include <AvTranscoder/Transcoder/Transcoder.hpp>
-
+%include <AvTranscoder/transcoder/StreamTranscoder.hpp>
+%include <AvTranscoder/transcoder/Transcoder.hpp>

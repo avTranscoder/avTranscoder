@@ -12,9 +12,12 @@
 *.la
 *.a
 
-.sconf_temp
-.sconsign.dblite
-config.log
-scons.cfg
 build
 dist
+
+# CMake
+CMakeCache.txt
+CMakeFiles
+Makefile
+cmake_install.cmake
+install_manifest.txt
