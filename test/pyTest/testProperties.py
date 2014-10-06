@@ -16,7 +16,8 @@ def testAddMetadataDate():
 	transcoder.add( "../data/audio/audio.wav", 0, "")
 
 	# add one metadata
-	ouputFile.addMetadata( "date", "metadata_to_check" )
+	metadata_to_check = ("date", "value")
+	ouputFile.addMetadata( metadata_to_check[0], metadata_to_check[1] )
 
 	progress = av.NoDisplayProgress()
 	transcoder.process( progress )
@@ -25,11 +26,11 @@ def testAddMetadataDate():
 	inputFile.analyse( progress, av.InputFile.eAnalyseLevelFast )
 	properties = inputFile.getProperties()
 
-	assert_in( ("date", "metadata_to_check"), properties.metadatas )
+	assert_in( metadata_to_check, properties.metadatas )
 
-def testAddMetadataPlop():
+def testAddImpossibleMetadata():
 	"""
-	Can't add metadata 'plop' to the outputFile.
+	Can't add an impossible metadata to the outputFile.
 	"""
 	outputFileName = "testAddMetadataPlop.wav"
 
@@ -40,7 +41,8 @@ def testAddMetadataPlop():
 	transcoder.add( "../data/audio/audio.wav", 0, "")
 
 	# add one metadata
-	ouputFile.addMetadata( "plop", "metadata_to_check" )
+	metadata_to_check = ("undefinedMetadataKey", "undefinedMetadataValue")
+	ouputFile.addMetadata( metadata_to_check[0], metadata_to_check[1] )
 
 	progress = av.NoDisplayProgress()
 	transcoder.process( progress )
@@ -49,4 +51,4 @@ def testAddMetadataPlop():
 	inputFile.analyse( progress, av.InputFile.eAnalyseLevelFast )
 	properties = inputFile.getProperties()
 
-	assert_not_in( ("plop", "metadata_to_check"), properties.metadatas )
+	assert_not_in( metadata_to_check, properties.metadatas )
