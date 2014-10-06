@@ -1,6 +1,6 @@
 from nose.tools import *
 
-from AvTranscoder import AvTranscoder as av
+from pyAvTranscoder import avtranscoder as av
 
 def testRewrapAudioStream():
 	"""

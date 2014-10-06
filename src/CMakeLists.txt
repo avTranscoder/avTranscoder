@@ -78,11 +78,11 @@ if(SWIG_FOUND)
 		swig_link_libraries(avtranscoder-py avtranscoder-shared ${PYTHON_LIBRARIES})
 
 		# Install python interface
-		set(AVTRANSCODER_PYTHON_BINDING_FILE "${CMAKE_SWIG_OUTDIR}/AvTranscoder.py")
+		set(AVTRANSCODER_PYTHON_BINDING_FILE "${CMAKE_SWIG_OUTDIR}/avtranscoder.py")
+		set(AVTRANSCODER_PYTHON_MODULE_OUTPUT_DIR "lib/python${PYTHONLIBS_VERSION_STRING}/site-packages/pyAvTranscoder/")
 		install(
-			FILES ${AVTRANSCODER_PYTHON_BINDING_FILE}
-			RENAME "avtranscoder.py"
-			DESTINATION "lib/python${PYTHONLIBS_VERSION_STRING}/site-packages/avtranscoder/"
+			FILES ${AVTRANSCODER_PYTHON_BINDING_FILE} ${AVTRANSCODER_PYTHON_INIT_FILE}
+			DESTINATION ${AVTRANSCODER_PYTHON_MODULE_OUTPUT_DIR}
 		)
 	else()
 		message("PYTHON not found, will not build python binding.")
