@@ -4,10 +4,14 @@
 
 #include <AvTranscoder/file/InputFile.hpp>
 #include <AvTranscoder/file/OutputFile.hpp>
+
+#include <AvTranscoder/frame/Frame.hpp>
+
 #include <AvTranscoder/essenceStream/AvInputAudio.hpp>
 #include <AvTranscoder/essenceStream/AvInputVideo.hpp>
 #include <AvTranscoder/essenceStream/AvOutputAudio.hpp>
 #include <AvTranscoder/essenceStream/AvOutputVideo.hpp>
+
 #include <AvTranscoder/transform/VideoTransform.hpp>
 
 #include <AvTranscoder/progress/ConsoleProgress.hpp>
@@ -36,7 +40,7 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 	outputVideo.setProfile( profile.getProfile( "xdcamhd422" ), VideoFrameDesc );
 	VideoFrame imageToEncode( outputVideo.getVideoCodec().getVideoFrameDesc() );
 	
-	DataStream codedImage;
+	CodedData codedImage;
 
 	// setup wrapper
 	//mxftkwrapper::MxftkOutputFile of( outputFilename );

@@ -102,7 +102,7 @@ bool AvInputVideo::readNextFrame( Frame& frameBuffer )
 
 	while( ! got_frame )
 	{
-		DataStream data;
+		CodedData data;
 		if( ! _inputStream->readNextPacket( data ) )
 			return false;
 

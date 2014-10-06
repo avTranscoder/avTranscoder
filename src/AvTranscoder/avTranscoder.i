@@ -25,7 +25,6 @@
 #include <AvTranscoder/codec/VideoCodec.hpp>
 #include <AvTranscoder/codec/AudioCodec.hpp>
 #include <AvTranscoder/codec/DataCodec.hpp>
-#include <AvTranscoder/codec/DataStream.hpp>
 
 #include <AvTranscoder/mediaProperty/mediaProperty.hpp>
 
@@ -80,8 +79,6 @@ namespace std {
 %include <AvTranscoder/codec/VideoCodec.hpp>
 %include <AvTranscoder/codec/AudioCodec.hpp>
 %include <AvTranscoder/codec/DataCodec.hpp>
-%include <AvTranscoder/codec/DataStream.hpp>
-
 
 %include <AvTranscoder/mediaProperty/mediaProperty.hpp>
 

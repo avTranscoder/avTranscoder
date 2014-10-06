@@ -5,7 +5,6 @@
 
 #include <AvTranscoder/mediaProperty/mediaProperty.hpp>
 
-#include <AvTranscoder/codec/DataStream.hpp>
 #include <AvTranscoder/codec/VideoCodec.hpp>
 #include <AvTranscoder/codec/AudioCodec.hpp>
 #include <AvTranscoder/codec/DataCodec.hpp>
@@ -87,7 +86,7 @@ public:
 	 * @param data coded packet information for the current stream
 	 * @param streamId refers to the stream in output ressource
 	**/
-	virtual bool wrap( const DataStream& data, const size_t streamId );
+	virtual bool wrap( const CodedData& data, const size_t streamId );
 
 	/**
 	 * @brief Finalize the end of the wrapping

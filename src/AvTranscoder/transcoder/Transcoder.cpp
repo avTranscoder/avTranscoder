@@ -244,14 +244,14 @@ void Transcoder::process( IProgress& progress )
 {
 	size_t frame = 0;
 
-	std::vector< DataStream > dataStreams;
+	std::vector< CodedData > codedData;
 
-	dataStreams.reserve( _inputStreams.size() );
+	codedData.reserve( _inputStreams.size() );
 
 	for( size_t streamIndex = 0; streamIndex < _inputStreams.size(); ++streamIndex )
 	{
-		DataStream dataStream;
-		dataStreams.push_back( dataStream );
+		CodedData data;
+		codedData.push_back( data );
 	}
 
 	if( ! _inputStreams.size() &&

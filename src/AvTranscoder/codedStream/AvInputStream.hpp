@@ -2,8 +2,7 @@
 #define _AV_TRANSCODER_CODED_STREAM_AV_INPUT_STREAM_HPP_
 
 #include "IInputStream.hpp"
-
-#include <AvTranscoder/codec/DataStream.hpp>
+#include <AvTranscoder/frame/Frame.hpp>
 
 struct AVStream;
 
@@ -28,7 +27,7 @@ public:
 
 	size_t getStreamIndex() const { return _streamIndex; }
 
-	bool readNextPacket( DataStream& data );
+	bool readNextPacket( CodedData& data );
 
 	// Stream properties
 	VideoCodec getVideoCodec() const;
@@ -52,7 +51,7 @@ private:
 
 private:
 	InputFile*       _inputFile;
-	std::vector<DataStream> _streamCache;
+	std::vector<CodedData> _streamCache;
 
 	VideoCodec        _videoDesc;
 	AudioCodec        _audioDesc;

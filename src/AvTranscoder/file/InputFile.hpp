@@ -3,7 +3,6 @@
 
 #include <AvTranscoder/common.hpp>
 
-#include <AvTranscoder/codec/DataStream.hpp>
 #include <AvTranscoder/codec/AudioCodec.hpp>
 #include <AvTranscoder/codec/VideoCodec.hpp>
 

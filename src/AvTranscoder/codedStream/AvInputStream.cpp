@@ -40,7 +40,7 @@ AvInputStream::~AvInputStream( )
 {
 }
 
-bool AvInputStream::readNextPacket( DataStream& data )
+bool AvInputStream::readNextPacket( CodedData& data )
 {
 	if( ! _bufferized )
 		throw std::runtime_error( "Can't read packet on non-bufferized input stream." );
@@ -61,7 +61,7 @@ bool AvInputStream::readNextPacket( DataStream& data )
 void AvInputStream::addPacket( AVPacket& packet )
 {
 	//std::cout << "add packet for stream " << _streamIndex << std::endl;
-	DataStream data;
+	CodedData data;
 	_streamCache.push_back( data );
 	_packetDuration = packet.duration;
 
@@ -78,7 +78,7 @@ void AvInputStream::addPacket( AVPacket& packet )
 	// &tmpData[0] = packet.data;
 	// tmpData.size( packet.size );
 
-	// remove reference on packet because it's passed to DataStream
+	// remove reference on packet because it's passed to CodedData
 	// packet.data = NULL;
 	// packet.size = 0;
 

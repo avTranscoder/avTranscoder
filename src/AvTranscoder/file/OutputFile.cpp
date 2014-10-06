@@ -150,7 +150,7 @@ bool OutputFile::beginWrap( )
 	return true;
 }
 
-bool OutputFile::wrap( const DataStream& data, const size_t streamId )
+bool OutputFile::wrap( const CodedData& data, const size_t streamId )
 {
 	if( ! data.getSize() )
 		return true;

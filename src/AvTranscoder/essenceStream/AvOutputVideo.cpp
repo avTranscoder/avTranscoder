@@ -47,7 +47,7 @@ void AvOutputVideo::setup( )
 }
 
 
-bool AvOutputVideo::encodeFrame( const Frame& sourceFrame, DataStream& codedFrame )
+bool AvOutputVideo::encodeFrame( const Frame& sourceFrame, Frame& codedFrame )
 {
 #if LIBAVCODEC_VERSION_MAJOR > 54
 	AVFrame* frame = av_frame_alloc();
@@ -140,7 +140,7 @@ bool AvOutputVideo::encodeFrame( const Frame& sourceFrame, DataStream& codedFram
 	return ret == 0;
 }
 
-bool AvOutputVideo::encodeFrame( DataStream& codedFrame )
+bool AvOutputVideo::encodeFrame( Frame& codedFrame )
 {
 	AVCodecContext* codecContext = _codedDesc.getAVCodecContext();
 

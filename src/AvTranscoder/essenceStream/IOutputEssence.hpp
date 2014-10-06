@@ -2,7 +2,6 @@
 #define _AV_TRANSCODER_ESSENCE_STREAM_IOUTPUT_ESSENCE_HPP_
 
 #include <AvTranscoder/frame/Frame.hpp>
-#include <AvTranscoder/codec/DataStream.hpp>
 #include <AvTranscoder/codec/ICodec.hpp>
 
 namespace avtranscoder
@@ -29,14 +28,14 @@ public:
 	 * @param codedFrame data of the coded frame if present (first frames can be delayed)
 	 * @return status of encoding
 	 */
-	virtual bool encodeFrame( const Frame& sourceFrame, DataStream& codedFrame ) = 0;
+	virtual bool encodeFrame( const Frame& sourceFrame, Frame& codedFrame ) = 0;
 
 	/**
 	 * @brief Get delayed encoded frames
 	 * @param codedFrame data of the coded frame if present (first frames can be delayed)
 	 * @return status of encoding
 	 */
-	virtual bool encodeFrame( DataStream& codedFrame ) = 0;
+	virtual bool encodeFrame( Frame& codedFrame ) = 0;
 
 	ICodec& getCodedDesc() { return _codedDesc; }
 

@@ -18,7 +18,7 @@ AvOutputStream::~AvOutputStream()
 {
 }
 
-bool AvOutputStream::wrap( DataStream& data )
+bool AvOutputStream::wrap( CodedData& data )
 {
 	assert( _outputFile != NULL );
 	

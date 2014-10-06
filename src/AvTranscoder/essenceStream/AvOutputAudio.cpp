@@ -45,7 +45,7 @@ void AvOutputAudio::setup()
 	}
 }
 
-bool AvOutputAudio::encodeFrame( const Frame& sourceFrame, DataStream& codedFrame )
+bool AvOutputAudio::encodeFrame( const Frame& sourceFrame, Frame& codedFrame )
 {
 #if LIBAVCODEC_VERSION_MAJOR > 54
 	AVFrame* frame = av_frame_alloc();
@@ -139,7 +139,7 @@ bool AvOutputAudio::encodeFrame( const Frame& sourceFrame, DataStream& codedFram
 	return ret == 0;
 }
 
-bool AvOutputAudio::encodeFrame( DataStream& codedFrame )
+bool AvOutputAudio::encodeFrame( Frame& codedFrame )
 {
 	AVCodecContext* codecContext = _codedDesc.getAVCodecContext();
 

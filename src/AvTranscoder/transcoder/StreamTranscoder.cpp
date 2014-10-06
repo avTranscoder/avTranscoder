@@ -296,12 +296,12 @@ bool StreamTranscoder::processRewrap()
 	assert( _inputStream  != NULL );
 	assert( _outputStream != NULL );
 	
-	DataStream dataStream;
+	CodedData data;
 
-	if( ! _inputStream->readNextPacket( dataStream ) )
+	if( ! _inputStream->readNextPacket( data ) )
 		return false;
 
-	_outputStream->wrap( dataStream );
+	_outputStream->wrap( data );
 	return true;
 }
 
@@ -310,11 +310,11 @@ bool StreamTranscoder::processRewrap( const int subStreamIndex )
 	assert( _inputStream  != NULL );
 	assert( _outputStream != NULL );
 	
-	DataStream dataStream;
+	CodedData data;
 
-	if( ! _inputStream->readNextPacket( dataStream ) )
+	if( ! _inputStream->readNextPacket( data ) )
 		return false;
-	_outputStream->wrap( dataStream );
+	_outputStream->wrap( data );
 
 	return true;
 }
@@ -328,7 +328,7 @@ bool StreamTranscoder::processTranscode()
 	assert( _frameBuffer    != NULL );
 	assert( _transform      != NULL );
 
-	DataStream dataStream;
+	CodedData data;
 	if( _verbose )
 		std::cout << "transcode a frame " << std::endl;
 
@@ -348,13 +348,13 @@ bool StreamTranscoder::processTranscode()
 		_transform->convert( *_sourceBuffer, *_frameBuffer );
 		if( _verbose )
 			std::cout << "encode " << _frameBuffer->getSize() << std::endl;
-		_outputEssence->encodeFrame( *_frameBuffer, dataStream );
+		_outputEssence->encodeFrame( *_frameBuffer, data );
 	}
 	else
 	{
 		if( _verbose )
 			std::cout << "encode last frame(s)" << std::endl;
-		if( ! _outputEssence->encodeFrame( dataStream ) )
+		if( ! _outputEssence->encodeFrame( data ) )
 		{
 			if( _infinityStream )
 			{
@@ -366,8 +366,8 @@ bool StreamTranscoder::processTranscode()
 	}
 
 	if( _verbose )
-		std::cout << "wrap (" << dataStream.getSize() << ")" << std::endl;
-	_outputStream->wrap( dataStream );
+		std::cout << "wrap (" << data.getSize() << ")" << std::endl;
+	_outputStream->wrap( data );
 	return true;
 }
 
@@ -380,7 +380,7 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 	assert( _frameBuffer    != NULL );
 	assert( _transform      != NULL );
 
-	DataStream dataStream;
+	CodedData data;
 	if( _verbose )
 		std::cout << "transcode a frame " << std::endl;
 
@@ -400,13 +400,13 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 		_transform->convert( *_sourceBuffer, *_frameBuffer );
 		if( _verbose )
 			std::cout << "encode" << std::endl;
-		_outputEssence->encodeFrame( *_frameBuffer, dataStream );
+		_outputEssence->encodeFrame( *_frameBuffer, data );
 	}
 	else
 	{
 		if( _verbose )
 			std::cout << "encode last frame(s)" << std::endl;
-		if( ! _outputEssence->encodeFrame( dataStream ) )
+		if( ! _outputEssence->encodeFrame( data ) )
 		{
 			if( _infinityStream )
 			{
@@ -417,8 +417,8 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 		}
 	}
 	if( _verbose )
-		std::cout << "wrap (" << dataStream.getSize() << ")" << std::endl;
-	_outputStream->wrap( dataStream );
+		std::cout << "wrap (" << data.getSize() << ")" << std::endl;
+	_outputStream->wrap( data );
 	return true;
 }
 

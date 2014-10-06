@@ -180,7 +180,7 @@ bool AvInputAudio::getNextFrame()
 	int got_frame = 0;
 	while( ! got_frame )
 	{
-		DataStream data;
+		CodedData data;
 		if( ! _inputStream->readNextPacket( data ) ) // error or end of file
 			return false;
 

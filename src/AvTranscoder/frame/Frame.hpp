@@ -28,6 +28,11 @@ protected:
 	DataBuffer _dataBuffer;
 };
 
+// Typedef to represent buffer of coded data.
+// Example 1: in case of image, no sense to get size if coded data.
+// Example 2: in case of audio, no sense to get number of channels if coded data.
+typedef Frame CodedData;
+
 }
 
 #endif
