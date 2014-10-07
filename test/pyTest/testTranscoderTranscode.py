@@ -1,12 +1,15 @@
+import os
+
 from nose.tools import *
 
 from pyAvTranscoder import avtranscoder as av
+
 
 def testTranscodeWave24b48kmono():
 	"""
 	Transcode one audio stream (profile wave24b48kmono).
 	"""
-	inputFileName = "../data/audio/audio.wav"
+	inputFileName = os.environ['AVTRANSCODER_TEST_AUDIO_FILE']
 	outputFileName = "testTranscodeWave24b48kmono.wav"
 
 	ouputFile = av.OutputFile( outputFileName )
@@ -35,7 +38,7 @@ def testTranscodeWave16b48kmono():
 	"""
 	Transcode one audio stream (profile wave16b48kmono).
 	"""
-	inputFileName = "../data/audio/audio.wav"
+	inputFileName = os.environ['AVTRANSCODER_TEST_AUDIO_FILE']
 	outputFileName = "testTranscodeWave16b48kmono.wav"
 
 	ouputFile = av.OutputFile( outputFileName )
@@ -64,7 +67,7 @@ def testTranscodeDnxhd120():
 	"""
 	Transcode one video stream (profile dnxhd120).
 	"""
-	inputFileName = "../data/video/video.mxf"
+	inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_FILE']
 	outputFileName = "testTranscodeDnxhd120.mxf"
 
 	ouputFile = av.OutputFile( outputFileName )
@@ -93,7 +96,7 @@ def testTranscodeDnxhd185():
 	"""
 	Transcode one video stream (profile dnxhd185).
 	"""
-	inputFileName = "../data/video/video.mxf"
+	inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_FILE']
 	outputFileName = "testTranscodeDnxhd185.mxf"
 
 	ouputFile = av.OutputFile( outputFileName )
@@ -122,7 +125,7 @@ def testTranscodeDnxhd185x():
 	"""
 	Transcode one video stream (profile dnxhd185x).
 	"""
-	inputFileName = "../data/video/video.mxf"
+	inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_FILE']
 	outputFileName = "testTranscodeDnxhd185x.mxf"
 
 	ouputFile = av.OutputFile( outputFileName )
@@ -151,7 +154,7 @@ def testTranscodeXdcamhd422():
 	"""
 	Transcode one video stream (profile xdcamhd422).
 	"""
-	inputFileName = "../data/video/video.mxf"
+	inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_FILE']
 	outputFileName = "testTranscodeXdcamhd422.mxf"
 
 	ouputFile = av.OutputFile( outputFileName )

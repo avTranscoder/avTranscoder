@@ -1,12 +1,15 @@
+import os
+
 from nose.tools import *
 
 from pyAvTranscoder import avtranscoder as av
+
 
 def testRewrapAudioStream():
 	"""
 	Rewrap one audio stream.
 	"""
-	inputFileName = "../data/audio/audio.wav"
+	inputFileName = os.environ['AVTRANSCODER_TEST_AUDIO_FILE']
 	outputFileName = "testRewrapAudioStream.wav"
 
 	ouputFile = av.OutputFile( outputFileName )
@@ -58,7 +61,7 @@ def testRewrapVideoStream():
 	"""
 	Rewrap one video stream.
 	"""
-	inputFileName = "../data/video/video.mxf"
+	inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_FILE']
 	outputFileName = "testRewrapVideoStream.mxf"
 
 	ouputFile = av.OutputFile( outputFileName )
