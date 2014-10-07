@@ -189,3 +189,37 @@ def testTranscodeXdcamhd422():
 	# assert_equals( 50000, dst_videoStream.maxBitRate )  # 5000 != 0L
 	# assert_equals( 50000, dst_videoStream.minBitRate )  # 5000 != 0L
 	assert_equals( "bottom bottom", dst_videoStream.fieldOrder )
+
+# def testTranscodeYUV420():
+# 	"""
+# 	Process one video stream (custom profile of encoding, with pixel format YUV420).
+# 	"""
+# 	inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_FILE']
+# 	outputFileName = "testTranscodeYUV420.avi"
+
+# 	ouputFile = av.OutputFile( outputFileName )
+# 	transcoder = av.Transcoder( ouputFile )
+
+# 	# create custom profile
+# 	customProfile = av.ProfileMap()
+# 	customProfile[av.Profile.avProfileIdentificator] = "customProfile"
+# 	customProfile[av.Profile.avProfileIdentificatorHuman] = "custom profile"
+# 	customProfile[av.Profile.avProfileType] = av.Profile.avProfileTypeVideo
+# 	customProfile[av.Profile.avProfileFrameRate] = "25"
+# 	customProfile[av.Profile.avProfileCodec] = "mpeg2video"
+# 	customProfile[av.Profile.avProfilePixelFormat] = "yuv420p"
+
+# 	transcoder.add( inputFileName, 0, customProfile )
+
+# 	transcoder.init()
+# 	progress = av.ConsoleProgress()
+# 	transcoder.process( progress )
+
+# 	# get dst file of transcode
+# 	dst_inputFile = av.InputFile( outputFileName )
+# 	dst_inputFile.analyse( progress, av.InputFile.eAnalyseLevelFast )
+# 	dst_properties = dst_inputFile.getProperties()
+# 	dst_videoStream = dst_properties.videoStreams[0]
+
+# 	assert_equals( "mpeg2video", dst_videoStream.codecName )
+# 	assert_equals( "yuv420p", dst_videoStream.pixelName )
