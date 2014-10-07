@@ -6,9 +6,6 @@ Based on LibAV/FFMpeg libraries to support various video formats, avTranscoder p
 
 You can also use its Java & Python bindings for simpler integration in your own projects.
 
-#### Requirements
-* GitPython (>=0.3.2)
-
 #### Continuous Integration
 
 ###### Drone.io  
