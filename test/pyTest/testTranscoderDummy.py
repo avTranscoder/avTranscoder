@@ -86,9 +86,8 @@ def testTranscodeDummyAudio():
 	audioDesc.setFps( 25 )
 	audioDesc.setSampleFormat( "s16" )
 
-
 	essenceDesc = av.AudioDesc( "pcm_s16le" )
-	essenceDesc.setAudioParameters( audioDesc );
+	essenceDesc.setAudioParameters( audioDesc )
 	transcoder.add( "", 0, "wave24b48kmono", essenceDesc )
 
 	transcoder.init()
@@ -112,9 +111,9 @@ def testTranscodeDummyVideo():
 	imageDesc.setHeight( 1080 )
 	imageDesc.setDar( 1, 1 )
 	inputPixel = av.Pixel( "yuv422p" )
-	imageDesc.setPixel( inputPixel );
+	imageDesc.setPixel( inputPixel )
 	essenceDesc = av.VideoDesc( "mpeg2video" )
-	essenceDesc.setImageParameters( imageDesc );
+	essenceDesc.setImageParameters( imageDesc )
 	transcoder.add( "", 0, "dnxhd120", essenceDesc )
 
 	transcoder.init()
