@@ -13,7 +13,7 @@ def testTranscodeNoStream():
 	ouputFile = av.OutputFile( outputFileName )
 	transcoder = av.Transcoder( ouputFile )
 
-	progress = av.ProgressListener()
+	progress = av.NoDisplayProgress()
 	transcoder.process( progress )
 
 
@@ -30,7 +30,7 @@ def testRewrapDummy():
 	transcoder.add( "", 0, "")
 	transcoder.add( "", 0, -1, "")
 
-	progress = av.ProgressListener()
+	progress = av.NoDisplayProgress()
 	transcoder.process( progress )
 
 @raises(RuntimeError)
@@ -46,7 +46,7 @@ def testTranscodeDummyExistingProfileWithNoEssenceDesc():
 	transcoder.add( "", 0, "dnxhd120" )
 	transcoder.add( "", 0, -1, "dnxhd120" )
 
-	progress = av.ProgressListener()
+	progress = av.NoDisplayProgress()
 	transcoder.process( progress )
 
 @raises(RuntimeError)
@@ -67,7 +67,7 @@ def testTranscodeDummyNewProfileWithNoEssenceDesc():
 	transcoder.add( "", 0, newProfile )
 	transcoder.add( "", 0, -1, newProfile )
 
-	progress = av.ProgressListener()
+	progress = av.NoDisplayProgress()
 	transcoder.process( progress )
 
 def testTranscodeDummyAudio():
