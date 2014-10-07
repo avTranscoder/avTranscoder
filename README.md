@@ -23,6 +23,15 @@ You can also use its Java & Python bindings for simpler integration in your own 
        src="https://scan.coverity.com/projects/2626/badge.svg"/>
 </a>
 
+#### Tests
+
+###### nosetests
+Python tests using nosetests.
+
+Create environment variables to use your files in tests.
+* AVTRANSCODER_TEST_AUDIO_FILE
+* AVTRANSCODER_TEST_VIDEO_FILE
+
 #### Packaging
 
 ###### Build openSUSE  
