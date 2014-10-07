@@ -15,7 +15,7 @@ def testRewrapAudioStream():
 	transcoder.add( inputFileName, 0, "" )
 
 	transcoder.setProcessMethod( av.eProcessMethodLongest )
-	progress = av.ProgressListener()
+	progress = av.NoDisplayProgress()
 	transcoder.process( progress )
 
 	# get src file of wrap
@@ -67,7 +67,7 @@ def testRewrapVideoStream():
 	transcoder.add( inputFileName, 0, "" )
 
 	transcoder.setProcessMethod( av.eProcessMethodLongest )
-	progress = av.ProgressListener()
+	progress = av.NoDisplayProgress()
 	transcoder.process( progress )
 
 	# get src file of wrap
