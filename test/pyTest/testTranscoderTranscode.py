@@ -15,8 +15,7 @@ def testTranscodeWave24b48kmono():
 	transcoder.add( inputFileName, 0, "wave24b48kmono" )
 
 	transcoder.init()
-	transcoder.setProcessMethod( av.eProcessMethodLongest )
-	progress = av.ProgressListener()
+	progress = av.ConsoleProgress()
 	transcoder.process( progress )
 
 	# get dst file of transcode
@@ -45,8 +44,7 @@ def testTranscodeWave16b48kmono():
 	transcoder.add( inputFileName, 0, "wave16b48kmono" )
 
 	transcoder.init()
-	transcoder.setProcessMethod( av.eProcessMethodLongest )
-	progress = av.ProgressListener()
+	progress = av.ConsoleProgress()
 	transcoder.process( progress )
 
 	# get dst file of transcode
@@ -75,8 +73,7 @@ def testTranscodeDnxhd120():
 	transcoder.add( inputFileName, 0, "dnxhd120" )
 
 	transcoder.init()
-	transcoder.setProcessMethod( av.eProcessMethodLongest )
-	progress = av.ProgressListener()
+	progress = av.ConsoleProgress()
 	transcoder.process( progress )
 
 	# get dst file of transcode
@@ -105,8 +102,7 @@ def testTranscodeDnxhd185():
 	transcoder.add( inputFileName, 0, "dnxhd185" )
 
 	transcoder.init()
-	transcoder.setProcessMethod( av.eProcessMethodLongest )
-	progress = av.ProgressListener()
+	progress = av.ConsoleProgress()
 	transcoder.process( progress )
 
 	# get dst file of transcode
@@ -135,8 +131,7 @@ def testTranscodeDnxhd185x():
 	transcoder.add( inputFileName, 0, "dnxhd185x" )
 
 	transcoder.init()
-	transcoder.setProcessMethod( av.eProcessMethodLongest )
-	progress = av.ProgressListener()
+	progress = av.ConsoleProgress()
 	transcoder.process( progress )
 
 	# get dst file of transcode
@@ -165,8 +160,7 @@ def testTranscodeXdcamhd422():
 	transcoder.add( inputFileName, 0, "xdcamhd422" )
 
 	transcoder.init()
-	transcoder.setProcessMethod( av.eProcessMethodLongest )
-	progress = av.ProgressListener()
+	progress = av.ConsoleProgress()
 	transcoder.process( progress )
 
 	# get dst file of transcode
