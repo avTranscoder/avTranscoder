@@ -1,6 +1,8 @@
 #ifndef _AV_TRANSCODER_PROFILE_HPP_
 #define _AV_TRANSCODER_PROFILE_HPP_
 
+#include "common.hpp"
+
 #include <string>
 #include <cstring>
 #include <vector>
@@ -9,7 +11,7 @@
 namespace avtranscoder
 {
 
-class Profile
+class AvExport Profile
 {
 public:
 	static const std::string avProfileIdentificator;

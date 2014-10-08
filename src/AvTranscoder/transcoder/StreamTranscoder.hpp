@@ -17,7 +17,7 @@ namespace avtranscoder
 
 class IEssenceTransform;
 
-class StreamTranscoder
+class AvExport StreamTranscoder
 {
 public:
 	/**

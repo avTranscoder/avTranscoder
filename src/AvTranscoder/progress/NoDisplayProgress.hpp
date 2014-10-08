@@ -9,7 +9,7 @@ namespace avtranscoder
 /**
  * @brief Implementation of IProgress, to manage cases when we need an IProgress but don't care of a progress bar.
  */
-class NoDisplayProgress : public IProgress
+class AvExport NoDisplayProgress : public IProgress
 {
 public:
 	~NoDisplayProgress()
