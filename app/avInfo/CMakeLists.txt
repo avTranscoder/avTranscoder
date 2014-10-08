@@ -5,7 +5,7 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 include(AvTranscoderMacros)
 
 # Build app
-include_directories(${AVTRANSCODER_SRC_PATH})
+include_directories(${AVTRANSCODER_SRC_PATH} ${FFMPEG_INCLUDE_DIR})
 add_executable(avinfo avInfo.cpp)
 set_target_properties(avinfo PROPERTIES VERSION ${AVTRANSCODER_VERSION})
 target_link_libraries(avinfo avtranscoder-shared)
