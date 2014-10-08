@@ -17,8 +17,11 @@ add_definitions(-DAVTRANSCODER_VERSION_MICRO=${AVTRANSCODER_VERSION_MICRO})
 set(CMAKE_VERBOSE_MAKEFILE OFF)
 
 # CPP flags on debug / release mode
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -fPIC -pg -g")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fPIC -O3")
+if(NOT WIN32)
+	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -fPIC -pg -g")
+	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fPIC -O3")
+endif()
+
 
 add_subdirectory(src)
 add_subdirectory(app)
