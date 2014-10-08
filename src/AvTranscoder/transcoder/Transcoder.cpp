@@ -2,6 +2,7 @@
 
 #include <limits>
 #include <iostream>
+#include <algorithm>
 
 namespace avtranscoder
 {
