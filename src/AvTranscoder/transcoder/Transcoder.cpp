@@ -17,7 +17,7 @@ Transcoder::Transcoder( OutputFile& outputFile )
 	, _outputFps( 25 )
 	, _finalisedStreams( 0 )
 	, _eProcessMethod ( eProcessMethodLongest )
-	, _indexBasedStream( 0 )
+	, _mainStreamIndex( 0 )
 	, _verbose( false )
 {
 	_outputFile.setup();
@@ -277,7 +277,7 @@ void Transcoder::process( IProgress& progress )
 			totalDuration = getMaxTotalDuration();
 			break;
 		case eProcessMethodBasedOnStream :
-			totalDuration = getStreamDuration( _indexBasedStream );
+			totalDuration = getStreamDuration( _mainStreamIndex );
 			break;
 		case eProcessMethodInfinity :
 			totalDuration = std::numeric_limits<double>::max();
@@ -311,7 +311,7 @@ void Transcoder::process( IProgress& progress )
 void Transcoder::setProcessMethod( const EProcessMethod eProcessMethod, const size_t indexBasedStream )
 {
 	_eProcessMethod	= eProcessMethod;
-	_indexBasedStream = indexBasedStream;
+	_mainStreamIndex = indexBasedStream;
 
 	for( size_t i = 0; i < _streamTranscoders.size(); ++i )
 	{
@@ -330,7 +330,7 @@ void Transcoder::setProcessMethod( const EProcessMethod eProcessMethod, const si
 					_streamTranscoders.at( i )->setInfinityStream( true );
 				break;
 			case eProcessMethodBasedOnStream :
-				if( i != _indexBasedStream )
+				if( i != _mainStreamIndex )
 					_streamTranscoders.at( i )->setInfinityStream( true );
 				else
 					_streamTranscoders.at( i )->setInfinityStream( false );

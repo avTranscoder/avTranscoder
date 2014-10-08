@@ -176,7 +176,7 @@ private:
 	size_t _finalisedStreams;
 	EProcessMethod _eProcessMethod;
 
-	size_t _indexBasedStream;  ///< Index of stream used to stop the process of transcode in case of eProcessMethodBasedOnStream.
+	size_t _mainStreamIndex;  ///< Index of stream used to stop the process of transcode in case of eProcessMethodBasedOnStream.
 
 	bool    _verbose;
 };
