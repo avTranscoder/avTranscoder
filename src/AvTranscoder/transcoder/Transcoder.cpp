@@ -17,6 +17,7 @@ Transcoder::Transcoder( OutputFile& outputFile )
 	, _outputFps( 25 )
 	, _finalisedStreams( 0 )
 	, _eProcessMethod ( eProcessMethodLongest )
+	, _mainStreamIndex( 0 )
 	, _verbose( false )
 {
 	_outputFile.setup();
@@ -275,6 +276,9 @@ void Transcoder::process( IProgress& progress )
 		case eProcessMethodLongest :
 			totalDuration = getMaxTotalDuration();
 			break;
+		case eProcessMethodBasedOnStream :
+			totalDuration = getStreamDuration( _mainStreamIndex );
+			break;
 		case eProcessMethodInfinity :
 			totalDuration = std::numeric_limits<double>::max();
 			break;
@@ -304,9 +308,10 @@ void Transcoder::process( IProgress& progress )
 	_outputFile.endWrap();
 }
 
-void Transcoder::setProcessMethod( const EProcessMethod eProcessMethod )
+void Transcoder::setProcessMethod( const EProcessMethod eProcessMethod, const size_t indexBasedStream )
 {
 	_eProcessMethod	= eProcessMethod;
+	_mainStreamIndex = indexBasedStream;
 
 	for( size_t i = 0; i < _streamTranscoders.size(); ++i )
 	{
@@ -323,6 +328,12 @@ void Transcoder::setProcessMethod( const EProcessMethod eProcessMethod )
 					_streamTranscoders.at( i )->setInfinityStream( false );
 				else
 					_streamTranscoders.at( i )->setInfinityStream( true );
+				break;
+			case eProcessMethodBasedOnStream :
+				if( i != _mainStreamIndex )
+					_streamTranscoders.at( i )->setInfinityStream( true );
+				else
+					_streamTranscoders.at( i )->setInfinityStream( false );
 				break;
 			case eProcessMethodInfinity :
 				_streamTranscoders.at( i )->setInfinityStream( true );
@@ -447,13 +458,18 @@ InputFile* Transcoder::addInputFile( const std::string& filename, const size_t s
 	return referenceFile;
 }
 
+double Transcoder::getStreamDuration( size_t indexStream ) const
+{
+	return _streamTranscoders.at( indexStream )->getDuration();
+}
+
 double Transcoder::getMinTotalDuration() const
 {
 	double minTotalDuration = std::numeric_limits<double>::max();
 	
 	for( size_t i = 0; i < _streamTranscoders.size(); ++i )
 	{
-		minTotalDuration = std::min( _streamTranscoders.at( i )->getDuration(), minTotalDuration );
+		minTotalDuration = std::min( getStreamDuration( i ), minTotalDuration );
 	}
 	return minTotalDuration;
 }
@@ -464,7 +480,7 @@ double Transcoder::getMaxTotalDuration() const
 	
 	for( size_t i = 0; i < _streamTranscoders.size(); ++i )
 	{
-		maxTotalDuration = std::max( _streamTranscoders.at( i )->getDuration(), maxTotalDuration );
+		maxTotalDuration = std::max( getStreamDuration( i ), maxTotalDuration );
 	}
 	return maxTotalDuration;
 }
