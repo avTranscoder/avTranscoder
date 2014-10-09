@@ -35,7 +35,7 @@ enum EOptionBaseType
 class Option
 {
 public:
-	Option( AVOption* avOption, void* avContext );
+	Option( AVOption& avOption, void* avContext );
 	~Option() {}
 	
 	EOptionBaseType getType() const;

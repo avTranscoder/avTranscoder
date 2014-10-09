@@ -47,7 +47,7 @@ void Context::loadOptions( void* av_class, int req_flags )
 			continue;
 		}
 
-		Option option( const_cast<AVOption*>( avOption ), av_class );
+		Option option( *const_cast<AVOption*>( avOption ), av_class );
 
 		if( option.getType() == eOptionBaseTypeChild )
 		{

@@ -10,8 +10,8 @@ extern "C" {
 namespace avtranscoder
 {
 
-Option::Option( AVOption* avOption, void* avContext )
-	: _avOption( avOption )
+Option::Option( AVOption& avOption, void* avContext )
+	: _avOption( &avOption )
 	, _avContext( avContext )
 	, _childOptions()
 	, _defaultChildIndex( 0 )
