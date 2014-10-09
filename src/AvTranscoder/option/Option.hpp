@@ -73,7 +73,7 @@ public:
 	// array of childs
 	bool hasChild() const { return ! _childOptions.empty(); }
 	const std::vector<Option>& getChilds() { return _childOptions; }
-	const Option& getChild( size_t index ) { return _childOptions.at( index ); }
+	const Option& getChildAtIndex( const size_t index ) const { return _childOptions.at( index ); }
 	int getDefaultChildIndex() const { return _defaultChildIndex; }
 	
 	void setDefaultChildIndex( size_t index ) { _defaultChildIndex = index; }

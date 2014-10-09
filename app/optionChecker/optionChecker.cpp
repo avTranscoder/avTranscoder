@@ -48,16 +48,16 @@ void displayOptions( const std::vector<avtranscoder::Option>& options )
 			std::cout << "Default choice index: " << option.getDefaultChildIndex() << std::endl;
 			for(size_t i = 0; i < option.getChilds().size(); ++i )
 				std::cout << "Choice " << i << ": " << 
-					option.getChild( i ).getName() << " // " << 
-					option.getChild( i ).getHelp() << std::endl;
+					option.getChildAtIndex( i ).getName() << " // " << 
+					option.getChildAtIndex( i ).getHelp() << std::endl;
 		}
 		else if( option.getType() == avtranscoder::eOptionBaseTypeGroup )
 		{
 			std::cout << "Nb choices: " << option.getChilds().size() << std::endl;
 			for(size_t i = 0; i < option.getChilds().size(); ++i )
 				std::cout << "Element " << i << ": " << 
-					option.getChild( i ).getName() << " // " <<
-					option.getChild( i ).getDefaultValueBool() << std::endl;
+					option.getChildAtIndex( i ).getName() << " // " <<
+					option.getChildAtIndex( i ).getDefaultValueBool() << std::endl;
 		}
 	}
 }
