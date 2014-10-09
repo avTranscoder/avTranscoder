@@ -1,9 +1,6 @@
 #include "Library.hpp"
 
 extern "C" {
-#ifndef __STDC_CONSTANT_MACROS
-    #define __STDC_CONSTANT_MACROS
-#endif
 #include <libavutil/version.h>
 #include <libavcodec/version.h>
 #include <libswscale/version.h>

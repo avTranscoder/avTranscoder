@@ -1,9 +1,6 @@
 #include "context.hpp"
 
 extern "C" {
-#ifndef __STDC_CONSTANT_MACROS
-	#define __STDC_CONSTANT_MACROS
-#endif
 #include <libavformat/avformat.h>
 #include <libavcodec/avcodec.h>
 #include <libavutil/mem.h>

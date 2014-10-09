@@ -1,10 +1,9 @@
 #ifndef _AV_TRANSCODER_UTIL_HPP
 #define	_AV_TRANSCODER_UTIL_HPP
 
+#include "common.hpp"
+
 extern "C" {
-#ifndef __STDC_CONSTANT_MACROS
-	#define __STDC_CONSTANT_MACROS
-#endif
 #include <libavutil/pixfmt.h>
 #include <libavutil/samplefmt.h>
 }
