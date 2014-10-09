@@ -74,7 +74,6 @@ public:
 	bool hasChild() const { return ! _childOptions.empty(); }
 	const std::vector<Option>& getChilds() { return _childOptions; }
 	const Option& getChild( size_t index ) { return _childOptions.at( index ); }
-	size_t getNbChilds() const { return _childOptions.size(); }
 	int getDefaultChildIndex() const { return _defaultChildIndex; }
 	
 	void setDefaultChildIndex( size_t index ) { _defaultChildIndex = index; }
