@@ -7,8 +7,6 @@
 namespace avtranscoder
 {
 
-class AvInputStream;
-
 class AvExport IInputEssence
 {
 public:

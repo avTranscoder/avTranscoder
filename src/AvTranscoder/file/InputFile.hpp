@@ -17,7 +17,7 @@
 #include <string>
 #include <vector>
 
-class AVFormatContext;
+struct AVFormatContext;
 
 namespace avtranscoder
 {

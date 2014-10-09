@@ -3,9 +3,9 @@
 
 #include "IInputEssence.hpp"
 
-class AVCodec;
-class AVCodecContext;
-class AVFrame;
+struct AVCodec;
+struct AVCodecContext;
+struct AVFrame;
 
 namespace avtranscoder
 {

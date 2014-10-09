@@ -3,7 +3,6 @@
 
 #include "Frame.hpp"
 #include <AvTranscoder/Profile.hpp>
-#include <AvTranscoder/common.hpp>
 
 namespace avtranscoder
 {

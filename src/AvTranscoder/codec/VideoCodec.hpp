@@ -1,13 +1,10 @@
 #ifndef _AV_TRANSCODER_CODED_STRUCTURES_VIDEO_DESC_HPP_
 #define _AV_TRANSCODER_CODED_STRUCTURES_VIDEO_DESC_HPP_
 
-#include <AvTranscoder/frame/VideoFrame.hpp>
 #include "ICodec.hpp"
-#include <AvTranscoder/common.hpp>
+#include <AvTranscoder/frame/VideoFrame.hpp>
 
-#include <string>
-
-class AVCodec;
+#include <utility>
 
 namespace avtranscoder
 {

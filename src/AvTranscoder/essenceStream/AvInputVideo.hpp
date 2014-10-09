@@ -2,12 +2,11 @@
 #define _AV_TRANSCODER_ESSENCE_STREAM_AV_INPUT_VIDEO_HPP_
 
 #include "IInputEssence.hpp"
-
 #include <AvTranscoder/Profile.hpp>
 
-class AVCodec;
-class AVCodecContext;
-class AVFrame;
+struct AVCodec;
+struct AVCodecContext;
+struct AVFrame;
 
 namespace avtranscoder
 {

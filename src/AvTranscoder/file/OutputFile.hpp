@@ -16,11 +16,11 @@
 #include <string>
 #include <vector>
 
-class AVOutputFormat;
-class AVFormatContext;
-class AVCodec;
-class AVCodecContext;
-class AVStream;
+struct AVOutputFormat;
+struct AVFormatContext;
+struct AVCodec;
+struct AVCodecContext;
+struct AVStream;
 
 namespace avtranscoder
 {

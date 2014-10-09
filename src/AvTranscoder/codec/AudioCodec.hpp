@@ -1,13 +1,8 @@
 #ifndef _AV_TRANSCODER_CODED_STRUCTURES_AUDIO_DESC_HPP_
 #define _AV_TRANSCODER_CODED_STRUCTURES_AUDIO_DESC_HPP_
 
-#include <AvTranscoder/frame/AudioFrame.hpp>
 #include "ICodec.hpp"
-#include <AvTranscoder/common.hpp>
-
-#include <string>
-
-class AVCodec;
+#include <AvTranscoder/frame/AudioFrame.hpp>
 
 namespace avtranscoder
 {

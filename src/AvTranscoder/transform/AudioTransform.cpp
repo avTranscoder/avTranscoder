@@ -1,6 +1,6 @@
 #include "AudioTransform.hpp"
 
-#include <stdexcept>
+#include <AvTranscoder/frame/AudioFrame.hpp>
 
 extern "C" {
 #ifndef __STDC_CONSTANT_MACROS
@@ -28,7 +28,7 @@ extern "C" {
 #endif
 }
 
-#include <AvTranscoder/frame/AudioFrame.hpp>
+#include <stdexcept>
 
 namespace avtranscoder
 {

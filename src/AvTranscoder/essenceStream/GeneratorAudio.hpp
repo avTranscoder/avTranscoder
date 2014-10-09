@@ -2,10 +2,7 @@
 #define _AV_TRANSCODER_ESSENCE_STREAM_GENERATOR_AUDIO_HPP_
 
 #include "IInputEssence.hpp"
-
-#include <AvTranscoder/common.hpp>
 #include <AvTranscoder/codec/AudioCodec.hpp>
-#include <AvTranscoder/frame/Frame.hpp>
 
 namespace avtranscoder
 {

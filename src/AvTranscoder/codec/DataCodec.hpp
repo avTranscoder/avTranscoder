@@ -2,9 +2,6 @@
 #define _AV_TRANSCODER_CODED_STRUCTURES_DATA_DESC_HPP_
 
 #include "ICodec.hpp"
-#include <AvTranscoder/common.hpp>
-
-#include <string>
 
 namespace avtranscoder
 {

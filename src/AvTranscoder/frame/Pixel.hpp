@@ -1,7 +1,7 @@
 #ifndef _AV_TRANSCODER_DATA_PIXEL_HPP_
 #define _AV_TRANSCODER_DATA_PIXEL_HPP_
 
-#include <string>
+#include <AvTranscoder/common.hpp>
 
 extern "C" {
 #ifndef __STDC_CONSTANT_MACROS
@@ -9,10 +9,9 @@ extern "C" {
 #endif
 #include <libavutil/pixfmt.h>
 }
+#include <string>
 
-#include <AvTranscoder/common.hpp>
-
-class AVPixFmtDescriptor;
+struct AVPixFmtDescriptor;
 
 namespace avtranscoder
 {

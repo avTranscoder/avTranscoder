@@ -2,7 +2,6 @@
 #define _AV_TRANSCODER_CODED_STREAM_AV_OUTPUT_STREAM_HPP_
 
 #include "IOutputStream.hpp"
-#include <AvTranscoder/frame/Frame.hpp>
 
 namespace avtranscoder
 {

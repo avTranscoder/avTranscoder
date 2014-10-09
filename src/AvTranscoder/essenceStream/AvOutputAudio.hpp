@@ -2,9 +2,7 @@
 #define _AV_TRANSCODER_ESSENCE_STREAM_AV_OUTPUT_AUDIO_HPP_
 
 #include "IOutputEssence.hpp"
-
 #include <AvTranscoder/codec/AudioCodec.hpp>
-#include <AvTranscoder/frame/Frame.hpp>
 #include <AvTranscoder/Profile.hpp>
 
 namespace avtranscoder

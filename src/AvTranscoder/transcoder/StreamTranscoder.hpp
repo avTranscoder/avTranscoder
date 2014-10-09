@@ -4,6 +4,7 @@
 #include <AvTranscoder/common.hpp>
 
 #include <AvTranscoder/codedStream/IInputStream.hpp>
+#include <AvTranscoder/codedStream/IOutputStream.hpp>
 
 #include <AvTranscoder/essenceStream/AvInputVideo.hpp>
 #include <AvTranscoder/essenceStream/AvOutputVideo.hpp>
