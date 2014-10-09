@@ -95,7 +95,7 @@ void Option::setFlag( const std::string& flag, const bool enable )
 {
 	int64_t optVal;
 	int error = av_opt_get_int( _avContext, getName().c_str(), AV_OPT_SEARCH_CHILDREN, &optVal );
-	if( error != 0 )
+	if( ! error )
 	{
 		char err[AV_ERROR_MAX_STRING_SIZE];
 		av_strerror( error, err, AV_ERROR_MAX_STRING_SIZE );
@@ -119,7 +119,7 @@ void Option::setFlag( const std::string& flag, const bool enable )
 void Option::setValueBool( const bool value )
 {
 	int error = av_opt_set_int( _avContext, getName().c_str(), value, AV_OPT_SEARCH_CHILDREN );
-	if( error != 0 )
+	if( ! error )
 	{
 		char err[AV_ERROR_MAX_STRING_SIZE];
 		av_strerror( error, err, AV_ERROR_MAX_STRING_SIZE );
@@ -130,7 +130,7 @@ void Option::setValueBool( const bool value )
 void Option::setValueInt( const int value )
 {
 	int error = av_opt_set_int( _avContext, getName().c_str(), value, AV_OPT_SEARCH_CHILDREN );
-	if( error != 0 )
+	if( ! error )
 	{
 		std::ostringstream os;
 		os << value;
@@ -146,7 +146,7 @@ void Option::setValueRatio( const int num, const int den )
 	ratio.num = num;
 	ratio.den = den;
 	int error = av_opt_set_q( _avContext, getName().c_str(), ratio, AV_OPT_SEARCH_CHILDREN );
-	if( error != 0 )
+	if( ! error )
 	{
 		std::ostringstream os;
 		os << num << "/" << den;
@@ -159,7 +159,7 @@ void Option::setValueRatio( const int num, const int den )
 void Option::setValueDouble( const double value )
 {
 	int error = av_opt_set_double( _avContext, getName().c_str(), value, AV_OPT_SEARCH_CHILDREN );
-	if( error != 0 )
+	if( ! error )
 	{
 		std::ostringstream os;
 		os << value;
@@ -172,7 +172,7 @@ void Option::setValueDouble( const double value )
 void Option::setValueString( const std::string& value )
 {
 	int error = av_opt_set( _avContext, getName().c_str(), value.c_str(), AV_OPT_SEARCH_CHILDREN );
-	if( error != 0 )
+	if( ! error )
 	{
 		char err[AV_ERROR_MAX_STRING_SIZE];
 		av_strerror( error, err, AV_ERROR_MAX_STRING_SIZE );

@@ -71,8 +71,8 @@ public:
 	void setValueString( const std::string& value );
 	
 	// array of childs
-	bool hasChild() const { return ! _childOptions.empty(); }
-	const std::vector<Option>& getChilds() { return _childOptions; }
+	bool hasChild() const { return _childOptions.size(); }
+	const std::vector<Option>& getChilds() const { return _childOptions; }
 	const Option& getChildAtIndex( const size_t index ) const { return _childOptions.at( index ); }
 	int getDefaultChildIndex() const { return _defaultChildIndex; }
 	
