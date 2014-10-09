@@ -49,25 +49,6 @@
 
 #include <AvTranscoder/transcoder/StreamTranscoder.hpp>
 #include <AvTranscoder/transcoder/Transcoder.hpp>
-
-/* initialize static const members for binding */
-namespace avtranscoder {
-const std::string Profile::avProfileIdentificator = "avProfile";
-const std::string Profile::avProfileIdentificatorHuman = "avProfileLong";
-
-const std::string Profile::avProfileType = "avProfileType";
-const std::string Profile::avProfileTypeFormat = "avProfileTypeFormat";
-const std::string Profile::avProfileTypeVideo = "avProfileTypeVideo";
-const std::string Profile::avProfileTypeAudio = "avProfileTypeAudio";
-
-const std::string Profile::avProfileFormat = "format";
-const std::string Profile::avProfileCodec = "codec";
-const std::string Profile::avProfilePixelFormat = "pix_fmt";
-const std::string Profile::avProfileSampleFormat = "sample_fmt";
-const std::string Profile::avProfileFrameRate = "r";
-const std::string Profile::avProfileSampleRate = "ar";
-const std::string Profile::avProfileChannel = "ac";
-}
 %}
 
 namespace std {	

@@ -51,8 +51,8 @@ public:
 	
 	void setParameters( const Profile::ProfileDesc& desc )
 	{
-		if( desc.find( Profile::avProfilePixelFormat ) != desc.end() )
-			setPixel( Pixel( desc.find( Profile::avProfilePixelFormat )->second.c_str() ) );
+		if( desc.find( Profile::getAvProfilePixelFormatKey() ) != desc.end() )
+			setPixel( Pixel( desc.find( Profile::getAvProfilePixelFormatKey() )->second.c_str() ) );
 	}
 
 	size_t               getWidth ()    const { return _width;  }

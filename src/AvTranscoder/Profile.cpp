@@ -18,12 +18,10 @@ namespace avtranscoder
 
 const std::string Profile::avProfileIdentificator( "avProfile" );
 const std::string Profile::avProfileIdentificatorHuman( "avProfileLong" );
-
 const std::string Profile::avProfileType( "avProfileType" );
 const std::string Profile::avProfileTypeFormat( "avProfileTypeFormat" );
 const std::string Profile::avProfileTypeVideo( "avProfileTypeVideo" );
 const std::string Profile::avProfileTypeAudio( "avProfileTypeAudio" );
-
 const std::string Profile::avProfileFormat( "format" );
 const std::string Profile::avProfileCodec( "codec" );
 const std::string Profile::avProfilePixelFormat( "pix_fmt" );
@@ -171,5 +169,19 @@ Profile::ProfileDesc& Profile::getProfile( const std::string& searchProfile )
 	}
 	throw std::runtime_error( "unable to find profile: " + searchProfile );
 }
+
+const std::string & Profile::getAvProfileIdentificatorKey() { return avProfileIdentificator; };
+const std::string & Profile::getAvProfileIdentificatorHumanKey() { return avProfileIdentificatorHuman; };
+const std::string & Profile::getAvProfileTypeKey() { return avProfileType; };
+const std::string & Profile::getAvProfileTypeFormatKey() { return avProfileTypeFormat; };
+const std::string & Profile::getAvProfileTypeVideoKey() { return avProfileTypeVideo; };
+const std::string & Profile::getAvProfileTypeAudioKey() { return avProfileTypeAudio; };
+const std::string & Profile::getAvProfileFormatKey() { return avProfileFormat; };
+const std::string & Profile::getAvProfileCodecKey() { return avProfileCodec; };
+const std::string & Profile::getAvProfilePixelFormatKey() { return avProfilePixelFormat; };
+const std::string & Profile::getAvProfileSampleFormatKey() { return avProfileSampleFormat; };
+const std::string & Profile::getAvProfileFrameRateKey() { return avProfileFrameRate; };
+const std::string & Profile::getAvProfileSampleRateKey() { return avProfileSampleRate; };
+const std::string & Profile::getAvProfileChannelKey() { return avProfileChannel; };
 
 }
