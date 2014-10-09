@@ -7,7 +7,6 @@
 %include "std_pair.i"
 %include "std_map.i"
 
-
 %include "AvTranscoder/swig/avException.i"
 %include "AvTranscoder/swig/avExport.i"
 
@@ -49,11 +48,28 @@
 
 #include <AvTranscoder/transcoder/StreamTranscoder.hpp>
 #include <AvTranscoder/transcoder/Transcoder.hpp>
+
+/* initialize static const members for binding */
+namespace avtranscoder {
+const std::string Profile::avProfileIdentificator = "avProfile";
+const std::string Profile::avProfileIdentificatorHuman = "avProfileLong";
+
+const std::string Profile::avProfileType = "avProfileType";
+const std::string Profile::avProfileTypeFormat = "avProfileTypeFormat";
+const std::string Profile::avProfileTypeVideo = "avProfileTypeVideo";
+const std::string Profile::avProfileTypeAudio = "avProfileTypeAudio";
+
+const std::string Profile::avProfileFormat = "format";
+const std::string Profile::avProfileCodec = "codec";
+const std::string Profile::avProfilePixelFormat = "pix_fmt";
+const std::string Profile::avProfileSampleFormat = "sample_fmt";
+const std::string Profile::avProfileFrameRate = "r";
+const std::string Profile::avProfileSampleRate = "ar";
+const std::string Profile::avProfileChannel = "ac";
+}
 %}
 
-%include "AvTranscoder/progress/progress.i"
-
-namespace std {
+namespace std {	
 %template(IntPair)         pair< size_t, size_t >;
 %template(VideoVector)     vector< avtranscoder::VideoProperties >;
 %template(AudioVector)     vector< avtranscoder::AudioProperties >;
@@ -67,6 +83,8 @@ namespace std {
 }
 
 %include <AvTranscoder/common.hpp>
+
+%include "AvTranscoder/progress/progress.i"
 
 %include <AvTranscoder/Profile.hpp>
 

@@ -8,7 +8,7 @@
 namespace avtranscoder
 {
 
-class AvOutputAudio : public IOutputEssence
+class AvExport AvOutputAudio : public IOutputEssence
 {
 public:
 	AvOutputAudio();

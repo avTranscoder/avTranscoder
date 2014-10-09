@@ -24,17 +24,17 @@ namespace detail
 	/**
 	 * @brief Fill metadata parameter with the given AVDictionary.
 	 */
-	void fillMetadataDictionnary( AVDictionary* avdictionnary, MetadatasMap& metadata );
+	void AvExport fillMetadataDictionnary( AVDictionary* avdictionnary, MetadatasMap& metadata );
 }
 
-struct Channel
+struct AvExport Channel
 {
 	size_t id;
 	size_t chromaHeight;
 	size_t bitStep;
 };
 
-struct VideoProperties
+struct AvExport VideoProperties
 {
 	VideoProperties()
 	{
@@ -106,7 +106,7 @@ public:
 	MetadatasMap getDataMap() const;
 };
 
-struct AudioProperties
+struct AvExport AudioProperties
 {
 	std::string codecName;
 	std::string codecLongName;
@@ -126,7 +126,7 @@ public:
 	MetadatasMap getDataMap() const;
 };
 
-struct DataProperties
+struct AvExport DataProperties
 {
 	size_t      streamId;
 	MetadatasMap metadatas;
@@ -135,7 +135,7 @@ public:
 	MetadatasMap getDataMap() const;
 };
 
-struct SubtitleProperties
+struct AvExport SubtitleProperties
 {
 	size_t      streamId;
 	MetadatasMap metadatas;
@@ -144,7 +144,7 @@ public:
 	MetadatasMap getDataMap() const;
 };
 
-struct AttachementProperties
+struct AvExport AttachementProperties
 {
 	size_t      streamId;
 	MetadatasMap metadatas;
@@ -153,7 +153,7 @@ public:
 	MetadatasMap getDataMap() const;
 };
 
-struct UnknownProperties
+struct AvExport UnknownProperties
 {
 	size_t      streamId;
 	MetadatasMap metadatas;
@@ -162,7 +162,7 @@ public:
 	MetadatasMap getDataMap() const;
 };
 
-struct Properties
+struct AvExport Properties
 {
 	std::string filename;
 	std::string formatName;

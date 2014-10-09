@@ -27,16 +27,18 @@ namespace avtranscoder
  * @brief: Enum to set a policy of how we manage the transcode in case of several streams.
  * eProcessMethodShortest: stop transcode at the end of the shortest stream.
  * eProcessMethodLongest: stop transcode at the end of the longest stream (default method).
+ * eProcessMethodBasedOnStream: stop transcode at the end of an indicated stream (@see _indexBasedStream).
  * eProcessMethodInfinity: stop transcode by outside of avTranscoder.
  */
 enum EProcessMethod
 {
 	eProcessMethodShortest = 0,
 	eProcessMethodLongest,
+	eProcessMethodBasedOnStream,
 	eProcessMethodInfinity,
 };
 
-class Transcoder
+class AvExport Transcoder
 {
 public:
 
@@ -116,8 +118,9 @@ public:
 	/**
 	 * @brief Set the transcodage politic.
 	 * @note If you call it before adding the streams, the process will stop at the end of the shortest stream.
+	 * @param indexBasedStream: in case of process method eProcessMethodBasedOnStream, stop transcode at the end of the indicated stream.
 	 */
-	void setProcessMethod( const EProcessMethod eProcessMethod );
+	void setProcessMethod( const EProcessMethod eProcessMethod, const size_t indexBasedStream = 0 );
 
 	/**
 	 * @brief Set verbose mode for the Transcoder and his streams.
@@ -140,8 +143,13 @@ private:
 	InputFile* addInputFile( const std::string& filename, const size_t streamIndex );
 
 	/**
+	 * @brief Get the duration of the stream.
+	 */
+	double getStreamDuration( size_t indexStream ) const;
+
+	/**
 	* @brief Get the duration of the shortest stream.
-	 * @note if there is only generated streams, return limit of double.
+	* @note if there is only generated streams, return limit of double.
 	*/
 	double getMinTotalDuration() const;
 
@@ -167,6 +175,8 @@ private:
 
 	size_t _finalisedStreams;
 	EProcessMethod _eProcessMethod;
+
+	size_t _mainStreamIndex;  ///< Index of stream used to stop the process of transcode in case of eProcessMethodBasedOnStream.
 
 	bool    _verbose;
 };

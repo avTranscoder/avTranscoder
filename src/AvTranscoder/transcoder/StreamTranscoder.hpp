@@ -18,7 +18,7 @@ namespace avtranscoder
 
 class ITransform;
 
-class StreamTranscoder
+class AvExport StreamTranscoder
 {
 public:
 	/**

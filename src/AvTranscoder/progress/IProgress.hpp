@@ -22,7 +22,7 @@ enum EJobStatus
  * Inherit this class to have your own way to manage a progress bar.
  * You can inherit this class in C++, but also in python / Java binding.
  */
-class IProgress
+class AvExport IProgress
 {
 public:
 	virtual ~IProgress() {};
