@@ -79,7 +79,11 @@ endmacro()
 # Get FFmpeg from custom install
 if(FFMPEG_LIBRARY_DIR AND FFMPEG_INCLUDE_DIR)
 	set(FFMPEG_FOUND TRUE)
-	file(GLOB FFMPEG_LIBRARIES "${FFMPEG_LIBRARY_DIR}/*.so")
+	if(WIN32)
+		file(GLOB FFMPEG_LIBRARIES "${FFMPEG_LIBRARY_DIR}/*.lib")
+	else()
+		file(GLOB FFMPEG_LIBRARIES "${FFMPEG_LIBRARY_DIR}/*.so")
+	endif()
 # Get FFmpeg from system install
 else()
 	# Check FFmpeg version

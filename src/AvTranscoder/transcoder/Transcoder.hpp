@@ -38,7 +38,7 @@ enum EProcessMethod
 	eProcessMethodInfinity,
 };
 
-class Transcoder
+class AvExport Transcoder
 {
 public:
 

@@ -64,7 +64,7 @@ struct Ratio
 	size_t den;
 };
 
-class ParamSet
+class AvExport ParamSet
 {
 public:
 	ParamSet( void* obj )
@@ -82,11 +82,11 @@ private:
 	void* _objContext;
 };
 
-void split( std::vector< std::string >& splitedString, const std::string& inputString, const std::string& splitChars = ";" );
-int getFilesInDir( const std::string& dir, std::vector< std::string >& files );
+void AvExport split( std::vector< std::string >& splitedString, const std::string& inputString, const std::string& splitChars = ";" );
+int AvExport getFilesInDir( const std::string& dir, std::vector< std::string >& files );
 
-std::string getFormat( const std::string& filename );
-bool matchFormat( const std::string& format, const std::string& filename );
+std::string AvExport getFormat( const std::string& filename );
+bool AvExport matchFormat( const std::string& format, const std::string& filename );
 
 }
 

@@ -9,7 +9,7 @@ namespace avtranscoder
 /**
  * @brief Implementation of IProgress, to display a progress bar in console.
  */
-class ConsoleProgress : public IProgress
+class AvExport ConsoleProgress : public IProgress
 {
 public:
 	~ConsoleProgress();

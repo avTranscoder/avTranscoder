@@ -31,7 +31,7 @@ enum ESubsamplingType
 	eSubsampling420       // 4:2:0
 };
 
-class Pixel
+class AvExport Pixel
 {
 public:
 	Pixel()

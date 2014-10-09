@@ -71,7 +71,7 @@ if(SWIG_FOUND)
 
 		# Create 'avtranscoder-py' shared lib
 		swig_add_module(avtranscoder-py python ${AVTRANSCODER_BINDING_FILE})
-		if(NOT APPLE)
+		if(NOT APPLE AND NOT WIN32)
 			set_target_properties(${SWIG_MODULE_avtranscoder-py_REAL_NAME} PROPERTIES SOVERSION ${AVTRANSCODER_VERSION_MAJOR})
 			set_target_properties(${SWIG_MODULE_avtranscoder-py_REAL_NAME} PROPERTIES VERSION ${AVTRANSCODER_VERSION})
 		endif()
@@ -101,7 +101,7 @@ if(SWIG_FOUND)
 
 		# Create 'avtranscoder-java' shared lib
 		swig_add_module(avtranscoder-java java ${AVTRANSCODER_BINDING_FILE})
-		if(NOT APPLE)
+		if(NOT APPLE AND NOT WIN32)
 			set_target_properties(${SWIG_MODULE_avtranscoder-java_REAL_NAME} PROPERTIES SOVERSION ${AVTRANSCODER_VERSION_MAJOR})
 			set_target_properties(${SWIG_MODULE_avtranscoder-java_REAL_NAME} PROPERTIES VERSION ${AVTRANSCODER_VERSION})
 		endif()
