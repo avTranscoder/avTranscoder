@@ -1,6 +1,6 @@
 #include "util.hpp"
 
-#include <AvTranscoder/option/context.hpp>
+#include <AvTranscoder/option/Context.hpp>
 #include <AvTranscoder/option/Option.hpp>
 
 extern "C" {

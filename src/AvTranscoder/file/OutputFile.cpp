@@ -1,6 +1,6 @@
 #include "OutputFile.hpp"
 
-#include <AvTranscoder/option/context.hpp>
+#include <AvTranscoder/option/Context.hpp>
 
 extern "C" {
 #include <libavcodec/avcodec.h>

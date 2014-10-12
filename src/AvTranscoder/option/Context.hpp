@@ -8,9 +8,6 @@
 #include <string>
 #include <map>
 
-struct AVFormatContext;
-struct AVCodecContext;
-
 namespace avtranscoder
 {
 
@@ -51,34 +48,6 @@ protected:
 private:
 	std::map<std::string, Option> _options;
 	void* _avContext;  ///< Has link (no ownership)
-};
-
-/**
- * @brief Wrapper of an AVFormatContext.
- * @note The AVFormatContext is allocated and free by the class. It is not the case of the base class.
- */
-class FormatContext : public Context
-{
-public:
-	FormatContext( int req_flags = 0 );
-	~FormatContext();
-
-private:
-	AVFormatContext* _avFormatContext;
-};
-
-/**
- * @brief Wrapper of an AVCodecContext.
- * @note The AVCodecContext is allocated and free by the class. It is not the case of the base class.
- */
-class CodecContext : public Context
-{
-public:
-	CodecContext( int req_flags = 0 );
-	~CodecContext();
-	
-private:
-	AVCodecContext* _avCodecContext;
 };
 
 }

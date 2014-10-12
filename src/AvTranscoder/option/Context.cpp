@@ -1,8 +1,6 @@
-#include "context.hpp"
+#include "Context.hpp"
 
 extern "C" {
-#include <libavformat/avformat.h>
-#include <libavcodec/avcodec.h>
 #include <libavutil/mem.h>
 #include <libavutil/opt.h>
 }
@@ -83,38 +81,13 @@ void Context::loadOptions( void* av_class, int req_flags )
 				parentFound = true;
 				break;
 			}
-        }
+		}
 
 		if( ! parentFound )
 		{
 			std::cout << "Warning: Can't find a choice option for " << itOption->getName() << std::endl;
 		}
 	}
-}
-
-FormatContext::FormatContext( int req_flags )
-	: _avFormatContext( NULL )
-{
-	_avFormatContext = avformat_alloc_context();
-	loadOptions( _avFormatContext, req_flags );
-}
-
-FormatContext::~FormatContext()
-{
-	avformat_free_context( _avFormatContext );
-}
-
-CodecContext::CodecContext( int req_flags )
-	: _avCodecContext( NULL )
-{
-	_avCodecContext = avcodec_alloc_context3( NULL );
-	loadOptions( _avCodecContext, req_flags );
-}
-
-CodecContext::~CodecContext()
-{
-	avcodec_close( _avCodecContext );
-	av_free( _avCodecContext );
 }
 
 }
