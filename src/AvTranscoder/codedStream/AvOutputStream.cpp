@@ -25,14 +25,4 @@ bool AvOutputStream::wrap( CodedData& data )
 	return _outputFile->wrap( data, _streamIndex );
 }
 
-VideoCodec AvOutputStream::getVideoCodec() const
-{
-	return _videoDesc;
-}
-
-AudioCodec AvOutputStream::getAudioCodec() const
-{
-	return _audioDesc;
-}
-
 }
