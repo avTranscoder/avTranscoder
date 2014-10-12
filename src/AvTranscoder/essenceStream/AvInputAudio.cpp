@@ -20,8 +20,7 @@ namespace avtranscoder
 AvInputAudio::AvInputAudio( AvInputStream& inputStream ) 
 	: IInputEssence()
 	, _inputStream   ( &inputStream )
-	, _codec         ( NULL )
-	, _codecContext  ( NULL )
+	, _codec( eCodecTypeDecoder, inputStream.getAudioCodec().getCodecId() )
 	, _frame         ( NULL )
 	, _selectedStream( -1 )
 {
@@ -29,12 +28,6 @@ AvInputAudio::AvInputAudio( AvInputStream& inputStream )
 
 AvInputAudio::~AvInputAudio()
 {
-	if( _codecContext != NULL )
-	{
-		avcodec_close( _codecContext );
-		av_free( _codecContext );
-		_codecContext = NULL;
-	}
 	if( _frame != NULL )
 	{
 #if LIBAVCODEC_VERSION_MAJOR > 54
@@ -53,32 +46,21 @@ AvInputAudio::~AvInputAudio()
 
 void AvInputAudio::setup()
 {
-	avcodec_register_all();
+	AVCodecContext* avCodecContext = _codec.getAVCodecContext();
+	AVCodec* avCodec = _codec.getAVCodec();
 
-	_codec = avcodec_find_decoder( _inputStream->getAudioCodec().getCodecId() );
-	if( _codec == NULL )
-	{
-		throw std::runtime_error( "codec not supported" );
-	}
+	avCodecContext->channels = _inputStream->getAudioCodec().getChannels();
 	
-	_codecContext = avcodec_alloc_context3( _codec );
-	if( _codecContext == NULL )
-	{
-		throw std::runtime_error( "unable to find context for codec" );
-	}
-	
-	_codecContext->channels = _inputStream->getAudioCodec().getChannels();
-	
-	int ret = avcodec_open2( _codecContext, _codec, NULL );
+	int ret = avcodec_open2( avCodecContext, avCodec, NULL );
 
-	if( ret < 0 || _codecContext == NULL || _codec == NULL )
+	if( ret < 0 || avCodecContext == NULL || avCodec == NULL )
 	{
 		std::string msg = "unable open audio codec: ";
-		msg +=  _codec->long_name;
+		msg +=  avCodec->long_name;
 		msg += " (";
-		msg += _codec->name;
+		msg += avCodec->name;
 		msg += ")";
-		avcodec_close( _codecContext );
+		avcodec_close( avCodecContext );
 
 		char err[250];
 
@@ -102,11 +84,13 @@ bool AvInputAudio::readNextFrame( Frame& frameBuffer )
 {
 	if( ! getNextFrame() )
 		return false;
-	
+
+	AVCodecContext* avCodecContext = _codec.getAVCodecContext();
+
 	size_t decodedSize = av_samples_get_buffer_size(
-		NULL, _codecContext->channels,
+		NULL, avCodecContext->channels,
 		_frame->nb_samples,
-		_codecContext->sample_fmt, 1 );
+		avCodecContext->sample_fmt, 1 );
 	
 	AudioFrame& audioBuffer = static_cast<AudioFrame&>( frameBuffer );
 
@@ -120,8 +104,8 @@ bool AvInputAudio::readNextFrame( Frame& frameBuffer )
 		unsigned char* dst = audioBuffer.getPtr();
 		av_samples_copy(
 			&dst, (uint8_t* const* )_frame->data, 0,
-			0, _frame->nb_samples, _codecContext->channels,
-			_codecContext->sample_fmt );
+			0, _frame->nb_samples, avCodecContext->channels,
+			avCodecContext->sample_fmt );
 	}
 
 	return true;
@@ -134,9 +118,9 @@ bool AvInputAudio::readNextFrame( Frame& frameBuffer, const size_t subStreamInde
 
 	const int output_nbChannels = 1;
 	const int output_align = 1;
-	size_t decodedSize = av_samples_get_buffer_size(NULL, output_nbChannels, _frame->nb_samples, _codecContext->sample_fmt, output_align);
+	size_t decodedSize = av_samples_get_buffer_size(NULL, output_nbChannels, _frame->nb_samples, _codec.getAVCodecContext()->sample_fmt, output_align);
 	
-	size_t nbSubStreams = _codecContext->channels;
+	size_t nbSubStreams = _codec.getAVCodecContext()->channels;
 	size_t bytePerSample = av_get_bytes_per_sample( (AVSampleFormat)_frame->format );
 
 	if( subStreamIndex > nbSubStreams - 1 )
@@ -188,7 +172,7 @@ bool AvInputAudio::getNextFrame()
 		packet.data         = data.getPtr();
 		packet.size         = data.getSize();
 		
-		int ret = avcodec_decode_audio4( _codecContext, _frame, &got_frame, &packet );
+		int ret = avcodec_decode_audio4( _codec.getAVCodecContext(), _frame, &got_frame, &packet );
 
 		if( ret < 0 )
 		{
