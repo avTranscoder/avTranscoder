@@ -1,5 +1,9 @@
 #include "ICodec.hpp"
 
+extern "C" {
+#include <libavutil/mem.h>
+}
+
 #include <stdexcept>
 #include <cassert>
 

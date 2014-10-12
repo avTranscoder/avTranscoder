@@ -5,10 +5,6 @@
 
 #include <string>
 
-struct AVCodec;
-struct AVCodecContext;
-enum AVCodecID;
-
 namespace avtranscoder
 {
 

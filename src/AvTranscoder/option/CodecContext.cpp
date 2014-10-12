@@ -2,6 +2,7 @@
 
 extern "C" {
 #include <libavcodec/avcodec.h>
+#include <libavutil/mem.h>
 }
 
 namespace avtranscoder
