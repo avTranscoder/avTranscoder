@@ -8,7 +8,7 @@ namespace avtranscoder
 GeneratorVideo::GeneratorVideo( )
 	: IInputEssence( )
 	, _inputFrame( NULL )
-	, _videoDesc()
+	, _videoDesc( eCodecTypeEncoder )
 	, _videoFrameDesc()
 	, _numberOfView( 1 )
 {

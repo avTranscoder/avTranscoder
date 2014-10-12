@@ -5,13 +5,13 @@
 namespace avtranscoder
 {
 
-VideoCodec::VideoCodec( const std::string& codecName )
-	: ICodec( codecName )
+VideoCodec::VideoCodec( const ECodecType type, const std::string& codecName )
+	: ICodec( type, codecName )
 {
 }
 
-VideoCodec::VideoCodec( const AVCodecID codecId )
-	: ICodec( codecId )
+VideoCodec::VideoCodec( const ECodecType type, const AVCodecID codecId )
+	: ICodec( type, codecId )
 {
 }
 

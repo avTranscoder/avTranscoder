@@ -27,7 +27,7 @@ AvInputStream::AvInputStream( InputFile& inputFile, const size_t streamIndex )
 	{
 		case AVMEDIA_TYPE_VIDEO:
 		{
-			VideoCodec* videoCodec = new VideoCodec( context->codec_id );
+			VideoCodec* videoCodec = new VideoCodec( eCodecTypeDecoder, context->codec_id );
 			videoCodec->setImageParameters( context->width, context->height, context->pix_fmt );
 			videoCodec->setTimeBase( context->time_base.num, context->time_base.den, context->ticks_per_frame );
 
@@ -43,7 +43,7 @@ AvInputStream::AvInputStream( InputFile& inputFile, const size_t streamIndex )
 			// std::cout << "channels " << context->channel_layout << std::endl;
 			// std::cout << "audio buffer read size " << context->block_align << std::endl;
 
-			AudioCodec* audioCodec = new AudioCodec( context->codec_id );
+			AudioCodec* audioCodec = new AudioCodec( eCodecTypeDecoder, context->codec_id );
 			audioCodec->setAudioParameters( context->sample_rate, context->channels, context->sample_fmt );
 
 			_codec = audioCodec;
@@ -51,7 +51,7 @@ AvInputStream::AvInputStream( InputFile& inputFile, const size_t streamIndex )
 		}
 		case AVMEDIA_TYPE_DATA:
 		{
-			DataCodec* dataCodec = new DataCodec( context->codec_id );
+			DataCodec* dataCodec = new DataCodec( eCodecTypeDecoder, context->codec_id );
 
 			_codec= dataCodec;
 			break;

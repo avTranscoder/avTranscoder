@@ -11,7 +11,7 @@ class AvExport IOutputEssence
 {
 public:
 	IOutputEssence( const std::string& codecName )
-	: _codedDesc( codecName )
+	: _codedDesc( eCodecTypeEncoder, codecName )
 	{}
 
 	virtual ~IOutputEssence()

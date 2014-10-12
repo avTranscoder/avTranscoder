@@ -5,19 +5,27 @@
 
 namespace avtranscoder {
 
-ICodec::ICodec( const std::string& codecName )
+ICodec::ICodec( const ECodecType type, const std::string& codecName )
 	: _codec( NULL )
 	, _codecContext( NULL )
 {
 	if( codecName.size() )
-		setEncoderCodec( codecName );
+	{
+		if( type == eCodecTypeEncoder )
+			setEncoderCodec( codecName );
+		else if( type == eCodecTypeDecoder )
+			setDecoderCodec( codecName );
+	}
 }
 
-ICodec::ICodec( const AVCodecID codecId )
+ICodec::ICodec( const ECodecType type, const AVCodecID codecId )
 	: _codec( NULL )
 	, _codecContext( NULL )
 {
-	setEncoderCodec( codecId );
+	if( type == eCodecTypeEncoder )
+		setEncoderCodec( codecId );
+	else if( type == eCodecTypeDecoder )
+		setDecoderCodec( codecId );
 }
 
 std::string ICodec::getCodecName() const
@@ -49,6 +57,20 @@ void ICodec::setEncoderCodec( const AVCodecID codecId )
 {
 	avcodec_register_all();  // Warning: should be called only once
 	_codec = avcodec_find_encoder( codecId );
+	initCodecContext();
+}
+
+void ICodec::setDecoderCodec( const std::string& codecName )
+{
+	avcodec_register_all();  // Warning: should be called only once
+	_codec = avcodec_find_decoder_by_name( codecName.c_str() );
+	initCodecContext();
+}
+
+void ICodec::setDecoderCodec( const AVCodecID codecId )
+{
+	avcodec_register_all();  // Warning: should be called only once
+	_codec = avcodec_find_decoder( codecId );
 	initCodecContext();
 }
 

@@ -9,8 +9,8 @@ namespace avtranscoder
 class AvExport DataCodec : public ICodec
 {
 public:
-	DataCodec( const std::string& codecName = "" );
-	DataCodec( const AVCodecID codecId );
+	DataCodec( const ECodecType type, const std::string& codecName = "" );
+	DataCodec( const ECodecType type, const AVCodecID codecId );
 	DataCodec( const ICodec& codec );
 };
 

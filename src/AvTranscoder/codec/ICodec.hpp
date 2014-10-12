@@ -12,12 +12,21 @@ enum AVCodecID;
 namespace avtranscoder
 {
 
+/**
+ * @brief Define if a codec is for encoding or decoding.
+ */
+enum ECodecType
+{
+	eCodecTypeEncoder,
+	eCodecTypeDecoder
+};
+
 class AvExport ICodec
 {
 public:
-	ICodec( const std::string& codecName );
-	ICodec( const AVCodecID codecId );
-	
+	ICodec( const ECodecType type, const std::string& codecName );
+	ICodec( const ECodecType type, const AVCodecID codecId );
+
 	virtual ~ICodec() {};
 	
 	std::string getCodecName()  const;
@@ -27,6 +36,9 @@ public:
 
 	void setEncoderCodec( const std::string& codecName );
 	void setEncoderCodec( const AVCodecID codecId );
+
+	void setDecoderCodec( const std::string& codecName );
+	void setDecoderCodec( const AVCodecID codecId );
 	
 #ifndef SWIG
 	AVCodec*        getAVCodec()        const { return _codec; }

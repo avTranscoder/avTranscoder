@@ -3,13 +3,13 @@
 namespace avtranscoder
 {
 
-DataCodec::DataCodec( const std::string& codecName )
-	: ICodec( "" )
+DataCodec::DataCodec( const ECodecType type, const std::string& codecName )
+	: ICodec( type, codecName )
 {
 }
 
-DataCodec::DataCodec( const AVCodecID codecId )
-	: ICodec( "" )
+DataCodec::DataCodec( const ECodecType type, const AVCodecID codecId )
+	: ICodec( type, codecId )
 {
 }
 

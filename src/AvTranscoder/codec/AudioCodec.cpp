@@ -5,13 +5,13 @@
 namespace avtranscoder
 {
 
-AudioCodec::AudioCodec( const std::string& codecName )
-	: ICodec( codecName )
+AudioCodec::AudioCodec( const ECodecType type, const std::string& codecName )
+	: ICodec( type, codecName )
 {
 }
 
-AudioCodec::AudioCodec( const AVCodecID codecId )
-	: ICodec( codecId )
+AudioCodec::AudioCodec( const ECodecType type, const AVCodecID codecId )
+	: ICodec( type, codecId )
 {
 }
 

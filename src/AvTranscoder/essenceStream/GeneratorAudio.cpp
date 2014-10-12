@@ -6,6 +6,8 @@ namespace avtranscoder
 GeneratorAudio::GeneratorAudio( )
 	: IInputEssence( )
 	, _inputFrame( NULL )
+	, _audioDesc( eCodecTypeEncoder )
+	, _frameDesc()
 {
 }
 

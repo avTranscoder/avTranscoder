@@ -66,7 +66,7 @@ void parseConfigFile( const std::string& configFilename, avtranscoder::Transcode
 					avtranscoder::Pixel inputPixel( dummyPixelFormat );
 					imageDesc.setPixel( inputPixel );
 
-					avtranscoder::VideoCodec inputVideoCodec( dummyVideoCodec );
+					avtranscoder::VideoCodec inputVideoCodec( avtranscoder::eCodecTypeEncoder, dummyVideoCodec );
 					inputVideoCodec.setImageParameters( imageDesc );
 					
 					transcoder.add( filename, streamIndex, subStreamIndex, transcodeProfile, inputVideoCodec );
