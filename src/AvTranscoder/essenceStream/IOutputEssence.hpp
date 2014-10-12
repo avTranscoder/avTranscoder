@@ -10,8 +10,7 @@ namespace avtranscoder
 class AvExport IOutputEssence
 {
 public:
-	virtual ~IOutputEssence()
-	{}
+	virtual ~IOutputEssence() {}
 
 	/**
 	 * @brief Setup the encoder
@@ -38,7 +37,6 @@ public:
 	 * @return a reference to the codec
 	 */
 	virtual ICodec& getCodec() = 0;
-
 };
 
 }
