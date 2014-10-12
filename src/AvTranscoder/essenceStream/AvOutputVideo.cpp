@@ -16,7 +16,7 @@ namespace avtranscoder
 {
 
 AvOutputVideo::AvOutputVideo( )
-	: IOutputEssence( "mpeg2video" )
+	: _codec( eCodecTypeEncoder, "mpeg2video" )
 {
 }
 
@@ -24,7 +24,7 @@ void AvOutputVideo::setup( )
 {
 	av_register_all();  // Warning: should be called only once
 
-	AVCodecContext* codecContext( _codedDesc.getAVCodecContext() );
+	AVCodecContext* codecContext( _codec.getAVCodecContext() );
 
 	if( codecContext == NULL )
 	{
@@ -32,7 +32,7 @@ void AvOutputVideo::setup( )
 	}
 
 	// try to open encoder with parameters
-	int ret = avcodec_open2( codecContext, _codedDesc.getAVCodec(), NULL );
+	int ret = avcodec_open2( codecContext, _codec.getAVCodec(), NULL );
 	if( ret < 0 )
 	{
 		char err[250];
@@ -52,7 +52,7 @@ bool AvOutputVideo::encodeFrame( const Frame& sourceFrame, Frame& codedFrame )
 	AVFrame* frame = avcodec_alloc_frame();
 #endif
 
-	AVCodecContext* codecContext = this->_codedDesc.getAVCodecContext();
+	AVCodecContext* codecContext = this->_codec.getAVCodecContext();
 
 	// Set default frame parameters
 #if LIBAVCODEC_VERSION_MAJOR > 54
@@ -139,7 +139,7 @@ bool AvOutputVideo::encodeFrame( const Frame& sourceFrame, Frame& codedFrame )
 
 bool AvOutputVideo::encodeFrame( Frame& codedFrame )
 {
-	AVCodecContext* codecContext = _codedDesc.getAVCodecContext();
+	AVCodecContext* codecContext = _codec.getAVCodecContext();
 
 	AVPacket packet;
 	av_init_packet( &packet );
@@ -181,14 +181,14 @@ void AvOutputVideo::setProfile( const Profile::ProfileDesc& desc, const avtransc
 		throw std::runtime_error( "The profile " + desc.find( Profile::avProfileIdentificatorHuman )->second + " is invalid." );
 	}
 	
-	_codedDesc.setEncoderCodec( desc.find( Profile::avProfileCodec )->second );
-	
-	const size_t frameRate = std::strtoul( desc.find( Profile::avProfileFrameRate )->second.c_str(), NULL, 0 );
-	static_cast<VideoCodec>( _codedDesc ).setTimeBase( 1, frameRate );
-	
-	static_cast<VideoCodec>( _codedDesc ).setImageParameters( frameDesc );
+	_codec.setEncoderCodec( desc.find( Profile::avProfileCodec )->second );
 
-	Context codecContext( _codedDesc.getAVCodecContext() );
+	const size_t frameRate = std::strtoul( desc.find( Profile::avProfileFrameRate )->second.c_str(), NULL, 0 );
+	_codec.setTimeBase( 1, frameRate );
+
+	_codec.setImageParameters( frameDesc );
+
+	Context codecContext( _codec.getAVCodecContext() );
 	
 	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
 	{

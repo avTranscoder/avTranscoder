@@ -27,7 +27,11 @@ public:
 
 	void setProfile( const Profile::ProfileDesc& desc, const avtranscoder::VideoFrameDesc& frameDesc );
 	
-	VideoCodec getVideoCodec() { return _codedDesc; }
+	ICodec& getCodec() { return _codec; }
+	VideoCodec& getVideoCodec() { return _codec; }
+
+private:
+	VideoCodec _codec;
 };
 
 }

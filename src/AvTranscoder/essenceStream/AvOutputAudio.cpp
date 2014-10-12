@@ -15,7 +15,7 @@ namespace avtranscoder
 {
 
 AvOutputAudio::AvOutputAudio()
-	: IOutputEssence( "pcm_s16le" )
+	: _codec( eCodecTypeEncoder, "pcm_s16le" )
 {
 }
 
@@ -23,7 +23,7 @@ void AvOutputAudio::setup()
 {
 	av_register_all();  // Warning: should be called only once
 
-	AVCodecContext* codecContext( _codedDesc.getAVCodecContext() );
+	AVCodecContext* codecContext( _codec.getAVCodecContext() );
 
 	if( codecContext == NULL )
 	{
@@ -31,7 +31,7 @@ void AvOutputAudio::setup()
 	}
 	
 	// try to open encoder with parameters.
-	int ret = avcodec_open2( codecContext, _codedDesc.getAVCodec(), NULL );
+	int ret = avcodec_open2( codecContext, _codec.getAVCodec(), NULL );
 	if( ret < 0 )
 	{
 		char err[250];
@@ -50,7 +50,7 @@ bool AvOutputAudio::encodeFrame( const Frame& sourceFrame, Frame& codedFrame )
 	AVFrame* frame = avcodec_alloc_frame();
 #endif
 
-	AVCodecContext* codecContext = _codedDesc.getAVCodecContext();
+	AVCodecContext* codecContext = _codec.getAVCodecContext();
 
 	// Set default frame parameters
 #if LIBAVCODEC_VERSION_MAJOR > 54
@@ -138,7 +138,7 @@ bool AvOutputAudio::encodeFrame( const Frame& sourceFrame, Frame& codedFrame )
 
 bool AvOutputAudio::encodeFrame( Frame& codedFrame )
 {
-	AVCodecContext* codecContext = _codedDesc.getAVCodecContext();
+	AVCodecContext* codecContext = _codec.getAVCodecContext();
 
 	AVPacket packet;
 	av_init_packet( &packet );
@@ -179,11 +179,10 @@ void AvOutputAudio::setProfile( const Profile::ProfileDesc& desc, const AudioFra
 		throw std::runtime_error( "The profile " + desc.find( Profile::avProfileIdentificatorHuman )->second + " is invalid." );
 	}
 	
-	_codedDesc.setEncoderCodec( desc.find( Profile::avProfileCodec )->second );
-	
-	static_cast<AudioCodec>( _codedDesc ).setAudioParameters( frameDesc );
+	_codec.setEncoderCodec( desc.find( Profile::avProfileCodec )->second );
+	_codec.setAudioParameters( frameDesc );
 
-	Context codecContext( _codedDesc.getAVCodecContext() );
+	Context codecContext( _codec.getAVCodecContext() );
 	
 	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
 	{

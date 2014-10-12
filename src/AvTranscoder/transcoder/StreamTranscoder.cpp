@@ -257,12 +257,12 @@ void StreamTranscoder::init()
 	if( ! _inputEssence )
 		return;
 
-	int latency = _outputEssence->getCodedDesc().getLatency();
+	int latency = _outputEssence->getCodec().getLatency();
 	if( _verbose )
 		std::cout << "latency of stream: " << latency << std::endl;
 
 	if( ! latency ||
-		latency < _outputEssence->getCodedDesc().getAVCodecContext()->frame_number )
+		latency < _outputEssence->getCodec().getAVCodecContext()->frame_number )
 		return;
 
 	while( ( --latency ) > 0 )

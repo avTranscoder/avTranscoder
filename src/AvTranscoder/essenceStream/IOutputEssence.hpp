@@ -10,10 +10,6 @@ namespace avtranscoder
 class AvExport IOutputEssence
 {
 public:
-	IOutputEssence( const std::string& codecName )
-	: _codedDesc( eCodecTypeEncoder, codecName )
-	{}
-
 	virtual ~IOutputEssence()
 	{}
 
@@ -37,10 +33,11 @@ public:
 	 */
 	virtual bool encodeFrame( Frame& codedFrame ) = 0;
 
-	ICodec& getCodedDesc() { return _codedDesc; }
-
-protected:
-	ICodec _codedDesc;
+	/**
+	 * @brief Get codec used for encoding.
+	 * @return a reference to the codec
+	 */
+	virtual ICodec& getCodec() = 0;
 
 };
 

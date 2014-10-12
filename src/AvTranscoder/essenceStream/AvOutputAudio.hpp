@@ -27,7 +27,11 @@ public:
 	
 	void setProfile( const Profile::ProfileDesc& desc, const AudioFrameDesc& frameDesc );
 
-	AudioCodec getAudioCodec() { return _codedDesc; }
+	ICodec& getCodec() { return _codec; }
+	AudioCodec& getAudioCodec() { return _codec; }
+
+private:
+	AudioCodec _codec;
 };
 
 }
