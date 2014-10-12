@@ -52,7 +52,7 @@ bool AvOutputVideo::encodeFrame( const Frame& sourceFrame, Frame& codedFrame )
 	AVFrame* frame = avcodec_alloc_frame();
 #endif
 
-	AVCodecContext* codecContext = this->_codec.getAVCodecContext();
+	AVCodecContext* codecContext = _codec.getAVCodecContext();
 
 	// Set default frame parameters
 #if LIBAVCODEC_VERSION_MAJOR > 54
