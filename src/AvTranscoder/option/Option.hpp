@@ -55,20 +55,20 @@ public:
 	bool isVideoOpt() const { return _avOption->flags & AV_OPT_FLAG_VIDEO_PARAM; }
 	bool isSubtitleOpt() const { return _avOption->flags & AV_OPT_FLAG_SUBTITLE_PARAM; }
 	
-	// default value
-	bool getDefaultValueBool() const;
-	int getDefaultValueInt() const;
-	double getDefaultValueDouble() const;
-	std::string getDefaultValueString() const;
-	std::pair<int, int> getDefaultValueRatio() const;
+	// get default value
+	bool getDefaultBool() const;
+	int getDefaultInt() const;
+	double getDefaultDouble() const;
+	std::string getDefaultString() const;
+	std::pair<int, int> getDefaultRatio() const;
 
-	// setters
+	// set value
 	void setFlag( const std::string& flag, const bool enable );
-	void setValueBool( const bool value );
-	void setValueInt( const int value );
-	void setValueRatio( const int num, const int den );
-	void setValueDouble( const double value );
-	void setValueString( const std::string& value );
+	void setBool( const bool value );
+	void setInt( const int value );
+	void setRatio( const int num, const int den );
+	void setDouble( const double value );
+	void setString( const std::string& value );
 	
 	// array of childs
 	bool hasChild() const { return _childOptions.size(); }

@@ -76,7 +76,7 @@ void Context::loadOptions( void* av_class, int req_flags )
 				// child of a Choice
 				if( parentOption.getType() == eOptionBaseTypeChoice )
 				{
-					if( itOption->getDefaultValueInt() == parentOption.getDefaultValueInt() )
+					if( itOption->getDefaultInt() == parentOption.getDefaultInt() )
 						parentOption.setDefaultChildIndex( parentOption.getChilds().size() - 1 );
 				}
 

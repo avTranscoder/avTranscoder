@@ -197,7 +197,7 @@ void AvOutputAudio::setProfile( const Profile::ProfileDesc& desc, const AudioFra
 		try
 		{
 			Option& encodeOption = codecContext.getOption( (*it).first );
-			encodeOption.setValueString( (*it).second );
+			encodeOption.setString( (*it).second );
 		}
 		catch( std::exception& e )
 		{
@@ -219,7 +219,7 @@ void AvOutputAudio::setProfile( const Profile::ProfileDesc& desc, const AudioFra
 		try
 		{
 			Option& encodeOption = codecContext.getOption( (*it).first );
-			encodeOption.setValueString( (*it).second );
+			encodeOption.setString( (*it).second );
 		}
 		catch( std::exception& e )
 		{

@@ -66,27 +66,27 @@ EOptionBaseType Option::getType() const
 	return _type;
 }
 
-bool Option::getDefaultValueBool() const
+bool Option::getDefaultBool() const
 {
 	return _avOption->default_val.i64;
 }
 
-int Option::getDefaultValueInt() const
+int Option::getDefaultInt() const
 {
 	return _avOption->default_val.i64;
 }
 
-double Option::getDefaultValueDouble() const
+double Option::getDefaultDouble() const
 {
 	return _avOption->default_val.dbl;
 }
 
-std::string Option::getDefaultValueString() const
+std::string Option::getDefaultString() const
 {
 	return std::string( _avOption->default_val.str ? _avOption->default_val.str : "" );
 }
 
-std::pair<int, int> Option::getDefaultValueRatio() const
+std::pair<int, int> Option::getDefaultRatio() const
 {
 	return std::pair<int, int>( _avOption->default_val.q.num, _avOption->default_val.q.den );
 }
@@ -116,7 +116,7 @@ void Option::setFlag( const std::string& flag, const bool enable )
 	}
 }
 
-void Option::setValueBool( const bool value )
+void Option::setBool( const bool value )
 {
 	int error = av_opt_set_int( _avContext, getName().c_str(), value, AV_OPT_SEARCH_CHILDREN );
 	if( ! error )
@@ -127,7 +127,7 @@ void Option::setValueBool( const bool value )
 	}
 }
 
-void Option::setValueInt( const int value )
+void Option::setInt( const int value )
 {
 	int error = av_opt_set_int( _avContext, getName().c_str(), value, AV_OPT_SEARCH_CHILDREN );
 	if( ! error )
@@ -140,7 +140,7 @@ void Option::setValueInt( const int value )
 	}
 }
 
-void Option::setValueRatio( const int num, const int den )
+void Option::setRatio( const int num, const int den )
 {
 	Rational ratio;
 	ratio.num = num;
@@ -156,7 +156,7 @@ void Option::setValueRatio( const int num, const int den )
 	}
 }
 
-void Option::setValueDouble( const double value )
+void Option::setDouble( const double value )
 {
 	int error = av_opt_set_double( _avContext, getName().c_str(), value, AV_OPT_SEARCH_CHILDREN );
 	if( ! error )
@@ -169,7 +169,7 @@ void Option::setValueDouble( const double value )
 	}
 }
 
-void Option::setValueString( const std::string& value )
+void Option::setString( const std::string& value )
 {
 	int error = av_opt_set( _avContext, getName().c_str(), value.c_str(), AV_OPT_SEARCH_CHILDREN );
 	if( ! error )

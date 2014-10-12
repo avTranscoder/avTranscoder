@@ -24,23 +24,23 @@ void displayOptions( const std::vector<avtranscoder::Option>& options )
 		
 		if( option.getType() == avtranscoder::eOptionBaseTypeInt )
 		{
-			std::cout << "DefaultValue: " << option.getDefaultValueInt() << std::endl;
+			std::cout << "DefaultValue: " << option.getDefaultInt() << std::endl;
 		}
 		else if( option.getType() == avtranscoder::eOptionBaseTypeBool )
 		{
-			std::cout << "DefaultValue: " << option.getDefaultValueBool() << std::endl;
+			std::cout << "DefaultValue: " << option.getDefaultBool() << std::endl;
 		}
 		else if( option.getType() == avtranscoder::eOptionBaseTypeDouble )
 		{
-			std::cout << "DefaultValue: " << option.getDefaultValueDouble() << std::endl;
+			std::cout << "DefaultValue: " << option.getDefaultDouble() << std::endl;
 		}
 		else if( option.getType() == avtranscoder::eOptionBaseTypeRatio )
 		{
-			std::cout << "DefaultValue: " << option.getDefaultValueRatio().first << ", " << option.getDefaultValueRatio().second << std::endl;
+			std::cout << "DefaultValue: " << option.getDefaultRatio().first << ", " << option.getDefaultRatio().second << std::endl;
 		}
 		else if( option.getType() == avtranscoder::eOptionBaseTypeString )
 		{
-			std::cout << "DefaultValue: " << option.getDefaultValueString() << std::endl;
+			std::cout << "DefaultValue: " << option.getDefaultString() << std::endl;
 		}
 		else if( option.getType() == avtranscoder::eOptionBaseTypeChoice )
 		{
@@ -57,7 +57,7 @@ void displayOptions( const std::vector<avtranscoder::Option>& options )
 			for(size_t i = 0; i < option.getChilds().size(); ++i )
 				std::cout << "Element " << i << ": " << 
 					option.getChildAtIndex( i ).getName() << " // " <<
-					option.getChildAtIndex( i ).getDefaultValueBool() << std::endl;
+					option.getChildAtIndex( i ).getDefaultBool() << std::endl;
 		}
 	}
 }

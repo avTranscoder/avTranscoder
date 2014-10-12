@@ -159,7 +159,7 @@ void AvInputVideo::setProfile( const Profile::ProfileDesc& desc )
 		try
 		{
 			Option& decodeOption = codecContext.getOption( (*it).first );
-			decodeOption.setValueString( (*it).second );
+			decodeOption.setString( (*it).second );
 		}
 		catch( std::exception& e )
 		{
