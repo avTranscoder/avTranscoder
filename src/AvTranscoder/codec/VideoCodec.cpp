@@ -15,11 +15,9 @@ VideoCodec::VideoCodec( const AVCodecID codecId )
 {
 }
 
-VideoCodec::VideoCodec( const ICodec& essenceDesc )
-	: ICodec( essenceDesc.getCodecId() )
+VideoCodec::VideoCodec( const ICodec& codec )
+	: ICodec( codec )
 {
-	_codec = essenceDesc.getAVCodec();
-	_codecContext = essenceDesc.getAVCodecContext();
 }
 
 VideoFrameDesc VideoCodec::getVideoFrameDesc() const

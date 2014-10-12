@@ -13,8 +13,8 @@ DataCodec::DataCodec( const AVCodecID codecId )
 {
 }
 
-DataCodec::DataCodec( const ICodec& essenceDesc )
-	: ICodec( "" )
+DataCodec::DataCodec( const ICodec& codec )
+	: ICodec( codec )
 {
 }
 

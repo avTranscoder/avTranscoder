@@ -14,7 +14,7 @@ class AvExport VideoCodec : public ICodec
 public:
 	VideoCodec( const std::string& codecName = "" );
 	VideoCodec( const AVCodecID codecId );
-	VideoCodec( const ICodec& essenceDesc );
+	VideoCodec( const ICodec& codec );
 	
 	VideoFrameDesc getVideoFrameDesc() const;
 	std::pair< size_t, size_t > getTimeBase() const;
