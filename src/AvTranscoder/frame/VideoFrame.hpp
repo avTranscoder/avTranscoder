@@ -42,7 +42,7 @@ public:
 	void setHeight( const size_t height    ) { _height = height; }
 	void setPixel ( const Pixel  pixel     ) { _pixel = pixel; }
 	void setDar( const size_t num, const size_t den ) { _displayAspectRatio.num = num; _displayAspectRatio.den = den; }
-	void setDar( const AVRational ratio ) { _displayAspectRatio = ratio; }
+	void setDar( const Rational ratio ) { _displayAspectRatio = ratio; }
 	
 	void setParameters( const Profile::ProfileDesc& desc )
 	{
@@ -52,7 +52,7 @@ public:
 
 	size_t               getWidth ()    const { return _width;  }
 	size_t               getHeight()    const { return _height; }
-	AVRational getDar() const { return _displayAspectRatio; }
+	Rational getDar() const { return _displayAspectRatio; }
 	int getDarNum() const { return _displayAspectRatio.num; }
 	int getDarDen() const { return _displayAspectRatio.den; }
 	Pixel                getPixelDesc() const { return _pixel; }
@@ -75,7 +75,7 @@ public:
 private:
 	size_t          _width;
 	size_t          _height;
-	AVRational      _displayAspectRatio;
+	Rational      _displayAspectRatio;
 	Pixel           _pixel;
 	// ColorProperties _color;
 

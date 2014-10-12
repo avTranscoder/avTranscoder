@@ -62,9 +62,9 @@ public:
 	
 	std::string startTimecode;
 
-	AVRational timeBase;
-	AVRational sar; // sample/pixel aspect ratio
-	AVRational dar; // display aspect ratio
+	Rational timeBase;
+	Rational sar; // sample/pixel aspect ratio
+	Rational dar; // display aspect ratio
 	
 	size_t      streamId;
 	size_t      codecId;

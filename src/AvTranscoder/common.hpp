@@ -53,6 +53,8 @@ namespace avtranscoder
 
 #define MAX_SWS_PLANE 4
 
+typedef AVRational Rational;
+
 void AvExport split( std::vector< std::string >& splitedString, const std::string& inputString, const std::string& splitChars = ";" );
 int AvExport getFilesInDir( const std::string& dir, std::vector< std::string >& files );
 

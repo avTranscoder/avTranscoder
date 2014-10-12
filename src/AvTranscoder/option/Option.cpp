@@ -142,7 +142,7 @@ void Option::setValueInt( const int value )
 
 void Option::setValueRatio( const int num, const int den )
 {
-	AVRational ratio;
+	Rational ratio;
 	ratio.num = num;
 	ratio.den = den;
 	int error = av_opt_set_q( _avContext, getName().c_str(), ratio, AV_OPT_SEARCH_CHILDREN );
