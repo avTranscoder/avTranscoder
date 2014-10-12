@@ -27,7 +27,7 @@ public:
 	ICodec( const ECodecType type, const std::string& codecName );
 	ICodec( const ECodecType type, const AVCodecID codecId );
 
-	virtual ~ICodec() {};
+	virtual ~ICodec();
 	
 	std::string getCodecName()  const;
 	AVCodecID   getCodecId()  const;

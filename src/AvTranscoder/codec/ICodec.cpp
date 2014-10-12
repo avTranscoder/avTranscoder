@@ -28,6 +28,13 @@ ICodec::ICodec( const ECodecType type, const AVCodecID codecId )
 		setDecoderCodec( codecId );
 }
 
+ICodec::~ICodec()
+{
+	avcodec_close( _codecContext );
+	av_free( _codecContext );
+	_codecContext = NULL;
+}
+
 std::string ICodec::getCodecName() const
 {
 	assert( _codecContext != NULL );
