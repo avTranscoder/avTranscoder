@@ -83,7 +83,7 @@ void ICodec::initCodecContext( )
 
 	if( ( _codecContext = avcodec_alloc_context3( _codec ) ) == NULL )
 	{
-		throw std::runtime_error( "unable to create context for context" );
+		throw std::runtime_error( "unable to allocate codec context and set its fields to default values" );
 	}
 
 	// Set default codec parameters
