@@ -6,6 +6,7 @@ extern "C" {
 
 #include <stdexcept>
 #include <cassert>
+#include <iostream>
 
 namespace avtranscoder {
 
@@ -66,6 +67,11 @@ void ICodec::setEncoderCodec( const std::string& codecName )
 
 void ICodec::setEncoderCodec( const AVCodecID codecId )
 {
+	if( codecId == 0 )
+	{
+		std::cout << "Warning: Unsupported codec with id 0" << std::endl;
+		return;
+	}
 	avcodec_register_all();  // Warning: should be called only once
 	_codec = avcodec_find_encoder( codecId );
 	initCodecContext();
@@ -80,6 +86,11 @@ void ICodec::setDecoderCodec( const std::string& codecName )
 
 void ICodec::setDecoderCodec( const AVCodecID codecId )
 {
+	if( codecId == 0 )
+	{
+		std::cout << "Warning: Unsupported codec with id 0" << std::endl;
+		return;
+	}
 	avcodec_register_all();  // Warning: should be called only once
 	_codec = avcodec_find_decoder( codecId );
 	initCodecContext();
