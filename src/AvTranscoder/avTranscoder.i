@@ -11,8 +11,6 @@
 %include "AvTranscoder/swig/avExport.i"
 
 %{
-#include <AvTranscoder/common.hpp>
-
 #include <AvTranscoder/Profile.hpp>
 
 #include <AvTranscoder/essenceStructures/Pixel.hpp>
@@ -63,8 +61,6 @@ namespace std {
 %template(ProfileMap)      map< string, string >;
 %template(ProfilesVector)  vector< map< string, string > >;
 }
-
-%include <AvTranscoder/common.hpp>
 
 %include "AvTranscoder/progress/progress.i"
 
