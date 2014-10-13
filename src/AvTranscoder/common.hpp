@@ -82,8 +82,10 @@ private:
 	void* _objContext;
 };
 
-void AvExport split( std::vector< std::string >& splitedString, const std::string& inputString, const std::string& splitChars = ";" );
-int AvExport getFilesInDir( const std::string& dir, std::vector< std::string >& files );
+#ifndef SWIG
+void split( std::vector< std::string >& splitedString, const std::string& inputString, const std::string& splitChars = ";" );
+int getFilesInDir( const std::string& dir, std::vector< std::string >& files );
+#endif
 
 std::string AvExport getFormat( const std::string& filename );
 bool AvExport matchFormat( const std::string& format, const std::string& filename );
