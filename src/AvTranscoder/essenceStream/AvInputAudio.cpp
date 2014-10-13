@@ -100,10 +100,13 @@ bool AvInputAudio::readNextFrame( Frame& frameBuffer )
 	{
 		if( audioBuffer.getSize() != decodedSize )
 			audioBuffer.getBuffer().resize( decodedSize, 0 );
-		
+
+		// @todo manage cases with data of frame not only on data[0] (use _frame.linesize)
+		unsigned char* const src = _frame->data[0];
 		unsigned char* dst = audioBuffer.getPtr();
+
 		av_samples_copy(
-			&dst, (uint8_t* const* )_frame->data, 0,
+			&dst, &src, 0,
 			0, _frame->nb_samples, avCodecContext->channels,
 			avCodecContext->sample_fmt );
 	}
@@ -145,9 +148,6 @@ bool AvInputAudio::readNextFrame( Frame& frameBuffer, const size_t subStreamInde
 		
 		for( int sample = 0; sample < _frame->nb_samples; ++sample )
 		{
-			// std::cout << "sample " << sample << " ==| ";
-			// std::cout << "src " << static_cast<void *>(src) << " -> ";
-			// std::cout << "dst " << static_cast<void *>(dst) << std::endl;
 			memcpy( dst, src, bytePerSample );
 			dst += bytePerSample;
 			src += bytePerSample * nbSubStreams;
