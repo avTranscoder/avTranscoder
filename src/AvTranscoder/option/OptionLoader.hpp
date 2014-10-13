@@ -22,7 +22,7 @@ namespace avtranscoder
  * @brief Manage Options.
  * Get a list of options by calling a load****Options(), depending on which FFMpeg / LibAV object you want to analyse.
  */
-class OptionLoader 
+class AvExport OptionLoader 
 {
 public:
 	typedef std::vector<Option> OptionArray;

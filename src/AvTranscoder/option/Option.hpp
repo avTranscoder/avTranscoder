@@ -1,6 +1,8 @@
 #ifndef _AV_TRANSCODER_OPTION_HPP
 #define	_AV_TRANSCODER_OPTION_HPP
 
+#include <AvTranscoder/common.hpp>
+
 extern "C" {
 #ifndef __STDC_CONSTANT_MACROS
 	#define __STDC_CONSTANT_MACROS
@@ -33,7 +35,7 @@ enum OptionType
  * Get its type to know what the option is about: Int, Double, Ratio, Choice...
  * Parse its array of options to get the potential childs (Choice and Group).
  */
-class Option
+class AvExport Option
 {
 public:
 	static OptionType getTypeFromAVOption( const char* unit, AVOptionType avType );
