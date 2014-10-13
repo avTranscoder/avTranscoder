@@ -15,8 +15,7 @@ static const std::string dummyPixelFormat = "yuv420p";
 static const std::string dummyVideoCodec = "mpeg2video";
 static const std::string dummyAudioCodec = "pcm_s16le";
 
-// bool verbose = false;
-bool verbose = true;
+bool verbose = false;
 
 void parseConfigFile( const std::string& configFilename, avtranscoder::Transcoder& transcoder, avtranscoder::Profile& profile )
 {
