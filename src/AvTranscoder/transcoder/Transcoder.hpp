@@ -24,10 +24,10 @@ namespace avtranscoder
 {
 
 /**
- * @brief: Enum to set a policy of how we manage the transcode in case of several streams.
+ * @brief Enum to set a policy of how we manage the transcode in case of several streams.
  * eProcessMethodShortest: stop transcode at the end of the shortest stream.
  * eProcessMethodLongest: stop transcode at the end of the longest stream (default method).
- * eProcessMethodBasedOnStream: stop transcode at the end of an indicated stream (@see _indexBasedStream).
+ * eProcessMethodBasedOnStream: stop transcode at the end of an indicated stream (@see _indexBasedStream of Transcoder).
  * eProcessMethodInfinity: stop transcode by outside of avTranscoder.
  */
 enum EProcessMethod
@@ -38,6 +38,10 @@ enum EProcessMethod
 	eProcessMethodInfinity,
 };
 
+/**
+ * @brief A Transcoder manages a list of streams, 
+ * and process a transcode to create an output media file.
+ */
 class AvExport Transcoder
 {
 public:
@@ -117,17 +121,22 @@ public:
 
 	/**
 	 * @brief Set the transcodage politic.
-	 * @note If you call it before adding the streams, the process will stop at the end of the shortest stream.
+	 * @note Call it after adding the streams.
+	 * @note By default eProcessMethodLongest.
 	 * @param indexBasedStream: in case of process method eProcessMethodBasedOnStream, stop transcode at the end of the indicated stream.
 	 */
 	void setProcessMethod( const EProcessMethod eProcessMethod, const size_t indexBasedStream = 0 );
 
 	/**
-	 * @brief Set verbose mode for the Transcoder and his streams.
+	 * @brief Set verbose mode for the Transcoder and its streams.
 	 * @note If you call it before adding the streams, no verbose mode will be set for the new streams.
 	 */
 	void setVerbose( bool verbose = true );
 
+	/**
+	 * @brief Set FPS of output media file.
+	 * @note By default 25 frames per second.
+     */
 	void setOutputFps( double fps ) { _outputFps = fps; }
 
 private:
@@ -160,16 +169,16 @@ private:
 	double getMaxTotalDuration() const;
 
 private:
-	OutputFile&                      _outputFile;
-	std::vector< InputFile* >        _inputFiles;
+	OutputFile&                      _outputFile;  ///< The output media file after process.
+	std::vector< InputFile* >        _inputFiles;  ///< The list of input files which contain added streams.
 
-	std::vector< IInputStream* >      _inputStreams;
-	std::vector< StreamTranscoder* > _streamTranscoders;
+	std::vector< StreamTranscoder* > _streamTranscoders;  ///< The streams of the output media file after process.
 	
-	std::vector< GeneratorAudio* > _generatorAudio;
-	std::vector< GeneratorVideo* > _generatorVideo;
+	std::vector< IInputStream* > _inputStreams;  ///< Objects to manage streams based on existing media files.
+	std::vector< GeneratorAudio* > _generatorAudio;  ///< Objects to manage silent audio streams.
+	std::vector< GeneratorVideo* > _generatorVideo;  ///< Objects to manage silent video streams (black images).
 
-	Profile _profile;
+	Profile _profile;  ///< Objet to get existing profiles, and add new ones for the Transcoder.
 
 	double _outputFps;
 
