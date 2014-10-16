@@ -147,7 +147,7 @@ StreamTranscoder::StreamTranscoder(
 			_transform = new AudioTransform();
 
 			GeneratorAudio* generatorAudio = new GeneratorAudio();
-			generatorAudio->setAudioDesc( outputAudio->getAudioCodec() );
+			generatorAudio->setAudioCodec( outputAudio->getAudioCodec() );
 			_generatorEssence = generatorAudio;
 
 			break;

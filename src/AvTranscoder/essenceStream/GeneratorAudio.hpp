@@ -14,10 +14,9 @@ public:
 
 	~GeneratorAudio( );
 
-	// Stream properties
-	void setAudioDesc( const AudioCodec& audioDesc );
+	void setAudioCodec( const AudioCodec& codec );
 
-	AudioCodec getAudioCodec() const;
+	AudioCodec& getAudioCodec();
 	
 	void setup() {}
 	
@@ -27,7 +26,7 @@ public:
 	bool readNextFrame( Frame& frameBuffer, const size_t subStreamIndex );
 
 private:
-	AudioCodec      _audioDesc;
+	AudioCodec _codec;
 	AudioFrameDesc _frameDesc;
 	
 	Frame*         _inputFrame;

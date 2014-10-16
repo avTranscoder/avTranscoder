@@ -405,7 +405,7 @@ void Transcoder::addDummyStream( const Profile::ProfileDesc& profile, const ICod
 		if( _verbose )
 			std::cout << "add a generated audio stream" << std::endl;
 		_generatorAudio.push_back( new GeneratorAudio() );
-		_generatorAudio.back()->setAudioDesc( static_cast<AudioCodec>( codec ) );
+		_generatorAudio.back()->setAudioCodec( static_cast<AudioCodec>( codec ) );
 		
 		_streamTranscoders.push_back( new StreamTranscoder( *_generatorAudio.back(), _outputFile, profile ) );
 	}

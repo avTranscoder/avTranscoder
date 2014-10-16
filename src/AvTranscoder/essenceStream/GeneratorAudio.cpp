@@ -6,7 +6,7 @@ namespace avtranscoder
 GeneratorAudio::GeneratorAudio( )
 	: IInputEssence( )
 	, _inputFrame( NULL )
-	, _audioDesc( eCodecTypeEncoder )
+	, _codec( eCodecTypeEncoder )
 	, _frameDesc()
 {
 }
@@ -15,19 +15,19 @@ GeneratorAudio::~GeneratorAudio( )
 {
 }
 
-void GeneratorAudio::setAudioDesc( const AudioCodec& audioDesc )
+void GeneratorAudio::setAudioCodec( const AudioCodec& codec )
 {
-	_audioDesc = audioDesc;
-	
-	_frameDesc.setSampleRate  ( _audioDesc.getAVCodecContext()->sample_rate );
-	_frameDesc.setChannels    ( _audioDesc.getAVCodecContext()->channels );
 	_frameDesc.setFps         ( 25.0 );
-	_frameDesc.setSampleFormat( _audioDesc.getAVCodecContext()->sample_fmt );
+	_codec = codec;
+
+	_frameDesc.setSampleRate( _codec.getAVCodecContext()->sample_rate );
+	_frameDesc.setChannels( _codec.getAVCodecContext()->channels );
+	_frameDesc.setSampleFormat( _codec.getAVCodecContext()->sample_fmt );
 }
 
-AudioCodec GeneratorAudio::getAudioCodec() const
+AudioCodec& GeneratorAudio::getAudioCodec()
 {
-	return _audioDesc;
+	return _codec;
 }
 
 void GeneratorAudio::setFrame( Frame& inputFrame )
