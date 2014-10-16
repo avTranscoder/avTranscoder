@@ -53,34 +53,7 @@ namespace avtranscoder
 
 #define MAX_SWS_PLANE 4
 
-struct Ratio
-{
-	Ratio()
-		: num( 0 )
-		, den( 0 )
-	{}
-
-	size_t num;
-	size_t den;
-};
-
-class AvExport ParamSet
-{
-public:
-	ParamSet( void* obj )
-		: _objContext( obj )
-	{}
-	
-	void set( const std::string& key, const std::string& flag, const bool enable );
-	void set( const std::string& key, const bool value );
-	void set( const std::string& key, const int value );
-	void set( const std::string& key, const int num, const int den );
-	void set( const std::string& key, const double value );
-	void set( const std::string& key, const std::string& value );
-	
-private:
-	void* _objContext;
-};
+typedef AVRational Rational;
 
 void AvExport split( std::vector< std::string >& splitedString, const std::string& inputString, const std::string& splitChars = ";" );
 int AvExport getFilesInDir( const std::string& dir, std::vector< std::string >& files );

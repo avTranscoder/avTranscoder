@@ -1,9 +1,8 @@
 #include "AvOutputVideo.hpp"
 
+#include <AvTranscoder/option/Context.hpp>
+
 extern "C" {
-#ifndef __STDC_CONSTANT_MACROS
-	#define __STDC_CONSTANT_MACROS
-#endif
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
 #include <libavutil/avutil.h>
@@ -17,15 +16,15 @@ namespace avtranscoder
 {
 
 AvOutputVideo::AvOutputVideo( )
-	: IOutputEssence( "mpeg2video" )
+	: _codec( eCodecTypeEncoder, "mpeg2video" )
 {
 }
 
 void AvOutputVideo::setup( )
 {
-	av_register_all();  // Warning: should be called only once
+	av_register_all();
 
-	AVCodecContext* codecContext( _codedDesc.getCodecContext() );
+	AVCodecContext* codecContext( _codec.getAVCodecContext() );
 
 	if( codecContext == NULL )
 	{
@@ -33,7 +32,7 @@ void AvOutputVideo::setup( )
 	}
 
 	// try to open encoder with parameters
-	int ret = avcodec_open2( codecContext, _codedDesc.getCodec(), NULL );
+	int ret = avcodec_open2( codecContext, _codec.getAVCodec(), NULL );
 	if( ret < 0 )
 	{
 		char err[250];
@@ -45,7 +44,7 @@ void AvOutputVideo::setup( )
 }
 
 
-bool AvOutputVideo::encodeFrame( const Frame& sourceFrame, DataStream& codedFrame )
+bool AvOutputVideo::encodeFrame( const Frame& sourceFrame, Frame& codedFrame )
 {
 #if LIBAVCODEC_VERSION_MAJOR > 54
 	AVFrame* frame = av_frame_alloc();
@@ -53,7 +52,7 @@ bool AvOutputVideo::encodeFrame( const Frame& sourceFrame, DataStream& codedFram
 	AVFrame* frame = avcodec_alloc_frame();
 #endif
 
-	AVCodecContext* codecContext = this->_codedDesc.getCodecContext();
+	AVCodecContext* codecContext = _codec.getAVCodecContext();
 
 	// Set default frame parameters
 #if LIBAVCODEC_VERSION_MAJOR > 54
@@ -138,9 +137,9 @@ bool AvOutputVideo::encodeFrame( const Frame& sourceFrame, DataStream& codedFram
 	return ret == 0;
 }
 
-bool AvOutputVideo::encodeFrame( DataStream& codedFrame )
+bool AvOutputVideo::encodeFrame( Frame& codedFrame )
 {
-	AVCodecContext* codecContext = _codedDesc.getCodecContext();
+	AVCodecContext* codecContext = _codec.getAVCodecContext();
 
 	AVPacket packet;
 	av_init_packet( &packet );
@@ -182,14 +181,14 @@ void AvOutputVideo::setProfile( const Profile::ProfileDesc& desc, const avtransc
 		throw std::runtime_error( "The profile " + desc.find( Profile::avProfileIdentificatorHuman )->second + " is invalid." );
 	}
 	
-	_codedDesc.setCodec( desc.find( Profile::avProfileCodec )->second );
-	
-	const size_t frameRate = std::strtoul( desc.find( Profile::avProfileFrameRate )->second.c_str(), NULL, 0 );
-	static_cast<VideoDesc>( _codedDesc ).setTimeBase( 1, frameRate );
-	
-	static_cast<VideoDesc>( _codedDesc ).setImageParameters( frameDesc );
+	_codec.setCodec( eCodecTypeEncoder, desc.find( Profile::avProfileCodec )->second );
 
-	ParamSet paramSet( _codedDesc.getCodecContext() );
+	const size_t frameRate = std::strtoul( desc.find( Profile::avProfileFrameRate )->second.c_str(), NULL, 0 );
+	_codec.setTimeBase( 1, frameRate );
+
+	_codec.setImageParameters( frameDesc );
+
+	Context codecContext( _codec.getAVCodecContext() );
 	
 	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
 	{
@@ -203,7 +202,8 @@ void AvOutputVideo::setProfile( const Profile::ProfileDesc& desc, const avtransc
 
 		try
 		{
-			paramSet.set( (*it).first, (*it).second );
+			Option& encodeOption = codecContext.getOption( (*it).first );
+			encodeOption.setString( (*it).second );
 		}
 		catch( std::exception& e )
 		{
@@ -225,7 +225,8 @@ void AvOutputVideo::setProfile( const Profile::ProfileDesc& desc, const avtransc
 
 		try
 		{
-			paramSet.set( (*it).first, (*it).second );
+			Option& encodeOption = codecContext.getOption( (*it).first );
+			encodeOption.setString( (*it).second );
 		}
 		catch( std::exception& e )
 		{

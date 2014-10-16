@@ -28,13 +28,13 @@ int main( int argc, char** argv )
 			if( profile.find( avtranscoder::Profile::avProfileType )->second == avtranscoder::Profile::avProfileTypeVideo )
 			{
 				avtranscoder::AvOutputVideo outputVideo;
-				outputVideo.setProfile( profile, outputVideo.getVideoDesc().getVideoFrameDesc() );
+				outputVideo.setProfile( profile, outputVideo.getVideoCodec().getVideoFrameDesc() );
 			}
 
 			if( profile.find( avtranscoder::Profile::avProfileType )->second == avtranscoder::Profile::avProfileTypeAudio )
 			{
 				avtranscoder::AvOutputAudio outputAudio;
-				outputAudio.setProfile( profile, outputAudio.getAudioDesc().getFrameDesc() );
+				outputAudio.setProfile( profile, outputAudio.getAudioCodec().getFrameDesc() );
 			}
 		}
 		catch( ... )

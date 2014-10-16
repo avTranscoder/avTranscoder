@@ -3,6 +3,10 @@
 
 #include <AvTranscoder/common.hpp>
 
+extern "C" {
+#include <libavutil/rational.h>
+}
+
 #include <string>
 #include <vector>
 #include <map>
@@ -32,6 +36,17 @@ struct AvExport Channel
 
 struct AvExport VideoProperties
 {
+	VideoProperties()
+	{
+		timeBase.num = 0;
+		timeBase.den = 0;
+		sar.num = 0;
+		sar.den = 0;
+		dar.num = 0;
+		dar.den = 0;
+	}
+	
+public:
 	std::string codecName;
 	std::string codecLongName;
 	std::string profileName;
@@ -47,9 +62,9 @@ struct AvExport VideoProperties
 	
 	std::string startTimecode;
 
-	Ratio       timeBase;
-	Ratio       sar; // sample/pixel aspect ratio
-	Ratio       dar; // display aspect ratio
+	Rational timeBase;
+	Rational sar; // sample/pixel aspect ratio
+	Rational dar; // display aspect ratio
 	
 	size_t      streamId;
 	size_t      codecId;

@@ -1,6 +1,6 @@
 #include "GeneratorVideo.hpp"
 
-#include <AvTranscoder/essenceTransform/VideoEssenceTransform.hpp>
+#include <AvTranscoder/transform/VideoTransform.hpp>
 
 namespace avtranscoder
 {
@@ -8,7 +8,7 @@ namespace avtranscoder
 GeneratorVideo::GeneratorVideo( )
 	: IInputEssence( )
 	, _inputFrame( NULL )
-	, _videoDesc()
+	, _codec( eCodecTypeEncoder )
 	, _videoFrameDesc()
 	, _numberOfView( 1 )
 {
@@ -18,15 +18,15 @@ GeneratorVideo::~GeneratorVideo( )
 {
 }
 
-void GeneratorVideo::setVideoDesc( const VideoDesc& videoDesc )
+void GeneratorVideo::setVideoCodec( const VideoCodec& codec )
 {
-	_videoDesc = videoDesc;
-	_videoFrameDesc = _videoDesc.getVideoFrameDesc();
+	_codec = codec;
+	_videoFrameDesc = _codec.getVideoFrameDesc();
 }
 
-VideoDesc GeneratorVideo::getVideoDesc() const
+VideoCodec& GeneratorVideo::getVideoCodec()
 {
-	return _videoDesc;
+	return _codec;
 }
 
 void GeneratorVideo::setFrame( Frame& inputFrame )
@@ -44,7 +44,7 @@ bool GeneratorVideo::readNextFrame( Frame& frameBuffer )
 		if( frameBuffer.getSize() != _videoFrameDesc.getDataSize() )
 			frameBuffer.getBuffer().resize( _videoFrameDesc.getDataSize() );
 
-		VideoFrameDesc desc( _videoDesc.getVideoFrameDesc() );
+		VideoFrameDesc desc( _codec.getVideoFrameDesc() );
 		Pixel rgbPixel;
 		rgbPixel.setColorComponents( eComponentRgb );
 		rgbPixel.setPlanar( false );
@@ -54,7 +54,7 @@ bool GeneratorVideo::readNextFrame( Frame& frameBuffer )
 		intermediateBuffer.getBuffer().resize( _videoFrameDesc.getDataSize() );
 		memset( intermediateBuffer.getPtr(), fillChar, _videoFrameDesc.getDataSize() );
 
-		VideoEssenceTransform videoEssenceTransform;
+		VideoTransform videoEssenceTransform;
 		videoEssenceTransform.convert( intermediateBuffer, frameBuffer );
 
 		return true;
