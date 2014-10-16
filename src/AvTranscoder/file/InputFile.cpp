@@ -26,7 +26,7 @@ InputFile::InputFile( const std::string& filename )
 	: _formatContext ( NULL )
 	, _filename      ( filename )
 {
-	av_register_all();  // Warning: should be called only once
+	av_register_all();
 	if( avformat_open_input( &_formatContext, _filename.c_str(), NULL, NULL ) < 0 )
 	{
 		std::string msg = "unable to open file: ";

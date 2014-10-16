@@ -21,7 +21,7 @@ AvOutputAudio::AvOutputAudio()
 
 void AvOutputAudio::setup()
 {
-	av_register_all();  // Warning: should be called only once
+	av_register_all();
 
 	AVCodecContext* codecContext( _codec.getAVCodecContext() );
 
