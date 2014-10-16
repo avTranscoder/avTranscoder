@@ -52,8 +52,8 @@ bool AudioTransform::init( const Frame& srcFrame, const Frame& dstFrame )
 	av_opt_set_int(  _audioConvertContext, "out_channel_layout", av_get_default_channel_layout( dst.desc().getChannels() ), 0 );
 	av_opt_set_int(  _audioConvertContext, "in_sample_rate",     src.desc().getSampleRate(), 0 );
 	av_opt_set_int(  _audioConvertContext, "out_sample_rate",    dst.desc().getSampleRate(), 0 );
-	SetSampleFormat( _audioConvertContext, "in_sample_fmt",      src.desc().getSampleFormat(), 0 );
-	SetSampleFormat( _audioConvertContext, "out_sample_fmt",     dst.desc().getSampleFormat(), 0 );
+	SetSampleFormat( _audioConvertContext, "in_sample_fmt",      src.desc().getAVSampleFormat(), 0 );
+	SetSampleFormat( _audioConvertContext, "out_sample_fmt",     dst.desc().getAVSampleFormat(), 0 );
 	
 	if( InitResampleContext( _audioConvertContext ) < 0 )
 	{

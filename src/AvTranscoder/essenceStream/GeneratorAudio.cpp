@@ -46,8 +46,8 @@ bool GeneratorAudio::readNextFrame( Frame& frameBuffer )
 
 		//av_samples_set_silence( data.getPtr(), offset, nb_samples, nb_channels, sample_fmt );
 		int fill_char = (
-			_frameDesc.getSampleFormat() == AV_SAMPLE_FMT_U8 ||
-			_frameDesc.getSampleFormat() == AV_SAMPLE_FMT_U8P
+			_frameDesc.getAVSampleFormat() == AV_SAMPLE_FMT_U8 ||
+			_frameDesc.getAVSampleFormat() == AV_SAMPLE_FMT_U8P
 			) ? 0x80 : 0x00;
 
 		memset( frameBuffer.getPtr(), fill_char, frameBuffer.getSize() );
