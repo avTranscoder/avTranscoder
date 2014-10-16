@@ -45,7 +45,7 @@ const size_t AudioCodec::getChannels() const
 	return _codecContext->channels;
 }
 
-const AVSampleFormat AudioCodec::getSampleFormat() const
+const AVSampleFormat AudioCodec::getAVSampleFormat() const
 {
 	assert( _codecContext != NULL );
 	return _codecContext->sample_fmt;
