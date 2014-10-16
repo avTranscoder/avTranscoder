@@ -112,7 +112,7 @@ StreamTranscoder::StreamTranscoder(
 			_transform = new VideoTransform();
 
 			GeneratorVideo* generatorVideo = new GeneratorVideo();
-			generatorVideo->setVideoDesc( outputVideo->getVideoCodec() );
+			generatorVideo->setVideoCodec( outputVideo->getVideoCodec() );
 			_generatorEssence = generatorVideo;
 			
 			break;

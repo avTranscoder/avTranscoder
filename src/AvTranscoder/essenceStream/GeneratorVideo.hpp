@@ -15,9 +15,9 @@ public:
 	~GeneratorVideo( );
 
 	// Stream properties
-	void setVideoDesc( const VideoCodec& videoDesc );
+	void setVideoCodec( const VideoCodec& codec );
 
-	VideoCodec getVideoCodec() const;
+	VideoCodec& getVideoCodec();
 	
 	void setup() {}
 
@@ -28,7 +28,7 @@ public:
 
 private:
 	Frame*         _inputFrame;
-	VideoCodec      _videoDesc;
+	VideoCodec      _codec;
 	VideoFrameDesc _videoFrameDesc;
 
 	size_t         _numberOfView;

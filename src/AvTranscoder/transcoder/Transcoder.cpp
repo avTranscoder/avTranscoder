@@ -415,7 +415,7 @@ void Transcoder::addDummyStream( const Profile::ProfileDesc& profile, const ICod
 		if( _verbose )
 			std::cout << "add generated video stream" << std::endl;
 		_generatorVideo.push_back( new GeneratorVideo() );
-		_generatorVideo.back()->setVideoDesc( static_cast<VideoCodec>( codec ) );
+		_generatorVideo.back()->setVideoCodec( static_cast<VideoCodec>( codec ) );
 		
 		_streamTranscoders.push_back( new StreamTranscoder( *_generatorVideo.back(), _outputFile, profile ) );
 	}
