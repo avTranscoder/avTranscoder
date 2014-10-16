@@ -13,19 +13,24 @@ endif()
 
 # Check GLUT
 find_package(GLUT)
-if(NOT GLUT_FOUND)
+
+if(NOT GLUT_Xi_LIBRARY OR NOT GLUT_Xmu_LIBRARY)
+	set(GLUT_FOUND FALSE)
+endif()
+
+if(NOT GLUT_FOUND) 
 	message("GLUT not found, will not build avplay app.")
 	return()
 endif()
 
 # Build app
 include_directories(${AVTRANSCODER_SRC_PATH} ${FFMPEG_INCLUDE_DIR})
-include_directories( ${OPENGL_INCLUDE_DIRS}  ${GLUT_INCLUDE_DIRS} )
+include_directories( ${OPENGL_INCLUDE_DIRS}  ${GLUT_INCLUDE_DIR} )
 
 file(GLOB AVPLAY_SRC_FILES "*.cpp" "*.hpp")
 add_executable(avplay ${AVPLAY_SRC_FILES})
 set_target_properties(avplay PROPERTIES VERSION ${AVTRANSCODER_VERSION})
-target_link_libraries(avplay avtranscoder-shared ${OPENGL_LIBRARIES} ${GLUT_LIBRARY})
+target_link_libraries(avplay avtranscoder-shared ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES})
 
 # Install app
 if(WIN32)
