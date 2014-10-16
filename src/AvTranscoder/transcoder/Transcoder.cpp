@@ -245,16 +245,6 @@ void Transcoder::process( IProgress& progress )
 {
 	size_t frame = 0;
 
-	std::vector< CodedData > codedData;
-
-	codedData.reserve( _inputStreams.size() );
-
-	for( size_t streamIndex = 0; streamIndex < _inputStreams.size(); ++streamIndex )
-	{
-		CodedData data;
-		codedData.push_back( data );
-	}
-
 	if( ! _inputStreams.size() &&
 		! _generatorVideo.size() && 
 		! _generatorAudio.size() )
