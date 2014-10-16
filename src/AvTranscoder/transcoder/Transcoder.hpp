@@ -55,7 +55,7 @@ public:
 	 * @note If filename is empty, add a generated stream.
 	 * @note If filename is empty, profileName can't be empty (no sens to rewrap a generated stream).
 	 */
-	void add( const std::string& filename, const size_t streamIndex, const std::string& profileName, ICodec& essenceCodec, const size_t offset = 0 );
+	void add( const std::string& filename, const size_t streamIndex, const std::string& profileName, ICodec& codec, const size_t offset = 0 );
 
 	/**
 	 * @brief Add a stream and set a custom profile
@@ -65,7 +65,7 @@ public:
 	/*
 	 * @note If filename is empty, add a generated stream.
 	 */
-	void add( const std::string& filename, const size_t streamIndex, Profile::ProfileDesc& profileDesc, ICodec& essenceCodec, const size_t offset = 0  );
+	void add( const std::string& filename, const size_t streamIndex, Profile::ProfileDesc& profileDesc, ICodec& codec, const size_t offset = 0  );
 	
 	/**
 	 * @brief Add a stream and set a profile
@@ -77,7 +77,7 @@ public:
 	 * @note If filename is empty, add a generated stream.
 	 * @note If filename is empty, profileName can't be empty (no sens to rewrap a generated stream).
 	 */
-	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const std::string& profileName, ICodec& essenceCodec, const size_t offset = 0  );
+	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const std::string& profileName, ICodec& codec, const size_t offset = 0  );
 
 	/**
 	 * @brief Add a stream and set a custom profile
@@ -88,7 +88,7 @@ public:
 	/**
 	 * @note If filename is empty, add a generated stream.
 	 */
-	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, Profile::ProfileDesc& profileDesc, ICodec& essenceCodec, const size_t offset = 0  );
+	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, Profile::ProfileDesc& profileDesc, ICodec& codec, const size_t offset = 0  );
 
 	/**
 	 * @brief Add the stream
@@ -138,7 +138,7 @@ private:
 
 	void addTranscodeStream( const std::string& filename, const size_t streamIndex, const size_t subStreamIndex, Profile::ProfileDesc& profile, const size_t offset = 0 );
 
-	void addDummyStream( const Profile::ProfileDesc& profile, const ICodec& essenceCodec );
+	void addDummyStream( const Profile::ProfileDesc& profile, const ICodec& codec );
 
 	InputFile* addInputFile( const std::string& filename, const size_t streamIndex );
 
