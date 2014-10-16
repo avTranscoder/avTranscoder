@@ -181,7 +181,7 @@ void AvOutputVideo::setProfile( const Profile::ProfileDesc& desc, const avtransc
 		throw std::runtime_error( "The profile " + desc.find( Profile::avProfileIdentificatorHuman )->second + " is invalid." );
 	}
 	
-	_codec.setEncoderCodec( desc.find( Profile::avProfileCodec )->second );
+	_codec.setCodec( eCodecTypeEncoder, desc.find( Profile::avProfileCodec )->second );
 
 	const size_t frameRate = std::strtoul( desc.find( Profile::avProfileFrameRate )->second.c_str(), NULL, 0 );
 	_codec.setTimeBase( 1, frameRate );

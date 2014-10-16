@@ -30,11 +30,8 @@ public:
 	
 	int getLatency()  const;
 
-	void setEncoderCodec( const std::string& codecName );
-	void setEncoderCodec( const AVCodecID codecId );
-
-	void setDecoderCodec( const std::string& codecName );
-	void setDecoderCodec( const AVCodecID codecId );
+	void setCodec( const ECodecType type, const std::string& codecName );
+	void setCodec( const ECodecType type, const AVCodecID codecId );
 	
 #ifndef SWIG
 	AVCodec*        getAVCodec()        const { return _codec; }

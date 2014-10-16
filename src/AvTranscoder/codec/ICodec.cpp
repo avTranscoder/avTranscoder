@@ -16,10 +16,7 @@ ICodec::ICodec( const ECodecType type, const std::string& codecName )
 {
 	if( codecName.size() )
 	{
-		if( type == eCodecTypeEncoder )
-			setEncoderCodec( codecName );
-		else if( type == eCodecTypeDecoder )
-			setDecoderCodec( codecName );
+		setCodec( type, codecName );
 	}
 }
 
@@ -27,10 +24,7 @@ ICodec::ICodec( const ECodecType type, const AVCodecID codecId )
 	: _codec( NULL )
 	, _codecContext( NULL )
 {
-	if( type == eCodecTypeEncoder )
-		setEncoderCodec( codecId );
-	else if( type == eCodecTypeDecoder )
-		setDecoderCodec( codecId );
+	setCodec( type, codecId );
 }
 
 ICodec::~ICodec()
@@ -58,14 +52,17 @@ int ICodec::getLatency()  const
 	return _codecContext->delay;
 }
 
-void ICodec::setEncoderCodec( const std::string& codecName )
+void ICodec::setCodec( const ECodecType type, const std::string& codecName )
 {
 	avcodec_register_all();  // Warning: should be called only once
-	_codec = avcodec_find_encoder_by_name( codecName.c_str() );
+	if( type == eCodecTypeEncoder )
+		_codec = avcodec_find_encoder_by_name( codecName.c_str() );
+	else if( type == eCodecTypeDecoder )
+		_codec = avcodec_find_decoder_by_name( codecName.c_str() );
 	initCodecContext();
 }
 
-void ICodec::setEncoderCodec( const AVCodecID codecId )
+void ICodec::setCodec( const ECodecType type, const AVCodecID codecId )
 {
 	if( codecId == 0 )
 	{
@@ -73,26 +70,10 @@ void ICodec::setEncoderCodec( const AVCodecID codecId )
 		return;
 	}
 	avcodec_register_all();  // Warning: should be called only once
-	_codec = avcodec_find_encoder( codecId );
-	initCodecContext();
-}
-
-void ICodec::setDecoderCodec( const std::string& codecName )
-{
-	avcodec_register_all();  // Warning: should be called only once
-	_codec = avcodec_find_decoder_by_name( codecName.c_str() );
-	initCodecContext();
-}
-
-void ICodec::setDecoderCodec( const AVCodecID codecId )
-{
-	if( codecId == 0 )
-	{
-		std::cout << "Warning: Unsupported codec with id 0" << std::endl;
-		return;
-	}
-	avcodec_register_all();  // Warning: should be called only once
-	_codec = avcodec_find_decoder( codecId );
+	if( type == eCodecTypeEncoder )
+		_codec = avcodec_find_encoder( codecId );
+	else if( type == eCodecTypeDecoder )
+		_codec = avcodec_find_decoder( codecId );
 	initCodecContext();
 }
 
