@@ -17,7 +17,6 @@ def testRewrapAudioStream():
 
 	transcoder.add( inputFileName, 0, "" )
 
-	transcoder.setProcessMethod( av.eProcessMethodLongest )
 	progress = av.NoDisplayProgress()
 	transcoder.process( progress )
 
@@ -69,7 +68,6 @@ def testRewrapVideoStream():
 
 	transcoder.add( inputFileName, 0, "" )
 
-	transcoder.setProcessMethod( av.eProcessMethodLongest )
 	progress = av.NoDisplayProgress()
 	transcoder.process( progress )
 
