@@ -173,7 +173,6 @@ private:
 
 	double _outputFps;
 
-	size_t _finalisedStreams;
 	EProcessMethod _eProcessMethod;
 
 	size_t _mainStreamIndex;  ///< Index of stream used to stop the process of transcode in case of eProcessMethodBasedOnStream.
