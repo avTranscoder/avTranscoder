@@ -114,8 +114,6 @@ private:
 	AVOutputFormat*  _outputFormat;
 	AVFormatContext* _formatContext;
 
-	AVCodec*         _codec;
-	AVCodecContext*  _codecContext;
 	AVStream*        _stream;
 
 	std::vector<size_t> _frameCount;

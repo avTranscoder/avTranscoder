@@ -17,8 +17,6 @@ namespace avtranscoder
 OutputFile::OutputFile( const std::string& filename )
 	: _outputFormat  ( NULL )
 	, _formatContext ( NULL )
-	, _codec         ( NULL )
-	, _codecContext  ( NULL )
 	, _stream        ( NULL )
 	, _filename      ( filename )
 	, _packetCount   ( 0 )
