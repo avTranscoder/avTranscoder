@@ -3,10 +3,6 @@
 #include <AvTranscoder/file/InputFile.hpp>
 
 extern "C" {
-#ifndef __STDC_CONSTANT_MACROS
- #define __STDC_CONSTANT_MACROS
-#endif
-
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
 }
@@ -18,29 +14,68 @@ namespace avtranscoder
 {
 
 AvInputStream::AvInputStream( InputFile& inputFile, const size_t streamIndex )
-		: IInputStream( )
-		, _inputFile( &inputFile )
-		, _packetDuration( 0 )
-		, _streamIndex( streamIndex )
-		, _bufferized( false )
+	: IInputStream( )
+	, _inputFile( &inputFile )
+	, _codec( NULL )
+	, _packetDuration( 0 )
+	, _streamIndex( streamIndex )
+	, _bufferized( false )
 {
 	AVCodecContext* context = _inputFile->getFormatContext().streams[_streamIndex]->codec;
-	if( context->codec_type == AVMEDIA_TYPE_AUDIO )
-	{
-		double outputFps = 25;
-		size_t bytePerSample = av_get_bytes_per_sample( context->sample_fmt );
 
-		context->block_align = 1.0 * context->sample_rate * context->channels * bytePerSample / outputFps;
-		// std::cout << "channels " << context->channel_layout << std::endl;
-		// std::cout << "audio buffer read size " << context->block_align << std::endl;
+	switch( context->codec_type )
+	{
+		case AVMEDIA_TYPE_VIDEO:
+		{
+			VideoCodec* videoCodec = new VideoCodec( eCodecTypeDecoder, context->codec_id );
+			videoCodec->setImageParameters( context->width, context->height, context->pix_fmt );
+			videoCodec->setTimeBase( context->time_base.num, context->time_base.den, context->ticks_per_frame );
+
+			_codec = videoCodec;
+			break;
+		}
+		case AVMEDIA_TYPE_AUDIO:
+		{
+			double outputFps = 25;
+			size_t bytePerSample = av_get_bytes_per_sample( context->sample_fmt );
+
+			context->block_align = 1.0 * context->sample_rate * context->channels * bytePerSample / outputFps;
+			// std::cout << "channels " << context->channel_layout << std::endl;
+			// std::cout << "audio buffer read size " << context->block_align << std::endl;
+
+			AudioCodec* audioCodec = new AudioCodec( eCodecTypeDecoder, context->codec_id );
+			audioCodec->setAudioParameters( context->sample_rate, context->channels, context->sample_fmt );
+
+			_codec = audioCodec;
+			break;
+		}
+		case AVMEDIA_TYPE_DATA:
+		{
+			DataCodec* dataCodec = new DataCodec( eCodecTypeDecoder, context->codec_id );
+
+			_codec= dataCodec;
+			break;
+		}
+		default:
+			break;
 	}
+}
+
+AvInputStream::AvInputStream( const AvInputStream& inputStream )
+	: IInputStream( )
+	, _inputFile( inputStream._inputFile )
+	, _codec( inputStream._codec )
+	, _streamIndex( inputStream._streamIndex )
+	, _bufferized( inputStream._bufferized )
+{
 }
 
 AvInputStream::~AvInputStream( )
 {
+	delete _codec;
 }
 
-bool AvInputStream::readNextPacket( DataStream& data )
+bool AvInputStream::readNextPacket( CodedData& data )
 {
 	if( ! _bufferized )
 		throw std::runtime_error( "Can't read packet on non-bufferized input stream." );
@@ -61,7 +96,7 @@ bool AvInputStream::readNextPacket( DataStream& data )
 void AvInputStream::addPacket( AVPacket& packet )
 {
 	//std::cout << "add packet for stream " << _streamIndex << std::endl;
-	DataStream data;
+	CodedData data;
 	_streamCache.push_back( data );
 	_packetDuration = packet.duration;
 
@@ -78,14 +113,14 @@ void AvInputStream::addPacket( AVPacket& packet )
 	// &tmpData[0] = packet.data;
 	// tmpData.size( packet.size );
 
-	// remove reference on packet because it's passed to DataStream
+	// remove reference on packet because it's passed to CodedData
 	// packet.data = NULL;
 	// packet.size = 0;
 
 	// std::cout << this << " buffer size " << _streamCache.size() << std::endl;
 }
 
-VideoDesc AvInputStream::getVideoDesc() const
+VideoCodec& AvInputStream::getVideoCodec()
 {
 	assert( _streamIndex <= _inputFile->getFormatContext().nb_streams );
 
@@ -94,17 +129,10 @@ VideoDesc AvInputStream::getVideoDesc() const
 		throw std::runtime_error( "unable to get video descriptor on non-video stream" );
 	}
 
-	AVCodecContext* codecContext = _inputFile->getFormatContext().streams[_streamIndex]->codec;
-
-	VideoDesc desc( codecContext->codec_id );
-
-	desc.setImageParameters( codecContext->width, codecContext->height, codecContext->pix_fmt );
-	desc.setTimeBase( codecContext->time_base.num, codecContext->time_base.den, codecContext->ticks_per_frame );
-
-	return desc;
+	return *static_cast<VideoCodec*>( _codec );;
 }
 
-AudioDesc AvInputStream::getAudioDesc() const
+AudioCodec& AvInputStream::getAudioCodec()
 {
 	assert( _streamIndex <= _inputFile->getFormatContext().nb_streams );
 
@@ -113,19 +141,19 @@ AudioDesc AvInputStream::getAudioDesc() const
 		throw std::runtime_error( "unable to get audio descriptor on non-audio stream" );
 	}
 
-	AVCodecContext* codecContext = _inputFile->getFormatContext().streams[_streamIndex]->codec;
-
-	AudioDesc desc( codecContext->codec_id );
-
-	desc.setAudioParameters( codecContext->sample_rate, codecContext->channels, codecContext->sample_fmt );
-
-	return desc;
+	return *static_cast<AudioCodec*>( _codec );;
 }
 
-DataDesc AvInputStream::getDataDesc() const
+DataCodec& AvInputStream::getDataCodec()
 {
-	DataDesc desc;
-	return desc;
+	assert( _streamIndex <= _inputFile->getFormatContext().nb_streams );
+
+	if( getAVStream()->codec->codec_type != AVMEDIA_TYPE_DATA )
+	{
+		throw std::runtime_error( "unable to get data descriptor on non-data stream" );
+	}
+
+	return *static_cast<DataCodec*>( _codec );;
 }
 
 AVMediaType AvInputStream::getStreamType() const

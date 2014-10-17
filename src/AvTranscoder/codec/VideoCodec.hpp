@@ -1,23 +1,20 @@
-#ifndef _AV_TRANSCODER_CODED_STRUCTURES_VIDEO_DESC_HPP_
-#define _AV_TRANSCODER_CODED_STRUCTURES_VIDEO_DESC_HPP_
+#ifndef _AV_TRANSCODER_CODEC_VIDEO_CODEC_HPP_
+#define _AV_TRANSCODER_CODEC_VIDEO_CODEC_HPP_
 
-#include <AvTranscoder/essenceStructures/VideoFrame.hpp>
-#include "CodedDesc.hpp"
-#include <AvTranscoder/common.hpp>
+#include "ICodec.hpp"
+#include <AvTranscoder/frame/VideoFrame.hpp>
 
-#include <string>
-
-class AVCodec;
+#include <utility>
 
 namespace avtranscoder
 {
 
-class AvExport VideoDesc : public CodedDesc
+class AvExport VideoCodec : public ICodec
 {
 public:
-	VideoDesc( const std::string& codecName = "" );
-	VideoDesc( const AVCodecID codecId );
-	VideoDesc( const CodedDesc& essenceDesc );
+	VideoCodec( const ECodecType type, const std::string& codecName = "" );
+	VideoCodec( const ECodecType type, const AVCodecID codecId );
+	VideoCodec( const ICodec& codec );
 	
 	VideoFrameDesc getVideoFrameDesc() const;
 	std::pair< size_t, size_t > getTimeBase() const;

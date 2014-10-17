@@ -2,10 +2,7 @@
 #define _AV_TRANSCODER_ESSENCE_STREAM_GENERATOR_VIDEO_HPP_
 
 #include "IInputEssence.hpp"
-
-#include <AvTranscoder/common.hpp>
-#include <AvTranscoder/codedStructures/VideoDesc.hpp>
-#include <AvTranscoder/essenceStructures/Frame.hpp>
+#include <AvTranscoder/codec/VideoCodec.hpp>
 
 namespace avtranscoder
 {
@@ -18,9 +15,9 @@ public:
 	~GeneratorVideo( );
 
 	// Stream properties
-	void setVideoDesc( const VideoDesc& videoDesc );
+	void setVideoCodec( const VideoCodec& codec );
 
-	VideoDesc getVideoDesc() const;
+	VideoCodec& getVideoCodec();
 	
 	void setup() {}
 
@@ -31,7 +28,7 @@ public:
 
 private:
 	Frame*         _inputFrame;
-	VideoDesc      _videoDesc;
+	VideoCodec      _codec;
 	VideoFrameDesc _videoFrameDesc;
 
 	size_t         _numberOfView;

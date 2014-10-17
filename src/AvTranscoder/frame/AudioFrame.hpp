@@ -3,7 +3,6 @@
 
 #include "Frame.hpp"
 #include <AvTranscoder/Profile.hpp>
-#include <AvTranscoder/common.hpp>
 
 namespace avtranscoder
 {
@@ -38,7 +37,12 @@ public:
 	size_t getSampleRate() const { return _sampleRate; }
 	size_t getChannels  () const { return _channels; }
 	size_t getFps       () const { return _fps; }
-	AVSampleFormat getSampleFormat() const { return _sampleFormat; }
+	AVSampleFormat getAVSampleFormat() const { return _sampleFormat; }
+	std::string getSampleFormat() const
+	{
+		const char* formatName = av_get_sample_fmt_name( _sampleFormat );
+		return formatName ? std::string( formatName ) : "unknown audio sample format";
+	}
 
 private:
 	size_t _sampleRate;

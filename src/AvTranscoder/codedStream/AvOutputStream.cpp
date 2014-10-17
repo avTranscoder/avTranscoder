@@ -18,21 +18,11 @@ AvOutputStream::~AvOutputStream()
 {
 }
 
-bool AvOutputStream::wrap( DataStream& data )
+bool AvOutputStream::wrap( CodedData& data )
 {
 	assert( _outputFile != NULL );
 	
 	return _outputFile->wrap( data, _streamIndex );
-}
-
-VideoDesc AvOutputStream::getVideoDesc() const
-{
-	return _videoDesc;
-}
-
-AudioDesc AvOutputStream::getAudioDesc() const
-{
-	return _audioDesc;
 }
 
 }

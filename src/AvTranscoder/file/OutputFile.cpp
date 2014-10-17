@@ -1,9 +1,8 @@
 #include "OutputFile.hpp"
 
+#include <AvTranscoder/option/Context.hpp>
+
 extern "C" {
-#ifndef __STDC_CONSTANT_MACROS
-    #define __STDC_CONSTANT_MACROS
-#endif
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
 }
@@ -57,29 +56,29 @@ bool OutputFile::setup()
 	return _formatContext != NULL;
 }
 
-IOutputStream& OutputFile::addVideoStream( const VideoDesc& videoDesc )
+IOutputStream& OutputFile::addVideoStream( const VideoCodec& videoDesc )
 {
 	assert( _formatContext != NULL );
 
-	if( ( _stream = avformat_new_stream( _formatContext, videoDesc.getCodec() ) ) == NULL )
+	if( ( _stream = avformat_new_stream( _formatContext, videoDesc.getAVCodec() ) ) == NULL )
 	{
 		throw std::runtime_error( "unable to add new video stream" );
 	}
 
-	_stream->codec->width  = videoDesc.getCodecContext()->width;
-	_stream->codec->height = videoDesc.getCodecContext()->height;
-	_stream->codec->bit_rate = videoDesc.getCodecContext()->bit_rate;
-	_stream->codec->ticks_per_frame = videoDesc.getCodecContext()->ticks_per_frame;
-	_stream->codec->pix_fmt = videoDesc.getCodecContext()->pix_fmt;
-	_stream->codec->profile = videoDesc.getCodecContext()->profile;
-	_stream->codec->level = videoDesc.getCodecContext()->level;
+	_stream->codec->width  = videoDesc.getAVCodecContext()->width;
+	_stream->codec->height = videoDesc.getAVCodecContext()->height;
+	_stream->codec->bit_rate = videoDesc.getAVCodecContext()->bit_rate;
+	_stream->codec->ticks_per_frame = videoDesc.getAVCodecContext()->ticks_per_frame;
+	_stream->codec->pix_fmt = videoDesc.getAVCodecContext()->pix_fmt;
+	_stream->codec->profile = videoDesc.getAVCodecContext()->profile;
+	_stream->codec->level = videoDesc.getAVCodecContext()->level;
 
 	// need to set the time_base on the AVCodecContext and the AVStream...
 	av_reduce(
 		&_stream->codec->time_base.num,
 		&_stream->codec->time_base.den,
-		videoDesc.getCodecContext()->time_base.num * videoDesc.getCodecContext()->ticks_per_frame,
-		videoDesc.getCodecContext()->time_base.den,
+		videoDesc.getAVCodecContext()->time_base.num * videoDesc.getAVCodecContext()->ticks_per_frame,
+		videoDesc.getAVCodecContext()->time_base.den,
 		INT_MAX );
 
 	_stream->time_base = _stream->codec->time_base;
@@ -91,18 +90,18 @@ IOutputStream& OutputFile::addVideoStream( const VideoDesc& videoDesc )
 	return *_outputStreams.back();
 }
 
-IOutputStream& OutputFile::addAudioStream( const AudioDesc& audioDesc )
+IOutputStream& OutputFile::addAudioStream( const AudioCodec& audioDesc )
 {
 	assert( _formatContext != NULL );
 
-	if( ( _stream = avformat_new_stream( _formatContext, audioDesc.getCodec() ) ) == NULL )
+	if( ( _stream = avformat_new_stream( _formatContext, audioDesc.getAVCodec() ) ) == NULL )
 	{
 		throw std::runtime_error( "unable to add new audio stream" );
 	}
 
-	_stream->codec->sample_rate = audioDesc.getCodecContext()->sample_rate;
-	_stream->codec->channels = audioDesc.getCodecContext()->channels;
-	_stream->codec->sample_fmt = audioDesc.getCodecContext()->sample_fmt;
+	_stream->codec->sample_rate = audioDesc.getAVCodecContext()->sample_rate;
+	_stream->codec->channels = audioDesc.getAVCodecContext()->channels;
+	_stream->codec->sample_fmt = audioDesc.getAVCodecContext()->sample_fmt;
 
 	AvOutputStream* avOutputStream = new AvOutputStream( *this, _formatContext->nb_streams - 1 );
 	_outputStreams.push_back( avOutputStream );
@@ -110,11 +109,11 @@ IOutputStream& OutputFile::addAudioStream( const AudioDesc& audioDesc )
 	return *_outputStreams.back();
 }
 
-IOutputStream& OutputFile::addDataStream( const DataDesc& dataDesc )
+IOutputStream& OutputFile::addDataStream( const DataCodec& dataDesc )
 {
 	assert( _formatContext != NULL );
 
-	if( ( _stream = avformat_new_stream( _formatContext, dataDesc.getCodec() ) ) == NULL )
+	if( ( _stream = avformat_new_stream( _formatContext, dataDesc.getAVCodec() ) ) == NULL )
 	{
 		throw std::runtime_error( "unable to add new data stream" );
 	}
@@ -148,7 +147,7 @@ bool OutputFile::beginWrap( )
 	return true;
 }
 
-bool OutputFile::wrap( const DataStream& data, const size_t streamId )
+bool OutputFile::wrap( const CodedData& data, const size_t streamId )
 {
 	if( ! data.getSize() )
 		return true;
@@ -236,7 +235,7 @@ void OutputFile::setProfile( const Profile::ProfileDesc& desc )
 	}
 	_outputFormat = av_guess_format( desc.find( constants::avProfileFormat )->second.c_str(), _filename.c_str(), NULL);
 	
-	ParamSet paramSet( _formatContext );
+	Context formatContext( _formatContext );
 	
 	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
 	{
@@ -248,7 +247,8 @@ void OutputFile::setProfile( const Profile::ProfileDesc& desc )
 		
 		try
 		{
-			paramSet.set( (*it).first, (*it).second );
+			Option& formatOption = formatContext.getOption( (*it).first );
+			formatOption.setString( (*it).second );
 		}
 		catch( std::exception& e )
 		{
@@ -268,7 +268,8 @@ void OutputFile::setProfile( const Profile::ProfileDesc& desc )
 
 		try
 		{
-			paramSet.set( (*it).first, (*it).second );
+			Option& formatOption = formatContext.getOption( (*it).first );
+			formatOption.setString( (*it).second );
 		}
 		catch( std::exception& e )
 		{

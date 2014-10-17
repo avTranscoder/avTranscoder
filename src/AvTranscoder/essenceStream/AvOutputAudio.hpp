@@ -2,11 +2,7 @@
 #define _AV_TRANSCODER_ESSENCE_STREAM_AV_OUTPUT_AUDIO_HPP_
 
 #include "IOutputEssence.hpp"
-
-#include <AvTranscoder/codedStructures/DataStream.hpp>
-#include <AvTranscoder/codedStructures/AudioDesc.hpp>
-#include <AvTranscoder/essenceStructures/AudioFrame.hpp>
-
+#include <AvTranscoder/codec/AudioCodec.hpp>
 #include <AvTranscoder/Profile.hpp>
 
 namespace avtranscoder
@@ -22,16 +18,20 @@ public:
 	/**
 	 * @param[out] codedFrame
 	 */
-	bool encodeFrame( const Frame& sourceFrame, DataStream& codedFrame );
+	bool encodeFrame( const Frame& sourceFrame, Frame& codedFrame );
 	
 	/**
 	 * get delayed encoded frames
 	 */
-	bool encodeFrame( DataStream& codedFrame );
+	bool encodeFrame( Frame& codedFrame );
 	
 	void setProfile( const Profile::ProfileDesc& desc, const AudioFrameDesc& frameDesc );
 
-	AudioDesc getAudioDesc() { return _codedDesc; }
+	ICodec& getCodec() { return _codec; }
+	AudioCodec& getAudioCodec() { return _codec; }
+
+private:
+	AudioCodec _codec;
 };
 
 }

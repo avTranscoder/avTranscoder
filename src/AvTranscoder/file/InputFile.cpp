@@ -1,5 +1,6 @@
 #include "InputFile.hpp"
 
+#include <AvTranscoder/option/Context.hpp>
 #include <AvTranscoder/mediaProperty/VideoStreamProperty.hpp>
 #include <AvTranscoder/mediaProperty/AudioStreamProperty.hpp>
 #include <AvTranscoder/mediaProperty/DataStreamProperty.hpp>
@@ -9,9 +10,6 @@
 
 
 extern "C" {
-#ifndef __STDC_CONSTANT_MACROS
-    #define __STDC_CONSTANT_MACROS
-#endif
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
 #include <libavutil/avutil.h>
@@ -28,7 +26,7 @@ InputFile::InputFile( const std::string& filename )
 	: _formatContext ( NULL )
 	, _filename      ( filename )
 {
-	av_register_all();  // Warning: should be called only once
+	av_register_all();
 	if( avformat_open_input( &_formatContext, _filename.c_str(), NULL, NULL ) < 0 )
 	{
 		std::string msg = "unable to open file: ";
@@ -215,7 +213,7 @@ bool InputFile::getReadStream( const size_t streamIndex )
 
 void InputFile::setProfile( const Profile::ProfileDesc& desc )
 {	
-	ParamSet paramSet( _formatContext );
+	Context formatContext( _formatContext );
 	
 	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
 	{
@@ -226,7 +224,8 @@ void InputFile::setProfile( const Profile::ProfileDesc& desc )
 		
 		try
 		{
-			paramSet.set( (*it).first, (*it).second );
+			Option& formatOption = formatContext.getOption( (*it).first );
+			formatOption.setString( (*it).second );
 		}
 		catch( std::exception& e )
 		{
