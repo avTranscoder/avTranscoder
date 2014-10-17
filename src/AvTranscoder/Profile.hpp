@@ -11,6 +11,23 @@
 namespace avtranscoder
 {
 
+namespace constants
+{
+	const std::string avProfileIdentificator = "avProfile";
+	const std::string avProfileIdentificatorHuman = "avProfileLong";
+	const std::string avProfileType = "avProfileType";
+	const std::string avProfileTypeFormat = "avProfileTypeFormat";
+	const std::string avProfileTypeVideo = "avProfileTypeVideo";
+	const std::string avProfileTypeAudio = "avProfileTypeAudio";
+	const std::string avProfileFormat = "format";
+	const std::string avProfileCodec = "codec";
+	const std::string avProfilePixelFormat = "pix_fmt";
+	const std::string avProfileSampleFormat = "sample_fmt";
+	const std::string avProfileFrameRate = "r";
+	const std::string avProfileSampleRate = "ar";
+	const std::string avProfileChannel = "ac";
+}
+
 class AvExport Profile
 {
 public:
@@ -37,39 +54,8 @@ public:
 
 	ProfileDesc& getProfile( const std::string& searchProfile );
 
-	static const std::string & getAvProfileIdentificatorKey();
-	static const std::string & getAvProfileIdentificatorHumanKey();
-	static const std::string & getAvProfileTypeKey();
-	static const std::string & getAvProfileTypeFormatKey();
-	static const std::string & getAvProfileTypeVideoKey();
-	static const std::string & getAvProfileTypeAudioKey();
-	static const std::string & getAvProfileFormatKey();
-	static const std::string & getAvProfileCodecKey();
-	static const std::string & getAvProfilePixelFormatKey();
-	static const std::string & getAvProfileSampleFormatKey();
-	static const std::string & getAvProfileFrameRateKey();
-	static const std::string & getAvProfileSampleRateKey();
-	static const std::string & getAvProfileChannelKey();
-
 private:
 	ProfilesDesc _profiles;
-
-#ifndef SWIG
-public:
-	static const std::string avProfileIdentificator;
-	static const std::string avProfileIdentificatorHuman;
-	static const std::string avProfileType;
-	static const std::string avProfileTypeFormat;
-	static const std::string avProfileTypeVideo;
-	static const std::string avProfileTypeAudio;
-	static const std::string avProfileFormat;
-	static const std::string avProfileCodec;
-	static const std::string avProfilePixelFormat;
-	static const std::string avProfileSampleFormat;
-	static const std::string avProfileFrameRate;
-	static const std::string avProfileSampleRate;
-	static const std::string avProfileChannel;
-#endif
 
 };
 

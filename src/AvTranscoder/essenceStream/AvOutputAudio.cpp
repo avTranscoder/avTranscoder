@@ -174,13 +174,13 @@ bool AvOutputAudio::encodeFrame( DataStream& codedFrame )
 
 void AvOutputAudio::setProfile( const Profile::ProfileDesc& desc, const AudioFrameDesc& frameDesc  )
 {
-	if( ! desc.count( Profile::avProfileCodec ) || 		
-		! desc.count( Profile::avProfileSampleFormat ) )
+	if( ! desc.count( constants::avProfileCodec ) || 		
+		! desc.count( constants::avProfileSampleFormat ) )
 	{
-		throw std::runtime_error( "The profile " + desc.find( Profile::avProfileIdentificatorHuman )->second + " is invalid." );
+		throw std::runtime_error( "The profile " + desc.find( constants::avProfileIdentificatorHuman )->second + " is invalid." );
 	}
 	
-	_codedDesc.setCodec( desc.find( Profile::avProfileCodec )->second );
+	_codedDesc.setCodec( desc.find( constants::avProfileCodec )->second );
 	
 	static_cast<AudioDesc>( _codedDesc ).setAudioParameters( frameDesc );
 
@@ -188,11 +188,11 @@ void AvOutputAudio::setProfile( const Profile::ProfileDesc& desc, const AudioFra
 	
 	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
 	{
-		if( (*it).first == Profile::avProfileIdentificator ||
-			(*it).first == Profile::avProfileIdentificatorHuman ||
-			(*it).first == Profile::avProfileType ||
-			(*it).first == Profile::avProfileCodec ||
-			(*it).first == Profile::avProfileSampleFormat )
+		if( (*it).first == constants::avProfileIdentificator ||
+			(*it).first == constants::avProfileIdentificatorHuman ||
+			(*it).first == constants::avProfileType ||
+			(*it).first == constants::avProfileCodec ||
+			(*it).first == constants::avProfileSampleFormat )
 			continue;
 
 		try
@@ -209,11 +209,11 @@ void AvOutputAudio::setProfile( const Profile::ProfileDesc& desc, const AudioFra
 
 	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
 	{
-		if( (*it).first == Profile::avProfileIdentificator ||
-			(*it).first == Profile::avProfileIdentificatorHuman ||
-			(*it).first == Profile::avProfileType ||
-			(*it).first == Profile::avProfileCodec ||
-			(*it).first == Profile::avProfileSampleFormat )
+		if( (*it).first == constants::avProfileIdentificator ||
+			(*it).first == constants::avProfileIdentificatorHuman ||
+			(*it).first == constants::avProfileType ||
+			(*it).first == constants::avProfileCodec ||
+			(*it).first == constants::avProfileSampleFormat )
 			continue;
 
 		try

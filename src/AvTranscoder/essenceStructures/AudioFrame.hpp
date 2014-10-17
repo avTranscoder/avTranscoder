@@ -31,8 +31,8 @@ public:
 	
 	void setParameters( const Profile::ProfileDesc& desc )
 	{
-		if( desc.find( Profile::getAvProfileSampleFormatKey() ) != desc.end() )
-			setSampleFormat( desc.find( Profile::getAvProfileSampleFormatKey() )->second );
+		if( desc.find( constants::avProfileSampleFormat ) != desc.end() )
+			setSampleFormat( desc.find( constants::avProfileSampleFormat )->second );
 	}
 
 	size_t getSampleRate() const { return _sampleRate; }

@@ -16,20 +16,6 @@
 namespace avtranscoder
 {
 
-const std::string Profile::avProfileIdentificator( "avProfile" );
-const std::string Profile::avProfileIdentificatorHuman( "avProfileLong" );
-const std::string Profile::avProfileType( "avProfileType" );
-const std::string Profile::avProfileTypeFormat( "avProfileTypeFormat" );
-const std::string Profile::avProfileTypeVideo( "avProfileTypeVideo" );
-const std::string Profile::avProfileTypeAudio( "avProfileTypeAudio" );
-const std::string Profile::avProfileFormat( "format" );
-const std::string Profile::avProfileCodec( "codec" );
-const std::string Profile::avProfilePixelFormat( "pix_fmt" );
-const std::string Profile::avProfileSampleFormat( "sample_fmt" );
-const std::string Profile::avProfileFrameRate( "r" );
-const std::string Profile::avProfileSampleRate( "ar" );
-const std::string Profile::avProfileChannel( "ac" );
-
 Profile::Profile( bool autoload )
 {
 	if( autoload )
@@ -53,11 +39,11 @@ void Profile::loadProfile( const std::string& avProfileFile )
 	}
 	// check if profile contains required values
 	if( 
-		customProfile.count( avProfileIdentificator ) &&
-		customProfile.count( avProfileIdentificatorHuman ) &&
-		customProfile.count( avProfileType ) &&
-		( customProfile.find( avProfileType )->second == avProfileTypeVideo ||
-		customProfile.find( avProfileType )->second == avProfileTypeAudio )
+		customProfile.count( constants::avProfileIdentificator ) &&
+		customProfile.count( constants::avProfileIdentificatorHuman ) &&
+		customProfile.count( constants::avProfileType ) &&
+		( customProfile.find( constants::avProfileType )->second == constants::avProfileTypeVideo ||
+		customProfile.find( constants::avProfileType )->second == constants::avProfileTypeAudio )
 		)
 	{
 		_profiles.push_back( customProfile );
@@ -99,11 +85,11 @@ void Profile::loadProfiles( const std::string& avProfilesPath )
 
 void Profile::update( const ProfileDesc& profile )
 {
-	std::string profileId( profile.find( avProfileIdentificator )->second );
+	std::string profileId( profile.find( constants::avProfileIdentificator )->second );
 	size_t profileIndex = 0;
 	for( ProfilesDesc::iterator it = _profiles.begin(); it != _profiles.end(); ++it )
 	{
-		if( (*it).find( avProfileIdentificator )->second == profileId )
+		if( (*it).find( constants::avProfileIdentificator )->second == profileId )
 		{
 			_profiles.at( profileIndex ) = profile;
 			return;
@@ -125,7 +111,7 @@ Profile::ProfilesDesc Profile::getFormatProfiles()
 
 	for( ProfilesDesc::iterator it = _profiles.begin(); it != _profiles.end(); ++it )
 	{
-		if( (*it).find( avProfileType )->second == avProfileTypeFormat )
+		if( (*it).find( constants::avProfileType )->second == constants::avProfileTypeFormat )
 			profiles.push_back( *it );
 	}
 
@@ -138,7 +124,7 @@ Profile::ProfilesDesc Profile::getVideoProfiles()
 
 	for( ProfilesDesc::iterator it = _profiles.begin(); it != _profiles.end(); ++it )
 	{
-		if( (*it).find( avProfileType )->second == avProfileTypeVideo )
+		if( (*it).find( constants::avProfileType )->second == constants::avProfileTypeVideo )
 			profiles.push_back( *it );
 	}
 
@@ -151,7 +137,7 @@ Profile::ProfilesDesc Profile::getAudioProfiles()
 
 	for( ProfilesDesc::iterator it = _profiles.begin(); it != _profiles.end(); ++it )
 	{
-		if( (*it).find( avProfileType )->second == avProfileTypeAudio )
+		if( (*it).find( constants::avProfileType )->second == constants::avProfileTypeAudio )
 			profiles.push_back( *it );
 	}
 
@@ -162,26 +148,12 @@ Profile::ProfileDesc& Profile::getProfile( const std::string& searchProfile )
 {
 	for( ProfilesDesc::iterator it = _profiles.begin(); it != _profiles.end(); ++it )
 	{
-		if( (*it).find( avProfileIdentificator )->second == searchProfile )
+		if( (*it).find( constants::avProfileIdentificator )->second == searchProfile )
 		{
 			return (*it);
 		}
 	}
 	throw std::runtime_error( "unable to find profile: " + searchProfile );
 }
-
-const std::string & Profile::getAvProfileIdentificatorKey() { return avProfileIdentificator; };
-const std::string & Profile::getAvProfileIdentificatorHumanKey() { return avProfileIdentificatorHuman; };
-const std::string & Profile::getAvProfileTypeKey() { return avProfileType; };
-const std::string & Profile::getAvProfileTypeFormatKey() { return avProfileTypeFormat; };
-const std::string & Profile::getAvProfileTypeVideoKey() { return avProfileTypeVideo; };
-const std::string & Profile::getAvProfileTypeAudioKey() { return avProfileTypeAudio; };
-const std::string & Profile::getAvProfileFormatKey() { return avProfileFormat; };
-const std::string & Profile::getAvProfileCodecKey() { return avProfileCodec; };
-const std::string & Profile::getAvProfilePixelFormatKey() { return avProfilePixelFormat; };
-const std::string & Profile::getAvProfileSampleFormatKey() { return avProfileSampleFormat; };
-const std::string & Profile::getAvProfileFrameRateKey() { return avProfileFrameRate; };
-const std::string & Profile::getAvProfileSampleRateKey() { return avProfileSampleRate; };
-const std::string & Profile::getAvProfileChannelKey() { return avProfileChannel; };
 
 }
