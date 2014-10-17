@@ -61,7 +61,7 @@ def testRewrapVideoStream():
 	Rewrap one video stream.
 	"""
 	inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_FILE']
-	outputFileName = "testRewrapVideoStream.mxf"
+	outputFileName = "testRewrapVideoStream.avi"
 
 	ouputFile = av.OutputFile( outputFileName )
 	transcoder = av.Transcoder( ouputFile )
