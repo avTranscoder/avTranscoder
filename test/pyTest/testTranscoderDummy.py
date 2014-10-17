@@ -60,9 +60,9 @@ def testTranscodeDummyNewProfileWithNoEssenceDesc():
 	transcoder = av.Transcoder( ouputFile )
 
 	newProfile = {
-		av.Profile.avProfileIdentificator : "newAudioPreset",
-		av.Profile.avProfileIdentificatorHuman : "New audio preset",
-		av.Profile.avProfileType : av.Profile.avProfileTypeAudio,
+		av.avProfileIdentificator : "newAudioPreset",
+		av.avProfileIdentificatorHuman : "New audio preset",
+		av.avProfileType : av.avProfileTypeAudio,
 	}
 	transcoder.add( "", 0, newProfile )
 	transcoder.add( "", 0, -1, newProfile )
