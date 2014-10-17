@@ -25,13 +25,13 @@ int main( int argc, char** argv )
 			std::cout << std::setw(35) << key.first << key.second << std::endl;
 
 		try{
-			if( profile.find( avtranscoder::Profile::getAvProfileTypeKey() )->second == avtranscoder::Profile::getAvProfileTypeVideoKey() )
+			if( profile.find( avtranscoder::constants::avProfileType )->second == avtranscoder::constants::avProfileTypeVideo )
 			{
 				avtranscoder::AvOutputVideo outputVideo;
 				outputVideo.setProfile( profile, outputVideo.getVideoDesc().getVideoFrameDesc() );
 			}
 
-			if( profile.find( avtranscoder::Profile::getAvProfileTypeKey() )->second == avtranscoder::Profile::getAvProfileTypeAudioKey() )
+			if( profile.find( avtranscoder::constants::avProfileType )->second == avtranscoder::constants::avProfileTypeAudio )
 			{
 				avtranscoder::AvOutputAudio outputAudio;
 				outputAudio.setProfile( profile, outputAudio.getAudioDesc().getFrameDesc() );
