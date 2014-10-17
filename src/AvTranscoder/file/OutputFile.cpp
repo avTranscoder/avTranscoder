@@ -222,25 +222,25 @@ void OutputFile::addMetadata( const std::string& key, const std::string& value )
 
 void OutputFile::setProfile( const Profile::ProfileDesc& desc )
 {
-	if( ! desc.count( Profile::avProfileFormat ) )
+	if( ! desc.count( constants::avProfileFormat ) )
 	{
-		throw std::runtime_error( "The profile " + desc.find( Profile::avProfileIdentificatorHuman )->second + " is invalid." );
+		throw std::runtime_error( "The profile " + desc.find( constants::avProfileIdentificatorHuman )->second + " is invalid." );
 	}
 	
-	if( ! matchFormat( desc.find( Profile::avProfileFormat )->second, _filename ) )
+	if( ! matchFormat( desc.find( constants::avProfileFormat )->second, _filename ) )
 	{
 		throw std::runtime_error( "Invalid format according to the file extension." );
 	}
-	_outputFormat = av_guess_format( desc.find( Profile::avProfileFormat )->second.c_str(), _filename.c_str(), NULL);
+	_outputFormat = av_guess_format( desc.find( constants::avProfileFormat )->second.c_str(), _filename.c_str(), NULL);
 	
 	Context formatContext( _formatContext );
 	
 	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
 	{
-		if( (*it).first == Profile::avProfileIdentificator ||
-			(*it).first == Profile::avProfileIdentificatorHuman ||
-			(*it).first == Profile::avProfileType ||
-			(*it).first == Profile::avProfileFormat )
+		if( (*it).first == constants::avProfileIdentificator ||
+			(*it).first == constants::avProfileIdentificatorHuman ||
+			(*it).first == constants::avProfileType ||
+			(*it).first == constants::avProfileFormat )
 			continue;
 		
 		try
@@ -258,10 +258,10 @@ void OutputFile::setProfile( const Profile::ProfileDesc& desc )
 	
 	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
 	{
-		if( (*it).first == Profile::avProfileIdentificator ||
-			(*it).first == Profile::avProfileIdentificatorHuman ||
-			(*it).first == Profile::avProfileType ||
-			(*it).first == Profile::avProfileFormat )
+		if( (*it).first == constants::avProfileIdentificator ||
+			(*it).first == constants::avProfileIdentificatorHuman ||
+			(*it).first == constants::avProfileType ||
+			(*it).first == constants::avProfileFormat )
 			continue;
 
 		try

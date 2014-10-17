@@ -32,7 +32,7 @@ enum EOptionBaseType
  * Get its type to know what the option is about: Int, Double, Ratio, Choice...
  * Parse its array of options to get the potential childs (Choice and Group).
  */
-class Option
+class AvExport Option
 {
 public:
 	Option( AVOption& avOption, void* avContext );
