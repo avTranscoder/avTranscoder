@@ -15,7 +15,7 @@ namespace avtranscoder
  * @brief Wrapper of AVContext.
  * Can access Options through the corresponding context.
  */
-class Context
+class AvExport Context
 {
 public:
 	Context() {}
