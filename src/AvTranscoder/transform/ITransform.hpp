@@ -2,18 +2,18 @@
 #define _AV_TRANSCODER_ESSENCE_TRANSFORM_ESSENCE_TRANSFORM_HPP_
 
 #include <AvTranscoder/common.hpp>
-#include <AvTranscoder/essenceStructures/Frame.hpp>
+#include <AvTranscoder/frame/Frame.hpp>
 
 namespace avtranscoder
 {
 
-class AvExport IEssenceTransform
+class AvExport ITransform
 {
 public:
-	IEssenceTransform()
+	ITransform()
 	{}
 
-	virtual ~IEssenceTransform()
+	virtual ~ITransform()
 	{}
 
 	virtual void convert( const Frame& src, Frame& dst ) = 0;

@@ -1,18 +1,14 @@
 #ifndef _AV_TRANSCODER_DATA_PIXEL_HPP_
 #define _AV_TRANSCODER_DATA_PIXEL_HPP_
 
-#include <string>
-
-extern "C" {
-#ifndef __STDC_CONSTANT_MACROS
-	#define __STDC_CONSTANT_MACROS
-#endif
-#include <libavutil/pixfmt.h>
-}
-
 #include <AvTranscoder/common.hpp>
 
-class AVPixFmtDescriptor;
+extern "C" {
+#include <libavutil/pixfmt.h>
+}
+#include <string>
+
+struct AVPixFmtDescriptor;
 
 namespace avtranscoder
 {
@@ -31,7 +27,7 @@ enum ESubsamplingType
 	eSubsampling420       // 4:2:0
 };
 
-class Pixel
+class AvExport Pixel
 {
 public:
 	Pixel()

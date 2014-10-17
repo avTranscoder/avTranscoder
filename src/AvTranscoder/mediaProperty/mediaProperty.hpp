@@ -3,6 +3,10 @@
 
 #include <AvTranscoder/common.hpp>
 
+extern "C" {
+#include <libavutil/rational.h>
+}
+
 #include <string>
 #include <vector>
 #include <map>
@@ -20,18 +24,29 @@ namespace detail
 	/**
 	 * @brief Fill metadata parameter with the given AVDictionary.
 	 */
-	void fillMetadataDictionnary( AVDictionary* avdictionnary, MetadatasMap& metadata );
+	void AvExport fillMetadataDictionnary( AVDictionary* avdictionnary, MetadatasMap& metadata );
 }
 
-struct Channel
+struct AvExport Channel
 {
 	size_t id;
 	size_t chromaHeight;
 	size_t bitStep;
 };
 
-struct VideoProperties
+struct AvExport VideoProperties
 {
+	VideoProperties()
+	{
+		timeBase.num = 0;
+		timeBase.den = 0;
+		sar.num = 0;
+		sar.den = 0;
+		dar.num = 0;
+		dar.den = 0;
+	}
+	
+public:
 	std::string codecName;
 	std::string codecLongName;
 	std::string profileName;
@@ -47,9 +62,9 @@ struct VideoProperties
 	
 	std::string startTimecode;
 
-	Ratio       timeBase;
-	Ratio       sar; // sample/pixel aspect ratio
-	Ratio       dar; // display aspect ratio
+	Rational timeBase;
+	Rational sar; // sample/pixel aspect ratio
+	Rational dar; // display aspect ratio
 	
 	size_t      streamId;
 	size_t      codecId;
@@ -91,7 +106,7 @@ public:
 	MetadatasMap getDataMap() const;
 };
 
-struct AudioProperties
+struct AvExport AudioProperties
 {
 	std::string codecName;
 	std::string codecLongName;
@@ -111,7 +126,7 @@ public:
 	MetadatasMap getDataMap() const;
 };
 
-struct DataProperties
+struct AvExport DataProperties
 {
 	size_t      streamId;
 	MetadatasMap metadatas;
@@ -120,7 +135,7 @@ public:
 	MetadatasMap getDataMap() const;
 };
 
-struct SubtitleProperties
+struct AvExport SubtitleProperties
 {
 	size_t      streamId;
 	MetadatasMap metadatas;
@@ -129,7 +144,7 @@ public:
 	MetadatasMap getDataMap() const;
 };
 
-struct AttachementProperties
+struct AvExport AttachementProperties
 {
 	size_t      streamId;
 	MetadatasMap metadatas;
@@ -138,7 +153,7 @@ public:
 	MetadatasMap getDataMap() const;
 };
 
-struct UnknownProperties
+struct AvExport UnknownProperties
 {
 	size_t      streamId;
 	MetadatasMap metadatas;
@@ -147,7 +162,7 @@ public:
 	MetadatasMap getDataMap() const;
 };
 
-struct Properties
+struct AvExport Properties
 {
 	std::string filename;
 	std::string formatName;

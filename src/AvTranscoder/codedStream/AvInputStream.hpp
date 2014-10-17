@@ -3,8 +3,6 @@
 
 #include "IInputStream.hpp"
 
-#include <AvTranscoder/codedStructures/DataStream.hpp>
-
 struct AVStream;
 
 namespace avtranscoder
@@ -16,24 +14,18 @@ class AvExport AvInputStream : public IInputStream
 {
 public:
 	AvInputStream( InputFile& inputFile, const size_t streamIndex );
-	~AvInputStream( );
+	AvInputStream( const AvInputStream& inputStream );
 
-	AvInputStream( const AvInputStream& inputStream )
-		: IInputStream( )
-		, _inputFile( inputStream._inputFile )
-		, _streamIndex( inputStream._streamIndex )
-		, _bufferized( inputStream._bufferized )
-	{
-	}
+	~AvInputStream( );
 
 	size_t getStreamIndex() const { return _streamIndex; }
 
-	bool readNextPacket( DataStream& data );
+	bool readNextPacket( CodedData& data );
 
 	// Stream properties
-	VideoDesc getVideoDesc() const;
-	AudioDesc getAudioDesc() const;
-	DataDesc  getDataDesc()  const;
+	VideoCodec& getVideoCodec();
+	AudioCodec& getAudioCodec();
+	DataCodec& getDataCodec();
 
 	AVMediaType getStreamType() const;
 
@@ -52,10 +44,9 @@ private:
 
 private:
 	InputFile*       _inputFile;
-	std::vector<DataStream> _streamCache;
+	std::vector<CodedData> _streamCache;
 
-	VideoDesc        _videoDesc;
-	AudioDesc        _audioDesc;
+	ICodec* _codec;  ///< Has ownership
 
 	int              _packetDuration;
 	size_t           _streamIndex;

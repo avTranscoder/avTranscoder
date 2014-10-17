@@ -2,10 +2,7 @@
 #define _AV_TRANSCODER_ESSENCE_STREAM_GENERATOR_AUDIO_HPP_
 
 #include "IInputEssence.hpp"
-
-#include <AvTranscoder/common.hpp>
-#include <AvTranscoder/codedStructures/AudioDesc.hpp>
-#include <AvTranscoder/essenceStructures/Frame.hpp>
+#include <AvTranscoder/codec/AudioCodec.hpp>
 
 namespace avtranscoder
 {
@@ -17,10 +14,9 @@ public:
 
 	~GeneratorAudio( );
 
-	// Stream properties
-	void setAudioDesc( const AudioDesc& audioDesc );
+	void setAudioCodec( const AudioCodec& codec );
 
-	AudioDesc getAudioDesc() const;
+	AudioCodec& getAudioCodec();
 	
 	void setup() {}
 	
@@ -30,7 +26,7 @@ public:
 	bool readNextFrame( Frame& frameBuffer, const size_t subStreamIndex );
 
 private:
-	AudioDesc      _audioDesc;
+	AudioCodec _codec;
 	AudioFrameDesc _frameDesc;
 	
 	Frame*         _inputFrame;

@@ -1,12 +1,7 @@
 #ifndef _AV_TRANSCODER_AUDIO_STREAM_PROPERTIES_HPP_
 #define _AV_TRANSCODER_AUDIO_STREAM_PROPERTIES_HPP_
 
-//#include <AvTranscoder/mediaProperty/MediaMetadatasStructures.hpp>
-
 extern "C" {
-#ifndef __STDC_CONSTANT_MACROS
-	#define __STDC_CONSTANT_MACROS
-#endif
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
 #include <libavutil/avutil.h>

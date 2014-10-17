@@ -71,9 +71,9 @@ if(SWIG_FOUND)
 
 		# Create '_avtranscoder' shared lib (python)
 		swig_add_module(avtranscoder-py python ${AVTRANSCODER_BINDING_FILE})
-		if(NOT APPLE)
-			# For Python binding, need to compile the wrapper into a lib called _<module_name>.so
-			set_target_properties(${SWIG_MODULE_avtranscoder-py_REAL_NAME} PROPERTIES OUTPUT_NAME _avtranscoder)
+		# For Python binding, need to compile the wrapper into a lib called "_<module_name>.so"
+		set_target_properties(${SWIG_MODULE_avtranscoder-py_REAL_NAME} PROPERTIES OUTPUT_NAME _avtranscoder)
+		if(NOT APPLE AND NOT WIN32)
 			set_target_properties(${SWIG_MODULE_avtranscoder-py_REAL_NAME} PROPERTIES SOVERSION ${AVTRANSCODER_VERSION_MAJOR})
 			set_target_properties(${SWIG_MODULE_avtranscoder-py_REAL_NAME} PROPERTIES VERSION ${AVTRANSCODER_VERSION})
 		endif()
@@ -105,7 +105,7 @@ if(SWIG_FOUND)
 
 		# Create 'avtranscoder-java' shared lib
 		swig_add_module(avtranscoder-java java ${AVTRANSCODER_BINDING_FILE})
-		if(NOT APPLE)
+		if(NOT APPLE AND NOT WIN32)
 			set_target_properties(${SWIG_MODULE_avtranscoder-java_REAL_NAME} PROPERTIES SOVERSION ${AVTRANSCODER_VERSION_MAJOR})
 			set_target_properties(${SWIG_MODULE_avtranscoder-java_REAL_NAME} PROPERTIES VERSION ${AVTRANSCODER_VERSION})
 		endif()
@@ -113,13 +113,16 @@ if(SWIG_FOUND)
 
 		# Post build of java binding : compile java files (generate class files) and create jar
 		set(AVTRANSCODER_JAVA_OUTPUT_PATH "${PROJECT_BINARY_DIR}/src/AvTranscoder")
+		set(AVTRANSCODER_JAVA_CLASS_OUTPUT_PATH "${AVTRANSCODER_JAVA_OUTPUT_PATH}/target")
 		set(AVTRANSCODER_JAR_PATH "${PROJECT_BINARY_DIR}/src")
 		set(AVTRANSCODER_JAR_NAME "avtranscoder.jar")
+		execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory ${AVTRANSCODER_JAVA_CLASS_OUTPUT_PATH})
+		
 		ADD_CUSTOM_COMMAND(
 			TARGET avtranscoder-java
 			POST_BUILD
-			COMMAND ${Java_JAVAC_EXECUTABLE} ${AVTRANSCODER_JAVA_CLASS_OUTPUT_PATH} "${AVTRANSCODER_JAVA_OUTPUT_PATH}/*.java"
-			COMMAND ${Java_JAR_EXECUTABLE} cf ${AVTRANSCODER_JAR_NAME} "${AVTRANSCODER_JAVA_OUTPUT_PATH}/*.class"
+			COMMAND ${Java_JAVAC_EXECUTABLE} "-d" ${AVTRANSCODER_JAVA_CLASS_OUTPUT_PATH} "${AVTRANSCODER_JAVA_OUTPUT_PATH}/*.java"
+			COMMAND ${Java_JAR_EXECUTABLE} cf ${AVTRANSCODER_JAR_NAME} "-C" ${AVTRANSCODER_JAVA_CLASS_OUTPUT_PATH} "."
 		)
 
 		# Install jar file

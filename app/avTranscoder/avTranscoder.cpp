@@ -4,11 +4,15 @@
 
 #include <AvTranscoder/file/InputFile.hpp>
 #include <AvTranscoder/file/OutputFile.hpp>
+
+#include <AvTranscoder/frame/Frame.hpp>
+
 #include <AvTranscoder/essenceStream/AvInputAudio.hpp>
 #include <AvTranscoder/essenceStream/AvInputVideo.hpp>
 #include <AvTranscoder/essenceStream/AvOutputAudio.hpp>
 #include <AvTranscoder/essenceStream/AvOutputVideo.hpp>
-#include <AvTranscoder/essenceTransform/VideoEssenceTransform.hpp>
+
+#include <AvTranscoder/transform/VideoTransform.hpp>
 
 #include <AvTranscoder/progress/ConsoleProgress.hpp>
 
@@ -28,15 +32,15 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 
 	// init video decoders
 	AvInputVideo inputVideo( input.getStream( 0 ) );
-	VideoFrameDesc VideoFrameDesc = input.getStream( 0 ).getVideoDesc().getVideoFrameDesc();
+	VideoFrameDesc VideoFrameDesc = input.getStream( 0 ).getVideoCodec().getVideoFrameDesc();
 	VideoFrame sourceImage( VideoFrameDesc );
 
 	// init video encoder
 	AvOutputVideo outputVideo;
 	outputVideo.setProfile( profile.getProfile( "xdcamhd422" ), VideoFrameDesc );
-	VideoFrame imageToEncode( outputVideo.getVideoDesc().getVideoFrameDesc() );
+	VideoFrame imageToEncode( outputVideo.getVideoCodec().getVideoFrameDesc() );
 	
-	DataStream codedImage;
+	CodedData codedImage;
 
 	// setup wrapper
 	//mxftkwrapper::MxftkOutputFile of( outputFilename );
@@ -49,11 +53,11 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 		exit( -1 );
 	}
 
-	of.addVideoStream( outputVideo.getVideoDesc() );
+	of.addVideoStream( outputVideo.getVideoCodec() );
 
 	of.beginWrap();
 
-	VideoEssenceTransform ct;
+	VideoTransform ct;
 
 
 	// Encodage/transcodage

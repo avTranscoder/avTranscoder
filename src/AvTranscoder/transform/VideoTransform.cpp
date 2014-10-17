@@ -1,13 +1,10 @@
-#include "VideoEssenceTransform.hpp"
+#include "VideoTransform.hpp"
 
-#include <AvTranscoder/essenceStructures/Pixel.hpp>
-#include <AvTranscoder/essenceStructures/VideoFrame.hpp>
+#include <AvTranscoder/frame/Pixel.hpp>
+#include <AvTranscoder/frame/VideoFrame.hpp>
 #include <AvTranscoder/common.hpp>
 
 extern "C" {
-#ifndef __STDC_CONSTANT_MACROS
-	#define __STDC_CONSTANT_MACROS
-#endif
 #include <libavcodec/avcodec.h>
 #include <libswscale/swscale.h>
 #include <libavutil/imgutils.h>
@@ -25,7 +22,7 @@ extern "C" {
 namespace avtranscoder
 {
 
-VideoEssenceTransform::VideoEssenceTransform()
+VideoTransform::VideoTransform()
 	: _imageConvertContext( NULL )
 	, _srcData     ( (uint8_t)MAX_SWS_PLANE, NULL )
 	, _dstData     ( (uint8_t)MAX_SWS_PLANE, NULL )
@@ -38,7 +35,7 @@ VideoEssenceTransform::VideoEssenceTransform()
 {
 }
 
-bool VideoEssenceTransform::init( const Frame& srcFrame, const Frame& dstFrame )
+bool VideoTransform::init( const Frame& srcFrame, const Frame& dstFrame )
 {
 	const VideoFrame& src = static_cast<const VideoFrame&>( srcFrame );
 	const VideoFrame& dst = static_cast<const VideoFrame&>( dstFrame );
@@ -111,7 +108,7 @@ bool VideoEssenceTransform::init( const Frame& srcFrame, const Frame& dstFrame )
 	return true;
 }
 
-void VideoEssenceTransform::convert( const Frame& srcFrame, Frame& dstFrame )
+void VideoTransform::convert( const Frame& srcFrame, Frame& dstFrame )
 {
 	const VideoFrame& src = static_cast<const VideoFrame&>( srcFrame );
 	VideoFrame& dst = static_cast<VideoFrame&>( dstFrame );

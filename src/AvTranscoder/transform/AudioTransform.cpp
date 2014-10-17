@@ -1,11 +1,8 @@
-#include "AudioEssenceTransform.hpp"
+#include "AudioTransform.hpp"
 
-#include <stdexcept>
+#include <AvTranscoder/frame/AudioFrame.hpp>
 
 extern "C" {
-#ifndef __STDC_CONSTANT_MACROS
-	#define __STDC_CONSTANT_MACROS
-#endif
 #include <libavcodec/avcodec.h>
 #include <libavutil/opt.h>
 
@@ -28,18 +25,18 @@ extern "C" {
 #endif
 }
 
-#include <AvTranscoder/essenceStructures/AudioFrame.hpp>
+#include <stdexcept>
 
 namespace avtranscoder
 {
 
-AudioEssenceTransform::AudioEssenceTransform()
+AudioTransform::AudioTransform()
 	: _audioConvertContext( NULL )
 	, _isInit    ( false )
 {
 }
 
-bool AudioEssenceTransform::init( const Frame& srcFrame, const Frame& dstFrame )
+bool AudioTransform::init( const Frame& srcFrame, const Frame& dstFrame )
 {
 	const AudioFrame& src = static_cast<const AudioFrame&>( srcFrame );
 	const AudioFrame& dst = static_cast<const AudioFrame&>( dstFrame );
@@ -55,8 +52,8 @@ bool AudioEssenceTransform::init( const Frame& srcFrame, const Frame& dstFrame )
 	av_opt_set_int(  _audioConvertContext, "out_channel_layout", av_get_default_channel_layout( dst.desc().getChannels() ), 0 );
 	av_opt_set_int(  _audioConvertContext, "in_sample_rate",     src.desc().getSampleRate(), 0 );
 	av_opt_set_int(  _audioConvertContext, "out_sample_rate",    dst.desc().getSampleRate(), 0 );
-	SetSampleFormat( _audioConvertContext, "in_sample_fmt",      src.desc().getSampleFormat(), 0 );
-	SetSampleFormat( _audioConvertContext, "out_sample_fmt",     dst.desc().getSampleFormat(), 0 );
+	SetSampleFormat( _audioConvertContext, "in_sample_fmt",      src.desc().getAVSampleFormat(), 0 );
+	SetSampleFormat( _audioConvertContext, "out_sample_fmt",     dst.desc().getAVSampleFormat(), 0 );
 	
 	if( InitResampleContext( _audioConvertContext ) < 0 )
 	{
@@ -67,7 +64,7 @@ bool AudioEssenceTransform::init( const Frame& srcFrame, const Frame& dstFrame )
 	return true;
 }
 
-void AudioEssenceTransform::convert( const Frame& srcFrame, Frame& dstFrame )
+void AudioTransform::convert( const Frame& srcFrame, Frame& dstFrame )
 {
 	if( ! _isInit )
 		_isInit = init( srcFrame, dstFrame );

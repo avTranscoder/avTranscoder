@@ -6,6 +6,8 @@ namespace avtranscoder
 GeneratorAudio::GeneratorAudio( )
 	: IInputEssence( )
 	, _inputFrame( NULL )
+	, _codec( eCodecTypeEncoder )
+	, _frameDesc()
 {
 }
 
@@ -13,19 +15,19 @@ GeneratorAudio::~GeneratorAudio( )
 {
 }
 
-void GeneratorAudio::setAudioDesc( const AudioDesc& audioDesc )
+void GeneratorAudio::setAudioCodec( const AudioCodec& codec )
 {
-	_audioDesc = audioDesc;
-	
-	_frameDesc.setSampleRate  ( _audioDesc.getCodecContext()->sample_rate );
-	_frameDesc.setChannels    ( _audioDesc.getCodecContext()->channels );
 	_frameDesc.setFps         ( 25.0 );
-	_frameDesc.setSampleFormat( _audioDesc.getCodecContext()->sample_fmt );
+	_codec = codec;
+
+	_frameDesc.setSampleRate( _codec.getAVCodecContext()->sample_rate );
+	_frameDesc.setChannels( _codec.getAVCodecContext()->channels );
+	_frameDesc.setSampleFormat( _codec.getAVCodecContext()->sample_fmt );
 }
 
-AudioDesc GeneratorAudio::getAudioDesc() const
+AudioCodec& GeneratorAudio::getAudioCodec()
 {
-	return _audioDesc;
+	return _codec;
 }
 
 void GeneratorAudio::setFrame( Frame& inputFrame )
@@ -44,8 +46,8 @@ bool GeneratorAudio::readNextFrame( Frame& frameBuffer )
 
 		//av_samples_set_silence( data.getPtr(), offset, nb_samples, nb_channels, sample_fmt );
 		int fill_char = (
-			_frameDesc.getSampleFormat() == AV_SAMPLE_FMT_U8 ||
-			_frameDesc.getSampleFormat() == AV_SAMPLE_FMT_U8P
+			_frameDesc.getAVSampleFormat() == AV_SAMPLE_FMT_U8 ||
+			_frameDesc.getAVSampleFormat() == AV_SAMPLE_FMT_U8P
 			) ? 0x80 : 0x00;
 
 		memset( frameBuffer.getPtr(), fill_char, frameBuffer.getSize() );
