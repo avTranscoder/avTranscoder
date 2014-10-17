@@ -7,7 +7,13 @@ include(AvTranscoderMacros)
 # Build app
 include_directories(${AVTRANSCODER_SRC_PATH} ${FFMPEG_INCLUDE_DIR})
 # Add C++11 flag
-set(CMAKE_CXX_FLAGS "-std=c++0x")
+if(NOT WIN32)
+	set(CMAKE_CXX_FLAGS "-std=c++0x")
+elseif(NOT MSVC12)
+	message("C++11 not supported, will not build avOptionChecker app.")
+	return()
+endif()
+
 add_executable(avoptionchecker optionChecker.cpp)
 set_target_properties(avoptionchecker PROPERTIES VERSION ${AVTRANSCODER_VERSION})
 target_link_libraries(avoptionchecker avtranscoder-shared)
