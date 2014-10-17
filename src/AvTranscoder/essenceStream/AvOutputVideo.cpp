@@ -174,16 +174,16 @@ bool AvOutputVideo::encodeFrame( Frame& codedFrame )
 
 void AvOutputVideo::setProfile( const Profile::ProfileDesc& desc, const avtranscoder::VideoFrameDesc& frameDesc )
 {
-	if( ! desc.count( Profile::avProfileCodec ) ||
-		! desc.count( Profile::avProfilePixelFormat ) || 
-		! desc.count( Profile::avProfileFrameRate ) )
+	if( ! desc.count( constants::avProfileCodec ) ||
+		! desc.count( constants::avProfilePixelFormat ) || 
+		! desc.count( constants::avProfileFrameRate ) )
 	{
-		throw std::runtime_error( "The profile " + desc.find( Profile::avProfileIdentificatorHuman )->second + " is invalid." );
+		throw std::runtime_error( "The profile " + desc.find( constants::avProfileIdentificatorHuman )->second + " is invalid." );
 	}
 	
-	_codec.setCodec( eCodecTypeEncoder, desc.find( Profile::avProfileCodec )->second );
+	_codec.setCodec( eCodecTypeEncoder, desc.find( constants::avProfileCodec )->second );
 
-	const size_t frameRate = std::strtoul( desc.find( Profile::avProfileFrameRate )->second.c_str(), NULL, 0 );
+	const size_t frameRate = std::strtoul( desc.find( constants::avProfileFrameRate )->second.c_str(), NULL, 0 );
 	_codec.setTimeBase( 1, frameRate );
 
 	_codec.setImageParameters( frameDesc );
@@ -192,12 +192,12 @@ void AvOutputVideo::setProfile( const Profile::ProfileDesc& desc, const avtransc
 	
 	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
 	{
-		if( (*it).first == Profile::avProfileIdentificator ||
-			(*it).first == Profile::avProfileIdentificatorHuman ||
-			(*it).first == Profile::avProfileType ||
-			(*it).first == Profile::avProfileCodec ||
-			(*it).first == Profile::avProfilePixelFormat ||
-			(*it).first == Profile::avProfileFrameRate )
+		if( (*it).first == constants::avProfileIdentificator ||
+			(*it).first == constants::avProfileIdentificatorHuman ||
+			(*it).first == constants::avProfileType ||
+			(*it).first == constants::avProfileCodec ||
+			(*it).first == constants::avProfilePixelFormat ||
+			(*it).first == constants::avProfileFrameRate )
 			continue;
 
 		try
@@ -215,12 +215,12 @@ void AvOutputVideo::setProfile( const Profile::ProfileDesc& desc, const avtransc
 
 	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
 	{
-		if( (*it).first == Profile::avProfileIdentificator ||
-			(*it).first == Profile::avProfileIdentificatorHuman ||
-			(*it).first == Profile::avProfileType ||
-			(*it).first == Profile::avProfileCodec ||
-			(*it).first == Profile::avProfilePixelFormat ||
-			(*it).first == Profile::avProfileFrameRate )
+		if( (*it).first == constants::avProfileIdentificator ||
+			(*it).first == constants::avProfileIdentificatorHuman ||
+			(*it).first == constants::avProfileType ||
+			(*it).first == constants::avProfileCodec ||
+			(*it).first == constants::avProfilePixelFormat ||
+			(*it).first == constants::avProfileFrameRate )
 			continue;
 
 		try

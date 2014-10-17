@@ -184,10 +184,10 @@ StreamTranscoder::StreamTranscoder(
 	, _infinityStream( false )
 {
 	// create a coding case based on a InputEssence (aka generator)
-	if( ! profile.count( Profile::avProfileType ) )
+	if( ! profile.count( constants::avProfileType ) )
 		throw std::runtime_error( "unable to found stream type (audio, video, etc.)" );
 
-	if( profile.find( Profile::avProfileType )->second == Profile::avProfileTypeVideo )
+	if( profile.find( constants::avProfileType )->second == constants::avProfileTypeVideo )
 	{
 		AvOutputVideo* outputVideo = new AvOutputVideo();
 		
@@ -210,7 +210,7 @@ StreamTranscoder::StreamTranscoder(
 		return;
 	}
 
-	if( profile.find( Profile::avProfileType )->second == Profile::avProfileTypeAudio )
+	if( profile.find( constants::avProfileType )->second == constants::avProfileTypeAudio )
 	{
 		AvOutputAudio* outputAudio = new AvOutputAudio();
 

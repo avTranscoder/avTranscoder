@@ -11,11 +11,18 @@ set_target_properties(avprocessor PROPERTIES VERSION ${AVTRANSCODER_VERSION})
 target_link_libraries(avprocessor avtranscoder-shared)
 
 # Install app
+if(WIN32)
+	set(BINARY_FILES "${CMAKE_CURRENT_BINARY_DIR}/avprocessor.exe")
+else()
+	set(BINARY_FILES "${CMAKE_CURRENT_BINARY_DIR}/avprocessor" "${CMAKE_CURRENT_BINARY_DIR}/avprocessor-${AVTRANSCODER_VERSION}")
+endif()
+
 install(
-	FILES "${CMAKE_CURRENT_BINARY_DIR}/avprocessor" "${CMAKE_CURRENT_BINARY_DIR}/avprocessor-${AVTRANSCODER_VERSION}"
+	FILES ${BINARY_FILES}
 	PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ WORLD_READ WORLD_EXECUTE
 	DESTINATION "bin/"
 )
+
 install(
 	FILES ${CMAKE_CURRENT_SOURCE_DIR}/avprocessor.man
 	RENAME avprocessor.1

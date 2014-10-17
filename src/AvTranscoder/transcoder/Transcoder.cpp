@@ -397,10 +397,10 @@ void Transcoder::addTranscodeStream( const std::string& filename, const size_t s
 
 void Transcoder::addDummyStream( const Profile::ProfileDesc& profile, const ICodec& codec )
 {
-	if( ! profile.count( Profile::avProfileType ) )
+	if( ! profile.count( constants::avProfileType ) )
 		throw std::runtime_error( "unable to found stream type (audio, video, etc.)" );
 
-	if( profile.find( Profile::avProfileType )->second == Profile::avProfileTypeAudio )
+	if( profile.find( constants::avProfileType )->second == constants::avProfileTypeAudio )
 	{
 		if( _verbose )
 			std::cout << "add a generated audio stream" << std::endl;
@@ -410,7 +410,7 @@ void Transcoder::addDummyStream( const Profile::ProfileDesc& profile, const ICod
 		_streamTranscoders.push_back( new StreamTranscoder( *_generatorAudio.back(), _outputFile, profile ) );
 	}
 
-	if( profile.find( Profile::avProfileType )->second == Profile::avProfileTypeVideo )
+	if( profile.find( constants::avProfileType )->second == constants::avProfileTypeVideo )
 	{
 		if( _verbose )
 			std::cout << "add generated video stream" << std::endl;
