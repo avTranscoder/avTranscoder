@@ -12,8 +12,6 @@ class AvExport GeneratorVideo : public IInputEssence
 public:
 	GeneratorVideo( );
 
-	~GeneratorVideo( );
-
 	// Stream properties
 	void setVideoCodec( const VideoCodec& codec );
 

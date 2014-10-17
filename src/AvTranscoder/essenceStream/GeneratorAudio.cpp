@@ -11,10 +11,6 @@ GeneratorAudio::GeneratorAudio( )
 {
 }
 
-GeneratorAudio::~GeneratorAudio( )
-{
-}
-
 void GeneratorAudio::setAudioCodec( const AudioCodec& codec )
 {
 	_frameDesc.setFps         ( 25.0 );

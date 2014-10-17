@@ -12,8 +12,6 @@ class AvExport GeneratorAudio : public IInputEssence
 public:
 	GeneratorAudio( );
 
-	~GeneratorAudio( );
-
 	void setAudioCodec( const AudioCodec& codec );
 
 	AudioCodec& getAudioCodec();

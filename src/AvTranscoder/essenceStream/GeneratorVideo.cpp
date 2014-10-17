@@ -14,10 +14,6 @@ GeneratorVideo::GeneratorVideo( )
 {
 }
 
-GeneratorVideo::~GeneratorVideo( )
-{
-}
-
 void GeneratorVideo::setVideoCodec( const VideoCodec& codec )
 {
 	_codec = codec;
