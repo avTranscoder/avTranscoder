@@ -15,7 +15,7 @@ public:
 
 	size_t getStreamIndex() const { return _streamIndex; }
 
-	bool wrap( CodedData& data );
+	bool wrap( const CodedData& data );
 
 private:
 	OutputFile*      _outputFile;
