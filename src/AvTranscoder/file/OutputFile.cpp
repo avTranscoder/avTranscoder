@@ -190,7 +190,7 @@ bool OutputFile::endWrap( )
 	{
 		throw std::runtime_error( "could not write trailer" );
 	}
-	avcodec_close( _stream->codec );
+
 	if( !( _formatContext->oformat->flags & AVFMT_NOFILE ) )
 	{
 		avio_close( _formatContext->pb );
