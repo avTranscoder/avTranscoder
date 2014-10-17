@@ -13,8 +13,6 @@ class AvExport AvOutputStream : public IOutputStream
 public:
 	AvOutputStream( OutputFile& outputFile, const size_t streamIndex );
 
-	~AvOutputStream( );
-
 	size_t getStreamIndex() const { return _streamIndex; }
 
 	bool wrap( CodedData& data );

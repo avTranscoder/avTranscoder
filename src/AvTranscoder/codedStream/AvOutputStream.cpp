@@ -14,10 +14,6 @@ AvOutputStream::AvOutputStream( OutputFile& outputFile, const size_t streamIndex
 {
 }
 
-AvOutputStream::~AvOutputStream()
-{
-}
-
 bool AvOutputStream::wrap( CodedData& data )
 {
 	assert( _outputFile != NULL );
