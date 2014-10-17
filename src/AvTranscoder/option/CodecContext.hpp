@@ -12,7 +12,7 @@ namespace avtranscoder
  * @brief Wrapper of an AVCodecContext.
  * @note The AVCodecContext is allocated and free by the class. It is not the case of the base class.
  */
-class CodecContext : public Context
+class AvExport  CodecContext : public Context
 {
 public:
 	CodecContext( int req_flags = 0 );

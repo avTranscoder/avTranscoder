@@ -9,7 +9,7 @@ include_directories(${AVTRANSCODER_SRC_PATH} ${FFMPEG_INCLUDE_DIR})
 # Add C++11 flag
 if(NOT WIN32)
 	set(CMAKE_CXX_FLAGS "-std=c++0x")
-elseif(NOT MSVC12)
+elseif(${MSVC_VERSION} LESS 1800)
 	message("C++11 not supported, will not build avPresetChecker app.")
 	return()
 endif()
