@@ -173,10 +173,6 @@ private:
 	std::vector< InputFile* >        _inputFiles;  ///< The list of input files which contain added streams.
 
 	std::vector< StreamTranscoder* > _streamTranscoders;  ///< The streams of the output media file after process.
-	
-	std::vector< IInputStream* > _inputStreams;  ///< Objects to manage streams based on existing media files.
-	std::vector< GeneratorAudio* > _generatorAudio;  ///< Objects to manage silent audio streams.
-	std::vector< GeneratorVideo* > _generatorVideo;  ///< Objects to manage silent video streams (black images).
 
 	Profile _profile;  ///< Objet to get existing profiles, and add new ones for the Transcoder.
 
