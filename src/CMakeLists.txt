@@ -2,7 +2,7 @@
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 include(AvTranscoderMacros)
 
-##find_package(FFmpeg)
+# find_package(FFmpeg)
 find_package(FFmpeg
 	COMPONENTS avcodec avformat avutil swscale swresample avresample)
 
@@ -30,7 +30,7 @@ set_target_properties(avtranscoder-shared PROPERTIES SOVERSION ${AVTRANSCODER_VE
 set_target_properties(avtranscoder-shared PROPERTIES VERSION ${AVTRANSCODER_VERSION})
 target_link_libraries(avtranscoder-shared ${FFMPEG_LIBRARIES})
 
-### Install AvTranscoder libs and include
+# Install AvTranscoder libs and include
 install(
 	DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/AvTranscoder"
 	DESTINATION "include"
@@ -129,7 +129,7 @@ if(SWIG_FOUND)
 		# Post build of java binding : compile java files (generate class files) and create jar
 		set(AVTRANSCODER_JAVA_OUTPUT_PATH "${PROJECT_BINARY_DIR}/src/AvTranscoder")
 		set(AVTRANSCODER_JAR_PATH "${PROJECT_BINARY_DIR}/src")
-		set(AVTRANSCODER_JAR_NAME "avtranscoder-${AVTRANSCODER_VERSION}.jar")
+		set(AVTRANSCODER_JAR_NAME "avtranscoder-java-${AVTRANSCODER_VERSION}.jar")
 		ADD_CUSTOM_COMMAND(
 			TARGET avtranscoder-java
 			POST_BUILD

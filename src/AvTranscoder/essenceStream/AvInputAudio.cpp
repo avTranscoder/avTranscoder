@@ -8,7 +8,11 @@ extern "C" {
 #include <libavformat/avformat.h>
 #include <libavutil/avutil.h>
 #include <libavutil/pixdesc.h>
+#if LIBAVUTIL_VERSION_MAJOR > 51
 #include <libavutil/channel_layout.h>
+#else
+#include <libavutil/audioconvert.h>
+#endif
 }
 
 #include <AvTranscoder/codedStream/AvInputStream.hpp>

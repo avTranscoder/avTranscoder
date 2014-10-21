@@ -40,7 +40,7 @@ extern "C" {
 #endif
 
 #ifndef SWIG
-#if LIBAVCODEC_VERSION_MAJOR < 54
+#if LIBAVCODEC_VERSION_MAJOR <= 54
  #define AVPixelFormat PixelFormat
  #define AV_PIX_FMT_NONE PIX_FMT_NONE
  #define AVCodecID CodecID
