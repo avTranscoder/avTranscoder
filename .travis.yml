@@ -20,12 +20,12 @@ before_script:
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then ./tools/travis.osx.install.deps.sh; fi
 
 script:
+  # Build
   - mkdir build
   - cd build
   - cmake .. -DCMAKE_INSTALL_PREFIX=`pwd`/dist
   - make install
-
-after_script:
+  # Launch tests
   - cd ..
   - chmod +x tools/travis.python.nosetests.sh
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then ./tools/travis.python.nosetests.sh; fi

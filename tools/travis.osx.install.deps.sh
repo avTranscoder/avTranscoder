@@ -3,4 +3,5 @@
 brew update
 
 brew install gcc cmake swig
-brew install ffmpeg freeglut doxygen
+brew install freeglut doxygen
+brew install bottles/ffmpeg-2.2.3.mavericks.bottle.tar.gz
