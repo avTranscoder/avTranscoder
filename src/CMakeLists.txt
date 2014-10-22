@@ -110,7 +110,7 @@ if(SWIG_FOUND)
 		include_directories(${JNI_INCLUDE_DIRS})
 
 		# Swig flags
-		set(CMAKE_SWIG_FLAGS -c++ -fcompact -package org.AvTranscoder)
+		set(CMAKE_SWIG_FLAGS -c++ -fcompact -package org.avtranscoder)
 
 		# Create 'avtranscoder-java' shared lib
 		swig_add_module(avtranscoder-java java ${AVTRANSCODER_BINDING_FILE})
@@ -124,7 +124,7 @@ if(SWIG_FOUND)
 		set(AVTRANSCODER_JAVA_OUTPUT_PATH "${PROJECT_BINARY_DIR}/src/AvTranscoder")
 		set(AVTRANSCODER_JAVA_CLASS_OUTPUT_PATH "${AVTRANSCODER_JAVA_OUTPUT_PATH}/target")
 		set(AVTRANSCODER_JAR_PATH "${PROJECT_BINARY_DIR}/src")
-		set(AVTRANSCODER_JAR_NAME "avtranscoder.jar")
+		set(AVTRANSCODER_JAR_NAME "avtranscoder-${AVTRANSCODER_VERSION}.jar")
 		execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory ${AVTRANSCODER_JAVA_CLASS_OUTPUT_PATH})
 		
 		ADD_CUSTOM_COMMAND(
