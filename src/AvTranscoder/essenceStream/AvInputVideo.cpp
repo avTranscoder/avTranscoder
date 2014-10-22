@@ -1,17 +1,15 @@
 #include "AvInputVideo.hpp"
 
+#include <AvTranscoder/option/Context.hpp>
+#include <AvTranscoder/codedStream/AvInputStream.hpp>
+#include <AvTranscoder/frame/VideoFrame.hpp>
+
 extern "C" {
-#ifndef __STDC_CONSTANT_MACROS
-	#define __STDC_CONSTANT_MACROS
-#endif
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
 #include <libavutil/avutil.h>
 #include <libavutil/pixdesc.h>
 }
-
-#include <AvTranscoder/codedStream/AvInputStream.hpp>
-#include <AvTranscoder/essenceStructures/VideoFrame.hpp>
 
 #include <stdexcept>
 #include <iostream>
@@ -22,8 +20,7 @@ namespace avtranscoder
 AvInputVideo::AvInputVideo( AvInputStream& inputStream )
 	: IInputEssence()
 	, _inputStream   ( &inputStream )
-	, _codec         ( NULL )
-	, _codecContext  ( NULL )
+	, _codec( eCodecTypeDecoder, inputStream.getVideoCodec().getCodecId() )
 	, _frame         ( NULL )
 	, _selectedStream( -1 )
 {
@@ -31,12 +28,6 @@ AvInputVideo::AvInputVideo( AvInputStream& inputStream )
 
 AvInputVideo::~AvInputVideo()
 {
-	if( _codecContext != NULL )
-	{
-		//avcodec_close( _codecContext );
-		av_free( _codecContext );
-		_codecContext = NULL;
-	}
 	if( _frame != NULL )
 	{
 #if LIBAVCODEC_VERSION_MAJOR > 54
@@ -54,33 +45,22 @@ AvInputVideo::~AvInputVideo()
 
 void AvInputVideo::setup()
 {
-	av_register_all();
+	AVCodecContext* avCodecContext = _codec.getAVCodecContext();
+	AVCodec* avCodec = _codec.getAVCodec();
 
-	_codec = avcodec_find_decoder( _inputStream->getVideoDesc().getCodecId() );
-	if( _codec == NULL )
-	{
-		throw std::runtime_error( "codec not supported" );
-	}
+	// if( avCodec->capabilities & CODEC_CAP_TRUNCATED )
+	// 	avCodecContext->flags |= CODEC_FLAG_TRUNCATED;
 
-	_codecContext = avcodec_alloc_context3( _codec );
-	if( _codecContext == NULL )
-	{
-		throw std::runtime_error( "unable to find context for codec" );
-	}
+	int ret = avcodec_open2( avCodecContext, avCodec, NULL );
 
-	// if( codec->capabilities & CODEC_CAP_TRUNCATED )
-	// 	codecContext->flags |= CODEC_FLAG_TRUNCATED;
-
-	int ret = avcodec_open2( _codecContext, _codec, NULL );
-
-	if( ret < 0 || _codecContext == NULL || _codec == NULL )
+	if( ret < 0 || avCodecContext == NULL || avCodec == NULL )
 	{
 		std::string msg = "unable open video codec: ";
-		msg +=  _codec->long_name;
+		msg +=  avCodec->long_name;
 		msg += " (";
-		msg += _codec->name;
+		msg += avCodec->name;
 		msg += ")";
-		avcodec_close( _codecContext );
+		avcodec_close( avCodecContext );
 		throw std::runtime_error( msg );
 	}
 
@@ -101,7 +81,7 @@ bool AvInputVideo::readNextFrame( Frame& frameBuffer )
 
 	while( ! got_frame )
 	{
-		DataStream data;
+		CodedData data;
 		if( ! _inputStream->readNextPacket( data ) )
 			return false;
 
@@ -112,7 +92,7 @@ bool AvInputVideo::readNextFrame( Frame& frameBuffer )
 		packet.data         = data.getPtr();
 		packet.size         = data.getSize();
 		
-		int ret = avcodec_decode_video2( _codecContext, _frame, &got_frame, &packet );
+		int ret = avcodec_decode_video2( _codec.getAVCodecContext(), _frame, &got_frame, &packet );
 		
 		if( ret < 0 )
 		{
@@ -144,23 +124,24 @@ bool AvInputVideo::readNextFrame( Frame& frameBuffer, const size_t subStreamInde
 
 void AvInputVideo::flushDecoder()
 {
-	avcodec_flush_buffers( _codecContext );
+	avcodec_flush_buffers( _codec.getAVCodecContext() );
 }
 
 void AvInputVideo::setProfile( const Profile::ProfileDesc& desc )
 {
-	ParamSet paramSet( _codecContext );
+	Context codecContext( _codec.getAVCodecContext() );
 
 	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
 	{
-		if( (*it).first == Profile::avProfileIdentificator ||
-			(*it).first == Profile::avProfileIdentificatorHuman ||
-			(*it).first == Profile::avProfileType )
+		if( (*it).first == constants::avProfileIdentificator ||
+			(*it).first == constants::avProfileIdentificatorHuman ||
+			(*it).first == constants::avProfileType )
 			continue;
 
 		try
 		{
-			paramSet.set( (*it).first, (*it).second );
+			Option& decodeOption = codecContext.getOption( (*it).first );
+			decodeOption.setString( (*it).second );
 		}
 		catch( std::exception& e )
 		{

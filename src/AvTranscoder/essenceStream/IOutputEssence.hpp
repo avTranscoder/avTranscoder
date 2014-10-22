@@ -1,9 +1,8 @@
 #ifndef _AV_TRANSCODER_ESSENCE_STREAM_IOUTPUT_ESSENCE_HPP_
 #define _AV_TRANSCODER_ESSENCE_STREAM_IOUTPUT_ESSENCE_HPP_
 
-#include <AvTranscoder/essenceStructures/Frame.hpp>
-#include <AvTranscoder/codedStructures/DataStream.hpp>
-#include <AvTranscoder/codedStructures/CodedDesc.hpp>
+#include <AvTranscoder/frame/Frame.hpp>
+#include <AvTranscoder/codec/ICodec.hpp>
 
 namespace avtranscoder
 {
@@ -11,12 +10,7 @@ namespace avtranscoder
 class AvExport IOutputEssence
 {
 public:
-	IOutputEssence( const std::string& codecName )
-	: _codedDesc( codecName )
-	{}
-
-	virtual ~IOutputEssence()
-	{}
+	virtual ~IOutputEssence() {}
 
 	/**
 	 * @brief Setup the encoder
@@ -29,20 +23,20 @@ public:
 	 * @param codedFrame data of the coded frame if present (first frames can be delayed)
 	 * @return status of encoding
 	 */
-	virtual bool encodeFrame( const Frame& sourceFrame, DataStream& codedFrame ) = 0;
+	virtual bool encodeFrame( const Frame& sourceFrame, Frame& codedFrame ) = 0;
 
 	/**
 	 * @brief Get delayed encoded frames
 	 * @param codedFrame data of the coded frame if present (first frames can be delayed)
 	 * @return status of encoding
 	 */
-	virtual bool encodeFrame( DataStream& codedFrame ) = 0;
+	virtual bool encodeFrame( Frame& codedFrame ) = 0;
 
-	CodedDesc& getCodedDesc() { return _codedDesc; }
-
-protected:
-	CodedDesc _codedDesc;
-
+	/**
+	 * @brief Get codec used for encoding.
+	 * @return a reference to the codec
+	 */
+	virtual ICodec& getCodec() = 0;
 };
 
 }

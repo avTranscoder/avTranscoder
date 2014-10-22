@@ -2,10 +2,9 @@
 #define _AV_TRANSCODER_ESSENCE_STREAM_AV_INPUT_AUDIO_HPP_
 
 #include "IInputEssence.hpp"
+#include <AvTranscoder/codec/AudioCodec.hpp>
 
-class AVCodec;
-class AVCodecContext;
-class AVFrame;
+struct AVFrame;
 
 namespace avtranscoder
 {
@@ -27,8 +26,7 @@ private:
 	bool getNextFrame();
 
 	AvInputStream*     _inputStream;
-	AVCodec*           _codec;
-	AVCodecContext*    _codecContext;
+	AudioCodec _codec;
 	AVFrame*           _frame;
 
 	int                _selectedStream;

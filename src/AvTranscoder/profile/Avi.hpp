@@ -7,11 +7,11 @@ namespace avtranscoder
 void loadAvi( Profile::ProfilesDesc& profiles )
 {
 	Profile::ProfileDesc avi;
-	avi[ Profile::avProfileIdentificator ] = "avi";
-	avi[ Profile::avProfileIdentificatorHuman ] = "AVI (Audio Video Interleaved)";
-	avi[ Profile::avProfileType ] = Profile::avProfileTypeFormat;
+	avi[ constants::avProfileIdentificator ] = "avi";
+	avi[ constants::avProfileIdentificatorHuman ] = "AVI (Audio Video Interleaved)";
+	avi[ constants::avProfileType ] = constants::avProfileTypeFormat;
 
-	avi[ Profile::avProfileFormat ] = "avi";
+	avi[ constants::avProfileFormat ] = "avi";
 
 	profiles.push_back( avi );
 }

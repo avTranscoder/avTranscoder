@@ -8,12 +8,12 @@ void loadXdCamHD422( Profile::ProfilesDesc& profiles )
 {
 	Profile::ProfileDesc xdCamHd422;
 
-	xdCamHd422[ Profile::avProfileIdentificator ] = "xdcamhd422";
-	xdCamHd422[ Profile::avProfileIdentificatorHuman ] = "XdCamHD 422";
-	xdCamHd422[ Profile::avProfileType ] = Profile::avProfileTypeVideo;
+	xdCamHd422[ constants::avProfileIdentificator ] = "xdcamhd422";
+	xdCamHd422[ constants::avProfileIdentificatorHuman ] = "XdCamHD 422";
+	xdCamHd422[ constants::avProfileType ] = constants::avProfileTypeVideo;
 
 
-	xdCamHd422[ Profile::avProfileCodec ] = "mpeg2video";
+	xdCamHd422[ constants::avProfileCodec ] = "mpeg2video";
 	xdCamHd422[ "profile" ] = "0"; // FF_PROFILE_MPEG2_422
 	xdCamHd422[ "level" ] = "2";
 
@@ -23,9 +23,9 @@ void loadXdCamHD422( Profile::ProfilesDesc& profiles )
 	xdCamHd422[ "qmin" ] = "2";
 	xdCamHd422[ "qmax" ] = "12";
 	xdCamHd422[ "dc" ] = "2"; // 10 - 8 = 2
-	xdCamHd422[ Profile::avProfileFrameRate ] = "25";
+	xdCamHd422[ constants::avProfileFrameRate ] = "25";
 
-	xdCamHd422[ Profile::avProfilePixelFormat ] = "yuv422p";
+	xdCamHd422[ constants::avProfilePixelFormat ] = "yuv422p";
 
 	// color informations are not used in FFmpeg/LibAV for Mpeg2
 	xdCamHd422[ "colorspace" ] = "1"; // AVCOL_SPC_BT709

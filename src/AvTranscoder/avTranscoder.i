@@ -1,4 +1,4 @@
-%module AvTranscoder
+%module avtranscoder
 
 %module(directors="1") AvTranscoder
 
@@ -7,25 +7,21 @@
 %include "std_pair.i"
 %include "std_map.i"
 
-
 %include "AvTranscoder/swig/avException.i"
 %include "AvTranscoder/swig/avExport.i"
 
 %{
-#include <AvTranscoder/common.hpp>
-
 #include <AvTranscoder/Profile.hpp>
 
-#include <AvTranscoder/essenceStructures/Pixel.hpp>
-#include <AvTranscoder/essenceStructures/Frame.hpp>
-#include <AvTranscoder/essenceStructures/VideoFrame.hpp>
-#include <AvTranscoder/essenceStructures/AudioFrame.hpp>
+#include <AvTranscoder/frame/Pixel.hpp>
+#include <AvTranscoder/frame/Frame.hpp>
+#include <AvTranscoder/frame/VideoFrame.hpp>
+#include <AvTranscoder/frame/AudioFrame.hpp>
 
-#include <AvTranscoder/codedStructures/CodedDesc.hpp>
-#include <AvTranscoder/codedStructures/VideoDesc.hpp>
-#include <AvTranscoder/codedStructures/AudioDesc.hpp>
-#include <AvTranscoder/codedStructures/DataDesc.hpp>
-#include <AvTranscoder/codedStructures/DataStream.hpp>
+#include <AvTranscoder/codec/ICodec.hpp>
+#include <AvTranscoder/codec/VideoCodec.hpp>
+#include <AvTranscoder/codec/AudioCodec.hpp>
+#include <AvTranscoder/codec/DataCodec.hpp>
 
 #include <AvTranscoder/mediaProperty/mediaProperty.hpp>
 
@@ -52,9 +48,7 @@
 #include <AvTranscoder/transcoder/Transcoder.hpp>
 %}
 
-%include "AvTranscoder/progress/progress.i"
-
-namespace std {
+namespace std {	
 %template(IntPair)         pair< size_t, size_t >;
 %template(VideoVector)     vector< avtranscoder::VideoProperties >;
 %template(AudioVector)     vector< avtranscoder::AudioProperties >;
@@ -67,21 +61,19 @@ namespace std {
 %template(ProfilesVector)  vector< map< string, string > >;
 }
 
-%include <AvTranscoder/common.hpp>
+%include "AvTranscoder/progress/progress.i"
 
 %include <AvTranscoder/Profile.hpp>
 
-%include <AvTranscoder/essenceStructures/Pixel.hpp>
-%include <AvTranscoder/essenceStructures/Frame.hpp>
-%include <AvTranscoder/essenceStructures/VideoFrame.hpp>
-%include <AvTranscoder/essenceStructures/AudioFrame.hpp>
+%include <AvTranscoder/frame/Pixel.hpp>
+%include <AvTranscoder/frame/Frame.hpp>
+%include <AvTranscoder/frame/VideoFrame.hpp>
+%include <AvTranscoder/frame/AudioFrame.hpp>
 
-%include <AvTranscoder/codedStructures/CodedDesc.hpp>
-%include <AvTranscoder/codedStructures/VideoDesc.hpp>
-%include <AvTranscoder/codedStructures/AudioDesc.hpp>
-%include <AvTranscoder/codedStructures/DataDesc.hpp>
-%include <AvTranscoder/codedStructures/DataStream.hpp>
-
+%include <AvTranscoder/codec/ICodec.hpp>
+%include <AvTranscoder/codec/VideoCodec.hpp>
+%include <AvTranscoder/codec/AudioCodec.hpp>
+%include <AvTranscoder/codec/DataCodec.hpp>
 
 %include <AvTranscoder/mediaProperty/mediaProperty.hpp>
 

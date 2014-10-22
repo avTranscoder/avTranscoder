@@ -17,8 +17,14 @@ add_definitions(-DAVTRANSCODER_VERSION_MICRO=${AVTRANSCODER_VERSION_MICRO})
 set(CMAKE_VERBOSE_MAKEFILE OFF)
 
 # CPP flags on debug / release mode
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -fPIC -pg -g")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fPIC -O3")
+if(NOT WIN32)
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -fPIC -pg -g")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fPIC -O3")
+else()
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
+endif()
+
 
 # CPack options
 SET(CPACK_DEB_COMPONENT_INSTALL 1)
@@ -27,25 +33,25 @@ set(CPACK_PACKAGING_INSTALL_PREFIX "/usr")
 
 
 set(CPACK_GENERATOR
-	"DEB")
+    "DEB")
 
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER
-	"Marc-Antoine ARNAUD")
+    "Marc-Antoine ARNAUD")
 
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY
-	"C++ API for LibAV / FFMpeg - provides the high level API to re-wrap or transcode media easily.")
+    "C++ API for LibAV / FFMpeg - provides the high level API to re-wrap or transcode media easily.")
 
 set(CPACK_DEBIAN_PACKAGE_DEPENDS
-	"${CPACK_DEBIAN_PACKAGE_AUTO_DEPENDS}, libavutil, libavcodec, libavformat, libavdevice, libswscale, libavresample")
+    "${CPACK_DEBIAN_PACKAGE_AUTO_DEPENDS}, libavutil, libavcodec, libavformat, libavdevice, libswscale, libavresample")
 
 set(CPACK_COMPONENT_DEV_DESCRIPTION
-   "C/C++ header files for use with avtranscoder")
+    "C/C++ header files for use with avtranscoder")
 
 # interconnected dependencies
-# set(CPACK_COMPONENT_TOOLS_DEPENDS lib)
-# set(CPACK_COMPONENT_DEV_DEPENDS lib)
-# set(CPACK_COMPONENT_PYTHON_DEPENDS lib)
-# set(CPACK_COMPONENT_JAVA_DEPENDS lib)
+set(CPACK_COMPONENT_TOOLS_DEPENDS lib)
+set(CPACK_COMPONENT_DEV_DEPENDS lib)
+set(CPACK_COMPONENT_PYTHON_DEPENDS lib)
+set(CPACK_COMPONENT_JAVA_DEPENDS lib)
 
 add_subdirectory(src)
 add_subdirectory(app)

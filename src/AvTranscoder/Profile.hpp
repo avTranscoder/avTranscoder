@@ -1,6 +1,8 @@
 #ifndef _AV_TRANSCODER_PROFILE_HPP_
 #define _AV_TRANSCODER_PROFILE_HPP_
 
+#include "common.hpp"
+
 #include <string>
 #include <cstring>
 #include <vector>
@@ -9,24 +11,27 @@
 namespace avtranscoder
 {
 
-class Profile
+namespace constants
+{
+	const std::string avProfileIdentificator = "avProfile";
+	const std::string avProfileIdentificatorHuman = "avProfileLong";
+	const std::string avProfileType = "avProfileType";
+	const std::string avProfileTypeFormat = "avProfileTypeFormat";
+	const std::string avProfileTypeVideo = "avProfileTypeVideo";
+	const std::string avProfileTypeAudio = "avProfileTypeAudio";
+	const std::string avProfileFormat = "format";
+	const std::string avProfileCodec = "codec";
+	const std::string avProfilePixelFormat = "pix_fmt";
+	const std::string avProfileSampleFormat = "sample_fmt";
+	const std::string avProfileFrameRate = "r";
+	const std::string avProfileSampleRate = "ar";
+	const std::string avProfileChannel = "ac";
+}
+
+class AvExport Profile
 {
 public:
-	static const std::string avProfileIdentificator;
-	static const std::string avProfileIdentificatorHuman;
-	static const std::string avProfileType;
 
-	static const std::string avProfileTypeFormat;
-	static const std::string avProfileTypeVideo;
-	static const std::string avProfileTypeAudio;
-	
-	static const std::string avProfileFormat;
-	static const std::string avProfileCodec;
-	static const std::string avProfilePixelFormat;
-	static const std::string avProfileSampleFormat;
-	static const std::string avProfileFrameRate;
-	static const std::string avProfileSampleRate;
-	static const std::string avProfileChannel;
 
 public:
 	// typedef std::pair< std::string, std::string > KeyDesc;
@@ -51,7 +56,10 @@ public:
 
 private:
 	ProfilesDesc _profiles;
+
 };
+
+
 
 }
 #endif

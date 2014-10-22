@@ -1,9 +1,8 @@
 #include "AvOutputAudio.hpp"
 
+#include <AvTranscoder/option/Context.hpp>
+
 extern "C" {
-#ifndef __STDC_CONSTANT_MACROS
-	#define __STDC_CONSTANT_MACROS
-#endif
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
 #include <libavutil/avutil.h>
@@ -16,15 +15,15 @@ namespace avtranscoder
 {
 
 AvOutputAudio::AvOutputAudio()
-	: IOutputEssence( "pcm_s16le" )
+	: _codec( eCodecTypeEncoder, "pcm_s16le" )
 {
 }
 
 void AvOutputAudio::setup()
 {
-	av_register_all();  // Warning: should be called only once
+	av_register_all();
 
-	AVCodecContext* codecContext( _codedDesc.getCodecContext() );
+	AVCodecContext* codecContext( _codec.getAVCodecContext() );
 
 	if( codecContext == NULL )
 	{
@@ -32,7 +31,7 @@ void AvOutputAudio::setup()
 	}
 	
 	// try to open encoder with parameters.
-	int ret = avcodec_open2( codecContext, _codedDesc.getCodec(), NULL );
+	int ret = avcodec_open2( codecContext, _codec.getAVCodec(), NULL );
 	if( ret < 0 )
 	{
 		char err[250];
@@ -43,7 +42,7 @@ void AvOutputAudio::setup()
 	}
 }
 
-bool AvOutputAudio::encodeFrame( const Frame& sourceFrame, DataStream& codedFrame )
+bool AvOutputAudio::encodeFrame( const Frame& sourceFrame, Frame& codedFrame )
 {
 #if LIBAVCODEC_VERSION_MAJOR > 54
 	AVFrame* frame = av_frame_alloc();
@@ -51,7 +50,7 @@ bool AvOutputAudio::encodeFrame( const Frame& sourceFrame, DataStream& codedFram
 	AVFrame* frame = avcodec_alloc_frame();
 #endif
 
-	AVCodecContext* codecContext = _codedDesc.getCodecContext();
+	AVCodecContext* codecContext = _codec.getAVCodecContext();
 
 	// Set default frame parameters
 #if LIBAVCODEC_VERSION_MAJOR > 54
@@ -137,9 +136,9 @@ bool AvOutputAudio::encodeFrame( const Frame& sourceFrame, DataStream& codedFram
 	return ret == 0;
 }
 
-bool AvOutputAudio::encodeFrame( DataStream& codedFrame )
+bool AvOutputAudio::encodeFrame( Frame& codedFrame )
 {
-	AVCodecContext* codecContext = _codedDesc.getCodecContext();
+	AVCodecContext* codecContext = _codec.getAVCodecContext();
 
 	AVPacket packet;
 	av_init_packet( &packet );
@@ -174,30 +173,30 @@ bool AvOutputAudio::encodeFrame( DataStream& codedFrame )
 
 void AvOutputAudio::setProfile( const Profile::ProfileDesc& desc, const AudioFrameDesc& frameDesc  )
 {
-	if( ! desc.count( Profile::avProfileCodec ) || 		
-		! desc.count( Profile::avProfileSampleFormat ) )
+	if( ! desc.count( constants::avProfileCodec ) || 		
+		! desc.count( constants::avProfileSampleFormat ) )
 	{
-		throw std::runtime_error( "The profile " + desc.find( Profile::avProfileIdentificatorHuman )->second + " is invalid." );
+		throw std::runtime_error( "The profile " + desc.find( constants::avProfileIdentificatorHuman )->second + " is invalid." );
 	}
 	
-	_codedDesc.setCodec( desc.find( Profile::avProfileCodec )->second );
-	
-	static_cast<AudioDesc>( _codedDesc ).setAudioParameters( frameDesc );
+	_codec.setCodec( eCodecTypeEncoder, desc.find( constants::avProfileCodec )->second );
+	_codec.setAudioParameters( frameDesc );
 
-	ParamSet paramSet( _codedDesc.getCodecContext() );
+	Context codecContext( _codec.getAVCodecContext() );
 	
 	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
 	{
-		if( (*it).first == Profile::avProfileIdentificator ||
-			(*it).first == Profile::avProfileIdentificatorHuman ||
-			(*it).first == Profile::avProfileType ||
-			(*it).first == Profile::avProfileCodec ||
-			(*it).first == Profile::avProfileSampleFormat )
+		if( (*it).first == constants::avProfileIdentificator ||
+			(*it).first == constants::avProfileIdentificatorHuman ||
+			(*it).first == constants::avProfileType ||
+			(*it).first == constants::avProfileCodec ||
+			(*it).first == constants::avProfileSampleFormat )
 			continue;
 
 		try
 		{
-			paramSet.set( (*it).first, (*it).second );
+			Option& encodeOption = codecContext.getOption( (*it).first );
+			encodeOption.setString( (*it).second );
 		}
 		catch( std::exception& e )
 		{
@@ -209,16 +208,17 @@ void AvOutputAudio::setProfile( const Profile::ProfileDesc& desc, const AudioFra
 
 	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
 	{
-		if( (*it).first == Profile::avProfileIdentificator ||
-			(*it).first == Profile::avProfileIdentificatorHuman ||
-			(*it).first == Profile::avProfileType ||
-			(*it).first == Profile::avProfileCodec ||
-			(*it).first == Profile::avProfileSampleFormat )
+		if( (*it).first == constants::avProfileIdentificator ||
+			(*it).first == constants::avProfileIdentificatorHuman ||
+			(*it).first == constants::avProfileType ||
+			(*it).first == constants::avProfileCodec ||
+			(*it).first == constants::avProfileSampleFormat )
 			continue;
 
 		try
 		{
-			paramSet.set( (*it).first, (*it).second );
+			Option& encodeOption = codecContext.getOption( (*it).first );
+			encodeOption.setString( (*it).second );
 		}
 		catch( std::exception& e )
 		{

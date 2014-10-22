@@ -7,11 +7,11 @@ namespace avtranscoder
 void loadMkv( Profile::ProfilesDesc& profiles )
 {
 	Profile::ProfileDesc mkv;
-	mkv[ Profile::avProfileIdentificator ] = "mkv";
-	mkv[ Profile::avProfileIdentificatorHuman ] = "Matroska";
-	mkv[ Profile::avProfileType ] = Profile::avProfileTypeFormat;
+	mkv[ constants::avProfileIdentificator ] = "mkv";
+	mkv[ constants::avProfileIdentificatorHuman ] = "Matroska";
+	mkv[ constants::avProfileType ] = constants::avProfileTypeFormat;
 
-	mkv[ Profile::avProfileFormat ] = "matroska";
+	mkv[ constants::avProfileFormat ] = "matroska";
 
 	profiles.push_back( mkv );
 }

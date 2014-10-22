@@ -24,19 +24,25 @@ namespace avtranscoder
 {
 
 /**
- * @brief: Enum to set a policy of how we manage the transcode in case of several streams.
+ * @brief Enum to set a policy of how we manage the transcode in case of several streams.
  * eProcessMethodShortest: stop transcode at the end of the shortest stream.
  * eProcessMethodLongest: stop transcode at the end of the longest stream (default method).
+ * eProcessMethodBasedOnStream: stop transcode at the end of an indicated stream (@see _indexBasedStream of Transcoder).
  * eProcessMethodInfinity: stop transcode by outside of avTranscoder.
  */
 enum EProcessMethod
 {
 	eProcessMethodShortest = 0,
 	eProcessMethodLongest,
+	eProcessMethodBasedOnStream,
 	eProcessMethodInfinity,
 };
 
-class Transcoder
+/**
+ * @brief A Transcoder manages a list of streams, 
+ * and process a transcode to create an output media file.
+ */
+class AvExport Transcoder
 {
 public:
 
@@ -53,7 +59,7 @@ public:
 	 * @note If filename is empty, add a generated stream.
 	 * @note If filename is empty, profileName can't be empty (no sens to rewrap a generated stream).
 	 */
-	void add( const std::string& filename, const size_t streamIndex, const std::string& profileName, CodedDesc& essenceDesc, const size_t offset = 0 );
+	void add( const std::string& filename, const size_t streamIndex, const std::string& profileName, ICodec& codec, const size_t offset = 0 );
 
 	/**
 	 * @brief Add a stream and set a custom profile
@@ -63,7 +69,7 @@ public:
 	/*
 	 * @note If filename is empty, add a generated stream.
 	 */
-	void add( const std::string& filename, const size_t streamIndex, Profile::ProfileDesc& profileDesc, CodedDesc& essenceDesc, const size_t offset = 0  );
+	void add( const std::string& filename, const size_t streamIndex, Profile::ProfileDesc& profileDesc, ICodec& codec, const size_t offset = 0  );
 	
 	/**
 	 * @brief Add a stream and set a profile
@@ -75,7 +81,7 @@ public:
 	 * @note If filename is empty, add a generated stream.
 	 * @note If filename is empty, profileName can't be empty (no sens to rewrap a generated stream).
 	 */
-	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const std::string& profileName, CodedDesc& essenceDesc, const size_t offset = 0  );
+	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const std::string& profileName, ICodec& codec, const size_t offset = 0  );
 
 	/**
 	 * @brief Add a stream and set a custom profile
@@ -86,7 +92,7 @@ public:
 	/**
 	 * @note If filename is empty, add a generated stream.
 	 */
-	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, Profile::ProfileDesc& profileDesc, CodedDesc& essenceDesc, const size_t offset = 0  );
+	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, Profile::ProfileDesc& profileDesc, ICodec& codec, const size_t offset = 0  );
 
 	/**
 	 * @brief Add the stream
@@ -115,16 +121,22 @@ public:
 
 	/**
 	 * @brief Set the transcodage politic.
-	 * @note If you call it before adding the streams, the process will stop at the end of the shortest stream.
+	 * @note Call it after adding the streams.
+	 * @note By default eProcessMethodLongest.
+	 * @param indexBasedStream: in case of process method eProcessMethodBasedOnStream, stop transcode at the end of the indicated stream.
 	 */
-	void setProcessMethod( const EProcessMethod eProcessMethod );
+	void setProcessMethod( const EProcessMethod eProcessMethod, const size_t indexBasedStream = 0 );
 
 	/**
-	 * @brief Set verbose mode for the Transcoder and his streams.
+	 * @brief Set verbose mode for the Transcoder and its streams.
 	 * @note If you call it before adding the streams, no verbose mode will be set for the new streams.
 	 */
 	void setVerbose( bool verbose = true );
 
+	/**
+	 * @brief Set FPS of output media file.
+	 * @note By default 25 frames per second.
+     */
 	void setOutputFps( double fps ) { _outputFps = fps; }
 
 private:
@@ -135,13 +147,18 @@ private:
 
 	void addTranscodeStream( const std::string& filename, const size_t streamIndex, const size_t subStreamIndex, Profile::ProfileDesc& profile, const size_t offset = 0 );
 
-	void addDummyStream( const Profile::ProfileDesc& profile, const CodedDesc& essenceDesc );
+	void addDummyStream( const Profile::ProfileDesc& profile, const ICodec& codec );
 
 	InputFile* addInputFile( const std::string& filename, const size_t streamIndex );
 
 	/**
+	 * @brief Get the duration of the stream.
+	 */
+	double getStreamDuration( size_t indexStream ) const;
+
+	/**
 	* @brief Get the duration of the shortest stream.
-	 * @note if there is only generated streams, return limit of double.
+	* @note if there is only generated streams, return limit of double.
 	*/
 	double getMinTotalDuration() const;
 
@@ -152,21 +169,22 @@ private:
 	double getMaxTotalDuration() const;
 
 private:
-	OutputFile&                      _outputFile;
-	std::vector< InputFile* >        _inputFiles;
+	OutputFile&                      _outputFile;  ///< The output media file after process.
+	std::vector< InputFile* >        _inputFiles;  ///< The list of input files which contain added streams.
 
-	std::vector< IInputStream* >      _inputStreams;
-	std::vector< StreamTranscoder* > _streamTranscoders;
+	std::vector< StreamTranscoder* > _streamTranscoders;  ///< The streams of the output media file after process.
 	
-	std::vector< GeneratorAudio* > _generatorAudio;
-	std::vector< GeneratorVideo* > _generatorVideo;
+	std::vector< IInputStream* > _inputStreams;  ///< Objects to manage streams based on existing media files.
+	std::vector< GeneratorAudio* > _generatorAudio;  ///< Objects to manage silent audio streams.
+	std::vector< GeneratorVideo* > _generatorVideo;  ///< Objects to manage silent video streams (black images).
 
-	Profile _profile;
+	Profile _profile;  ///< Objet to get existing profiles, and add new ones for the Transcoder.
 
 	double _outputFps;
 
-	size_t _finalisedStreams;
 	EProcessMethod _eProcessMethod;
+
+	size_t _mainStreamIndex;  ///< Index of stream used to stop the process of transcode in case of eProcessMethodBasedOnStream.
 
 	bool    _verbose;
 };

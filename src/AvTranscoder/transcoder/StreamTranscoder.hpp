@@ -4,6 +4,7 @@
 #include <AvTranscoder/common.hpp>
 
 #include <AvTranscoder/codedStream/IInputStream.hpp>
+#include <AvTranscoder/codedStream/IOutputStream.hpp>
 
 #include <AvTranscoder/essenceStream/AvInputVideo.hpp>
 #include <AvTranscoder/essenceStream/AvOutputVideo.hpp>
@@ -15,9 +16,9 @@
 namespace avtranscoder
 {
 
-class IEssenceTransform;
+class ITransform;
 
-class StreamTranscoder
+class AvExport StreamTranscoder
 {
 public:
 	/**
@@ -86,7 +87,7 @@ private:
 	IInputEssence*  _currentEssence;
 	IOutputEssence* _outputEssence;
 
-	IEssenceTransform* _transform;
+	ITransform* _transform;
 
 	int  _subStreamIndex;
 
