@@ -1,7 +1,7 @@
-#include <AvTranscoder/file/InputFile.hpp>
-#include <AvTranscoder/mediaProperty/printMediaProperty.hpp>
+#include <avtranscoder/file/InputFile.hpp>
+#include <avtranscoder/mediaProperty/printMediaProperty.hpp>
 
-#include <AvTranscoder/progress/NoDisplayProgress.hpp>
+#include <avtranscoder/progress/NoDisplayProgress.hpp>
 
 #include <iostream>
 

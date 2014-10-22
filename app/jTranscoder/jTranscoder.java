@@ -1,5 +1,5 @@
 
-import org.AvTranscoder.InputFile;
+import org.avtranscoder.InputFile;
 
 
 public class jTranscoder {

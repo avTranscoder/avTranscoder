@@ -13,7 +13,7 @@ else()
 	add_definitions(-DFF_RESAMPLE_LIBRARY)
 endif()
 
-# Include AvTranscoder and FFmpeg
+# Include avtranscoder and FFmpeg
 include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${FFMPEG_INCLUDE_DIR})
 
 # Create 'avtranscoder' static lib
@@ -34,9 +34,9 @@ set_target_properties(avtranscoder-shared PROPERTIES SOVERSION ${AVTRANSCODER_VE
 set_target_properties(avtranscoder-shared PROPERTIES VERSION ${AVTRANSCODER_VERSION})
 target_link_libraries(avtranscoder-shared ${FFMPEG_LIBRARIES})
 
-# Install AvTranscoder libs and include
+# Install avtranscoder libs and include
 install(
-	DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/AvTranscoder"
+	DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/avtranscoder"
 	DESTINATION "include"
 	COMPONENT "dev"
 	FILES_MATCHING
@@ -65,8 +65,8 @@ if(SWIG_FOUND)
 	include(${SWIG_USE_FILE})
 
 	# Configure Swig
-	set(CMAKE_SWIG_OUTDIR "${CMAKE_CURRENT_BINARY_DIR}/AvTranscoder")
-	set(AVTRANSCODER_BINDING_FILE "AvTranscoder/avTranscoder.i")
+	set(CMAKE_SWIG_OUTDIR "${CMAKE_CURRENT_BINARY_DIR}/avtranscoder")
+	set(AVTRANSCODER_BINDING_FILE "avtranscoder/avtranscoder.i")
 	set_source_files_properties(${AVTRANSCODER_BINDING_FILE} PROPERTIES CPLUSPLUS ON)
 
 	### PYTHON BINDING
@@ -91,7 +91,7 @@ if(SWIG_FOUND)
 		swig_link_libraries(avtranscoder-py avtranscoder-shared ${PYTHON_LIBRARIES})
 
 		# Install python interface
-		set(AVTRANSCODER_PYTHON_BINDING_FILE "${CMAKE_SWIG_OUTDIR}/AvTranscoder.py")
+		set(AVTRANSCODER_PYTHON_BINDING_FILE "${CMAKE_SWIG_OUTDIR}/avtranscoder.py")
 
 		install(
 			FILES ${AVTRANSCODER_PYTHON_BINDING_FILE}
@@ -118,7 +118,7 @@ if(SWIG_FOUND)
 		include_directories(${JNI_INCLUDE_DIRS})
 
 		# Swig flags
-		set(CMAKE_SWIG_FLAGS -c++ -fcompact -package org.AvTranscoder)
+		set(CMAKE_SWIG_FLAGS -c++ -fcompact -package org.avtranscoder)
 
 		# Create 'avtranscoder-java' shared lib
 		swig_add_module(avtranscoder-java java ${AVTRANSCODER_BINDING_FILE})
@@ -129,7 +129,7 @@ if(SWIG_FOUND)
 		swig_link_libraries(avtranscoder-java avtranscoder-shared)
 
 		# Post build of java binding : compile java files (generate class files) and create jar
-		set(AVTRANSCODER_JAVA_OUTPUT_PATH "${PROJECT_BINARY_DIR}/src/AvTranscoder")
+		set(AVTRANSCODER_JAVA_OUTPUT_PATH "${PROJECT_BINARY_DIR}/src/avtranscoder")
 		set(AVTRANSCODER_JAVA_CLASS_OUTPUT_PATH "${AVTRANSCODER_JAVA_OUTPUT_PATH}/target")
 		set(AVTRANSCODER_JAR_PATH "${PROJECT_BINARY_DIR}/src")
 		set(AVTRANSCODER_JAR_NAME "avtranscoder-${AVTRANSCODER_VERSION}.jar")

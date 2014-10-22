@@ -2,19 +2,19 @@
 #include <iomanip>
 #include <cstdlib>
 
-#include <AvTranscoder/file/InputFile.hpp>
-#include <AvTranscoder/file/OutputFile.hpp>
+#include <avtranscoder/file/InputFile.hpp>
+#include <avtranscoder/file/OutputFile.hpp>
 
-#include <AvTranscoder/frame/Frame.hpp>
+#include <avtranscoder/frame/Frame.hpp>
 
-#include <AvTranscoder/essenceStream/AvInputAudio.hpp>
-#include <AvTranscoder/essenceStream/AvInputVideo.hpp>
-#include <AvTranscoder/essenceStream/AvOutputAudio.hpp>
-#include <AvTranscoder/essenceStream/AvOutputVideo.hpp>
+#include <avtranscoder/essenceStream/AvInputAudio.hpp>
+#include <avtranscoder/essenceStream/AvInputVideo.hpp>
+#include <avtranscoder/essenceStream/AvOutputAudio.hpp>
+#include <avtranscoder/essenceStream/AvOutputVideo.hpp>
 
-#include <AvTranscoder/transform/VideoTransform.hpp>
+#include <avtranscoder/transform/VideoTransform.hpp>
 
-#include <AvTranscoder/progress/ConsoleProgress.hpp>
+#include <avtranscoder/progress/ConsoleProgress.hpp>
 
 void transcodeVideo( const char* inputfilename, const char* outputFilename )
 {

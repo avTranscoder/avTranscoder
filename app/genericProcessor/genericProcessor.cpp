@@ -1,6 +1,6 @@
-#include <AvTranscoder/transcoder/Transcoder.hpp>
+#include <avtranscoder/transcoder/Transcoder.hpp>
 
-#include <AvTranscoder/progress/ConsoleProgress.hpp>
+#include <avtranscoder/progress/ConsoleProgress.hpp>
 
 #include <iostream>
 #include <iomanip>
