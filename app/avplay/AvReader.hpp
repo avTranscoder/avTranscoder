@@ -1,13 +1,13 @@
 #ifndef _AVPLAYER_AVREADER_
 #define _AVPLAYER_AVREADER_
 
-#include <AvTranscoder/file/InputFile.hpp>
-#include <AvTranscoder/essenceStream/AvInputAudio.hpp>
-#include <AvTranscoder/essenceStream/AvInputVideo.hpp>
-#include <AvTranscoder/transform/VideoTransform.hpp>
-#include <AvTranscoder/mediaProperty/printMediaProperty.hpp>
+#include <avtranscoder/file/InputFile.hpp>
+#include <avtranscoder/essenceStream/AvInputAudio.hpp>
+#include <avtranscoder/essenceStream/AvInputVideo.hpp>
+#include <avtranscoder/transform/VideoTransform.hpp>
+#include <avtranscoder/mediaProperty/printMediaProperty.hpp>
 
-#include <AvTranscoder/progress/ConsoleProgress.hpp>
+#include <avtranscoder/progress/ConsoleProgress.hpp>
 
 #include "Reader.hpp"
 
