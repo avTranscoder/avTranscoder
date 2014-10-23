@@ -1,10 +1,10 @@
 
 #include <iostream>
 #include <iomanip>
-#include <AvTranscoder/Profile.hpp>
+#include <avtranscoder/Profile.hpp>
 
-#include <AvTranscoder/essenceStream/AvOutputVideo.hpp>
-#include <AvTranscoder/essenceStream/AvOutputAudio.hpp>
+#include <avtranscoder/essenceStream/AvOutputVideo.hpp>
+#include <avtranscoder/essenceStream/AvOutputAudio.hpp>
 
 
 int main( int argc, char** argv )

@@ -2,7 +2,7 @@
 #include <iomanip>
 #include <sstream>
 
-#include <AvTranscoder/Library.hpp>
+#include <avtranscoder/Library.hpp>
 
 int main( int argc, char** argv )
 {

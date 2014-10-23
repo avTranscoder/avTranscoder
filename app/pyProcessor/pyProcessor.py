@@ -1,6 +1,6 @@
 import sys
 
-from AvTranscoder import AvTranscoder
+from avtranscoder import avtranscoder
 
 def parseConfigFile( inputConfigFile, transcoder ):
 	"""
@@ -29,17 +29,17 @@ if len(sys.argv) < 3:
 	exit(1)
 
 # create Transcoder
-ouputFile = AvTranscoder.OutputFile( sys.argv[2] )
-transcoder = AvTranscoder.Transcoder( ouputFile )
+ouputFile = avtranscoder.OutputFile( sys.argv[2] )
+transcoder = avtranscoder.Transcoder( ouputFile )
 
 # parse configuration file
 inputConfigFile = sys.argv[1]
 parseConfigFile( inputConfigFile, transcoder )
 
 # initialize Transcoder
-transcoder.setProcessMethod( AvTranscoder.eProcessMethodLongest )
+transcoder.setProcessMethod( avtranscoder.eProcessMethodLongest )
 transcoder.init()
 
 # Process transcode
-progress = AvTranscoder.ProgressListener()
+progress = avtranscoder.ProgressListener()
 transcoder.process( progress )
