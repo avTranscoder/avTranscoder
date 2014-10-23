@@ -191,11 +191,12 @@ StreamTranscoder::StreamTranscoder(
 	{
 		// Create input essence based on a given input VideoCodec
 		GeneratorVideo* generatorVideo = new GeneratorVideo();
-		generatorVideo->setVideoCodec( static_cast<VideoCodec>( inputCodec ) );
+		const VideoCodec& inputVideoCodec = static_cast<const VideoCodec&>( inputCodec );
+		generatorVideo->setVideoCodec( inputVideoCodec );
 		_inputEssence = generatorVideo;
 
 		// Create inputFrame, and outputFrame which is based on a given profile
-		VideoFrameDesc inputFrameDesc = static_cast<VideoCodec>( inputCodec ).getVideoFrameDesc();
+		VideoFrameDesc inputFrameDesc = inputVideoCodec.getVideoFrameDesc();
 		VideoFrameDesc outputFrameDesc = inputFrameDesc;
 		outputFrameDesc.setParameters( profile );
 		_sourceBuffer = new VideoFrame( inputFrameDesc );
@@ -217,11 +218,12 @@ StreamTranscoder::StreamTranscoder(
 	{
 		// Create input essence based on a given input AudioCodec
 		GeneratorAudio* generatorAudio = new GeneratorAudio();
-		generatorAudio->setAudioCodec( static_cast<const AudioCodec&>( inputCodec ) );
+		const AudioCodec& inputAudioCodec = static_cast<const AudioCodec&>( inputCodec );
+		generatorAudio->setAudioCodec( inputAudioCodec );
 		_inputEssence = generatorAudio;
 
 		// Create inputFrame, and outputFrame which is based on a given profile
-		AudioFrameDesc inputFrameDesc = static_cast<const AudioCodec&>( inputCodec ).getFrameDesc();
+		AudioFrameDesc inputFrameDesc = inputAudioCodec.getFrameDesc();
 		AudioFrameDesc outputFrameDesc = inputFrameDesc;
 		outputFrameDesc.setParameters( profile );
 		_sourceBuffer = new AudioFrame( inputFrameDesc );
