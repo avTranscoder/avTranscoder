@@ -82,8 +82,10 @@ if(SWIG_FOUND)
 		# Swig flags
 		set(CMAKE_SWIG_FLAGS -c++ -fcompact)
 
-		# Create 'avtranscoder-py' shared lib
+		# Create '_avtranscoder' shared lib (python)
 		swig_add_module(avtranscoder-py python ${AVTRANSCODER_BINDING_FILE})
+		# For Python binding, need to compile the wrapper into a lib called "_<module_name>.so"
+		set_target_properties(${SWIG_MODULE_avtranscoder-py_REAL_NAME} PROPERTIES OUTPUT_NAME _avtranscoder)
 		if(NOT APPLE AND NOT WIN32)
 			set_target_properties(${SWIG_MODULE_avtranscoder-py_REAL_NAME} PROPERTIES SOVERSION ${AVTRANSCODER_VERSION_MAJOR})
 			set_target_properties(${SWIG_MODULE_avtranscoder-py_REAL_NAME} PROPERTIES VERSION ${AVTRANSCODER_VERSION})
@@ -91,12 +93,14 @@ if(SWIG_FOUND)
 		swig_link_libraries(avtranscoder-py avtranscoder-shared ${PYTHON_LIBRARIES})
 
 		# Install python interface
-		set(AVTRANSCODER_PYTHON_BINDING_FILE "${CMAKE_SWIG_OUTDIR}/AvTranscoder.py")
+		set(AVTRANSCODER_PYTHON_BINDING_FILE "${CMAKE_SWIG_OUTDIR}/avtranscoder.py")
+		set(AVTRANSCODER_PYTHON_MODULE_OUTPUT_DIR "lib/python${PYTHONLIBS_VERSION_STRING}/site-packages/pyAvTranscoder/")
 		install(
-			FILES ${AVTRANSCODER_PYTHON_BINDING_FILE}
-			RENAME "avtranscoder.py"
-			DESTINATION "lib/python${PYTHONLIBS_VERSION_STRING}/site-packages/avtranscoder/"
+			FILES ${AVTRANSCODER_PYTHON_BINDING_FILE} ${AVTRANSCODER_PYTHON_INIT_FILE}
+			DESTINATION ${AVTRANSCODER_PYTHON_MODULE_OUTPUT_DIR}
 		)
+		# Install __init__.py
+		install(CODE "file(WRITE ${CMAKE_INSTALL_PREFIX}/${AVTRANSCODER_PYTHON_MODULE_OUTPUT_DIR}/__init__.py)")
 	else()
 		message("PYTHON not found, will not build python binding.")
 	endif()

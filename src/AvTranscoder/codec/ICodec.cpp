@@ -29,9 +29,13 @@ ICodec::ICodec( const ECodecType type, const AVCodecID codecId )
 
 ICodec::~ICodec()
 {
-	avcodec_close( _codecContext );
-	av_free( _codecContext );
-	_codecContext = NULL;
+	if( _codecContext && _codec )
+	{
+		avcodec_close( _codecContext );
+		av_free( _codecContext );
+		_codecContext = NULL;
+		_codec = NULL;
+	}
 }
 
 std::string ICodec::getCodecName() const

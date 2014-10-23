@@ -11,9 +11,6 @@ Transcoder::Transcoder( OutputFile& outputFile )
 	: _outputFile( outputFile )
 	, _inputFiles()
 	, _streamTranscoders()
-	, _inputStreams()
-	, _generatorAudio()
-	, _generatorVideo()
 	, _profile( true )
 	, _outputFps( 25 )
 	, _eProcessMethod ( eProcessMethodLongest )
@@ -30,14 +27,6 @@ Transcoder::~Transcoder()
 		delete (*it);
 	}
 	for( std::vector< StreamTranscoder* >::iterator it = _streamTranscoders.begin(); it != _streamTranscoders.end(); ++it )
-	{
-		delete (*it);
-	}
-	for( std::vector< GeneratorAudio* >::iterator it = _generatorAudio.begin(); it != _generatorAudio.end(); ++it )
-	{
-		delete (*it);
-	}
-	for( std::vector< GeneratorVideo* >::iterator it = _generatorVideo.begin(); it != _generatorVideo.end(); ++it )
 	{
 		delete (*it);
 	}
@@ -245,9 +234,7 @@ void Transcoder::process( IProgress& progress )
 {
 	size_t frame = 0;
 
-	if( ! _inputStreams.size() &&
-		! _generatorVideo.size() && 
-		! _generatorAudio.size() )
+	if( ! _streamTranscoders.size() )
 	{
 		throw std::runtime_error( "missing input streams in transcoder" );
 	}
@@ -346,7 +333,6 @@ void Transcoder::addRewrapStream( const std::string& filename, const size_t stre
 {
 	InputFile* referenceFile = addInputFile( filename, streamIndex );
 	_streamTranscoders.push_back( new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile ) );
-	_inputStreams.push_back( &referenceFile->getStream( streamIndex ) );
 }
 
 void Transcoder::addTranscodeStream( const std::string& filename, const size_t streamIndex, Profile::ProfileDesc& profile, const size_t offset )
@@ -359,7 +345,6 @@ void Transcoder::addTranscodeStream( const std::string& filename, const size_t s
 		case AVMEDIA_TYPE_AUDIO:
 		{
 			_streamTranscoders.push_back( new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile, profile, -1 , offset ) );
-			_inputStreams.push_back( &referenceFile->getStream( streamIndex ) );
 			break;
 		}
 		case AVMEDIA_TYPE_DATA:
@@ -382,7 +367,6 @@ void Transcoder::addTranscodeStream( const std::string& filename, const size_t s
 		case AVMEDIA_TYPE_AUDIO:
 		{
 			_streamTranscoders.push_back( new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile, profile, subStreamIndex, offset ) );
-			_inputStreams.push_back( &referenceFile->getStream( streamIndex ) );
 			break;
 		}
 		case AVMEDIA_TYPE_DATA:
@@ -404,20 +388,16 @@ void Transcoder::addDummyStream( const Profile::ProfileDesc& profile, const ICod
 	{
 		if( _verbose )
 			std::cout << "add a generated audio stream" << std::endl;
-		_generatorAudio.push_back( new GeneratorAudio() );
-		_generatorAudio.back()->setAudioCodec( static_cast<AudioCodec>( codec ) );
-		
-		_streamTranscoders.push_back( new StreamTranscoder( *_generatorAudio.back(), _outputFile, profile ) );
+
+		_streamTranscoders.push_back( new StreamTranscoder( codec, _outputFile, profile ) );
 	}
 
 	if( profile.find( constants::avProfileType )->second == constants::avProfileTypeVideo )
 	{
 		if( _verbose )
 			std::cout << "add generated video stream" << std::endl;
-		_generatorVideo.push_back( new GeneratorVideo() );
-		_generatorVideo.back()->setVideoCodec( static_cast<VideoCodec>( codec ) );
-		
-		_streamTranscoders.push_back( new StreamTranscoder( *_generatorVideo.back(), _outputFile, profile ) );
+
+		_streamTranscoders.push_back( new StreamTranscoder( codec, _outputFile, profile ) );
 	}
 }
 

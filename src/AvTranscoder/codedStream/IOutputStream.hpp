@@ -15,7 +15,7 @@ public:
 
 	virtual size_t getStreamIndex() const = 0;
 
-	virtual bool wrap( CodedData& data ) = 0;
+	virtual bool wrap( const CodedData& data ) = 0;
 };
 
 }

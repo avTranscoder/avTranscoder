@@ -1,6 +1,6 @@
-%module AvTranscoder
+%module avtranscoder
 
-%module(directors="1") AvTranscoder
+%module(directors="1") avtranscoder
 
 %include "std_string.i"
 %include "std_vector.i"

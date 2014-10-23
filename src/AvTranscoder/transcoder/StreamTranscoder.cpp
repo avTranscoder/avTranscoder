@@ -162,7 +162,7 @@ StreamTranscoder::StreamTranscoder(
 }
 
 StreamTranscoder::StreamTranscoder(
-		IInputEssence& inputEssence,
+		const ICodec& inputCodec,
 		OutputFile& outputFile,
 		const Profile::ProfileDesc& profile
 	)
@@ -170,7 +170,7 @@ StreamTranscoder::StreamTranscoder(
 	, _outputStream( NULL )
 	, _sourceBuffer( NULL )
 	, _frameBuffer( NULL )
-	, _inputEssence( &inputEssence )
+	, _inputEssence( NULL )
 	, _generatorEssence( NULL )
 	, _currentEssence( NULL )
 	, _outputEssence( NULL )
@@ -189,66 +189,72 @@ StreamTranscoder::StreamTranscoder(
 
 	if( profile.find( constants::avProfileType )->second == constants::avProfileTypeVideo )
 	{
-		AvOutputVideo* outputVideo = new AvOutputVideo();
-		
-		_outputEssence = outputVideo;
+		// Create input essence based on a given input VideoCodec
+		GeneratorVideo* generatorVideo = new GeneratorVideo();
+		const VideoCodec& inputVideoCodec = static_cast<const VideoCodec&>( inputCodec );
+		generatorVideo->setVideoCodec( inputVideoCodec );
+		_inputEssence = generatorVideo;
 
-		VideoFrameDesc inputFrameDesc = static_cast<GeneratorVideo*>( _inputEssence )->getVideoCodec().getVideoFrameDesc();
-
+		// Create inputFrame, and outputFrame which is based on a given profile
+		VideoFrameDesc inputFrameDesc = inputVideoCodec.getVideoFrameDesc();
 		VideoFrameDesc outputFrameDesc = inputFrameDesc;
 		outputFrameDesc.setParameters( profile );
-		outputVideo->setProfile( profile, outputFrameDesc );
-
-		_outputStream = &outputFile.addVideoStream( outputVideo->getVideoCodec() );
 		_sourceBuffer = new VideoFrame( inputFrameDesc );
 		_frameBuffer  = new VideoFrame( outputFrameDesc );
 
+		// Create output essence
+		AvOutputVideo* outputVideo = new AvOutputVideo();
+		outputVideo->setProfile( profile, outputFrameDesc );
+		_outputEssence = outputVideo;
+
+		// Create a video stream in the output file
+		_outputStream = &outputFile.addVideoStream( outputVideo->getVideoCodec() );
+
 		_transform = new VideoTransform();
 
-		_currentEssence = _inputEssence;		
-
-		return;
+		_currentEssence = _inputEssence;
 	}
-
-	if( profile.find( constants::avProfileType )->second == constants::avProfileTypeAudio )
+	else if( profile.find( constants::avProfileType )->second == constants::avProfileTypeAudio )
 	{
-		AvOutputAudio* outputAudio = new AvOutputAudio();
+		// Create input essence based on a given input AudioCodec
+		GeneratorAudio* generatorAudio = new GeneratorAudio();
+		const AudioCodec& inputAudioCodec = static_cast<const AudioCodec&>( inputCodec );
+		generatorAudio->setAudioCodec( inputAudioCodec );
+		_inputEssence = generatorAudio;
 
-		_outputEssence = outputAudio;
-
-		AudioFrameDesc inputFrameDesc = static_cast<GeneratorAudio*>( _inputEssence )->getAudioCodec().getFrameDesc();
-
+		// Create inputFrame, and outputFrame which is based on a given profile
+		AudioFrameDesc inputFrameDesc = inputAudioCodec.getFrameDesc();
 		AudioFrameDesc outputFrameDesc = inputFrameDesc;
 		outputFrameDesc.setParameters( profile );
-		outputAudio->setProfile( profile, outputFrameDesc );
-
-		_outputStream = &outputFile.addAudioStream( outputAudio->getAudioCodec() );
 		_sourceBuffer = new AudioFrame( inputFrameDesc );
 		_frameBuffer  = new AudioFrame( outputFrameDesc );
 
-		_transform = new AudioTransform();
-		
-		_currentEssence = _inputEssence;
-		return;
-	}
+		// Create output essence
+		AvOutputAudio* outputAudio = new AvOutputAudio();
+		outputAudio->setProfile( profile, outputFrameDesc );
+		_outputEssence = outputAudio;
 
-	throw std::runtime_error( "unupported stream type" );
+		// Create an audio stream in the output file
+		_outputStream = &outputFile.addAudioStream( outputAudio->getAudioCodec() );
+
+		_transform = new AudioTransform();
+
+		_currentEssence = _inputEssence;
+	}
+	else
+	{
+		throw std::runtime_error( "unupported stream type" );
+	}
 }
 
 StreamTranscoder::~StreamTranscoder()
 {
-	if( _frameBuffer )
-		delete _frameBuffer;
-	if( _sourceBuffer )
-		delete _sourceBuffer;
-	if( _inputEssence && _inputStream )
-		delete _inputEssence;
-	if( _generatorEssence )
-		delete _generatorEssence;
-	if( _outputEssence )
-		delete _outputEssence;
-	if( _transform )
-		delete _transform;
+	delete _frameBuffer;
+	delete _sourceBuffer;
+	delete _generatorEssence;
+	delete _outputEssence;
+	delete _transform;
+	delete _inputEssence;
 }
 
 void StreamTranscoder::init()

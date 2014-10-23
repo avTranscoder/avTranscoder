@@ -17,8 +17,6 @@ namespace avtranscoder
 OutputFile::OutputFile( const std::string& filename )
 	: _outputFormat  ( NULL )
 	, _formatContext ( NULL )
-	, _codec         ( NULL )
-	, _codecContext  ( NULL )
 	, _stream        ( NULL )
 	, _filename      ( filename )
 	, _packetCount   ( 0 )
@@ -192,7 +190,7 @@ bool OutputFile::endWrap( )
 	{
 		throw std::runtime_error( "could not write trailer" );
 	}
-	avcodec_close( _stream->codec );
+
 	if( !( _formatContext->oformat->flags & AVFMT_NOFILE ) )
 	{
 		avio_close( _formatContext->pb );

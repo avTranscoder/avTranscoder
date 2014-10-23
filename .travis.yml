@@ -12,7 +12,7 @@ before_script:
   - env | sort  
   - date -u
   - uname -a
-  
+
   - chmod +x tools/travis.linux.install.deps.sh
   - chmod +x tools/travis.osx.install.deps.sh
   
@@ -20,8 +20,12 @@ before_script:
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then ./tools/travis.osx.install.deps.sh; fi
 
 script:
+  # Build
   - mkdir build
   - cd build
-  - cmake ..
-  - make
-
+  - cmake .. -DCMAKE_INSTALL_PREFIX=`pwd`/dist
+  - make install
+  # Launch tests
+  - cd ..
+  - chmod +x tools/travis.python.nosetests.sh
+  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then ./tools/travis.python.nosetests.sh; fi
