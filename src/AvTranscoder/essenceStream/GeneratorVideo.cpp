@@ -7,8 +7,8 @@ namespace avtranscoder
 
 GeneratorVideo::GeneratorVideo( )
 	: IInputEssence( )
+	, _codec( NULL )
 	, _inputFrame( NULL )
-	, _codec( eCodecTypeEncoder )
 	, _videoFrameDesc()
 	, _numberOfView( 1 )
 {
@@ -16,13 +16,13 @@ GeneratorVideo::GeneratorVideo( )
 
 void GeneratorVideo::setVideoCodec( const VideoCodec& codec )
 {
-	_codec = codec;
-	_videoFrameDesc = _codec.getVideoFrameDesc();
+	_codec = &codec;
+	_videoFrameDesc = _codec->getVideoFrameDesc();
 }
 
-VideoCodec& GeneratorVideo::getVideoCodec()
+const VideoCodec& GeneratorVideo::getVideoCodec()
 {
-	return _codec;
+	return *_codec;
 }
 
 void GeneratorVideo::setFrame( Frame& inputFrame )
@@ -40,7 +40,7 @@ bool GeneratorVideo::readNextFrame( Frame& frameBuffer )
 		if( frameBuffer.getSize() != _videoFrameDesc.getDataSize() )
 			frameBuffer.getBuffer().resize( _videoFrameDesc.getDataSize() );
 
-		VideoFrameDesc desc( _codec.getVideoFrameDesc() );
+		VideoFrameDesc desc( _codec->getVideoFrameDesc() );
 		Pixel rgbPixel;
 		rgbPixel.setColorComponents( eComponentRgb );
 		rgbPixel.setPlanar( false );

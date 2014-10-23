@@ -15,7 +15,7 @@ public:
 	// Stream properties
 	void setVideoCodec( const VideoCodec& codec );
 
-	VideoCodec& getVideoCodec();
+	const VideoCodec& getVideoCodec();
 	
 	void setup() {}
 
@@ -25,8 +25,8 @@ public:
 	bool readNextFrame( Frame& frameBuffer, const size_t subStreamIndex );
 
 private:
-	Frame*         _inputFrame;
-	VideoCodec      _codec;
+	const VideoCodec* _codec;
+	Frame* _inputFrame;
 	VideoFrameDesc _videoFrameDesc;
 
 	size_t         _numberOfView;

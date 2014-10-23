@@ -14,7 +14,7 @@ public:
 
 	void setAudioCodec( const AudioCodec& codec );
 
-	AudioCodec& getAudioCodec();
+	const AudioCodec& getAudioCodec();
 	
 	void setup() {}
 	
@@ -24,10 +24,9 @@ public:
 	bool readNextFrame( Frame& frameBuffer, const size_t subStreamIndex );
 
 private:
-	AudioCodec _codec;
-	AudioFrameDesc _frameDesc;
-	
+	const AudioCodec* _codec;
 	Frame*         _inputFrame;
+	AudioFrameDesc _frameDesc;
 };
 
 }

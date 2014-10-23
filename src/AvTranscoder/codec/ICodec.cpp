@@ -29,11 +29,12 @@ ICodec::ICodec( const ECodecType type, const AVCodecID codecId )
 
 ICodec::~ICodec()
 {
-	if( ! _codecContext )
+	if( _codecContext && _codec )
 	{
 		avcodec_close( _codecContext );
 		av_free( _codecContext );
 		_codecContext = NULL;
+		_codec = NULL;
 	}
 }
 
