@@ -12,6 +12,7 @@ extern "C" {
 #include <libavformat/version.h>
 #include <libavcodec/version.h>
 #include <libavcodec/avcodec.h>
+#include <libavutil/rational.h>
 }
 
 #include <string>
@@ -53,7 +54,34 @@ namespace avtranscoder
 
 #define MAX_SWS_PLANE 4
 
-typedef AVRational Rational;
+/**
+ * @brief Wrapper of AVRational.
+ */
+class Rational
+{
+public:
+	Rational()
+	{
+		_ratio.num = 0;
+		_ratio.den = 0;
+	}
+
+	Rational( const int num, const int den )
+	{
+		_ratio.num = num;
+		_ratio.den = den;
+	}
+
+	double getRatio() const { return _ratio.num / _ratio.den; }
+	int getNum() const { return _ratio.num; }
+	int getDen() const { return _ratio.den; }
+	AVRational& getAVRational() { return _ratio; }
+
+	int setNum( int num ) { _ratio.num = num; }
+	int setDen( int den ) { _ratio.den = den; }
+private:
+	AVRational _ratio;
+};
 
 #ifndef SWIG
 void split( std::vector< std::string >& splitedString, const std::string& inputString, const std::string& splitChars = ";" );

@@ -3,10 +3,6 @@
 
 #include <AvTranscoder/common.hpp>
 
-extern "C" {
-#include <libavutil/rational.h>
-}
-
 #include <string>
 #include <vector>
 #include <map>
@@ -36,17 +32,6 @@ struct AvExport Channel
 
 struct AvExport VideoProperties
 {
-	VideoProperties()
-	{
-		timeBase.num = 0;
-		timeBase.den = 0;
-		sar.num = 0;
-		sar.den = 0;
-		dar.num = 0;
-		dar.den = 0;
-	}
-	
-public:
 	std::string codecName;
 	std::string codecLongName;
 	std::string profileName;

@@ -142,10 +142,8 @@ void Option::setInt( const int value )
 
 void Option::setRatio( const int num, const int den )
 {
-	Rational ratio;
-	ratio.num = num;
-	ratio.den = den;
-	int error = av_opt_set_q( _avContext, getName().c_str(), ratio, AV_OPT_SEARCH_CHILDREN );
+	Rational ratio( num, den );
+	int error = av_opt_set_q( _avContext, getName().c_str(), ratio.getAVRational(), AV_OPT_SEARCH_CHILDREN );
 	if( error )
 	{
 		std::ostringstream os;
