@@ -30,7 +30,6 @@ public:
 	AVMediaType getStreamType() const;
 
 	double getDuration() const;
-	double getPacketDuration() const;
 
 	void addPacket( AVPacket& packet );
 
@@ -48,7 +47,6 @@ private:
 
 	ICodec* _codec;  ///< Has ownership
 
-	int              _packetDuration;
 	size_t           _streamIndex;
 	bool             _bufferized;
 };
