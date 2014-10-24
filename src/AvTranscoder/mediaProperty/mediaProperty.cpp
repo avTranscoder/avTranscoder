@@ -58,8 +58,8 @@ MetadatasMap VideoProperties::getDataMap() const
 	detail::add( dataMap, "start timecode", startTimecode );
 	detail::add( dataMap, "width", width );
 	detail::add( dataMap, "height", height );
-	detail::add( dataMap, "pixel aspect ratio", sar.num / sar.den );
-	detail::add( dataMap, "display aspect ratio", dar.num / dar.den );
+	detail::add( dataMap, "pixel aspect ratio", sar.getRatio() );
+	detail::add( dataMap, "display aspect ratio", dar.getRatio() );
 	detail::add( dataMap, "dtgActiveFormat", dtgActiveFormat );
 	detail::add( dataMap, "components count", componentsCount );
 	detail::add( dataMap, "pixel type", pixelName );
@@ -79,7 +79,7 @@ MetadatasMap VideoProperties::getDataMap() const
 	detail::add( dataMap, "interlaced ", isInterlaced );
 	detail::add( dataMap, "top field first", topFieldFirst );
 	detail::add( dataMap, "field order", fieldOrder);
-	detail::add( dataMap, "timeBase", timeBase.num / timeBase.den );
+	detail::add( dataMap, "timeBase", timeBase.getRatio() );
 	detail::add( dataMap, "fps", fps );
 	detail::add( dataMap, "ticksPerFrame", ticksPerFrame );
 	detail::add( dataMap, "bit rate", bitRate );

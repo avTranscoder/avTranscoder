@@ -132,10 +132,10 @@ VideoProperties videoStreamInfo(
 	vp.profile          = codec_context->profile,
 	vp.level            = codec_context->level;
 
-	vp.timeBase.num     = codec_context->time_base.num;
-	vp.timeBase.den     = codec_context->time_base.den;
-	vp.sar.num          = codec_context->sample_aspect_ratio.num;
-	vp.sar.den          = codec_context->sample_aspect_ratio.den;
+	vp.timeBase.setNum( codec_context->time_base.num );
+	vp.timeBase.setDen( codec_context->time_base.den );
+	vp.sar.setNum( codec_context->sample_aspect_ratio.num );
+	vp.sar.setDen( codec_context->sample_aspect_ratio.den );
 	
 	vp.startTimecode    = makeTimecodeMpegToString( codec_context->timecode_frame_start );
 
@@ -144,8 +144,8 @@ VideoProperties videoStreamInfo(
 			   codec_context->width * codec_context->sample_aspect_ratio.num,
 			   codec_context->height * codec_context->sample_aspect_ratio.den,
 			   1024 * 1024);
-	vp.dar.num = darNum;
-	vp.dar.den = darDen;
+	vp.dar.setNum( darNum );
+	vp.dar.setDen( darDen );
 
 	vp.fps = 1.0 * codec_context->time_base.den / ( codec_context->time_base.num * codec_context->ticks_per_frame );
 	

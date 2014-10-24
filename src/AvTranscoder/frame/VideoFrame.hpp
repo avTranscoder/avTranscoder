@@ -30,18 +30,16 @@ public:
 	VideoFrameDesc()
 		: _width( 0 )
 		, _height( 0 )
+		, _displayAspectRatio()
 		, _pixel()
 		, _interlaced( false )
 		, _topFieldFirst( false )
-	{
-		_displayAspectRatio.num = 0;
-		_displayAspectRatio.den = 0;
-	}
+	{}
 	
 	void setWidth ( const size_t width     ) { _width = width; }
 	void setHeight( const size_t height    ) { _height = height; }
 	void setPixel ( const Pixel  pixel     ) { _pixel = pixel; }
-	void setDar( const size_t num, const size_t den ) { _displayAspectRatio.num = num; _displayAspectRatio.den = den; }
+	void setDar( const size_t num, const size_t den ) { _displayAspectRatio = Rational( num, den); }
 	void setDar( const Rational ratio ) { _displayAspectRatio = ratio; }
 	
 	void setParameters( const Profile::ProfileDesc& desc )
@@ -53,8 +51,6 @@ public:
 	size_t               getWidth ()    const { return _width;  }
 	size_t               getHeight()    const { return _height; }
 	Rational getDar() const { return _displayAspectRatio; }
-	int getDarNum() const { return _displayAspectRatio.num; }
-	int getDarDen() const { return _displayAspectRatio.den; }
 	Pixel                getPixelDesc() const { return _pixel; }
 
 	size_t getDataSize() const
@@ -75,7 +71,7 @@ public:
 private:
 	size_t          _width;
 	size_t          _height;
-	Rational      _displayAspectRatio;
+	Rational        _displayAspectRatio;
 	Pixel           _pixel;
 	// ColorProperties _color;
 

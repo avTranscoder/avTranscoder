@@ -110,12 +110,12 @@ def testRewrapVideoStream():
 	assert_equals( src_videoStream.endianess, dst_videoStream.endianess )
 	assert_equals( src_videoStream.startTimecode, dst_videoStream.startTimecode )
 
-	#assert_equals( src_videoStream.timeBase.num, dst_videoStream.timeBase.num )
-	#assert_equals( src_videoStream.timeBase.den, dst_videoStream.timeBase.den )
-	#assert_equals( src_videoStream.sar.num, dst_videoStream.sar.num )
-	#assert_equals( src_videoStream.sar.den, dst_videoStream.sar.den )
-	#assert_equals( src_videoStream.dar.num, dst_videoStream.dar.num )
-	#assert_equals( src_videoStream.dar.den, dst_videoStream.dar.den )
+	assert_equals( src_videoStream.timeBase.getNum(), dst_videoStream.timeBase.getNum() )
+	assert_equals( src_videoStream.timeBase.getDen(), dst_videoStream.timeBase.getDen() )
+	assert_equals( src_videoStream.sar.getNum(), dst_videoStream.sar.getNum() )
+	assert_equals( src_videoStream.sar.getDen(), dst_videoStream.sar.getDen() )
+	assert_equals( src_videoStream.dar.getNum(), dst_videoStream.dar.getNum() )
+	assert_equals( src_videoStream.dar.getDen(), dst_videoStream.dar.getDen() )
 	
 	assert_equals( src_videoStream.streamId, dst_videoStream.streamId )
 	assert_equals( src_videoStream.codecId, dst_videoStream.codecId )
