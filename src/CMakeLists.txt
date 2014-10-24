@@ -118,6 +118,9 @@ if(SWIG_FOUND)
 
 		# Create 'avtranscoder-java' shared lib
 		swig_add_module(avtranscoder-java java ${AVTRANSCODER_BINDING_FILE})
+		if(WIN32)
+			set_target_properties(avtranscoder-java PROPERTIES OUTPUT_NAME "avtranscoder-java-${AVTRANSCODER_VERSION}")
+		endif()
 		if(NOT APPLE AND NOT WIN32)
 			set_target_properties(${SWIG_MODULE_avtranscoder-java_REAL_NAME} PROPERTIES SOVERSION ${AVTRANSCODER_VERSION_MAJOR})
 			set_target_properties(${SWIG_MODULE_avtranscoder-java_REAL_NAME} PROPERTIES VERSION ${AVTRANSCODER_VERSION})
