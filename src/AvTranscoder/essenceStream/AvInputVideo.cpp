@@ -108,6 +108,9 @@ bool AvInputVideo::readNextFrame( Frame& frameBuffer )
 	VideoFrame& imageBuffer = static_cast<VideoFrame&>( frameBuffer );
 
 	size_t decodedSize = avpicture_get_size( (AVPixelFormat)_frame->format, _frame->width, _frame->height );
+	if( ! decodedSize )
+		return false;
+
 	if( imageBuffer.getBuffer().size() != decodedSize )
 		imageBuffer.getBuffer().resize( decodedSize );
 
