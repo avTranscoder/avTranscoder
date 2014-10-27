@@ -3,10 +3,6 @@
 
 #include <AvTranscoder/common.hpp>
 
-extern "C" {
-#include <libavutil/rational.h>
-}
-
 #include <string>
 #include <vector>
 #include <map>
