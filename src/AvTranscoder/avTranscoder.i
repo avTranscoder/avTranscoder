@@ -9,6 +9,7 @@
 
 %include "AvTranscoder/swig/avException.i"
 %include "AvTranscoder/swig/avExport.i"
+%include "AvTranscoder/swig/avDocumentation.i"
 
 %{
 #include <AvTranscoder/Profile.hpp>
