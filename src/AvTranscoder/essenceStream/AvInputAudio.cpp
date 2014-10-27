@@ -82,7 +82,7 @@ void AvInputAudio::setup()
 
 bool AvInputAudio::readNextFrame( Frame& frameBuffer )
 {
-	if( ! getNextFrame() )
+	if( ! decodeNextFrame() )
 		return false;
 
 	AVCodecContext* avCodecContext = _codec.getAVCodecContext();
@@ -116,7 +116,7 @@ bool AvInputAudio::readNextFrame( Frame& frameBuffer )
 
 bool AvInputAudio::readNextFrame( Frame& frameBuffer, const size_t subStreamIndex )
 {
-	if( ! getNextFrame() )
+	if( ! decodeNextFrame() )
 		return false;
 
 	const int output_nbChannels = 1;
@@ -156,7 +156,7 @@ bool AvInputAudio::readNextFrame( Frame& frameBuffer, const size_t subStreamInde
 	return true;
 }
 
-bool AvInputAudio::getNextFrame()
+bool AvInputAudio::decodeNextFrame()
 {
 	int got_frame = 0;
 	while( ! got_frame )

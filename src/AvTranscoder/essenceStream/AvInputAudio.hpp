@@ -23,7 +23,7 @@ public:
 	bool readNextFrame( Frame& frameBuffer, const size_t subStreamIndex );
 
 private:
-	bool getNextFrame();
+	bool decodeNextFrame();
 
 	AvInputStream*     _inputStream;
 	AudioCodec _codec;
