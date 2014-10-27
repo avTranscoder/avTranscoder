@@ -12,7 +12,6 @@ Transcoder::Transcoder( OutputFile& outputFile )
 	, _inputFiles()
 	, _streamTranscoders()
 	, _profile( true )
-	, _outputFps( 25 )
 	, _eProcessMethod ( eProcessMethodLongest )
 	, _mainStreamIndex( 0 )
 	, _verbose( false )
@@ -266,7 +265,7 @@ void Transcoder::process( IProgress& progress )
 		if( ! processFrame() )
 			break;
 		
-		if( progress.progress( 1 / _outputFps * ( frame ), totalDuration ) == eJobStatusCancel )
+		if( progress.progress( 1 / 25. * ( frame ), totalDuration ) == eJobStatusCancel )
 		{
 			break;
 		}

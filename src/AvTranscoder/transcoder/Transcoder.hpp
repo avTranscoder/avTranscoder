@@ -133,12 +133,6 @@ public:
 	 */
 	void setVerbose( bool verbose = true );
 
-	/**
-	 * @brief Set FPS of output media file.
-	 * @note By default 25 frames per second.
-     */
-	void setOutputFps( double fps ) { _outputFps = fps; }
-
 private:
 
 	void addRewrapStream( const std::string& filename, const size_t streamIndex );
@@ -175,8 +169,6 @@ private:
 	std::vector< StreamTranscoder* > _streamTranscoders;  ///< The streams of the output media file after process.
 
 	Profile _profile;  ///< Objet to get existing profiles, and add new ones for the Transcoder.
-
-	double _outputFps;
 
 	EProcessMethod _eProcessMethod;
 
