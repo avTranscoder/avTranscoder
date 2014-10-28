@@ -1,8 +1,8 @@
-# avTranscoder
+# mediaManager
 
 C++ API for LibAV / FFMpeg
 
-Based on LibAV/FFMpeg libraries to support various video formats, avTranscoder provides the high level API to re-wrap or transcode media easily.
+Based on LibAV/FFMpeg libraries to support various video formats, mediaManager provides the high level API to re-wrap or transcode media easily.
 
 You can also use its Java & Python bindings for simpler integration in your own projects.
 
@@ -22,15 +22,14 @@ You can also use its Java & Python bindings for simpler integration in your own 
 
 #### Tests
 
-###### nosetests
-Python tests using nosetests.
-
-Create environment variables to use your files in tests.
-* AVTRANSCODER_TEST_AUDIO_FILE
-* AVTRANSCODER_TEST_VIDEO_FILE
+Test unit use the python nosetests library.
+For more information look this file: [test/README.md](test/README.md)
 
 #### Packaging
 
 ###### Build openSUSE  
+comming soon
+
+###### packaging using CPack
 comming soon
 

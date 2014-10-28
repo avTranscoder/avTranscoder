@@ -2,28 +2,28 @@ import os
 
 from nose.tools import *
 
-from pyAvTranscoder import avtranscoder as av
-
+from mediaManager import mediaCore
+from mediaManager import mediaIO
 
 def testTranscodeWave24b48kmono():
 	"""
 	Transcode one audio stream (profile wave24b48kmono).
 	"""
-	inputFileName = os.environ['AVTRANSCODER_TEST_AUDIO_FILE']
+	inputFileName = os.environ['MEDIA_MANAGER_TEST_AUDIO_FILE']
 	outputFileName = "testTranscodeWave24b48kmono.wav"
 
-	ouputFile = av.OutputFile( outputFileName )
-	transcoder = av.Transcoder( ouputFile )
+	ouputFile = mediaIO.OutputFile( outputFileName )
+	transcoder = mediaIO.Transcoder( ouputFile )
 
 	transcoder.add( inputFileName, 0, "wave24b48kmono" )
 
 	transcoder.init()
-	progress = av.ConsoleProgress()
+	progress = mediaCore.ConsoleProgress()
 	transcoder.process( progress )
 
 	# get dst file of transcode
-	dst_inputFile = av.InputFile( outputFileName )
-	dst_inputFile.analyse( progress, av.InputFile.eAnalyseLevelFast )
+	dst_inputFile = mediaIO.InputFile( outputFileName )
+	dst_inputFile.analyse( progress, mediaIO.InputFile.eAnalyseLevelFast )
 	dst_properties = dst_inputFile.getProperties()
 	dst_audioStream = dst_properties.audioStreams[0]
 
@@ -38,21 +38,21 @@ def testTranscodeWave16b48kmono():
 	"""
 	Transcode one audio stream (profile wave16b48kmono).
 	"""
-	inputFileName = os.environ['AVTRANSCODER_TEST_AUDIO_FILE']
+	inputFileName = os.environ['MEDIA_MANAGER_TEST_AUDIO_FILE']
 	outputFileName = "testTranscodeWave16b48kmono.wav"
 
-	ouputFile = av.OutputFile( outputFileName )
-	transcoder = av.Transcoder( ouputFile )
+	ouputFile = mediaIO.OutputFile( outputFileName )
+	transcoder = mediaIO.Transcoder( ouputFile )
 
 	transcoder.add( inputFileName, 0, "wave16b48kmono" )
 
 	transcoder.init()
-	progress = av.ConsoleProgress()
+	progress = mediaCore.ConsoleProgress()
 	transcoder.process( progress )
 
 	# get dst file of transcode
-	dst_inputFile = av.InputFile( outputFileName )
-	dst_inputFile.analyse( progress, av.InputFile.eAnalyseLevelFast )
+	dst_inputFile = mediaIO.InputFile( outputFileName )
+	dst_inputFile.analyse( progress, mediaIO.InputFile.eAnalyseLevelFast )
 	dst_properties = dst_inputFile.getProperties()
 	dst_audioStream = dst_properties.audioStreams[0]
 
@@ -67,21 +67,21 @@ def testTranscodeWave16b48kmono():
 # 	"""
 # 	Transcode one video stream (profile dnxhd120).
 # 	"""
-# 	inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_FILE']
+# 	inputFileName = os.environ['MEDIA_MANAGER_TEST_VIDEO_FILE']
 # 	outputFileName = "testTranscodeDnxhd120.mxf"
 
-# 	ouputFile = av.OutputFile( outputFileName )
-# 	transcoder = av.Transcoder( ouputFile )
+# 	ouputFile = mediaIO.OutputFile( outputFileName )
+# 	transcoder = mediaIO.Transcoder( ouputFile )
 
 # 	transcoder.add( inputFileName, 0, "dnxhd120" )
 
 # 	transcoder.init()
-# 	progress = av.ConsoleProgress()
+# 	progress = mediaCore.ConsoleProgress()
 # 	transcoder.process( progress )
 
 # 	# get dst file of transcode
-# 	dst_inputFile = av.InputFile( outputFileName )
-# 	dst_inputFile.analyse( progress, av.InputFile.eAnalyseLevelFast )
+# 	dst_inputFile = mediaIO.InputFile( outputFileName )
+# 	dst_inputFile.analyse( progress, mediaIO.InputFile.eAnalyseLevelFast )
 # 	dst_properties = dst_inputFile.getProperties()
 # 	dst_videoStream = dst_properties.videoStreams[0]
 
@@ -96,21 +96,21 @@ def testTranscodeWave16b48kmono():
 # 	"""
 # 	Transcode one video stream (profile dnxhd185).
 # 	"""
-# 	inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_FILE']
+# 	inputFileName = os.environ['MEDIA_MANAGER_TEST_VIDEO_FILE']
 # 	outputFileName = "testTranscodeDnxhd185.mxf"
 
-# 	ouputFile = av.OutputFile( outputFileName )
-# 	transcoder = av.Transcoder( ouputFile )
+# 	ouputFile = mediaIO.OutputFile( outputFileName )
+# 	transcoder = mediaIO.Transcoder( ouputFile )
 
 # 	transcoder.add( inputFileName, 0, "dnxhd185" )
 
 # 	transcoder.init()
-# 	progress = av.ConsoleProgress()
+# 	progress = mediaCore.ConsoleProgress()
 # 	transcoder.process( progress )
 
 # 	# get dst file of transcode
-# 	dst_inputFile = av.InputFile( outputFileName )
-# 	dst_inputFile.analyse( progress, av.InputFile.eAnalyseLevelFast )
+# 	dst_inputFile = mediaIO.InputFile( outputFileName )
+# 	dst_inputFile.analyse( progress, mediaIO.InputFile.eAnalyseLevelFast )
 # 	dst_properties = dst_inputFile.getProperties()
 # 	dst_videoStream = dst_properties.videoStreams[0]
 
@@ -125,21 +125,21 @@ def testTranscodeWave16b48kmono():
 # 	"""
 # 	Transcode one video stream (profile dnxhd185x).
 # 	"""
-# 	inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_FILE']
+# 	inputFileName = os.environ['MEDIA_MANAGER_TEST_VIDEO_FILE']
 # 	outputFileName = "testTranscodeDnxhd185x.mxf"
 
-# 	ouputFile = av.OutputFile( outputFileName )
-# 	transcoder = av.Transcoder( ouputFile )
+# 	ouputFile = mediaIO.OutputFile( outputFileName )
+# 	transcoder = mediaIO.Transcoder( ouputFile )
 
 # 	transcoder.add( inputFileName, 0, "dnxhd185x" )
 
 # 	transcoder.init()
-# 	progress = av.ConsoleProgress()
+# 	progress = mediaCore.ConsoleProgress()
 # 	transcoder.process( progress )
 
 # 	# get dst file of transcode
-# 	dst_inputFile = av.InputFile( outputFileName )
-# 	dst_inputFile.analyse( progress, av.InputFile.eAnalyseLevelFast )
+# 	dst_inputFile = mediaIO.InputFile( outputFileName )
+# 	dst_inputFile.analyse( progress, mediaIO.InputFile.eAnalyseLevelFast )
 # 	dst_properties = dst_inputFile.getProperties()
 # 	dst_videoStream = dst_properties.videoStreams[0]
 
@@ -154,21 +154,21 @@ def testTranscodeWave16b48kmono():
 # 	"""
 # 	Transcode one video stream (profile xdcamhd422).
 # 	"""
-# 	inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_FILE']
+# 	inputFileName = os.environ['MEDIA_MANAGER_TEST_VIDEO_FILE']
 # 	outputFileName = "testTranscodeXdcamhd422.mxf"
 
-# 	ouputFile = av.OutputFile( outputFileName )
-# 	transcoder = av.Transcoder( ouputFile )
+# 	ouputFile = mediaIO.OutputFile( outputFileName )
+# 	transcoder = mediaIO.Transcoder( ouputFile )
 
 # 	transcoder.add( inputFileName, 0, "xdcamhd422" )
 
 # 	transcoder.init()
-# 	progress = av.ConsoleProgress()
+# 	progress = mediaCore.ConsoleProgress()
 # 	transcoder.process( progress )
 
 # 	# get dst file of transcode
-# 	dst_inputFile = av.InputFile( outputFileName )
-# 	dst_inputFile.analyse( progress, av.InputFile.eAnalyseLevelFast )
+# 	dst_inputFile = mediaIO.InputFile( outputFileName )
+# 	dst_inputFile.analyse( progress, mediaIO.InputFile.eAnalyseLevelFast )
 # 	dst_properties = dst_inputFile.getProperties()
 # 	dst_videoStream = dst_properties.videoStreams[0]
 
@@ -194,30 +194,30 @@ def testTranscodeWave16b48kmono():
 # 	"""
 # 	Process one video stream (custom profile of encoding, with pixel format YUV420).
 # 	"""
-# 	inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_FILE']
+# 	inputFileName = os.environ['MEDIA_MANAGER_TEST_VIDEO_FILE']
 # 	outputFileName = "testTranscodeYUV420.avi"
 
-# 	ouputFile = av.OutputFile( outputFileName )
-# 	transcoder = av.Transcoder( ouputFile )
+# 	ouputFile = mediaIO.OutputFile( outputFileName )
+# 	transcoder = mediaIO.Transcoder( ouputFile )
 
 # 	# create custom profile
-# 	customProfile = av.ProfileMap()
-# 	customProfile[av.Profile.avProfileIdentificator] = "customProfile"
-# 	customProfile[av.Profile.avProfileIdentificatorHuman] = "custom profile"
-# 	customProfile[av.Profile.avProfileType] = av.Profile.avProfileTypeVideo
-# 	customProfile[av.Profile.avProfileFrameRate] = "25"
-# 	customProfile[av.Profile.avProfileCodec] = "mpeg2video"
-# 	customProfile[av.Profile.avProfilePixelFormat] = "yuv420p"
+# 	customProfile = mediaCore.ProfileMap()
+# 	customProfile[mediaCore.Profile.mediaProfileIdentificator] = "customProfile"
+# 	customProfile[mediaCore.Profile.mediaProfileIdentificatorHuman] = "custom profile"
+# 	customProfile[mediaCore.Profile.mediaProfileType] = mediaCore.Profile.mediaProfileTypeVideo
+# 	customProfile[mediaCore.Profile.mediaProfileFrameRate] = "25"
+# 	customProfile[mediaCore.Profile.mediaProfileCodec] = "mpeg2video"
+# 	customProfile[mediaCore.Profile.mediaProfilePixelFormat] = "yuv420p"
 
 # 	transcoder.add( inputFileName, 0, customProfile )
 
 # 	transcoder.init()
-# 	progress = av.ConsoleProgress()
+# 	progress = mediaCore.ConsoleProgress()
 # 	transcoder.process( progress )
 
 # 	# get dst file of transcode
-# 	dst_inputFile = av.InputFile( outputFileName )
-# 	dst_inputFile.analyse( progress, av.InputFile.eAnalyseLevelFast )
+# 	dst_inputFile = mediaIO.InputFile( outputFileName )
+# 	dst_inputFile.analyse( progress, mediaIO.InputFile.eAnalyseLevelFast )
 # 	dst_properties = dst_inputFile.getProperties()
 # 	dst_videoStream = dst_properties.videoStreams[0]
 

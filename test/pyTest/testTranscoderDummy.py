@@ -1,7 +1,7 @@
 from nose.tools import *
 
-from pyAvTranscoder import avtranscoder as av
-
+from mediaManager import mediaCore
+from mediaManager import mediaIO
 
 @raises(RuntimeError)
 def testTranscodeNoStream():
@@ -10,10 +10,10 @@ def testTranscodeNoStream():
 	"""
 	outputFileName = "testTranscodeNoStream.avi"
 
-	ouputFile = av.OutputFile( outputFileName )
-	transcoder = av.Transcoder( ouputFile )
+	ouputFile = mediaIO.OutputFile( outputFileName )
+	transcoder = mediaIO.Transcoder( ouputFile )
 
-	progress = av.NoDisplayProgress()
+	progress = mediaCore.NoDisplayProgress()
 	transcoder.process( progress )
 
 
@@ -24,13 +24,13 @@ def testRewrapDummy():
 	"""
 	outputFileName = "testRewrapDummy.avi"
 
-	ouputFile = av.OutputFile( outputFileName )
-	transcoder = av.Transcoder( ouputFile )
+	ouputFile = mediaIO.OutputFile( outputFileName )
+	transcoder = mediaIO.Transcoder( ouputFile )
 
 	transcoder.add( "", 0, "")
 	transcoder.add( "", 0, -1, "")
 
-	progress = av.NoDisplayProgress()
+	progress = mediaCore.NoDisplayProgress()
 	transcoder.process( progress )
 
 @raises(RuntimeError)
@@ -40,13 +40,13 @@ def testTranscodeDummyExistingProfileWithNoEssenceDesc():
 	"""
 	outputFileName = "testTranscodeDummyExistingProfileWithNoEssenceDesc.avi"
 
-	ouputFile = av.OutputFile( outputFileName )
-	transcoder = av.Transcoder( ouputFile )
+	ouputFile = mediaIO.OutputFile( outputFileName )
+	transcoder = mediaIO.Transcoder( ouputFile )
 
 	transcoder.add( "", 0, "dnxhd120" )
 	transcoder.add( "", 0, -1, "dnxhd120" )
 
-	progress = av.NoDisplayProgress()
+	progress = mediaCore.NoDisplayProgress()
 	transcoder.process( progress )
 
 @raises(RuntimeError)
@@ -56,18 +56,18 @@ def testTranscodeDummyNewProfileWithNoEssenceDesc():
 	"""
 	outputFileName = "testTranscodeDummyNewProfileWithNoEssenceDesc.avi"
 
-	ouputFile = av.OutputFile( outputFileName )
-	transcoder = av.Transcoder( ouputFile )
+	ouputFile = mediaIO.OutputFile( outputFileName )
+	transcoder = mediaIO.Transcoder( ouputFile )
 
 	newProfile = {
-		av.avProfileIdentificator : "newAudioPreset",
-		av.avProfileIdentificatorHuman : "New audio preset",
-		av.avProfileType : av.avProfileTypeAudio,
+		mediaCore.mediaProfileIdentificator : "newAudioPreset",
+		mediaCore.mediaProfileIdentificatorHuman : "New audio preset",
+		mediaCore.mediaProfileType : mediaCore.mediaProfileTypeAudio,
 	}
 	transcoder.add( "", 0, newProfile )
 	transcoder.add( "", 0, -1, newProfile )
 
-	progress = av.NoDisplayProgress()
+	progress = mediaCore.NoDisplayProgress()
 	transcoder.process( progress )
 
 def testTranscodeDummyAudio():
@@ -76,17 +76,17 @@ def testTranscodeDummyAudio():
 	"""
 	outputFileName = "testTranscodeDummyAudio.wav"
 
-	ouputFile = av.OutputFile( outputFileName )
-	transcoder = av.Transcoder( ouputFile )
+	ouputFile = mediaIO.OutputFile( outputFileName )
+	transcoder = mediaIO.Transcoder( ouputFile )
 
 	# add a dummy video stream
-	audioDesc = av.AudioFrameDesc()
+	audioDesc = mediaCore.AudioFrameDesc()
 	audioDesc.setSampleRate( 48000 )
 	audioDesc.setChannels( 1 )
 	audioDesc.setFps( 25 )
 	audioDesc.setSampleFormat( "s16" )
 
-	audioCodec = av.AudioCodec( av.eCodecTypeEncoder, "pcm_s16le" )
+	audioCodec = mediaIO.AudioCodec( mediaIO.eCodecTypeEncoder, "pcm_s16le" )
 	audioCodec.setAudioParameters( audioDesc )
 	transcoder.add( "", 0, "wave24b48kmono", audioCodec )
 
@@ -102,17 +102,17 @@ def testTranscodeDummyVideo():
 	"""
 	outputFileName = "testTranscodeDummyVideo.avi"
 
-	ouputFile = av.OutputFile( outputFileName )
-	transcoder = av.Transcoder( ouputFile )
+	ouputFile = mediaIO.OutputFile( outputFileName )
+	transcoder = mediaIO.Transcoder( ouputFile )
 
 	# add a dummy video stream
-	imageDesc = av.VideoFrameDesc()
+	imageDesc = mediaCore.VideoFrameDesc()
 	imageDesc.setWidth( 1920 )
 	imageDesc.setHeight( 1080 )
 	imageDesc.setDar( 1, 1 )
-	inputPixel = av.Pixel( "yuv422p" )
+	inputPixel = mediaCore.Pixel( "yuv422p" )
 	imageDesc.setPixel( inputPixel )
-	videoCodec = av.VideoCodec( av.eCodecTypeEncoder, "mpeg2video" )
+	videoCodec = mediaIO.VideoCodec( mediaIO.eCodecTypeEncoder, "mpeg2video" )
 	videoCodec.setImageParameters( imageDesc )
 	transcoder.add( "", 0, "dnxhd120", videoCodec )
 

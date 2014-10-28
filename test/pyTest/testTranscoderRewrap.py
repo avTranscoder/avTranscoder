@@ -2,32 +2,33 @@ import os
 
 from nose.tools import *
 
-from pyAvTranscoder import avtranscoder as av
+from mediaManager import mediaCore
+from mediaManager import mediaIO
 
 def testRewrapAudioStream():
 	"""
 	Rewrap one audio stream.
 	"""
-	inputFileName = os.environ['AVTRANSCODER_TEST_AUDIO_FILE']
+	inputFileName = os.environ['MEDIA_MANAGER_TEST_AUDIO_FILE']
 	outputFileName = "testRewrapAudioStream.wav"
 
-	ouputFile = av.OutputFile( outputFileName )
-	transcoder = av.Transcoder( ouputFile )
+	ouputFile = mediaIO.OutputFile( outputFileName )
+	transcoder = mediaIO.Transcoder( ouputFile )
 
 	transcoder.add( inputFileName, 0, "" )
 
-	progress = av.NoDisplayProgress()
+	progress = mediaCore.NoDisplayProgress()
 	transcoder.process( progress )
 
 	# get src file of wrap
-	src_inputFile = av.InputFile( inputFileName )
-	src_inputFile.analyse( progress, av.InputFile.eAnalyseLevelFast )
+	src_inputFile = mediaIO.InputFile( inputFileName )
+	src_inputFile.analyse( progress, mediaIO.InputFile.eAnalyseLevelFast )
 	src_properties = src_inputFile.getProperties()
 	src_audioStream = src_properties.audioStreams[0]
 
 	# get dst file of wrap
-	dst_inputFile = av.InputFile( outputFileName )
-	dst_inputFile.analyse( progress, av.InputFile.eAnalyseLevelFast )
+	dst_inputFile = mediaIO.InputFile( outputFileName )
+	dst_inputFile.analyse( progress, mediaIO.InputFile.eAnalyseLevelFast )
 	dst_properties = dst_inputFile.getProperties()
 	dst_audioStream = dst_properties.audioStreams[0]
 
@@ -64,26 +65,26 @@ def testRewrapVideoStream():
 	"""
 	Rewrap one video stream.
 	"""
-	inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_FILE']
+	inputFileName = os.environ['MEDIA_MANAGER_TEST_VIDEO_FILE']
 	outputFileName = "testRewrapVideoStream.avi"
 
-	ouputFile = av.OutputFile( outputFileName )
-	transcoder = av.Transcoder( ouputFile )
+	ouputFile = mediaIO.OutputFile( outputFileName )
+	transcoder = mediaIO.Transcoder( ouputFile )
 
 	transcoder.add( inputFileName, 0, "" )
 
-	progress = av.NoDisplayProgress()
+	progress = mediaCore.NoDisplayProgress()
 	transcoder.process( progress )
 
 	# get src file of wrap
-	src_inputFile = av.InputFile( inputFileName )
-	src_inputFile.analyse( progress, av.InputFile.eAnalyseLevelFull )
+	src_inputFile = mediaIO.InputFile( inputFileName )
+	src_inputFile.analyse( progress, mediaIO.InputFile.eAnalyseLevelFull )
 	src_properties = src_inputFile.getProperties()
 	src_videoStream = src_properties.videoStreams[0]
 
 	# get dst file of wrap
-	dst_inputFile = av.InputFile( outputFileName )
-	dst_inputFile.analyse( progress, av.InputFile.eAnalyseLevelFast )
+	dst_inputFile = mediaIO.InputFile( outputFileName )
+	dst_inputFile.analyse( progress, mediaIO.InputFile.eAnalyseLevelFast )
 	dst_properties = dst_inputFile.getProperties()
 	dst_videoStream = dst_properties.videoStreams[0]
 
