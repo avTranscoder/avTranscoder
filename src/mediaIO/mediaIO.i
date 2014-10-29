@@ -7,6 +7,7 @@
 
 %include "mediaCore/swig/mediaException.i"
 %include "mediaCore/swig/mediaExport.i"
+%include "mediaCore/swig/mediaRational.i"
 
 %{
 #include <mediaIO/codec/ICodec.hpp>
