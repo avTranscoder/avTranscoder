@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # Get mediaManager library
-export PYTHONPATH=`pwd`/build/dist/lib:`pwd`/build/dist/lib/python2.7/site-packages/:$PYTHONPATH
+export PYTHONPATH=`pwd`/build/dist/lib/python2.7/site-packages/:$PYTHONPATH
+export LD_LIBRARY_PATH=`pwd`/build/dist/lib:$LD_LIBRARY_PATH
 
 # Get assets
 git clone https://github.com/avTranscoder/avTranscoder-data.git
@@ -11,3 +12,4 @@ export MEDIA_MANAGER_TEST_AUDIO_FILE=`pwd`/avTranscoder-data/audio/frequenciesPe
 # Launch tests
 cd test/pyTest
 nosetests
+
