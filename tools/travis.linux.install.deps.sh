@@ -10,9 +10,14 @@ sudo apt-get install -qq python-dev doxygen
 sudo apt-get install -qq freeglut3-dev libxmu-dev
 sudo apt-get install -qq python-nose
 
-# Build FFmpeg 2.2.9
-sudo wget https://www.ffmpeg.org/releases/ffmpeg-2.2.9.tar.bz2
-sudo bunzip2 ffmpeg-2.2.9.tar.bz2
-sudo tar -xvf ffmpeg-2.2.9.tar
-cd ffmpeg-2.2.9
-./configure --disable-yasm --enable-shared --disable-static && make && sudo make install
+# Build FFmpeg
+FFMPEG_VERSION=snapshot
+wget https://www.ffmpeg.org/releases/ffmpeg-$FFMPEG_VERSION.tar.bz2
+bunzip2 ffmpeg-$FFMPEG_VERSION.tar.bz2
+tar -xvf ffmpeg-$FFMPEG_VERSION.tar
+cd ffmpeg
+
+./configure --disable-yasm --enable-shared --disable-static
+make
+sudo make install
+
