@@ -14,7 +14,7 @@ sudo apt-get install -qq python-nose
 FFMPEG_VERSION=snapshot
 wget https://www.ffmpeg.org/releases/ffmpeg-$FFMPEG_VERSION.tar.bz2
 bunzip2 ffmpeg-$FFMPEG_VERSION.tar.bz2
-tar -xvf ffmpeg-$FFMPEG_VERSION.tar
+tar -xf ffmpeg-$FFMPEG_VERSION.tar
 cd ffmpeg
 
 ./configure --disable-yasm --enable-shared --disable-static
