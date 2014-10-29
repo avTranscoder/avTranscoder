@@ -18,7 +18,7 @@
 #include <string>
 #include <vector>
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediaio
 {
@@ -28,7 +28,7 @@ namespace mediaio
  * eProcessMethodShortest: stop transcode at the end of the shortest stream.
  * eProcessMethodLongest: stop transcode at the end of the longest stream (default method).
  * eProcessMethodBasedOnStream: stop transcode at the end of an indicated stream (@see _indexBasedStream of Transcoder).
- * eProcessMethodInfinity: stop transcode by outside of mediaManager.
+ * eProcessMethodInfinity: stop transcode by outside of mediaEngine.
  */
 enum EProcessMethod
 {
@@ -42,7 +42,7 @@ enum EProcessMethod
  * @brief A Transcoder manages a list of streams, 
  * and process a transcode to create an output media file.
  */
-class MediaManagerExport Transcoder
+class MediaEngineExport Transcoder
 {
 public:
 

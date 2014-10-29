@@ -1,5 +1,5 @@
-#ifndef _MEDIA_MANAGER_IO_MEDIA_PROPERTY_MEDIA_HPP_
-#define _MEDIA_MANAGER_IO_MEDIA_PROPERTY_MEDIA_HPP_
+#ifndef _MEDIA_ENGINE_IO_MEDIA_PROPERTY_MEDIA_HPP_
+#define _MEDIA_ENGINE_IO_MEDIA_PROPERTY_MEDIA_HPP_
 
 #include <mediaCore/common.hpp>
 
@@ -7,7 +7,7 @@
 #include <vector>
 #include <map>
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediaio
 {
@@ -22,17 +22,17 @@ namespace detail
 	/**
 	 * @brief Fill metadata parameter with the given AVDictionary.
 	 */
-	void MediaManagerExport fillMetadataDictionnary( AVDictionary* avdictionnary, MetadatasMap& metadata );
+	void MediaEngineExport fillMetadataDictionnary( AVDictionary* avdictionnary, MetadatasMap& metadata );
 }
 
-struct MediaManagerExport Channel
+struct MediaEngineExport Channel
 {
 	size_t id;
 	size_t chromaHeight;
 	size_t bitStep;
 };
 
-struct MediaManagerExport VideoProperties
+struct MediaEngineExport VideoProperties
 {
 	VideoProperties()
 	{
@@ -103,7 +103,7 @@ public:
 	MetadatasMap getDataMap() const;
 };
 
-struct MediaManagerExport AudioProperties
+struct MediaEngineExport AudioProperties
 {
 	std::string codecName;
 	std::string codecLongName;
@@ -122,7 +122,7 @@ struct MediaManagerExport AudioProperties
 	MetadatasMap getDataMap() const;
 };
 
-struct MediaManagerExport DataProperties
+struct MediaEngineExport DataProperties
 {
 	size_t      streamId;
 	MetadatasMap metadatas;
@@ -130,7 +130,7 @@ struct MediaManagerExport DataProperties
 	MetadatasMap getDataMap() const;
 };
 
-struct MediaManagerExport SubtitleProperties
+struct MediaEngineExport SubtitleProperties
 {
 	size_t      streamId;
 	MetadatasMap metadatas;
@@ -138,7 +138,7 @@ struct MediaManagerExport SubtitleProperties
 	MetadatasMap getDataMap() const;
 };
 
-struct MediaManagerExport AttachementProperties
+struct MediaEngineExport AttachementProperties
 {
 	size_t      streamId;
 	MetadatasMap metadatas;
@@ -146,7 +146,7 @@ struct MediaManagerExport AttachementProperties
 	MetadatasMap getDataMap() const;
 };
 
-struct MediaManagerExport UnknownProperties
+struct MediaEngineExport UnknownProperties
 {
 	size_t      streamId;
 	MetadatasMap metadatas;
@@ -154,7 +154,7 @@ struct MediaManagerExport UnknownProperties
 	MetadatasMap getDataMap() const;
 };
 
-struct MediaManagerExport Properties
+struct MediaEngineExport Properties
 {
 	std::string filename;
 	std::string formatName;

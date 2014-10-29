@@ -3,12 +3,12 @@
 add_library(mediaCore-shared SHARED ${MEDIA_CORE_SRC_FILES})
 set_target_properties(mediaCore-shared PROPERTIES LINKER_LANGUAGE CXX)
 if(WIN32)
-	set_target_properties(mediaCore-shared PROPERTIES OUTPUT_NAME "mediaCore-${MEDIA_MANAGER_VERSION}")
+	set_target_properties(mediaCore-shared PROPERTIES OUTPUT_NAME "mediaCore-${MEDIA_ENGINE_VERSION}")
 else()
 	set_target_properties(mediaCore-shared PROPERTIES OUTPUT_NAME mediaCore)
 endif()
-set_target_properties(mediaCore-shared PROPERTIES SOVERSION ${MEDIA_MANAGER_VERSION})
-set_target_properties(mediaCore-shared PROPERTIES VERSION ${MEDIA_MANAGER_VERSION})
+set_target_properties(mediaCore-shared PROPERTIES SOVERSION ${MEDIA_ENGINE_VERSION})
+set_target_properties(mediaCore-shared PROPERTIES VERSION ${MEDIA_ENGINE_VERSION})
 target_link_libraries(mediaCore-shared ${FFMPEG_LIBRARIES})
 
 ### Install mediacore libs and include

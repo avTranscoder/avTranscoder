@@ -12,7 +12,7 @@
 
 #include "Reader.hpp"
 
-using namespace mediamanager;
+using namespace mediaengine;
 
 class MediaReader : public Reader
 {

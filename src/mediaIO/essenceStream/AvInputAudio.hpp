@@ -1,19 +1,19 @@
-#ifndef _MEDIA_MANAGER_IO_ESSENCE_STREAM_AV_INPUT_AUDIO_HPP_
-#define _MEDIA_MANAGER_IO_ESSENCE_STREAM_AV_INPUT_AUDIO_HPP_
+#ifndef _MEDIA_ENGINE_IO_ESSENCE_STREAM_AV_INPUT_AUDIO_HPP_
+#define _MEDIA_ENGINE_IO_ESSENCE_STREAM_AV_INPUT_AUDIO_HPP_
 
 #include "IInputEssence.hpp"
 #include <mediaIO/codec/AudioCodec.hpp>
 
 struct AVFrame;
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediaio
 {
 
 class AvInputStream;
 
-class MediaManagerExport AvInputAudio : public IInputEssence
+class MediaEngineExport AvInputAudio : public IInputEssence
 {
 public:
 	AvInputAudio( AvInputStream& inputStream );

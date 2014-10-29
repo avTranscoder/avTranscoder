@@ -1,12 +1,12 @@
-#ifndef _MEDIA_MANAGER_IO_CODED_STREAM_I_INPUT_STREAM_HPP_
-#define _MEDIA_MANAGER_IO_CODED_STREAM_I_INPUT_STREAM_HPP_
+#ifndef _MEDIA_ENGINE_IO_CODED_STREAM_I_INPUT_STREAM_HPP_
+#define _MEDIA_ENGINE_IO_CODED_STREAM_I_INPUT_STREAM_HPP_
 
 #include <mediaCore/frame/Frame.hpp>
 #include <mediaIO/codec/AudioCodec.hpp>
 #include <mediaIO/codec/VideoCodec.hpp>
 #include <mediaIO/codec/DataCodec.hpp>
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediaio
 {

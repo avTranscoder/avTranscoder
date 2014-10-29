@@ -1,16 +1,16 @@
-#ifndef _MEDIA_MANAGER_IO_ESSENCE_STREAM_I_OUTPUT_ESSENCE_HPP_
-#define _MEDIA_MANAGER_IO_ESSENCE_STREAM_I_OUTPUT_ESSENCE_HPP_
+#ifndef _MEDIA_ENGINE_IO_ESSENCE_STREAM_I_OUTPUT_ESSENCE_HPP_
+#define _MEDIA_ENGINE_IO_ESSENCE_STREAM_I_OUTPUT_ESSENCE_HPP_
 
 #include <mediaCore/common.hpp>
 #include <mediaCore/frame/Frame.hpp>
 #include <mediaIO/codec/ICodec.hpp>
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediaio
 {
 
-class MediaManagerExport IOutputEssence
+class MediaEngineExport IOutputEssence
 {
 public:
 	virtual ~IOutputEssence() {}

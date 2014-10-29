@@ -1,6 +1,6 @@
 .\" Manpage for mediachecker.
 .\" Contact arnaud.marcantoine@gmail.com to correct errors or typos.
-.TH man 1 "21 May 2014" "1.0" "avinfo man page"
+.TH man 1 "21 May 2014" "1.0" "mediachecker man page"
 .SH NOM
 mediachecker - check options for each profile detected
 .SH SYNOPSIS

@@ -1,5 +1,5 @@
-#ifndef _MEDIA_MANAGER_IO_VIDEO_STREAM_PROPERTIES_HPP_
-#define _MEDIA_MANAGER_IO_VIDEO_STREAM_PROPERTIES_HPP_
+#ifndef _MEDIA_ENGINE_IO_VIDEO_STREAM_PROPERTIES_HPP_
+#define _MEDIA_ENGINE_IO_VIDEO_STREAM_PROPERTIES_HPP_
 
 extern "C" {
 #include <libavcodec/avcodec.h>
@@ -18,7 +18,7 @@ extern "C" {
 #define isinf(x) (!_finite(x))
 #endif
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediaio
 {

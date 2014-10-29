@@ -1,5 +1,5 @@
-#ifndef _MEDIA_MANAGER_IO_ESSENCE_STREAM_AV_INPUT_VIDEO_HPP_
-#define _MEDIA_MANAGER_IO_ESSENCE_STREAM_AV_INPUT_VIDEO_HPP_
+#ifndef _MEDIA_ENGINE_IO_ESSENCE_STREAM_AV_INPUT_VIDEO_HPP_
+#define _MEDIA_ENGINE_IO_ESSENCE_STREAM_AV_INPUT_VIDEO_HPP_
 
 #include "IInputEssence.hpp"
 #include <mediaCore/profile/Profile.hpp>
@@ -7,14 +7,14 @@
 
 struct AVFrame;
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediaio
 {
 
 class AvInputStream;
 
-class MediaManagerExport AvInputVideo : public IInputEssence
+class MediaEngineExport AvInputVideo : public IInputEssence
 {
 public:
 	AvInputVideo( AvInputStream& inputStream );

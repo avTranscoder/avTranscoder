@@ -1,11 +1,11 @@
-#ifndef _MEDIA_MANAGER_CORE_PROGRESS_IPROGRESS_HPP_
-#define _MEDIA_MANAGER_CORE_PROGRESS_IPROGRESS_HPP_
+#ifndef _MEDIA_ENGINE_CORE_PROGRESS_IPROGRESS_HPP_
+#define _MEDIA_ENGINE_CORE_PROGRESS_IPROGRESS_HPP_
 
 #include <mediaCore/common.hpp>
 
 #include <iostream>
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediacore
 {
@@ -24,7 +24,7 @@ enum EJobStatus
  * Inherit this class to have your own way to manage a progress bar.
  * You can inherit this class in C++, but also in python / Java binding.
  */
-class MediaManagerExport IProgress
+class MediaEngineExport IProgress
 {
 public:
 	virtual ~IProgress() {};

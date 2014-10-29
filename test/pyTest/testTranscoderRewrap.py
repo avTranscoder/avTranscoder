@@ -2,14 +2,14 @@ import os
 
 from nose.tools import *
 
-from mediaManager import mediaCore
-from mediaManager import mediaIO
+from mediaEngine import mediaCore
+from mediaEngine import mediaIO
 
 def testRewrapAudioStream():
 	"""
 	Rewrap one audio stream.
 	"""
-	inputFileName = os.environ['MEDIA_MANAGER_TEST_AUDIO_FILE']
+	inputFileName = os.environ['MEDIA_ENGINE_TEST_AUDIO_FILE']
 	outputFileName = "testRewrapAudioStream.wav"
 
 	ouputFile = mediaIO.OutputFile( outputFileName )
@@ -65,7 +65,7 @@ def testRewrapVideoStream():
 	"""
 	Rewrap one video stream.
 	"""
-	inputFileName = os.environ['MEDIA_MANAGER_TEST_VIDEO_FILE']
+	inputFileName = os.environ['MEDIA_ENGINE_TEST_VIDEO_FILE']
 	outputFileName = "testRewrapVideoStream.avi"
 
 	ouputFile = mediaIO.OutputFile( outputFileName )

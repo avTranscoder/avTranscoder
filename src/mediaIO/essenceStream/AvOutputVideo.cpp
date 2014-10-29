@@ -12,7 +12,7 @@ extern "C" {
 #include <stdexcept>
 #include <cstdlib>
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediaio
 {

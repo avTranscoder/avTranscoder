@@ -1,16 +1,16 @@
-#ifndef _MEDIA_MANAGER_IO_ESSENCE_STREAM_AV_OUTPUT_VIDEO_HPP_
-#define _MEDIA_MANAGER_IO_ESSENCE_STREAM_AV_OUTPUT_VIDEO_HPP_
+#ifndef _MEDIA_ENGINE_IO_ESSENCE_STREAM_AV_OUTPUT_VIDEO_HPP_
+#define _MEDIA_ENGINE_IO_ESSENCE_STREAM_AV_OUTPUT_VIDEO_HPP_
 
 #include "IOutputEssence.hpp"
 #include <mediaCore/profile/Profile.hpp>
 #include <mediaIO/codec/VideoCodec.hpp>
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediaio
 {
 
-class MediaManagerExport AvOutputVideo : public IOutputEssence
+class MediaEngineExport AvOutputVideo : public IOutputEssence
 {
 public:
 	AvOutputVideo();

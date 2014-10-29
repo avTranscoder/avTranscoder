@@ -1,9 +1,9 @@
-#ifndef _MEDIA_MANAGER_IO_UNKNOWN_STREAM_PROPERTIES_HPP_
-#define _MEDIA_MANAGER_IO_UNKNOWN_STREAM_PROPERTIES_HPP_
+#ifndef _MEDIA_ENGINE_IO_UNKNOWN_STREAM_PROPERTIES_HPP_
+#define _MEDIA_ENGINE_IO_UNKNOWN_STREAM_PROPERTIES_HPP_
 
 class AVFormatContext;
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediaio
 {

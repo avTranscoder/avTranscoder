@@ -3,7 +3,7 @@
 #include <iostream>
 #include <iomanip>
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediacore
 {

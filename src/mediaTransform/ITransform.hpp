@@ -1,15 +1,15 @@
-#ifndef _MEDIA_MANAGER_MEDIA_TRANSFORM_I_TRANSFORM_HPP_
-#define _MEDIA_MANAGER_MEDIA_TRANSFORM_I_TRANSFORM_HPP_
+#ifndef _MEDIA_ENGINE_MEDIA_TRANSFORM_I_TRANSFORM_HPP_
+#define _MEDIA_ENGINE_MEDIA_TRANSFORM_I_TRANSFORM_HPP_
 
 #include <mediaCore/common.hpp>
 #include <mediaCore/frame/Frame.hpp>
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediatransform
 {
 
-class MediaManagerExport ITransform
+class MediaEngineExport ITransform
 {
 public:
 	ITransform()

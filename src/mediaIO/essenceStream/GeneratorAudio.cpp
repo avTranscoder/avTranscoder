@@ -1,6 +1,6 @@
 #include "GeneratorAudio.hpp"
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediaio
 {

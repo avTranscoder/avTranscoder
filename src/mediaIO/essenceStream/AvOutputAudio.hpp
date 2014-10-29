@@ -1,16 +1,16 @@
-#ifndef _MEDIA_MANAGER_IO_ESSENCE_STREAM_AV_OUTPUT_AUDIO_HPP_
-#define _MEDIA_MANAGER_IO_ESSENCE_STREAM_AV_OUTPUT_AUDIO_HPP_
+#ifndef _MEDIA_ENGINE_IO_ESSENCE_STREAM_AV_OUTPUT_AUDIO_HPP_
+#define _MEDIA_ENGINE_IO_ESSENCE_STREAM_AV_OUTPUT_AUDIO_HPP_
 
 #include "IOutputEssence.hpp"
 #include <mediaCore/profile/Profile.hpp>
 #include <mediaIO/codec/AudioCodec.hpp>
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediaio
 {
 
-class MediaManagerExport AvOutputAudio : public IOutputEssence
+class MediaEngineExport AvOutputAudio : public IOutputEssence
 {
 public:
 	AvOutputAudio();

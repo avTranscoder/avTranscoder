@@ -1,11 +1,11 @@
-#ifndef _MEDIA_MANAGER_IO_CODEC_ICODEC_HPP_
-#define _MEDIA_MANAGER_IO_CODEC_ICODEC_HPP_
+#ifndef _MEDIA_ENGINE_IO_CODEC_ICODEC_HPP_
+#define _MEDIA_ENGINE_IO_CODEC_ICODEC_HPP_
 
 #include <mediaCore/common.hpp>
 
 #include <string>
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediaio
 {
@@ -19,7 +19,7 @@ enum ECodecType
 	eCodecTypeDecoder
 };
 
-class MediaManagerExport ICodec
+class MediaEngineExport ICodec
 {
 public:
 	ICodec( const ECodecType type, const std::string& codecName );

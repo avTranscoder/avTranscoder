@@ -1,5 +1,5 @@
-#ifndef _MEDIA_MANAGER_IO_FILE_OUTPUT_FILE_HPP_
-#define _MEDIA_MANAGER_IO_FILE_OUTPUT_FILE_HPP_
+#ifndef _MEDIA_ENGINE_IO_FILE_OUTPUT_FILE_HPP_
+#define _MEDIA_ENGINE_IO_FILE_OUTPUT_FILE_HPP_
 
 #include <mediaCore/common.hpp>
 #include <mediaCore/profile/Profile.hpp>
@@ -21,7 +21,7 @@ struct AVCodec;
 struct AVCodecContext;
 struct AVStream;
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediaio
 {
@@ -31,7 +31,7 @@ namespace mediaio
  * the default implentation use avformat wrapper frome the LibAV/FFMpeg.\n
  * It can be overloaded to integrate custom wrapper.
  **/
-class MediaManagerExport OutputFile
+class MediaEngineExport OutputFile
 {
 public:
 	/**

@@ -1,15 +1,15 @@
-#ifndef _MEDIA_MANAGER_IO_ESSENCE_STREAM_GENERATOR_VIDEO_HPP_
-#define _MEDIA_MANAGER_IO_ESSENCE_STREAM_GENERATOR_VIDEO_HPP_
+#ifndef _MEDIA_ENGINE_IO_ESSENCE_STREAM_GENERATOR_VIDEO_HPP_
+#define _MEDIA_ENGINE_IO_ESSENCE_STREAM_GENERATOR_VIDEO_HPP_
 
 #include "IInputEssence.hpp"
 #include <mediaIO/codec/VideoCodec.hpp>
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediaio
 {
 
-class MediaManagerExport GeneratorVideo : public IInputEssence
+class MediaEngineExport GeneratorVideo : public IInputEssence
 {
 public:
 	GeneratorVideo( );

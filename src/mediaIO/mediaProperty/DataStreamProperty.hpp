@@ -1,5 +1,5 @@
-#ifndef _MEDIA_MANAGER_IO_DATA_STREAM_PROPERTIES_HPP_
-#define _MEDIA_MANAGER_IO_DATA_STREAM_PROPERTIES_HPP_
+#ifndef _MEDIA_ENGINE_IO_DATA_STREAM_PROPERTIES_HPP_
+#define _MEDIA_ENGINE_IO_DATA_STREAM_PROPERTIES_HPP_
 
 extern "C" {
 #include <libavcodec/avcodec.h>
@@ -10,7 +10,7 @@ extern "C" {
 
 #include <bitset>
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediaio
 {

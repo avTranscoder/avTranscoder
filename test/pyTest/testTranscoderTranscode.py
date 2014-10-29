@@ -2,14 +2,14 @@ import os
 
 from nose.tools import *
 
-from mediaManager import mediaCore
-from mediaManager import mediaIO
+from mediaEngine import mediaCore
+from mediaEngine import mediaIO
 
 def testTranscodeWave24b48kmono():
 	"""
 	Transcode one audio stream (profile wave24b48kmono).
 	"""
-	inputFileName = os.environ['MEDIA_MANAGER_TEST_AUDIO_FILE']
+	inputFileName = os.environ['MEDIA_ENGINE_TEST_AUDIO_FILE']
 	outputFileName = "testTranscodeWave24b48kmono.wav"
 
 	ouputFile = mediaIO.OutputFile( outputFileName )
@@ -38,7 +38,7 @@ def testTranscodeWave16b48kmono():
 	"""
 	Transcode one audio stream (profile wave16b48kmono).
 	"""
-	inputFileName = os.environ['MEDIA_MANAGER_TEST_AUDIO_FILE']
+	inputFileName = os.environ['MEDIA_ENGINE_TEST_AUDIO_FILE']
 	outputFileName = "testTranscodeWave16b48kmono.wav"
 
 	ouputFile = mediaIO.OutputFile( outputFileName )
@@ -67,7 +67,7 @@ def testTranscodeWave16b48kmono():
 # 	"""
 # 	Transcode one video stream (profile dnxhd120).
 # 	"""
-# 	inputFileName = os.environ['MEDIA_MANAGER_TEST_VIDEO_FILE']
+# 	inputFileName = os.environ['MEDIA_ENGINE_TEST_VIDEO_FILE']
 # 	outputFileName = "testTranscodeDnxhd120.mxf"
 
 # 	ouputFile = mediaIO.OutputFile( outputFileName )
@@ -96,7 +96,7 @@ def testTranscodeWave16b48kmono():
 # 	"""
 # 	Transcode one video stream (profile dnxhd185).
 # 	"""
-# 	inputFileName = os.environ['MEDIA_MANAGER_TEST_VIDEO_FILE']
+# 	inputFileName = os.environ['MEDIA_ENGINE_TEST_VIDEO_FILE']
 # 	outputFileName = "testTranscodeDnxhd185.mxf"
 
 # 	ouputFile = mediaIO.OutputFile( outputFileName )
@@ -125,7 +125,7 @@ def testTranscodeWave16b48kmono():
 # 	"""
 # 	Transcode one video stream (profile dnxhd185x).
 # 	"""
-# 	inputFileName = os.environ['MEDIA_MANAGER_TEST_VIDEO_FILE']
+# 	inputFileName = os.environ['MEDIA_ENGINE_TEST_VIDEO_FILE']
 # 	outputFileName = "testTranscodeDnxhd185x.mxf"
 
 # 	ouputFile = mediaIO.OutputFile( outputFileName )
@@ -154,7 +154,7 @@ def testTranscodeWave16b48kmono():
 # 	"""
 # 	Transcode one video stream (profile xdcamhd422).
 # 	"""
-# 	inputFileName = os.environ['MEDIA_MANAGER_TEST_VIDEO_FILE']
+# 	inputFileName = os.environ['MEDIA_ENGINE_TEST_VIDEO_FILE']
 # 	outputFileName = "testTranscodeXdcamhd422.mxf"
 
 # 	ouputFile = mediaIO.OutputFile( outputFileName )
@@ -194,7 +194,7 @@ def testTranscodeWave16b48kmono():
 # 	"""
 # 	Process one video stream (custom profile of encoding, with pixel format YUV420).
 # 	"""
-# 	inputFileName = os.environ['MEDIA_MANAGER_TEST_VIDEO_FILE']
+# 	inputFileName = os.environ['MEDIA_ENGINE_TEST_VIDEO_FILE']
 # 	outputFileName = "testTranscodeYUV420.avi"
 
 # 	ouputFile = mediaIO.OutputFile( outputFileName )

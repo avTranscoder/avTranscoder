@@ -1,6 +1,6 @@
 #include "DataCodec.hpp"
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediaio
 {

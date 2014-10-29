@@ -8,7 +8,7 @@ extern "C" {
 #include <cassert>
 #include <iostream>
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediaio
 {

@@ -1,7 +1,7 @@
 from nose.tools import *
 
-from mediaManager import mediaCore
-from mediaManager import mediaIO
+from mediaEngine import mediaCore
+from mediaEngine import mediaIO
 
 @raises(RuntimeError)
 def testTranscodeNoStream():

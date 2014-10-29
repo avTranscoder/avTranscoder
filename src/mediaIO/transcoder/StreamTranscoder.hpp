@@ -1,5 +1,5 @@
-#ifndef _MEDIA_MANAGER_IO_TRANSCODER_STREAM_TRANSCODER_HPP_
-#define _MEDIA_MANAGER_IO_TRANSCODER_STREAM_TRANSCODER_HPP_
+#ifndef _MEDIA_ENGINE_IO_TRANSCODER_STREAM_TRANSCODER_HPP_
+#define _MEDIA_ENGINE_IO_TRANSCODER_STREAM_TRANSCODER_HPP_
 
 #include <mediaCore/common.hpp>
 #include <mediaCore/profile/Profile.hpp>
@@ -10,7 +10,7 @@
 #include <mediaIO/essenceStream/AvOutputVideo.hpp>
 #include <mediaIO/file/OutputFile.hpp>
 
-namespace mediamanager
+namespace mediaengine
 {
 
 namespace mediatransform
@@ -21,7 +21,7 @@ namespace mediatransform
 namespace mediaio
 {
 
-class MediaManagerExport StreamTranscoder
+class MediaEngineExport StreamTranscoder
 {
 public:
 	/**

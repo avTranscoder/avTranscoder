@@ -4,7 +4,7 @@ extern "C" {
 #include <libavformat/avformat.h>
 }
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediacore
 {

@@ -9,7 +9,7 @@ extern "C" {
 #include <dirent.h>
 #include <iostream>
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediacore
 {

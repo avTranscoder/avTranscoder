@@ -2,7 +2,7 @@
 
 #include <cassert>
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediaio
 {

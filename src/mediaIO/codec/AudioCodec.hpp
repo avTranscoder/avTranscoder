@@ -1,15 +1,15 @@
-#ifndef _MEDIA_MANAGER_IO_CODEC_AUDIO_CODEC_HPP_
-#define _MEDIA_MANAGER_IO_CODEC_AUDIO_CODEC_HPP_
+#ifndef _MEDIA_ENGINE_IO_CODEC_AUDIO_CODEC_HPP_
+#define _MEDIA_ENGINE_IO_CODEC_AUDIO_CODEC_HPP_
 
 #include "ICodec.hpp"
 #include <mediaCore/frame/AudioFrame.hpp>
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediaio
 {
 
-class MediaManagerExport AudioCodec : public ICodec
+class MediaEngineExport AudioCodec : public ICodec
 {
 public:
 	AudioCodec( const ECodecType type, const std::string& codecName = "" );

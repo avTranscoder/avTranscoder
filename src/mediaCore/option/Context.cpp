@@ -11,7 +11,7 @@ extern "C" {
 
 #include <iostream>
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediacore
 {

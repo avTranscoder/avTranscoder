@@ -7,7 +7,7 @@ extern "C" {
 #include <sstream>
 #include <utility>
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediaio
 {

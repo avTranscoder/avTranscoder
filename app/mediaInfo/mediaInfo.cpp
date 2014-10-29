@@ -6,7 +6,7 @@
 
 int main( int argc, char** argv )
 {
-	using namespace mediamanager;
+	using namespace mediaengine;
 
 	mediacore::Libraries libs( mediacore::getLibraries() );
 

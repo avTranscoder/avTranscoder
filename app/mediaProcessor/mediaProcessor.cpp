@@ -10,7 +10,7 @@
 #include <sstream>
 #include <cstdlib>
 
-using namespace mediamanager;
+using namespace mediaengine;
 
 static const size_t dummyWidth = 1920;
 static const size_t dummyHeight = 1080;

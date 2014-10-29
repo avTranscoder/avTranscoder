@@ -1,5 +1,5 @@
-#ifndef _MEDIA_MANAGER_IO_FILE_INPUT_FILE_HPP_
-#define _MEDIA_MANAGER_IO_FILE_INPUT_FILE_HPP_
+#ifndef _MEDIA_ENGINE_IO_FILE_INPUT_FILE_HPP_
+#define _MEDIA_ENGINE_IO_FILE_INPUT_FILE_HPP_
 
 #include <mediaCore/common.hpp>
 #include <mediaCore/profile/Profile.hpp>
@@ -15,12 +15,12 @@
 
 struct AVFormatContext;
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediaio
 {
 
-class MediaManagerExport InputFile
+class MediaEngineExport InputFile
 {
 public:
 	/**

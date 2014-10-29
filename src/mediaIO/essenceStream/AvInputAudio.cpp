@@ -14,7 +14,7 @@ extern "C" {
 #include <iostream>
 #include <stdexcept>
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediaio
 {

@@ -1,8 +1,8 @@
 import sys
 
-from mediaManager import mediaCore
-from mediaManager import mediaIO
-from mediaManager import mediaTransform
+from mediaEngine import mediaCore
+from mediaEngine import mediaIO
+from mediaEngine import mediaTransform
 
 def parseConfigFile( inputConfigFile, transcoder ):
 	"""

@@ -39,13 +39,13 @@
 
 namespace std {
 %template(IntPair)         pair< size_t, size_t >;
-%template(VideoVector)     vector< mediamanager::mediaio::VideoProperties >;
-%template(AudioVector)     vector< mediamanager::mediaio::AudioProperties >;
+%template(VideoVector)     vector< mediaengine::mediaio::VideoProperties >;
+%template(AudioVector)     vector< mediaengine::mediaio::AudioProperties >;
 %template(MetadataPair)    pair< string, string >;
 %template(MetadatasVector) vector< pair< string, string > >;
 %template(GopPair)         pair< char, bool >;
 %template(GopVector)       vector< pair< char, bool > >;
-%template(ChannelVector)   vector< mediamanager::mediaio::Channel >;
+%template(ChannelVector)   vector< mediaengine::mediaio::Channel >;
 }
 
 %include <mediaCore/common.hpp>

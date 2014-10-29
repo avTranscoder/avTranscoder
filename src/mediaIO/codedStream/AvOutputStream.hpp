@@ -1,16 +1,16 @@
-#ifndef _MEDIA_MANAGER_IO_CODED_STREAM_AV_OUTPUT_STREAM_HPP_
-#define _MEDIA_MANAGER_IO_CODED_STREAM_AV_OUTPUT_STREAM_HPP_
+#ifndef _MEDIA_ENGINE_IO_CODED_STREAM_AV_OUTPUT_STREAM_HPP_
+#define _MEDIA_ENGINE_IO_CODED_STREAM_AV_OUTPUT_STREAM_HPP_
 
 #include "IOutputStream.hpp"
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediaio
 {
 
 class OutputFile;
 
-class MediaManagerExport AvOutputStream : public IOutputStream
+class MediaEngineExport AvOutputStream : public IOutputStream
 {
 public:
 	AvOutputStream( OutputFile& outputFile, const size_t streamIndex );

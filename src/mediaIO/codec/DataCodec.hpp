@@ -1,14 +1,14 @@
-#ifndef _MEDIA_MANAGER_IO_CODEC_DATA_CODEC_HPP_
-#define _MEDIA_MANAGER_IO_CODEC_DATA_CODEC_HPP_
+#ifndef _MEDIA_ENGINE_IO_CODEC_DATA_CODEC_HPP_
+#define _MEDIA_ENGINE_IO_CODEC_DATA_CODEC_HPP_
 
 #include "ICodec.hpp"
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediaio
 {
 
-class MediaManagerExport DataCodec : public ICodec
+class MediaEngineExport DataCodec : public ICodec
 {
 public:
 	DataCodec( const ECodecType type, const std::string& codecName = "" );

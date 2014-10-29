@@ -1,5 +1,5 @@
-#ifndef _MEDIA_MANAGER_CORE_PROFILE_PROFILE_HPP_
-#define _MEDIA_MANAGER_CORE_PROFILE_PROFILE_HPP_
+#ifndef _MEDIA_ENGINE_CORE_PROFILE_PROFILE_HPP_
+#define _MEDIA_ENGINE_CORE_PROFILE_PROFILE_HPP_
 
 #include <mediaCore/common.hpp>
 
@@ -8,7 +8,7 @@
 #include <vector>
 #include <map>
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediacore
 {
@@ -30,7 +30,7 @@ namespace constants
 	const std::string mediaProfileChannel = "ac";
 }
 
-class MediaManagerExport Profile
+class MediaEngineExport Profile
 {
 public:
 	typedef std::map< std::string, std::string > ProfileDesc;

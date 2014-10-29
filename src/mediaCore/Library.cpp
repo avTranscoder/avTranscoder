@@ -16,7 +16,7 @@ extern "C" {
 #include <sstream>
 #include <algorithm>
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediacore
 {
@@ -77,7 +77,7 @@ Libraries getLibraries()
 {
 	Libraries libs;
 
-	libs.push_back( Library( "mediamanager", avutil_license(),     MEDIA_MANAGER_VERSION_MAJOR,  MEDIA_MANAGER_VERSION_MINOR,  MEDIA_MANAGER_VERSION_MICRO  ) );
+	libs.push_back( Library( "mediaengine",  avutil_license(),     MEDIA_ENGINE_VERSION_MAJOR,   MEDIA_ENGINE_VERSION_MINOR,   MEDIA_ENGINE_VERSION_MICRO   ) );
 	libs.push_back( Library( "avutil",       avutil_license(),     LIBAVUTIL_VERSION_MAJOR,      LIBAVUTIL_VERSION_MINOR,      LIBAVUTIL_VERSION_MICRO      ) );
 	libs.push_back( Library( "avformat",     avformat_license(),   LIBAVFORMAT_VERSION_MAJOR,    LIBAVFORMAT_VERSION_MINOR,    LIBAVFORMAT_VERSION_MICRO    ) );
 	libs.push_back( Library( "avcodec",      avcodec_license(),    LIBAVCODEC_VERSION_MAJOR,     LIBAVCODEC_VERSION_MINOR,     LIBAVCODEC_VERSION_MICRO     ) );

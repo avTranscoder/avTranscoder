@@ -1,17 +1,17 @@
-#ifndef _MEDIA_MANAGER_CORE_LIBRARY_HPP_
-#define _MEDIA_MANAGER_CORE_LIBRARY_HPP_
+#ifndef _MEDIA_ENGINE_CORE_LIBRARY_HPP_
+#define _MEDIA_ENGINE_CORE_LIBRARY_HPP_
 
 #include "common.hpp"
 
 #include <vector>
 #include <string>
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediacore
 {
 
-class MediaManagerExport Library
+class MediaEngineExport Library
 {
 public:
 	Library( const std::string& name, const std::string& license, const size_t major, const size_t minor, const size_t release );
@@ -35,11 +35,11 @@ private:
 
 typedef std::vector< Library > Libraries;
 
-Libraries MediaManagerExport getLibraries();
+Libraries MediaEngineExport getLibraries();
 
-std::vector<std::string> MediaManagerExport getInputExtensions();
+std::vector<std::string> MediaEngineExport getInputExtensions();
 
-std::vector<std::string> MediaManagerExport getOutputExtensions();
+std::vector<std::string> MediaEngineExport getOutputExtensions();
 
 }
 }

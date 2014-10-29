@@ -1,8 +1,8 @@
-# mediaManager
+# mediaEngine
 
 C++ API for LibAV / FFMpeg
 
-Based on LibAV/FFMpeg libraries to support various video formats, mediaManager provides the high level API to re-wrap or transcode media easily.
+Based on LibAV/FFMpeg libraries to support various video formats, mediaEngine provides the high level API to re-wrap or transcode media easily.
 
 You can also use its Java & Python bindings for simpler integration in your own projects.
 

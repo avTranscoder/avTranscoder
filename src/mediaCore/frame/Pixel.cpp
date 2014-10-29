@@ -9,7 +9,7 @@ extern "C" {
 
 #include <stdexcept>
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediacore
 {

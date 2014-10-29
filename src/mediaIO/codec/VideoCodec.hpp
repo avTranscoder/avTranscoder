@@ -1,17 +1,17 @@
-#ifndef _MEDIA_MANAGER_IO_CODEC_VIDEO_CODEC_HPP_
-#define _MEDIA_MANAGER_IO_CODEC_VIDEO_CODEC_HPP_
+#ifndef _MEDIA_ENGINE_IO_CODEC_VIDEO_CODEC_HPP_
+#define _MEDIA_ENGINE_IO_CODEC_VIDEO_CODEC_HPP_
 
 #include "ICodec.hpp"
 #include <mediaCore/frame/VideoFrame.hpp>
 
 #include <utility>
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediaio
 {
 
-class MediaManagerExport VideoCodec : public ICodec
+class MediaEngineExport VideoCodec : public ICodec
 {
 public:
 	VideoCodec( const ECodecType type, const std::string& codecName = "" );

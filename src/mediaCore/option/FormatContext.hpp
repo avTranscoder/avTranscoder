@@ -1,11 +1,11 @@
-#ifndef _MEDIA_MANAGER_CORE_OPTION_FORMAT_CONTEXT_HPP_
-#define _MEDIA_MANAGER_CORE_OPTION_FORMAT_CONTEXT_HPP_
+#ifndef _MEDIA_ENGINE_CORE_OPTION_FORMAT_CONTEXT_HPP_
+#define _MEDIA_ENGINE_CORE_OPTION_FORMAT_CONTEXT_HPP_
 
 #include "Context.hpp"
 
 struct AVFormatContext;
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediacore
 {

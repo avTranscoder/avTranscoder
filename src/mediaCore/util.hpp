@@ -1,5 +1,5 @@
-#ifndef _MEDIA_MANAGER_CORE_UTIL_HPP
-#define	_MEDIA_MANAGER_CORE_UTIL_HPP
+#ifndef _MEDIA_ENGINE_CORE_UTIL_HPP
+#define	_MEDIA_ENGINE_CORE_UTIL_HPP
 
 #include "common.hpp"
 
@@ -12,7 +12,7 @@ extern "C" {
 #include <vector>
 #include <map>
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediacore
 {

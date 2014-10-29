@@ -1,5 +1,5 @@
-#ifndef _MEDIA_MANAGER_CORE_OPTION_CONTEXT_HPP_
-#define _MEDIA_MANAGER_CORE_OPTION_CONTEXT_HPP_
+#ifndef _MEDIA_ENGINE_CORE_OPTION_CONTEXT_HPP_
+#define _MEDIA_ENGINE_CORE_OPTION_CONTEXT_HPP_
 
 #include <mediaCore/common.hpp>
 #include <mediaCore/option/Option.hpp>
@@ -7,7 +7,7 @@
 #include <string>
 #include <map>
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediacore
 {
@@ -16,7 +16,7 @@ namespace mediacore
  * @brief Wrapper of AVContext.
  * Can access Options through the corresponding context.
  */
-class MediaManagerExport Context
+class MediaEngineExport Context
 {
 public:
 	Context() {}

@@ -1,15 +1,15 @@
-#ifndef _MEDIA_MANAGER_CORE_FRAME_AUDIO_FRAME_HPP_
-#define _MEDIA_MANAGER_CORE_FRAME_AUDIO_FRAME_HPP_
+#ifndef _MEDIA_ENGINE_CORE_FRAME_AUDIO_FRAME_HPP_
+#define _MEDIA_ENGINE_CORE_FRAME_AUDIO_FRAME_HPP_
 
 #include "Frame.hpp"
 #include <mediaCore/profile/Profile.hpp>
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediacore
 {
 
-class MediaManagerExport AudioFrameDesc
+class MediaEngineExport AudioFrameDesc
 {
 public:
 	AudioFrameDesc()
@@ -54,7 +54,7 @@ private:
 	AVSampleFormat _sampleFormat;
 };
 
-class MediaManagerExport AudioFrame : public Frame
+class MediaEngineExport AudioFrame : public Frame
 {
 public:
 	AudioFrame( const AudioFrameDesc& ref )

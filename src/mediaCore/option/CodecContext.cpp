@@ -5,7 +5,7 @@ extern "C" {
 #include <libavutil/mem.h>
 }
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediacore
 {

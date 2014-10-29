@@ -3,12 +3,12 @@
 add_library(mediaIO-shared SHARED ${MEDIA_IO_SRC_FILES})
 set_target_properties(mediaIO-shared PROPERTIES LINKER_LANGUAGE CXX)
 if(WIN32)
-	set_target_properties(mediaIO-shared PROPERTIES OUTPUT_NAME "mediaIO-${MEDIA_MANAGER_VERSION}")
+	set_target_properties(mediaIO-shared PROPERTIES OUTPUT_NAME "mediaIO-${MEDIA_ENGINE_VERSION}")
 else()
 	set_target_properties(mediaIO-shared PROPERTIES OUTPUT_NAME mediaIO)
 endif()
-set_target_properties(mediaIO-shared PROPERTIES SOVERSION ${MEDIA_MANAGER_VERSION})
-set_target_properties(mediaIO-shared PROPERTIES VERSION ${MEDIA_MANAGER_VERSION})
+set_target_properties(mediaIO-shared PROPERTIES SOVERSION ${MEDIA_ENGINE_VERSION})
+set_target_properties(mediaIO-shared PROPERTIES VERSION ${MEDIA_ENGINE_VERSION})
 target_link_libraries(mediaIO-shared ${FFMPEG_LIBRARIES} mediaCore-shared mediaTransform-shared)
 
 ### Install mediaIO libs and include

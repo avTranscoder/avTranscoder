@@ -1,6 +1,6 @@
 # Load custom cmake utilities
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
-include(MediaManagerMacros)
+include(MediaEngineMacros)
 
 find_package(
 	FFmpeg
@@ -22,7 +22,7 @@ else()
 	add_definitions(-DFF_RESAMPLE_LIBRARY)
 endif()
 
-# Include mediaManager and FFmpeg/Libav
+# Include mediaEngine and FFmpeg/Libav
 include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${FFMPEG_INCLUDE_DIR})
 
 add_subdirectory(mediaCore)

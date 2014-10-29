@@ -1,15 +1,15 @@
-#ifndef _MEDIA_MANAGER_IO_ESSENCE_STREAM_I_INPUT_ESSENCE_HPP_
-#define _MEDIA_MANAGER_IO_ESSENCE_STREAM_I_INPUT_ESSENCE_HPP_
+#ifndef _MEDIA_ENGINE_IO_ESSENCE_STREAM_I_INPUT_ESSENCE_HPP_
+#define _MEDIA_ENGINE_IO_ESSENCE_STREAM_I_INPUT_ESSENCE_HPP_
 
 #include <mediaCore/common.hpp>
 #include <mediaCore/frame/Frame.hpp>
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediaio
 {
 
-class MediaManagerExport IInputEssence
+class MediaEngineExport IInputEssence
 {
 public:
 	virtual ~IInputEssence() {};

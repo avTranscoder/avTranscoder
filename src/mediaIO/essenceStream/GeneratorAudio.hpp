@@ -1,15 +1,15 @@
-#ifndef _MEDIA_MANAGER_IO_ESSENCE_STREAM_GENERATOR_AUDIO_HPP_
-#define _MEDIA_MANAGER_IO_ESSENCE_STREAM_GENERATOR_AUDIO_HPP_
+#ifndef _MEDIA_ENGINE_IO_ESSENCE_STREAM_GENERATOR_AUDIO_HPP_
+#define _MEDIA_ENGINE_IO_ESSENCE_STREAM_GENERATOR_AUDIO_HPP_
 
 #include "IInputEssence.hpp"
 #include <mediaIO/codec/AudioCodec.hpp>
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediaio
 {
 
-class MediaManagerExport GeneratorAudio : public IInputEssence
+class MediaEngineExport GeneratorAudio : public IInputEssence
 {
 public:
 	GeneratorAudio( );

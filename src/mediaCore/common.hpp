@@ -1,5 +1,5 @@
-#ifndef _MEDIA_MANAGER_CORE_COMMON_HPP_
-#define _MEDIA_MANAGER_CORE_COMMON_HPP_
+#ifndef _MEDIA_ENGINE_CORE_COMMON_HPP_
+#define _MEDIA_ENGINE_CORE_COMMON_HPP_
 
 extern "C" {
 #ifndef __STDC_CONSTANT_MACROS
@@ -20,19 +20,19 @@ extern "C" {
 #include <vector>
 
 #ifdef SWIG
- #define MediaManagerExport
+ #define MediaEngineExport
 #else
 #if ( defined( WIN32 ) || defined( WIN64 ) || defined( _WIN32 ) || defined( _WIN64 ) || defined( __WINDOWS__ ) || defined( __TOS_WIN__ ) || defined( __WIN32__ ) )
- #define MediaManagerExport __declspec( dllexport )
+ #define MediaEngineExport __declspec( dllexport )
 #elif defined( __GNUC__ )     // Add compiler definition here...
  #if __GNUC__ - 0 > 3 || ( __GNUC__ - 0 == 3 && __GNUC_MINOR__ - 0 > 2 )
-  #define MediaManagerExport __attribute__ ( ( visibility( "default" ) ) )
+  #define MediaEngineExport __attribute__ ( ( visibility( "default" ) ) )
  #else
-  #define MediaManagerExport
-  #warning "MediaManagerExport not set because of a too old gcc version. The plug-in may not compile with the option -fvisible=hidden."
+  #define MediaEngineExport
+  #warning "MediaEngineExport not set because of a too old gcc version. The plug-in may not compile with the option -fvisible=hidden."
  #endif
 #else
- #error "MediaManagerExport not defined for this compiler..."
+ #error "MediaEngineExport not defined for this compiler..."
 #endif
 #endif
 
@@ -49,7 +49,7 @@ extern "C" {
 #endif
 #endif
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediacore
 {

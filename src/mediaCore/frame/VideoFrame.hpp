@@ -1,5 +1,5 @@
-#ifndef _MEDIA_MANAGER_CORE_FRAME_VIDEO_FRAME_HPP_
-#define _MEDIA_MANAGER_CORE_FRAME_VIDEO_FRAME_HPP_
+#ifndef _MEDIA_ENGINE_CORE_FRAME_VIDEO_FRAME_HPP_
+#define _MEDIA_ENGINE_CORE_FRAME_VIDEO_FRAME_HPP_
 
 #include "Frame.hpp"
 #include "Pixel.hpp"
@@ -13,7 +13,7 @@ extern "C" {
 #include <stdexcept>
 #include <utility>
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediacore
 {
@@ -26,7 +26,7 @@ namespace mediacore
 // 	//EColorRange     eColorRange;
 // };
 
-class MediaManagerExport VideoFrameDesc
+class MediaEngineExport VideoFrameDesc
 {
 public:
 	VideoFrameDesc()
@@ -87,7 +87,7 @@ private:
 
 //template< template<typename> Alloc >
 //class AvExport ImageBase
-class MediaManagerExport VideoFrame : public Frame
+class MediaEngineExport VideoFrame : public Frame
 {
 public:
 	VideoFrame( const VideoFrameDesc& ref )

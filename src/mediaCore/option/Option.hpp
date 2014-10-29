@@ -1,5 +1,5 @@
-#ifndef _MEDIA_MANAGER_CORE_OPTION_OPTION_HPP
-#define	_MEDIA_MANAGER_CORE_OPTION_OPTION_HPP
+#ifndef _MEDIA_ENGINE_CORE_OPTION_OPTION_HPP
+#define	_MEDIA_ENGINE_CORE_OPTION_OPTION_HPP
 
 #include <mediaCore/common.hpp>
 
@@ -11,7 +11,7 @@ extern "C" {
 #include <string>
 #include <utility>
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediacore
 {
@@ -34,7 +34,7 @@ enum EOptionBaseType
  * Get its type to know what the option is about: Int, Double, Ratio, Choice...
  * Parse its array of options to get the potential childs (Choice and Group).
  */
-class MediaManagerExport Option
+class MediaEngineExport Option
 {
 public:
 	Option( AVOption& avOption, void* avContext );

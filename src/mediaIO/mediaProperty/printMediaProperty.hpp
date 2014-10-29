@@ -1,5 +1,5 @@
-#ifndef _MEDIA_MANAGER_IO_PRINT_HPP_
-#define _MEDIA_MANAGER_IO_PRINT_HPP_
+#ifndef _MEDIA_ENGINE_IO_PRINT_HPP_
+#define _MEDIA_ENGINE_IO_PRINT_HPP_
 
 #include <mediaIO/file/InputFile.hpp>
 
@@ -8,7 +8,7 @@
 #include <sstream>
 #include <map>
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediaio
 {

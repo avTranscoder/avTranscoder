@@ -1,5 +1,5 @@
-#ifndef _MEDIA_MANAGER_CORE_FRAME_PIXEL_HPP_
-#define _MEDIA_MANAGER_CORE_FRAME_PIXEL_HPP_
+#ifndef _MEDIA_ENGINE_CORE_FRAME_PIXEL_HPP_
+#define _MEDIA_ENGINE_CORE_FRAME_PIXEL_HPP_
 
 #include <mediaCore/common.hpp>
 
@@ -10,7 +10,7 @@ extern "C" {
 
 struct AVPixFmtDescriptor;
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediacore
 {
@@ -29,7 +29,7 @@ enum ESubsamplingType
 	eSubsampling420       // 4:2:0
 };
 
-class MediaManagerExport Pixel
+class MediaEngineExport Pixel
 {
 public:
 	Pixel()

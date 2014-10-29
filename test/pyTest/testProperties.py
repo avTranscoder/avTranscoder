@@ -2,8 +2,8 @@ import os
 
 from nose.tools import *
 
-from mediaManager import mediaCore
-from mediaManager import mediaIO
+from mediaEngine import mediaCore
+from mediaEngine import mediaIO
 
 def testAddMetadataDate():
 	"""
@@ -15,7 +15,7 @@ def testAddMetadataDate():
 	transcoder = mediaIO.Transcoder( ouputFile )
 
 	# rewrap a stream
-	transcoder.add( os.environ['MEDIA_MANAGER_TEST_AUDIO_FILE'], 0, "")
+	transcoder.add( os.environ['MEDIA_ENGINE_TEST_AUDIO_FILE'], 0, "")
 
 	# add one metadata
 	metadata_to_check = ("date", "value")
@@ -40,7 +40,7 @@ def testAddImpossibleMetadata():
 	transcoder = mediaIO.Transcoder( ouputFile )
 
 	# rewrap a stream
-	transcoder.add( os.environ['MEDIA_MANAGER_TEST_AUDIO_FILE'], 0, "")
+	transcoder.add( os.environ['MEDIA_ENGINE_TEST_AUDIO_FILE'], 0, "")
 
 	# add one metadata
 	metadata_to_check = ("undefinedMetadataKey", "undefinedMetadataValue")

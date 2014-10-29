@@ -13,7 +13,7 @@ extern "C" {
 #include <libavutil/pixdesc.h>
 }
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediacore
 {

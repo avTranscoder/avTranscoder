@@ -1,18 +1,18 @@
-#ifndef _MEDIA_MANAGER_CORE_FRAME_FRAME_HPP_
-#define _MEDIA_MANAGER_CORE_FRAME_FRAME_HPP_
+#ifndef _MEDIA_ENGINE_CORE_FRAME_FRAME_HPP_
+#define _MEDIA_ENGINE_CORE_FRAME_FRAME_HPP_
 
 #include <mediaCore/common.hpp>
 
 #include <vector>
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediacore
 {
 
 typedef std::vector< unsigned char > DataBuffer;
 
-class MediaManagerExport Frame
+class MediaEngineExport Frame
 {
 public:
 	Frame(){};

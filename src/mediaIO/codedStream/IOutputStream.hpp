@@ -1,9 +1,9 @@
-#ifndef _MEDIA_MANAGER_IO_CODED_STREAM_I_OUTPUT_STREAM_HPP_
-#define _MEDIA_MANAGER_IO_CODED_STREAM_I_OUTPUT_STREAM_HPP_
+#ifndef _MEDIA_ENGINE_IO_CODED_STREAM_I_OUTPUT_STREAM_HPP_
+#define _MEDIA_ENGINE_IO_CODED_STREAM_I_OUTPUT_STREAM_HPP_
 
 #include <mediaCore/frame/Frame.hpp>
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediaio
 {

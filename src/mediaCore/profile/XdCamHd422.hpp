@@ -1,7 +1,7 @@
-#ifndef _MEDIA_MANAGER_CORE_PROFILE_XDCAMHD422_HPP_
-#define _MEDIA_MANAGER_CORE_PROFILE_XDCAMHD422_HPP_
+#ifndef _MEDIA_ENGINE_CORE_PROFILE_XDCAMHD422_HPP_
+#define _MEDIA_ENGINE_CORE_PROFILE_XDCAMHD422_HPP_
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediacore
 {

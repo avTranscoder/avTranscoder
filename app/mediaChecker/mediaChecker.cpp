@@ -9,7 +9,7 @@
 
 int main( int argc, char** argv )
 {
-	using namespace mediamanager;
+	using namespace mediaengine;
 
 	mediacore::Profile p;
 	p.loadProfiles();
@@ -27,7 +27,7 @@ int main( int argc, char** argv )
 			std::cout << std::setw(35) << key.first << key.second << std::endl;
 
 		try{
-			using namespace mediamanager::mediacore::constants;
+			using namespace mediaengine::mediacore::constants;
 			if( profile.find( mediaProfileType )->second == mediaProfileTypeVideo )
 			{
 				mediaio::AvOutputVideo outputVideo;

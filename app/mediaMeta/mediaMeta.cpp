@@ -14,7 +14,7 @@ int main( int argc, char** argv )
 		return( -1 );
 	}
 
-	using namespace mediamanager;
+	using namespace mediaengine;
 
 	mediacore::NoDisplayProgress p;
 

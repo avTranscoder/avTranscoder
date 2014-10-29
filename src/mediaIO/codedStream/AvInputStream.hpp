@@ -1,18 +1,18 @@
-#ifndef _MEDIA_MANAGER_IO_CODED_STREAM_AV_INPUT_STREAM_HPP_
-#define _MEDIA_MANAGER_IO_CODED_STREAM_AV_INPUT_STREAM_HPP_
+#ifndef _MEDIA_ENGINE_IO_CODED_STREAM_AV_INPUT_STREAM_HPP_
+#define _MEDIA_ENGINE_IO_CODED_STREAM_AV_INPUT_STREAM_HPP_
 
 #include "IInputStream.hpp"
 
 struct AVStream;
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediaio
 {
 
 class InputFile;
 
-class MediaManagerExport AvInputStream : public IInputStream
+class MediaEngineExport AvInputStream : public IInputStream
 {
 public:
 	AvInputStream( InputFile& inputFile, const size_t streamIndex );

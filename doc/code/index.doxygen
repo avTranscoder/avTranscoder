@@ -1,4 +1,4 @@
-/** @mainpage mediaManager
+/** @mainpage mediaEngine
  *
  * An High Level API for transform medias.<br/>
  * Based on FFMpeg / libav projects.

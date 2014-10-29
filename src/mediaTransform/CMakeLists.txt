@@ -3,12 +3,12 @@
 add_library(mediaTransform-shared SHARED ${MEDIA_TRANSFORM_SRC_FILES})
 set_target_properties(mediaTransform-shared PROPERTIES LINKER_LANGUAGE CXX)
 if(WIN32)
-	set_target_properties(mediaTransform-shared PROPERTIES OUTPUT_NAME "mediaTransform-${MEDIA_MANAGER_VERSION}")
+	set_target_properties(mediaTransform-shared PROPERTIES OUTPUT_NAME "mediaTransform-${MEDIA_ENGINE_VERSION}")
 else()
 	set_target_properties(mediaTransform-shared PROPERTIES OUTPUT_NAME mediaTransform)
 endif()
-set_target_properties(mediaTransform-shared PROPERTIES SOVERSION ${MEDIA_MANAGER_VERSION})
-set_target_properties(mediaTransform-shared PROPERTIES VERSION ${MEDIA_MANAGER_VERSION})
+set_target_properties(mediaTransform-shared PROPERTIES SOVERSION ${MEDIA_ENGINE_VERSION})
+set_target_properties(mediaTransform-shared PROPERTIES VERSION ${MEDIA_ENGINE_VERSION})
 target_link_libraries(mediaTransform-shared ${FFMPEG_LIBRARIES} mediaCore-shared)
 
 

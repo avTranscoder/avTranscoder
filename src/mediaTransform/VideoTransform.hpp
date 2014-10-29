@@ -1,5 +1,5 @@
-#ifndef _AV_TRANSCODER_ESSENCE_TRANSFORM_VIDEO_ESSENCE_TRANSFORM_HPP
-#define _AV_TRANSCODER_ESSENCE_TRANSFORM_VIDEO_ESSENCE_TRANSFORM_HPP
+#ifndef _MEDIA_ENGINE_TRANSFORM_VIDEO_TRANSFORM_HPP
+#define _MEDIA_ENGINE_TRANSFORM_VIDEO_TRANSFORM_HPP
 
 #include "ITransform.hpp"
 
@@ -9,12 +9,12 @@
 
 class SwsContext;
 
-namespace mediamanager
+namespace mediaengine
 {
 namespace mediatransform
 {
 
-class MediaManagerExport VideoTransform : public ITransform
+class MediaEngineExport VideoTransform : public ITransform
 {
 public:
 	VideoTransform();
