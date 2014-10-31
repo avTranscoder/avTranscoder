@@ -31,6 +31,8 @@ public:
 	 * @return status of decoding
 	 */
 	virtual bool readNextFrame( Frame& frameBuffer, const size_t subStreamIndex ) = 0;
+
+	virtual void setFrame( Frame& inputFrame ) {}
 };
 
 }
