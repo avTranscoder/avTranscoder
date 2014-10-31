@@ -41,7 +41,6 @@ std::vector<std::string> getPixelFormats( const std::string& videoCodecName )
 	else
 	{
 		const AVCodec* videoCodec = avcodec_find_encoder_by_name( videoCodecName.c_str() );
-
 		if( videoCodec && videoCodec->pix_fmts != NULL )
 		{
 			size_t pix_fmt = 0;
@@ -52,7 +51,7 @@ std::vector<std::string> getPixelFormats( const std::string& videoCodecName )
 #else
 				const AVPixFmtDescriptor* pix_desc = av_pix_fmt_desc_get( videoCodec->pix_fmts[pix_fmt] );
 #endif
-				if( ! pix_desc->name )
+				if( ! pix_desc || ! pix_desc->name )
 					continue;
 				pixelFormats.push_back( std::string( pix_desc->name ) );
 				++pix_fmt;
@@ -66,6 +65,7 @@ std::vector<std::string> getSampleFormats( const std::string& audioCodecName )
 {
 	std::vector<std::string> sampleFormats;
 	
+	// all audio codec concerned
 	if( audioCodecName.empty() )
 	{
 		for( size_t sampleFormat = 0; sampleFormat < AV_SAMPLE_FMT_NB; ++sampleFormat)
@@ -73,6 +73,7 @@ std::vector<std::string> getSampleFormats( const std::string& audioCodecName )
 			sampleFormats.push_back( av_get_sample_fmt_name( static_cast<AVSampleFormat>( sampleFormat ) ) );
 		}
 	}
+	// specific audio codec
 	else
 	{
 		const AVCodec* audioCodec = avcodec_find_encoder_by_name( audioCodecName.c_str() );
@@ -109,10 +110,6 @@ std::vector<std::string> getFormatsLongNames()
 	AVOutputFormat* fmt = NULL;
 	while( ( fmt = av_oformat_next( fmt ) ) )
 	{
-		// add only format with video track
-		if( fmt->video_codec == AV_CODEC_ID_NONE )
-			continue;
-
 		if( ! fmt->long_name )
 			continue;
 
@@ -127,10 +124,6 @@ std::vector<std::string> getFormatsShortNames()
 	AVOutputFormat* fmt = NULL;
 	while( ( fmt = av_oformat_next( fmt ) ) )
 	{
-		// add only format with video track
-		if( fmt->video_codec == AV_CODEC_ID_NONE )
-			continue;
-
 		if( ! fmt->name )
 			continue;
 
