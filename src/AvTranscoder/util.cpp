@@ -261,7 +261,7 @@ std::vector<std::string> getAudioCodecsShortNames()
 	return audioCodecsShortNames;
 }
 
-std::map< std::string, std::vector<Option> > getOutputFormatOptions()
+OptionArrayMap getOutputFormatOptions()
 {
 	av_register_all();
 
@@ -288,7 +288,7 @@ std::map< std::string, std::vector<Option> > getOutputFormatOptions()
 	return optionsPerFormat;
 }
 
-std::map< std::string, std::vector<Option> > getVideoCodecOptions()
+OptionArrayMap getVideoCodecOptions()
 {
 	std::map< std::string, std::vector<Option> > videoCodecOptions;
 	
@@ -319,7 +319,7 @@ std::map< std::string, std::vector<Option> > getVideoCodecOptions()
 	return videoCodecOptions;
 }
 
-std::map< std::string, std::vector<Option> > getAudioCodecOptions()
+OptionArrayMap getAudioCodecOptions()
 {
 	std::map< std::string, std::vector<Option> > audioCodecOptions;
 	
