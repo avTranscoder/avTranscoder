@@ -34,7 +34,7 @@ int main( int argc, char** argv )
 			if( profile.find( avtranscoder::constants::avProfileType )->second == avtranscoder::constants::avProfileTypeAudio )
 			{
 				avtranscoder::AvOutputAudio outputAudio;
-				outputAudio.setProfile( profile, outputAudio.getAudioCodec().getFrameDesc() );
+				outputAudio.setProfile( profile, outputAudio.getAudioCodec().getAudioFrameDesc() );
 			}
 		}
 		catch( ... )

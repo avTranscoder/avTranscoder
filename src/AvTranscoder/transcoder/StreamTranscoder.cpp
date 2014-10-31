@@ -126,7 +126,7 @@ StreamTranscoder::StreamTranscoder(
 
 			_outputEssence = outputAudio;
 			
-			AudioFrameDesc outputFrameDesc( _inputStream->getAudioCodec().getFrameDesc() );
+			AudioFrameDesc outputFrameDesc( _inputStream->getAudioCodec().getAudioFrameDesc() );
 			outputFrameDesc.setParameters( profile );
 			if( subStreamIndex > -1 )
 			{
@@ -137,12 +137,12 @@ StreamTranscoder::StreamTranscoder(
 
 			_outputStream = &outputFile.addAudioStream( outputAudio->getAudioCodec() );
 
-			AudioFrameDesc inputFrameDesc( _inputStream->getAudioCodec().getFrameDesc() );
+			AudioFrameDesc inputFrameDesc( _inputStream->getAudioCodec().getAudioFrameDesc() );
 			if( subStreamIndex > -1 )
 				inputFrameDesc.setChannels( 1 );
 			
 			_sourceBuffer = new AudioFrame( inputFrameDesc );
-			_frameBuffer  = new AudioFrame( outputAudio->getAudioCodec().getFrameDesc() );
+			_frameBuffer  = new AudioFrame( outputAudio->getAudioCodec().getAudioFrameDesc() );
 			
 			_transform = new AudioTransform();
 
@@ -223,7 +223,7 @@ StreamTranscoder::StreamTranscoder(
 		_inputEssence = generatorAudio;
 
 		// Create inputFrame, and outputFrame which is based on a given profile
-		AudioFrameDesc inputFrameDesc = inputAudioCodec.getFrameDesc();
+		AudioFrameDesc inputFrameDesc = inputAudioCodec.getAudioFrameDesc();
 		AudioFrameDesc outputFrameDesc = inputFrameDesc;
 		outputFrameDesc.setParameters( profile );
 		_sourceBuffer = new AudioFrame( inputFrameDesc );

@@ -49,7 +49,7 @@ void AvInputAudio::setup()
 	AVCodecContext* avCodecContext = _codec.getAVCodecContext();
 	AVCodec* avCodec = _codec.getAVCodec();
 
-	avCodecContext->channels = _inputStream->getAudioCodec().getChannels();
+	avCodecContext->channels = _inputStream->getAudioCodec().getAudioFrameDesc().getChannels();
 	
 	int ret = avcodec_open2( avCodecContext, avCodec, NULL );
 
