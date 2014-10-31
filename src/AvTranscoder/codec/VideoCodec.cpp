@@ -23,14 +23,16 @@ VideoCodec::VideoCodec( const ICodec& codec )
 VideoFrameDesc VideoCodec::getVideoFrameDesc() const
 {
 	assert( _codecContext != NULL );
-	VideoFrameDesc VideoFrameDesc;
-	Pixel pixel( _codecContext->pix_fmt );
 
-	VideoFrameDesc.setWidth ( _codecContext->width  );
-	VideoFrameDesc.setHeight( _codecContext->height );
-	VideoFrameDesc.setPixel ( pixel );
-	VideoFrameDesc.setDar   ( _codecContext->height, _codecContext->width );
-	return VideoFrameDesc;
+	VideoFrameDesc videoFrameDesc;
+	videoFrameDesc.setWidth ( _codecContext->width  );
+	videoFrameDesc.setHeight( _codecContext->height );
+	videoFrameDesc.setDar( _codecContext->width, _codecContext->height );
+
+	Pixel pixel( _codecContext->pix_fmt );
+	videoFrameDesc.setPixel( pixel );
+
+	return videoFrameDesc;
 }
 
 std::pair< size_t, size_t > VideoCodec::getTimeBase() const
