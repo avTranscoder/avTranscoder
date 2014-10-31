@@ -25,8 +25,8 @@ public:
 	bool readNextFrame( Frame& frameBuffer, const size_t subStreamIndex );
 
 private:
-	const VideoCodec* _codec;
-	Frame* _inputFrame;
+	const VideoCodec* _codec;  ///< Has link (no ownership)
+	Frame* _inputFrame;  ///< Has link (no ownership)
 	VideoFrameDesc _videoFrameDesc;
 
 	size_t         _numberOfView;

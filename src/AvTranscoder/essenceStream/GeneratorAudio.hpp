@@ -24,8 +24,8 @@ public:
 	bool readNextFrame( Frame& frameBuffer, const size_t subStreamIndex );
 
 private:
-	const AudioCodec* _codec;
-	Frame*         _inputFrame;
+	const AudioCodec* _codec;  ///< Has link (no ownership)
+	Frame* _inputFrame;  ///< Has link (no ownership)
 	AudioFrameDesc _frameDesc;
 };
 
