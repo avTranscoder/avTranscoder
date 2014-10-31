@@ -190,11 +190,6 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 	addTranscodeStream( filename, streamIndex, subStreamIndex, profileDesc, offset );
 }
 
-void Transcoder::add( StreamTranscoder& stream )
-{
-	_streamTranscoders.push_back( &stream );
-}
-
 void Transcoder::init()
 {
 	for( size_t streamIndex = 0; streamIndex < _streamTranscoders.size(); ++streamIndex )

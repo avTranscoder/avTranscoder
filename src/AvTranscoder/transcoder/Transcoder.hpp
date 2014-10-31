@@ -95,12 +95,6 @@ public:
 	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, Profile::ProfileDesc& profileDesc, ICodec& codec, const size_t offset = 0  );
 
 	/**
-	 * @brief Add the stream
-	 * @note The stream will be deleted in Transcoder's destructor.
-	 */
-	void add( StreamTranscoder& stream );
-
-	/**
 	 * @brief Initialize all streams added, by ensure process necessary frames in case of latency.
 	 * @note This can be called several times with no side effects.
 	 * @note Can take a little bit of time.
