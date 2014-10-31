@@ -402,10 +402,10 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 	if( _currentEssence->readNextFrame( *_sourceBuffer, subStreamIndex ) )
 	{
 		if( _verbose )
-			std::cout << "convert " << std::endl;
+			std::cout << "convert " << _sourceBuffer->getSize() << std::endl;
 		_transform->convert( *_sourceBuffer, *_frameBuffer );
 		if( _verbose )
-			std::cout << "encode" << std::endl;
+			std::cout << "encode " << _frameBuffer->getSize() << std::endl;
 		_outputEssence->encodeFrame( *_frameBuffer, data );
 	}
 	else
