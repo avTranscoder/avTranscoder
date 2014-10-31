@@ -57,17 +57,22 @@ public:
 	void switchToGeneratorEssence();
 	void switchToInputEssence();
 
-	void setVerbose( bool verbose = true ){ _verbose = verbose; }
-
-	void setInfinityStream( bool isInfinity ) { _infinityStream = isInfinity; }
-
-	void setOffset( bool offset = true ){ _offset = offset; }
-
 	/**
 	 * @brief Get the duration of the stream.
 	 * @note if it's a generated stream, return limit of double.
 	 */
 	double getDuration() const;
+
+	/**
+	 * @return a reference to the current essence processed in this stream.
+	 */
+	IInputEssence& getCurrentEssence() const { return *_currentEssence; }
+
+	void setVerbose( bool verbose = true ){ _verbose = verbose; }
+
+	void setInfinityStream( bool isInfinity ) { _infinityStream = isInfinity; }
+
+	void setOffset( bool offset = true ){ _offset = offset; }
 
 private:
 	bool processRewrap();
