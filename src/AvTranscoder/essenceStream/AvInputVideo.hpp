@@ -28,6 +28,7 @@ public:
 	void setProfile( const Profile::ProfileDesc& desc );
 	
 private:
+	bool decodeNextFrame();
 
 	AvInputStream* _inputStream;  ///< Stream from which we read next frames
 	const VideoCodec* _codec;  ///< Video decoder. Has link (no ownership)

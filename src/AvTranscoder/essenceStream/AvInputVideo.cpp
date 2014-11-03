@@ -77,12 +77,36 @@ void AvInputVideo::setup()
 
 bool AvInputVideo::readNextFrame( Frame& frameBuffer )
 {
-	int got_frame = 0;
+	if( ! decodeNextFrame() )
+		return false;
 
+	VideoFrame& imageBuffer = static_cast<VideoFrame&>( frameBuffer );
+
+	size_t decodedSize = avpicture_get_size( (AVPixelFormat)_frame->format, _frame->width, _frame->height );
+	if( ! decodedSize )
+		return false;
+
+	if( imageBuffer.getBuffer().size() != decodedSize )
+		imageBuffer.getBuffer().resize( decodedSize );
+
+	// Copy pixel data from an AVPicture into one contiguous buffer.
+	avpicture_layout( (AVPicture*)_frame, (AVPixelFormat)_frame->format, _frame->width, _frame->height, &imageBuffer.getBuffer()[0], frameBuffer.getBuffer().size() );
+
+	return true;
+}
+
+bool AvInputVideo::readNextFrame( Frame& frameBuffer, const size_t subStreamIndex )
+{
+	return false;
+}
+
+bool AvInputVideo::decodeNextFrame()
+{
+	int got_frame = 0;
 	while( ! got_frame )
 	{
 		CodedData data;
-		if( ! _inputStream->readNextPacket( data ) )
+		if( ! _inputStream->readNextPacket( data ) ) // error or end of file
 			return false;
 
 		AVPacket packet;
@@ -104,25 +128,7 @@ bool AvInputVideo::readNextFrame( Frame& frameBuffer )
 		
 		av_free_packet( &packet );
 	}
-
-	VideoFrame& imageBuffer = static_cast<VideoFrame&>( frameBuffer );
-
-	size_t decodedSize = avpicture_get_size( (AVPixelFormat)_frame->format, _frame->width, _frame->height );
-	if( ! decodedSize )
-		return false;
-
-	if( imageBuffer.getBuffer().size() != decodedSize )
-		imageBuffer.getBuffer().resize( decodedSize );
-
-	// Copy pixel data from an AVPicture into one contiguous buffer.
-	avpicture_layout( (AVPicture*)_frame, (AVPixelFormat)_frame->format, _frame->width, _frame->height, &imageBuffer.getBuffer()[0], frameBuffer.getBuffer().size() );
-
 	return true;
-}
-
-bool AvInputVideo::readNextFrame( Frame& frameBuffer, const size_t subStreamIndex )
-{
-	return false;
 }
 
 void AvInputVideo::flushDecoder()
