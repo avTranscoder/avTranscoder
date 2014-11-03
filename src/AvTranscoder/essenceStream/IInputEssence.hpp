@@ -32,6 +32,11 @@ public:
 	 */
 	virtual bool readNextFrame( Frame& frameBuffer, const size_t subStreamIndex ) = 0;
 
+	/**
+	 * Set the next frame of the input stream
+	 * @note Not yet implemented for AvInputVideo and AvInputAudio
+	 * @param inputFrame: the new next frame
+	 */
 	virtual void setFrame( Frame& inputFrame ) {}
 };
 
