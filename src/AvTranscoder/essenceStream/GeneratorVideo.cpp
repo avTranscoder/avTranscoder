@@ -2,29 +2,20 @@
 
 #include <AvTranscoder/transform/VideoTransform.hpp>
 
-#include <stdexcept>
-
 namespace avtranscoder
 {
 
 GeneratorVideo::GeneratorVideo( )
 	: IInputEssence( )
-	, _codec( NULL )
 	, _inputFrame( NULL )
-	, _videoFrameDesc()
+	, _frameDesc()
 	, _numberOfView( 1 )
 {
 }
 
-void GeneratorVideo::setVideoCodec( const VideoCodec& codec )
+void GeneratorVideo::setVideoFrameDesc( const VideoFrameDesc& frameDesc )
 {
-	_codec = &codec;
-	_videoFrameDesc = _codec->getVideoFrameDesc();
-}
-
-const VideoCodec& GeneratorVideo::getVideoCodec()
-{
-	return *_codec;
+	_frameDesc = frameDesc;
 }
 
 void GeneratorVideo::setFrame( Frame& inputFrame )
@@ -37,26 +28,21 @@ bool GeneratorVideo::readNextFrame( Frame& frameBuffer )
 	// Generate black image
 	if( ! _inputFrame )
 	{
-		if( ! _codec )
-		{
-			throw std::runtime_error( "Can't readNextFrame of video generator without knowing codec." );
-		}
-
 		// @todo support PAL (0 to 255) and NTFS (16 to 235)
 		int fillChar = 0;
 
-		if( frameBuffer.getSize() != _videoFrameDesc.getDataSize() )
-			frameBuffer.getBuffer().resize( _videoFrameDesc.getDataSize() );
+		if( frameBuffer.getSize() != _frameDesc.getDataSize() )
+			frameBuffer.getBuffer().resize( _frameDesc.getDataSize() );
 
-		VideoFrameDesc desc( _codec->getVideoFrameDesc() );
+		VideoFrameDesc desc( _frameDesc );
 		Pixel rgbPixel;
 		rgbPixel.setColorComponents( eComponentRgb );
 		rgbPixel.setPlanar( false );
 		desc.setPixel( rgbPixel );
 
 		VideoFrame intermediateBuffer( desc );
-		intermediateBuffer.getBuffer().resize( _videoFrameDesc.getDataSize() );
-		memset( intermediateBuffer.getPtr(), fillChar, _videoFrameDesc.getDataSize() );
+		intermediateBuffer.getBuffer().resize( _frameDesc.getDataSize() );
+		memset( intermediateBuffer.getPtr(), fillChar, _frameDesc.getDataSize() );
 
 		VideoTransform videoEssenceTransform;
 		videoEssenceTransform.convert( intermediateBuffer, frameBuffer );

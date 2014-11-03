@@ -13,9 +13,7 @@ public:
 	GeneratorVideo( );
 
 	// Stream properties
-	void setVideoCodec( const VideoCodec& codec );
-
-	const VideoCodec& getVideoCodec();
+	void setVideoFrameDesc( const VideoFrameDesc& frameDesc );
 	
 	void setup() {}
 
@@ -25,9 +23,8 @@ public:
 	bool readNextFrame( Frame& frameBuffer, const size_t subStreamIndex );
 
 private:
-	const VideoCodec* _codec;  ///< Has link (no ownership)
 	Frame* _inputFrame;  ///< Has link (no ownership)
-	VideoFrameDesc _videoFrameDesc;
+	VideoFrameDesc _frameDesc;
 
 	size_t         _numberOfView;
 };
