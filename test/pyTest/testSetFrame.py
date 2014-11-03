@@ -32,7 +32,7 @@ def testSetVideoFrame():
 	# create transcoder and add a video stream
 	transcoder = av.Transcoder( ouputFile )
 	transcoder.add(  "", 0, "xdcamhd422", inputVideoCodec )
-	videoEssence = transcoder.getStream( 0 ).getCurrentEssence()
+	videoEssence = transcoder.getStreamTranscoder( 0 ).getCurrentEssence()
 
 	# start process
 	transcoder.init()
@@ -85,7 +85,7 @@ def testSetAudioFrame():
 	# create transcoder and add a video stream
 	transcoder = av.Transcoder( ouputFile )
 	transcoder.add(  "", 0, "wave24b48kmono", inputAudioCodec )
-	audioEssence = transcoder.getStream( 0 ).getCurrentEssence()
+	audioEssence = transcoder.getStreamTranscoder( 0 ).getCurrentEssence()
 
 	# start process
 	transcoder.init()
