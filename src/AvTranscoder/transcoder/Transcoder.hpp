@@ -95,6 +95,11 @@ public:
 	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, Profile::ProfileDesc& profileDesc, ICodec& codec, const size_t offset = 0  );
 
 	/**
+	 * @brief Add the stream
+	 */
+	void add( StreamTranscoder& streamTranscoder);
+
+	/**
 	 * @brief Initialize all streams added, by ensure process necessary frames in case of latency.
 	 * @note This can be called several times with no side effects.
 	 * @note Can take a little bit of time.
@@ -166,7 +171,8 @@ private:
 	OutputFile&                      _outputFile;  ///< The output media file after process.
 	std::vector< InputFile* >        _inputFiles;  ///< The list of input files which contain added streams.
 
-	std::vector< StreamTranscoder* > _streamTranscoders;  ///< The streams of the output media file after process.
+	std::vector< StreamTranscoder* > _streamTranscoders;  ///< All streams of the output media file after process.
+	std::vector< StreamTranscoder* > _streamTranscodersAllocated;  ///< Streams allocated inside the Transcoder.
 
 	Profile _profile;  ///< Objet to get existing profiles, and add new ones for the Transcoder.
 
