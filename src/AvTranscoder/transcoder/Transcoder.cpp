@@ -78,7 +78,7 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, Pro
 
 	if( _verbose )
 		std::cout << "add transcoding stream" << std::endl;
-	addTranscodeStream( filename, streamIndex, profileDesc, offset );
+	addTranscodeStream( filename, streamIndex, -1, profileDesc, offset );
 }
 
 void Transcoder::add( const std::string& filename, const size_t streamIndex, Profile::ProfileDesc& profileDesc, ICodec& codec, const size_t offset )
@@ -94,7 +94,7 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, Pro
 	
 	if( _verbose )
 		std::cout << "add transcoding stream" << std::endl;
-	addTranscodeStream( filename, streamIndex, profileDesc, offset );
+	addTranscodeStream( filename, streamIndex, -1, profileDesc, offset );
 }
 
 void Transcoder::add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const std::string& profileName, const size_t offset )
@@ -334,29 +334,6 @@ void Transcoder::addRewrapStream( const std::string& filename, const size_t stre
 	InputFile* referenceFile = addInputFile( filename, streamIndex );
 	_streamTranscodersAllocated.push_back( new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile ) );
 	_streamTranscoders.push_back( _streamTranscodersAllocated.back() );
-}
-
-void Transcoder::addTranscodeStream( const std::string& filename, const size_t streamIndex, Profile::ProfileDesc& profile, const size_t offset )
-{
-	InputFile* referenceFile = addInputFile( filename, streamIndex );
-
-	switch( referenceFile->getStreamType( streamIndex ) )
-	{
-		case AVMEDIA_TYPE_VIDEO:
-		case AVMEDIA_TYPE_AUDIO:
-		{
-			_streamTranscodersAllocated.push_back( new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile, profile, -1 , offset ) );
-			_streamTranscoders.push_back( _streamTranscodersAllocated.back() );
-			break;
-		}
-		case AVMEDIA_TYPE_DATA:
-		case AVMEDIA_TYPE_SUBTITLE:
-		case AVMEDIA_TYPE_ATTACHMENT:
-		default:
-		{
-			throw std::runtime_error( "unsupported media type in transcode setup" );
-		}
-	}
 }
 
 void Transcoder::addTranscodeStream( const std::string& filename, const size_t streamIndex, const size_t subStreamIndex, Profile::ProfileDesc& profile, const size_t offset )
