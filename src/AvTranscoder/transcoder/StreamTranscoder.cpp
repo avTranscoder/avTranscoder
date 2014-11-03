@@ -350,10 +350,10 @@ bool StreamTranscoder::processTranscode()
 	if( _currentEssence->readNextFrame( *_sourceBuffer ) )
 	{
 		if( _verbose )
-			std::cout << "convert " << _sourceBuffer->getSize() << std::endl;
+			std::cout << "convert (" << _sourceBuffer->getSize() << " bytes)" << std::endl;
 		_transform->convert( *_sourceBuffer, *_frameBuffer );
 		if( _verbose )
-			std::cout << "encode " << _frameBuffer->getSize() << std::endl;
+			std::cout << "encode (" << _frameBuffer->getSize() << " bytes)" << std::endl;
 		_outputEssence->encodeFrame( *_frameBuffer, data );
 	}
 	else
@@ -372,7 +372,7 @@ bool StreamTranscoder::processTranscode()
 	}
 
 	if( _verbose )
-		std::cout << "wrap (" << data.getSize() << ")" << std::endl;
+		std::cout << "wrap (" << data.getSize() << " bytes)" << std::endl;
 	_outputStream->wrap( data );
 	return true;
 }
@@ -402,10 +402,10 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 	if( _currentEssence->readNextFrame( *_sourceBuffer, subStreamIndex ) )
 	{
 		if( _verbose )
-			std::cout << "convert " << _sourceBuffer->getSize() << std::endl;
+			std::cout << "convert (" << _sourceBuffer->getSize() << " bytes)" << std::endl;
 		_transform->convert( *_sourceBuffer, *_frameBuffer );
 		if( _verbose )
-			std::cout << "encode " << _frameBuffer->getSize() << std::endl;
+			std::cout << "encode (" << _frameBuffer->getSize() << " bytes)" << std::endl;
 		_outputEssence->encodeFrame( *_frameBuffer, data );
 	}
 	else
@@ -423,7 +423,7 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 		}
 	}
 	if( _verbose )
-		std::cout << "wrap (" << data.getSize() << ")" << std::endl;
+		std::cout << "wrap (" << data.getSize() << " bytes)" << std::endl;
 	_outputStream->wrap( data );
 	return true;
 }
