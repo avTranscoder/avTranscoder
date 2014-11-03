@@ -167,3 +167,4 @@ def testRewrapVideoStream():
 		dst_metadata = dst_videoStream.metadatas[metadata]
 
 		assert_equals( src_metadata, dst_metadata )
+

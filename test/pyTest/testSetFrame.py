@@ -114,3 +114,4 @@ def testSetAudioFrame():
 	assert_equals( "signed 32 bits", dst_audioStream.sampleFormat )
 	assert_equals( 48000, dst_audioStream.sampleRate )
 	assert_equals( 1, dst_audioStream.channels )
+
