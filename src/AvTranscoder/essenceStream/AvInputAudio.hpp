@@ -25,11 +25,11 @@ public:
 private:
 	bool decodeNextFrame();
 
-	AvInputStream*     _inputStream;
-	AudioCodec _codec;
-	AVFrame*           _frame;
+	AvInputStream* _inputStream;  ///< Stream from which we read next frames
+	AudioCodec _codec;  ///< Audio decoder
+	AVFrame* _frame;  ///< Libav object to store decoded data
 
-	int                _selectedStream;
+	int _selectedStream;  ///< Index of the selected stream in the input file
 };
 
 }

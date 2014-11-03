@@ -28,11 +28,12 @@ public:
 	void setProfile( const Profile::ProfileDesc& desc );
 	
 private:
-	AvInputStream*     _inputStream;
-	VideoCodec _codec;
-	AVFrame*           _frame;
 
-	int                _selectedStream;
+	AvInputStream* _inputStream;  ///< Stream from which we read next frames
+	VideoCodec _codec;  ///< Video decoder
+	AVFrame* _frame;  ///< Libav object to store decoded data
+
+	int _selectedStream;  ///< Index of the selected stream in the input file
 };
 
 }
