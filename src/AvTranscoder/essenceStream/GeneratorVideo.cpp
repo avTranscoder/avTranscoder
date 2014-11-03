@@ -9,7 +9,6 @@ GeneratorVideo::GeneratorVideo( )
 	: IInputEssence( )
 	, _inputFrame( NULL )
 	, _frameDesc()
-	, _numberOfView( 1 )
 {
 }
 

@@ -25,8 +25,6 @@ public:
 private:
 	Frame* _inputFrame;  ///< Has link (no ownership)
 	VideoFrameDesc _frameDesc;
-
-	size_t         _numberOfView;
 };
 
 }
