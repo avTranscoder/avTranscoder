@@ -20,7 +20,7 @@ namespace avtranscoder
 AvInputVideo::AvInputVideo( AvInputStream& inputStream )
 	: IInputEssence()
 	, _inputStream   ( &inputStream )
-	, _codec( eCodecTypeDecoder, inputStream.getVideoCodec().getCodecId() )
+	, _codec( &inputStream.getVideoCodec() )
 	, _frame         ( NULL )
 	, _selectedStream( inputStream.getStreamIndex() )
 {
@@ -45,8 +45,8 @@ AvInputVideo::~AvInputVideo()
 
 void AvInputVideo::setup()
 {
-	AVCodecContext* avCodecContext = _codec.getAVCodecContext();
-	AVCodec* avCodec = _codec.getAVCodec();
+	AVCodecContext* avCodecContext = _codec->getAVCodecContext();
+	AVCodec* avCodec = _codec->getAVCodec();
 
 	// if( avCodec->capabilities & CODEC_CAP_TRUNCATED )
 	// 	avCodecContext->flags |= CODEC_FLAG_TRUNCATED;
@@ -92,7 +92,7 @@ bool AvInputVideo::readNextFrame( Frame& frameBuffer )
 		packet.data         = data.getPtr();
 		packet.size         = data.getSize();
 		
-		int ret = avcodec_decode_video2( _codec.getAVCodecContext(), _frame, &got_frame, &packet );
+		int ret = avcodec_decode_video2( _codec->getAVCodecContext(), _frame, &got_frame, &packet );
 		
 		if( ret < 0 )
 		{
@@ -127,12 +127,12 @@ bool AvInputVideo::readNextFrame( Frame& frameBuffer, const size_t subStreamInde
 
 void AvInputVideo::flushDecoder()
 {
-	avcodec_flush_buffers( _codec.getAVCodecContext() );
+	avcodec_flush_buffers( _codec->getAVCodecContext() );
 }
 
 void AvInputVideo::setProfile( const Profile::ProfileDesc& desc )
 {
-	Context codecContext( _codec.getAVCodecContext() );
+	Context codecContext( _codec->getAVCodecContext() );
 
 	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
 	{

@@ -20,7 +20,7 @@ namespace avtranscoder
 AvInputAudio::AvInputAudio( AvInputStream& inputStream ) 
 	: IInputEssence()
 	, _inputStream   ( &inputStream )
-	, _codec( eCodecTypeDecoder, inputStream.getAudioCodec().getCodecId() )
+	, _codec( &inputStream.getAudioCodec() )
 	, _frame         ( NULL )
 	, _selectedStream( inputStream.getStreamIndex() )
 {
@@ -46,8 +46,8 @@ AvInputAudio::~AvInputAudio()
 
 void AvInputAudio::setup()
 {
-	AVCodecContext* avCodecContext = _codec.getAVCodecContext();
-	AVCodec* avCodec = _codec.getAVCodec();
+	AVCodecContext* avCodecContext = _codec->getAVCodecContext();
+	AVCodec* avCodec = _codec->getAVCodec();
 
 	avCodecContext->channels = _inputStream->getAudioCodec().getAudioFrameDesc().getChannels();
 	
@@ -85,7 +85,7 @@ bool AvInputAudio::readNextFrame( Frame& frameBuffer )
 	if( ! decodeNextFrame() )
 		return false;
 
-	AVCodecContext* avCodecContext = _codec.getAVCodecContext();
+	AVCodecContext* avCodecContext = _codec->getAVCodecContext();
 
 	size_t decodedSize = av_samples_get_buffer_size(
 		NULL, avCodecContext->channels,
@@ -121,9 +121,9 @@ bool AvInputAudio::readNextFrame( Frame& frameBuffer, const size_t subStreamInde
 
 	const int output_nbChannels = 1;
 	const int output_align = 1;
-	size_t decodedSize = av_samples_get_buffer_size(NULL, output_nbChannels, _frame->nb_samples, _codec.getAVCodecContext()->sample_fmt, output_align);
+	size_t decodedSize = av_samples_get_buffer_size(NULL, output_nbChannels, _frame->nb_samples, _codec->getAVCodecContext()->sample_fmt, output_align);
 	
-	size_t nbSubStreams = _codec.getAVCodecContext()->channels;
+	size_t nbSubStreams = _codec->getAVCodecContext()->channels;
 	size_t bytePerSample = av_get_bytes_per_sample( (AVSampleFormat)_frame->format );
 
 	if( subStreamIndex > nbSubStreams - 1 )
@@ -172,7 +172,7 @@ bool AvInputAudio::decodeNextFrame()
 		packet.data         = data.getPtr();
 		packet.size         = data.getSize();
 		
-		int ret = avcodec_decode_audio4( _codec.getAVCodecContext(), _frame, &got_frame, &packet );
+		int ret = avcodec_decode_audio4( _codec->getAVCodecContext(), _frame, &got_frame, &packet );
 
 		if( ret < 0 )
 		{
