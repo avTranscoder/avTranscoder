@@ -12,7 +12,7 @@ class AvExport GeneratorVideo : public IInputEssence
 public:
 	GeneratorVideo( );
 
-	// Stream properties
+	VideoFrameDesc& getVideoFrameDesc() { return _frameDesc; }
 	void setVideoFrameDesc( const VideoFrameDesc& frameDesc );
 	
 	void setup() {}

@@ -12,6 +12,7 @@ class AvExport GeneratorAudio : public IInputEssence
 public:
 	GeneratorAudio( );
 
+	AudioFrameDesc& getAudioFrameDesc() { return _frameDesc; }
 	void setAudioFrameDesc( const AudioFrameDesc& frameDesc );
 	
 	void setup() {}
