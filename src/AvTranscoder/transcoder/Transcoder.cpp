@@ -364,23 +364,16 @@ void Transcoder::addDummyStream( const Profile::ProfileDesc& profile, const ICod
 	if( ! profile.count( constants::avProfileType ) )
 		throw std::runtime_error( "unable to found stream type (audio, video, etc.)" );
 
-	if( profile.find( constants::avProfileType )->second == constants::avProfileTypeAudio )
+	if( _verbose )
 	{
-		if( _verbose )
+		if( profile.find( constants::avProfileType )->second == constants::avProfileTypeVideo )
+			std::cout << "add a generated video stream" << std::endl;
+		else if( profile.find( constants::avProfileType )->second == constants::avProfileTypeAudio )
 			std::cout << "add a generated audio stream" << std::endl;
-
-		_streamTranscodersAllocated.push_back( new StreamTranscoder( codec, _outputFile, profile ) );
-		_streamTranscoders.push_back( _streamTranscodersAllocated.back() );
 	}
 
-	if( profile.find( constants::avProfileType )->second == constants::avProfileTypeVideo )
-	{
-		if( _verbose )
-			std::cout << "add generated video stream" << std::endl;
-
-		_streamTranscodersAllocated.push_back( new StreamTranscoder( codec, _outputFile, profile ) );
-		_streamTranscoders.push_back( _streamTranscodersAllocated.back() );
-	}
+	_streamTranscodersAllocated.push_back( new StreamTranscoder( codec, _outputFile, profile ) );
+	_streamTranscoders.push_back( _streamTranscodersAllocated.back() );
 }
 
 InputFile* Transcoder::addInputFile( const std::string& filename, const size_t streamIndex )
