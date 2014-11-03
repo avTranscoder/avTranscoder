@@ -22,7 +22,7 @@ AvInputVideo::AvInputVideo( AvInputStream& inputStream )
 	, _inputStream   ( &inputStream )
 	, _codec( eCodecTypeDecoder, inputStream.getVideoCodec().getCodecId() )
 	, _frame         ( NULL )
-	, _selectedStream( -1 )
+	, _selectedStream( inputStream.getStreamIndex() )
 {
 }
 

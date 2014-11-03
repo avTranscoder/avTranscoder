@@ -22,7 +22,7 @@ AvInputAudio::AvInputAudio( AvInputStream& inputStream )
 	, _inputStream   ( &inputStream )
 	, _codec( eCodecTypeDecoder, inputStream.getAudioCodec().getCodecId() )
 	, _frame         ( NULL )
-	, _selectedStream( -1 )
+	, _selectedStream( inputStream.getStreamIndex() )
 {
 }
 
