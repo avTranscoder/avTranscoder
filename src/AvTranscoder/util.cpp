@@ -110,6 +110,10 @@ std::vector<std::string> getFormatsLongNames()
 	AVOutputFormat* fmt = NULL;
 	while( ( fmt = av_oformat_next( fmt ) ) )
 	{
+		// skip undefined codec
+		if( fmt->video_codec == AV_CODEC_ID_NONE )
+			continue;
+
 		if( ! fmt->long_name )
 			continue;
 
@@ -124,6 +128,10 @@ std::vector<std::string> getFormatsShortNames()
 	AVOutputFormat* fmt = NULL;
 	while( ( fmt = av_oformat_next( fmt ) ) )
 	{
+		// skip undefined codec
+		if( fmt->video_codec == AV_CODEC_ID_NONE )
+			continue;
+
 		if( ! fmt->name )
 			continue;
 
