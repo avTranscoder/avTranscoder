@@ -4,9 +4,9 @@
 namespace avtranscoder
 {
 
-void loadWave( Profile::ProfilesDesc& profiles )
+void loadWave( ProfileLoader::Profiles& profiles )
 {
-	Profile::ProfileDesc wave48k;
+	ProfileLoader::Profile wave48k;
 	wave48k[ constants::avProfileType ] = constants::avProfileTypeAudio;
 	wave48k[ constants::avProfileSampleRate ] = "48000";
 

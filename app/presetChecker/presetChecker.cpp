@@ -1,7 +1,7 @@
 
 #include <iostream>
 #include <iomanip>
-#include <AvTranscoder/Profile.hpp>
+#include <AvTranscoder/ProfileLoader.hpp>
 
 #include <AvTranscoder/essenceStream/AvOutputVideo.hpp>
 #include <AvTranscoder/essenceStream/AvOutputAudio.hpp>
@@ -9,7 +9,7 @@
 
 int main( int argc, char** argv )
 {
-	avtranscoder::Profile p;
+	avtranscoder::ProfileLoader p;
 	p.loadProfiles();
 
 	std::cout << p.getProfiles().size() << std::endl;

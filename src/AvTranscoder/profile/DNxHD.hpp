@@ -4,9 +4,9 @@
 namespace avtranscoder
 {
 
-void loadDNxHD( Profile::ProfilesDesc& profiles )
+void loadDNxHD( ProfileLoader::Profiles& profiles )
 {
-	Profile::ProfileDesc dnxhd120;
+	ProfileLoader::Profile dnxhd120;
 	dnxhd120[ constants::avProfileIdentificator ] = "dnxhd120";
 	dnxhd120[ constants::avProfileIdentificatorHuman ] = "DNxHD 120";
 	dnxhd120[ constants::avProfileType ] = constants::avProfileTypeVideo;
@@ -16,7 +16,7 @@ void loadDNxHD( Profile::ProfilesDesc& profiles )
 	dnxhd120[ "g" ] = "1";
 	dnxhd120[ constants::avProfileFrameRate ] = "25";
 
-	Profile::ProfileDesc dnxhd185;
+	ProfileLoader::Profile dnxhd185;
 	dnxhd185[ constants::avProfileIdentificator ] = "dnxhd185";
 	dnxhd185[ constants::avProfileIdentificatorHuman ] = "DNxHD 185";
 	dnxhd185[ constants::avProfileType ] = constants::avProfileTypeVideo;
@@ -26,7 +26,7 @@ void loadDNxHD( Profile::ProfilesDesc& profiles )
 	dnxhd185[ "g" ] = "1";
 	dnxhd185[ constants::avProfileFrameRate ] = "25";
 
-	Profile::ProfileDesc dnxhd185x;
+	ProfileLoader::Profile dnxhd185x;
 	dnxhd185x[ constants::avProfileIdentificator ] = "dnxhd185x";
 	dnxhd185x[ constants::avProfileIdentificatorHuman ] = "DNxHD 185 X";
 	dnxhd185x[ constants::avProfileType ] = constants::avProfileTypeVideo;

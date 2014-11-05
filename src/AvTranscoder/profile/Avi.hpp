@@ -4,9 +4,9 @@
 namespace avtranscoder
 {
 
-void loadAvi( Profile::ProfilesDesc& profiles )
+void loadAvi( ProfileLoader::Profiles& profiles )
 {
-	Profile::ProfileDesc avi;
+	ProfileLoader::Profile avi;
 	avi[ constants::avProfileIdentificator ] = "avi";
 	avi[ constants::avProfileIdentificatorHuman ] = "AVI (Audio Video Interleaved)";
 	avi[ constants::avProfileType ] = constants::avProfileTypeFormat;

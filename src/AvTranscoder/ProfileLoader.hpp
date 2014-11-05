@@ -28,38 +28,31 @@ namespace constants
 	const std::string avProfileChannel = "ac";
 }
 
-class AvExport Profile
+class AvExport ProfileLoader
 {
 public:
-
-
-public:
-	// typedef std::pair< std::string, std::string > KeyDesc;
-	typedef std::map< std::string, std::string > ProfileDesc;
-	typedef std::vector< ProfileDesc > ProfilesDesc;
+	typedef std::map< std::string, std::string > Profile;
+	typedef std::vector< Profile > Profiles;
 
 public:
-	Profile( bool autoload = false );
+	ProfileLoader( bool autoload = false );
 
 	void loadProfiles( const std::string& avProfilesPath = "" );
 	void loadProfile( const std::string& avProfileFile );
 
-	void update( const ProfileDesc& profile );
+	void update( const Profile& profile );
 	
-	const ProfilesDesc& getProfiles();
+	const Profiles& getProfiles();
 
-	ProfilesDesc getFormatProfiles();
-	ProfilesDesc getVideoProfiles();
-	ProfilesDesc getAudioProfiles();
+	Profiles getFormatProfiles();
+	Profiles getVideoProfiles();
+	Profiles getAudioProfiles();
 
-	ProfileDesc& getProfile( const std::string& searchProfile );
+	Profile& getProfile( const std::string& searchProfile );
 
 private:
-	ProfilesDesc _profiles;
-
+	Profiles _profiles;
 };
-
-
 
 }
 #endif
