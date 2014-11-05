@@ -12,7 +12,7 @@
 
 #include <AvTranscoder/progress/IProgress.hpp>
 
-#include <AvTranscoder/Profile.hpp>
+#include <AvTranscoder/ProfileLoader.hpp>
 
 #include <string>
 #include <vector>
@@ -119,9 +119,9 @@ public:
 	
 	/**
 	 * @brief Set the format of the input file
-	 * @param desc: the profile of the input format
+	 * @param profile: the profile of the input format
 	 */
-	virtual void setProfile( const Profile::ProfileDesc& desc );
+	virtual void setProfile( const ProfileLoader::Profile& profile );
 
 protected:
 	AVFormatContext*            _formatContext;

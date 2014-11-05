@@ -211,11 +211,11 @@ bool InputFile::getReadStream( const size_t streamIndex )
 	return _inputStreams.at( streamIndex )->getBufferred();
 }
 
-void InputFile::setProfile( const Profile::ProfileDesc& desc )
+void InputFile::setProfile( const ProfileLoader::Profile& profile )
 {	
 	Context formatContext( _formatContext );
 	
-	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
+	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
 	{
 		if( (*it).first == constants::avProfileIdentificator ||
 			(*it).first == constants::avProfileIdentificatorHuman ||

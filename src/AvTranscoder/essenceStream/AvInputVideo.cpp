@@ -127,11 +127,11 @@ void AvInputVideo::flushDecoder()
 	avcodec_flush_buffers( _codec.getAVCodecContext() );
 }
 
-void AvInputVideo::setProfile( const Profile::ProfileDesc& desc )
+void AvInputVideo::setProfile( const ProfileLoader::Profile& profile )
 {
 	Context codecContext( _codec.getAVCodecContext() );
 
-	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
+	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
 	{
 		if( (*it).first == constants::avProfileIdentificator ||
 			(*it).first == constants::avProfileIdentificatorHuman ||

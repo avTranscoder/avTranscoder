@@ -1,4 +1,4 @@
-#include "Profile.hpp"
+#include "ProfileLoader.hpp"
 
 #include "common.hpp"
 
@@ -16,18 +16,18 @@
 namespace avtranscoder
 {
 
-Profile::Profile( bool autoload )
+ProfileLoader::ProfileLoader( bool autoload )
 {
 	if( autoload )
 		loadProfiles();
 }
 
-void Profile::loadProfile( const std::string& avProfileFile )
+void ProfileLoader::loadProfile( const std::string& avProfileFile )
 {
 	std::ifstream infile;
 	infile.open( avProfileFile.c_str(), std::ifstream::in );
 	
-	Profile::ProfileDesc customProfile;
+	ProfileLoader::Profile customProfile;
 
 	std::string line;
 	while( std::getline( infile, line ) )
@@ -50,7 +50,7 @@ void Profile::loadProfile( const std::string& avProfileFile )
 	}
 }
 
-void Profile::loadProfiles( const std::string& avProfilesPath )
+void ProfileLoader::loadProfiles( const std::string& avProfilesPath )
 {
 	loadXdCamHD422( _profiles );
 	loadDNxHD( _profiles );
@@ -83,11 +83,11 @@ void Profile::loadProfiles( const std::string& avProfilesPath )
 	}
 }
 
-void Profile::update( const ProfileDesc& profile )
+void ProfileLoader::update( const Profile& profile )
 {
 	std::string profileId( profile.find( constants::avProfileIdentificator )->second );
 	size_t profileIndex = 0;
-	for( ProfilesDesc::iterator it = _profiles.begin(); it != _profiles.end(); ++it )
+	for( Profiles::iterator it = _profiles.begin(); it != _profiles.end(); ++it )
 	{
 		if( (*it).find( constants::avProfileIdentificator )->second == profileId )
 		{
@@ -100,16 +100,16 @@ void Profile::update( const ProfileDesc& profile )
 	_profiles.push_back( profile );
 }
 
-const Profile::ProfilesDesc& Profile::getProfiles()
+const ProfileLoader::Profiles& ProfileLoader::getProfiles()
 {
 	return _profiles;
 }
 
-Profile::ProfilesDesc Profile::getFormatProfiles()
+ProfileLoader::Profiles ProfileLoader::getFormatProfiles()
 {
-	ProfilesDesc profiles;
+	Profiles profiles;
 
-	for( ProfilesDesc::iterator it = _profiles.begin(); it != _profiles.end(); ++it )
+	for( Profiles::iterator it = _profiles.begin(); it != _profiles.end(); ++it )
 	{
 		if( (*it).find( constants::avProfileType )->second == constants::avProfileTypeFormat )
 			profiles.push_back( *it );
@@ -118,11 +118,11 @@ Profile::ProfilesDesc Profile::getFormatProfiles()
 	return profiles;
 }
 
-Profile::ProfilesDesc Profile::getVideoProfiles()
+ProfileLoader::Profiles ProfileLoader::getVideoProfiles()
 {
-	ProfilesDesc profiles;
+	Profiles profiles;
 
-	for( ProfilesDesc::iterator it = _profiles.begin(); it != _profiles.end(); ++it )
+	for( Profiles::iterator it = _profiles.begin(); it != _profiles.end(); ++it )
 	{
 		if( (*it).find( constants::avProfileType )->second == constants::avProfileTypeVideo )
 			profiles.push_back( *it );
@@ -131,11 +131,11 @@ Profile::ProfilesDesc Profile::getVideoProfiles()
 	return profiles;
 }
 
-Profile::ProfilesDesc Profile::getAudioProfiles()
+ProfileLoader::Profiles ProfileLoader::getAudioProfiles()
 {
-	ProfilesDesc profiles;
+	Profiles profiles;
 
-	for( ProfilesDesc::iterator it = _profiles.begin(); it != _profiles.end(); ++it )
+	for( Profiles::iterator it = _profiles.begin(); it != _profiles.end(); ++it )
 	{
 		if( (*it).find( constants::avProfileType )->second == constants::avProfileTypeAudio )
 			profiles.push_back( *it );
@@ -144,9 +144,9 @@ Profile::ProfilesDesc Profile::getAudioProfiles()
 	return profiles;
 }
 
-Profile::ProfileDesc& Profile::getProfile( const std::string& searchProfile )
+ProfileLoader::Profile& ProfileLoader::getProfile( const std::string& searchProfile )
 {
-	for( ProfilesDesc::iterator it = _profiles.begin(); it != _profiles.end(); ++it )
+	for( Profiles::iterator it = _profiles.begin(); it != _profiles.end(); ++it )
 	{
 		if( (*it).find( constants::avProfileIdentificator )->second == searchProfile )
 		{

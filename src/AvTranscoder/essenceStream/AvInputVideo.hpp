@@ -3,7 +3,7 @@
 
 #include "IInputEssence.hpp"
 #include <AvTranscoder/codec/VideoCodec.hpp>
-#include <AvTranscoder/Profile.hpp>
+#include <AvTranscoder/ProfileLoader.hpp>
 
 struct AVFrame;
 
@@ -25,7 +25,7 @@ public:
 
 	void flushDecoder();
 	
-	void setProfile( const Profile::ProfileDesc& desc );
+	void setProfile( const ProfileLoader::Profile& profile );
 	
 private:
 	AvInputStream*     _inputStream;

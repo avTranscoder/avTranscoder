@@ -3,7 +3,7 @@
 
 #include "IOutputEssence.hpp"
 #include <AvTranscoder/codec/VideoCodec.hpp>
-#include <AvTranscoder/Profile.hpp>
+#include <AvTranscoder/ProfileLoader.hpp>
 
 namespace avtranscoder
 {
@@ -25,7 +25,7 @@ public:
 	 */
 	bool encodeFrame( Frame& codedFrame );
 
-	void setProfile( const Profile::ProfileDesc& desc, const avtranscoder::VideoFrameDesc& frameDesc );
+	void setProfile( const ProfileLoader::Profile& profile, const avtranscoder::VideoFrameDesc& frameDesc );
 	
 	ICodec& getCodec() { return _codec; }
 	VideoCodec& getVideoCodec() { return _codec; }

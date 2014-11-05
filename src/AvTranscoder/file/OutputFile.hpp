@@ -11,7 +11,7 @@
 
 #include <AvTranscoder/codedStream/AvOutputStream.hpp>
 
-#include <AvTranscoder/Profile.hpp>
+#include <AvTranscoder/ProfileLoader.hpp>
 
 #include <string>
 #include <vector>
@@ -98,7 +98,7 @@ public:
 	 * @brief Set the format of the output file
 	 * @param desc: the profile of the output format
 	 */
-	virtual void setProfile( const Profile::ProfileDesc& desc );
+	virtual void setProfile( const ProfileLoader::Profile& profile );
 	
 	/**
 	 * @brief Add metadata to the output file.
