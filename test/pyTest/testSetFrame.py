@@ -9,6 +9,7 @@ def testSetVideoFrame():
 	"""
 	Generate a video stream, and set its frame during process.
 	"""
+	profile = av.Profile(True)
 
 	# create output
 	outputFileName = "testSetVideoFrame.mov"
@@ -26,13 +27,13 @@ def testSetVideoFrame():
 
 	imageDesc.setPixel( inputPixel );
 
-	inputVideoCodec = av.VideoCodec( av.eCodecTypeEncoder, "mpeg2video" );
-	inputVideoCodec.setImageParameters( imageDesc );
+	video = av.GeneratorVideo()
+	video.setVideoFrameDesc( imageDesc )
 
 	# create transcoder and add a video stream
 	transcoder = av.Transcoder( ouputFile )
-	transcoder.add(  "", 0, "xdcamhd422", inputVideoCodec )
-	videoEssence = transcoder.getStreamTranscoder( 0 ).getCurrentEssence()
+	streamTranscoder = av.StreamTranscoder( video, ouputFile, profile.getProfile( "xdcamhd422" ) )
+	transcoder.add( streamTranscoder )
 
 	# start process
 	transcoder.init()
@@ -44,7 +45,7 @@ def testSetVideoFrame():
 		# set video frame
 		frame = av.VideoFrame( imageDesc )
 		frame.getBuffer().assign(frame.getBuffer().size(), i)
-		videoEssence.setFrame( frame )
+		video.setFrame( frame )
 
 	# end process
 	ouputFile.endWrap()
@@ -63,11 +64,11 @@ def testSetVideoFrame():
 	assert_equals( 16, dst_videoStream.dar.num )
 	assert_equals( 9, dst_videoStream.dar.den )
 
-
 def testSetAudioFrame():
 	"""
 	Generate a audio stream, and set its frame during process.
 	"""
+	profile = av.Profile(True)
 
 	# create output
 	outputFileName = "testSetAudioFrame.wav"
@@ -79,13 +80,13 @@ def testSetAudioFrame():
 	audioDesc.setChannels( 1 )
 	audioDesc.setSampleFormat( "s32" )
 
-	inputAudioCodec = av.AudioCodec( av.eCodecTypeEncoder, "pcm_s24le" );
-	inputAudioCodec.setAudioParameters( audioDesc );
+	audio = av.GeneratorAudio()
+	audio.setAudioFrameDesc( audioDesc )
 
 	# create transcoder and add a video stream
 	transcoder = av.Transcoder( ouputFile )
-	transcoder.add(  "", 0, "wave24b48kmono", inputAudioCodec )
-	audioEssence = transcoder.getStreamTranscoder( 0 ).getCurrentEssence()
+	streamTranscoder = av.StreamTranscoder( audio, ouputFile, profile.getProfile( "wave24b48kmono" ) )
+	transcoder.add(  streamTranscoder )
 
 	# start process
 	transcoder.init()
@@ -97,7 +98,7 @@ def testSetAudioFrame():
 		# set video frame
 		frame = av.AudioFrame( audioDesc )
 		frame.getBuffer().assign(frame.getBuffer().size(), i)
-		audioEssence.setFrame( frame )
+		audio.setFrame( frame )
 
 	# end process
 	ouputFile.endWrap()

@@ -162,7 +162,7 @@ StreamTranscoder::StreamTranscoder(
 }
 
 StreamTranscoder::StreamTranscoder(
-		const ICodec& inputCodec,
+		IInputEssence& inputEssence,
 		OutputFile& outputFile,
 		const Profile::ProfileDesc& profile
 	)
@@ -170,7 +170,7 @@ StreamTranscoder::StreamTranscoder(
 	, _outputStream( NULL )
 	, _sourceBuffer( NULL )
 	, _frameBuffer( NULL )
-	, _inputEssence( NULL )
+	, _inputEssence( &inputEssence )
 	, _generatorEssence( NULL )
 	, _currentEssence( NULL )
 	, _outputEssence( NULL )
@@ -189,14 +189,8 @@ StreamTranscoder::StreamTranscoder(
 
 	if( profile.find( constants::avProfileType )->second == constants::avProfileTypeVideo )
 	{
-		// Create input essence based on a given input VideoCodec
-		GeneratorVideo* generatorVideo = new GeneratorVideo();
-		const VideoCodec& inputVideoCodec = static_cast<const VideoCodec&>( inputCodec );
-		generatorVideo->setVideoFrameDesc( inputVideoCodec.getVideoFrameDesc() );
-		_inputEssence = generatorVideo;
-
 		// Create inputFrame, and outputFrame which is based on a given profile
-		VideoFrameDesc inputFrameDesc = inputVideoCodec.getVideoFrameDesc();
+		VideoFrameDesc inputFrameDesc = static_cast<GeneratorVideo&>( inputEssence ).getVideoFrameDesc();
 		VideoFrameDesc outputFrameDesc = inputFrameDesc;
 		outputFrameDesc.setParameters( profile );
 		_sourceBuffer = new VideoFrame( inputFrameDesc );
@@ -216,14 +210,8 @@ StreamTranscoder::StreamTranscoder(
 	}
 	else if( profile.find( constants::avProfileType )->second == constants::avProfileTypeAudio )
 	{
-		// Create input essence based on a given input AudioCodec
-		GeneratorAudio* generatorAudio = new GeneratorAudio();
-		const AudioCodec& inputAudioCodec = static_cast<const AudioCodec&>( inputCodec );
-		generatorAudio->setAudioFrameDesc( inputAudioCodec.getAudioFrameDesc() );
-		_inputEssence = generatorAudio;
-
 		// Create inputFrame, and outputFrame which is based on a given profile
-		AudioFrameDesc inputFrameDesc = inputAudioCodec.getAudioFrameDesc();
+		AudioFrameDesc inputFrameDesc = static_cast<GeneratorAudio&>( inputEssence ).getAudioFrameDesc();
 		AudioFrameDesc outputFrameDesc = inputFrameDesc;
 		outputFrameDesc.setParameters( profile );
 		_sourceBuffer = new AudioFrame( inputFrameDesc );
@@ -251,10 +239,12 @@ StreamTranscoder::~StreamTranscoder()
 {
 	delete _frameBuffer;
 	delete _sourceBuffer;
+	// _inputEssence is a link to an existing InputEssence if _generatorEssence is NULL
+	if( _generatorEssence )
+		delete _inputEssence;
 	delete _generatorEssence;
 	delete _outputEssence;
 	delete _transform;
-	delete _inputEssence;
 }
 
 void StreamTranscoder::init()

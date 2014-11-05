@@ -6,10 +6,8 @@
 #include <AvTranscoder/file/InputFile.hpp>
 #include <AvTranscoder/file/OutputFile.hpp>
 
-#include <AvTranscoder/codedStream/IInputStream.hpp>
-
-#include <AvTranscoder/essenceStream/GeneratorAudio.hpp>
-#include <AvTranscoder/essenceStream/GeneratorVideo.hpp>
+#include <AvTranscoder/essenceStream/IInputEssence.hpp>
+#include <AvTranscoder/essenceStream/IOutputEssence.hpp>
 
 #include <AvTranscoder/progress/IProgress.hpp>
 
@@ -171,6 +169,8 @@ private:
 
 	std::vector< StreamTranscoder* > _streamTranscoders;  ///< All streams of the output media file after process.
 	std::vector< StreamTranscoder* > _streamTranscodersAllocated;  ///< Streams allocated inside the Transcoder.
+
+	std::vector< IInputEssence* > _internalEssences;  ///< Internal essences allocated inside the Transcoder.
 
 	Profile _profile;  ///< Objet to get existing profiles, and add new ones for the Transcoder.
 

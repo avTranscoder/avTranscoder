@@ -1,5 +1,8 @@
 #include "Transcoder.hpp"
 
+#include <AvTranscoder/essenceStream/GeneratorAudio.hpp>
+#include <AvTranscoder/essenceStream/GeneratorVideo.hpp>
+
 #include <limits>
 #include <iostream>
 #include <algorithm>
@@ -27,6 +30,10 @@ Transcoder::~Transcoder()
 		delete (*it);
 	}
 	for( std::vector< StreamTranscoder* >::iterator it = _streamTranscodersAllocated.begin(); it != _streamTranscodersAllocated.end(); ++it )
+	{
+		delete (*it);
+	}
+	for( std::vector< IInputEssence* >::iterator it = _internalEssences.begin(); it != _internalEssences.end(); ++it )
 	{
 		delete (*it);
 	}
@@ -364,16 +371,30 @@ void Transcoder::addDummyStream( const Profile::ProfileDesc& profile, const ICod
 	if( ! profile.count( constants::avProfileType ) )
 		throw std::runtime_error( "unable to found stream type (audio, video, etc.)" );
 
-	if( _verbose )
+	if( profile.find( constants::avProfileType )->second == constants::avProfileTypeVideo )
 	{
-		if( profile.find( constants::avProfileType )->second == constants::avProfileTypeVideo )
+		if( _verbose )
 			std::cout << "add a generated video stream" << std::endl;
-		else if( profile.find( constants::avProfileType )->second == constants::avProfileTypeAudio )
-			std::cout << "add a generated audio stream" << std::endl;
-	}
 
-	_streamTranscodersAllocated.push_back( new StreamTranscoder( codec, _outputFile, profile ) );
-	_streamTranscoders.push_back( _streamTranscodersAllocated.back() );
+		GeneratorVideo* video = new GeneratorVideo();
+		video->setVideoFrameDesc( static_cast<const VideoCodec&>( codec ).getVideoFrameDesc() );
+		_internalEssences.push_back( video );
+
+		_streamTranscodersAllocated.push_back( new StreamTranscoder( *video, _outputFile, profile ) );
+		_streamTranscoders.push_back( _streamTranscodersAllocated.back() );
+	}
+	else if( profile.find( constants::avProfileType )->second == constants::avProfileTypeAudio )
+	{
+		if( _verbose )
+			std::cout << "add a generated audio stream" << std::endl;
+
+		GeneratorAudio* audio = new GeneratorAudio();
+		audio->setAudioFrameDesc( static_cast<const AudioCodec&>( codec ).getAudioFrameDesc() );
+		_internalEssences.push_back( audio );
+
+		_streamTranscodersAllocated.push_back( new StreamTranscoder( *audio, _outputFile, profile ) );
+		_streamTranscoders.push_back( _streamTranscodersAllocated.back() );
+	}
 }
 
 InputFile* Transcoder::addInputFile( const std::string& filename, const size_t streamIndex )
