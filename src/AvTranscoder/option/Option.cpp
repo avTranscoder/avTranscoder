@@ -88,7 +88,7 @@ std::string Option::getDefaultString() const
 
 std::pair<int, int> Option::getDefaultRatio() const
 {
-	return std::pair<int, int>( _avOption->default_val.q.num, _avOption->default_val.q.den );
+	return std::make_pair( _avOption->default_val.q.num, _avOption->default_val.q.den );
 }
 //av_make_error_string
 void Option::setFlag( const std::string& flag, const bool enable )
