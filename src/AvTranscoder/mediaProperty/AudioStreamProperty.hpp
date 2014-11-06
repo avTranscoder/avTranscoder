@@ -43,23 +43,9 @@ avtranscoder::AudioProperties audioStreamInfo( const AVFormatContext* formatCont
 	if( channelDescription )
 		ap.channelDescription = std::string( channelDescription );
 #endif
-	
-	std::string sampleFormat = "";
-	switch( codec_context->sample_fmt )
-	{
-		case AV_SAMPLE_FMT_NONE : ap.sampleFormat = "none"; break;
-		case AV_SAMPLE_FMT_U8   : ap.sampleFormat = "unsigned 8 bits"; break;
-		case AV_SAMPLE_FMT_S16  : ap.sampleFormat = "signed 16 bits"; break;
-		case AV_SAMPLE_FMT_S32  : ap.sampleFormat = "signed 32 bits"; break;
-		case AV_SAMPLE_FMT_FLT  : ap.sampleFormat = "float"; break;
-		case AV_SAMPLE_FMT_DBL  : ap.sampleFormat = "double"; break;
-		case AV_SAMPLE_FMT_U8P  : ap.sampleFormat = "unsigned 8 bits, planar"; break;
-		case AV_SAMPLE_FMT_S16P : ap.sampleFormat = "signed 16 bits, planar"; break;
-		case AV_SAMPLE_FMT_S32P : ap.sampleFormat = "signed 32 bits, planar"; break;
-		case AV_SAMPLE_FMT_FLTP : ap.sampleFormat = "float, planar"; break;
-		case AV_SAMPLE_FMT_DBLP : ap.sampleFormat = "double, planar"; break;
-		case AV_SAMPLE_FMT_NB   : ap.sampleFormat = "Number of sample formats."; break;
-	}
+        const char* fmtName = av_get_sample_fmt_name( codec_context->sample_fmt );
+        if( fmtName )
+            ap.sampleFormat = std::string( fmtName );
 
 	return ap;
 }

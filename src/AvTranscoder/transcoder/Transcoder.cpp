@@ -1,8 +1,11 @@
 #include "Transcoder.hpp"
 
+#include <AvTranscoder/progress/NoDisplayProgress.hpp>
+
 #include <limits>
 #include <iostream>
 #include <algorithm>
+#include <sstream>
 
 namespace avtranscoder
 {
@@ -83,9 +86,7 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, Pro
 
 	// Check filename
 	if( ! filename.length() )
-	{
 		throw std::runtime_error( "Can't transcode a stream without filename indicated" );
-	}
 
 	if( _verbose )
 		std::cout << "Add transcoded stream" << std::endl;
@@ -132,8 +133,33 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 			addRewrapStream( filename, streamIndex );
 			return;
 		}
+		// Transcode (transparent for the user)
 		else
-			throw std::runtime_error( "Can't demultiplexing and re-wrap a stream" );
+		{
+			if( _verbose )
+				std::cout << "Add transcoded stream (because of demultiplexing)" << std::endl;
+			// Create profile as input configuration
+			InputFile inputFile( filename );
+			NoDisplayProgress progress;
+			inputFile.analyse( progress, InputFile::eAnalyseLevelFast );
+			AudioProperties audioProperties = inputFile.getProperties().audioStreams.at( streamIndex );  // Warning: only manage audio case
+
+			ProfileLoader::Profile profile;
+			profile[ constants::avProfileIdentificator ] = "presetRewrap";
+			profile[ constants::avProfileIdentificatorHuman ] = "Preset rewrap";
+			profile[ constants::avProfileType ] = avtranscoder::constants::avProfileTypeAudio;
+			profile[ constants::avProfileCodec ] = audioProperties.codecName;
+			profile[ constants::avProfileSampleFormat ] = audioProperties.sampleFormat;
+			std::stringstream ss;
+			ss << audioProperties.sampleRate;
+			profile[ constants::avProfileSampleRate ] = ss.str();
+			profile[ constants::avProfileChannel ] = "1";
+
+			// Add profile
+			_profileLoader.update( profile );
+
+			add( filename, streamIndex, subStreamIndex, profile, offset );
+		}
 	}
 	// Transcode
 	else
@@ -163,8 +189,33 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 			addRewrapStream( filename, streamIndex );
 			return;
 		}
+		// Transcode (transparent for the user)
 		else
-			throw std::runtime_error( "Can't demultiplexing and re-wrap a stream" );
+		{
+			if( _verbose )
+				std::cout << "Add transcoded stream (because of demultiplexing)" << std::endl;
+			// Create profile as input configuration
+			InputFile inputFile( filename );
+			NoDisplayProgress progress;
+			inputFile.analyse( progress, InputFile::eAnalyseLevelFast );
+			AudioProperties audioProperties = inputFile.getProperties().audioStreams.at( streamIndex );  // Warning: only manage audio case
+
+			ProfileLoader::Profile profile;
+			profile[ constants::avProfileIdentificator ] = "presetRewrap";
+			profile[ constants::avProfileIdentificatorHuman ] = "Preset rewrap";
+			profile[ constants::avProfileType ] = avtranscoder::constants::avProfileTypeAudio;
+			profile[ constants::avProfileCodec ] = audioProperties.codecName;
+			profile[ constants::avProfileSampleFormat ] = audioProperties.sampleFormat;
+			std::stringstream ss;
+			ss << audioProperties.sampleRate;
+			profile[ constants::avProfileSampleRate ] = ss.str();
+			profile[ constants::avProfileChannel ] = "1";
+
+			// Add profile
+			_profileLoader.update( profile );
+
+			add( filename, streamIndex, subStreamIndex, profile, offset );
+		}
 	}
 	// Transcode
 	else
@@ -188,9 +239,7 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 
 	// Check filename
 	if( ! filename.length() )
-	{
 		throw std::runtime_error( "Can't transcode a stream without filename indicated" );
-	}
 
 	if( _verbose )
 		std::cout << "Add transcoded for substream " << subStreamIndex << std::endl;
