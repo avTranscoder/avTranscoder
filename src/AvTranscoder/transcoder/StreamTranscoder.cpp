@@ -283,11 +283,7 @@ bool StreamTranscoder::processFrame()
 
 	if( ! _inputEssence )
 	{
-		if( _subStreamIndex < 0 )
-		{
-			return processRewrap();
-		}
-		return processRewrap( _subStreamIndex );
+		return processRewrap();
 	}
 
 	if( _subStreamIndex < 0 )
@@ -308,20 +304,6 @@ bool StreamTranscoder::processRewrap()
 		return false;
 
 	_outputStream->wrap( data );
-	return true;
-}
-
-bool StreamTranscoder::processRewrap( const int subStreamIndex )
-{
-	assert( _inputStream  != NULL );
-	assert( _outputStream != NULL );
-	
-	CodedData data;
-
-	if( ! _inputStream->readNextPacket( data ) )
-		return false;
-	_outputStream->wrap( data );
-
 	return true;
 }
 

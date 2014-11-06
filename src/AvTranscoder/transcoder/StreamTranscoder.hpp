@@ -71,7 +71,6 @@ public:
 
 private:
 	bool processRewrap();
-	bool processRewrap( const int subStreamIndex );
 	bool processTranscode();
 	bool processTranscode( const int subStreamIndex );
 
