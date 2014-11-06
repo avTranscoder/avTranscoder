@@ -9,9 +9,7 @@
 #include <AvTranscoder/essenceStream/IInputEssence.hpp>
 #include <AvTranscoder/essenceStream/IOutputEssence.hpp>
 
-#include <AvTranscoder/progress/IProgress.hpp>
-
-#include <AvTranscoder/Profile.hpp>
+#include <AvTranscoder/ProfileLoader.hpp>
 
 #include "StreamTranscoder.hpp"
 
@@ -63,11 +61,11 @@ public:
 	 * @brief Add a stream and set a custom profile
 	 * @note Profile will be updated, be sure to pass unique profile name.
 	 */
-	void add( const std::string& filename, const size_t streamIndex, Profile::ProfileDesc& profileDesc, const size_t offset = 0 );
+	void add( const std::string& filename, const size_t streamIndex, ProfileLoader::Profile& profile, const size_t offset = 0 );
 	/*
 	 * @note If filename is empty, add a generated stream.
 	 */
-	void add( const std::string& filename, const size_t streamIndex, Profile::ProfileDesc& profileDesc, ICodec& codec, const size_t offset = 0  );
+	void add( const std::string& filename, const size_t streamIndex, ProfileLoader::Profile& profile, ICodec& codec, const size_t offset = 0  );
 	
 	/**
 	 * @brief Add a stream and set a profile
@@ -86,11 +84,11 @@ public:
 	 * @note Profile will be updated, be sure to pass unique profile name.
 	 * @note If subStreamIndex is negative, no substream is selected it's the stream.
 	 */
-	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, Profile::ProfileDesc& profileDesc, const size_t offset = 0 );
+	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, ProfileLoader::Profile& profile, const size_t offset = 0 );
 	/**
 	 * @note If filename is empty, add a generated stream.
 	 */
-	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, Profile::ProfileDesc& profileDesc, ICodec& codec, const size_t offset = 0  );
+	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, ProfileLoader::Profile& profile, ICodec& codec, const size_t offset = 0  );
 
 	/**
 	 * @brief Add the stream
@@ -140,9 +138,9 @@ private:
 
 	void addRewrapStream( const std::string& filename, const size_t streamIndex );
 
-	void addTranscodeStream( const std::string& filename, const size_t streamIndex, const size_t subStreamIndex, Profile::ProfileDesc& profile, const size_t offset = 0 );
+	void addTranscodeStream( const std::string& filename, const size_t streamIndex, const size_t subStreamIndex, ProfileLoader::Profile& profile, const size_t offset = 0 );
 
-	void addDummyStream( const Profile::ProfileDesc& profile, const ICodec& codec );
+	void addDummyStream( const ProfileLoader::Profile& profile, const ICodec& codec );
 
 	InputFile* addInputFile( const std::string& filename, const size_t streamIndex );
 
@@ -172,7 +170,7 @@ private:
 
 	std::vector< IInputEssence* > _internalEssences;  ///< Internal essences allocated inside the Transcoder.
 
-	Profile _profile;  ///< Objet to get existing profiles, and add new ones for the Transcoder.
+	ProfileLoader _profileLoader;  ///< Manage existing profiles, and add new ones for the Transcoder.
 
 	EProcessMethod _eProcessMethod;
 

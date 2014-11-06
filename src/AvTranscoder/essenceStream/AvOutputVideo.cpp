@@ -154,25 +154,25 @@ bool AvOutputVideo::encodeFrame( Frame& codedFrame )
 #endif
 }
 
-void AvOutputVideo::setProfile( const Profile::ProfileDesc& desc, const avtranscoder::VideoFrameDesc& frameDesc )
+void AvOutputVideo::setProfile( const ProfileLoader::Profile& profile, const avtranscoder::VideoFrameDesc& frameDesc )
 {
-	if( ! desc.count( constants::avProfileCodec ) ||
-		! desc.count( constants::avProfilePixelFormat ) || 
-		! desc.count( constants::avProfileFrameRate ) )
+	if( ! profile.count( constants::avProfileCodec ) ||
+		! profile.count( constants::avProfilePixelFormat ) || 
+		! profile.count( constants::avProfileFrameRate ) )
 	{
-		throw std::runtime_error( "The profile " + desc.find( constants::avProfileIdentificatorHuman )->second + " is invalid." );
+		throw std::runtime_error( "The profile " + profile.find( constants::avProfileIdentificatorHuman )->second + " is invalid." );
 	}
 	
-	_codec.setCodec( eCodecTypeEncoder, desc.find( constants::avProfileCodec )->second );
+	_codec.setCodec( eCodecTypeEncoder, profile.find( constants::avProfileCodec )->second );
 
-	const size_t frameRate = std::strtoul( desc.find( constants::avProfileFrameRate )->second.c_str(), NULL, 0 );
+	const size_t frameRate = std::strtoul( profile.find( constants::avProfileFrameRate )->second.c_str(), NULL, 0 );
 	_codec.setTimeBase( 1, frameRate );
 
 	_codec.setImageParameters( frameDesc );
 
 	Context codecContext( _codec.getAVCodecContext() );
 	
-	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
+	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
 	{
 		if( (*it).first == constants::avProfileIdentificator ||
 			(*it).first == constants::avProfileIdentificatorHuman ||
@@ -195,7 +195,7 @@ void AvOutputVideo::setProfile( const Profile::ProfileDesc& desc, const avtransc
 
 	setup();
 
-	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
+	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
 	{
 		if( (*it).first == constants::avProfileIdentificator ||
 			(*it).first == constants::avProfileIdentificatorHuman ||

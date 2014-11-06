@@ -67,7 +67,7 @@ StreamTranscoder::StreamTranscoder(
 StreamTranscoder::StreamTranscoder(
 		IInputStream& inputStream,
 		OutputFile& outputFile,
-		const Profile::ProfileDesc& profile,
+		const ProfileLoader::Profile& profile,
 		const int subStreamIndex,
 		const size_t offset
 	)
@@ -164,7 +164,7 @@ StreamTranscoder::StreamTranscoder(
 StreamTranscoder::StreamTranscoder(
 		IInputEssence& inputEssence,
 		OutputFile& outputFile,
-		const Profile::ProfileDesc& profile
+		const ProfileLoader::Profile& profile
 	)
 	: _inputStream( NULL )
 	, _outputStream( NULL )

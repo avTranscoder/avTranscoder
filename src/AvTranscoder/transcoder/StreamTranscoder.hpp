@@ -11,7 +11,7 @@
 
 #include <AvTranscoder/file/OutputFile.hpp>
 
-#include <AvTranscoder/Profile.hpp>
+#include <AvTranscoder/ProfileLoader.hpp>
 
 namespace avtranscoder
 {
@@ -30,13 +30,13 @@ public:
 	/**
 	 * @brief transcode stream
 	 **/
-	StreamTranscoder( IInputStream& inputStream, OutputFile& outputFile, const Profile::ProfileDesc& profile, const int subStreamIndex = -1, const size_t offset = 0 );
+	StreamTranscoder( IInputStream& inputStream, OutputFile& outputFile, const ProfileLoader::Profile& profile, const int subStreamIndex = -1, const size_t offset = 0 );
 
 	/**
 	 * @brief encode from a generated stream
 	 * @note offset feature has no sense here
 	 **/
-	StreamTranscoder( IInputEssence& inputEssence, OutputFile& outputFile, const Profile::ProfileDesc& profile );
+	StreamTranscoder( IInputEssence& inputEssence, OutputFile& outputFile, const ProfileLoader::Profile& profile );
 
 	~StreamTranscoder();
 

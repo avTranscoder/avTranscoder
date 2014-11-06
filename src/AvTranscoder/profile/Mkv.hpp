@@ -4,9 +4,9 @@
 namespace avtranscoder
 {
 
-void loadMkv( Profile::ProfilesDesc& profiles )
+void loadMkv( ProfileLoader::Profiles& profiles )
 {
-	Profile::ProfileDesc mkv;
+	ProfileLoader::Profile mkv;
 	mkv[ constants::avProfileIdentificator ] = "mkv";
 	mkv[ constants::avProfileIdentificatorHuman ] = "Matroska";
 	mkv[ constants::avProfileType ] = constants::avProfileTypeFormat;

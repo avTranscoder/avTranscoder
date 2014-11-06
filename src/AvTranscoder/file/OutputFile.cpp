@@ -220,22 +220,22 @@ void OutputFile::addMetadata( const std::string& key, const std::string& value )
 	}
 }
 
-void OutputFile::setProfile( const Profile::ProfileDesc& desc )
+void OutputFile::setProfile( const ProfileLoader::Profile& profile )
 {
-	if( ! desc.count( constants::avProfileFormat ) )
+	if( ! profile.count( constants::avProfileFormat ) )
 	{
-		throw std::runtime_error( "The profile " + desc.find( constants::avProfileIdentificatorHuman )->second + " is invalid." );
+		throw std::runtime_error( "The profile " + profile.find( constants::avProfileIdentificatorHuman )->second + " is invalid." );
 	}
 	
-	if( ! matchFormat( desc.find( constants::avProfileFormat )->second, _filename ) )
+	if( ! matchFormat( profile.find( constants::avProfileFormat )->second, _filename ) )
 	{
 		throw std::runtime_error( "Invalid format according to the file extension." );
 	}
-	_outputFormat = av_guess_format( desc.find( constants::avProfileFormat )->second.c_str(), _filename.c_str(), NULL);
+	_outputFormat = av_guess_format( profile.find( constants::avProfileFormat )->second.c_str(), _filename.c_str(), NULL);
 	
 	Context formatContext( _formatContext );
 	
-	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
+	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
 	{
 		if( (*it).first == constants::avProfileIdentificator ||
 			(*it).first == constants::avProfileIdentificatorHuman ||
@@ -256,7 +256,7 @@ void OutputFile::setProfile( const Profile::ProfileDesc& desc )
 	
 	setup();
 	
-	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
+	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
 	{
 		if( (*it).first == constants::avProfileIdentificator ||
 			(*it).first == constants::avProfileIdentificatorHuman ||

@@ -9,7 +9,7 @@ def testSetVideoFrame():
 	"""
 	Generate a video stream, and set its frame during process.
 	"""
-	profile = av.Profile(True)
+	profileLoader = av.ProfileLoader(True)
 
 	# create output
 	outputFileName = "testSetVideoFrame.mov"
@@ -32,7 +32,7 @@ def testSetVideoFrame():
 
 	# create transcoder and add a video stream
 	transcoder = av.Transcoder( ouputFile )
-	streamTranscoder = av.StreamTranscoder( video, ouputFile, profile.getProfile( "xdcamhd422" ) )
+	streamTranscoder = av.StreamTranscoder( video, ouputFile, profileLoader.getProfile( "xdcamhd422" ) )
 	transcoder.add( streamTranscoder )
 
 	# start process
@@ -68,7 +68,7 @@ def testSetAudioFrame():
 	"""
 	Generate a audio stream, and set its frame during process.
 	"""
-	profile = av.Profile(True)
+	profileLoader = av.ProfileLoader(True)
 
 	# create output
 	outputFileName = "testSetAudioFrame.wav"
@@ -85,7 +85,7 @@ def testSetAudioFrame():
 
 	# create transcoder and add a video stream
 	transcoder = av.Transcoder( ouputFile )
-	streamTranscoder = av.StreamTranscoder( audio, ouputFile, profile.getProfile( "wave24b48kmono" ) )
+	streamTranscoder = av.StreamTranscoder( audio, ouputFile, profileLoader.getProfile( "wave24b48kmono" ) )
 	transcoder.add(  streamTranscoder )
 
 	# start process
