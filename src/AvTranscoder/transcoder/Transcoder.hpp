@@ -141,6 +141,11 @@ private:
 
 	void addRewrapStream( const std::string& filename, const size_t streamIndex );
 
+        /**
+         * @note Get profile from input
+         */
+        void addTranscodeStream( const std::string& filename, const size_t streamIndex, const size_t subStreamIndex, const size_t offset );
+
 	void addTranscodeStream( const std::string& filename, const size_t streamIndex, ProfileLoader::Profile& profile, const size_t offset = 0 );
 
 	void addTranscodeStream( const std::string& filename, const size_t streamIndex, const size_t subStreamIndex, ProfileLoader::Profile& profile, const size_t offset = 0 );

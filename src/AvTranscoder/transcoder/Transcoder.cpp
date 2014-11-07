@@ -138,27 +138,7 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 		{
 			if( _verbose )
 				std::cout << "Add transcoded stream (because of demultiplexing)" << std::endl;
-			// Create profile as input configuration
-			InputFile inputFile( filename );
-			NoDisplayProgress progress;
-			inputFile.analyse( progress, InputFile::eAnalyseLevelFast );
-			AudioProperties audioProperties = inputFile.getProperties().audioStreams.at( streamIndex );  // Warning: only manage audio case
-
-			ProfileLoader::Profile profile;
-			profile[ constants::avProfileIdentificator ] = "presetRewrap";
-			profile[ constants::avProfileIdentificatorHuman ] = "Preset rewrap";
-			profile[ constants::avProfileType ] = avtranscoder::constants::avProfileTypeAudio;
-			profile[ constants::avProfileCodec ] = audioProperties.codecName;
-			profile[ constants::avProfileSampleFormat ] = audioProperties.sampleFormat;
-			std::stringstream ss;
-			ss << audioProperties.sampleRate;
-			profile[ constants::avProfileSampleRate ] = ss.str();
-			profile[ constants::avProfileChannel ] = "1";
-
-			// Add profile
-			_profileLoader.update( profile );
-
-			add( filename, streamIndex, subStreamIndex, profile, offset );
+			addTranscodeStream( filename, streamIndex, subStreamIndex, offset );
 		}
 	}
 	// Transcode
@@ -194,27 +174,7 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 		{
 			if( _verbose )
 				std::cout << "Add transcoded stream (because of demultiplexing)" << std::endl;
-			// Create profile as input configuration
-			InputFile inputFile( filename );
-			NoDisplayProgress progress;
-			inputFile.analyse( progress, InputFile::eAnalyseLevelFast );
-			AudioProperties audioProperties = inputFile.getProperties().audioStreams.at( streamIndex );  // Warning: only manage audio case
-
-			ProfileLoader::Profile profile;
-			profile[ constants::avProfileIdentificator ] = "presetRewrap";
-			profile[ constants::avProfileIdentificatorHuman ] = "Preset rewrap";
-			profile[ constants::avProfileType ] = avtranscoder::constants::avProfileTypeAudio;
-			profile[ constants::avProfileCodec ] = audioProperties.codecName;
-			profile[ constants::avProfileSampleFormat ] = audioProperties.sampleFormat;
-			std::stringstream ss;
-			ss << audioProperties.sampleRate;
-			profile[ constants::avProfileSampleRate ] = ss.str();
-			profile[ constants::avProfileChannel ] = "1";
-
-			// Add profile
-			_profileLoader.update( profile );
-
-			add( filename, streamIndex, subStreamIndex, profile, offset );
+			addTranscodeStream( filename, streamIndex, subStreamIndex, offset );
 		}
 	}
 	// Transcode
@@ -415,6 +375,47 @@ void Transcoder::addRewrapStream( const std::string& filename, const size_t stre
 {
 	InputFile* referenceFile = addInputFile( filename, streamIndex );
 	_streamTranscoders.push_back( new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile ) );
+}
+
+void Transcoder::addTranscodeStream( const std::string& filename, const size_t streamIndex, const size_t subStreamIndex, const size_t offset )
+{
+	InputFile* referenceFile = addInputFile( filename, streamIndex );
+
+	// Create profile as input configuration
+	NoDisplayProgress progress;
+	referenceFile->analyse( progress, InputFile::eAnalyseLevelFast );
+	AudioProperties audioProperties = referenceFile->getProperties().audioStreams.at( streamIndex );
+
+	ProfileLoader::Profile profile;
+	profile[ constants::avProfileIdentificator ] = "presetRewrap";
+	profile[ constants::avProfileIdentificatorHuman ] = "Preset rewrap";
+	profile[ constants::avProfileType ] = avtranscoder::constants::avProfileTypeAudio;
+	profile[ constants::avProfileCodec ] = audioProperties.codecName;
+	profile[ constants::avProfileSampleFormat ] = audioProperties.sampleFormat;
+	std::stringstream ss;
+	ss << audioProperties.sampleRate;
+	profile[ constants::avProfileSampleRate ] = ss.str();
+	profile[ constants::avProfileChannel ] = "1";
+
+	// Add profile
+	_profileLoader.update( profile );
+
+	switch( referenceFile->getStreamType( streamIndex ) )
+	{
+		case AVMEDIA_TYPE_VIDEO:
+		case AVMEDIA_TYPE_AUDIO:
+		{
+			_streamTranscoders.push_back( new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile, profile, subStreamIndex , offset ) );
+			break;
+		}
+		case AVMEDIA_TYPE_DATA:
+		case AVMEDIA_TYPE_SUBTITLE:
+		case AVMEDIA_TYPE_ATTACHMENT:
+		default:
+		{
+			throw std::runtime_error( "unsupported media type in transcode setup" );
+		}
+	}
 }
 
 void Transcoder::addTranscodeStream( const std::string& filename, const size_t streamIndex, ProfileLoader::Profile& profile, const size_t offset )
