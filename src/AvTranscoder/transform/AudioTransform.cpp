@@ -64,11 +64,23 @@ bool AudioTransform::init( const Frame& srcFrame, const Frame& dstFrame )
 	return true;
 }
 
+bool AudioTransform::initFrames( const Frame& srcFrame, Frame& dstFrame )
+{
+	const AudioFrame& src = static_cast<const AudioFrame&>( srcFrame );
+	const AudioFrame& dst = static_cast<const AudioFrame&>( dstFrame );
+
+	int dstSampleSize = av_get_bytes_per_sample( dst.desc().getAVSampleFormat() );
+	dstFrame.getBuffer().resize( src.getNbSamples() * dstSampleSize );
+	return true;
+}
+
 void AudioTransform::convert( const Frame& srcFrame, Frame& dstFrame )
 {
 	if( ! _isInit )
 		_isInit = init( srcFrame, dstFrame );
-
+	
+	initFrames( srcFrame, dstFrame );
+	
 	const unsigned char* srcData = srcFrame.getPtr();
 	unsigned char* dstData = dstFrame.getPtr();
 
