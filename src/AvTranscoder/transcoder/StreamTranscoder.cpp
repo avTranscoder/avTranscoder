@@ -304,22 +304,18 @@ bool StreamTranscoder::processRewrap()
 	
 	CodedData data;
 
-	while( true )
-	{
-		if( ! _inputStream->readNextPacket( data ) )
+	if( ! _inputStream->readNextPacket( data ) )
 			return false;
-
-		switch( _outputStream->wrap( data ) )
-		{
-			case IOutputStream::eWrappingSuccess:
-				return true;
-			case IOutputStream::eWrappingWaitingForData:
-				// the wrapper needs more data to write the current packet
-				data = CodedData();
-				break;
-			case IOutputStream::eWrappingError:
-				return false;
-		}
+	
+	switch( _outputStream->wrap( data ) )
+	{
+		case IOutputStream::eWrappingSuccess:
+			return true;
+		case IOutputStream::eWrappingWaitingForData:
+			// the wrapper needs more data to write the current packet
+			return processRewrap();
+		case IOutputStream::eWrappingError:
+			return false;
 	}
 	return true;
 }
@@ -348,58 +344,53 @@ bool StreamTranscoder::processTranscode()
 	assert( _transform      != NULL );
 
 	CodedData data;
-	
-	while( true )
+	if( _verbose )
+		std::cout << "transcode a frame " << std::endl;
+
+	if( _offset &&
+		_frameProcessed > _offset &&
+		! _offsetPassed &&
+		_takeFromGenerator )
+	{
+		switchToInputEssence();
+		_offsetPassed = true;
+	}
+
+	if( _currentEssence->readNextFrame( *_sourceBuffer ) )
 	{
 		if( _verbose )
-			std::cout << "transcode a frame " << std::endl;
-
-		if( _offset &&
-			_frameProcessed > _offset &&
-			! _offsetPassed &&
-			_takeFromGenerator )
-		{
-			switchToInputEssence();
-			_offsetPassed = true;
-		}
-
-		if( _currentEssence->readNextFrame( *_sourceBuffer ) )
-		{
-			if( _verbose )
-				std::cout << "convert " << _sourceBuffer->getSize() << std::endl;
-			_transform->convert( *_sourceBuffer, *_frameBuffer );
-			if( _verbose )
-				std::cout << "encode " << _frameBuffer->getSize() << std::endl;
-			_outputEssence->encodeFrame( *_frameBuffer, data );
-		}
-		else
-		{
-			if( _verbose )
-				std::cout << "encode last frame(s)" << std::endl;
-			if( ! _outputEssence->encodeFrame( data ) )
-			{
-				if( _infinityStream )
-				{
-					switchToGeneratorEssence();
-					return processTranscode();
-				}
-				return false;
-			}
-		}
-
+			std::cout << "convert " << _sourceBuffer->getSize() << std::endl;
+		_transform->convert( *_sourceBuffer, *_frameBuffer );
 		if( _verbose )
-			std::cout << "wrap (" << data.getSize() << ")" << std::endl;
-		switch( _outputStream->wrap( data ) )
+			std::cout << "encode " << _frameBuffer->getSize() << std::endl;
+		_outputEssence->encodeFrame( *_frameBuffer, data );
+	}
+	else
+	{
+		if( _verbose )
+			std::cout << "encode last frame(s)" << std::endl;
+		if( ! _outputEssence->encodeFrame( data ) )
 		{
-			case IOutputStream::eWrappingSuccess:
-				return true;
-			case IOutputStream::eWrappingWaitingForData:
-				// the wrapper needs more data to write the current packet
-				data = CodedData();
-				break;
-			case IOutputStream::eWrappingError:
-				return false;
+			if( _infinityStream )
+			{
+				switchToGeneratorEssence();
+				return processTranscode();
+			}
+			return false;
 		}
+	}
+
+	if( _verbose )
+		std::cout << "wrap (" << data.getSize() << ")" << std::endl;
+	switch( _outputStream->wrap( data ) )
+	{
+		case IOutputStream::eWrappingSuccess:
+			return true;
+		case IOutputStream::eWrappingWaitingForData:
+			// the wrapper needs more data to write the current packet
+			return processTranscode();
+		case IOutputStream::eWrappingError:
+			return false;
 	}
 	return true;
 }
@@ -415,56 +406,53 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 
 	CodedData data;
 	
-	while( true )
+	if( _verbose )
+		std::cout << "transcode a frame " << std::endl;
+
+	if( _offset &&
+		_frameProcessed > _offset &&
+		! _offsetPassed &&
+		_takeFromGenerator )
+	{
+		switchToInputEssence();
+		_offsetPassed = true;
+	}
+
+	if( _currentEssence->readNextFrame( *_sourceBuffer, subStreamIndex ) )
 	{
 		if( _verbose )
-			std::cout << "transcode a frame " << std::endl;
-
-		if( _offset &&
-			_frameProcessed > _offset &&
-			! _offsetPassed &&
-			_takeFromGenerator )
-		{
-			switchToInputEssence();
-			_offsetPassed = true;
-		}
-
-		if( _currentEssence->readNextFrame( *_sourceBuffer, subStreamIndex ) )
-		{
-			if( _verbose )
-				std::cout << "convert " << std::endl;
-			_transform->convert( *_sourceBuffer, *_frameBuffer );
-			if( _verbose )
-				std::cout << "encode" << std::endl;
-			_outputEssence->encodeFrame( *_frameBuffer, data );
-		}
-		else
-		{
-			if( _verbose )
-				std::cout << "encode last frame(s)" << std::endl;
-			if( ! _outputEssence->encodeFrame( data ) )
-			{
-				if( _infinityStream )
-				{
-					switchToGeneratorEssence();
-					return processTranscode();
-				}
-				return false;
-			}
-		}
+			std::cout << "convert " << std::endl;
+		_transform->convert( *_sourceBuffer, *_frameBuffer );
 		if( _verbose )
-			std::cout << "wrap (" << data.getSize() << ")" << std::endl;
-		switch( _outputStream->wrap( data ) )
+			std::cout << "encode" << std::endl;
+		_outputEssence->encodeFrame( *_frameBuffer, data );
+	}
+	else
+	{
+		if( _verbose )
+			std::cout << "encode last frame(s)" << std::endl;
+		if( ! _outputEssence->encodeFrame( data ) )
 		{
-			case IOutputStream::eWrappingSuccess:
-				return true;
-			case IOutputStream::eWrappingWaitingForData:
-				// the wrapper needs more data to write the current packet
-				data = CodedData();
-				break;
-			case IOutputStream::eWrappingError:
-				return false;
+			if( _infinityStream )
+			{
+				switchToGeneratorEssence();
+				return processTranscode();
+			}
+			return false;
 		}
+	}
+	if( _verbose )
+		std::cout << "wrap (" << data.getSize() << ")" << std::endl;
+	switch( _outputStream->wrap( data ) )
+	{
+		case IOutputStream::eWrappingSuccess:
+			return true;
+		case IOutputStream::eWrappingWaitingForData:
+			// the wrapper needs more data to write the current packet
+			return processTranscode( subStreamIndex );
+			break;
+		case IOutputStream::eWrappingError:
+			return false;
 	}
 	return true;
 }
