@@ -29,7 +29,7 @@ VideoProperties::VideoProperties()
 	, _gopStructure()
 {}
 
-VideoProperties::VideoProperties( const AVFormatContext* formatContext, const size_t index, IProgress& progress )
+VideoProperties::VideoProperties( const AVFormatContext* formatContext, const size_t index, IProgress& progress, const EAnalyseLevel level )
 	: _formatContext( formatContext )
 	, _codecContext( formatContext->streams[index]->codec )
 	, _pixFmt( NULL )
@@ -50,9 +50,8 @@ VideoProperties::VideoProperties( const AVFormatContext* formatContext, const si
 		_pixFmt = &av_pix_fmt_descriptors[ _codecContext->pix_fmt ];
 #endif
 
-	// Analyse GOP
-	//if( level == eAnalyseLevelFull )
-	analyseGopStructure( progress );
+	if( level == eAnalyseLevelFull )
+		analyseGopStructure( progress );
 }
 
 std::string VideoProperties::getCodecName() const

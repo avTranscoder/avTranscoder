@@ -3,6 +3,7 @@
 
 #include <AvTranscoder/common.hpp>
 #include <AvTranscoder/mediaProperty/util.hpp>
+#include <AvTranscoder/file/util.hpp>
 #include <AvTranscoder/progress/IProgress.hpp>
 
 extern "C" {
@@ -29,7 +30,7 @@ class AvExport VideoProperties
 {
 public:
 	VideoProperties();
-	VideoProperties( const AVFormatContext* formatContext, const size_t index, IProgress& progress );
+	VideoProperties( const AVFormatContext* formatContext, const size_t index, IProgress& progress, const EAnalyseLevel level = eAnalyseLevelFull );
 
 	std::string getCodecName() const;
 	std::string getCodecLongName() const;

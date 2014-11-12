@@ -1,5 +1,6 @@
 #include "Transcoder.hpp"
 
+#include <AvTranscoder/file/util.hpp>
 #include <AvTranscoder/progress/NoDisplayProgress.hpp>
 
 #include <limits>
@@ -383,7 +384,7 @@ void Transcoder::addTranscodeStream( const std::string& filename, const size_t s
 
 	// Create profile as input configuration
 	NoDisplayProgress progress;
-	referenceFile->analyse( progress, InputFile::eAnalyseLevelFast );
+	referenceFile->analyse( progress, eAnalyseLevelFast );
 	AudioProperties audioProperties = referenceFile->getProperties().getAudioProperties().at( streamIndex );
 
 	ProfileLoader::Profile profile;

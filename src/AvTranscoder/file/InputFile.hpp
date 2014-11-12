@@ -3,6 +3,8 @@
 
 #include <AvTranscoder/common.hpp>
 
+#include <AvTranscoder/file/util.hpp>
+
 #include <AvTranscoder/codec/AudioCodec.hpp>
 #include <AvTranscoder/codec/VideoCodec.hpp>
 
@@ -33,12 +35,6 @@ public:
 	InputFile( const std::string& filename );
 
 	virtual ~InputFile();
-
-	enum EAnalyseLevel
-	{
-		eAnalyseLevelFast = 0,
-		eAnalyseLevelFull = 0,
-	};
 
 	/**
 	 * @return Return the resource to access

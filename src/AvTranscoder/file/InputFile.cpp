@@ -79,7 +79,7 @@ InputFile& InputFile::analyse( IProgress& progress, const EAnalyseLevel level )
 		{
 			case AVMEDIA_TYPE_VIDEO:
 			{
-				_properties.getVideoProperties().push_back( VideoProperties( _formatContext, streamId, progress ) );
+				_properties.getVideoProperties().push_back( VideoProperties( _formatContext, streamId, progress, level ) );
 				break;
 			}
 			case AVMEDIA_TYPE_AUDIO:
