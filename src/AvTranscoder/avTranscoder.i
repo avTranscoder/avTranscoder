@@ -48,13 +48,6 @@
 
 namespace std {	
 %template(IntPair)         pair< size_t, size_t >;
-%template(VideoVector)     vector< avtranscoder::VideoProperties >;
-%template(AudioVector)     vector< avtranscoder::AudioProperties >;
-%template(MetadataPair)    pair< string, string >;
-%template(MetadatasVector) vector< pair< string, string > >;
-%template(GopPair)         pair< char, bool >;
-%template(GopVector)       vector< pair< char, bool > >;
-%template(ChannelVector)   vector< avtranscoder::Channel >;
 %template(ProfileMap)      map< string, string >;
 %template(ProfilesVector)  vector< map< string, string > >;
 }
