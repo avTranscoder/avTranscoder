@@ -391,7 +391,7 @@ void Transcoder::addTranscodeStream( const std::string& filename, const size_t s
 	profile[ constants::avProfileIdentificatorHuman ] = "Preset rewrap";
 	profile[ constants::avProfileType ] = avtranscoder::constants::avProfileTypeAudio;
 	profile[ constants::avProfileCodec ] = audioProperties.codecName;
-	profile[ constants::avProfileSampleFormat ] = audioProperties.sampleFormat;
+	profile[ constants::avProfileSampleFormat ] = audioProperties.sampleFormatName;
 	std::stringstream ss;
 	ss << audioProperties.sampleRate;
 	profile[ constants::avProfileSampleRate ] = ss.str();

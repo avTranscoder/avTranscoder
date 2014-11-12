@@ -106,7 +106,8 @@ struct AvExport AudioProperties
 {
 	std::string codecName;
 	std::string codecLongName;
-	std::string sampleFormat;
+	std::string sampleFormatName;
+	std::string sampleFormatLongName;
 	std::string channelLayout;
 	std::string channelName;
 	std::string channelDescription;
