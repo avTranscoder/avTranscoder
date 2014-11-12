@@ -13,12 +13,19 @@ using namespace avtranscoder;
 %}
 
 namespace std {
-%template(VideoVector)     vector< avtranscoder::VideoProperties >;
-%template(AudioVector)     vector< avtranscoder::AudioProperties >;
+%template(VideoVector)        vector< avtranscoder::VideoProperties >;
+%template(AudioVector)        vector< avtranscoder::AudioProperties >;
+%template(DataVector)         vector< avtranscoder::DataProperties >;
+%template(SubtitleVector)     vector< avtranscoder::SubtitleProperties >;
+%template(AttachementVector)  vector< avtranscoder::AttachementProperties >;
+%template(UnknownVector)      vector< avtranscoder::UnknownProperties >;
+
 %template(MetadataPair)    pair< string, string >;
 %template(MetadatasVector) vector< pair< string, string > >;
+
 %template(GopPair)         pair< char, bool >;
 %template(GopVector)       vector< pair< char, bool > >;
+
 %template(ChannelVector)   vector< avtranscoder::Channel >;
 }
 
