@@ -1,12 +1,12 @@
 #include "InputFile.hpp"
 
 #include <AvTranscoder/option/Context.hpp>
-#include <AvTranscoder/mediaProperty/VideoStreamProperty.hpp>
-#include <AvTranscoder/mediaProperty/AudioStreamProperty.hpp>
-#include <AvTranscoder/mediaProperty/DataStreamProperty.hpp>
-#include <AvTranscoder/mediaProperty/SubtitleStreamProperty.hpp>
-#include <AvTranscoder/mediaProperty/AttachementStreamProperty.hpp>
-#include <AvTranscoder/mediaProperty/UnknownStreamProperty.hpp>
+#include <AvTranscoder/mediaProperty/VideoProperties.hpp>
+#include <AvTranscoder/mediaProperty/AudioProperties.hpp>
+#include <AvTranscoder/mediaProperty/DataProperties.hpp>
+#include <AvTranscoder/mediaProperty/SubtitleProperties.hpp>
+#include <AvTranscoder/mediaProperty/AttachementProperties.hpp>
+#include <AvTranscoder/mediaProperty/UnknownProperties.hpp>
 
 
 extern "C" {
