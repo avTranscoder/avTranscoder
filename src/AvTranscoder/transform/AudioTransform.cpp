@@ -84,7 +84,7 @@ void AudioTransform::convert( const Frame& srcFrame, Frame& dstFrame )
 		throw std::runtime_error( "unable to convert audio samples" );
 	}
 
-	int nbOutputSamples = nbOutputSamplesPerChannel * static_cast<const AudioFrame&>( dstFrame ).desc().getChannels();
+	size_t nbOutputSamples = nbOutputSamplesPerChannel * static_cast<const AudioFrame&>( dstFrame ).desc().getChannels();
 	
 	if( dstFrame.getSize() != nbOutputSamples )
 		dstFrame.getBuffer().resize( nbOutputSamples, 0 );
