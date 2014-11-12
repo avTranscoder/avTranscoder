@@ -384,7 +384,7 @@ void Transcoder::addTranscodeStream( const std::string& filename, const size_t s
 
 	// Create profile as input configuration
 	NoDisplayProgress progress;
-	referenceFile->analyse( progress, eAnalyseLevelFast );
+	referenceFile->analyse( progress, eAnalyseLevelHeader );
 	AudioProperties audioProperties = referenceFile->getProperties().getAudioProperties().at( streamIndex );
 
 	ProfileLoader::Profile profile;

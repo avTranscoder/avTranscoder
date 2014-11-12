@@ -46,7 +46,7 @@ public:
 	 *        call this function before getProperties().
 	 * @param progress callback to get analysis progression
 	 **/
-	InputFile& analyse( IProgress& progress, const EAnalyseLevel level = eAnalyseLevelFull );
+	InputFile& analyse( IProgress& progress, const EAnalyseLevel level = eAnalyseLevelFirstGop );
 	
 	/**
 	 * @brief Return media properties on the current InputFile.
@@ -63,7 +63,7 @@ public:
 	 * @param progress callback to get analysis progression
 	 * @return structure of media metadatas
 	 **/
-	static FileProperties analyseFile( const std::string& filename, IProgress& progress, const EAnalyseLevel level = eAnalyseLevelFull );
+	static FileProperties analyseFile( const std::string& filename, IProgress& progress, const EAnalyseLevel level = eAnalyseLevelFirstGop );
 
 	/**
 	 * @brief Get stream type: video, audio, subtitle, etc.

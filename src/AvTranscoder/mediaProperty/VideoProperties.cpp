@@ -50,7 +50,7 @@ VideoProperties::VideoProperties( const AVFormatContext* formatContext, const si
 		_pixFmt = &av_pix_fmt_descriptors[ _codecContext->pix_fmt ];
 #endif
 
-	if( level == eAnalyseLevelFull )
+	if( level == eAnalyseLevelFirstGop )
 		analyseGopStructure( progress );
 }
 

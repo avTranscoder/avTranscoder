@@ -30,7 +30,7 @@ class AvExport VideoProperties
 {
 public:
 	VideoProperties();
-	VideoProperties( const AVFormatContext* formatContext, const size_t index, IProgress& progress, const EAnalyseLevel level = eAnalyseLevelFull );
+	VideoProperties( const AVFormatContext* formatContext, const size_t index, IProgress& progress, const EAnalyseLevel level = eAnalyseLevelFirstGop );
 
 	std::string getCodecName() const;
 	std::string getCodecLongName() const;

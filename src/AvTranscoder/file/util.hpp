@@ -9,8 +9,9 @@ namespace avtranscoder
  */
 enum EAnalyseLevel
 {
-	eAnalyseLevelFast = 0,
-	eAnalyseLevelFull = 0,
+	eAnalyseLevelHeader = 0,
+	eAnalyseLevelFirstGop = 1,
+	//eAnalyseLevelFull = 2,
 };
 
 }
