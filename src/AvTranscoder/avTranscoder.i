@@ -39,9 +39,6 @@
 #include <AvTranscoder/essenceStream/AvInputAudio.hpp>
 #include <AvTranscoder/essenceStream/AvInputVideo.hpp>
 
-#include <AvTranscoder/file/InputFile.hpp>
-#include <AvTranscoder/file/OutputFile.hpp>
-
 #include <AvTranscoder/transcoder/StreamTranscoder.hpp>
 #include <AvTranscoder/transcoder/Transcoder.hpp>
 %}
@@ -54,6 +51,7 @@ namespace std {
 
 %include "AvTranscoder/progress/progress.i"
 %include "AvTranscoder/mediaProperty/mediaProperty.i"
+%include "AvTranscoder/file/file.i"
 
 %include <AvTranscoder/ProfileLoader.hpp>
 
@@ -80,9 +78,6 @@ namespace std {
 %include <AvTranscoder/essenceStream/IInputEssence.hpp>
 %include <AvTranscoder/essenceStream/AvInputAudio.hpp>
 %include <AvTranscoder/essenceStream/AvInputVideo.hpp>
-
-%include <AvTranscoder/file/InputFile.hpp>
-%include <AvTranscoder/file/OutputFile.hpp>
 
 %include <AvTranscoder/transcoder/StreamTranscoder.hpp>
 %include <AvTranscoder/transcoder/Transcoder.hpp>
