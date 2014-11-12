@@ -229,7 +229,7 @@ void InputFile::setProfile( const ProfileLoader::Profile& profile )
 		}
 		catch( std::exception& e )
 		{
-			std::cout << "[InputFile] warning: " << e.what() << std::endl;
+			std::cout << "[InputFile] warning - can't set option " << (*it).first << " to " << (*it).second << ": " << e.what() << std::endl;
 		}
 	}
 }
