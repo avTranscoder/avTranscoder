@@ -1,13 +1,13 @@
 #include "InputFile.hpp"
 
 #include <AvTranscoder/option/Context.hpp>
+#include <AvTranscoder/mediaProperty/mediaProperty.hpp>
 #include <AvTranscoder/mediaProperty/VideoProperties.hpp>
 #include <AvTranscoder/mediaProperty/AudioProperties.hpp>
 #include <AvTranscoder/mediaProperty/DataProperties.hpp>
 #include <AvTranscoder/mediaProperty/SubtitleProperties.hpp>
 #include <AvTranscoder/mediaProperty/AttachementProperties.hpp>
 #include <AvTranscoder/mediaProperty/UnknownProperties.hpp>
-
 
 extern "C" {
 #include <libavcodec/avcodec.h>
@@ -24,7 +24,8 @@ namespace avtranscoder
 
 InputFile::InputFile( const std::string& filename )
 	: _formatContext ( NULL )
-	, _filename      ( filename )
+	, _properties( NULL )
+	, _filename( filename )
 {
 	av_register_all();
 	if( avformat_open_input( &_formatContext, _filename.c_str(), NULL, NULL ) < 0 )
@@ -42,6 +43,10 @@ InputFile::InputFile( const std::string& filename )
 		throw std::runtime_error( "unable to find stream informations" );
 	}
 
+	// Initialize FileProperties
+	_properties = FileProperties( _formatContext );
+
+	// Create streams
 	for( size_t streamIndex = 0; streamIndex < _formatContext->nb_streams; ++streamIndex )
 	{
 		_inputStreams.push_back( new AvInputStream( *this, streamIndex ) );
@@ -68,56 +73,38 @@ InputFile& InputFile::analyse( IProgress& progress, const EAnalyseLevel level )
 
 	seekAtFrame( 0 );
 
-	_properties.filename = _formatContext->filename;
-	_properties.formatName = _formatContext->iformat->name;
-	_properties.formatLongName = _formatContext->iformat->long_name;
-	_properties.streamsCount = _formatContext->nb_streams;
-	_properties.programsCount = _formatContext->nb_programs;
-	_properties.startTime = 1.0 * (unsigned int)_formatContext->start_time / AV_TIME_BASE;
-	_properties.duration = 1.0 * _formatContext->duration / AV_TIME_BASE;
-	_properties.bitRate = _formatContext->bit_rate;
-	_properties.packetSize = _formatContext->packet_size;
-
-	detail::fillMetadataDictionnary( _formatContext->metadata, _properties.metadatas );
-
 	for( size_t streamId = 0; streamId < _formatContext->nb_streams; streamId++ )
 	{
 		switch( _formatContext->streams[streamId]->codec->codec_type )
 		{
 			case AVMEDIA_TYPE_VIDEO:
 			{
-				_properties.videoStreams.push_back( videoStreamInfo( _formatContext, streamId, progress, level ) );
-				detail::fillMetadataDictionnary( _formatContext->streams[streamId]->metadata, _properties.videoStreams.back().metadatas );
+				_properties.getVideoProperties().push_back( VideoProperties( _formatContext, streamId, progress ) );
 				break;
 			}
 			case AVMEDIA_TYPE_AUDIO:
 			{
-				_properties.audioStreams.push_back( audioStreamInfo( _formatContext, streamId ) );
-				detail::fillMetadataDictionnary( _formatContext->streams[streamId]->metadata, _properties.audioStreams.back().metadatas );
+				_properties.getAudioProperties().push_back( AudioProperties( _formatContext, streamId ) );
 				break;
 			}
 			case AVMEDIA_TYPE_DATA:
 			{
-				_properties.dataStreams.push_back( dataStreamInfo( _formatContext, streamId ) );
-				detail::fillMetadataDictionnary( _formatContext->streams[streamId]->metadata, _properties.dataStreams.back().metadatas );
+				_properties.getDataProperties().push_back( DataProperties( _formatContext, streamId ) );
 				break;
 			}
 			case AVMEDIA_TYPE_SUBTITLE:
 			{
-				_properties.subtitleStreams.push_back( subtitleStreamInfo( _formatContext, streamId ) );
-				detail::fillMetadataDictionnary( _formatContext->streams[streamId]->metadata, _properties.subtitleStreams.back().metadatas );
+				_properties.getSubtitleProperties().push_back( SubtitleProperties( _formatContext, streamId ) );
 				break;
 			}
 			case AVMEDIA_TYPE_ATTACHMENT:
 			{
-				_properties.attachementStreams.push_back( attachementStreamInfo( _formatContext, streamId ) );
-				detail::fillMetadataDictionnary( _formatContext->streams[streamId]->metadata, _properties.attachementStreams.back().metadatas );
+				_properties.getAttachementProperties().push_back( AttachementProperties( _formatContext, streamId ) );
 				break;
 			}
 			case AVMEDIA_TYPE_UNKNOWN:
 			{
-				_properties.unknownStreams.push_back( unknownStreamInfo( _formatContext, streamId ) );
-				detail::fillMetadataDictionnary( _formatContext->streams[streamId]->metadata, _properties.unknownStreams.back().metadatas );
+				_properties.getUnknownPropertiesProperties().push_back( UnknownProperties( _formatContext, streamId ) );
 				break;
 			}
 			case AVMEDIA_TYPE_NB:
@@ -132,13 +119,11 @@ InputFile& InputFile::analyse( IProgress& progress, const EAnalyseLevel level )
 	return *this;
 }
 
-Properties InputFile::analyseFile( const std::string& filename, IProgress& progress, const EAnalyseLevel level )
+FileProperties InputFile::analyseFile( const std::string& filename, IProgress& progress, const EAnalyseLevel level )
 {
 	InputFile file( filename );
 	file.analyse( progress, level );
-	Properties properties;
-	file.getProperties( properties );
-	return properties;
+	return file.getProperties();
 }
 
 AVMediaType InputFile::getStreamType( size_t index )
@@ -229,7 +214,7 @@ void InputFile::setProfile( const ProfileLoader::Profile& profile )
 		}
 		catch( std::exception& e )
 		{
-			std::cout << "[InputFile] warning - can't set option " << (*it).first << " to " << (*it).second << ": " << e.what() << std::endl;
+			std::cout << "[InputFile] warning: " << e.what() << std::endl;
 		}
 	}
 }

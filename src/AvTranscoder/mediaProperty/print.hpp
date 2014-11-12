@@ -14,7 +14,7 @@ namespace avtranscoder
 static const size_t keyWidth = 32;
 static const std::string separator = "====================";
 
-std::ostream& operator<<( std::ostream& flux, const Properties& properties )
+std::ostream& operator<<( std::ostream& flux, const FileProperties& properties )
 {
 	flux << std::left;
 	flux << separator << " Wrapper " << separator << std::endl;
@@ -114,39 +114,39 @@ std::ostream& operator<<( std::ostream& flux, const InputFile& input )
 	flux << input.getProperties();
 
 	// video streams
-	for( size_t videoStreamIndex = 0; videoStreamIndex < input.getProperties().videoStreams.size(); ++videoStreamIndex )
+	for( size_t videoStreamIndex = 0; videoStreamIndex < input.getProperties().getNbVideoStreams(); ++videoStreamIndex )
 	{
-		flux << input.getProperties().videoStreams.at( videoStreamIndex );
+		flux << input.getProperties().getVideoProperties().at( videoStreamIndex );
 	}
 
 	// audio streams
-	for( size_t audioStreamIndex = 0; audioStreamIndex < input.getProperties().audioStreams.size(); ++audioStreamIndex )
+	for( size_t audioStreamIndex = 0; audioStreamIndex < input.getProperties().getNbAudioStreams(); ++audioStreamIndex )
 	{
-		flux << input.getProperties().audioStreams.at( audioStreamIndex );
+		flux << input.getProperties().getAudioProperties().at( audioStreamIndex );
 	}
 
 	// data streams
-	for( size_t dataStreamIndex = 0; dataStreamIndex < input.getProperties().dataStreams.size(); ++dataStreamIndex )
+	for( size_t dataStreamIndex = 0; dataStreamIndex < input.getProperties().getNbDataStreams(); ++dataStreamIndex )
 	{
-		flux << input.getProperties().dataStreams.at( dataStreamIndex );
+		flux << input.getProperties().getDataProperties().at( dataStreamIndex );
 	}
 
 	// subtitle streams
-	for( size_t subtitleStreamIndex = 0; subtitleStreamIndex < input.getProperties().subtitleStreams.size(); ++subtitleStreamIndex )
+	for( size_t subtitleStreamIndex = 0; subtitleStreamIndex < input.getProperties().getNbSubtitleStreams(); ++subtitleStreamIndex )
 	{
-		flux << input.getProperties().subtitleStreams.at( subtitleStreamIndex );
+		flux << input.getProperties().getSubtitleProperties().at( subtitleStreamIndex );
 	}
 
 	// attachement streams
-	for( size_t attachementStreamIndex = 0; attachementStreamIndex < input.getProperties().attachementStreams.size(); ++attachementStreamIndex )
+	for( size_t attachementStreamIndex = 0; attachementStreamIndex < input.getProperties().getNbAttachementStreams(); ++attachementStreamIndex )
 	{
-		flux << input.getProperties().attachementStreams.at( attachementStreamIndex );
+		flux << input.getProperties().getAttachementProperties().at( attachementStreamIndex );
 	}
 
 	// unknown streams
-	for( size_t unknownStreamIndex = 0; unknownStreamIndex < input.getProperties().unknownStreams.size(); ++unknownStreamIndex )
+	for( size_t unknownStreamIndex = 0; unknownStreamIndex < input.getProperties().getNbUnknownStreams(); ++unknownStreamIndex )
 	{
-		flux << input.getProperties().unknownStreams.at( unknownStreamIndex );
+		flux << input.getProperties().getUnknownPropertiesProperties().at( unknownStreamIndex );
 	}
 
 	return flux;

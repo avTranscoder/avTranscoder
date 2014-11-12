@@ -8,7 +8,7 @@
 
 #include <AvTranscoder/codedStream/AvInputStream.hpp>
 
-#include <AvTranscoder/mediaProperty/mediaProperty.hpp>
+#include <AvTranscoder/mediaProperty/FileProperties.hpp>
 
 #include <AvTranscoder/progress/IProgress.hpp>
 
@@ -57,9 +57,9 @@ public:
 	 * @note require to launch analyse() before to fill the property struture
 	 * @return structure of media metadatas
 	 **/
-	const Properties& getProperties() const { return _properties; }
+	const FileProperties& getProperties() const { return _properties; }
 
-	void getProperties( Properties& properties ) const { properties = _properties; }
+	void getProperties( FileProperties& properties ) const { properties = _properties; }
 
 	/**
 	 * @brief Get media file properties using static method.
@@ -67,7 +67,7 @@ public:
 	 * @param progress callback to get analysis progression
 	 * @return structure of media metadatas
 	 **/
-	static Properties analyseFile( const std::string& filename, IProgress& progress, const EAnalyseLevel level = eAnalyseLevelFull );
+	static FileProperties analyseFile( const std::string& filename, IProgress& progress, const EAnalyseLevel level = eAnalyseLevelFull );
 
 	/**
 	 * @brief Get stream type: video, audio, subtitle, etc.
@@ -125,7 +125,7 @@ public:
 
 protected:
 	AVFormatContext*            _formatContext;
-	Properties                  _properties;
+	FileProperties _properties;
 	std::string                 _filename;
 	std::vector<AvInputStream*> _inputStreams;
 };

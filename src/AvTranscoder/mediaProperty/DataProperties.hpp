@@ -1,80 +1,38 @@
-#ifndef _AV_TRANSCODER_DATA_STREAM_PROPERTIES_HPP_
-#define _AV_TRANSCODER_DATA_STREAM_PROPERTIES_HPP_
+#ifndef _AV_TRANSCODER_MEDIA_PROPERTY_DATA_PROPERTIES_HPP
+#define _AV_TRANSCODER_MEDIA_PROPERTY_DATA_PROPERTIES_HPP
+
+#include <AvTranscoder/common.hpp>
+#include <AvTranscoder/mediaProperty/mediaProperty.hpp>
 
 extern "C" {
-#include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
-#include <libavutil/avutil.h>
-#include <libavutil/pixdesc.h>
 }
-
-#include <bitset>
 
 namespace avtranscoder
 {
 
-void detectAncillaryData( AVFormatContext* formatContext, const int index )
+class AvExport DataProperties
 {
-	AVPacket pkt;
-	av_init_packet( &pkt );
-	
-	bool detection = false;
+public:
+	DataProperties();
+	DataProperties( const AVFormatContext* formatContext, const size_t index );
 
-	while( ! av_read_frame( formatContext, &pkt ) )
-	{
-		if( pkt.stream_index == index )
-		{
-			std::cout << "start detect packet" << std::endl;
-			size_t offset = 0;
-			std::cout << offset << " - " << (int) pkt.data[ offset ] << " | " << std::bitset<8>( pkt.data[ offset ] ) << std::endl; offset++;
-			std::cout << offset << " - " << (int) pkt.data[ offset ] << " | " << std::bitset<8>( pkt.data[ offset ] ) << std::endl; offset++;
-			std::cout << offset << " - " << (int) pkt.data[ offset ] << " | " << std::bitset<8>( pkt.data[ offset ] ) << std::endl; offset++;
-			std::cout << offset << " - " << (int) pkt.data[ offset ] << " | " << std::bitset<8>( pkt.data[ offset ] ) << std::endl; offset++;
-			std::cout << offset << " - " << (int) pkt.data[ offset ] << " | " << std::bitset<8>( pkt.data[ offset ] ) << std::endl; offset++;
-			std::cout << offset << " - " << (int) pkt.data[ offset ] << " | " << std::bitset<8>( pkt.data[ offset ] ) << std::endl; offset++;
-			std::cout << offset << " - " << (int) pkt.data[ offset ] << " | " << std::bitset<8>( pkt.data[ offset ] ) << std::endl; offset++;
-			std::cout << offset << " - " << (int) pkt.data[ offset ] << " | " << std::bitset<8>( pkt.data[ offset ] ) << std::endl; offset++;
-			std::cout << offset << " - " << (int) pkt.data[ offset ] << " | " << std::bitset<8>( pkt.data[ offset ] ) << std::endl; offset++;
-			std::cout << offset << " - " << (int) pkt.data[ offset ] << " | " << std::bitset<8>( pkt.data[ offset ] ) << std::endl; offset++;
-			std::cout << offset << " - " << (int) pkt.data[ offset ] << " | " << std::bitset<8>( pkt.data[ offset ] ) << std::endl; offset++;
-			std::cout << offset << " - " << (int) pkt.data[ offset ] << " | " << std::bitset<8>( pkt.data[ offset ] ) << std::endl; offset++;
-			std::cout << offset << " - " << (int) pkt.data[ offset ] << " | " << std::bitset<8>( pkt.data[ offset ] ) << std::endl; offset++;
-			std::cout << offset << " - " << (int) pkt.data[ offset ] << " | " << std::bitset<8>( pkt.data[ offset ] ) << std::endl; offset++;
-			std::cout << offset << " - " << (int) pkt.data[ offset ] << " | " << std::bitset<8>( pkt.data[ offset ] ) << std::endl; offset++;
-			std::cout << offset << " - " << (int) pkt.data[ offset ] << " | " << std::bitset<8>( pkt.data[ offset ] ) << std::endl; offset++;
-			std::cout << offset << " - " << (int) pkt.data[ offset ] << " | " << std::bitset<8>( pkt.data[ offset ] ) << std::endl; offset++;
-			std::cout << offset << " - " << (int) pkt.data[ offset ] << " | " << std::bitset<8>( pkt.data[ offset ] ) << std::endl; offset++;
-			std::cout << offset << " - " << (int) pkt.data[ offset ] << " | " << std::bitset<8>( pkt.data[ offset ] ) << std::endl; offset++;
-			std::cout << offset << " - " << (int) pkt.data[ offset ] << " | " << std::bitset<8>( pkt.data[ offset ] ) << std::endl; offset++;
+	size_t getStreamId() const { return _streamId; }
+	MetadatasMap& getMetadatas() { return _metadatas; }
 
+	const AVFormatContext& getAVFormatContext() { return *_formatContext; }
 
-			unsigned short numberOfLines = (unsigned int) ( pkt.data[0] << 8 ) + pkt.data[1];
+	MetadatasMap getDataMap() const;
 
-			std::cout << "[data] number of lines " << numberOfLines << std::endl;
+private:
+	void detectAncillaryData();
 
-			detection = true;
-		}
+private:
+	const AVFormatContext* _formatContext;  ///< Has link (no ownership)
 
-		av_free_packet( &pkt );
-
-		if( detection )
-			break;
-	}
-}
-
-DataProperties dataStreamInfo( AVFormatContext* formatContext, const size_t index )
-{
-	DataProperties dp;
-	dp.streamId = index;
-
-	// AVCodecContext* codec_context = formatContext->streams[index]->codec;
-	
-	// dp.codecId       = codec_context->codec_id;
-
-	//detectAncillaryData( formatContext, index );
-
-	return dp;
-}
+	size_t _streamId;
+	MetadatasMap _metadatas;
+};
 
 }
 

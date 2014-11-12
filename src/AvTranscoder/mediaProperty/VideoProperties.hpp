@@ -1,343 +1,125 @@
-#ifndef _AV_TRANSCODER_VIDEO_STREAM_PROPERTIES_HPP_
-#define _AV_TRANSCODER_VIDEO_STREAM_PROPERTIES_HPP_
+#ifndef _AV_TRANSCODER_MEDIA_PROPERTY_VIDEO_PROPERTIES_HPP
+#define _AV_TRANSCODER_MEDIA_PROPERTY_VIDEO_PROPERTIES_HPP
+
+#include <AvTranscoder/common.hpp>
+#include <AvTranscoder/mediaProperty/mediaProperty.hpp>
+#include <AvTranscoder/progress/IProgress.hpp>
 
 extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
-#include <libavutil/avutil.h>
 #include <libavutil/pixdesc.h>
 }
 
-#include <iostream>
-#include <iomanip>
-#include <sstream>
-
-#ifdef _MSC_VER
-#include <float.h>
-#define isnan _isnan
-#define isinf(x) (!_finite(x))
-#endif
+#include <string>
+#include <vector>
+#include <utility>
 
 namespace avtranscoder
 {
 
-namespace details
+struct AvExport Channel
 {
+	size_t id;
+	size_t chromaHeight;
+	size_t bitStep;
+};
 
-void getGopProperties(
-	VideoProperties& vp,
-	AVFormatContext* formatContext,
-	AVCodecContext* codecContext,
-	AVCodec* codec,
-	const int videoStreamIndex,
-	IProgress& progress
-	)
+class AvExport VideoProperties
 {
-	AVPacket pkt;
+public:
+	VideoProperties();
+	VideoProperties( const AVFormatContext* formatContext, const size_t index, IProgress& progress );
 
-#if LIBAVCODEC_VERSION_MAJOR > 54
-	AVFrame* frame = av_frame_alloc();
-#else
-	AVFrame* frame = avcodec_alloc_frame();
-#endif
+	std::string getCodecName() const;
+	std::string getCodecLongName() const;
+	std::string getProfileName() const;
+	std::string getColorTransfert() const;
+	std::string getColorspace() const;
+	std::string getColorRange() const;
+	std::string getColorPrimaries() const;
+	std::string getChromaSampleLocation() const;
+	std::string getFieldOrder() const;
 
-	av_init_packet( &pkt );
-	avcodec_open2( codecContext, codec, NULL );
+	std::string getPixelName() const { return _pixFmt->name; }
+	std::string getEndianess() const;
 
-	int count = 0;
-	int gotFrame = 0;
-	bool stopAnalyse = false;
+	int64_t getStartTimecode() const { return _codecContext->timecode_frame_start; }
+	std::string getStartTimecodeString() const;
 
-	while( ! av_read_frame( formatContext, &pkt ) )
-	{
-		if( pkt.stream_index == videoStreamIndex )
-		{
-			// std::cout << "decode frame" << std::endl;
-			avcodec_decode_video2( codecContext, frame, &gotFrame, &pkt );
-			if( gotFrame )
-			{
-				// std::cout << "inteleaved " << frame->interlaced_frame << std::endl;
-				vp.gopStructure.push_back( std::pair<char, bool>( av_get_picture_type_char( frame->pict_type ), frame->key_frame ) );
-				vp.isInterlaced  = frame->interlaced_frame;
-				vp.topFieldFirst = frame->top_field_first;
-				++count;
-				if( progress.progress( count, codecContext->gop_size ) == eJobStatusCancel )
-					stopAnalyse = true;
-			}
-		}
+	Rational getTimeBase() const;
+	Rational getSar() const; // sample/pixel aspect ratio
+	Rational getDar() const; // display aspect ratio
 
-		av_free_packet( &pkt );
-		
-		if( codecContext->gop_size == count )
-		{
-			stopAnalyse = true;
-		}
+	size_t getStreamId() const { return _streamId; }
+	size_t getCodecId() const { return _codecContext->codec_id; }
+	size_t getBitRate() const { return _codecContext->bit_rate; }
+	size_t getMaxBitRate() const { return _codecContext->rc_max_rate; }
+	size_t getMinBitRate() const { return _codecContext->rc_min_rate; }
+	size_t getTicksPerFrame() const { return _codecContext->ticks_per_frame; }
+	size_t getWidth() const { return _codecContext->width; }
+	size_t getHeight() const { return _codecContext->height; }
+	size_t getGopSize() const { return _codecContext->gop_size; }
+	size_t getDtgActiveFormat() const { return _codecContext->dtg_active_format; }
+	size_t getReferencesFrames() const { return _codecContext->refs; }
+	int getProfile() const { return _codecContext->profile; }
+	int getLevel() const { return _codecContext->level; }
+	size_t getComponentsCount() const { return _pixFmt->nb_components; }
+	size_t getChromaWidth() const { return _pixFmt->log2_chroma_w; }
+	size_t getChromaHeight() const { return _pixFmt->log2_chroma_h; }
 
-		if( stopAnalyse )
-			break;
-	}
-#if LIBAVCODEC_VERSION_MAJOR > 54
-	av_frame_free( &frame );
-#else
- #if LIBAVCODEC_VERSION_MAJOR > 53
-	avcodec_free_frame( &frame );
- #else
-	av_free( frame );
- #endif
-#endif
-}
+	double getFps() const;
 
-}
+	bool hasBFrames() const { return (bool) _codecContext->has_b_frames; }
+	bool isIndexedColors() const { return (bool) _pixFmt->flags & PIX_FMT_PAL; }
+	bool isBitWisePacked() const { return (bool) _pixFmt->flags & PIX_FMT_BITSTREAM; }
+	bool isHardwareAccelerated() const { return (bool) _pixFmt->flags & PIX_FMT_HWACCEL; }
+	bool isPlanar() const { return (bool) _pixFmt->flags & PIX_FMT_PLANAR; }
+	bool isRgbPixelData() const { return (bool) _pixFmt->flags & PIX_FMT_RGB; }
+	bool isPseudoPaletted() const;
+	bool hasAlpha() const;
 
-std::string makeTimecodeMpegToString( uint32_t tc25bit )
-{
-	std::ostringstream os;
-	os << std::setfill( '0' );
-	os << std::setw(2) << ( tc25bit >> 19 & 0x1f ) << ":";   // 5-bit hours
-	os << std::setw(2) << ( tc25bit >> 13 & 0x3f ) << ":";   // 6-bit minutes
-	os << std::setw(2) << ( tc25bit >>  6 & 0x3f ) ;         // 6-bit seconds
-	os << ( tc25bit & 1 << 24 ? ';' : ':' ); // 1-bit drop flag
-	os << std::setw(2) << ( tc25bit       & 0x3f );   // 6-bit frames
-	return os.str();
-}
+	//@{
+	// Warning: Can acces these data when analyse first gop
+	// Construct the VideoProperties with level = eAnalyseLevelFull
+	// @see EAnalyseLevel
+	// @see analyseGopStructure
+	bool isInterlaced() const { return _isInterlaced; }
+	bool isTopFieldFirst() const { return _isTopFieldFirst; }
+	std::vector< std::pair< char, bool > > getGopStructure() const { return _gopStructure; }
+	//@}
 
+	std::vector<Channel> getChannels() const;
 
-VideoProperties videoStreamInfo(
-	AVFormatContext* formatContext,
-	const size_t videoStreamIndex,
-	IProgress& progress,
-	const InputFile::EAnalyseLevel level
-	)
-{
-	VideoProperties vp;
-	AVCodecContext* codec_context = formatContext->streams[videoStreamIndex]->codec;
-	
-	codec_context->skip_frame = AVDISCARD_NONE;
+	MetadatasMap& getMetadatas() { return _metadatas; }
 
-	vp.streamId         = videoStreamIndex;
+	const AVFormatContext& getAVFormatContext() { return *_formatContext; }
+	AVCodecContext& getAVCodecContext() { return *_codecContext; }
+	const AVPixFmtDescriptor& getAVPixFmtDescriptor() { return *_pixFmt; }
 
-	vp.codecId          = codec_context->codec_id;
-	vp.bitRate          = codec_context->bit_rate;
-	vp.maxBitRate       = codec_context->rc_max_rate;
-	vp.minBitRate       = codec_context->rc_min_rate;
-	vp.isInterlaced     = false;
-	vp.topFieldFirst    = false;
+	MetadatasMap getDataMap() const;  ///< Warning: the method calls analyseGopStructure, which can modify state of the object
 
-	vp.ticksPerFrame    = codec_context->ticks_per_frame,
-	vp.width            = codec_context->width,
-	vp.height           = codec_context->height,
-	vp.gopSize          = codec_context->gop_size,
-	vp.dtgActiveFormat  = codec_context->dtg_active_format,
-	vp.referencesFrames = codec_context->refs,
-	vp.profile          = codec_context->profile,
-	vp.level            = codec_context->level;
+private:
+	/**
+	 *  @brief frame type / is key frame
+	 *  @param progress: callback to get analysis progression
+	 */
+	void analyseGopStructure( IProgress& progress );
 
-	vp.timeBase.num     = codec_context->time_base.num;
-	vp.timeBase.den     = codec_context->time_base.den;
-	vp.sar.num          = codec_context->sample_aspect_ratio.num;
-	vp.sar.den          = codec_context->sample_aspect_ratio.den;
-	
-	vp.startTimecode    = makeTimecodeMpegToString( codec_context->timecode_frame_start );
+private:
+	const AVFormatContext* _formatContext;  ///< Has link (no ownership)
+	AVCodecContext* _codecContext;  ///< Has link (no ownership)
+	const AVPixFmtDescriptor* _pixFmt;  ///< Has link (no ownership)
 
-	int darNum, darDen;
-	av_reduce( &darNum, &darDen,
-			   codec_context->width * codec_context->sample_aspect_ratio.num,
-			   codec_context->height * codec_context->sample_aspect_ratio.den,
-			   1024 * 1024);
-	vp.dar.num = darNum;
-	vp.dar.den = darDen;
-
-	vp.fps = 1.0 * codec_context->time_base.den / ( codec_context->time_base.num * codec_context->ticks_per_frame );
-	
-	if( isinf( vp.fps ) )
-		vp.fps = 0.0;
-
-	vp.hasBFrames           = (bool) codec_context->has_b_frames;
-
-	
-	vp.colorspace           = "";
-	vp.colorTransfert       = "";
-	vp.colorRange           = "";
-	vp.colorPrimaries       = "";
-	vp.chromaSampleLocation = "";
-	vp.fieldOrder           = "";
-	
-	switch( codec_context->color_trc )
-	{
-		case AVCOL_TRC_BT709:        vp.colorTransfert = "Rec 709 / ITU-R BT1361"; break;
-		case AVCOL_TRC_UNSPECIFIED:  vp.colorTransfert = "unspecified"; break;
-		case AVCOL_TRC_GAMMA22:      vp.colorTransfert = "Gamma 2.2"; break;
-		case AVCOL_TRC_GAMMA28:      vp.colorTransfert = "Gamma 2.8"; break;
-#if LIBAVCODEC_VERSION_MAJOR > 53
-		case AVCOL_TRC_SMPTE240M:    vp.colorTransfert = "Smpte 240M"; break;
-#endif
-#if LIBAVCODEC_VERSION_MAJOR > 54
- #ifdef AVCOL_TRC_SMPTE170M
-		case AVCOL_TRC_SMPTE170M:    vp.colorTransfert = "Rec 601 / ITU-R BT601-6 525 or 625 / ITU-R BT1358 525 or 625 / ITU-R BT1700 NTSC"; break;
- #endif
- #ifdef AVCOL_TRC_LINEAR
-		case AVCOL_TRC_LINEAR:       vp.colorTransfert = "Linear transfer characteristics"; break;
- #endif
- #ifdef AVCOL_TRC_LOG
-		case AVCOL_TRC_LOG:          vp.colorTransfert = "Logarithmic transfer characteristic (100:1 range)"; break;
- #endif
- #ifdef AVCOL_TRC_LOG_SQRT
-		case AVCOL_TRC_LOG_SQRT:     vp.colorTransfert = "Logarithmic transfer characteristic (100 * Sqrt( 10 ) : 1 range)"; break;
- #endif
- #ifdef AVCOL_TRC_IEC61966_2_4
-		case AVCOL_TRC_IEC61966_2_4: vp.colorTransfert = "IEC 61966-2-4"; break;
- #endif
- #ifdef AVCOL_TRC_BT1361_ECG
-		case AVCOL_TRC_BT1361_ECG:   vp.colorTransfert = "ITU-R BT1361 Extended Colour Gamut"; break;
- #endif
- #ifdef AVCOL_TRC_IEC61966_2_1
-		case AVCOL_TRC_IEC61966_2_1: vp.colorTransfert = "IEC 61966-2-1 (sRGB or sYCC)"; break;
- #endif
- #ifdef AVCOL_TRC_BT2020_10
-		case AVCOL_TRC_BT2020_10:    vp.colorTransfert = "ITU-R BT2020 for 10 bit system"; break;
- #endif
- #ifdef AVCOL_TRC_BT2020_12
-		case AVCOL_TRC_BT2020_12:    vp.colorTransfert = "ITU-R BT2020 for 12 bit system"; break;	
- #endif
-#endif
-		case AVCOL_TRC_NB:           vp.colorTransfert = "Not ABI"; break;
-		default: break;
-	}
-	switch( codec_context->colorspace )
-	{
-		case AVCOL_SPC_RGB:         vp.colorspace = "RGB"; break;
-		case AVCOL_SPC_BT709:       vp.colorspace = "Rec 709"; break;
-		case AVCOL_SPC_UNSPECIFIED: vp.colorspace = "unspecified"; break;
-		case AVCOL_SPC_FCC:         vp.colorspace = "Four CC"; break;
-		case AVCOL_SPC_BT470BG:     vp.colorspace = "BT470 (PAL - 625)"; break;
-		case AVCOL_SPC_SMPTE170M:   vp.colorspace = "Smpte 170M (NTSC)"; break;
-		case AVCOL_SPC_SMPTE240M:   vp.colorspace = "Smpte 240M"; break;
-#if LIBAVCODEC_VERSION_MAJOR > 53
-		case AVCOL_SPC_YCOCG:       vp.colorspace = "Y Co Cg"; break;
-//#else
-//		case AVCOL_SPC_YCGCO:       vp.colorspace = "Y Cg Co"; break;
-#endif
-#if LIBAVCODEC_VERSION_MAJOR > 54
- #ifdef AVCOL_TRC_BT2020_12
-		case AVCOL_SPC_BT2020_NCL:  vp.colorspace = "ITU-R BT2020 non-constant luminance system"; break;
- #endif
- #ifdef AVCOL_TRC_BT2020_CL
-		case AVCOL_SPC_BT2020_CL:   vp.colorspace = "ITU-R BT2020 constant luminance system"; break;
- #endif
-#endif
-		case AVCOL_SPC_NB:          vp.colorspace = "Not ABI"; break;
-		default: break;
-	}
-	switch( codec_context->color_range )
-	{
-		case AVCOL_RANGE_UNSPECIFIED: vp.colorRange = "unspecified"; break;
-		case AVCOL_RANGE_MPEG:        vp.colorRange = "Head"; break;
-		case AVCOL_RANGE_JPEG:        vp.colorRange = "Full"; break;
-		case AVCOL_RANGE_NB:          vp.colorRange = "Not ABI"; break;
-		default: break;
-	}
-	switch( codec_context->color_primaries )
-	{
-		case AVCOL_PRI_BT709:       vp.colorPrimaries = "Rec 709"; break;
-		case AVCOL_PRI_UNSPECIFIED: vp.colorPrimaries = "unspecified"; break;
-		case AVCOL_PRI_BT470M:      vp.colorPrimaries = "BT 470M"; break;
-		case AVCOL_PRI_BT470BG:     vp.colorPrimaries = "Rec 601 (PAL & SECAM)"; break;
-		case AVCOL_PRI_SMPTE170M:   vp.colorPrimaries = "Rec 601 (NTSC)"; break;
-		case AVCOL_PRI_SMPTE240M:   vp.colorPrimaries = "Smpte 240 (NTSC)"; break;
-		case AVCOL_PRI_FILM:        vp.colorPrimaries = "Film"; break;
-#if LIBAVCODEC_VERSION_MAJOR > 54
- #ifdef AVCOL_TRC_BT2020_CL
-		case AVCOL_PRI_BT2020:      vp.colorPrimaries = "ITU-R BT2020"; break;
- #endif
-#endif
-		case AVCOL_PRI_NB:          vp.colorPrimaries = "Not ABI"; break;
-		default: break;
-	}
-	switch( codec_context->chroma_sample_location )
-	{
-		case AVCHROMA_LOC_UNSPECIFIED: vp.chromaSampleLocation = "unspecified"; break;
-		case AVCHROMA_LOC_LEFT:        vp.chromaSampleLocation = "left (mpeg2/4, h264 default)"; break;
-		case AVCHROMA_LOC_CENTER:      vp.chromaSampleLocation = "center (mpeg1, jpeg, h263)"; break;
-		case AVCHROMA_LOC_TOPLEFT:     vp.chromaSampleLocation = "top left"; break;
-		case AVCHROMA_LOC_TOP:         vp.chromaSampleLocation = "top"; break;
-		case AVCHROMA_LOC_BOTTOMLEFT:  vp.chromaSampleLocation = "bottom left"; break;
-		case AVCHROMA_LOC_BOTTOM:      vp.chromaSampleLocation = "bottom"; break;
-		case AVCHROMA_LOC_NB:          vp.chromaSampleLocation = "Not ABI"; break;
-		default: break;
-	}
-	switch( codec_context->field_order )
-	{
-		case AV_FIELD_UNKNOWN:     vp.fieldOrder = "unknown"; break;
-		case AV_FIELD_PROGRESSIVE: vp.fieldOrder = "progressive"; break;
-		case AV_FIELD_TT:          vp.fieldOrder = "top top"; break;
-		case AV_FIELD_BB:          vp.fieldOrder = "bottom bottom"; break;
-		case AV_FIELD_TB:          vp.fieldOrder = "top bottom"; break;
-		case AV_FIELD_BT:          vp.fieldOrder = "bottom top"; break;
-		default: break;
-	}
-#if LIBAVUTIL_VERSION_MAJOR > 51
-	const AVPixFmtDescriptor* pixFmt = av_pix_fmt_desc_get( codec_context->pix_fmt );
-#else
-	const AVPixFmtDescriptor* pixFmt = NULL;
-	if( codec_context->pix_fmt >= 0 && codec_context->pix_fmt < PIX_FMT_NB )
-		pixFmt = &av_pix_fmt_descriptors[ codec_context->pix_fmt ];
-#endif
-
-	if( pixFmt != NULL )
-	{
-		vp.pixelName            = pixFmt->name;
-		vp.componentsCount      = pixFmt->nb_components;
-		vp.chromaWidth          = pixFmt->log2_chroma_w;
-		vp.chromaHeight         = pixFmt->log2_chroma_h;
-		vp.endianess            = ( pixFmt->flags & PIX_FMT_BE ) ? "big" : "little";
-		vp.indexedColors        = (bool) pixFmt->flags & PIX_FMT_PAL;
-		vp.bitWisePacked        = (bool) pixFmt->flags & PIX_FMT_BITSTREAM;
-		vp.hardwareAcceleration = (bool) pixFmt->flags & PIX_FMT_HWACCEL;
-		vp.notFirstPlane        = (bool) pixFmt->flags & PIX_FMT_PLANAR;
-		vp.rgbPixelData         = (bool) pixFmt->flags & PIX_FMT_RGB;
-#if LIBAVCODEC_VERSION_MAJOR > 53
-		vp.pseudoPaletted       = (bool) pixFmt->flags & PIX_FMT_PSEUDOPAL;
-		vp.asAlpha              = (bool) pixFmt->flags & PIX_FMT_ALPHA;
-#else
-#endif
-
-		for( size_t channel = 0; channel < (size_t)pixFmt->nb_components; ++channel )
-		{
-			Channel c;
-			c.id           = channel;
-			c.chromaHeight = (size_t)pixFmt->comp[channel].plane;
-			c.bitStep      = (size_t)pixFmt->comp[channel].step_minus1;
-			vp.channels.push_back( c );
-		}
-	}
-
-	AVCodec* codec = NULL;
-	if( ( codec = avcodec_find_decoder( codec_context->codec_id ) ) != NULL )
-	{
-		if( codec->capabilities & CODEC_CAP_TRUNCATED )
-			codec_context->flags|= CODEC_FLAG_TRUNCATED;
-
-		vp.codecName     = codec->name;
-		vp.codecLongName = codec->long_name;
-
-		if( codec_context->profile != -99 )
-		{
-			const char* profile;
-			if( ( profile = av_get_profile_name( codec, codec_context->profile ) ) != NULL )
-				vp.profileName = profile;
-		}
-		
-		// std::cout << "pass here " <<  codec_context->width << "x" << codec_context->height<< std::endl;
-
-		if( codec_context->width && codec_context->height )// && level != InputFile::eAnalyseLevelFast )
-		{
-			// std::cout << "full analysis" << std::endl;
-			details::getGopProperties( vp, formatContext, codec_context, codec, videoStreamIndex, progress );
-		}
-	}
-
-	return vp;
-}
+	size_t _streamId;
+	//@{
+	// Can acces these data when analyse first gop
+	bool _isInterlaced;
+	bool _isTopFieldFirst;
+	std::vector< std::pair< char, bool > > _gopStructure;
+	//@}
+	MetadatasMap _metadatas;
+};
 
 }
 
