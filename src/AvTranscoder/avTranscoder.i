@@ -25,8 +25,6 @@
 #include <AvTranscoder/codec/AudioCodec.hpp>
 #include <AvTranscoder/codec/DataCodec.hpp>
 
-#include <AvTranscoder/mediaProperty/mediaProperty.hpp>
-
 #include <AvTranscoder/codedStream/IOutputStream.hpp>
 #include <AvTranscoder/codedStream/AvOutputStream.hpp>
 
@@ -62,6 +60,7 @@ namespace std {
 }
 
 %include "AvTranscoder/progress/progress.i"
+%include "AvTranscoder/mediaProperty/mediaProperty.i"
 
 %include <AvTranscoder/ProfileLoader.hpp>
 
@@ -74,8 +73,6 @@ namespace std {
 %include <AvTranscoder/codec/VideoCodec.hpp>
 %include <AvTranscoder/codec/AudioCodec.hpp>
 %include <AvTranscoder/codec/DataCodec.hpp>
-
-%include <AvTranscoder/mediaProperty/mediaProperty.hpp>
 
 %include <AvTranscoder/codedStream/IOutputStream.hpp>
 %include <AvTranscoder/codedStream/AvOutputStream.hpp>

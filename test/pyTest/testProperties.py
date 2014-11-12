@@ -28,7 +28,7 @@ def testAddMetadataDate():
 	inputFile.analyse( progress, av.InputFile.eAnalyseLevelFast )
 	properties = inputFile.getProperties()
 
-	assert_in( metadata_to_check, properties.metadatas )
+	assert_in( metadata_to_check, properties.getMetadatas() )
 
 def testAddImpossibleMetadata():
 	"""
@@ -53,4 +53,4 @@ def testAddImpossibleMetadata():
 	inputFile.analyse( progress, av.InputFile.eAnalyseLevelFast )
 	properties = inputFile.getProperties()
 
-	assert_not_in( metadata_to_check, properties.metadatas )
+	assert_not_in( metadata_to_check, properties.getMetadatas() )

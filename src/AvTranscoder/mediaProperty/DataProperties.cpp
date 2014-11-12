@@ -1,28 +1,53 @@
-#ifndef _AV_TRANSCODER_DATA_STREAM_PROPERTIES_HPP_
-#define _AV_TRANSCODER_DATA_STREAM_PROPERTIES_HPP_
+#include "DataProperties.hpp"
 
 extern "C" {
 #include <libavcodec/avcodec.h>
-#include <libavformat/avformat.h>
 #include <libavutil/avutil.h>
 #include <libavutil/pixdesc.h>
 }
 
 #include <bitset>
+#include <iostream>
 
 namespace avtranscoder
 {
 
-void detectAncillaryData( AVFormatContext* formatContext, const int index )
+DataProperties::DataProperties()
+	: _formatContext( NULL )
+	, _streamId( 0 )
+{}
+
+DataProperties::DataProperties( const AVFormatContext* formatContext, const size_t index )
+	: _formatContext( formatContext )
+	, _streamId( index )
+{
+	//detectAncillaryData( _formatContext, _streamId );
+}
+
+MetadatasMap DataProperties::getDataMap() const
+{
+	MetadatasMap dataMap;
+
+	detail::add( dataMap, "streamId", _streamId );
+
+	for( size_t metadataIndex = 0; metadataIndex < _metadatas.size(); ++metadataIndex )
+	{
+		detail::add( dataMap, _metadatas.at( metadataIndex ).first, _metadatas.at( metadataIndex ).second );
+	}
+
+	return dataMap;
+}
+
+void DataProperties::detectAncillaryData()
 {
 	AVPacket pkt;
 	av_init_packet( &pkt );
 	
 	bool detection = false;
 
-	while( ! av_read_frame( formatContext, &pkt ) )
+	while( ! av_read_frame( const_cast<AVFormatContext*>( _formatContext ), &pkt ) )
 	{
-		if( pkt.stream_index == index )
+		if( pkt.stream_index == (int)_streamId )
 		{
 			std::cout << "start detect packet" << std::endl;
 			size_t offset = 0;
@@ -62,20 +87,4 @@ void detectAncillaryData( AVFormatContext* formatContext, const int index )
 	}
 }
 
-DataProperties dataStreamInfo( AVFormatContext* formatContext, const size_t index )
-{
-	DataProperties dp;
-	dp.streamId = index;
-
-	// AVCodecContext* codec_context = formatContext->streams[index]->codec;
-	
-	// dp.codecId       = codec_context->codec_id;
-
-	//detectAncillaryData( formatContext, index );
-
-	return dp;
 }
-
-}
-
-#endif
