@@ -2,8 +2,7 @@
 #define _AV_TRANSCODER_MEDIA_PROPERTY_FILE_PROPERTIES_HPP
 
 #include <AvTranscoder/common.hpp>
-#include <AvTranscoder/mediaProperty/mediaProperty.hpp>
-
+#include <AvTranscoder/mediaProperty/util.hpp>
 #include <AvTranscoder/mediaProperty/VideoProperties.hpp>
 #include <AvTranscoder/mediaProperty/AudioProperties.hpp>
 #include <AvTranscoder/mediaProperty/DataProperties.hpp>

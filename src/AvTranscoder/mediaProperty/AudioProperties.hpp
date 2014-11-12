@@ -2,7 +2,7 @@
 #define _AV_TRANSCODER_MEDIA_PROPERTY_AUDIO_PROPERTIES_HPP
 
 #include <AvTranscoder/common.hpp>
-#include <AvTranscoder/mediaProperty/mediaProperty.hpp>
+#include <AvTranscoder/mediaProperty/util.hpp>
 
 extern "C" {
 #include <libavformat/avformat.h>

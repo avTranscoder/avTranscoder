@@ -2,7 +2,7 @@
 #define _AV_TRANSCODER_MEDIA_PROPERTY_VIDEO_PROPERTIES_HPP
 
 #include <AvTranscoder/common.hpp>
-#include <AvTranscoder/mediaProperty/mediaProperty.hpp>
+#include <AvTranscoder/mediaProperty/util.hpp>
 #include <AvTranscoder/progress/IProgress.hpp>
 
 extern "C" {
