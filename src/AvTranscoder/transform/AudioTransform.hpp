@@ -30,7 +30,7 @@ private:
 	
 	ResampleContext* _audioConvertContext;
 
-	size_t _lastAudioFrameSize;
+	size_t _lastProcessedAudioFrameSize;
 	
 	bool _isInit;
 };
