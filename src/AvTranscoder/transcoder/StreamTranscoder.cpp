@@ -305,7 +305,7 @@ bool StreamTranscoder::processRewrap()
 	CodedData data;
 
 	if( ! _inputStream->readNextPacket( data ) )
-			return false;
+		return false;
 	
 	IOutputStream::EWrappingStatus wrappingStatus = _outputStream->wrap( data );
 	switch( wrappingStatus )
@@ -349,9 +349,9 @@ bool StreamTranscoder::processTranscode()
 		std::cout << "transcode a frame " << std::endl;
 
 	if( _offset &&
-		_frameProcessed > _offset &&
-		! _offsetPassed &&
-		_takeFromGenerator )
+	    _frameProcessed > _offset &&
+	    ! _offsetPassed &&
+	    _takeFromGenerator )
 	{
 		switchToInputEssence();
 		_offsetPassed = true;
@@ -412,9 +412,9 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 		std::cout << "transcode a frame " << std::endl;
 
 	if( _offset &&
-		_frameProcessed > _offset &&
-		! _offsetPassed &&
-		_takeFromGenerator )
+	    _frameProcessed > _offset &&
+	    ! _offsetPassed &&
+	    _takeFromGenerator )
 	{
 		switchToInputEssence();
 		_offsetPassed = true;
