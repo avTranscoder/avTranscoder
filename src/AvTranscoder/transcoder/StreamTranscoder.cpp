@@ -307,7 +307,8 @@ bool StreamTranscoder::processRewrap()
 	if( ! _inputStream->readNextPacket( data ) )
 			return false;
 	
-	switch( _outputStream->wrap( data ) )
+	IOutputStream::EWrappingStatus wrappingStatus = _outputStream->wrap( data );
+	switch( wrappingStatus )
 	{
 		case IOutputStream::eWrappingSuccess:
 			return true;
@@ -382,7 +383,8 @@ bool StreamTranscoder::processTranscode()
 
 	if( _verbose )
 		std::cout << "wrap (" << data.getSize() << ")" << std::endl;
-	switch( _outputStream->wrap( data ) )
+	IOutputStream::EWrappingStatus wrappingStatus = _outputStream->wrap( data );
+	switch( wrappingStatus )
 	{
 		case IOutputStream::eWrappingSuccess:
 			return true;
@@ -443,7 +445,8 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 	}
 	if( _verbose )
 		std::cout << "wrap (" << data.getSize() << ")" << std::endl;
-	switch( _outputStream->wrap( data ) )
+	IOutputStream::EWrappingStatus wrappingStatus = _outputStream->wrap( data );
+	switch( wrappingStatus )
 	{
 		case IOutputStream::eWrappingSuccess:
 			return true;
