@@ -41,10 +41,10 @@ public:
 	std::string getChromaSampleLocation() const;
 	std::string getFieldOrder() const;
 
-	std::string getPixelName() const { return _pixFmt->name; }
+	std::string getPixelName() const;
 	std::string getEndianess() const;
 
-	int64_t getStartTimecode() const { return _codecContext->timecode_frame_start; }
+	int64_t getStartTimecode() const;
 	std::string getStartTimecodeString() const;
 
 	Rational getTimeBase() const;
@@ -52,30 +52,30 @@ public:
 	Rational getDar() const; // display aspect ratio
 
 	size_t getStreamId() const { return _streamId; }
-	size_t getCodecId() const { return _codecContext->codec_id; }
-	size_t getBitRate() const { return _codecContext->bit_rate; }
-	size_t getMaxBitRate() const { return _codecContext->rc_max_rate; }
-	size_t getMinBitRate() const { return _codecContext->rc_min_rate; }
-	size_t getTicksPerFrame() const { return _codecContext->ticks_per_frame; }
-	size_t getWidth() const { return _codecContext->width; }
-	size_t getHeight() const { return _codecContext->height; }
-	size_t getGopSize() const { return _codecContext->gop_size; }
-	size_t getDtgActiveFormat() const { return _codecContext->dtg_active_format; }
-	size_t getReferencesFrames() const { return _codecContext->refs; }
-	int getProfile() const { return _codecContext->profile; }
-	int getLevel() const { return _codecContext->level; }
-	size_t getComponentsCount() const { return _pixFmt->nb_components; }
-	size_t getChromaWidth() const { return _pixFmt->log2_chroma_w; }
-	size_t getChromaHeight() const { return _pixFmt->log2_chroma_h; }
+	size_t getCodecId() const;
+	size_t getBitRate() const;
+	size_t getMaxBitRate() const;
+	size_t getMinBitRate() const;
+	size_t getTicksPerFrame() const;
+	size_t getWidth() const;
+	size_t getHeight() const;
+	size_t getGopSize() const;
+	size_t getDtgActiveFormat() const;
+	size_t getReferencesFrames() const;
+	int getProfile() const;
+	int getLevel() const;
+	size_t getComponentsCount() const;
+	size_t getChromaWidth() const;
+	size_t getChromaHeight() const;
 
 	double getFps() const;
 
-	bool hasBFrames() const { return (bool) _codecContext->has_b_frames; }
-	bool isIndexedColors() const { return (bool) _pixFmt->flags & PIX_FMT_PAL; }
-	bool isBitWisePacked() const { return (bool) _pixFmt->flags & PIX_FMT_BITSTREAM; }
-	bool isHardwareAccelerated() const { return (bool) _pixFmt->flags & PIX_FMT_HWACCEL; }
-	bool isPlanar() const { return (bool) _pixFmt->flags & PIX_FMT_PLANAR; }
-	bool isRgbPixelData() const { return (bool) _pixFmt->flags & PIX_FMT_RGB; }
+	bool hasBFrames() const;
+	bool isIndexedColors() const;
+	bool isBitWisePacked() const;
+	bool isHardwareAccelerated() const;
+	bool isPlanar() const;
+	bool isRgbPixelData() const;
 	bool isPseudoPaletted() const;
 	bool hasAlpha() const;
 
