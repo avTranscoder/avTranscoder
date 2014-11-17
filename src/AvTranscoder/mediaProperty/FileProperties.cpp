@@ -22,20 +22,20 @@ MetadatasMap FileProperties::getDataMap() const
 	MetadatasMap dataMap;
 
 	detail::add( dataMap, "filename", getFilename() );
-	detail::add( dataMap, "format name", getFormatName() );
-	detail::add( dataMap, "format long name", getFormatLongName() );
+	detail::add( dataMap, "formatName", getFormatName() );
+	detail::add( dataMap, "formatLongName", getFormatLongName() );
 
-	detail::add( dataMap, "start time", getStartTime() );
+	detail::add( dataMap, "startTime", getStartTime() );
 	detail::add( dataMap, "duration", getDuration() );
 	detail::add( dataMap, "bitrate", getBitRate() );
-	detail::add( dataMap, "number of streams", getNbStreams() );
-	detail::add( dataMap, "number of programs", getProgramsCount() );
-	detail::add( dataMap, "number of video streams", getNbVideoStreams() );
-	detail::add( dataMap, "number of audio streams", getNbAudioStreams() );
-	detail::add( dataMap, "number of data streams", getNbDataStreams() );
-	detail::add( dataMap, "number of subtitle streams", getNbSubtitleStreams() );
-	detail::add( dataMap, "number of attachement streams", getNbAttachementStreams() );
-	detail::add( dataMap, "number of unknown streams", getNbUnknownStreams() );
+	detail::add( dataMap, "numberOfStreams", getNbStreams() );
+	detail::add( dataMap, "numberOfPrograms", getProgramsCount() );
+	detail::add( dataMap, "numberOfVideoStreams", getNbVideoStreams() );
+	detail::add( dataMap, "numberOfAudioStreams", getNbAudioStreams() );
+	detail::add( dataMap, "numberOfDataStreams", getNbDataStreams() );
+	detail::add( dataMap, "numberOfSubtitleStreams", getNbSubtitleStreams() );
+	detail::add( dataMap, "numberOfAttachementStreams", getNbAttachementStreams() );
+	detail::add( dataMap, "numberOfUnknownStreams", getNbUnknownStreams() );
 
 	for( size_t metadataIndex = 0; metadataIndex < _metadatas.size(); ++metadataIndex )
 	{

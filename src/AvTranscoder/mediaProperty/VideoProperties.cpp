@@ -673,44 +673,44 @@ MetadatasMap VideoProperties::getDataMap() const
 {
 	MetadatasMap dataMap;
 
-	detail::add( dataMap, "stream id", getStreamId() );
-	detail::add( dataMap, "codec id", getCodecId() );
-	detail::add( dataMap, "codec name", getCodecName() );
-	detail::add( dataMap, "codec long name", getCodecLongName() );
+	detail::add( dataMap, "streamId", getStreamId() );
+	detail::add( dataMap, "codecId", getCodecId() );
+	detail::add( dataMap, "codecName", getCodecName() );
+	detail::add( dataMap, "codecLongName", getCodecLongName() );
 	detail::add( dataMap, "profile", getProfile() );
-	detail::add( dataMap, "profile name", getProfileName() );
+	detail::add( dataMap, "profileName", getProfileName() );
 	detail::add( dataMap, "level", getLevel() );
-	detail::add( dataMap, "start timecode", getStartTimecode() );
+	detail::add( dataMap, "startTimecode", getStartTimecode() );
 	detail::add( dataMap, "width", getWidth() );
 	detail::add( dataMap, "height", getHeight() );
-	detail::add( dataMap, "pixel aspect ratio", getSar().num / getSar().den );
-	detail::add( dataMap, "display aspect ratio", getDar().num / getDar().den );
+	detail::add( dataMap, "pixelAspectRatio", getSar().num / getSar().den );
+	detail::add( dataMap, "displayAspectRatio", getDar().num / getDar().den );
 	detail::add( dataMap, "dtgActiveFormat", getDtgActiveFormat() );
-	detail::add( dataMap, "components count", getComponentsCount() );
-	detail::add( dataMap, "pixel type", getPixelName() );
-	detail::add( dataMap, "bit wise acked", isBitWisePacked() );
-	detail::add( dataMap, "rgb pixel", isRgbPixelData() );
-	detail::add( dataMap, "as alpha", hasAlpha() );
-	detail::add( dataMap, "chroma width", getChromaWidth() );
-	detail::add( dataMap, "chroma height", getChromaHeight() );
+	detail::add( dataMap, "componentsCount", getComponentsCount() );
+	detail::add( dataMap, "pixelType", getPixelName() );
+	detail::add( dataMap, "bitWiseAcked", isBitWisePacked() );
+	detail::add( dataMap, "rgbPixel", isRgbPixelData() );
+	detail::add( dataMap, "asAlpha", hasAlpha() );
+	detail::add( dataMap, "chromaWidth", getChromaWidth() );
+	detail::add( dataMap, "chromaHeight", getChromaHeight() );
 	detail::add( dataMap, "endianess", getEndianess() );
-	detail::add( dataMap, "color transfert", getColorTransfert() );
+	detail::add( dataMap, "colorTransfert", getColorTransfert() );
 	detail::add( dataMap, "colorspace", getColorspace() );
-	detail::add( dataMap, "color range", getColorRange() );
-	detail::add( dataMap, "color primaries", getColorPrimaries() );
-	detail::add( dataMap, "indexed colors", isIndexedColors() );
-	detail::add( dataMap, "pseudo paletted", isPseudoPaletted() );
-	detail::add( dataMap, "chroma sample location", getChromaSampleLocation() );
+	detail::add( dataMap, "colorRange", getColorRange() );
+	detail::add( dataMap, "colorPrimaries", getColorPrimaries() );
+	detail::add( dataMap, "indexedColors", isIndexedColors() );
+	detail::add( dataMap, "pseudoPaletted", isPseudoPaletted() );
+	detail::add( dataMap, "chromaSampleLocation", getChromaSampleLocation() );
 	detail::add( dataMap, "interlaced ", isInterlaced() );
-	detail::add( dataMap, "top field first", isTopFieldFirst() );
-	detail::add( dataMap, "field order", getFieldOrder() );
+	detail::add( dataMap, "topFieldFirst", isTopFieldFirst() );
+	detail::add( dataMap, "fieldOrder", getFieldOrder() );
 	detail::add( dataMap, "timeBase", getTimeBase().num / getTimeBase().den );
 	detail::add( dataMap, "fps", getFps() );
 	detail::add( dataMap, "ticksPerFrame", getTicksPerFrame() );
-	detail::add( dataMap, "bit rate", getBitRate() );
-	detail::add( dataMap, "max bit rate", getMaxBitRate() );
-	detail::add( dataMap, "min bit rate", getMinBitRate() );
-	detail::add( dataMap, "gop size", getGopSize() );
+	detail::add( dataMap, "bitRate", getBitRate() );
+	detail::add( dataMap, "maxBitRate", getMaxBitRate() );
+	detail::add( dataMap, "minBitRate", getMinBitRate() );
+	detail::add( dataMap, "gopSize", getGopSize() );
 
 	std::string gop;
 	NoDisplayProgress progress;
@@ -722,8 +722,8 @@ MetadatasMap VideoProperties::getDataMap() const
 	}
 	detail::add( dataMap, "gop", gop );
 
-	detail::add( dataMap, "has B frames", hasBFrames() );
-	detail::add( dataMap, "references frames", getReferencesFrames() );
+	detail::add( dataMap, "hasBFrames", hasBFrames() );
+	detail::add( dataMap, "referencesFrames", getReferencesFrames() );
 
 	for( size_t metadataIndex = 0; metadataIndex < _metadatas.size(); ++metadataIndex )
 	{

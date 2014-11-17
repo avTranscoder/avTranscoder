@@ -125,18 +125,18 @@ MetadatasMap AudioProperties::getDataMap() const
 {
 	MetadatasMap dataMap;
 
-	detail::add( dataMap, "stream id", getStreamId() );
-	detail::add( dataMap, "codec id", getCodecId() );
-	detail::add( dataMap, "codec name", getCodecName() );
-	detail::add( dataMap, "codec long name", getCodecLongName() );
-	detail::add( dataMap, "sample format name", getSampleFormatName() );
-	detail::add( dataMap, "sample format long name", getSampleFormatLongName() );
-	detail::add( dataMap, "sample rate", getSampleRate() );
-	detail::add( dataMap, "bit rate", getBitRate() );
+	detail::add( dataMap, "streamId", getStreamId() );
+	detail::add( dataMap, "codecId", getCodecId() );
+	detail::add( dataMap, "codecName", getCodecName() );
+	detail::add( dataMap, "codecLongName", getCodecLongName() );
+	detail::add( dataMap, "sampleFormatName", getSampleFormatName() );
+	detail::add( dataMap, "sampleFormatLongName", getSampleFormatLongName() );
+	detail::add( dataMap, "sampleRate", getSampleRate() );
+	detail::add( dataMap, "bitRate", getBitRate() );
 	detail::add( dataMap, "channels", getChannels() );
-	detail::add( dataMap, "channel layout", getChannelLayout() );
-	detail::add( dataMap, "channel name", getChannelName() );
-	detail::add( dataMap, "channel description", getChannelDescription() );
+	detail::add( dataMap, "channelLayout", getChannelLayout() );
+	detail::add( dataMap, "channelName", getChannelName() );
+	detail::add( dataMap, "channelDescription", getChannelDescription() );
 
 	for( size_t metadataIndex = 0; metadataIndex < _metadatas.size(); ++metadataIndex )
 	{
