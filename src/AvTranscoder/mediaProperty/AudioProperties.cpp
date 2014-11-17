@@ -11,12 +11,6 @@ extern "C" {
 namespace avtranscoder
 {
 
-AudioProperties::AudioProperties()
-	: _formatContext( NULL )
-	, _codecContext( NULL )
-	, _streamId( 0 )
-{}
-
 AudioProperties::AudioProperties( const AVFormatContext* formatContext, const size_t index )
 	: _formatContext( formatContext )
 	, _codecContext( formatContext->streams[index]->codec )

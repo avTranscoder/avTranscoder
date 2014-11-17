@@ -19,16 +19,6 @@ extern "C" {
 namespace avtranscoder
 {
 
-VideoProperties::VideoProperties()
-	: _formatContext( NULL )
-	, _codecContext( NULL )
-	, _pixFmt( NULL )
-	, _streamId( 0 )
-	, _isInterlaced( false )
-	, _isTopFieldFirst( false )
-	, _gopStructure()
-{}
-
 VideoProperties::VideoProperties( const AVFormatContext* formatContext, const size_t index, IProgress& progress, const EAnalyseLevel level )
 	: _formatContext( formatContext )
 	, _codecContext( formatContext->streams[index]->codec )

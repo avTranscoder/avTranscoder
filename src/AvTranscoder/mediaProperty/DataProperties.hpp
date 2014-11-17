@@ -14,7 +14,6 @@ namespace avtranscoder
 class AvExport DataProperties
 {
 public:
-	DataProperties();
 	DataProperties( const AVFormatContext* formatContext, const size_t index );
 
 	size_t getStreamId() const { return _streamId; }

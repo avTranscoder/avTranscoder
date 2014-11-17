@@ -3,11 +3,6 @@
 namespace avtranscoder
 {
 
-AttachementProperties::AttachementProperties()
-	: _formatContext( NULL )
-	, _streamId( 0 )
-{}
-
 AttachementProperties::AttachementProperties( const AVFormatContext* formatContext, const size_t index )
 	: _formatContext( formatContext )
 	, _streamId( index )

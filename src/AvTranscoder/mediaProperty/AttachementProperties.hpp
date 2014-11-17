@@ -14,7 +14,6 @@ namespace avtranscoder
 class AvExport AttachementProperties
 {
 public:
-	AttachementProperties();
 	AttachementProperties( const AVFormatContext* formatContext, const size_t index );
 
 	size_t getStreamId() const { return _streamId; }

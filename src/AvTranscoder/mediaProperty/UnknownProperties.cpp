@@ -3,11 +3,6 @@
 namespace avtranscoder
 {
 
-UnknownProperties::UnknownProperties()
-	: _formatContext( NULL )
-	, _streamId( 0 )
-{}
-
 UnknownProperties::UnknownProperties( const AVFormatContext* formatContext, const size_t index )
 	: _formatContext( formatContext )
 	, _streamId( index )

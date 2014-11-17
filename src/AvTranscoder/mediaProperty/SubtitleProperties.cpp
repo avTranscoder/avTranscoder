@@ -3,11 +3,6 @@
 namespace avtranscoder
 {
 
-SubtitleProperties::SubtitleProperties()
-	: _formatContext( NULL )
-	, _streamId( 0 )
-{}
-
 SubtitleProperties::SubtitleProperties( const AVFormatContext* formatContext, const size_t index )
 	: _formatContext( formatContext )
 	, _streamId( index )

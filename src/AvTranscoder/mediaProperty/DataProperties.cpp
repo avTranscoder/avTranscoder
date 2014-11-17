@@ -12,11 +12,6 @@ extern "C" {
 namespace avtranscoder
 {
 
-DataProperties::DataProperties()
-	: _formatContext( NULL )
-	, _streamId( 0 )
-{}
-
 DataProperties::DataProperties( const AVFormatContext* formatContext, const size_t index )
 	: _formatContext( formatContext )
 	, _streamId( index )
