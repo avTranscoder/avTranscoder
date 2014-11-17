@@ -116,8 +116,9 @@ std::string AudioProperties::getChannelDescription() const
 	if( channelDescription )
 		return std::string( channelDescription );
 	return "unknown channel description";
-#endif
+#else
 	return "can't access channel description";
+#endif
 }
 
 MetadatasMap AudioProperties::getDataMap() const
