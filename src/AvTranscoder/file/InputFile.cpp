@@ -79,32 +79,38 @@ InputFile& InputFile::analyse( IProgress& progress, const EAnalyseLevel level )
 		{
 			case AVMEDIA_TYPE_VIDEO:
 			{
-				_properties.getVideoProperties().push_back( VideoProperties( _formatContext, streamId, progress, level ) );
+				VideoProperties properties( _formatContext, streamId, progress, level );
+				_properties.getVideoProperties().push_back( properties );
 				break;
 			}
 			case AVMEDIA_TYPE_AUDIO:
 			{
-				_properties.getAudioProperties().push_back( AudioProperties( _formatContext, streamId ) );
+				AudioProperties properties( _formatContext, streamId );
+				_properties.getAudioProperties().push_back( properties );
 				break;
 			}
 			case AVMEDIA_TYPE_DATA:
 			{
-				_properties.getDataProperties().push_back( DataProperties( _formatContext, streamId ) );
+				DataProperties properties( _formatContext, streamId );
+				_properties.getDataProperties().push_back( properties );
 				break;
 			}
 			case AVMEDIA_TYPE_SUBTITLE:
 			{
-				_properties.getSubtitleProperties().push_back( SubtitleProperties( _formatContext, streamId ) );
+				SubtitleProperties properties( _formatContext, streamId );
+				_properties.getSubtitleProperties().push_back( properties );
 				break;
 			}
 			case AVMEDIA_TYPE_ATTACHMENT:
 			{
-				_properties.getAttachementProperties().push_back( AttachementProperties( _formatContext, streamId ) );
+				AttachementProperties properties( _formatContext, streamId );
+				_properties.getAttachementProperties().push_back( properties );
 				break;
 			}
 			case AVMEDIA_TYPE_UNKNOWN:
 			{
-				_properties.getUnknownPropertiesProperties().push_back( UnknownProperties( _formatContext, streamId ) );
+				UnknownProperties properties( _formatContext, streamId );
+				_properties.getUnknownPropertiesProperties().push_back( properties );
 				break;
 			}
 			case AVMEDIA_TYPE_NB:
