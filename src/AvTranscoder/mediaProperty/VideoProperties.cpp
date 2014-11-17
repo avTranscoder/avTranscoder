@@ -21,13 +21,20 @@ namespace avtranscoder
 
 VideoProperties::VideoProperties( const AVFormatContext* formatContext, const size_t index, IProgress& progress, const EAnalyseLevel level )
 	: _formatContext( formatContext )
-	, _codecContext( formatContext->streams[index]->codec )
+	, _codecContext( NULL )
+	, _codec( NULL )
 	, _pixFmt( NULL )
 	, _streamId( index )
 	, _isInterlaced( false )
 	, _isTopFieldFirst( false )
 	, _gopStructure()
 {
+	if( _formatContext )
+		_codecContext = formatContext->streams[index]->codec;
+
+	if( _formatContext && _codecContext )
+		_codec = avcodec_find_decoder( _codecContext->codec_id );
+
 	// Skip decoding for selected frames
 	_codecContext->skip_frame = AVDISCARD_NONE;
 
@@ -46,42 +53,41 @@ VideoProperties::VideoProperties( const AVFormatContext* formatContext, const si
 
 std::string VideoProperties::getCodecName() const
 {
-	AVCodec* codec = NULL;
-	if( ( codec = avcodec_find_decoder( _codecContext->codec_id ) ) != NULL )
+	if( _codecContext && _codec )
 	{
-		if( codec->capabilities & CODEC_CAP_TRUNCATED )
+		if( _codec->capabilities & CODEC_CAP_TRUNCATED )
 			_codecContext->flags|= CODEC_FLAG_TRUNCATED;
 
-		return std::string( codec->name );
+		if( _codec->name )
+			return std::string( _codec->name );
 	}
 	return "unknown codec";
 }
 
 std::string VideoProperties::getCodecLongName() const
 {
-	AVCodec* codec = NULL;
-	if( ( codec = avcodec_find_decoder( _codecContext->codec_id ) ) != NULL )
+	if( _codecContext && _codec )
 	{
-		if( codec->capabilities & CODEC_CAP_TRUNCATED )
+		if( _codec->capabilities & CODEC_CAP_TRUNCATED )
 			_codecContext->flags|= CODEC_FLAG_TRUNCATED;
 
-		return std::string( codec->long_name );
+		if( _codec->long_name )
+			return std::string( _codec->long_name );
 	}
 	return "unknown codec";
 }
 
 std::string VideoProperties::getProfileName() const
 {
-	AVCodec* codec = NULL;
-	if( ( codec = avcodec_find_decoder( _codecContext->codec_id ) ) != NULL )
+	if( _codecContext && _codec )
 	{
-		if( codec->capabilities & CODEC_CAP_TRUNCATED )
+		if( _codec->capabilities & CODEC_CAP_TRUNCATED )
 			_codecContext->flags|= CODEC_FLAG_TRUNCATED;
 
 		if( _codecContext->profile != -99 )
 		{
 			const char* profile;
-			if( ( profile = av_get_profile_name( codec, _codecContext->profile ) ) != NULL )
+			if( ( profile = av_get_profile_name( _codec, _codecContext->profile ) ) != NULL )
 				return std::string( profile );
 		}
 	}
@@ -363,10 +369,9 @@ bool VideoProperties::hasAlpha() const
 
 void VideoProperties::analyseGopStructure( IProgress& progress )
 {
-	AVCodec* codec = NULL;
-	if( ( codec = avcodec_find_decoder( _codecContext->codec_id ) ) != NULL )
+	if( _formatContext && _codecContext && _codec )
 	{
-		if( codec->capabilities & CODEC_CAP_TRUNCATED )
+		if( _codec->capabilities & CODEC_CAP_TRUNCATED )
 			_codecContext->flags|= CODEC_FLAG_TRUNCATED;
 
 		if( _codecContext->width && _codecContext->height )
@@ -380,7 +385,7 @@ void VideoProperties::analyseGopStructure( IProgress& progress )
 #endif
 
 			av_init_packet( &pkt );
-			avcodec_open2( _codecContext, codec, NULL );
+			avcodec_open2( _codecContext, _codec, NULL );
 
 			int count = 0;
 			int gotFrame = 0;
