@@ -14,23 +14,25 @@ namespace avtranscoder
 AudioProperties::AudioProperties( const AVFormatContext* formatContext, const size_t index )
 	: _formatContext( formatContext )
 	, _codecContext( formatContext->streams[index]->codec )
+	, _codec( NULL )
 	, _streamId( index )
-{}
+{
+	if( _formatContext && _codecContext )
+		_codec = avcodec_find_decoder( _codecContext->codec_id );
+}
 
 std::string AudioProperties::getCodecName() const
 {
-	AVCodec* codec = avcodec_find_decoder( _codecContext->codec_id );
-	if( codec != NULL )
-		return std::string( codec->name );
+	if( _codec && _codec->name )
+		return std::string( _codec->name );
 	else
 		return "unknown codec";
 }
 
 std::string AudioProperties::getCodecLongName() const
 {
-	AVCodec* codec = avcodec_find_decoder( _codecContext->codec_id );
-	if( codec != NULL )
-		return std::string( codec->long_name );
+	if( _codec && _codec->long_name )
+		return std::string( _codec->long_name );
 	return "unknown codec";
 }
 

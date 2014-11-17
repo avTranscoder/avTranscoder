@@ -43,6 +43,7 @@ public:
 private:
 	const AVFormatContext* _formatContext;  ///< Has link (no ownership)
 	AVCodecContext* _codecContext;  ///< Has link (no ownership)
+	AVCodec* _codec; ///< Has link (no ownership)
 
 	size_t _streamId;
 	MetadatasMap _metadatas;
