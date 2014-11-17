@@ -351,9 +351,10 @@ Rational VideoProperties::getTimeBase() const
 	if( ! _codecContext )
 		throw std::runtime_error( "unknown codec context" );
 
-	Rational timeBase;
-	timeBase.num = _codecContext->time_base.num;
-	timeBase.den = _codecContext->time_base.den;
+	Rational timeBase = {
+		_codecContext->time_base.num,
+		_codecContext->time_base.den,
+	};
 	return timeBase;
 }
 
@@ -362,9 +363,10 @@ Rational VideoProperties::getSar() const
 	if( ! _codecContext )
 		throw std::runtime_error( "unknown codec context" );
 
-	Rational sar;
-	sar.num = _codecContext->sample_aspect_ratio.num;
-	sar.den = _codecContext->sample_aspect_ratio.den;
+	Rational sar = {
+		_codecContext->sample_aspect_ratio.num,
+		_codecContext->sample_aspect_ratio.den,
+	};
 	return sar;
 }
 
@@ -379,9 +381,10 @@ Rational VideoProperties::getDar() const
 			   _codecContext->height * getSar().den,
 			   1024 * 1024);
 
-	Rational dar;
-	dar.num = darNum;
-	dar.den = darDen;
+	Rational dar = {
+		darNum,
+		darDen,
+	};
 	return dar;
 }
 
