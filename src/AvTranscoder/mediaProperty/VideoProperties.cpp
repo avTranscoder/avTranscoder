@@ -35,6 +35,9 @@ VideoProperties::VideoProperties( const AVFormatContext* formatContext, const si
 
 	if( _formatContext && _codecContext )
 		_codec = avcodec_find_decoder( _codecContext->codec_id );
+	
+	if( formatContext )
+		detail::fillMetadataDictionnary( _formatContext->streams[index]->metadata, _metadatas );
 
 	// Skip decoding for selected frames
 	_codecContext->skip_frame = AVDISCARD_NONE;

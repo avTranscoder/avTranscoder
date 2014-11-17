@@ -6,7 +6,10 @@ namespace avtranscoder
 UnknownProperties::UnknownProperties( const AVFormatContext* formatContext, const size_t index )
 	: _formatContext( formatContext )
 	, _streamId( index )
-{}
+{
+	if( formatContext )
+		detail::fillMetadataDictionnary( _formatContext->streams[index]->metadata, _metadatas );
+}
 
 MetadatasMap UnknownProperties::getDataMap() const
 {

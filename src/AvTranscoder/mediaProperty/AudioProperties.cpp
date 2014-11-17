@@ -22,6 +22,9 @@ AudioProperties::AudioProperties( const AVFormatContext* formatContext, const si
 
 	if( _formatContext && _codecContext )
 		_codec = avcodec_find_decoder( _codecContext->codec_id );
+
+	if( formatContext )
+		detail::fillMetadataDictionnary( _formatContext->streams[index]->metadata, _metadatas );
 }
 
 std::string AudioProperties::getCodecName() const

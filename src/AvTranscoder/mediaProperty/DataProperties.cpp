@@ -17,6 +17,9 @@ DataProperties::DataProperties( const AVFormatContext* formatContext, const size
 	, _streamId( index )
 {
 	//detectAncillaryData( _formatContext, _streamId );
+
+	if( formatContext )
+		detail::fillMetadataDictionnary( _formatContext->streams[index]->metadata, _metadatas );
 }
 
 MetadatasMap DataProperties::getDataMap() const
