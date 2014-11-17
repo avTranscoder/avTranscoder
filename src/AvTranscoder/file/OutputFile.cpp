@@ -178,6 +178,21 @@ IOutputStream::EWrappingStatus OutputFile::wrap( const CodedData& data, const si
 
 	av_free_packet( &packet );
 
+	if( streamId > 0 )
+	{
+		// get previous and current streams
+		AVStream* previousStream = _formatContext->streams[ streamId - 1 ];
+		AVStream* currentStream = _formatContext->streams[ streamId ];
+		// compute their durations
+		double currentStreamDuration = (double)currentStream->cur_dts * currentStream->time_base.num / currentStream->time_base.den;
+		double previousStreamDuration = (double)previousStream->cur_dts * previousStream->time_base.num / previousStream->time_base.den;
+		if( currentStreamDuration < previousStreamDuration )
+		{
+			// if the current stream is strictly shorter than the previous, wait for more data
+			return IOutputStream::eWrappingWaitingForData;
+		}
+	}
+
 	_packetCount++;
 	_frameCount.at( streamId )++;
 	return IOutputStream::eWrappingSuccess;
