@@ -80,7 +80,7 @@ std::string AudioProperties::getSampleFormatLongName() const
 		case AV_SAMPLE_FMT_DBLP:
 			return "double, planar";
 		case AV_SAMPLE_FMT_NB:
-			return "Number of sample formats.";
+			return "number of sample formats";
 	}
 	return "unknown sample format";
 }
