@@ -13,10 +13,13 @@ namespace avtranscoder
 
 AudioProperties::AudioProperties( const AVFormatContext* formatContext, const size_t index )
 	: _formatContext( formatContext )
-	, _codecContext( formatContext->streams[index]->codec )
+	, _codecContext( NULL )
 	, _codec( NULL )
 	, _streamId( index )
 {
+	if( _formatContext )
+		_codecContext = formatContext->streams[index]->codec;
+
 	if( _formatContext && _codecContext )
 		_codec = avcodec_find_decoder( _codecContext->codec_id );
 }
@@ -38,6 +41,9 @@ std::string AudioProperties::getCodecLongName() const
 
 std::string AudioProperties::getSampleFormatName() const
 {
+	if( ! _codecContext )
+		return "unknown codec context";
+
 	const char* fmtName = av_get_sample_fmt_name( _codecContext->sample_fmt );
 	if( fmtName )
 		return std::string( fmtName );
@@ -46,6 +52,9 @@ std::string AudioProperties::getSampleFormatName() const
 
 std::string AudioProperties::getSampleFormatLongName() const
 {
+	if( ! _codecContext )
+		return "unknown codec context";
+
 	switch( _codecContext->sample_fmt )
 	{
 		case AV_SAMPLE_FMT_NONE:
@@ -78,6 +87,9 @@ std::string AudioProperties::getSampleFormatLongName() const
 
 std::string AudioProperties::getChannelLayout() const
 {
+	if( ! _codecContext )
+		return "unknown codec context";
+
 	char buf1[1024];
 	av_get_channel_layout_string( buf1, sizeof( buf1 ), -1, _codecContext->channel_layout );
 	return std::string( buf1 );
@@ -85,6 +97,9 @@ std::string AudioProperties::getChannelLayout() const
 
 std::string AudioProperties::getChannelName() const
 {
+	if( ! _codecContext )
+		return "unknown codec context";
+
 	const char* channelName = av_get_channel_name( _codecContext->channel_layout );
 	if( channelName )
 		return std::string( channelName );
@@ -93,6 +108,9 @@ std::string AudioProperties::getChannelName() const
 
 std::string AudioProperties::getChannelDescription() const
 {
+	if( ! _codecContext )
+		return "unknown codec context";
+
 #ifdef FF_RESAMPLE_LIBRARY
 	const char* channelDescription = av_get_channel_description( _codecContext->channel_layout );
 	if( channelDescription )
