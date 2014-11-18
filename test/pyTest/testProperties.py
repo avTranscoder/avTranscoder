@@ -25,10 +25,10 @@ def testAddMetadataDate():
 	transcoder.process( progress )
 
 	inputFile = av.InputFile( outputFileName )
-	inputFile.analyse( progress, av.InputFile.eAnalyseLevelFast )
+	inputFile.analyse( progress, av.eAnalyseLevelHeader )
 	properties = inputFile.getProperties()
 
-	assert_in( metadata_to_check, properties.metadatas )
+	assert_in( metadata_to_check, properties.getMetadatas() )
 
 def testAddImpossibleMetadata():
 	"""
@@ -50,7 +50,7 @@ def testAddImpossibleMetadata():
 	transcoder.process( progress )
 
 	inputFile = av.InputFile( outputFileName )
-	inputFile.analyse( progress, av.InputFile.eAnalyseLevelFast )
+	inputFile.analyse( progress, av.eAnalyseLevelHeader )
 	properties = inputFile.getProperties()
 
-	assert_not_in( metadata_to_check, properties.metadatas )
+	assert_not_in( metadata_to_check, properties.getMetadatas() )
