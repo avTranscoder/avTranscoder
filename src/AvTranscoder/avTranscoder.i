@@ -43,7 +43,7 @@
 #include <AvTranscoder/transcoder/Transcoder.hpp>
 %}
 
-namespace std {	
+namespace std {
 %template(IntPair)         pair< size_t, size_t >;
 %template(ProfileMap)      map< string, string >;
 %template(ProfilesVector)  vector< map< string, string > >;

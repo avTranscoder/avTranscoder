@@ -1,5 +1,4 @@
 %{
-#include <AvTranscoder/common.hpp>
 #include <AvTranscoder/mediaProperty/util.hpp>
 #include <AvTranscoder/mediaProperty/FileProperties.hpp>
 #include <AvTranscoder/mediaProperty/VideoProperties.hpp>
@@ -13,7 +12,6 @@ using namespace avtranscoder;
 %}
 
 namespace std {
-
 // Allow vector of object with no default constructor
 %ignore vector< avtranscoder::VideoProperties >::vector(size_type); 
 %ignore vector< avtranscoder::VideoProperties >::resize;
