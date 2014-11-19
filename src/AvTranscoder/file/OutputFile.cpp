@@ -20,6 +20,7 @@ OutputFile::OutputFile( const std::string& filename )
 	, _stream        ( NULL )
 	, _filename      ( filename )
 	, _packetCount   ( 0 )
+	, _previousProcessedStreamDuration ( 0.0 )
 	, _verbose       ( false )
 {
 	if( ( _formatContext = avformat_alloc_context() ) == NULL )
@@ -178,21 +179,19 @@ IOutputStream::EWrappingStatus OutputFile::wrap( const CodedData& data, const si
 
 	av_free_packet( &packet );
 
-	if( streamId > 0 )
+	// get the current streams
+	AVStream* currentStream = _formatContext->streams[ streamId ];
+	// compute its duration
+	double currentStreamDuration = (double)currentStream->cur_dts * currentStream->time_base.num / currentStream->time_base.den;
+	
+	if( currentStreamDuration < _previousProcessedStreamDuration )
 	{
-		// get previous and current streams
-		AVStream* previousStream = _formatContext->streams[ streamId - 1 ];
-		AVStream* currentStream = _formatContext->streams[ streamId ];
-		// compute their durations
-		double currentStreamDuration = (double)currentStream->cur_dts * currentStream->time_base.num / currentStream->time_base.den;
-		double previousStreamDuration = (double)previousStream->cur_dts * previousStream->time_base.num / previousStream->time_base.den;
-		if( currentStreamDuration < previousStreamDuration )
-		{
-			// if the current stream is strictly shorter than the previous, wait for more data
-			return IOutputStream::eWrappingWaitingForData;
-		}
+		// if the current stream is strictly shorter than the previous, wait for more data
+		return IOutputStream::eWrappingWaitingForData;
 	}
 
+	_previousProcessedStreamDuration = currentStreamDuration;
+	
 	_packetCount++;
 	_frameCount.at( streamId )++;
 	return IOutputStream::eWrappingSuccess;

@@ -121,6 +121,8 @@ private:
 	std::string      _filename;
 
 	size_t           _packetCount;
+	
+	double           _previousProcessedStreamDuration;
 
 	bool             _verbose;
 };
