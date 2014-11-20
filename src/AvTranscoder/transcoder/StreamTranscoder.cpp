@@ -112,7 +112,7 @@ StreamTranscoder::StreamTranscoder(
 			_transform = new VideoTransform();
 
 			GeneratorVideo* generatorVideo = new GeneratorVideo();
-			generatorVideo->setVideoCodec( outputVideo->getVideoCodec() );
+			generatorVideo->setVideoFrameDesc( outputVideo->getVideoCodec().getVideoFrameDesc() );
 			_generatorEssence = generatorVideo;
 			
 			break;
@@ -126,7 +126,7 @@ StreamTranscoder::StreamTranscoder(
 
 			_outputEssence = outputAudio;
 			
-			AudioFrameDesc outputFrameDesc( _inputStream->getAudioCodec().getFrameDesc() );
+			AudioFrameDesc outputFrameDesc( _inputStream->getAudioCodec().getAudioFrameDesc() );
 			outputFrameDesc.setParameters( profile );
 			if( subStreamIndex > -1 )
 			{
@@ -137,17 +137,17 @@ StreamTranscoder::StreamTranscoder(
 
 			_outputStream = &outputFile.addAudioStream( outputAudio->getAudioCodec() );
 
-			AudioFrameDesc inputFrameDesc( _inputStream->getAudioCodec().getFrameDesc() );
+			AudioFrameDesc inputFrameDesc( _inputStream->getAudioCodec().getAudioFrameDesc() );
 			if( subStreamIndex > -1 )
 				inputFrameDesc.setChannels( 1 );
 			
 			_sourceBuffer = new AudioFrame( inputFrameDesc );
-			_frameBuffer  = new AudioFrame( outputAudio->getAudioCodec().getFrameDesc() );
+			_frameBuffer  = new AudioFrame( outputAudio->getAudioCodec().getAudioFrameDesc() );
 			
 			_transform = new AudioTransform();
 
 			GeneratorAudio* generatorAudio = new GeneratorAudio();
-			generatorAudio->setAudioCodec( outputAudio->getAudioCodec() );
+			generatorAudio->setAudioFrameDesc( outputAudio->getAudioCodec().getAudioFrameDesc() );
 			_generatorEssence = generatorAudio;
 
 			break;
@@ -162,7 +162,7 @@ StreamTranscoder::StreamTranscoder(
 }
 
 StreamTranscoder::StreamTranscoder(
-		const ICodec& inputCodec,
+		IInputEssence& inputEssence,
 		OutputFile& outputFile,
 		const ProfileLoader::Profile& profile
 	)
@@ -170,7 +170,7 @@ StreamTranscoder::StreamTranscoder(
 	, _outputStream( NULL )
 	, _sourceBuffer( NULL )
 	, _frameBuffer( NULL )
-	, _inputEssence( NULL )
+	, _inputEssence( &inputEssence )
 	, _generatorEssence( NULL )
 	, _currentEssence( NULL )
 	, _outputEssence( NULL )
@@ -189,14 +189,8 @@ StreamTranscoder::StreamTranscoder(
 
 	if( profile.find( constants::avProfileType )->second == constants::avProfileTypeVideo )
 	{
-		// Create input essence based on a given input VideoCodec
-		GeneratorVideo* generatorVideo = new GeneratorVideo();
-		const VideoCodec& inputVideoCodec = static_cast<const VideoCodec&>( inputCodec );
-		generatorVideo->setVideoCodec( inputVideoCodec );
-		_inputEssence = generatorVideo;
-
 		// Create inputFrame, and outputFrame which is based on a given profile
-		VideoFrameDesc inputFrameDesc = inputVideoCodec.getVideoFrameDesc();
+		VideoFrameDesc inputFrameDesc = static_cast<GeneratorVideo&>( inputEssence ).getVideoFrameDesc();
 		VideoFrameDesc outputFrameDesc = inputFrameDesc;
 		outputFrameDesc.setParameters( profile );
 		_sourceBuffer = new VideoFrame( inputFrameDesc );
@@ -216,14 +210,8 @@ StreamTranscoder::StreamTranscoder(
 	}
 	else if( profile.find( constants::avProfileType )->second == constants::avProfileTypeAudio )
 	{
-		// Create input essence based on a given input AudioCodec
-		GeneratorAudio* generatorAudio = new GeneratorAudio();
-		const AudioCodec& inputAudioCodec = static_cast<const AudioCodec&>( inputCodec );
-		generatorAudio->setAudioCodec( inputAudioCodec );
-		_inputEssence = generatorAudio;
-
 		// Create inputFrame, and outputFrame which is based on a given profile
-		AudioFrameDesc inputFrameDesc = inputAudioCodec.getFrameDesc();
+		AudioFrameDesc inputFrameDesc = static_cast<GeneratorAudio&>( inputEssence ).getAudioFrameDesc();
 		AudioFrameDesc outputFrameDesc = inputFrameDesc;
 		outputFrameDesc.setParameters( profile );
 		_sourceBuffer = new AudioFrame( inputFrameDesc );
@@ -251,10 +239,12 @@ StreamTranscoder::~StreamTranscoder()
 {
 	delete _frameBuffer;
 	delete _sourceBuffer;
+	// _inputEssence is a link to an existing InputEssence if _generatorEssence is NULL
+	if( _generatorEssence )
+		delete _inputEssence;
 	delete _generatorEssence;
 	delete _outputEssence;
 	delete _transform;
-	delete _inputEssence;
 }
 
 void StreamTranscoder::init()
@@ -332,10 +322,10 @@ bool StreamTranscoder::processTranscode()
 	if( _currentEssence->readNextFrame( *_sourceBuffer ) )
 	{
 		if( _verbose )
-			std::cout << "convert " << _sourceBuffer->getSize() << std::endl;
+			std::cout << "convert (" << _sourceBuffer->getSize() << " bytes)" << std::endl;
 		_transform->convert( *_sourceBuffer, *_frameBuffer );
 		if( _verbose )
-			std::cout << "encode " << _frameBuffer->getSize() << std::endl;
+			std::cout << "encode (" << _frameBuffer->getSize() << " bytes)" << std::endl;
 		_outputEssence->encodeFrame( *_frameBuffer, data );
 	}
 	else
@@ -354,7 +344,7 @@ bool StreamTranscoder::processTranscode()
 	}
 
 	if( _verbose )
-		std::cout << "wrap (" << data.getSize() << ")" << std::endl;
+		std::cout << "wrap (" << data.getSize() << " bytes)" << std::endl;
 	_outputStream->wrap( data );
 	return true;
 }
@@ -384,10 +374,10 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 	if( _currentEssence->readNextFrame( *_sourceBuffer, subStreamIndex ) )
 	{
 		if( _verbose )
-			std::cout << "convert " << std::endl;
+			std::cout << "convert (" << _sourceBuffer->getSize() << " bytes)" << std::endl;
 		_transform->convert( *_sourceBuffer, *_frameBuffer );
 		if( _verbose )
-			std::cout << "encode" << std::endl;
+			std::cout << "encode (" << _frameBuffer->getSize() << " bytes)" << std::endl;
 		_outputEssence->encodeFrame( *_frameBuffer, data );
 	}
 	else
@@ -405,7 +395,7 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 		}
 	}
 	if( _verbose )
-		std::cout << "wrap (" << data.getSize() << ")" << std::endl;
+		std::cout << "wrap (" << data.getSize() << " bytes)" << std::endl;
 	_outputStream->wrap( data );
 	return true;
 }

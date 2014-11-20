@@ -14,11 +14,8 @@ public:
 	AudioCodec( const ECodecType type, const AVCodecID codecId );
 	AudioCodec( const ICodec& codec );
 
-	AudioFrameDesc getFrameDesc() const;
-	const size_t getSampleRate() const;
-	const size_t getChannels() const;
-	const AVSampleFormat getAVSampleFormat() const;
-	
+	AudioFrameDesc getAudioFrameDesc() const;
+
 	void setAudioParameters( const AudioFrameDesc& audioFrameDesc );
 	void setAudioParameters( const size_t sampleRate, const size_t channels, const AVSampleFormat sampleFormat );
 };

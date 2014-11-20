@@ -40,6 +40,8 @@
 #include <AvTranscoder/essenceStream/IInputEssence.hpp>
 #include <AvTranscoder/essenceStream/AvInputAudio.hpp>
 #include <AvTranscoder/essenceStream/AvInputVideo.hpp>
+#include <AvTranscoder/essenceStream/GeneratorVideo.hpp>
+#include <AvTranscoder/essenceStream/GeneratorAudio.hpp>
 
 #include <AvTranscoder/file/InputFile.hpp>
 #include <AvTranscoder/file/OutputFile.hpp>
@@ -59,6 +61,7 @@ namespace std {
 %template(ChannelVector)   vector< avtranscoder::Channel >;
 %template(ProfileMap)      map< string, string >;
 %template(ProfilesVector)  vector< map< string, string > >;
+%template(DataBuffer)      std::vector< unsigned char >;
 }
 
 %include "AvTranscoder/progress/progress.i"
@@ -90,6 +93,8 @@ namespace std {
 %include <AvTranscoder/essenceStream/IInputEssence.hpp>
 %include <AvTranscoder/essenceStream/AvInputAudio.hpp>
 %include <AvTranscoder/essenceStream/AvInputVideo.hpp>
+%include <AvTranscoder/essenceStream/GeneratorVideo.hpp>
+%include <AvTranscoder/essenceStream/GeneratorAudio.hpp>
 
 %include <AvTranscoder/file/InputFile.hpp>
 %include <AvTranscoder/file/OutputFile.hpp>

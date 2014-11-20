@@ -103,25 +103,7 @@ bool AvOutputVideo::encodeFrame( const Frame& sourceFrame, Frame& codedFrame )
 		memcpy( codedFrame.getPtr(), packet.data, packet.size );
 	}
 #endif
-/*
-		std::string imgType = "";
-		switch( codecContext->coded_frame->pict_type )
-		{
-			case AV_PICTURE_TYPE_NONE : imgType = "None"; break;
-			case AV_PICTURE_TYPE_I : imgType = "I"; break;
-			case AV_PICTURE_TYPE_P : imgType = "P"; break;
-			case AV_PICTURE_TYPE_B : imgType = "B"; break;
-			case AV_PICTURE_TYPE_S : imgType = "S"; break;
-			case AV_PICTURE_TYPE_SI : imgType = "SI"; break;
-			case AV_PICTURE_TYPE_SP : imgType = "SP"; break;
-			case AV_PICTURE_TYPE_BI : imgType = "BI"; break;
-		}
 
-		std::clog << "\tframe " << codecContext->coded_frame->display_picture_number;
-		std::clog << " coded @ " << codecContext->coded_frame->coded_picture_number;
-		std::clog << " type : " << imgType;
-		std::clog << " quality : " << codecContext->coded_frame->quality << std::endl;
-*/
 	av_free_packet( &packet );
 #if LIBAVCODEC_VERSION_MAJOR > 54
 	av_frame_free( &frame );

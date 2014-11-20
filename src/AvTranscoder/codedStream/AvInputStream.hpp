@@ -30,7 +30,6 @@ public:
 	AVMediaType getStreamType() const;
 
 	double getDuration() const;
-	double getPacketDuration() const;
 
 	void addPacket( AVPacket& packet );
 
@@ -43,14 +42,13 @@ private:
 	AVStream* getAVStream() const;
 
 private:
-	InputFile*       _inputFile;
-	std::vector<CodedData> _streamCache;
-
+	InputFile* _inputFile;  ///< Has link (no ownership)
 	ICodec* _codec;  ///< Has ownership
 
-	int              _packetDuration;
-	size_t           _streamIndex;
-	bool             _bufferized;
+	std::vector<CodedData> _streamCache;
+
+	size_t _streamIndex;  ///<  Index of the stream in the input file
+	bool _bufferized;  ///< If the stream is bufferized
 };
 
 }
