@@ -67,7 +67,7 @@ StreamTranscoder::StreamTranscoder(
 StreamTranscoder::StreamTranscoder(
 		IInputStream& inputStream,
 		OutputFile& outputFile,
-		const Profile::ProfileDesc& profile,
+		const ProfileLoader::Profile& profile,
 		const int subStreamIndex,
 		const size_t offset
 	)
@@ -164,7 +164,7 @@ StreamTranscoder::StreamTranscoder(
 StreamTranscoder::StreamTranscoder(
 		const ICodec& inputCodec,
 		OutputFile& outputFile,
-		const Profile::ProfileDesc& profile
+		const ProfileLoader::Profile& profile
 	)
 	: _inputStream( NULL )
 	, _outputStream( NULL )
@@ -283,11 +283,7 @@ bool StreamTranscoder::processFrame()
 
 	if( ! _inputEssence )
 	{
-		if( _subStreamIndex < 0 )
-		{
-			return processRewrap();
-		}
-		return processRewrap( _subStreamIndex );
+		return processRewrap();
 	}
 
 	if( _subStreamIndex < 0 )
@@ -308,20 +304,6 @@ bool StreamTranscoder::processRewrap()
 		return false;
 
 	_outputStream->wrap( data );
-	return true;
-}
-
-bool StreamTranscoder::processRewrap( const int subStreamIndex )
-{
-	assert( _inputStream  != NULL );
-	assert( _outputStream != NULL );
-	
-	CodedData data;
-
-	if( ! _inputStream->readNextPacket( data ) )
-		return false;
-	_outputStream->wrap( data );
-
 	return true;
 }
 

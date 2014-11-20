@@ -17,7 +17,7 @@ static const std::string dummyAudioCodec = "pcm_s16le";
 
 bool verbose = false;
 
-void parseConfigFile( const std::string& configFilename, avtranscoder::Transcoder& transcoder, avtranscoder::Profile& profile )
+void parseConfigFile( const std::string& configFilename, avtranscoder::Transcoder& transcoder )
 {
 	std::ifstream configFile( configFilename.c_str(), std::ifstream::in );
 
@@ -99,8 +99,6 @@ int main( int argc, char** argv )
 		if( verbose )
 			std::cout << "start ..." << std::endl;
 
-		avtranscoder::Profile profiles( true );
-
 		if( verbose )
 			std::cout << "output file: " << argv[2] << std::endl;
 
@@ -111,7 +109,7 @@ int main( int argc, char** argv )
 
 		if( verbose )
 			std::cout << "parse config file" << std::endl;
-		parseConfigFile( inputConfigFile, transcoder, profiles );
+		parseConfigFile( inputConfigFile, transcoder );
 
 		// set verbose of all stream
 		transcoder.setVerbose( verbose );

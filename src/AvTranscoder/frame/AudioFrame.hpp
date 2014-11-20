@@ -2,7 +2,7 @@
 #define _AV_TRANSCODER_DATA_AUDIO_FRAME_HPP_
 
 #include "Frame.hpp"
-#include <AvTranscoder/Profile.hpp>
+#include <AvTranscoder/ProfileLoader.hpp>
 
 namespace avtranscoder
 {
@@ -28,10 +28,10 @@ public:
 		return ( _sampleRate / _fps ) * _channels * av_get_bytes_per_sample( _sampleFormat );
 	}
 	
-	void setParameters( const Profile::ProfileDesc& desc )
+	void setParameters( const ProfileLoader::Profile& profile )
 	{
-		if( desc.find( constants::avProfileSampleFormat ) != desc.end() )
-			setSampleFormat( desc.find( constants::avProfileSampleFormat )->second );
+		if( profile.find( constants::avProfileSampleFormat ) != profile.end() )
+			setSampleFormat( profile.find( constants::avProfileSampleFormat )->second );
 	}
 
 	size_t getSampleRate() const { return _sampleRate; }

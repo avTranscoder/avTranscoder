@@ -4,9 +4,9 @@
 namespace avtranscoder
 {
 
-void loadXdCamHD422( Profile::ProfilesDesc& profiles )
+void loadXdCamHD422( ProfileLoader::Profiles& profiles )
 {
-	Profile::ProfileDesc xdCamHd422;
+	ProfileLoader::Profile xdCamHd422;
 
 	xdCamHd422[ constants::avProfileIdentificator ] = "xdcamhd422";
 	xdCamHd422[ constants::avProfileIdentificatorHuman ] = "XdCamHD 422";

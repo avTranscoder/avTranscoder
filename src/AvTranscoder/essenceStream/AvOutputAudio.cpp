@@ -171,20 +171,20 @@ bool AvOutputAudio::encodeFrame( Frame& codedFrame )
 #endif
 }
 
-void AvOutputAudio::setProfile( const Profile::ProfileDesc& desc, const AudioFrameDesc& frameDesc  )
+void AvOutputAudio::setProfile( const ProfileLoader::Profile& profile, const AudioFrameDesc& frameDesc  )
 {
-	if( ! desc.count( constants::avProfileCodec ) || 		
-		! desc.count( constants::avProfileSampleFormat ) )
+	if( ! profile.count( constants::avProfileCodec ) || 		
+		! profile.count( constants::avProfileSampleFormat ) )
 	{
-		throw std::runtime_error( "The profile " + desc.find( constants::avProfileIdentificatorHuman )->second + " is invalid." );
+		throw std::runtime_error( "The profile " + profile.find( constants::avProfileIdentificatorHuman )->second + " is invalid." );
 	}
 	
-	_codec.setCodec( eCodecTypeEncoder, desc.find( constants::avProfileCodec )->second );
+	_codec.setCodec( eCodecTypeEncoder, profile.find( constants::avProfileCodec )->second );
 	_codec.setAudioParameters( frameDesc );
 
 	Context codecContext( _codec.getAVCodecContext() );
 	
-	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
+	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
 	{
 		if( (*it).first == constants::avProfileIdentificator ||
 			(*it).first == constants::avProfileIdentificatorHuman ||
@@ -206,7 +206,7 @@ void AvOutputAudio::setProfile( const Profile::ProfileDesc& desc, const AudioFra
 
 	setup();
 
-	for( Profile::ProfileDesc::const_iterator it = desc.begin(); it != desc.end(); ++it )
+	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
 	{
 		if( (*it).first == constants::avProfileIdentificator ||
 			(*it).first == constants::avProfileIdentificatorHuman ||
@@ -222,7 +222,7 @@ void AvOutputAudio::setProfile( const Profile::ProfileDesc& desc, const AudioFra
 		}
 		catch( std::exception& e )
 		{
-			std::cout << "[OutputAudio] warning: " << e.what() << std::endl;
+			std::cout << "[OutputAudio] warning - can't set option " << (*it).first << " to " << (*it).second << ": " << e.what() << std::endl;
 		}
 	}
 }

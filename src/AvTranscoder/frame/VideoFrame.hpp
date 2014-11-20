@@ -3,7 +3,7 @@
 
 #include "Frame.hpp"
 #include "Pixel.hpp"
-#include <AvTranscoder/Profile.hpp>
+#include <AvTranscoder/ProfileLoader.hpp>
 
 extern "C" {
 #include <libavutil/pixdesc.h>
@@ -44,10 +44,10 @@ public:
 	void setDar( const size_t num, const size_t den ) { _displayAspectRatio.num = num; _displayAspectRatio.den = den; }
 	void setDar( const Rational ratio ) { _displayAspectRatio = ratio; }
 	
-	void setParameters( const Profile::ProfileDesc& desc )
+	void setParameters( const ProfileLoader::Profile& profile )
 	{
-		if( desc.find( constants::avProfilePixelFormat ) != desc.end() )
-			setPixel( Pixel( desc.find( constants::avProfilePixelFormat )->second.c_str() ) );
+		if( profile.find( constants::avProfilePixelFormat ) != profile.end() )
+			setPixel( Pixel( profile.find( constants::avProfilePixelFormat )->second.c_str() ) );
 	}
 
 	size_t               getWidth ()    const { return _width;  }
@@ -94,7 +94,7 @@ public:
 		_dataBuffer = DataBuffer( ref.getDataSize(), 0 );
 	}
 
-	const VideoFrameDesc&     desc() const    { return _videoFrameDesc; }
+	const VideoFrameDesc& desc() const { return _videoFrameDesc; }
 
 private:
 	const VideoFrameDesc _videoFrameDesc;

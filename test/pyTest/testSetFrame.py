@@ -111,7 +111,8 @@ def testSetAudioFrame():
 
 	assert_equals( "pcm_s24le", dst_audioStream.codecName )
 	assert_equals( "PCM signed 24-bit little-endian", dst_audioStream.codecLongName )
-	assert_equals( "signed 32 bits", dst_audioStream.sampleFormat )
+	assert_equals( "s32", dst_audioStream.sampleFormatName )
+	assert_equals( "signed 32 bits", dst_audioStream.sampleFormatLongName )
 	assert_equals( 48000, dst_audioStream.sampleRate )
 	assert_equals( 1, dst_audioStream.channels )
 
