@@ -43,22 +43,25 @@ avtranscoder::AudioProperties audioStreamInfo( const AVFormatContext* formatCont
 	if( channelDescription )
 		ap.channelDescription = std::string( channelDescription );
 #endif
-	
+        const char* fmtName = av_get_sample_fmt_name( codec_context->sample_fmt );
+        if( fmtName )
+            ap.sampleFormatName = std::string( fmtName );
+
 	std::string sampleFormat = "";
 	switch( codec_context->sample_fmt )
 	{
-		case AV_SAMPLE_FMT_NONE : ap.sampleFormat = "none"; break;
-		case AV_SAMPLE_FMT_U8   : ap.sampleFormat = "unsigned 8 bits"; break;
-		case AV_SAMPLE_FMT_S16  : ap.sampleFormat = "signed 16 bits"; break;
-		case AV_SAMPLE_FMT_S32  : ap.sampleFormat = "signed 32 bits"; break;
-		case AV_SAMPLE_FMT_FLT  : ap.sampleFormat = "float"; break;
-		case AV_SAMPLE_FMT_DBL  : ap.sampleFormat = "double"; break;
-		case AV_SAMPLE_FMT_U8P  : ap.sampleFormat = "unsigned 8 bits, planar"; break;
-		case AV_SAMPLE_FMT_S16P : ap.sampleFormat = "signed 16 bits, planar"; break;
-		case AV_SAMPLE_FMT_S32P : ap.sampleFormat = "signed 32 bits, planar"; break;
-		case AV_SAMPLE_FMT_FLTP : ap.sampleFormat = "float, planar"; break;
-		case AV_SAMPLE_FMT_DBLP : ap.sampleFormat = "double, planar"; break;
-		case AV_SAMPLE_FMT_NB   : ap.sampleFormat = "Number of sample formats."; break;
+		case AV_SAMPLE_FMT_NONE : ap.sampleFormatLongName = "none"; break;
+		case AV_SAMPLE_FMT_U8   : ap.sampleFormatLongName = "unsigned 8 bits"; break;
+		case AV_SAMPLE_FMT_S16  : ap.sampleFormatLongName = "signed 16 bits"; break;
+		case AV_SAMPLE_FMT_S32  : ap.sampleFormatLongName = "signed 32 bits"; break;
+		case AV_SAMPLE_FMT_FLT  : ap.sampleFormatLongName = "float"; break;
+		case AV_SAMPLE_FMT_DBL  : ap.sampleFormatLongName = "double"; break;
+		case AV_SAMPLE_FMT_U8P  : ap.sampleFormatLongName = "unsigned 8 bits, planar"; break;
+		case AV_SAMPLE_FMT_S16P : ap.sampleFormatLongName = "signed 16 bits, planar"; break;
+		case AV_SAMPLE_FMT_S32P : ap.sampleFormatLongName = "signed 32 bits, planar"; break;
+		case AV_SAMPLE_FMT_FLTP : ap.sampleFormatLongName = "float, planar"; break;
+		case AV_SAMPLE_FMT_DBLP : ap.sampleFormatLongName = "double, planar"; break;
+		case AV_SAMPLE_FMT_NB   : ap.sampleFormatLongName = "Number of sample formats."; break;
 	}
 
 	return ap;

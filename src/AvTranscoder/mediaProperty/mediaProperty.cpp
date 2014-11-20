@@ -114,7 +114,8 @@ MetadatasMap AudioProperties::getDataMap() const
 	detail::add( dataMap, "codec id", codecId );
 	detail::add( dataMap, "codec name", codecName );
 	detail::add( dataMap, "codec long name", codecLongName );
-	detail::add( dataMap, "sample format", sampleFormat );
+	detail::add( dataMap, "sample format name", sampleFormatName );
+	detail::add( dataMap, "sample format long name", sampleFormatLongName );
 	detail::add( dataMap, "sample rate", sampleRate );
 	detail::add( dataMap, "bit rate", bit_rate );
 	detail::add( dataMap, "channels", channels );

@@ -271,7 +271,7 @@ void OutputFile::setProfile( const ProfileLoader::Profile& profile )
 		}
 		catch( std::exception& e )
 		{
-			std::cout << "[OutputFile] warning: " << e.what() << std::endl;
+			std::cout << "[OutputFile] warning - can't set option " << (*it).first << " to " << (*it).second << ": " << e.what() << std::endl;
 		}
 	}
 }

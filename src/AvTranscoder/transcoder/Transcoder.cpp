@@ -3,9 +3,12 @@
 #include <AvTranscoder/essenceStream/GeneratorAudio.hpp>
 #include <AvTranscoder/essenceStream/GeneratorVideo.hpp>
 
+#include <AvTranscoder/progress/NoDisplayProgress.hpp>
+
 #include <limits>
 #include <iostream>
 #include <algorithm>
+#include <sstream>
 
 namespace avtranscoder
 {
@@ -41,47 +44,56 @@ Transcoder::~Transcoder()
 
 void Transcoder::add( const std::string& filename, const size_t streamIndex, const std::string& profileName, const size_t offset )
 {
-	if( profileName.length() == 0 ) // no profile, only re-wrap stream
+	// Re-wrap
+	if( profileName.length() == 0 )
 	{
 		if( _verbose )
-			std::cout << "add re-wrap stream" << std::endl;
-		addRewrapStream( filename, streamIndex );
-		return;
-	}
+			std::cout << "Add re-wrap stream" << std::endl;
 
-	ProfileLoader::Profile& transcodeProfile = _profileLoader.getProfile( profileName );
-	add( filename, streamIndex, transcodeProfile, offset );
+		// Check filename
+		if( filename.length() == 0 )
+			throw std::runtime_error( "Can't re-wrap a stream without filename indicated" );
+
+		addRewrapStream( filename, streamIndex );
+	}
+	// Transcode
+	else
+	{
+		ProfileLoader::Profile& transcodeProfile = _profileLoader.getProfile( profileName );
+		add( filename, streamIndex, transcodeProfile, offset );
+	}
 }
 
 void Transcoder::add( const std::string& filename, const size_t streamIndex, const std::string& profileName, ICodec& codec, const size_t offset )
 {
-	if( profileName.length() == 0 ) // no profile, only re-wrap stream
+	// Re-wrap
+	if( profileName.length() == 0 )
 	{
 		if( _verbose )
-			std::cout << "add re-wrap stream" << std::endl;
-		
+			std::cout << "Add re-wrap stream" << std::endl;
+
+		// Check filename
 		if( filename.length() == 0 )
-		{
-			std::cerr << "can't add a generated stream with no profileName indicated" << std::endl;
-			return;
-		}
+			throw std::runtime_error( "Can't re-wrap a stream without filename indicated" );
 		
 		addRewrapStream( filename, streamIndex );
-		return;
 	}
-	
-	ProfileLoader::Profile& transcodeProfile = _profileLoader.getProfile( profileName );
-	add( filename, streamIndex, transcodeProfile, codec, offset );
+	// Transcode
+	else
+	{
+		ProfileLoader::Profile& transcodeProfile = _profileLoader.getProfile( profileName );
+		add( filename, streamIndex, transcodeProfile, codec, offset );
+	}
 }
 
 void Transcoder::add( const std::string& filename, const size_t streamIndex, ProfileLoader::Profile& profile, const size_t offset )
 {
+	// Add profile if new
 	_profileLoader.update( profile );
+
+	// Check filename
 	if( ! filename.length() )
-	{
-		std::cerr << "can't add a stream with no filename indicated" << std::endl;
-		return;
-	}
+		throw std::runtime_error( "Can't transcode a stream without filename indicated" );
 
 	if( _verbose )
 		std::cout << "add transcoding stream" << std::endl;
@@ -90,110 +102,140 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, Pro
 
 void Transcoder::add( const std::string& filename, const size_t streamIndex, ProfileLoader::Profile& profile, ICodec& codec, const size_t offset )
 {
+	// Add profile if new
 	_profileLoader.update( profile );
+
+	// Generator
 	if( ! filename.length() )
 	{
 		if( _verbose )
-			std::cout << "add a generated stream" << std::endl;
+			std::cout << "Add generated stream" << std::endl;
 		addDummyStream( profile, codec );
-		return;
 	}
-	
-	if( _verbose )
-		std::cout << "add transcoding stream" << std::endl;
-	addTranscodeStream( filename, streamIndex, -1, profile, offset );
+	// Transcode
+	else
+	{
+		if( _verbose )
+			std::cout << "Add transcoded stream" << std::endl;
+		addTranscodeStream( filename, streamIndex, -1, profile, offset );
+	}
 }
 
 void Transcoder::add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const std::string& profileName, const size_t offset )
 {
+	// No subStream selected
 	if( subStreamIndex < 0 )
 	{
 		add( filename, streamIndex, profileName, offset );
 		return;
 	}
 
-	if( profileName.length() == 0 ) // no profile, only re-wrap stream
+	if( profileName.length() == 0 )
 	{
-		if( _verbose )
-			std::cout << "add re-wrap stream for substream " << subStreamIndex << std::endl;
-
-		addRewrapStream( filename, streamIndex );
-		return;
+		// Re-wrap
+		if( subStreamIndex < 0 )
+		{
+			if( _verbose )
+				std::cout << "Add re-wrap stream" << std::endl;
+			addRewrapStream( filename, streamIndex );
+			return;
+		}
+		// Transcode (transparent for the user)
+		else
+		{
+			if( _verbose )
+				std::cout << "Add transcoded stream (because of demultiplexing)" << std::endl;
+			addTranscodeStream( filename, streamIndex, subStreamIndex, offset );
+		}
 	}
-
-	ProfileLoader::Profile& transcodeProfile = _profileLoader.getProfile( profileName );
-	add( filename, streamIndex, subStreamIndex, transcodeProfile, offset );
+	// Transcode
+	else
+	{
+		ProfileLoader::Profile& transcodeProfile = _profileLoader.getProfile( profileName );
+		add( filename, streamIndex, subStreamIndex, transcodeProfile, offset );
+	}
 }
 
 void Transcoder::add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const std::string& profileName, ICodec& codec, const size_t offset )
 {
+	// No subStream selected
 	if( subStreamIndex < 0 )
 	{
 		add( filename, streamIndex, profileName, codec );
 		return;
 	}
-	
-	if( profileName.length() == 0 ) // no profile, only re-wrap stream
-	{
-		if( _verbose )
-			std::cout << "add re-wrap stream for substream " << subStreamIndex << std::endl;
 
-		if( filename.length() == 0 )
+	// Re-wrap
+	if( profileName.length() == 0 )
+	{
+		// Re-wrap
+		if( subStreamIndex < 0 )
 		{
-			std::cerr << "can't add a generated stream with no profileName indicated" << std::endl;
+			if( _verbose )
+				std::cout << "Add re-wrap stream" << std::endl;
+			addRewrapStream( filename, streamIndex );
 			return;
 		}
-		
-		addRewrapStream( filename, streamIndex );
-		return;
+		// Transcode (transparent for the user)
+		else
+		{
+			if( _verbose )
+				std::cout << "Add transcoded stream (because of demultiplexing)" << std::endl;
+			addTranscodeStream( filename, streamIndex, subStreamIndex, offset );
+		}
 	}
-
-	ProfileLoader::Profile& transcodeProfile = _profileLoader.getProfile( profileName );
-	add( filename, streamIndex, subStreamIndex, transcodeProfile, codec, offset );
+	// Transcode
+	else
+	{
+		ProfileLoader::Profile& transcodeProfile = _profileLoader.getProfile( profileName );
+		add( filename, streamIndex, subStreamIndex, transcodeProfile, codec, offset );
+	}
 }
 
 void Transcoder::add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, ProfileLoader::Profile& profile, const size_t offset )
 {
+	// Add profile if new
 	_profileLoader.update( profile );
-	
+
+	// No subStream selected
 	if( subStreamIndex < 0 )
 	{
 		add( filename, streamIndex, profile, offset );
 		return;
 	}
-	
+
+	// Check filename
 	if( ! filename.length() )
-	{
-		if( _verbose )
-			std::cerr << "can't add a stream with no filename indicated" << std::endl;
-		return;
-	}
+		throw std::runtime_error( "Can't transcode a stream without filename indicated" );
 
 	if( _verbose )
-		std::cout << "add transcoding stream for substream " << subStreamIndex << std::endl;
+		std::cout << "Add transcoded for substream " << subStreamIndex << std::endl;
 	addTranscodeStream( filename, streamIndex, subStreamIndex, profile, offset );
 }
 
 void Transcoder::add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, ProfileLoader::Profile& profile, ICodec& codec, const size_t offset )
 {
+	// Add profile if new
 	_profileLoader.update( profile );
 	
+	// No subStream selected
 	if( subStreamIndex < 0 )
 	{
 		add( filename, streamIndex, profile );
 		return;
 	}
-	
+
+	// Generator
 	if( ! filename.length() )
 	{
 		if( _verbose )
-			std::cout << "add a generated stream" << std::endl;
+			std::cout << "Add generated stream" << std::endl;
 		addDummyStream( profile, codec );
 		return;
 	}
 
 	if( _verbose )
-		std::cout << "add transcoding stream for substream " << subStreamIndex << std::endl;
+		std::cout << "Add transcoded stream for substream " << subStreamIndex << std::endl;
 	addTranscodeStream( filename, streamIndex, subStreamIndex, profile, offset );
 }
 
@@ -339,8 +381,51 @@ void Transcoder::setVerbose( bool verbose )
 void Transcoder::addRewrapStream( const std::string& filename, const size_t streamIndex )
 {
 	InputFile* referenceFile = addInputFile( filename, streamIndex );
+
 	_streamTranscodersAllocated.push_back( new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile ) );
 	_streamTranscoders.push_back( _streamTranscodersAllocated.back() );
+}
+
+void Transcoder::addTranscodeStream( const std::string& filename, const size_t streamIndex, const size_t subStreamIndex, const size_t offset )
+{
+	InputFile* referenceFile = addInputFile( filename, streamIndex );
+
+	// Create profile as input configuration
+	NoDisplayProgress progress;
+	referenceFile->analyse( progress, InputFile::eAnalyseLevelFast );
+	AudioProperties audioProperties = referenceFile->getProperties().audioStreams.at( streamIndex );
+
+	ProfileLoader::Profile profile;
+	profile[ constants::avProfileIdentificator ] = "presetRewrap";
+	profile[ constants::avProfileIdentificatorHuman ] = "Preset rewrap";
+	profile[ constants::avProfileType ] = avtranscoder::constants::avProfileTypeAudio;
+	profile[ constants::avProfileCodec ] = audioProperties.codecName;
+	profile[ constants::avProfileSampleFormat ] = audioProperties.sampleFormatName;
+	std::stringstream ss;
+	ss << audioProperties.sampleRate;
+	profile[ constants::avProfileSampleRate ] = ss.str();
+	profile[ constants::avProfileChannel ] = "1";
+
+	// Add profile
+	_profileLoader.update( profile );
+
+	switch( referenceFile->getStreamType( streamIndex ) )
+	{
+		case AVMEDIA_TYPE_VIDEO:
+		case AVMEDIA_TYPE_AUDIO:
+		{
+			_streamTranscodersAllocated.push_back( new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile, profile, subStreamIndex , offset ) );
+			_streamTranscoders.push_back( _streamTranscodersAllocated.back() );
+			break;
+		}
+		case AVMEDIA_TYPE_DATA:
+		case AVMEDIA_TYPE_SUBTITLE:
+		case AVMEDIA_TYPE_ATTACHMENT:
+		default:
+		{
+			throw std::runtime_error( "unsupported media type in transcode setup" );
+		}
+	}
 }
 
 void Transcoder::addTranscodeStream( const std::string& filename, const size_t streamIndex, const size_t subStreamIndex, ProfileLoader::Profile& profile, const size_t offset )

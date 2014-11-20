@@ -85,15 +85,17 @@ void ProfileLoader::loadProfiles( const std::string& avProfilesPath )
 
 void ProfileLoader::update( const Profile& profile )
 {
-	std::string profileId( profile.find( constants::avProfileIdentificator )->second );
+	Profile::const_iterator profileIt = profile.find( constants::avProfileIdentificator );
+	if( profileIt == profile.end() )
+		throw std::runtime_error( "Invalid profile: can't get identificator" );
+
+	std::string profileId( profileIt->second );
 	size_t profileIndex = 0;
 	for( Profiles::iterator it = _profiles.begin(); it != _profiles.end(); ++it )
 	{
+		// profile already exists
 		if( (*it).find( constants::avProfileIdentificator )->second == profileId )
-		{
-			_profiles.at( profileIndex ) = profile;
 			return;
-		}
 		++profileIndex;
 	}
 	// profile not found: add the new profile
