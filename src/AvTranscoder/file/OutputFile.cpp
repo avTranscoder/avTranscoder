@@ -145,10 +145,10 @@ bool OutputFile::beginWrap( )
 	return true;
 }
 
-bool OutputFile::wrap( const CodedData& data, const size_t streamId )
+IOutputStream::EWrappingStatus OutputFile::wrap( const CodedData& data, const size_t streamId )
 {
 	if( ! data.getSize() )
-		return true;
+		return IOutputStream::eWrappingSuccess;
 	if( _verbose )
 		std::cout << "wrap on stream " << streamId << " (" << data.getSize() << " bytes for frame " << _frameCount.at( streamId ) << ")" << std::endl;
 	AVPacket packet;
@@ -174,14 +174,14 @@ bool OutputFile::wrap( const CodedData& data, const size_t streamId )
 		msg += err;
 		// throw std::runtime_error( msg );
 		std::cout << msg << std::endl;
-		return false;
+		return IOutputStream::eWrappingError;
 	}
 
 	av_free_packet( &packet );
 
 	_packetCount++;
 	_frameCount.at( streamId )++;
-	return true;
+	return IOutputStream::eWrappingSuccess;
 }
 
 bool OutputFile::endWrap( )
