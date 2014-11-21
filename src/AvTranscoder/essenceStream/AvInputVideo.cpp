@@ -22,7 +22,6 @@ AvInputVideo::AvInputVideo( AvInputStream& inputStream )
 	, _inputStream   ( &inputStream )
 	, _codec( eCodecTypeDecoder, inputStream.getVideoCodec().getCodecId() )
 	, _frame         ( NULL )
-	, _selectedStream( -1 )
 {
 }
 
@@ -82,18 +81,23 @@ bool AvInputVideo::readNextFrame( Frame& frameBuffer )
 	while( ! got_frame )
 	{
 		CodedData data;
-		if( ! _inputStream->readNextPacket( data ) )
-			return false;
 
 		AVPacket packet;
 		av_init_packet( &packet );
 
-		packet.stream_index = _selectedStream;
-		packet.data         = data.getPtr();
-		packet.size         = data.getSize();
-		
+		bool nextPacketRead = _inputStream->readNextPacket( data );
+
+		packet.stream_index = _inputStream->getStreamIndex();
+		packet.data = nextPacketRead ? data.getPtr(): NULL;
+		packet.size = data.getSize();
+
 		int ret = avcodec_decode_video2( _codec.getAVCodecContext(), _frame, &got_frame, &packet );
 		
+		av_free_packet( &packet );
+
+		if( ! nextPacketRead && ret == 0 && got_frame == 0 )
+			return false;
+
 		if( ret < 0 )
 		{
 			char err[250];
@@ -101,8 +105,6 @@ bool AvInputVideo::readNextFrame( Frame& frameBuffer )
 			
 			throw std::runtime_error( "an error occured during video decoding - " + std::string(err) );
 		}
-		
-		av_free_packet( &packet );
 	}
 
 	VideoFrame& imageBuffer = static_cast<VideoFrame&>( frameBuffer );
