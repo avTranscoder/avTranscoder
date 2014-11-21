@@ -67,12 +67,13 @@ IOutputStream& OutputFile::addVideoStream( const VideoCodec& videoDesc )
 	_stream->codec->width  = videoDesc.getAVCodecContext()->width;
 	_stream->codec->height = videoDesc.getAVCodecContext()->height;
 	_stream->codec->bit_rate = videoDesc.getAVCodecContext()->bit_rate;
-	_stream->codec->ticks_per_frame = videoDesc.getAVCodecContext()->ticks_per_frame;
 	_stream->codec->pix_fmt = videoDesc.getAVCodecContext()->pix_fmt;
 	_stream->codec->profile = videoDesc.getAVCodecContext()->profile;
 	_stream->codec->level = videoDesc.getAVCodecContext()->level;
 
-	// need to set the time_base on the AVCodecContext and the AVStream...
+	// need to set the time_base on the AVCodecContext and the AVStream
+	// compensating the frame rate with the ticks_per_frame and keeping
+	// a coherent reading speed.
 	av_reduce(
 		&_stream->codec->time_base.num,
 		&_stream->codec->time_base.den,
