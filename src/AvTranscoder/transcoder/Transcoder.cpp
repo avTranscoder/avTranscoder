@@ -6,6 +6,7 @@
 #include <iostream>
 #include <algorithm>
 #include <sstream>
+#include <libavformat/avformat.h>
 
 namespace avtranscoder
 {
@@ -310,10 +311,18 @@ void Transcoder::process( IProgress& progress )
 	{
 		if( _verbose )
 			std::cout << "process frame " << frame << std::endl;
-		if( ! processFrame() )
-			break;
-		
-		if( progress.progress( 1 / _outputFps * ( frame ), totalDuration ) == eJobStatusCancel )
+
+		bool frameProcessed =  processFrame();
+		if( ! frameProcessed )
+			break;	
+
+		int currentDts = _outputFile.getFormatContext().streams[0]->cur_dts;
+		int timebaseNum = _outputFile.getFormatContext().streams[0]->time_base.num;
+		int timebaseDen = _outputFile.getFormatContext().streams[0]->time_base.den;
+
+		double duration = (double)currentDts * timebaseNum / timebaseDen;
+
+		if( progress.progress( duration, totalDuration ) == eJobStatusCancel )
 		{
 			break;
 		}
