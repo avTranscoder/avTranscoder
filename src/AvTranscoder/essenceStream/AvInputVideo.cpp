@@ -22,7 +22,6 @@ AvInputVideo::AvInputVideo( AvInputStream& inputStream )
 	, _inputStream   ( &inputStream )
 	, _codec( eCodecTypeDecoder, inputStream.getVideoCodec().getCodecId() )
 	, _frame         ( NULL )
-	, _selectedStream( inputStream.getStreamIndex() )
 {
 }
 
@@ -88,9 +87,9 @@ bool AvInputVideo::readNextFrame( Frame& frameBuffer )
 
 		bool nextPacketRead = _inputStream->readNextPacket( data );
 
-		packet.stream_index = _selectedStream;
+		packet.stream_index = _inputStream->getStreamIndex();
 		packet.data = nextPacketRead ? data.getPtr(): NULL;
-		packet.size = nextPacketRead ? data.getSize(): 0;
+		packet.size = data.getSize();
 
 		int ret = avcodec_decode_video2( _codec.getAVCodecContext(), _frame, &got_frame, &packet );
 		

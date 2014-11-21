@@ -31,8 +31,6 @@ private:
 	AvInputStream*     _inputStream;
 	VideoCodec _codec;
 	AVFrame*           _frame;
-
-	int                _selectedStream;
 };
 
 }
