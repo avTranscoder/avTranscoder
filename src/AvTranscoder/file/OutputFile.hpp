@@ -108,6 +108,8 @@ public:
 	virtual void addMetadata( const std::string& key, const std::string& value );
 
 	virtual void setVerbose( bool verbose = false ){ _verbose = verbose; }
+	
+	AVFormatContext& getFormatContext() { return *_formatContext; }
 
 private:
 	std::vector<AvOutputStream*> _outputStreams;
