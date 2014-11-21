@@ -20,6 +20,7 @@ OutputFile::OutputFile( const std::string& filename )
 	, _stream        ( NULL )
 	, _filename      ( filename )
 	, _packetCount   ( 0 )
+	, _previousProcessedStreamDuration ( 0.0 )
 	, _verbose       ( false )
 {
 	if( ( _formatContext = avformat_alloc_context() ) == NULL )
@@ -66,7 +67,6 @@ IOutputStream& OutputFile::addVideoStream( const VideoCodec& videoDesc )
 	_stream->codec->width  = videoDesc.getAVCodecContext()->width;
 	_stream->codec->height = videoDesc.getAVCodecContext()->height;
 	_stream->codec->bit_rate = videoDesc.getAVCodecContext()->bit_rate;
-	_stream->codec->ticks_per_frame = videoDesc.getAVCodecContext()->ticks_per_frame;
 	_stream->codec->pix_fmt = videoDesc.getAVCodecContext()->pix_fmt;
 	_stream->codec->profile = videoDesc.getAVCodecContext()->profile;
 	_stream->codec->level = videoDesc.getAVCodecContext()->level;
@@ -145,10 +145,10 @@ bool OutputFile::beginWrap( )
 	return true;
 }
 
-bool OutputFile::wrap( const CodedData& data, const size_t streamId )
+IOutputStream::EWrappingStatus OutputFile::wrap( const CodedData& data, const size_t streamId )
 {
 	if( ! data.getSize() )
-		return true;
+		return avtranscoder::IOutputStream::eWrappingError;
 	if( _verbose )
 		std::cout << "wrap on stream " << streamId << " (" << data.getSize() << " bytes for frame " << _frameCount.at( streamId ) << ")" << std::endl;
 	AVPacket packet;
@@ -174,14 +174,27 @@ bool OutputFile::wrap( const CodedData& data, const size_t streamId )
 		msg += err;
 		// throw std::runtime_error( msg );
 		std::cout << msg << std::endl;
-		return false;
+		return IOutputStream::eWrappingError;
 	}
 
 	av_free_packet( &packet );
 
+	// get the current streams
+	AVStream* currentStream = _formatContext->streams[ streamId ];
+	// compute its duration
+	double currentStreamDuration = (double)currentStream->cur_dts * currentStream->time_base.num / currentStream->time_base.den;
+	
+	if( currentStreamDuration < _previousProcessedStreamDuration )
+	{
+		// if the current stream is strictly shorter than the previous, wait for more data
+		return IOutputStream::eWrappingWaitingForData;
+	}
+
+	_previousProcessedStreamDuration = currentStreamDuration;
+	
 	_packetCount++;
 	_frameCount.at( streamId )++;
-	return true;
+	return IOutputStream::eWrappingSuccess;
 }
 
 bool OutputFile::endWrap( )

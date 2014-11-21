@@ -302,8 +302,18 @@ bool StreamTranscoder::processRewrap()
 
 	if( ! _inputStream->readNextPacket( data ) )
 		return false;
-
-	_outputStream->wrap( data );
+	
+	IOutputStream::EWrappingStatus wrappingStatus = _outputStream->wrap( data );
+	switch( wrappingStatus )
+	{
+		case IOutputStream::eWrappingSuccess:
+			return true;
+		case IOutputStream::eWrappingWaitingForData:
+			// the wrapper needs more data to write the current packet
+			return processRewrap();
+		case IOutputStream::eWrappingError:
+			return false;
+	}
 	return true;
 }
 
@@ -321,9 +331,9 @@ bool StreamTranscoder::processTranscode()
 		std::cout << "transcode a frame " << std::endl;
 
 	if( _offset &&
-		_frameProcessed > _offset &&
-		! _offsetPassed &&
-		_takeFromGenerator )
+	    _frameProcessed > _offset &&
+	    ! _offsetPassed &&
+	    _takeFromGenerator )
 	{
 		switchToInputEssence();
 		_offsetPassed = true;
@@ -355,7 +365,17 @@ bool StreamTranscoder::processTranscode()
 
 	if( _verbose )
 		std::cout << "wrap (" << data.getSize() << ")" << std::endl;
-	_outputStream->wrap( data );
+	IOutputStream::EWrappingStatus wrappingStatus = _outputStream->wrap( data );
+	switch( wrappingStatus )
+	{
+		case IOutputStream::eWrappingSuccess:
+			return true;
+		case IOutputStream::eWrappingWaitingForData:
+			// the wrapper needs more data to write the current packet
+			return processTranscode();
+		case IOutputStream::eWrappingError:
+			return false;
+	}
 	return true;
 }
 
@@ -369,13 +389,14 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 	assert( _transform      != NULL );
 
 	CodedData data;
+	
 	if( _verbose )
 		std::cout << "transcode a frame " << std::endl;
 
 	if( _offset &&
-		_frameProcessed > _offset &&
-		! _offsetPassed &&
-		_takeFromGenerator )
+	    _frameProcessed > _offset &&
+	    ! _offsetPassed &&
+	    _takeFromGenerator )
 	{
 		switchToInputEssence();
 		_offsetPassed = true;
@@ -406,7 +427,18 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 	}
 	if( _verbose )
 		std::cout << "wrap (" << data.getSize() << ")" << std::endl;
-	_outputStream->wrap( data );
+	IOutputStream::EWrappingStatus wrappingStatus = _outputStream->wrap( data );
+	switch( wrappingStatus )
+	{
+		case IOutputStream::eWrappingSuccess:
+			return true;
+		case IOutputStream::eWrappingWaitingForData:
+			// the wrapper needs more data to write the current packet
+			return processTranscode( subStreamIndex );
+			break;
+		case IOutputStream::eWrappingError:
+			return false;
+	}
 	return true;
 }
 
