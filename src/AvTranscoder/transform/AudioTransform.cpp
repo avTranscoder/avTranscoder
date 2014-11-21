@@ -32,6 +32,7 @@ namespace avtranscoder
 
 AudioTransform::AudioTransform()
 	: _audioConvertContext( NULL )
+	, _previousProcessedAudioFrameSize( 0 )
 	, _isInit    ( false )
 {
 }
@@ -64,10 +65,23 @@ bool AudioTransform::init( const Frame& srcFrame, const Frame& dstFrame )
 	return true;
 }
 
+bool AudioTransform::initFrames( const Frame& srcFrame, Frame& dstFrame )
+{
+	const AudioFrame& src = static_cast<const AudioFrame&>( srcFrame );
+	const AudioFrame& dst = static_cast<const AudioFrame&>( dstFrame );
+
+	int dstSampleSize = av_get_bytes_per_sample( dst.desc().getAVSampleFormat() );
+	dstFrame.getBuffer().resize( src.getNbSamples() * dstSampleSize );
+	return true;
+}
+
 void AudioTransform::convert( const Frame& srcFrame, Frame& dstFrame )
 {
 	if( ! _isInit )
 		_isInit = init( srcFrame, dstFrame );
+
+	if( srcFrame.getSize() != _previousProcessedAudioFrameSize )
+		initFrames( srcFrame, dstFrame );
 
 	const unsigned char* srcData = srcFrame.getPtr();
 	unsigned char* dstData = dstFrame.getPtr();
@@ -89,6 +103,7 @@ void AudioTransform::convert( const Frame& srcFrame, Frame& dstFrame )
 	if( dstFrame.getSize() != nbOutputSamples )
 		dstFrame.getBuffer().resize( nbOutputSamples, 0 );
 	static_cast<AudioFrame&>( dstFrame ).setNbSamples( static_cast<const AudioFrame&>( srcFrame ).getNbSamples() );
+	_previousProcessedAudioFrameSize = srcFrame.getSize();
 }
 
 }
