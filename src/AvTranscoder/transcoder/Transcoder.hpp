@@ -94,9 +94,8 @@ public:
 
 	/**
 	 * @brief Add the stream
-	 * @note The stream will be deleted in Transcoder's destructor.
 	 */
-	void add( StreamTranscoder& stream );
+	void add( StreamTranscoder& streamTranscoder);
 
 	/**
 	 * @brief Initialize all streams added, by ensure process necessary frames in case of latency.
@@ -118,6 +117,12 @@ public:
 	void process( IProgress& progress );
 
 	/**
+	 * @param streamIndex: careful about the order of stream insertion of the Transcoder.
+	 * @return a reference to a stream manage by the Transcoder.
+	 */
+	StreamTranscoder& getStreamTranscoder( size_t streamIndex ) const { return *_streamTranscoders.at( streamIndex ); }
+
+	/**
 	 * @brief Set the transcodage politic.
 	 * @note Call it after adding the streams.
 	 * @note By default eProcessMethodLongest.
@@ -131,23 +136,11 @@ public:
 	 */
 	void setVerbose( bool verbose = true );
 
-	/**
-	 * @brief Set FPS of output media file.
-	 * @note By default 25 frames per second.
-     */
-	void setOutputFps( double fps ) { _outputFps = fps; }
-
 private:
 
 	void addRewrapStream( const std::string& filename, const size_t streamIndex );
 
-        /**
-         * @note Get profile from input
-         */
-        void addTranscodeStream( const std::string& filename, const size_t streamIndex, const size_t subStreamIndex, const size_t offset );
-
-	void addTranscodeStream( const std::string& filename, const size_t streamIndex, ProfileLoader::Profile& profile, const size_t offset = 0 );
-
+	void addTranscodeStream( const std::string& filename, const size_t streamIndex, const size_t subStreamIndex, const size_t offset );  ///< Get profile from input
 	void addTranscodeStream( const std::string& filename, const size_t streamIndex, const size_t subStreamIndex, ProfileLoader::Profile& profile, const size_t offset = 0 );
 
 	void addDummyStream( const ProfileLoader::Profile& profile, const ICodec& codec );
@@ -175,11 +168,10 @@ private:
 	OutputFile&                      _outputFile;  ///< The output media file after process.
 	std::vector< InputFile* >        _inputFiles;  ///< The list of input files which contain added streams.
 
-	std::vector< StreamTranscoder* > _streamTranscoders;  ///< The streams of the output media file after process.
+	std::vector< StreamTranscoder* > _streamTranscoders;  ///< All streams of the output media file after process.
+	std::vector< StreamTranscoder* > _streamTranscodersAllocated;  ///< Streams allocated inside the Transcoder.
 
 	ProfileLoader _profileLoader;  ///< Objet to get existing profiles, and add new ones for the Transcoder.
-
-	double _outputFps;
 
 	EProcessMethod _eProcessMethod;
 

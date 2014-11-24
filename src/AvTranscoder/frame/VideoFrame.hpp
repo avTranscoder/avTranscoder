@@ -40,7 +40,7 @@ public:
 	
 	void setWidth ( const size_t width     ) { _width = width; }
 	void setHeight( const size_t height    ) { _height = height; }
-	void setPixel ( const Pixel  pixel     ) { _pixel = pixel; }
+	void setPixel( const Pixel&  pixel ) { _pixel = pixel; }
 	void setDar( const size_t num, const size_t den ) { _displayAspectRatio.num = num; _displayAspectRatio.den = den; }
 	void setDar( const Rational ratio ) { _displayAspectRatio = ratio; }
 	

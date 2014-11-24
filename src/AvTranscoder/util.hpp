@@ -3,6 +3,8 @@
 
 #include "common.hpp"
 
+#include <AvTranscoder/option/Context.hpp>
+
 extern "C" {
 #include <libavutil/pixfmt.h>
 #include <libavutil/samplefmt.h>
@@ -15,7 +17,7 @@ extern "C" {
 namespace avtranscoder
 {
 
-class Option;
+typedef std::map<std::string, OptionArray> OptionArrayMap;
 
 /**
 *  @brief Get pixel format supported by a video codec.
@@ -65,17 +67,17 @@ std::vector<std::string> getAudioCodecsShortNames();
 /**
  * @brief Get the list of options for each output format
  */
-std::map< std::string, std::vector<Option> > getOutputFormatOptions();
+OptionArrayMap getOutputFormatOptions();
 
 /**
  * @brief Get the list of options for each video codec
  */
-std::map< std::string, std::vector<Option> > getVideoCodecOptions();
+OptionArrayMap getVideoCodecOptions();
 
 /**
  * @brief Get the list of options for each audio codec
  */
-std::map< std::string, std::vector<Option> > getAudioCodecOptions();
+OptionArrayMap getAudioCodecOptions();
 
 }
 

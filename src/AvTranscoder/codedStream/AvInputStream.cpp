@@ -17,7 +17,6 @@ AvInputStream::AvInputStream( InputFile& inputFile, const size_t streamIndex )
 	: IInputStream( )
 	, _inputFile( &inputFile )
 	, _codec( NULL )
-	, _packetDuration( 0 )
 	, _streamIndex( streamIndex )
 	, _bufferized( false )
 {
@@ -98,7 +97,6 @@ void AvInputStream::addPacket( AVPacket& packet )
 	//std::cout << "add packet for stream " << _streamIndex << std::endl;
 	CodedData data;
 	_streamCache.push_back( data );
-	_packetDuration = packet.duration;
 
 	if( ! _bufferized )
 		return;
@@ -164,11 +162,6 @@ AVMediaType AvInputStream::getStreamType() const
 double AvInputStream::getDuration() const
 {
 	return 1.0 * _inputFile->getFormatContext().duration / AV_TIME_BASE;
-}
-
-double AvInputStream::getPacketDuration() const
-{
-	return _packetDuration * av_q2d( _inputFile->getFormatContext().streams[_streamIndex]->time_base );
 }
 
 void AvInputStream::clearBuffering()

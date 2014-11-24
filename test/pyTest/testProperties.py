@@ -54,3 +54,4 @@ def testAddImpossibleMetadata():
 	properties = inputFile.getProperties()
 
 	assert_not_in( metadata_to_check, properties.metadatas )
+

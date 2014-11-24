@@ -26,7 +26,6 @@ public:
 	virtual AVMediaType getStreamType() const = 0;
 
 	virtual double getDuration() const = 0;
-	virtual double getPacketDuration() const = 0;
 
 	virtual void setBufferred( const bool bufferized ) = 0;
 

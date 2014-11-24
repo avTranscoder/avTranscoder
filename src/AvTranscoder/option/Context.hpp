@@ -11,6 +11,9 @@
 namespace avtranscoder
 {
 
+typedef std::vector<Option> OptionArray;
+typedef std::map<std::string, Option> OptionMap;
+
 /**
  * @brief Wrapper of AVContext.
  * Can access Options through the corresponding context.
@@ -37,8 +40,8 @@ public:
 		loadOptions( avContext, req_flags );
 	}
 
-	std::vector<Option> getOptions();
-	std::map<std::string, Option>& getOptionsMap() { return _options; }
+	OptionArray getOptions();
+	OptionMap& getOptionsMap() { return _options; }
 
 	Option& getOption( const std::string& optionName ) { return _options.at(optionName); }
 
@@ -46,7 +49,7 @@ protected:
 	void loadOptions( void* av_class, int req_flags );
 
 private:
-	std::map<std::string, Option> _options;
+	OptionMap _options;
 	void* _avContext;  ///< Has link (no ownership)
 };
 

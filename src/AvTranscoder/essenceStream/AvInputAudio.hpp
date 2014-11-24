@@ -23,13 +23,13 @@ public:
 	bool readNextFrame( Frame& frameBuffer, const size_t subStreamIndex );
 
 private:
-	bool getNextFrame();
+	bool decodeNextFrame();
 
-	AvInputStream*     _inputStream;
-	AudioCodec _codec;
-	AVFrame*           _frame;
+	AvInputStream* _inputStream;  ///< Stream from which we read next frames
+	const AudioCodec* _codec;  ///< Audio decoder. Has link (no ownership)
+	AVFrame* _frame;  ///< Libav object to store decoded data
 
-	int                _selectedStream;
+	int _selectedStream;  ///< Index of the selected stream in the input file
 };
 
 }

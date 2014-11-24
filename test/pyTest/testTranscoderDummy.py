@@ -121,3 +121,4 @@ def testTranscodeDummyVideo():
 	ouputFile.beginWrap()
 	transcoder.processFrame()
 	ouputFile.endWrap()
+

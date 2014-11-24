@@ -15,8 +15,8 @@ Transcoder::Transcoder( OutputFile& outputFile )
 	: _outputFile( outputFile )
 	, _inputFiles()
 	, _streamTranscoders()
+	, _streamTranscodersAllocated()
 	, _profileLoader( true )
-	, _outputFps( 25 )
 	, _eProcessMethod ( eProcessMethodLongest )
 	, _mainStreamIndex( 0 )
 	, _verbose( false )
@@ -30,7 +30,7 @@ Transcoder::~Transcoder()
 	{
 		delete (*it);
 	}
-	for( std::vector< StreamTranscoder* >::iterator it = _streamTranscoders.begin(); it != _streamTranscoders.end(); ++it )
+	for( std::vector< StreamTranscoder* >::iterator it = _streamTranscodersAllocated.begin(); it != _streamTranscodersAllocated.end(); ++it )
 	{
 		delete (*it);
 	}
@@ -90,8 +90,8 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, Pro
 		throw std::runtime_error( "Can't transcode a stream without filename indicated" );
 
 	if( _verbose )
-		std::cout << "Add transcoded stream" << std::endl;
-	addTranscodeStream( filename, streamIndex, profile, offset );
+		std::cout << "add transcoding stream" << std::endl;
+	addTranscodeStream( filename, streamIndex, -1, profile, offset );
 }
 
 void Transcoder::add( const std::string& filename, const size_t streamIndex, ProfileLoader::Profile& profile, ICodec& codec, const size_t offset )
@@ -111,7 +111,7 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, Pro
 	{
 		if( _verbose )
 			std::cout << "Add transcoded stream" << std::endl;
-		addTranscodeStream( filename, streamIndex, profile, offset );
+		addTranscodeStream( filename, streamIndex, -1, profile, offset );
 	}
 }
 
@@ -380,7 +380,9 @@ void Transcoder::setVerbose( bool verbose )
 void Transcoder::addRewrapStream( const std::string& filename, const size_t streamIndex )
 {
 	InputFile* referenceFile = addInputFile( filename, streamIndex );
-	_streamTranscoders.push_back( new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile ) );
+
+	_streamTranscodersAllocated.push_back( new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile ) );
+	_streamTranscoders.push_back( _streamTranscodersAllocated.back() );
 }
 
 void Transcoder::addTranscodeStream( const std::string& filename, const size_t streamIndex, const size_t subStreamIndex, const size_t offset )
@@ -424,28 +426,6 @@ void Transcoder::addTranscodeStream( const std::string& filename, const size_t s
 	}
 }
 
-void Transcoder::addTranscodeStream( const std::string& filename, const size_t streamIndex, ProfileLoader::Profile& profile, const size_t offset )
-{
-	InputFile* referenceFile = addInputFile( filename, streamIndex );
-
-	switch( referenceFile->getStreamType( streamIndex ) )
-	{
-		case AVMEDIA_TYPE_VIDEO:
-		case AVMEDIA_TYPE_AUDIO:
-		{
-			_streamTranscoders.push_back( new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile, profile, -1 , offset ) );
-			break;
-		}
-		case AVMEDIA_TYPE_DATA:
-		case AVMEDIA_TYPE_SUBTITLE:
-		case AVMEDIA_TYPE_ATTACHMENT:
-		default:
-		{
-			throw std::runtime_error( "unsupported media type in transcode setup" );
-		}
-	}
-}
-
 void Transcoder::addTranscodeStream( const std::string& filename, const size_t streamIndex, const size_t subStreamIndex, ProfileLoader::Profile& profile, const size_t offset )
 {
 	InputFile* referenceFile = addInputFile( filename, streamIndex );
@@ -455,7 +435,8 @@ void Transcoder::addTranscodeStream( const std::string& filename, const size_t s
 		case AVMEDIA_TYPE_VIDEO:
 		case AVMEDIA_TYPE_AUDIO:
 		{
-			_streamTranscoders.push_back( new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile, profile, subStreamIndex, offset ) );
+			_streamTranscodersAllocated.push_back( new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile, profile, subStreamIndex, offset ) );
+			_streamTranscoders.push_back( _streamTranscodersAllocated.back() );
 			break;
 		}
 		case AVMEDIA_TYPE_DATA:
@@ -473,21 +454,16 @@ void Transcoder::addDummyStream( const ProfileLoader::Profile& profile, const IC
 	if( ! profile.count( constants::avProfileType ) )
 		throw std::runtime_error( "unable to found stream type (audio, video, etc.)" );
 
-	if( profile.find( constants::avProfileType )->second == constants::avProfileTypeAudio )
+	if( _verbose )
 	{
-		if( _verbose )
+		if( profile.find( constants::avProfileType )->second == constants::avProfileTypeVideo )
+			std::cout << "add a generated video stream" << std::endl;
+		else if( profile.find( constants::avProfileType )->second == constants::avProfileTypeAudio )
 			std::cout << "add a generated audio stream" << std::endl;
-
-		_streamTranscoders.push_back( new StreamTranscoder( codec, _outputFile, profile ) );
 	}
 
-	if( profile.find( constants::avProfileType )->second == constants::avProfileTypeVideo )
-	{
-		if( _verbose )
-			std::cout << "add generated video stream" << std::endl;
-
-		_streamTranscoders.push_back( new StreamTranscoder( codec, _outputFile, profile ) );
-	}
+	_streamTranscodersAllocated.push_back( new StreamTranscoder( codec, _outputFile, profile ) );
+	_streamTranscoders.push_back( _streamTranscodersAllocated.back() );
 }
 
 InputFile* Transcoder::addInputFile( const std::string& filename, const size_t streamIndex )
