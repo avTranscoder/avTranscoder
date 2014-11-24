@@ -52,16 +52,16 @@ def testSetVideoFrame():
 	# get dst file of transcode
 	dst_inputFile = av.InputFile( outputFileName )
 	progress = av.NoDisplayProgress()
-	dst_inputFile.analyse( progress, av.InputFile.eAnalyseLevelFast )
+	dst_inputFile.analyse( progress, av.eAnalyseLevelHeader )
 	dst_properties = dst_inputFile.getProperties()
-	dst_videoStream = dst_properties.videoStreams[0]
+	dst_videoStream = dst_properties.getVideoProperties()[0]
 
-	assert_equals( "mpeg2video", dst_videoStream.codecName )
-	assert_equals( "MPEG-2 video", dst_videoStream.codecLongName )
-	assert_equals( 1920, dst_videoStream.width )
-	assert_equals( 1080, dst_videoStream.height )
-	assert_equals( 16, dst_videoStream.dar.num )
-	assert_equals( 9, dst_videoStream.dar.den )
+	assert_equals( "mpeg2video", dst_videoStream.getCodecName() )
+	assert_equals( "MPEG-2 video", dst_videoStream.getCodecLongName() )
+	assert_equals( 1920, dst_videoStream.getWidth() )
+	assert_equals( 1080, dst_videoStream.getHeight() )
+	assert_equals( 16, dst_videoStream.getDar().num )
+	assert_equals( 9, dst_videoStream.getDar().den )
 
 
 def testSetAudioFrame():
@@ -105,14 +105,14 @@ def testSetAudioFrame():
 	# get dst file of transcode
 	dst_inputFile = av.InputFile( outputFileName )
 	progress = av.NoDisplayProgress()
-	dst_inputFile.analyse( progress, av.InputFile.eAnalyseLevelFast )
+	dst_inputFile.analyse( progress, av.eAnalyseLevelHeader )
 	dst_properties = dst_inputFile.getProperties()
-	dst_audioStream = dst_properties.audioStreams[0]
+	dst_audioStream = dst_properties.getAudioProperties()[0]
 
-	assert_equals( "pcm_s24le", dst_audioStream.codecName )
-	assert_equals( "PCM signed 24-bit little-endian", dst_audioStream.codecLongName )
-	assert_equals( "s32", dst_audioStream.sampleFormatName )
-	assert_equals( "signed 32 bits", dst_audioStream.sampleFormatLongName )
-	assert_equals( 48000, dst_audioStream.sampleRate )
-	assert_equals( 1, dst_audioStream.channels )
+	assert_equals( "pcm_s24le", dst_audioStream.getCodecName() )
+	assert_equals( "PCM signed 24-bit little-endian", dst_audioStream.getCodecLongName() )
+	assert_equals( "s32", dst_audioStream.getSampleFormatName() )
+	assert_equals( "signed 32 bits", dst_audioStream.getSampleFormatLongName() )
+	assert_equals( 48000, dst_audioStream.getSampleRate() )
+	assert_equals( 1, dst_audioStream.getChannels() )
 

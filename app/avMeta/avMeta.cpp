@@ -1,5 +1,5 @@
 #include <AvTranscoder/file/InputFile.hpp>
-#include <AvTranscoder/mediaProperty/printMediaProperty.hpp>
+#include <AvTranscoder/mediaProperty/print.hpp>
 
 #include <AvTranscoder/progress/NoDisplayProgress.hpp>
 
@@ -16,7 +16,7 @@ int main( int argc, char** argv )
 	avtranscoder::NoDisplayProgress p;
 
 	avtranscoder::InputFile input( argv[1] );
-	input.analyse( p, avtranscoder::InputFile::eAnalyseLevelFull );
+	input.analyse( p, avtranscoder::eAnalyseLevelFirstGop );
 
 	// a simply metadata display
 	std::cout << input;

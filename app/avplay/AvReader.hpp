@@ -5,7 +5,7 @@
 #include <AvTranscoder/essenceStream/AvInputAudio.hpp>
 #include <AvTranscoder/essenceStream/AvInputVideo.hpp>
 #include <AvTranscoder/transform/VideoTransform.hpp>
-#include <AvTranscoder/mediaProperty/printMediaProperty.hpp>
+#include <AvTranscoder/mediaProperty/print.hpp>
 
 #include <AvTranscoder/progress/ConsoleProgress.hpp>
 
@@ -23,7 +23,7 @@ public:
 		avtranscoder::ConsoleProgress p;
 
 		_inputFile.analyse( p );
-		_videoStream = _inputFile.getProperties().videoStreams.at(0).streamId;
+		_videoStream = _inputFile.getProperties().getVideoProperties().at(0).getStreamId();
 
 		_inputFile.readStream( _videoStream );
 
@@ -58,17 +58,17 @@ public:
 
 	size_t getWidth()
 	{
-		return _inputFile.getProperties().videoStreams.at(0).width;
+		return _inputFile.getProperties().getVideoProperties().at(0).getWidth();
 	};
 
 	size_t getHeight()
 	{
-		return _inputFile.getProperties().videoStreams.at(0).height;
+		return _inputFile.getProperties().getVideoProperties().at(0).getHeight();
 	}
 
 	size_t getComponents()
 	{
-		return _inputFile.getProperties().videoStreams.at(0).componentsCount;
+		return _inputFile.getProperties().getVideoProperties().at(0).getComponentsCount();
 	}
 
 	size_t getBitDepth()
