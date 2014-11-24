@@ -319,71 +319,6 @@ bool StreamTranscoder::processRewrap()
 	return true;
 }
 
-bool StreamTranscoder::processTranscode()
-{
-	assert( _inputEssence   != NULL );
-	assert( _currentEssence != NULL );
-	assert( _outputEssence  != NULL );
-	assert( _sourceBuffer   != NULL );
-	assert( _frameBuffer    != NULL );
-	assert( _transform      != NULL );
-
-	CodedData data;
-	if( _verbose )
-		std::cout << "transcode a frame " << std::endl;
-
-	if( _offset &&
-		_frameProcessed > _offset &&
-		! _offsetPassed &&
-		_takeFromGenerator )
-	{
-		switchToInputEssence();
-		_offsetPassed = true;
-	}
-
-	if( _currentEssence->readNextFrame( *_sourceBuffer ) )
-	{
-		if( _verbose )
-			std::cout << "convert (" << _sourceBuffer->getSize() << " bytes)" << std::endl;
-		_transform->convert( *_sourceBuffer, *_frameBuffer );
-		if( _verbose )
-			std::cout << "encode (" << _frameBuffer->getSize() << " bytes)" << std::endl;
-		_outputEssence->encodeFrame( *_frameBuffer, data );
-	}
-	else
-	{
-		if( _verbose )
-			std::cout << "encode last frame(s)" << std::endl;
-		if( ! _outputEssence->encodeFrame( data ) )
-		{
-			if( _infinityStream )
-			{
-				switchToGeneratorEssence();
-				return processTranscode();
-			}
-			return false;
-		}
-	}
-
-	if( _verbose )
-		std::cout << "wrap (" << data.getSize() << " bytes)" << std::endl;
-
-	IOutputStream::EWrappingStatus wrappingStatus = _outputStream->wrap( data );
-
-	switch( wrappingStatus )
-	{
-		case IOutputStream::eWrappingSuccess:
-			return true;
-		case IOutputStream::eWrappingWaitingForData:
-			// the wrapper needs more data to write the current packet
-			return processTranscode();
-		case IOutputStream::eWrappingError:
-			return false;
-	}
-
-	return true;
-}
-
 bool StreamTranscoder::processTranscode( const int subStreamIndex )
 {
 	assert( _inputEssence   != NULL );
@@ -406,7 +341,13 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 		_offsetPassed = true;
 	}
 
-	if( _currentEssence->readNextFrame( *_sourceBuffer, subStreamIndex ) )
+	bool decodingStatus = false;
+	if( subStreamIndex == -1 )
+		decodingStatus = _currentEssence->readNextFrame( *_sourceBuffer );
+	else
+		decodingStatus = _currentEssence->readNextFrame( *_sourceBuffer, subStreamIndex );
+
+	if( decodingStatus )
 	{
 		if( _verbose )
 			std::cout << "convert (" << _sourceBuffer->getSize() << " bytes)" << std::endl;

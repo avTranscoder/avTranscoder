@@ -76,8 +76,7 @@ public:
 
 private:
 	bool processRewrap();
-	bool processTranscode();
-	bool processTranscode( const int subStreamIndex );
+	bool processTranscode( const int subStreamIndex = -1 );  ///< By default transcode all channels
 
 private:
 	IInputStream*   _inputStream;
