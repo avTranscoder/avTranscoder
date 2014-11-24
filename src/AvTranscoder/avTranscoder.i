@@ -25,8 +25,6 @@
 #include <AvTranscoder/codec/AudioCodec.hpp>
 #include <AvTranscoder/codec/DataCodec.hpp>
 
-#include <AvTranscoder/mediaProperty/mediaProperty.hpp>
-
 #include <AvTranscoder/codedStream/IOutputStream.hpp>
 #include <AvTranscoder/codedStream/AvOutputStream.hpp>
 
@@ -41,27 +39,19 @@
 #include <AvTranscoder/essenceStream/AvInputAudio.hpp>
 #include <AvTranscoder/essenceStream/AvInputVideo.hpp>
 
-#include <AvTranscoder/file/InputFile.hpp>
-#include <AvTranscoder/file/OutputFile.hpp>
-
 #include <AvTranscoder/transcoder/StreamTranscoder.hpp>
 #include <AvTranscoder/transcoder/Transcoder.hpp>
 %}
 
-namespace std {	
+namespace std {
 %template(IntPair)         pair< size_t, size_t >;
-%template(VideoVector)     vector< avtranscoder::VideoProperties >;
-%template(AudioVector)     vector< avtranscoder::AudioProperties >;
-%template(MetadataPair)    pair< string, string >;
-%template(MetadatasVector) vector< pair< string, string > >;
-%template(GopPair)         pair< char, bool >;
-%template(GopVector)       vector< pair< char, bool > >;
-%template(ChannelVector)   vector< avtranscoder::Channel >;
 %template(ProfileMap)      map< string, string >;
 %template(ProfilesVector)  vector< map< string, string > >;
 }
 
 %include "AvTranscoder/progress/progress.i"
+%include "AvTranscoder/mediaProperty/mediaProperty.i"
+%include "AvTranscoder/file/file.i"
 
 %include <AvTranscoder/ProfileLoader.hpp>
 
@@ -74,8 +64,6 @@ namespace std {
 %include <AvTranscoder/codec/VideoCodec.hpp>
 %include <AvTranscoder/codec/AudioCodec.hpp>
 %include <AvTranscoder/codec/DataCodec.hpp>
-
-%include <AvTranscoder/mediaProperty/mediaProperty.hpp>
 
 %include <AvTranscoder/codedStream/IOutputStream.hpp>
 %include <AvTranscoder/codedStream/AvOutputStream.hpp>
@@ -90,9 +78,6 @@ namespace std {
 %include <AvTranscoder/essenceStream/IInputEssence.hpp>
 %include <AvTranscoder/essenceStream/AvInputAudio.hpp>
 %include <AvTranscoder/essenceStream/AvInputVideo.hpp>
-
-%include <AvTranscoder/file/InputFile.hpp>
-%include <AvTranscoder/file/OutputFile.hpp>
 
 %include <AvTranscoder/transcoder/StreamTranscoder.hpp>
 %include <AvTranscoder/transcoder/Transcoder.hpp>
