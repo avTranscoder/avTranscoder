@@ -15,7 +15,7 @@ public:
 
 	size_t getStreamIndex() const { return _streamIndex; }
 
-	bool wrap( const CodedData& data );
+	IOutputStream::EWrappingStatus wrap( const CodedData& data );
 
 private:
 	OutputFile*      _outputFile;
