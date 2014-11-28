@@ -44,7 +44,6 @@ public:
 	{ }
 
 	Pixel( const std::string& avPixelFormat );
-
 	Pixel( const AVPixelFormat avPixelFormat );
 
 	void setBitsPerPixel   ( const size_t pixelSize ) { _pixelSize = pixelSize; }

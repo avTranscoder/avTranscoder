@@ -18,20 +18,12 @@ Pixel::Pixel( const std::string& avPixelFormat )
 }
 
 Pixel::Pixel( const AVPixelFormat avPixelFormat )
-	: _pixelSize  ( 24 )
-	, _components ( 3 )
-	, _componentType ( eComponentYuv )
-	, _subsamplingType ( eSubsamplingNone )
-	, _endianess  ( false )
-	, _withAlpha  ( false )
-	, _planar     ( true )
 {
 	init( avPixelFormat );
 }
 
 AVPixelFormat Pixel::findPixel() const
 {
-	//av_register_all();
 #if LIBAVUTIL_VERSION_MAJOR > 51
 	const AVPixFmtDescriptor *pix_desc = NULL;
 	while( ( pix_desc = av_pix_fmt_desc_next( pix_desc ) ) )
