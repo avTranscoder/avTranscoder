@@ -23,8 +23,11 @@ enum EComponentType
 enum ESubsamplingType
 {
 	eSubsamplingNone = 0, // 4:4:4
+	eSubsampling440,      // 4:4:0
 	eSubsampling422,      // 4:2:2
-	eSubsampling420       // 4:2:0
+	eSubsampling420,      // 4:2:0
+	eSubsampling411,      // 4:1:1
+	eSubsampling410       // 4:1:0
 };
 
 class AvExport Pixel
