@@ -1,10 +1,48 @@
 # avTranscoder
 
-C++ API for LibAV / FFMpeg
+C++ API for Libav / FFmpeg
 
-Based on LibAV/FFMpeg libraries to support various video formats, avTranscoder provides the high level API to re-wrap or transcode media easily.
+Based on Libav/FFmpeg libraries to support various video and audio formats, avTranscoder provides the high level API to re-wrap or transcode media easily.
 
-You can also use its Java & Python bindings for simpler integration in your own projects.
+#### What you need to know
+* C++ library
+* Java and Python bindings generated with SWIG
+* multiplateform (Linux, MAC, Windows)
+* your call to be based on Libav, FFmpeg, or your custom fork of one of these librairies
+
+#### How to use
+Check out applications contained in the project to see examples of how to use the library in C++, Java or Python.
+
+To encode, avTranscoder manipulates profiles.
+A profile is a text file which discribes, with a set of key-value, what we want as output for the format, the video, or the audio.
+You can create your own profiles and export a variable called ```AVPROFILES``` to indicate the path to them.
+
+The minimum format profile is:
+```
+avProfileName=profileName
+avProfileLongName=profileLongName
+avProfileType=avProfileTypeFormat
+format=formatName 
+```
+
+The minimum video profile is:
+```
+avProfileName=profileName
+avProfileLongName=profileLongName
+avProfileType=avProfileTypeVideo
+codec=codecName
+pix_fmt=pixelFormat
+r=frameRate
+```
+
+The minimum audio profile is:
+```
+avProfileName=profileName
+avProfileLongName=profileLongName
+avProfileType=avProfileTypeAudio
+codec=codecName
+sample_fmt=sampleFormat
+```
 
 #### Continuous Integration
 
@@ -26,8 +64,16 @@ You can also use its Java & Python bindings for simpler integration in your own 
 Python tests using nosetests.
 
 Create environment variables to use your files in tests.
-* AVTRANSCODER_TEST_AUDIO_FILE
-* AVTRANSCODER_TEST_VIDEO_FILE
+* ```AVTRANSCODER_TEST_AUDIO_FILE```
+* ```AVTRANSCODER_TEST_VIDEO_FILE```
+
+Note: for continuous integration, we launch tests with media files contained in ```avTranscoder-data``` repository.
+
+Launch the tests:
+```
+cd test/pyTest
+nosetests
+```
 
 #### Packaging
 
