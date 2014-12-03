@@ -25,7 +25,7 @@ public:
 		_inputFile.analyse( p );
 		_videoStream = _inputFile.getProperties().getVideoProperties().at(0).getStreamId();
 
-		_inputFile.readStream( _videoStream );
+		_inputFile.activateStream( _videoStream );
 
 		_inputVideo = new avtranscoder::AvInputVideo( _inputFile.getStream( _videoStream ) );
 		

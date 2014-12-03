@@ -17,8 +17,9 @@ AvInputStream::AvInputStream( InputFile& inputFile, const size_t streamIndex )
 	: IInputStream( )
 	, _inputFile( &inputFile )
 	, _codec( NULL )
+	, _streamCache()
 	, _streamIndex( streamIndex )
-	, _bufferized( false )
+	, _isActivated( false )
 {
 	AVCodecContext* context = _inputFile->getFormatContext().streams[_streamIndex]->codec;
 
@@ -57,8 +58,9 @@ AvInputStream::AvInputStream( const AvInputStream& inputStream )
 	: IInputStream( )
 	, _inputFile( inputStream._inputFile )
 	, _codec( inputStream._codec )
+	, _streamCache()
 	, _streamIndex( inputStream._streamIndex )
-	, _bufferized( inputStream._bufferized )
+	, _isActivated( inputStream._isActivated )
 {
 }
 
@@ -69,8 +71,8 @@ AvInputStream::~AvInputStream( )
 
 bool AvInputStream::readNextPacket( CodedData& data )
 {
-	if( ! _bufferized )
-		throw std::runtime_error( "Can't read packet on non-bufferized input stream." );
+	if( ! _isActivated )
+		throw std::runtime_error( "Can't read packet on non-activated input stream." );
 
 	// if packet is already cached
 	if( ! _streamCache.empty() )
@@ -90,7 +92,7 @@ bool AvInputStream::readNextPacket( CodedData& data )
 void AvInputStream::addPacket( AVPacket& packet )
 {
 	// Do not cache data if the stream is declared as unused in process
-	if( ! _bufferized )
+	if( ! _isActivated )
 		return;
 
 	CodedData data;

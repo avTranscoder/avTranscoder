@@ -195,14 +195,14 @@ void InputFile::seekAtFrame( const size_t frame )
 	}
 }
 
-void InputFile::readStream( const size_t streamIndex, bool readStream )
+void InputFile::activateStream( const size_t streamIndex, bool activate )
 {
-	_inputStreams.at( streamIndex )->setBufferred( readStream );
+	_inputStreams.at( streamIndex )->activate( activate );
 }
 
-bool InputFile::getReadStream( const size_t streamIndex )
+bool InputFile::isStreamActivated( const size_t streamIndex )
 {
-	return _inputStreams.at( streamIndex )->getBufferred();
+	return _inputStreams.at( streamIndex )->isActivated();
 }
 
 void InputFile::setProfile( const ProfileLoader::Profile& profile )

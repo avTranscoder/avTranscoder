@@ -35,8 +35,8 @@ public:
 
 	void addPacket( AVPacket& packet );
 
-	void setBufferred( const bool bufferized ){ _bufferized = bufferized; };
-	bool getBufferred() const { return _bufferized; };
+	void activate( const bool activate = true ){ _isActivated = activate; };
+	bool isActivated() const { return _isActivated; };
 
 	void clearBuffering();
 
@@ -47,10 +47,10 @@ private:
 	InputFile* _inputFile;  ///< Has link (no ownership)
 	ICodec* _codec;  ///< Has ownership
 
-	std::queue<CodedData> _streamCache;
+	std::queue<CodedData> _streamCache;  ///< Cache of packet data already read and corresponding to this stream
 
 	size_t _streamIndex;  ///<  Index of the stream in the input file
-	bool _bufferized;  ///< If the stream is bufferized
+	bool _isActivated;  ///< If the stream is activated, data read from it will be buffered
 };
 
 }
