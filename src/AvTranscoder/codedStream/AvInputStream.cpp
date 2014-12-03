@@ -35,13 +35,6 @@ AvInputStream::AvInputStream( InputFile& inputFile, const size_t streamIndex )
 		}
 		case AVMEDIA_TYPE_AUDIO:
 		{
-			double outputFps = 25;
-			size_t bytePerSample = av_get_bytes_per_sample( context->sample_fmt );
-
-			context->block_align = 1.0 * context->sample_rate * context->channels * bytePerSample / outputFps;
-			// std::cout << "channels " << context->channel_layout << std::endl;
-			// std::cout << "audio buffer read size " << context->block_align << std::endl;
-
 			AudioCodec* audioCodec = new AudioCodec( eCodecTypeDecoder, context->codec_id );
 			audioCodec->setAudioParameters( context->sample_rate, context->channels, context->sample_fmt );
 
