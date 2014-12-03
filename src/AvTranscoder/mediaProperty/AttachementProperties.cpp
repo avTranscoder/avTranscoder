@@ -11,7 +11,7 @@ AttachementProperties::AttachementProperties( const AVFormatContext* formatConte
 		detail::fillMetadataDictionnary( _formatContext->streams[index]->metadata, _metadatas );
 }
 
-PropertiesMap AttachementProperties::getDataMap() const
+PropertiesMap AttachementProperties::getPropertiesAsMap() const
 {
 	PropertiesMap dataMap;
 

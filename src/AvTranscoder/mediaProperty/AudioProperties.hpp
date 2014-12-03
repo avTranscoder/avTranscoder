@@ -40,7 +40,7 @@ public:
 	AVCodecContext& getAVCodecContext() { return *_codecContext; }
 #endif
 
-	PropertiesMap getDataMap() const;
+	PropertiesMap getPropertiesAsMap() const;  ///< Return all audio properties as a map (name of property: value)
 
 private:
 	const AVFormatContext* _formatContext;  ///< Has link (no ownership)

@@ -81,7 +81,7 @@ size_t FileProperties::getNbStreams() const
 	return _formatContext->nb_streams;
 }
 
-PropertiesMap FileProperties::getDataMap() const
+PropertiesMap FileProperties::getPropertiesAsMap() const
 {
 	PropertiesMap dataMap;
 

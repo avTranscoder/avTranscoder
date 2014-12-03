@@ -81,7 +81,6 @@ public:
 
 	//@{
 	// Warning: Can acces these data when analyse first gop
-	// Construct the VideoProperties with level = eAnalyseLevelFull
 	// @see EAnalyseLevel
 	// @see analyseGopStructure
 	bool isInterlaced() const { return _isInterlaced; }
@@ -99,7 +98,7 @@ public:
 	const AVPixFmtDescriptor& getAVPixFmtDescriptor() { return *_pixFmt; }
 #endif
 
-	PropertiesMap getDataMap() const;
+	PropertiesMap getPropertiesAsMap() const;  ///< Return all video properties as a map (name of property: value)
 
 private:
 	/**

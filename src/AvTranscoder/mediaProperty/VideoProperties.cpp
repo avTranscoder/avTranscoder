@@ -648,7 +648,7 @@ std::vector<Channel> VideoProperties::getChannels() const
 	return channels;
 }
 
-PropertiesMap VideoProperties::getDataMap() const
+PropertiesMap VideoProperties::getPropertiesAsMap() const
 {
 	PropertiesMap dataMap;
 

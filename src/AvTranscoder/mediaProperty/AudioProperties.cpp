@@ -154,7 +154,7 @@ size_t AudioProperties::getBitRate() const
 	return _codecContext->bit_rate;
 }
 
-PropertiesMap AudioProperties::getDataMap() const
+PropertiesMap AudioProperties::getPropertiesAsMap() const
 {
 	PropertiesMap dataMap;
 

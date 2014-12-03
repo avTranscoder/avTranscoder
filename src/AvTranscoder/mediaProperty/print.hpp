@@ -19,7 +19,7 @@ std::ostream& operator<<( std::ostream& flux, const FileProperties& fileProperti
 	flux << std::left;
 	flux << separator << " Wrapper " << separator << std::endl;
 
-	PropertiesMap properties = fileProperties.getDataMap();
+	PropertiesMap properties = fileProperties.getPropertiesAsMap();
 	for( PropertiesMap::iterator it = properties.begin(); it != properties.end(); ++it )
 	{
 		flux << std::setw( keyWidth ) << it->first << ": " << it->second << std::endl;
@@ -33,7 +33,7 @@ std::ostream& operator<<( std::ostream& flux, const VideoProperties& videoProper
 	flux << std::left;
 	flux << separator << " Video stream " << separator << std::endl;
 
-	PropertiesMap properties = videoProperties.getDataMap();
+	PropertiesMap properties = videoProperties.getPropertiesAsMap();
 	for( PropertiesMap::iterator it = properties.begin(); it != properties.end(); ++it )
 	{
 		flux << std::setw( keyWidth ) << it->first << ": " << it->second << std::endl;
@@ -47,7 +47,7 @@ std::ostream& operator<<( std::ostream& flux, const AudioProperties& audioProper
 	flux << std::left;
 	flux << separator << " Audio stream " << separator << std::endl;
 
-	PropertiesMap properties = audioProperties.getDataMap();
+	PropertiesMap properties = audioProperties.getPropertiesAsMap();
 	for( PropertiesMap::iterator it = properties.begin(); it != properties.end(); ++it )
 	{
 		flux << std::setw( keyWidth ) << it->first << ": " << it->second << std::endl;
@@ -60,7 +60,7 @@ std::ostream& operator<<( std::ostream& flux, const DataProperties& dataProperti
 {
 	flux << separator << " Data stream " << separator << std::endl;
 
-	PropertiesMap properties = dataProperties.getDataMap();
+	PropertiesMap properties = dataProperties.getPropertiesAsMap();
 	for( PropertiesMap::iterator it = properties.begin(); it != properties.end(); ++it )
 	{
 		flux << std::setw( keyWidth ) << it->first << ": " << it->second << std::endl;
@@ -73,7 +73,7 @@ std::ostream& operator<<( std::ostream& flux, const SubtitleProperties& subtitle
 {
 	flux << separator << " Subtitle stream " << separator << std::endl;
 
-	PropertiesMap properties = subtitleProperties.getDataMap();
+	PropertiesMap properties = subtitleProperties.getPropertiesAsMap();
 	for( PropertiesMap::iterator it = properties.begin(); it != properties.end(); ++it )
 	{
 		flux << std::setw( keyWidth ) << it->first << ": " << it->second << std::endl;
@@ -86,7 +86,7 @@ std::ostream& operator<<( std::ostream& flux, const AttachementProperties& attac
 {
 	flux << separator << " Attachement stream " << separator << std::endl;
 
-	PropertiesMap properties = attachementProperties.getDataMap();
+	PropertiesMap properties = attachementProperties.getPropertiesAsMap();
 	for( PropertiesMap::iterator it = properties.begin(); it != properties.end(); ++it )
 	{
 		flux << std::setw( keyWidth ) << it->first << ": " << it->second << std::endl;
@@ -99,7 +99,7 @@ std::ostream& operator<<( std::ostream& flux, const UnknownProperties& unknownPr
 {
 	flux << separator << " Unknown stream " << separator << std::endl;
 
-	PropertiesMap properties = unknownProperties.getDataMap();
+	PropertiesMap properties = unknownProperties.getPropertiesAsMap();
 	for( PropertiesMap::iterator it = properties.begin(); it != properties.end(); ++it )
 	{
 		flux << std::setw( keyWidth ) << it->first << ": " << it->second << std::endl;

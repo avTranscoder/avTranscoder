@@ -23,7 +23,7 @@ public:
 	const AVFormatContext& getAVFormatContext() { return *_formatContext; }
 #endif
 
-	PropertiesMap getDataMap() const;
+	PropertiesMap getPropertiesAsMap() const;  ///< Return all data properties as a map (name of property: value)
 
 private:
 	void detectAncillaryData();

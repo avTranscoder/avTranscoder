@@ -62,7 +62,7 @@ public:
 	const AVFormatContext& getAVFormatContext() { return *_formatContext; }
 #endif
 
-	PropertiesMap getDataMap() const;
+	PropertiesMap getPropertiesAsMap() const;  ///< Return all file properties as a map (name of property: value)
 
 private:
 	const AVFormatContext* _formatContext;  ///< Has link (no ownership)
