@@ -109,7 +109,6 @@ public:
 
 	virtual void setVerbose( bool verbose = false ){ _verbose = verbose; }
 	
-	AVFormatContext& getFormatContext() { return *_formatContext; }
 	double getProgressDuration();
 
 private:
