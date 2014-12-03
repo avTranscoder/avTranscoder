@@ -282,9 +282,10 @@ void Transcoder::process( IProgress& progress )
 	{
 		throw std::runtime_error( "missing input streams in transcoder" );
 	}
-	
+
 	if( _verbose )
 		std::cout << "begin transcoding" << std::endl;
+	init();
 	
 	_outputFile.beginWrap();
 

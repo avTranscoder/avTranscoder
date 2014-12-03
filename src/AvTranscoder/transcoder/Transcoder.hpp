@@ -112,7 +112,9 @@ public:
 
 	/**
 	 * @brief Process all the streams, and ended the process depending on the transcode politic.
-	 * @param progress
+	 * @note The function manages all process: init(), beginWrap(), processFrame()s, and endWrap().
+	 * @param progress: choose a progress, or create your own in C++ or in bindings by inherit IProgress class.
+	 * @see IProgress
 	 */
 	void process( IProgress& progress );
 
