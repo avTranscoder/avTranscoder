@@ -35,7 +35,7 @@ public:
 	size_t getBitRate() const;
 	size_t getPacketSize() const;
 
-	MetadatasMap& getMetadatas() { return _metadatas; }
+	PropertiesMap& getMetadatas() { return _metadatas; }
 
 	size_t getNbStreams() const;
 	size_t getNbVideoStreams() const { return _videoStreams.size(); }
@@ -62,7 +62,7 @@ public:
 	const AVFormatContext& getAVFormatContext() { return *_formatContext; }
 #endif
 
-	MetadatasMap getDataMap() const;
+	PropertiesMap getDataMap() const;
 
 private:
 	const AVFormatContext* _formatContext;  ///< Has link (no ownership)
@@ -74,7 +74,7 @@ private:
 	std::vector< AttachementProperties > _attachementStreams;  ///< Array of properties per attachement stream
 	std::vector< UnknownProperties > _unknownStreams;  ///< Array of properties per unknown stream
 
-	MetadatasMap _metadatas;
+	PropertiesMap _metadatas;
 };
 
 }

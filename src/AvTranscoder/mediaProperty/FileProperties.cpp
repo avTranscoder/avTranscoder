@@ -81,9 +81,9 @@ size_t FileProperties::getNbStreams() const
 	return _formatContext->nb_streams;
 }
 
-MetadatasMap FileProperties::getDataMap() const
+PropertiesMap FileProperties::getDataMap() const
 {
-	MetadatasMap dataMap;
+	PropertiesMap dataMap;
 
 	detail::add( dataMap, "filename", getFilename() );
 	detail::add( dataMap, "formatName", getFormatName() );

@@ -648,9 +648,9 @@ std::vector<Channel> VideoProperties::getChannels() const
 	return channels;
 }
 
-MetadatasMap VideoProperties::getDataMap() const
+PropertiesMap VideoProperties::getDataMap() const
 {
-	MetadatasMap dataMap;
+	PropertiesMap dataMap;
 
 	detail::add( dataMap, "streamId", getStreamId() );
 	detail::add( dataMap, "codecId", getCodecId() );

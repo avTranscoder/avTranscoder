@@ -33,14 +33,14 @@ public:
 	size_t getSampleRate() const;
 	size_t getChannels() const;
 	size_t getBitRate() const;
-	MetadatasMap& getMetadatas() { return _metadatas; }
+	PropertiesMap& getMetadatas() { return _metadatas; }
 
 #ifndef SWIG
 	const AVFormatContext& getAVFormatContext() { return *_formatContext; }
 	AVCodecContext& getAVCodecContext() { return *_codecContext; }
 #endif
 
-	MetadatasMap getDataMap() const;
+	PropertiesMap getDataMap() const;
 
 private:
 	const AVFormatContext* _formatContext;  ///< Has link (no ownership)
@@ -48,7 +48,7 @@ private:
 	AVCodec* _codec; ///< Has link (no ownership)
 
 	size_t _streamId;
-	MetadatasMap _metadatas;
+	PropertiesMap _metadatas;
 };
 
 }

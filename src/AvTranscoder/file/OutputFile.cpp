@@ -216,9 +216,9 @@ bool OutputFile::endWrap( )
 	return true;
 }
 
-void OutputFile::addMetadata( const MetadatasMap& dataMap )
+void OutputFile::addMetadata( const PropertiesMap& dataMap )
 {
-	for( MetadatasMap::const_iterator it = dataMap.begin(); it != dataMap.end(); ++it )
+	for( PropertiesMap::const_iterator it = dataMap.begin(); it != dataMap.end(); ++it )
 	{
 		addMetadata( it->first, it->second );
 	}

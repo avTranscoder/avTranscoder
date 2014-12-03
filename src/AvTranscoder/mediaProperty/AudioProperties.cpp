@@ -154,9 +154,9 @@ size_t AudioProperties::getBitRate() const
 	return _codecContext->bit_rate;
 }
 
-MetadatasMap AudioProperties::getDataMap() const
+PropertiesMap AudioProperties::getDataMap() const
 {
-	MetadatasMap dataMap;
+	PropertiesMap dataMap;
 
 	detail::add( dataMap, "streamId", getStreamId() );
 	detail::add( dataMap, "codecId", getCodecId() );
