@@ -29,16 +29,18 @@ public:
 	std::string getChannelName() const;
 	std::string getChannelDescription() const;
 	size_t getStreamId() const { return _streamId; }
-	size_t getCodecId() const { return _codecContext->codec_id; }
-	size_t getSampleRate() const { return _codecContext->sample_rate; }
-	size_t getChannels() const { return _codecContext->channels; }
-	size_t getBitRate() const { return _codecContext->bit_rate; }
-	MetadatasMap& getMetadatas() { return _metadatas; }
+	size_t getCodecId() const;
+	size_t getSampleRate() const;
+	size_t getChannels() const;
+	size_t getBitRate() const;
+	PropertiesMap& getMetadatas() { return _metadatas; }
 
+#ifndef SWIG
 	const AVFormatContext& getAVFormatContext() { return *_formatContext; }
 	AVCodecContext& getAVCodecContext() { return *_codecContext; }
+#endif
 
-	MetadatasMap getDataMap() const;
+	PropertiesMap getPropertiesAsMap() const;  ///< Return all audio properties as a map (name of property: value)
 
 private:
 	const AVFormatContext* _formatContext;  ///< Has link (no ownership)
@@ -46,7 +48,7 @@ private:
 	AVCodec* _codec; ///< Has link (no ownership)
 
 	size_t _streamId;
-	MetadatasMap _metadatas;
+	PropertiesMap _metadatas;
 };
 
 }

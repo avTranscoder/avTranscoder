@@ -81,7 +81,6 @@ public:
 
 	//@{
 	// Warning: Can acces these data when analyse first gop
-	// Construct the VideoProperties with level = eAnalyseLevelFull
 	// @see EAnalyseLevel
 	// @see analyseGopStructure
 	bool isInterlaced() const { return _isInterlaced; }
@@ -91,13 +90,15 @@ public:
 
 	std::vector<Channel> getChannels() const;
 
-	MetadatasMap& getMetadatas() { return _metadatas; }
+	PropertiesMap& getMetadatas() { return _metadatas; }
 
+#ifndef SWIG
 	const AVFormatContext& getAVFormatContext() { return *_formatContext; }
 	AVCodecContext& getAVCodecContext() { return *_codecContext; }
 	const AVPixFmtDescriptor& getAVPixFmtDescriptor() { return *_pixFmt; }
+#endif
 
-	MetadatasMap getDataMap() const;  ///< Warning: the method calls analyseGopStructure, which can modify state of the object
+	PropertiesMap getPropertiesAsMap() const;  ///< Return all video properties as a map (name of property: value)
 
 private:
 	/**
@@ -119,7 +120,7 @@ private:
 	bool _isTopFieldFirst;
 	std::vector< std::pair< char, bool > > _gopStructure;
 	//@}
-	MetadatasMap _metadatas;
+	PropertiesMap _metadatas;
 };
 
 }

@@ -11,9 +11,9 @@ UnknownProperties::UnknownProperties( const AVFormatContext* formatContext, cons
 		detail::fillMetadataDictionnary( _formatContext->streams[index]->metadata, _metadatas );
 }
 
-MetadatasMap UnknownProperties::getDataMap() const
+PropertiesMap UnknownProperties::getPropertiesAsMap() const
 {
-	MetadatasMap dataMap;
+	PropertiesMap dataMap;
 
 	detail::add( dataMap, "streamId", _streamId );
 

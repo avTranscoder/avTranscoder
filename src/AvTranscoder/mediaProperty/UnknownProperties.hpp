@@ -17,17 +17,19 @@ public:
 	UnknownProperties( const AVFormatContext* formatContext, const size_t index );
 
 	size_t getStreamId() const { return _streamId; }
-	MetadatasMap& getMetadatas() { return _metadatas; }
+	PropertiesMap& getMetadatas() { return _metadatas; }
 
+#ifndef SWIG
 	const AVFormatContext& getAVFormatContext() { return *_formatContext; }
+#endif
 
-	MetadatasMap getDataMap() const;
+	PropertiesMap getPropertiesAsMap() const;  ///< Return unknown properties as a map (name of property: value)
 
 private:
 	const AVFormatContext* _formatContext;  ///< Has link (no ownership)
 
 	size_t _streamId;
-	MetadatasMap _metadatas;
+	PropertiesMap _metadatas;
 };
 
 }

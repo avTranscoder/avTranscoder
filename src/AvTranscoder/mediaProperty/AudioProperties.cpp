@@ -1,5 +1,7 @@
 #include "AudioProperties.hpp"
 
+#include <stdexcept>
+
 extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
@@ -124,9 +126,37 @@ std::string AudioProperties::getChannelDescription() const
 #endif
 }
 
-MetadatasMap AudioProperties::getDataMap() const
+size_t AudioProperties::getCodecId() const 
 {
-	MetadatasMap dataMap;
+	if( ! _codecContext )
+		throw std::runtime_error( "unknown codec context" );
+	return _codecContext->codec_id;
+}
+
+size_t AudioProperties::getSampleRate() const 
+{
+	if( ! _codecContext )
+		throw std::runtime_error( "unknown codec context" );
+	return _codecContext->sample_rate;
+}
+
+size_t AudioProperties::getChannels() const 
+{
+	if( ! _codecContext )
+		throw std::runtime_error( "unknown codec context" );
+	return _codecContext->channels;
+}
+
+size_t AudioProperties::getBitRate() const
+{
+	if( ! _codecContext )
+		throw std::runtime_error( "unknown codec context" );
+	return _codecContext->bit_rate;
+}
+
+PropertiesMap AudioProperties::getPropertiesAsMap() const
+{
+	PropertiesMap dataMap;
 
 	detail::add( dataMap, "streamId", getStreamId() );
 	detail::add( dataMap, "codecId", getCodecId() );

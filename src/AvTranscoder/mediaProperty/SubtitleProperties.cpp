@@ -11,9 +11,9 @@ SubtitleProperties::SubtitleProperties( const AVFormatContext* formatContext, co
 		detail::fillMetadataDictionnary( _formatContext->streams[index]->metadata, _metadatas );
 }
 
-MetadatasMap SubtitleProperties::getDataMap() const
+PropertiesMap SubtitleProperties::getPropertiesAsMap() const
 {
-	MetadatasMap dataMap;
+	PropertiesMap dataMap;
 
 	detail::add( dataMap, "streamId", _streamId );
 

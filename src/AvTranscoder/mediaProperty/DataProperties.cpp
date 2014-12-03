@@ -22,9 +22,9 @@ DataProperties::DataProperties( const AVFormatContext* formatContext, const size
 		detail::fillMetadataDictionnary( _formatContext->streams[index]->metadata, _metadatas );
 }
 
-MetadatasMap DataProperties::getDataMap() const
+PropertiesMap DataProperties::getPropertiesAsMap() const
 {
-	MetadatasMap dataMap;
+	PropertiesMap dataMap;
 
 	detail::add( dataMap, "streamId", _streamId );
 

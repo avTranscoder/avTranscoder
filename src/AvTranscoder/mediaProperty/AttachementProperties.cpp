@@ -11,9 +11,9 @@ AttachementProperties::AttachementProperties( const AVFormatContext* formatConte
 		detail::fillMetadataDictionnary( _formatContext->streams[index]->metadata, _metadatas );
 }
 
-MetadatasMap AttachementProperties::getDataMap() const
+PropertiesMap AttachementProperties::getPropertiesAsMap() const
 {
-	MetadatasMap dataMap;
+	PropertiesMap dataMap;
 
 	detail::add( dataMap, "streamId", _streamId );
 

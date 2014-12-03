@@ -1,5 +1,7 @@
 #include "FileProperties.hpp"
 
+#include <stdexcept>
+
 namespace avtranscoder
 {
 
@@ -16,10 +18,72 @@ FileProperties::FileProperties( const AVFormatContext* formatContext )
 		detail::fillMetadataDictionnary( _formatContext->metadata, _metadatas );
 }
 
-
-MetadatasMap FileProperties::getDataMap() const
+std::string FileProperties::getFilename() const
 {
-	MetadatasMap dataMap;
+	if( ! _formatContext )
+		throw std::runtime_error( "unknown format context" );
+	return _formatContext->filename;
+}
+
+std::string FileProperties::getFormatName() const
+{
+	if( ! _formatContext || ! _formatContext->iformat )
+		throw std::runtime_error( "unknown format context" );
+	return _formatContext->iformat->name;
+}
+
+std::string FileProperties::getFormatLongName() const
+{
+	if( ! _formatContext || ! _formatContext->iformat )
+		throw std::runtime_error( "unknown format context" );
+	return _formatContext->iformat->long_name;
+}
+
+size_t FileProperties::getProgramsCount() const
+{
+	if( ! _formatContext )
+		throw std::runtime_error( "unknown format context" );
+	return _formatContext->nb_programs;
+}
+
+double FileProperties::getStartTime() const
+{
+	if( ! _formatContext )
+		throw std::runtime_error( "unknown format context" );
+	return  1.0 * (unsigned int)_formatContext->start_time / AV_TIME_BASE;
+}
+
+double FileProperties::getDuration() const
+{
+	if( ! _formatContext )
+		throw std::runtime_error( "unknown format context" );
+	return 1.0 * _formatContext->duration / AV_TIME_BASE;
+}
+
+size_t FileProperties::getBitRate() const
+{
+	if( ! _formatContext )
+		throw std::runtime_error( "unknown format context" );
+	return _formatContext->bit_rate;
+}
+
+size_t FileProperties::getPacketSize() const
+{
+	if( ! _formatContext )
+		throw std::runtime_error( "unknown format context" );
+	return _formatContext->packet_size;
+}
+
+size_t FileProperties::getNbStreams() const
+{
+	if( ! _formatContext )
+		throw std::runtime_error( "unknown format context" );
+	return _formatContext->nb_streams;
+}
+
+PropertiesMap FileProperties::getPropertiesAsMap() const
+{
+	PropertiesMap dataMap;
 
 	detail::add( dataMap, "filename", getFilename() );
 	detail::add( dataMap, "formatName", getFormatName() );

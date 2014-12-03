@@ -104,7 +104,7 @@ public:
 	 * @brief Add metadata to the output file.
 	 * @note Depending on the format, you are not sure to find your metadata after the transcode.
 	 */
-	virtual void addMetadata( const MetadatasMap& dataMap );
+	virtual void addMetadata( const PropertiesMap& dataMap );
 	virtual void addMetadata( const std::string& key, const std::string& value );
 
 	virtual void setVerbose( bool verbose = false ){ _verbose = verbose; }

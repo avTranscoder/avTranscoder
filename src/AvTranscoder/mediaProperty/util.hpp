@@ -12,31 +12,31 @@ namespace avtranscoder
 {
 
 /**
- * @brief Can get all data of Properties structures by getDataMap(), which return a MetadatasMap.
+ * @brief PropertyMap is a vector of pair, because the order of properties matters to us.
  */
-typedef std::vector< std::pair<std::string, std::string> > MetadatasMap;
+typedef std::vector< std::pair<std::string, std::string> > PropertiesMap;
 
 namespace detail
 {
 
 template<typename T>
-void add( MetadatasMap& dataMap, const std::string& key, const T& value )
+void add( PropertiesMap& propertiesMap, const std::string& key, const T& value )
 {
 	std::stringstream ss;
 	ss << value;
-	add( dataMap, key, ss.str() );
+	add( propertiesMap, key, ss.str() );
 }
 
 template<>
-void add( MetadatasMap& dataMap, const std::string& key, const std::string& value );
+void add( PropertiesMap& propertiesMap, const std::string& key, const std::string& value );
 
 template<>
-void add( MetadatasMap& dataMap, const std::string& key, const bool& value );
+void add( PropertiesMap& propertiesMap, const std::string& key, const bool& value );
 
 /**
  * @brief Fill metadata parameter with the given AVDictionary.
  */
-void AvExport fillMetadataDictionnary( AVDictionary* avdictionnary, MetadatasMap& metadata );
+void AvExport fillMetadataDictionnary( AVDictionary* avdictionnary, PropertiesMap& metadata );
 
 }
 

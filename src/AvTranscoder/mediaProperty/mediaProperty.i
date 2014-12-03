@@ -34,8 +34,8 @@ namespace std {
 %template(AttachementVector)  vector< avtranscoder::AttachementProperties >;
 %template(UnknownVector)      vector< avtranscoder::UnknownProperties >;
 
-%template(MetadataPair)    pair< string, string >;
-%template(MetadatasVector) vector< pair< string, string > >;
+%template(PropertyPair)    pair< string, string >;
+%template(PropertyVector)  vector< pair< string, string > >;
 
 %template(GopPair)         pair< char, bool >;
 %template(GopVector)       vector< pair< char, bool > >;

@@ -7,9 +7,7 @@ extern "C" {
 }
 
 #include <stdexcept>
-#include <iostream>
 #include <iomanip>
-#include <sstream>
 
 #ifdef _MSC_VER
 #include <float.h>
@@ -331,7 +329,6 @@ int64_t VideoProperties::getStartTimecode() const
 {
 	if( ! _codecContext )
 		throw std::runtime_error( "unknown codec context" );
-
 	return _codecContext->timecode_frame_start;
 }
 
@@ -395,7 +392,6 @@ size_t VideoProperties::getCodecId() const
 {
 	if( ! _codecContext )
 		throw std::runtime_error( "unknown codec context" );
-
 	return _codecContext->codec_id;
 }
 
@@ -403,7 +399,6 @@ size_t VideoProperties::getBitRate() const
 {
 	if( ! _codecContext )
 		throw std::runtime_error( "unknown codec context" );
-
 	return _codecContext->bit_rate;
 }
 
@@ -411,7 +406,6 @@ size_t VideoProperties::getMaxBitRate() const
 {
 	if( ! _codecContext )
 		throw std::runtime_error( "unknown codec context" );
-
 	return _codecContext->rc_max_rate;
 }
 
@@ -419,7 +413,6 @@ size_t VideoProperties::getMinBitRate() const
 {
 	if( ! _codecContext )
 		throw std::runtime_error( "unknown codec context" );
-
 	return _codecContext->rc_min_rate;
 }
 
@@ -427,7 +420,6 @@ size_t VideoProperties::getTicksPerFrame() const
 {
 	if( ! _codecContext )
 		throw std::runtime_error( "unknown codec context" );
-
 	return _codecContext->ticks_per_frame;
 }
 
@@ -435,7 +427,6 @@ size_t VideoProperties::getWidth() const
 {
 	if( ! _codecContext )
 		throw std::runtime_error( "unknown codec context" );
-
 	return _codecContext->width;
 }
 
@@ -443,7 +434,6 @@ size_t VideoProperties::getHeight() const
 {
 	if( ! _codecContext )
 		throw std::runtime_error( "unknown codec context" );
-
 	return _codecContext->height;
 }
 
@@ -451,7 +441,6 @@ size_t VideoProperties::getGopSize() const
 {
 	if( ! _codecContext )
 		throw std::runtime_error( "unknown codec context" );
-
 	return _codecContext->gop_size;
 }
 
@@ -459,7 +448,6 @@ size_t VideoProperties::getDtgActiveFormat() const
 {
 	if( ! _codecContext )
 		throw std::runtime_error( "unknown codec context" );
-
 	return _codecContext->dtg_active_format;
 }
 
@@ -467,7 +455,6 @@ size_t VideoProperties::getReferencesFrames() const
 {
 	if( ! _codecContext )
 		throw std::runtime_error( "unknown codec context" );
-
 	return _codecContext->refs;
 }
 
@@ -475,7 +462,6 @@ int VideoProperties::getProfile() const
 {
 	if( ! _codecContext )
 		throw std::runtime_error( "unknown codec context" );
-
 	return _codecContext->profile;
 }
 
@@ -483,7 +469,6 @@ int VideoProperties::getLevel() const
 {
 	if( ! _codecContext )
 		throw std::runtime_error( "unknown codec context" );
-
 	return _codecContext->level;
 }
 
@@ -491,7 +476,6 @@ size_t VideoProperties::getComponentsCount() const
 {
 	if( ! _pixFmt )
 		throw std::runtime_error( "unknown pixel format" );
-
 	return _pixFmt->nb_components;
 }
 
@@ -499,7 +483,6 @@ size_t VideoProperties::getChromaWidth() const
 {
 	if( ! _pixFmt )
 		throw std::runtime_error( "unknown pixel format" );
-
 	return _pixFmt->log2_chroma_w;
 }
 
@@ -507,7 +490,6 @@ size_t VideoProperties::getChromaHeight() const
 {
 	if( ! _pixFmt )
 		throw std::runtime_error( "unknown pixel format" );
-
 	return _pixFmt->log2_chroma_h;
 }
 
@@ -524,7 +506,6 @@ bool VideoProperties::hasBFrames() const
 {
 	if( ! _codecContext )
 		throw std::runtime_error( "unknown codec context" );
-
 	return (bool) _codecContext->has_b_frames;
 }
 
@@ -532,7 +513,6 @@ bool VideoProperties::isIndexedColors() const
 {
 	if( ! _pixFmt )
 		throw std::runtime_error( "unknown pixel format" );
-
 	return (bool) _pixFmt->flags & PIX_FMT_PAL;
 }
 
@@ -540,7 +520,6 @@ bool VideoProperties::isBitWisePacked() const
 {
 	if( ! _pixFmt )
 		throw std::runtime_error( "unknown pixel format" );
-
 	return (bool) _pixFmt->flags & PIX_FMT_BITSTREAM;
 }
 
@@ -548,7 +527,6 @@ bool VideoProperties::isHardwareAccelerated() const
 {
 	if( ! _pixFmt )
 		throw std::runtime_error( "unknown pixel format" );
-
 	return (bool) _pixFmt->flags & PIX_FMT_HWACCEL;
 }
 
@@ -556,7 +534,6 @@ bool VideoProperties::isPlanar() const
 {
 	if( ! _pixFmt )
 		throw std::runtime_error( "unknown pixel format" );
-
 	return (bool) _pixFmt->flags & PIX_FMT_PLANAR;
 }
 
@@ -564,7 +541,6 @@ bool VideoProperties::isRgbPixelData() const
 {
 	if( ! _pixFmt )
 		throw std::runtime_error( "unknown pixel format" );
-
 	return (bool) _pixFmt->flags & PIX_FMT_RGB;
 }
 
@@ -672,9 +648,9 @@ std::vector<Channel> VideoProperties::getChannels() const
 	return channels;
 }
 
-MetadatasMap VideoProperties::getDataMap() const
+PropertiesMap VideoProperties::getPropertiesAsMap() const
 {
-	MetadatasMap dataMap;
+	PropertiesMap dataMap;
 
 	detail::add( dataMap, "streamId", getStreamId() );
 	detail::add( dataMap, "codecId", getCodecId() );
