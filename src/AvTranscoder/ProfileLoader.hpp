@@ -13,8 +13,8 @@ namespace avtranscoder
 
 namespace constants
 {
-	const std::string avProfileIdentificator = "avProfile";
-	const std::string avProfileIdentificatorHuman = "avProfileLong";
+	const std::string avProfileIdentificator = "avProfileName";
+	const std::string avProfileIdentificatorHuman = "avProfileLongName";
 	const std::string avProfileType = "avProfileType";
 	const std::string avProfileTypeFormat = "avProfileTypeFormat";
 	const std::string avProfileTypeVideo = "avProfileTypeVideo";
