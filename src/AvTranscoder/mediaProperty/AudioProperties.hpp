@@ -29,10 +29,10 @@ public:
 	std::string getChannelName() const;
 	std::string getChannelDescription() const;
 	size_t getStreamId() const { return _streamId; }
-	size_t getCodecId() const { return _codecContext->codec_id; }
-	size_t getSampleRate() const { return _codecContext->sample_rate; }
-	size_t getChannels() const { return _codecContext->channels; }
-	size_t getBitRate() const { return _codecContext->bit_rate; }
+	size_t getCodecId() const;
+	size_t getSampleRate() const;
+	size_t getChannels() const;
+	size_t getBitRate() const;
 	MetadatasMap& getMetadatas() { return _metadatas; }
 
 #ifndef SWIG

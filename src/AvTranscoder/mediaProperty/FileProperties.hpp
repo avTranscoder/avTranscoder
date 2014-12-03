@@ -25,19 +25,19 @@ class AvExport FileProperties
 public:
 	FileProperties( const AVFormatContext* formatContext );
 
-	std::string getFilename() const { return _formatContext->filename; }
-	std::string getFormatName() const { return _formatContext->iformat->name; }
-	std::string getFormatLongName() const { return _formatContext->iformat->long_name; }
+	std::string getFilename() const;
+	std::string getFormatName() const;
+	std::string getFormatLongName() const;
 
-	size_t getProgramsCount() const { return _formatContext->nb_programs; }
-	double getStartTime() const { return  1.0 * (unsigned int)_formatContext->start_time / AV_TIME_BASE; }
-	double getDuration() const { return 1.0 * _formatContext->duration / AV_TIME_BASE; }
-	size_t getBitRate() const { return _formatContext->bit_rate; }
-	size_t getPacketSize() const { return _formatContext->packet_size; }
+	size_t getProgramsCount() const;
+	double getStartTime() const;
+	double getDuration() const;
+	size_t getBitRate() const;
+	size_t getPacketSize() const;
 
 	MetadatasMap& getMetadatas() { return _metadatas; }
 
-	size_t getNbStreams() const { return _formatContext->nb_streams; }
+	size_t getNbStreams() const;
 	size_t getNbVideoStreams() const { return _videoStreams.size(); }
 	size_t getNbAudioStreams() const { return _audioStreams.size(); }
 	size_t getNbDataStreams() const { return _dataStreams.size(); }
