@@ -144,7 +144,7 @@ AvInputStream& InputFile::getStream( size_t index )
 	return *_inputStreams.at( index );
 }
 
-bool InputFile::readNextPacket( const size_t streamIndex )
+bool InputFile::readNextPacket( CodedData& data, const size_t streamIndex )
 {
 	AVPacket packet;
 	av_init_packet( &packet );
@@ -157,14 +157,20 @@ bool InputFile::readNextPacket( const size_t streamIndex )
 			return false;
 		}
 
-		// send packet to stream buffer
-		_inputStreams.at( packet.stream_index )->addPacket( packet );
-
-		// We only read one stream and skip others
+		// if the packet stream is the expected one
+		// copy and return the packet data
 		if( packet.stream_index == (int)streamIndex )
 		{
+			data.getBuffer().resize( packet.size );
+			if( packet.size != 0 )
+				memcpy( data.getPtr(), packet.data, packet.size );
 			av_free_packet( &packet );
 			return true;
+		}
+		// else add the packet data to the stream cache
+		else
+		{
+			_inputStreams.at( packet.stream_index )->addPacket( packet );
 		}
 
 		// do not delete these 2 lines

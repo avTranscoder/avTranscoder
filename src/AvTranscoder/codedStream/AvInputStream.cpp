@@ -72,43 +72,32 @@ bool AvInputStream::readNextPacket( CodedData& data )
 	if( ! _bufferized )
 		throw std::runtime_error( "Can't read packet on non-bufferized input stream." );
 
-	if( _streamCache.empty() )
-		_inputFile->readNextPacket( _streamIndex );
-
-	if( _streamCache.empty() )
-		return false;
-
-	_streamCache.front().getBuffer().swap( data.getBuffer() );
-
-	_streamCache.erase( _streamCache.begin() );
+	// if packet is already cached
+	if( ! _streamCache.empty() )
+	{
+		_streamCache.front().getBuffer().swap( data.getBuffer() );
+		_streamCache.erase( _streamCache.begin() );
+	}
+	// else read next packet
+	else
+	{
+		return _inputFile->readNextPacket( data, _streamIndex ) && _streamCache.empty();
+	}
 
 	return true;
 }
 
 void AvInputStream::addPacket( AVPacket& packet )
 {
-	//std::cout << "add packet for stream " << _streamIndex << std::endl;
-	CodedData data;
-	_streamCache.push_back( data );
-
+	// Do not cache data if the stream is declared as unused in process
 	if( ! _bufferized )
 		return;
 
-	// is it possible to remove this copy ?
-	// using : av_packet_unref ?
+	CodedData data;
+	_streamCache.push_back( data );
 	_streamCache.back().getBuffer().resize( packet.size );
 	if( packet.size != 0 )
 		memcpy( _streamCache.back().getPtr(), packet.data, packet.size );
-
-	// std::vector<unsigned char> tmpData( 0,0 );
-	// &tmpData[0] = packet.data;
-	// tmpData.size( packet.size );
-
-	// remove reference on packet because it's passed to CodedData
-	// packet.data = NULL;
-	// packet.size = 0;
-
-	// std::cout << this << " buffer size " << _streamCache.size() << std::endl;
 }
 
 VideoCodec& AvInputStream::getVideoCodec()
