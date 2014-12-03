@@ -291,4 +291,13 @@ void OutputFile::setProfile( const ProfileLoader::Profile& profile )
 	}
 }
 
+double OutputFile::getProgressDuration()
+{
+	AVStream* firstOutputStream = _formatContext->streams[0];
+	if( firstOutputStream == NULL )
+		throw std::runtime_error( "at least one stream must be set to get the progress duration" );
+	double duration = av_q2d( firstOutputStream->time_base ) * firstOutputStream->cur_dts;
+	return duration;
+}
+
 }

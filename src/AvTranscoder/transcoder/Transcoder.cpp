@@ -317,10 +317,7 @@ void Transcoder::process( IProgress& progress )
 		if( ! frameProcessed )
 			break;	
 
-		AVStream* firstOutputStream = _outputFile.getFormatContext().streams[0];
-		double duration = av_q2d( firstOutputStream->time_base ) * firstOutputStream->cur_dts;
-
-		if( progress.progress( duration, totalDuration ) == eJobStatusCancel )
+		if( progress.progress( _outputFile.getProgressDuration(), totalDuration ) == eJobStatusCancel )
 		{
 			break;
 		}
