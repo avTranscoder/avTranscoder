@@ -59,13 +59,13 @@ void AvInputAudio::setup()
 		msg +=  avCodec->long_name;
 		msg += " (";
 		msg += avCodec->name;
-		msg += ")";
+		msg += ") ";
 		avcodec_close( avCodecContext );
 
-		char err[250];
+		char err[AV_ERROR_MAX_STRING_SIZE];
+		av_strerror( ret, err, sizeof(err) );
+		msg += err;
 
-		av_strerror( ret, err, 250 );
-		std::cout << err << std::endl;
 		throw std::runtime_error( msg );
 	}
 
@@ -173,12 +173,10 @@ bool AvInputAudio::decodeNextFrame()
 		packet.size         = data.getSize();
 		
 		int ret = avcodec_decode_audio4( _codec->getAVCodecContext(), _frame, &got_frame, &packet );
-
 		if( ret < 0 )
 		{
-			char err[250];
-			av_strerror( ret, err, 250 );
-			
+			char err[AV_ERROR_MAX_STRING_SIZE];
+			av_strerror( ret, err, sizeof(err) );
 			throw std::runtime_error( "an error occured during audio decoding" + std::string( err ) );
 		}
 

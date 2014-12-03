@@ -119,9 +119,8 @@ bool AvInputVideo::decodeNextFrame()
 		int ret = avcodec_decode_video2( _codec->getAVCodecContext(), _frame, &got_frame, &packet );
 		if( ret < 0 )
 		{
-			char err[250];
-			av_strerror( ret, err, 250);
-			
+			char err[AV_ERROR_MAX_STRING_SIZE];
+			av_strerror( ret, err, sizeof(err) );
 			throw std::runtime_error( "an error occured during video decoding - " + std::string(err) );
 		}
 		av_free_packet( &packet );

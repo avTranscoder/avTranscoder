@@ -136,8 +136,8 @@ bool OutputFile::beginWrap( )
 	int ret = avformat_write_header( _formatContext, NULL );
 	if( ret != 0 )
 	{
-		char err[250];
-		av_strerror( ret, err, 250);
+		char err[AV_ERROR_MAX_STRING_SIZE];
+		av_strerror( ret, err, sizeof(err) );
 		std::string msg = "could not write header: ";
 		msg += err;
 		throw std::runtime_error( msg );
@@ -170,8 +170,8 @@ IOutputStream::EWrappingStatus OutputFile::wrap( const CodedData& data, const si
 
 	if( ret != 0 )
 	{
-		char err[250];
-		av_strerror( ret, err, 250);
+		char err[AV_ERROR_MAX_STRING_SIZE];
+		av_strerror( ret, err, sizeof(err) );
 		std::string msg = "error when writting packet in stream: ";
 		msg += err;
 		// throw std::runtime_error( msg );
@@ -229,8 +229,8 @@ void OutputFile::addMetadata( const std::string& key, const std::string& value )
 	int ret = av_dict_set( &_formatContext->metadata, key.c_str(), value.c_str(), 0 );
 	if( ret < 0 )
 	{
-		char err[250];
-		av_strerror( ret, err, 250 );
+		char err[AV_ERROR_MAX_STRING_SIZE];
+		av_strerror( ret, err, sizeof(err) );
 		std::cout << err << std::endl;
 	}
 }
