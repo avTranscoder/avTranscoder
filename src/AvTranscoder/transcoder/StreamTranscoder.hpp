@@ -57,22 +57,26 @@ public:
 	void switchToGeneratorEssence();
 	void switchToInputEssence();
 
-	void setVerbose( bool verbose = true ){ _verbose = verbose; }
-
-	void setInfinityStream( bool isInfinity ) { _infinityStream = isInfinity; }
-
-	void setOffset( bool offset = true ){ _offset = offset; }
-
 	/**
 	 * @brief Get the duration of the stream.
 	 * @note if it's a generated stream, return limit of double.
 	 */
 	double getDuration() const;
 
+	/**
+	 * @return a reference to the current essence processed in this stream.
+	 */
+	IInputEssence& getCurrentEssence() const { return *_currentEssence; }
+
+	void setVerbose( bool verbose = true ){ _verbose = verbose; }
+
+	void setInfinityStream( bool isInfinity ) { _infinityStream = isInfinity; }
+
+	void setOffset( bool offset = true ){ _offset = offset; }
+
 private:
 	bool processRewrap();
-	bool processTranscode();
-	bool processTranscode( const int subStreamIndex );
+	bool processTranscode( const int subStreamIndex = -1 );  ///< By default transcode all channels
 
 private:
 	IInputStream*   _inputStream;
@@ -88,28 +92,15 @@ private:
 
 	ITransform* _transform;
 
-	int  _subStreamIndex;
+	int  _subStreamIndex;  ///< Index of channel that is processed from the input stream (-1 if no demultiplexing).
 
-	/**
-	 * @brief How many frame processed for this StreamTranscoder.
-	 */
-	size_t _frameProcessed;
-	/**
-	 * @brief Offset, in frame, at the beginning of the StreamTranscoder.
-	 */
-	size_t _offset;
+	size_t _frameProcessed;  ///< How many frame processed for this StreamTranscoder.
+	size_t _offset;  ///< Offset, in frame, at the beginning of the StreamTranscoder.
 
-	bool _takeFromGenerator;
-
+	bool _takeFromGenerator;  ///< Is the data processed are taken from a generator.
 	bool _verbose;
-
-	bool _offsetPassed;
-
-	/**
-	 * @brief Automatic switch to a generator
-	 * @note not applicable when rewrap
-	 */
-	bool _infinityStream;
+	bool _offsetPassed;  ///< Is the offset at the beginning of the stream is finished.
+	bool _infinityStream;  ///< Automatically switch to a generator at the end of the stream (not applicable when rewrap);
 };
 
 }

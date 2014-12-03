@@ -40,11 +40,6 @@ bool VideoTransform::init( const Frame& srcFrame, const Frame& dstFrame )
 	const VideoFrame& src = static_cast<const VideoFrame&>( srcFrame );
 	const VideoFrame& dst = static_cast<const VideoFrame&>( dstFrame );
 
-	assert( src.desc().getWidth()  != 0 );
-	assert( src.desc().getHeight() != 0 );
-	assert( src.desc().getWidth()  == dst.desc().getWidth()  );
-	assert( src.desc().getHeight() == dst.desc().getHeight() );
-
 	_imageConvertContext = sws_getContext(
 		src.desc().getWidth(), src.desc().getHeight(), src.desc().getPixelDesc().findPixel(),
 		dst.desc().getWidth(), dst.desc().getHeight(), dst.desc().getPixelDesc().findPixel(),

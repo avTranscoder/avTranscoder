@@ -23,17 +23,17 @@ def testTranscodeWave24b48kmono():
 
 	# get dst file of transcode
 	dst_inputFile = av.InputFile( outputFileName )
-	dst_inputFile.analyse( progress, av.InputFile.eAnalyseLevelFast )
+	dst_inputFile.analyse( progress, av.eAnalyseLevelHeader )
 	dst_properties = dst_inputFile.getProperties()
-	dst_audioStream = dst_properties.audioStreams[0]
+	dst_audioStream = dst_properties.getAudioProperties()[0]
 
-	assert_equals( "pcm_s24le", dst_audioStream.codecName )
-	assert_equals( "PCM signed 24-bit little-endian", dst_audioStream.codecLongName )
-	assert_equals( "s32", dst_audioStream.sampleFormatName )
-	assert_equals( "signed 32 bits", dst_audioStream.sampleFormatLongName )
-	assert_equals( 48000, dst_audioStream.sampleRate )
-	# assert_equals( "1 channels", dst_audioStream.channelLayout )  # '1 channels' != '0 channels'
-	assert_equals( 1, dst_audioStream.channels )
+	assert_equals( "pcm_s24le", dst_audioStream.getCodecName() )
+	assert_equals( "PCM signed 24-bit little-endian", dst_audioStream.getCodecLongName() )
+	assert_equals( "s32", dst_audioStream.getSampleFormatName() )
+	assert_equals( "signed 32 bits", dst_audioStream.getSampleFormatLongName() )
+	assert_equals( 48000, dst_audioStream.getSampleRate() )
+	# assert_equals( "1 channels", dst_audioStream.getChannelLayout() )  # '1 channels' != '0 channels'
+	assert_equals( 1, dst_audioStream.getChannels() )
 
 def testTranscodeWave16b48kmono():
 	"""
@@ -53,17 +53,17 @@ def testTranscodeWave16b48kmono():
 
 	# get dst file of transcode
 	dst_inputFile = av.InputFile( outputFileName )
-	dst_inputFile.analyse( progress, av.InputFile.eAnalyseLevelFast )
+	dst_inputFile.analyse( progress, av.eAnalyseLevelHeader )
 	dst_properties = dst_inputFile.getProperties()
-	dst_audioStream = dst_properties.audioStreams[0]
+	dst_audioStream = dst_properties.getAudioProperties()[0]
 
-	assert_equals( "pcm_s16le", dst_audioStream.codecName )
-	assert_equals( "PCM signed 16-bit little-endian", dst_audioStream.codecLongName )
-	assert_equals( "s16", dst_audioStream.sampleFormatName )
-	assert_equals( "signed 16 bits", dst_audioStream.sampleFormatLongName )
-	assert_equals( 48000, dst_audioStream.sampleRate )
-	# assert_equals( "1 channels", dst_audioStream.channelLayout )  # '1 channels' != '0 channels'
-	assert_equals( 1, dst_audioStream.channels )
+	assert_equals( "pcm_s16le", dst_audioStream.getCodecName() )
+	assert_equals( "PCM signed 16-bit little-endian", dst_audioStream.getCodecLongName() )
+	assert_equals( "s16", dst_audioStream.getSampleFormatName() )
+	assert_equals( "signed 16 bits", dst_audioStream.getSampleFormatLongName() )
+	assert_equals( 48000, dst_audioStream.getSampleRate() )
+	# assert_equals( "1 channels", dst_audioStream.getChannelLayout() )  # '1 channels' != '0 channels'
+	assert_equals( 1, dst_audioStream.getChannels() )
 
 # def testTranscodeDnxhd120():
 # 	"""
@@ -83,9 +83,9 @@ def testTranscodeWave16b48kmono():
 
 # 	# get dst file of transcode
 # 	dst_inputFile = av.InputFile( outputFileName )
-# 	dst_inputFile.analyse( progress, av.InputFile.eAnalyseLevelFast )
+# 	dst_inputFile.analyse( progress, av.eAnalyseLevelFast )
 # 	dst_properties = dst_inputFile.getProperties()
-# 	dst_videoStream = dst_properties.videoStreams[0]
+# 	dst_videoStream = dst_properties.getVideoProperties()[0]
 
 # 	assert_equals( "dnxhd", dst_videoStream.codecName )
 # 	assert_equals( "VC3/DNxHD", dst_videoStream.codecLongName )
@@ -112,9 +112,9 @@ def testTranscodeWave16b48kmono():
 
 # 	# get dst file of transcode
 # 	dst_inputFile = av.InputFile( outputFileName )
-# 	dst_inputFile.analyse( progress, av.InputFile.eAnalyseLevelFast )
+# 	dst_inputFile.analyse( progress, av.eAnalyseLevelFast )
 # 	dst_properties = dst_inputFile.getProperties()
-# 	dst_videoStream = dst_properties.videoStreams[0]
+# 	dst_videoStream = dst_properties.getVideoProperties()[0]
 
 # 	assert_equals( "dnxhd", dst_videoStream.codecName )
 # 	assert_equals( "VC3/DNxHD", dst_videoStream.codecLongName )
@@ -141,9 +141,9 @@ def testTranscodeWave16b48kmono():
 
 # 	# get dst file of transcode
 # 	dst_inputFile = av.InputFile( outputFileName )
-# 	dst_inputFile.analyse( progress, av.InputFile.eAnalyseLevelFast )
+# 	dst_inputFile.analyse( progress, av.eAnalyseLevelFast )
 # 	dst_properties = dst_inputFile.getProperties()
-# 	dst_videoStream = dst_properties.videoStreams[0]
+# 	dst_videoStream = dst_properties.getVideoProperties()[0]
 
 # 	assert_equals( "dnxhd", dst_videoStream.codecName )
 # 	assert_equals( "VC3/DNxHD", dst_videoStream.codecLongName )
@@ -170,9 +170,9 @@ def testTranscodeWave16b48kmono():
 
 # 	# get dst file of transcode
 # 	dst_inputFile = av.InputFile( outputFileName )
-# 	dst_inputFile.analyse( progress, av.InputFile.eAnalyseLevelFast )
+# 	dst_inputFile.analyse( progress, av.eAnalyseLevelFast )
 # 	dst_properties = dst_inputFile.getProperties()
-# 	dst_videoStream = dst_properties.videoStreams[0]
+# 	dst_videoStream = dst_properties.getVideoProperties()[0]
 
 # 	assert_equals( "mpeg2video", dst_videoStream.codecName )
 # 	assert_equals( "MPEG-2 video", dst_videoStream.codecLongName )
@@ -219,9 +219,10 @@ def testTranscodeWave16b48kmono():
 
 # 	# get dst file of transcode
 # 	dst_inputFile = av.InputFile( outputFileName )
-# 	dst_inputFile.analyse( progress, av.InputFile.eAnalyseLevelFast )
+# 	dst_inputFile.analyse( progress, av.eAnalyseLevelFast )
 # 	dst_properties = dst_inputFile.getProperties()
-# 	dst_videoStream = dst_properties.videoStreams[0]
+# 	dst_videoStream = dst_properties.getVideoProperties()[0]
 
 # 	assert_equals( "mpeg2video", dst_videoStream.codecName )
 # 	assert_equals( "yuv420p", dst_videoStream.pixelName )
+

@@ -20,8 +20,9 @@ namespace avtranscoder
 AvInputVideo::AvInputVideo( AvInputStream& inputStream )
 	: IInputEssence()
 	, _inputStream   ( &inputStream )
-	, _codec( eCodecTypeDecoder, inputStream.getVideoCodec().getCodecId() )
+	, _codec( &inputStream.getVideoCodec() )
 	, _frame         ( NULL )
+	, _selectedStream( inputStream.getStreamIndex() )
 {
 }
 
@@ -44,8 +45,8 @@ AvInputVideo::~AvInputVideo()
 
 void AvInputVideo::setup()
 {
-	AVCodecContext* avCodecContext = _codec.getAVCodecContext();
-	AVCodec* avCodec = _codec.getAVCodec();
+	AVCodecContext* avCodecContext = _codec->getAVCodecContext();
+	AVCodec* avCodec = _codec->getAVCodec();
 
 	// if( avCodec->capabilities & CODEC_CAP_TRUNCATED )
 	// 	avCodecContext->flags |= CODEC_FLAG_TRUNCATED;
@@ -76,40 +77,15 @@ void AvInputVideo::setup()
 
 bool AvInputVideo::readNextFrame( Frame& frameBuffer )
 {
-	int got_frame = 0;
-
-	while( ! got_frame )
-	{
-		CodedData data;
-
-		AVPacket packet;
-		av_init_packet( &packet );
-
-		bool nextPacketRead = _inputStream->readNextPacket( data );
-
-		packet.stream_index = _inputStream->getStreamIndex();
-		packet.data = nextPacketRead ? data.getPtr(): NULL;
-		packet.size = data.getSize();
-
-		int ret = avcodec_decode_video2( _codec.getAVCodecContext(), _frame, &got_frame, &packet );
-		
-		av_free_packet( &packet );
-
-		if( ! nextPacketRead && ret == 0 && got_frame == 0 )
-			return false;
-
-		if( ret < 0 )
-		{
-			char err[250];
-			av_strerror( ret, err, 250);
-			
-			throw std::runtime_error( "an error occured during video decoding - " + std::string(err) );
-		}
-	}
+	if( ! decodeNextFrame() )
+		return false;
 
 	VideoFrame& imageBuffer = static_cast<VideoFrame&>( frameBuffer );
 
 	size_t decodedSize = avpicture_get_size( (AVPixelFormat)_frame->format, _frame->width, _frame->height );
+	if( ! decodedSize )
+		return false;
+
 	if( imageBuffer.getBuffer().size() != decodedSize )
 		imageBuffer.getBuffer().resize( decodedSize );
 
@@ -124,14 +100,43 @@ bool AvInputVideo::readNextFrame( Frame& frameBuffer, const size_t subStreamInde
 	return false;
 }
 
+bool AvInputVideo::decodeNextFrame()
+{
+	int got_frame = 0;
+	while( ! got_frame )
+	{
+		CodedData data;
+		if( ! _inputStream->readNextPacket( data ) ) // error or end of file
+			return false;
+
+		AVPacket packet;
+		av_init_packet( &packet );
+
+		packet.stream_index = _selectedStream; //_inputStream->getStreamIndex();
+		packet.data = data.getPtr(); //nextPacketRead ? data.getPtr(): NULL;
+		packet.size = data.getSize();
+
+		int ret = avcodec_decode_video2( _codec->getAVCodecContext(), _frame, &got_frame, &packet );
+		if( ret < 0 )
+		{
+			char err[250];
+			av_strerror( ret, err, 250);
+			
+			throw std::runtime_error( "an error occured during video decoding - " + std::string(err) );
+		}
+		av_free_packet( &packet );
+	}
+	return true;
+}
+
 void AvInputVideo::flushDecoder()
 {
-	avcodec_flush_buffers( _codec.getAVCodecContext() );
+	avcodec_flush_buffers( _codec->getAVCodecContext() );
 }
 
 void AvInputVideo::setProfile( const ProfileLoader::Profile& profile )
 {
-	Context codecContext( _codec.getAVCodecContext() );
+	Context codecContext( _codec->getAVCodecContext() );
 
 	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
 	{

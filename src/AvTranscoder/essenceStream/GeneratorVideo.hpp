@@ -12,10 +12,8 @@ class AvExport GeneratorVideo : public IInputEssence
 public:
 	GeneratorVideo( );
 
-	// Stream properties
-	void setVideoCodec( const VideoCodec& codec );
-
-	const VideoCodec& getVideoCodec();
+	VideoFrameDesc& getVideoFrameDesc() { return _frameDesc; }
+	void setVideoFrameDesc( const VideoFrameDesc& frameDesc );
 	
 	void setup() {}
 
@@ -25,11 +23,8 @@ public:
 	bool readNextFrame( Frame& frameBuffer, const size_t subStreamIndex );
 
 private:
-	const VideoCodec* _codec;
-	Frame* _inputFrame;
-	VideoFrameDesc _videoFrameDesc;
-
-	size_t         _numberOfView;
+	Frame* _inputFrame;  ///< Has link (no ownership)
+	VideoFrameDesc _frameDesc;
 };
 
 }
