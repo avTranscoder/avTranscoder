@@ -19,7 +19,9 @@ public:
 	size_t getStreamId() const { return _streamId; }
 	MetadatasMap& getMetadatas() { return _metadatas; }
 
+#ifndef SWIG
 	const AVFormatContext& getAVFormatContext() { return *_formatContext; }
+#endif
 
 	MetadatasMap getDataMap() const;
 

@@ -58,7 +58,9 @@ public:
 	std::vector< avtranscoder::UnknownProperties >& getUnknownPropertiesProperties() { return  _unknownStreams; }
 	const std::vector< avtranscoder::UnknownProperties >& getUnknownPropertiesProperties() const  { return  _unknownStreams; }
 
+#ifndef SWIG
 	const AVFormatContext& getAVFormatContext() { return *_formatContext; }
+#endif
 
 	MetadatasMap getDataMap() const;
 

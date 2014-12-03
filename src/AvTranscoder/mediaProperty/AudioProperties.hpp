@@ -35,8 +35,10 @@ public:
 	size_t getBitRate() const { return _codecContext->bit_rate; }
 	MetadatasMap& getMetadatas() { return _metadatas; }
 
+#ifndef SWIG
 	const AVFormatContext& getAVFormatContext() { return *_formatContext; }
 	AVCodecContext& getAVCodecContext() { return *_codecContext; }
+#endif
 
 	MetadatasMap getDataMap() const;
 

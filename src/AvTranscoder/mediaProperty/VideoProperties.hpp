@@ -93,9 +93,11 @@ public:
 
 	MetadatasMap& getMetadatas() { return _metadatas; }
 
+#ifndef SWIG
 	const AVFormatContext& getAVFormatContext() { return *_formatContext; }
 	AVCodecContext& getAVCodecContext() { return *_codecContext; }
 	const AVPixFmtDescriptor& getAVPixFmtDescriptor() { return *_pixFmt; }
+#endif
 
 	MetadatasMap getDataMap() const;  ///< Warning: the method calls analyseGopStructure, which can modify state of the object
 
