@@ -86,16 +86,17 @@ public:
 	AVFormatContext& getFormatContext() const { return *_formatContext; }
 
 	/**
-	 * @brief Read the next packet for the specified stream
-	 * @note For performances, each readed stream needs to be bufferized using the readStream() method.
-	 * @return if next packet was succefully readed
+	 * @brief Read the next packet of the specified stream
+	 * @param data: data of next packet read
+	 * @note For performances, each read stream needs to be bufferized using the readStream() method.
+	 * @return if next packet was succefully read
 	 **/
-	bool readNextPacket( const size_t streamIndex );
+	bool readNextPacket( CodedData& data, const size_t streamIndex );
 
 	/**
 	 * @brief Seek input stream at specified frame
 	 * @note clean also buffers in each InputStream
-	 * @return if next packet was succefully readed
+	 * @return if next packet was succefully read
 	 **/
 	void seekAtFrame( const size_t frame );
 
