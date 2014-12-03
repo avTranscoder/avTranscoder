@@ -99,7 +99,7 @@ public:
 	const AVPixFmtDescriptor& getAVPixFmtDescriptor() { return *_pixFmt; }
 #endif
 
-	MetadatasMap getDataMap() const;  ///< Warning: the method calls analyseGopStructure, which can modify state of the object
+	MetadatasMap getDataMap() const;
 
 private:
 	/**
