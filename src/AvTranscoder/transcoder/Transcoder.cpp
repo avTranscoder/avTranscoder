@@ -22,7 +22,11 @@ Transcoder::Transcoder( OutputFile& outputFile )
 	, _mainStreamIndex( 0 )
 	, _verbose( false )
 {
+	// Initialize the OutputFile
 	_outputFile.setup();
+
+	// Print no output from ffmpeg
+	av_log_set_level( AV_LOG_QUIET );
 }
 
 Transcoder::~Transcoder()
@@ -285,9 +289,6 @@ void Transcoder::process( IProgress& progress )
 	
 	_outputFile.beginWrap();
 
-	if( _verbose )
-		av_log_set_level( AV_LOG_DEBUG );
-
 	double totalDuration = getTotalDurationFromProcessMethod();
 
 	size_t frame = 0;
@@ -325,6 +326,10 @@ void Transcoder::setVerbose( bool verbose )
 		(*it)->setVerbose( _verbose );
 	}
 	_outputFile.setVerbose( _verbose );
+
+	// Print stuff which is only useful for ffmpeg developers.
+	if( _verbose )
+		av_log_set_level( AV_LOG_DEBUG );
 }
 
 void Transcoder::addRewrapStream( const std::string& filename, const size_t streamIndex )

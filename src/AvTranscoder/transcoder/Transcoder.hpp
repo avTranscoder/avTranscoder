@@ -43,6 +43,9 @@ enum EProcessMethod
 class AvExport Transcoder
 {
 public:
+	/**
+	 * @note Set FFmpeg log level to quite.
+	 */
 	Transcoder( OutputFile& outputFile );
 	
 	~Transcoder();
@@ -131,8 +134,9 @@ public:
 	void setProcessMethod( const EProcessMethod eProcessMethod, const size_t indexBasedStream = 0 );
 
 	/**
-	 * @brief Set verbose mode for the Transcoder and its streams.
+	 * @brief Set verbose mode for the Transcoder, its streams, and its output file.
 	 * @note If you call it before adding the streams, no verbose mode will be set for the new streams.
+	 * @note set av log level to AV_LOG_DEBUG
 	 */
 	void setVerbose( bool verbose = true );
 
