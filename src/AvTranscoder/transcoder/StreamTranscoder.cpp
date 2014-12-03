@@ -259,7 +259,7 @@ StreamTranscoder::~StreamTranscoder()
 
 void StreamTranscoder::init()
 {
-	// rewrap
+	// rewrap case: no need to take care of the latency of codec
 	if( ! _inputEssence )
 		return;
 

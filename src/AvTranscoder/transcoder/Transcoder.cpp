@@ -22,7 +22,11 @@ Transcoder::Transcoder( OutputFile& outputFile )
 	, _mainStreamIndex( 0 )
 	, _verbose( false )
 {
+	// Initialize the OutputFile
 	_outputFile.setup();
+
+	// Print no output from ffmpeg
+	av_log_set_level( AV_LOG_QUIET );
 }
 
 Transcoder::~Transcoder()
@@ -252,19 +256,17 @@ void Transcoder::init()
 bool Transcoder::processFrame()
 {
 	if( _streamTranscoders.size() == 0 )
-	{
 		return false;
-	}
 
 	if( _verbose )
 		std::cout << "process frame" << std::endl;
+
 	for( size_t streamIndex = 0; streamIndex < _streamTranscoders.size(); ++streamIndex )
 	{
 		if( _verbose )
 			std::cout << "process stream " << streamIndex << "/" << _streamTranscoders.size() - 1 << std::endl;
 
 		bool streamProcessStatus = _streamTranscoders.at( streamIndex )->processFrame();
-
 		if( ! streamProcessStatus )
 		{
 			_streamTranscoders.clear();
@@ -276,51 +278,30 @@ bool Transcoder::processFrame()
 
 void Transcoder::process( IProgress& progress )
 {
-	size_t frame = 0;
-
-	if( ! _streamTranscoders.size() )
-	{
+	if( _streamTranscoders.size() == 0 )
 		throw std::runtime_error( "missing input streams in transcoder" );
-	}
-	
+
+	manageInfinityStreamFromProcessMethod();
+
 	if( _verbose )
 		std::cout << "begin transcoding" << std::endl;
+	init();
 	
 	_outputFile.beginWrap();
 
-	double totalDuration = std::numeric_limits<double>::max();
-	switch( _eProcessMethod )
-	{
-		case eProcessMethodShortest :
-			totalDuration = getMinTotalDuration();
-			break;
-		case eProcessMethodLongest :
-			totalDuration = getMaxTotalDuration();
-			break;
-		case eProcessMethodBasedOnStream :
-			totalDuration = getStreamDuration( _mainStreamIndex );
-			break;
-		case eProcessMethodInfinity :
-			totalDuration = std::numeric_limits<double>::max();
-			break;
-	}
+	double totalDuration = getTotalDurationFromProcessMethod();
 
-	if( _verbose )
-		av_log_set_level( AV_LOG_DEBUG );
-
-	while( 1 )
+	size_t frame = 0;
+	bool frameProcessed = true;
+	while( frameProcessed )
 	{
 		if( _verbose )
 			std::cout << "process frame " << frame << std::endl;
 
-		bool frameProcessed =  processFrame();
-		if( ! frameProcessed )
-			break;	
+		frameProcessed =  processFrame();
 
 		if( progress.progress( _outputFile.getProgressDuration(), totalDuration ) == eJobStatusCancel )
-		{
 			break;
-		}
 
 		++frame;
 	}
@@ -335,34 +316,6 @@ void Transcoder::setProcessMethod( const EProcessMethod eProcessMethod, const si
 {
 	_eProcessMethod	= eProcessMethod;
 	_mainStreamIndex = indexBasedStream;
-
-	for( size_t i = 0; i < _streamTranscoders.size(); ++i )
-	{
-		switch( _eProcessMethod )
-		{
-			case eProcessMethodShortest :
-				if( _streamTranscoders.at( i )->getDuration() == getMinTotalDuration() )
-					_streamTranscoders.at( i )->setInfinityStream( false );
-				else
-					_streamTranscoders.at( i )->setInfinityStream( true );
-				break;
-			case eProcessMethodLongest :
-				if( _streamTranscoders.at( i )->getDuration() == getMaxTotalDuration() )
-					_streamTranscoders.at( i )->setInfinityStream( false );
-				else
-					_streamTranscoders.at( i )->setInfinityStream( true );
-				break;
-			case eProcessMethodBasedOnStream :
-				if( i != _mainStreamIndex )
-					_streamTranscoders.at( i )->setInfinityStream( true );
-				else
-					_streamTranscoders.at( i )->setInfinityStream( false );
-				break;
-			case eProcessMethodInfinity :
-				_streamTranscoders.at( i )->setInfinityStream( true );
-				break;
-		}
-	}
 }
 
 void Transcoder::setVerbose( bool verbose )
@@ -373,6 +326,10 @@ void Transcoder::setVerbose( bool verbose )
 		(*it)->setVerbose( _verbose );
 	}
 	_outputFile.setVerbose( _verbose );
+
+	// Print stuff which is only useful for ffmpeg developers.
+	if( _verbose )
+		av_log_set_level( AV_LOG_DEBUG );
 }
 
 void Transcoder::addRewrapStream( const std::string& filename, const size_t streamIndex )
@@ -526,6 +483,54 @@ double Transcoder::getMaxTotalDuration() const
 		maxTotalDuration = std::max( getStreamDuration( i ), maxTotalDuration );
 	}
 	return maxTotalDuration;
+}
+
+double Transcoder::getTotalDurationFromProcessMethod() const
+{
+	switch( _eProcessMethod )
+	{
+		case eProcessMethodShortest :
+			return getMinTotalDuration();
+		case eProcessMethodLongest :
+			return getMaxTotalDuration();
+		case eProcessMethodBasedOnStream :
+			return getStreamDuration( _mainStreamIndex );
+		case eProcessMethodInfinity :
+			return std::numeric_limits<double>::max();
+		default:
+			return getMaxTotalDuration();
+	}	
+}
+
+void Transcoder::manageInfinityStreamFromProcessMethod()
+{
+	for( size_t i = 0; i < _streamTranscoders.size(); ++i )
+	{
+		switch( _eProcessMethod )
+		{
+			case eProcessMethodShortest :
+				if( _streamTranscoders.at( i )->getDuration() == getMinTotalDuration() )
+					_streamTranscoders.at( i )->setInfinityStream( false );
+				else
+					_streamTranscoders.at( i )->setInfinityStream( true );
+				break;
+			case eProcessMethodLongest :
+				if( _streamTranscoders.at( i )->getDuration() == getMaxTotalDuration() )
+					_streamTranscoders.at( i )->setInfinityStream( false );
+				else
+					_streamTranscoders.at( i )->setInfinityStream( true );
+				break;
+			case eProcessMethodBasedOnStream :
+				if( i != _mainStreamIndex )
+					_streamTranscoders.at( i )->setInfinityStream( true );
+				else
+					_streamTranscoders.at( i )->setInfinityStream( false );
+				break;
+			case eProcessMethodInfinity :
+				_streamTranscoders.at( i )->setInfinityStream( true );
+				break;
+		}
+	}
 }
 
 }

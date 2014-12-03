@@ -17,7 +17,6 @@ def testTranscodeWave24b48kmono():
 
 	transcoder.add( inputFileName, 0, "wave24b48kmono" )
 
-	transcoder.init()
 	progress = av.ConsoleProgress()
 	transcoder.process( progress )
 
@@ -47,7 +46,6 @@ def testTranscodeWave16b48kmono():
 
 	transcoder.add( inputFileName, 0, "wave16b48kmono" )
 
-	transcoder.init()
 	progress = av.ConsoleProgress()
 	transcoder.process( progress )
 
@@ -77,7 +75,6 @@ def testTranscodeWave16b48kmono():
 
 # 	transcoder.add( inputFileName, 0, "dnxhd120" )
 
-# 	transcoder.init()
 # 	progress = av.ConsoleProgress()
 # 	transcoder.process( progress )
 
@@ -106,7 +103,6 @@ def testTranscodeWave16b48kmono():
 
 # 	transcoder.add( inputFileName, 0, "dnxhd185" )
 
-# 	transcoder.init()
 # 	progress = av.ConsoleProgress()
 # 	transcoder.process( progress )
 
@@ -135,7 +131,6 @@ def testTranscodeWave16b48kmono():
 
 # 	transcoder.add( inputFileName, 0, "dnxhd185x" )
 
-# 	transcoder.init()
 # 	progress = av.ConsoleProgress()
 # 	transcoder.process( progress )
 
@@ -164,7 +159,6 @@ def testTranscodeWave16b48kmono():
 
 # 	transcoder.add( inputFileName, 0, "xdcamhd422" )
 
-# 	transcoder.init()
 # 	progress = av.ConsoleProgress()
 # 	transcoder.process( progress )
 
@@ -213,7 +207,6 @@ def testTranscodeWave16b48kmono():
 
 # 	transcoder.add( inputFileName, 0, customProfile )
 
-# 	transcoder.init()
 # 	progress = av.ConsoleProgress()
 # 	transcoder.process( progress )
 

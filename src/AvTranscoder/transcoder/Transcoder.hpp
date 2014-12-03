@@ -43,7 +43,9 @@ enum EProcessMethod
 class AvExport Transcoder
 {
 public:
-
+	/**
+	 * @note Set FFmpeg log level to quite.
+	 */
 	Transcoder( OutputFile& outputFile );
 	
 	~Transcoder();
@@ -112,7 +114,9 @@ public:
 
 	/**
 	 * @brief Process all the streams, and ended the process depending on the transcode politic.
-	 * @param progress
+	 * @note The function manages all process: init(), beginWrap(), processFrame()s, and endWrap().
+	 * @param progress: choose a progress, or create your own in C++ or in bindings by inherit IProgress class.
+	 * @see IProgress
 	 */
 	void process( IProgress& progress );
 
@@ -124,20 +128,19 @@ public:
 
 	/**
 	 * @brief Set the transcodage politic.
-	 * @note Call it after adding the streams.
 	 * @note By default eProcessMethodLongest.
 	 * @param indexBasedStream: in case of process method eProcessMethodBasedOnStream, stop transcode at the end of the indicated stream.
 	 */
 	void setProcessMethod( const EProcessMethod eProcessMethod, const size_t indexBasedStream = 0 );
 
 	/**
-	 * @brief Set verbose mode for the Transcoder and its streams.
+	 * @brief Set verbose mode for the Transcoder, its streams, and its output file.
 	 * @note If you call it before adding the streams, no verbose mode will be set for the new streams.
+	 * @note set av log level to AV_LOG_DEBUG
 	 */
 	void setVerbose( bool verbose = true );
 
 private:
-
 	void addRewrapStream( const std::string& filename, const size_t streamIndex );
 
 	void addTranscodeStream( const std::string& filename, const size_t streamIndex, const size_t subStreamIndex, const size_t offset );  ///< Get profile from input
@@ -163,6 +166,17 @@ private:
 	 * @note if there is only generated streams, return limit of double.
 	 */
 	double getMaxTotalDuration() const;
+
+	/**
+	 * @brief Get the duration of the output program
+	 * @note Depends on the streams, the process method, and the main stream index.
+         */
+	double getTotalDurationFromProcessMethod() const;
+
+	/**
+	 * @brief Set for each StreamTranscoder if it is an infinity stream (switch to generator at the end of the stream).
+         */
+	void manageInfinityStreamFromProcessMethod();
 
 private:
 	OutputFile&                      _outputFile;  ///< The output media file after process.

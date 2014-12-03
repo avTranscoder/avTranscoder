@@ -25,6 +25,5 @@ def testAddStreamTranscoder():
 
 	# process
 	progress = av.NoDisplayProgress()
-	transcoder.init()
 	transcoder.process( progress )
 
