@@ -114,14 +114,11 @@ int main( int argc, char** argv )
 		// set verbose of all stream
 		transcoder.setVerbose( verbose );
 		transcoder.setProcessMethod( avtranscoder::eProcessMethodLongest );
-		transcoder.init();
 		
 		if( verbose )
 			std::cout << "start Transcode" << std::endl;
 
 		avtranscoder::ConsoleProgress progress;
-
-		// video re-wrapping or transcoding if necessary
 		transcoder.process( progress );
 
 		std::cout << std::endl;
