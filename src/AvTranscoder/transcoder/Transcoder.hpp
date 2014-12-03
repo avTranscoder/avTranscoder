@@ -43,7 +43,6 @@ enum EProcessMethod
 class AvExport Transcoder
 {
 public:
-
 	Transcoder( OutputFile& outputFile );
 	
 	~Transcoder();
@@ -139,7 +138,6 @@ public:
 	void setVerbose( bool verbose = true );
 
 private:
-
 	void addRewrapStream( const std::string& filename, const size_t streamIndex );
 
 	void addTranscodeStream( const std::string& filename, const size_t streamIndex, const size_t subStreamIndex, const size_t offset );  ///< Get profile from input

@@ -252,19 +252,17 @@ void Transcoder::init()
 bool Transcoder::processFrame()
 {
 	if( _streamTranscoders.size() == 0 )
-	{
 		return false;
-	}
 
 	if( _verbose )
 		std::cout << "process frame" << std::endl;
+
 	for( size_t streamIndex = 0; streamIndex < _streamTranscoders.size(); ++streamIndex )
 	{
 		if( _verbose )
 			std::cout << "process stream " << streamIndex << "/" << _streamTranscoders.size() - 1 << std::endl;
 
 		bool streamProcessStatus = _streamTranscoders.at( streamIndex )->processFrame();
-
 		if( ! streamProcessStatus )
 		{
 			_streamTranscoders.clear();
@@ -276,12 +274,8 @@ bool Transcoder::processFrame()
 
 void Transcoder::process( IProgress& progress )
 {
-	size_t frame = 0;
-
-	if( ! _streamTranscoders.size() )
-	{
+	if( _streamTranscoders.size() == 0 )
 		throw std::runtime_error( "missing input streams in transcoder" );
-	}
 
 	if( _verbose )
 		std::cout << "begin transcoding" << std::endl;
@@ -289,24 +283,22 @@ void Transcoder::process( IProgress& progress )
 	
 	_outputFile.beginWrap();
 
-	double totalDuration = getTotalDurationFromProcessMethod();
-
 	if( _verbose )
 		av_log_set_level( AV_LOG_DEBUG );
 
-	while( 1 )
+	double totalDuration = getTotalDurationFromProcessMethod();
+
+	size_t frame = 0;
+	bool frameProcessed = true;
+	while( frameProcessed )
 	{
 		if( _verbose )
 			std::cout << "process frame " << frame << std::endl;
 
-		bool frameProcessed =  processFrame();
-		if( ! frameProcessed )
-			break;	
+		frameProcessed =  processFrame();
 
 		if( progress.progress( _outputFile.getProgressDuration(), totalDuration ) == eJobStatusCancel )
-		{
 			break;
-		}
 
 		++frame;
 	}
@@ -526,6 +518,8 @@ double Transcoder::getTotalDurationFromProcessMethod() const
 			return getStreamDuration( _mainStreamIndex );
 		case eProcessMethodInfinity :
 			return std::numeric_limits<double>::max();
+		default:
+			return getMaxTotalDuration();
 	}	
 }
 
