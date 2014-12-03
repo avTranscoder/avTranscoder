@@ -289,22 +289,7 @@ void Transcoder::process( IProgress& progress )
 	
 	_outputFile.beginWrap();
 
-	double totalDuration = std::numeric_limits<double>::max();
-	switch( _eProcessMethod )
-	{
-		case eProcessMethodShortest :
-			totalDuration = getMinTotalDuration();
-			break;
-		case eProcessMethodLongest :
-			totalDuration = getMaxTotalDuration();
-			break;
-		case eProcessMethodBasedOnStream :
-			totalDuration = getStreamDuration( _mainStreamIndex );
-			break;
-		case eProcessMethodInfinity :
-			totalDuration = std::numeric_limits<double>::max();
-			break;
-	}
+	double totalDuration = getTotalDurationFromProcessMethod();
 
 	if( _verbose )
 		av_log_set_level( AV_LOG_DEBUG );
@@ -527,6 +512,21 @@ double Transcoder::getMaxTotalDuration() const
 		maxTotalDuration = std::max( getStreamDuration( i ), maxTotalDuration );
 	}
 	return maxTotalDuration;
+}
+
+double Transcoder::getTotalDurationFromProcessMethod() const
+{
+	switch( _eProcessMethod )
+	{
+		case eProcessMethodShortest :
+			return getMinTotalDuration();
+		case eProcessMethodLongest :
+			return getMaxTotalDuration();
+		case eProcessMethodBasedOnStream :
+			return getStreamDuration( _mainStreamIndex );
+		case eProcessMethodInfinity :
+			return std::numeric_limits<double>::max();
+	}	
 }
 
 }

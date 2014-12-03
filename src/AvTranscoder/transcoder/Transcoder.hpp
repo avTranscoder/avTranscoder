@@ -166,6 +166,12 @@ private:
 	 */
 	double getMaxTotalDuration() const;
 
+	/**
+	 * @brief Get the duration of the output program
+	 * @note Depends on the streams, the process method, and the main stream index.
+         */
+	double getTotalDurationFromProcessMethod() const;
+
 private:
 	OutputFile&                      _outputFile;  ///< The output media file after process.
 	std::vector< InputFile* >        _inputFiles;  ///< The list of input files which contain added streams.
