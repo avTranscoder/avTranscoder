@@ -109,7 +109,7 @@ public:
 
 	virtual void setVerbose( bool verbose = false ){ _verbose = verbose; }
 	
-	double getProgressDuration();
+	virtual double getProgressDuration();
 
 private:
 	std::vector<AvOutputStream*> _outputStreams;
