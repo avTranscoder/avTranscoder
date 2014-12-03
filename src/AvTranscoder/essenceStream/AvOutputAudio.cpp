@@ -34,8 +34,8 @@ void AvOutputAudio::setup()
 	int ret = avcodec_open2( codecContext, _codec.getAVCodec(), NULL );
 	if( ret < 0 )
 	{
-		char err[250];
-		av_strerror( ret, err, 250);
+		char err[AV_ERROR_MAX_STRING_SIZE];
+		av_strerror( ret, err, sizeof(err) );
 		std::string msg = "could not open audio encoder: ";
 		msg += err;
 		throw std::runtime_error( msg );
@@ -69,18 +69,16 @@ bool AvOutputAudio::encodeFrame( const Frame& sourceFrame, Frame& codedFrame )
 	int buffer_size = av_samples_get_buffer_size( NULL, codecContext->channels, frame->nb_samples, codecContext->sample_fmt, 0 );
 	if( buffer_size < 0 )
 	{
-		char err[250];
-		av_strerror( buffer_size, err, 250 );
-		
+		char err[AV_ERROR_MAX_STRING_SIZE];
+		av_strerror( buffer_size, err, sizeof(err) );
 		throw std::runtime_error( "EncodeFrame error: buffer size < 0 - " + std::string(err) );
 	}
 
 	int retvalue = avcodec_fill_audio_frame( frame, codecContext->channels, codecContext->sample_fmt, sourceAudioFrame.getPtr(), buffer_size, 0 );
 	if( retvalue < 0 )
 	{
-		char err[250];
-		av_strerror( retvalue, err, 250);	
-		
+		char err[AV_ERROR_MAX_STRING_SIZE];
+		av_strerror( retvalue, err, sizeof(err) );
 		throw std::runtime_error( "EncodeFrame error: avcodec fill audio frame - " + std::string( err ) );
 	}
 	

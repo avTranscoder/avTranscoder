@@ -35,8 +35,8 @@ void AvOutputVideo::setup( )
 	int ret = avcodec_open2( codecContext, _codec.getAVCodec(), NULL );
 	if( ret < 0 )
 	{
-		char err[250];
-		av_strerror( ret, err, 250);
+		char err[AV_ERROR_MAX_STRING_SIZE];
+		av_strerror( ret, err, sizeof(err) );
 		std::string msg = "could not open video encoder: ";
 		msg += err;
 		throw std::runtime_error( msg );

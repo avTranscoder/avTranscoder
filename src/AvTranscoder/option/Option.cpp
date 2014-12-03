@@ -98,7 +98,7 @@ void Option::setFlag( const std::string& flag, const bool enable )
 	if( error )
 	{
 		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( error, err, AV_ERROR_MAX_STRING_SIZE );
+		av_strerror( error, err, sizeof(err) );
 		throw std::runtime_error( "unknown key " + getName() + ": " + err );
 	}
 
@@ -111,7 +111,7 @@ void Option::setFlag( const std::string& flag, const bool enable )
 	if( error )
 	{
 		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( error, err, AV_ERROR_MAX_STRING_SIZE );
+		av_strerror( error, err, sizeof(err) );
 		throw std::runtime_error( "setting " + getName() + " parameter to " + flag + ": " + err );
 	}
 }
@@ -122,7 +122,7 @@ void Option::setBool( const bool value )
 	if( error )
 	{
 		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( error, err, AV_ERROR_MAX_STRING_SIZE );
+		av_strerror( error, err, sizeof(err) );
 		throw std::runtime_error( "setting " + getName() + " parameter to " + ( value ? "true" : "false" ) + ": " + err );
 	}
 }
@@ -135,7 +135,7 @@ void Option::setInt( const int value )
 		std::ostringstream os;
 		os << value;
 		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( error, err, AV_ERROR_MAX_STRING_SIZE );
+		av_strerror( error, err, sizeof(err) );
 		throw std::runtime_error( "setting " + getName() + " parameter to " + os.str() + ": " + err );
 	}
 }
@@ -151,7 +151,7 @@ void Option::setRatio( const int num, const int den )
 		std::ostringstream os;
 		os << num << "/" << den;
 		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( error, err, AV_ERROR_MAX_STRING_SIZE );
+		av_strerror( error, err, sizeof(err) );
 		throw std::runtime_error( "setting " + getName() + " parameter to " + os.str() + ": " + err );
 	}
 }
@@ -164,7 +164,7 @@ void Option::setDouble( const double value )
 		std::ostringstream os;
 		os << value;
 		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( error, err, AV_ERROR_MAX_STRING_SIZE );
+		av_strerror( error, err, sizeof(err) );
 		throw std::runtime_error( "setting " + getName() + " parameter to " + os.str() + ": " + err );
 	}
 }
@@ -175,7 +175,7 @@ void Option::setString( const std::string& value )
 	if( error )
 	{
 		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( error, err, AV_ERROR_MAX_STRING_SIZE );
+		av_strerror( error, err, sizeof(err) );
 		throw std::runtime_error( "setting " + getName() + " parameter to " + value + ": " + err );
 	}
 }
