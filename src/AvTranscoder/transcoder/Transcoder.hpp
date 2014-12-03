@@ -125,7 +125,6 @@ public:
 
 	/**
 	 * @brief Set the transcodage politic.
-	 * @note Call it after adding the streams.
 	 * @note By default eProcessMethodLongest.
 	 * @param indexBasedStream: in case of process method eProcessMethodBasedOnStream, stop transcode at the end of the indicated stream.
 	 */
@@ -169,6 +168,11 @@ private:
 	 * @note Depends on the streams, the process method, and the main stream index.
          */
 	double getTotalDurationFromProcessMethod() const;
+
+	/**
+	 * @brief Set for each StreamTranscoder if it is an infinity stream (switch to generator at the end of the stream).
+         */
+	void manageInfinityStreamFromProcessMethod();
 
 private:
 	OutputFile&                      _outputFile;  ///< The output media file after process.

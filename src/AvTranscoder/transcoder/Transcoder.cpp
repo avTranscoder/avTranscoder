@@ -277,6 +277,8 @@ void Transcoder::process( IProgress& progress )
 	if( _streamTranscoders.size() == 0 )
 		throw std::runtime_error( "missing input streams in transcoder" );
 
+	manageInfinityStreamFromProcessMethod();
+
 	if( _verbose )
 		std::cout << "begin transcoding" << std::endl;
 	init();
@@ -313,34 +315,6 @@ void Transcoder::setProcessMethod( const EProcessMethod eProcessMethod, const si
 {
 	_eProcessMethod	= eProcessMethod;
 	_mainStreamIndex = indexBasedStream;
-
-	for( size_t i = 0; i < _streamTranscoders.size(); ++i )
-	{
-		switch( _eProcessMethod )
-		{
-			case eProcessMethodShortest :
-				if( _streamTranscoders.at( i )->getDuration() == getMinTotalDuration() )
-					_streamTranscoders.at( i )->setInfinityStream( false );
-				else
-					_streamTranscoders.at( i )->setInfinityStream( true );
-				break;
-			case eProcessMethodLongest :
-				if( _streamTranscoders.at( i )->getDuration() == getMaxTotalDuration() )
-					_streamTranscoders.at( i )->setInfinityStream( false );
-				else
-					_streamTranscoders.at( i )->setInfinityStream( true );
-				break;
-			case eProcessMethodBasedOnStream :
-				if( i != _mainStreamIndex )
-					_streamTranscoders.at( i )->setInfinityStream( true );
-				else
-					_streamTranscoders.at( i )->setInfinityStream( false );
-				break;
-			case eProcessMethodInfinity :
-				_streamTranscoders.at( i )->setInfinityStream( true );
-				break;
-		}
-	}
 }
 
 void Transcoder::setVerbose( bool verbose )
@@ -521,6 +495,37 @@ double Transcoder::getTotalDurationFromProcessMethod() const
 		default:
 			return getMaxTotalDuration();
 	}	
+}
+
+void Transcoder::manageInfinityStreamFromProcessMethod()
+{
+	for( size_t i = 0; i < _streamTranscoders.size(); ++i )
+	{
+		switch( _eProcessMethod )
+		{
+			case eProcessMethodShortest :
+				if( _streamTranscoders.at( i )->getDuration() == getMinTotalDuration() )
+					_streamTranscoders.at( i )->setInfinityStream( false );
+				else
+					_streamTranscoders.at( i )->setInfinityStream( true );
+				break;
+			case eProcessMethodLongest :
+				if( _streamTranscoders.at( i )->getDuration() == getMaxTotalDuration() )
+					_streamTranscoders.at( i )->setInfinityStream( false );
+				else
+					_streamTranscoders.at( i )->setInfinityStream( true );
+				break;
+			case eProcessMethodBasedOnStream :
+				if( i != _mainStreamIndex )
+					_streamTranscoders.at( i )->setInfinityStream( true );
+				else
+					_streamTranscoders.at( i )->setInfinityStream( false );
+				break;
+			case eProcessMethodInfinity :
+				_streamTranscoders.at( i )->setInfinityStream( true );
+				break;
+		}
+	}
 }
 
 }
