@@ -18,20 +18,12 @@ Pixel::Pixel( const std::string& avPixelFormat )
 }
 
 Pixel::Pixel( const AVPixelFormat avPixelFormat )
-	: _pixelSize  ( 24 )
-	, _components ( 3 )
-	, _componentType ( eComponentYuv )
-	, _subsamplingType ( eSubsamplingNone )
-	, _endianess  ( false )
-	, _withAlpha  ( false )
-	, _planar     ( true )
 {
 	init( avPixelFormat );
 }
 
 AVPixelFormat Pixel::findPixel() const
 {
-	//av_register_all();
 #if LIBAVUTIL_VERSION_MAJOR > 51
 	const AVPixFmtDescriptor *pix_desc = NULL;
 	while( ( pix_desc = av_pix_fmt_desc_next( pix_desc ) ) )
@@ -87,15 +79,30 @@ void Pixel::init( const AVPixelFormat avPixelFormat )
 
 	setSubsampling( eSubsamplingNone );
 
-	if( ( pix_desc->log2_chroma_w == true ) &&
-		( pix_desc->log2_chroma_h == false ) )
+	if( ( pix_desc->log2_chroma_w == 0 ) &&
+		( pix_desc->log2_chroma_h == 1 ) )
+	{
+		setSubsampling( eSubsampling440 );
+	}
+	else if( ( pix_desc->log2_chroma_w == 1 ) &&
+		( pix_desc->log2_chroma_h == 0 ) )
 	{
 		setSubsampling( eSubsampling422 );
 	}
-	if( ( pix_desc->log2_chroma_w == true ) &&
-		( pix_desc->log2_chroma_h == true ) )
+	else if( ( pix_desc->log2_chroma_w == 1 ) &&
+		( pix_desc->log2_chroma_h == 1 ) )
 	{
 		setSubsampling( eSubsampling420 );
+	}
+	else if( ( pix_desc->log2_chroma_w == 3 ) &&
+		( pix_desc->log2_chroma_h == 0 ) )
+	{
+		setSubsampling( eSubsampling411 );
+	}
+	else if( ( pix_desc->log2_chroma_w == 2 ) &&
+		( pix_desc->log2_chroma_h == 2 ) )
+	{
+		setSubsampling( eSubsampling410 );
 	}
 }
 
@@ -114,18 +121,33 @@ bool Pixel::asCorrectSubsampling( const AVPixFmtDescriptor* pix_desc, const ESub
 	{
 		case eSubsamplingNone :
 		{
-			return  ( pix_desc->log2_chroma_w == false ) &&
-					( pix_desc->log2_chroma_h == false );
+			return  ( pix_desc->log2_chroma_w == 0 ) &&
+			        ( pix_desc->log2_chroma_h == 0 );
+		}
+		case eSubsampling440 :
+		{
+			return  ( pix_desc->log2_chroma_w == 0 ) &&
+			        ( pix_desc->log2_chroma_h == 1 );
 		}
 		case eSubsampling422 :
 		{
-			return  ( pix_desc->log2_chroma_w == true  ) &&
-					( pix_desc->log2_chroma_h == false );
+			return  ( pix_desc->log2_chroma_w == 1 ) &&
+			        ( pix_desc->log2_chroma_h == 0 );
 		}
 		case eSubsampling420 :
 		{
-			return  ( pix_desc->log2_chroma_w == true  ) &&
-					( pix_desc->log2_chroma_h == true  );
+			return  ( pix_desc->log2_chroma_w == 1 ) &&
+			        ( pix_desc->log2_chroma_h == 1 );
+		}
+		case eSubsampling411:
+		{
+			return  ( pix_desc->log2_chroma_w == 3 ) &&
+			        ( pix_desc->log2_chroma_h == 0 );
+		}
+		case eSubsampling410 :
+		{
+			return  ( pix_desc->log2_chroma_w == 2 ) &&
+			        ( pix_desc->log2_chroma_h == 2  );
 		}
 	}
 	return false;
