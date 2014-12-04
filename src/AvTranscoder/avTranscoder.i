@@ -15,11 +15,6 @@
 %{
 #include <AvTranscoder/ProfileLoader.hpp>
 
-#include <AvTranscoder/frame/Pixel.hpp>
-#include <AvTranscoder/frame/Frame.hpp>
-#include <AvTranscoder/frame/VideoFrame.hpp>
-#include <AvTranscoder/frame/AudioFrame.hpp>
-
 #include <AvTranscoder/codec/ICodec.hpp>
 #include <AvTranscoder/codec/VideoCodec.hpp>
 #include <AvTranscoder/codec/AudioCodec.hpp>
@@ -54,13 +49,9 @@ namespace std {
 
 %include "AvTranscoder/progress/progress.i"
 %include "AvTranscoder/mediaProperty/mediaProperty.i"
+%include "AvTranscoder/frame/frame.i"
 
 %include <AvTranscoder/ProfileLoader.hpp>
-
-%include <AvTranscoder/frame/Pixel.hpp>
-%include <AvTranscoder/frame/Frame.hpp>
-%include <AvTranscoder/frame/VideoFrame.hpp>
-%include <AvTranscoder/frame/AudioFrame.hpp>
 
 %include <AvTranscoder/codec/ICodec.hpp>
 %include <AvTranscoder/codec/VideoCodec.hpp>
