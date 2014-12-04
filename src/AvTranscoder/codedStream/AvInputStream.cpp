@@ -76,7 +76,7 @@ bool AvInputStream::readNextPacket( CodedData& data )
 	if( ! _streamCache.empty() )
 	{
 		_streamCache.front().getBuffer().swap( data.getBuffer() );
-		_streamCache.erase( _streamCache.begin() );
+		_streamCache.pop();
 	}
 	// else read next packet
 	else
@@ -94,7 +94,7 @@ void AvInputStream::addPacket( AVPacket& packet )
 		return;
 
 	CodedData data;
-	_streamCache.push_back( data );
+	_streamCache.push( data );
 	_streamCache.back().getBuffer().resize( packet.size );
 	if( packet.size != 0 )
 		memcpy( _streamCache.back().getPtr(), packet.data, packet.size );
@@ -148,7 +148,7 @@ double AvInputStream::getDuration() const
 
 void AvInputStream::clearBuffering()
 {
-	_streamCache.clear();
+	_streamCache = std::queue<CodedData>();
 }
 
 AVStream* AvInputStream::getAVStream() const

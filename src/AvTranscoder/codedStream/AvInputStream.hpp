@@ -3,6 +3,8 @@
 
 #include "IInputStream.hpp"
 
+#include <queue>
+
 struct AVStream;
 
 namespace avtranscoder
@@ -45,7 +47,7 @@ private:
 	InputFile* _inputFile;  ///< Has link (no ownership)
 	ICodec* _codec;  ///< Has ownership
 
-	std::vector<CodedData> _streamCache;
+	std::queue<CodedData> _streamCache;
 
 	size_t _streamIndex;  ///<  Index of the stream in the input file
 	bool _bufferized;  ///< If the stream is bufferized
