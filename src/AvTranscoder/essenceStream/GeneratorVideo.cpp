@@ -28,7 +28,7 @@ bool GeneratorVideo::readNextFrame( Frame& frameBuffer )
 	if( ! _inputFrame )
 	{
 		// @todo support PAL (0 to 255) and NTFS (16 to 235)
-		int fillChar = 0;
+		char fillChar = 0;
 
 		if( frameBuffer.getSize() != _frameDesc.getDataSize() )
 			frameBuffer.getBuffer().resize( _frameDesc.getDataSize() );
