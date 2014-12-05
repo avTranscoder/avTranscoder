@@ -23,8 +23,6 @@ void GeneratorAudio::setFrame( Frame& inputFrame )
 
 bool GeneratorAudio::readNextFrame( Frame& frameBuffer )
 {
-	frameBuffer.getBuffer().resize( _frameDesc.getDataSize() );
-
 	if( ! _inputFrame )
 	{
 		AudioFrame& audioFrameBuffer = static_cast<AudioFrame&>( frameBuffer );
@@ -36,13 +34,14 @@ bool GeneratorAudio::readNextFrame( Frame& frameBuffer )
 			_frameDesc.getAVSampleFormat() == AV_SAMPLE_FMT_U8P
 			) ? 0x80 : 0x00;
 
+		if( frameBuffer.getSize() != _frameDesc.getDataSize() )
+			frameBuffer.getBuffer().resize( _frameDesc.getDataSize() );
 		memset( frameBuffer.getPtr(), fill_char, frameBuffer.getSize() );
-		return true;
 	}
-	
-	if( frameBuffer.getSize() != _inputFrame->getSize() )
-		frameBuffer.getBuffer().resize( _inputFrame->getSize() );
-	std::memcpy( frameBuffer.getPtr(), _inputFrame->getPtr(), _inputFrame->getSize() );
+	else
+	{
+		frameBuffer.copyData( _inputFrame->getPtr(), _inputFrame->getSize() );
+	}
 	return true;
 }
 

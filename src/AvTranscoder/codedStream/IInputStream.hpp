@@ -27,7 +27,8 @@ public:
 
 	virtual double getDuration() const = 0;
 
-	virtual void setBufferred( const bool bufferized ) = 0;
+	virtual void activate( const bool activate = true ) = 0;
+	virtual bool isActivated() const = 0;
 
 	virtual void clearBuffering() = 0;
 

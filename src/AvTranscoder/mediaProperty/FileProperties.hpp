@@ -46,20 +46,20 @@ public:
 	size_t getNbUnknownStreams() const { return _unknownStreams.size(); }
 
 	std::vector< avtranscoder::VideoProperties >& getVideoProperties() { return  _videoStreams; }
-	const std::vector< avtranscoder::VideoProperties >& getVideoProperties() const  { return  _videoStreams; }
 	std::vector< avtranscoder::AudioProperties >& getAudioProperties() { return  _audioStreams; }
-	const std::vector< avtranscoder::AudioProperties >& getAudioProperties() const  { return  _audioStreams; }
 	std::vector< avtranscoder::DataProperties >& getDataProperties() { return  _dataStreams; }
-	const std::vector< avtranscoder::DataProperties >& getDataProperties() const  { return  _dataStreams; }
 	std::vector< avtranscoder::SubtitleProperties >& getSubtitleProperties() { return  _subtitleStreams; }
-	const std::vector< avtranscoder::SubtitleProperties >& getSubtitleProperties() const  { return  _subtitleStreams; }
 	std::vector< avtranscoder::AttachementProperties >& getAttachementProperties() { return  _attachementStreams; }
-	const std::vector< avtranscoder::AttachementProperties >& getAttachementProperties() const  { return  _attachementStreams; }
 	std::vector< avtranscoder::UnknownProperties >& getUnknownPropertiesProperties() { return  _unknownStreams; }
-	const std::vector< avtranscoder::UnknownProperties >& getUnknownPropertiesProperties() const  { return  _unknownStreams; }
 
 #ifndef SWIG
 	const AVFormatContext& getAVFormatContext() { return *_formatContext; }
+	const std::vector< avtranscoder::VideoProperties >& getVideoProperties() const  { return  _videoStreams; }
+	const std::vector< avtranscoder::AudioProperties >& getAudioProperties() const  { return  _audioStreams; }
+	const std::vector< avtranscoder::DataProperties >& getDataProperties() const  { return  _dataStreams; }
+	const std::vector< avtranscoder::SubtitleProperties >& getSubtitleProperties() const  { return  _subtitleStreams; }
+	const std::vector< avtranscoder::AttachementProperties >& getAttachementProperties() const  { return  _attachementStreams; }
+	const std::vector< avtranscoder::UnknownProperties >& getUnknownPropertiesProperties() const  { return  _unknownStreams; }
 #endif
 
 	PropertiesMap getPropertiesAsMap() const;  ///< Return all file properties as a map (name of property: value)

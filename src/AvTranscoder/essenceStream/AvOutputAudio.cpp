@@ -106,15 +106,13 @@ bool AvOutputAudio::encodeFrame( const Frame& sourceFrame, Frame& codedFrame )
 	int ret = avcodec_encode_audio2( codecContext, &packet, frame, &gotPacket );
 	if( ret == 0 && gotPacket == 1 )
 	{
-		codedFrame.getBuffer().resize( packet.size );
-		memcpy( codedFrame.getPtr(), packet.data, packet.size );
+		codedFrame.copyData( packet.data, packet.size );
 	}
 #else
 	int ret = avcodec_encode_audio( codecContext, packet.data, packet.size, frame );
 	if( ret > 0 )
 	{
-		codedFrame.getBuffer().resize( packet.size );
-		memcpy( codedFrame.getPtr(), packet.data, packet.size );
+		codedFrame.copyData( packet.data, packet.size );
 	}
 #endif
 	
@@ -150,8 +148,7 @@ bool AvOutputAudio::encodeFrame( Frame& codedFrame )
 	int ret = avcodec_encode_audio2( codecContext, &packet, NULL, &gotPacket );
 	if( ret == 0 && gotPacket == 1 )
 	{
-		codedFrame.getBuffer().resize( packet.size );
-		memcpy( codedFrame.getPtr(), packet.data, packet.size );
+		codedFrame.copyData( packet.data, packet.size );
 	}
 	av_free_packet( &packet );
 	return ret == 0 && gotPacket == 1;
@@ -160,8 +157,7 @@ bool AvOutputAudio::encodeFrame( Frame& codedFrame )
 	int ret = avcodec_encode_audio( codecContext, packet.data, packet.size, NULL );
 	if( ret > 0 )
 	{
-		codedFrame.getBuffer().resize( packet.size );
-		memcpy( codedFrame.getPtr(), packet.data, packet.size );
+		codedFrame.copyData( packet.data, packet.size );
 	}
 	av_free_packet( &packet );
 	return ret == 0;

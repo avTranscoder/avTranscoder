@@ -11,15 +11,14 @@ def testAddStreamTranscoder():
 	"""
 	# input
 	inputFile = av.InputFile( os.environ['AVTRANSCODER_TEST_AUDIO_FILE'] )
-	inputIndex = 0
-	inputStream = inputFile.getStream( inputIndex )
-	inputStream.setBufferred( True )
+        inputIndex = 0
+	inputFile.activateStream( inputIndex )
 
 	# output
 	outputFileName = "testAddStreamTranscoder.avi"
 	ouputFile = av.OutputFile( outputFileName )
 
-	streamTranscoder = av.StreamTranscoder( inputStream, ouputFile )
+	streamTranscoder = av.StreamTranscoder( inputFile.getStream( inputIndex ), ouputFile )
 	transcoder = av.Transcoder( ouputFile )
 	transcoder.add( streamTranscoder)
 

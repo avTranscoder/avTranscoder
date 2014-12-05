@@ -28,8 +28,6 @@ VideoTransform::VideoTransform()
 	, _dstData     ( (uint8_t)MAX_SWS_PLANE, NULL )
 	, _srcLineSize ( MAX_SWS_PLANE, 0 )
 	, _dstLineSize ( MAX_SWS_PLANE, 0 )
-	, _srcOffsets  ( MAX_SWS_PLANE, 0 )
-	, _dstOffsets  ( MAX_SWS_PLANE, 0 )
 	, _isInit      ( false )
 	, _verbose( false )
 {
@@ -50,16 +48,19 @@ bool VideoTransform::init( const Frame& srcFrame, const Frame& dstFrame )
 		throw std::runtime_error( "unable to create color convert context" );
 	}
 
-	av_image_fill_linesizes( &_srcLineSize[0], src.desc().getPixelDesc().findPixel(), src.desc().getWidth() );
-	av_image_fill_linesizes( &_dstLineSize[0], dst.desc().getPixelDesc().findPixel(), dst.desc().getWidth() );
+	const AVPixelFormat srcPixelFormat = src.desc().getPixelDesc().findPixel();
+	const AVPixelFormat dstPixelFormat = dst.desc().getPixelDesc().findPixel();
+
+	av_image_fill_linesizes( &_srcLineSize[0], srcPixelFormat, src.desc().getWidth() );
+	av_image_fill_linesizes( &_dstLineSize[0], dstPixelFormat, dst.desc().getWidth() );
 
 	if( _verbose )
 	{
 		std::clog << "video conversion from ";
 		const char* pixFmt;
-		pixFmt = av_get_pix_fmt_name( src.desc().getPixelDesc().findPixel() );
+		pixFmt = av_get_pix_fmt_name( srcPixelFormat );
 		std::clog << ( pixFmt != NULL ? pixFmt : "None" ) << " to ";
-		pixFmt = av_get_pix_fmt_name( dst.desc().getPixelDesc().findPixel() );
+		pixFmt = av_get_pix_fmt_name( dstPixelFormat );
 		std::clog << ( pixFmt != NULL ? pixFmt : "None" ) << std::endl;
 
 		std::clog << "source, width = " << src.desc().getWidth() << std::endl;
@@ -81,25 +82,6 @@ bool VideoTransform::init( const Frame& srcFrame, const Frame& dstFrame )
 		std::clog << "[3] = " << _dstLineSize[3] << std::endl;
 	}
 
-	size_t cumulSrcOffset = 0;
-	size_t cumulDstOffset = 0;
-
-	for( size_t plane = 0; plane < MAX_SWS_PLANE; ++plane )
-	{
-#ifdef FFALIGN
-		_srcLineSize.at( plane ) = FFALIGN( _srcLineSize.at( plane ), 16 );
-		_dstLineSize.at( plane ) = FFALIGN( _dstLineSize.at( plane ), 16 );
-#else
-		_srcLineSize.at( plane ) = _srcLineSize.at( plane );
-		_dstLineSize.at( plane ) = _dstLineSize.at( plane );
-#endif
-		_srcOffsets.at( plane ) = cumulSrcOffset;
-		_dstOffsets.at( plane ) = cumulDstOffset;
-
-		cumulSrcOffset += _srcLineSize.at( plane ) * src.desc().getHeight();
-		cumulDstOffset += _dstLineSize.at( plane ) * dst.desc().getHeight();
-	}
-
 	return true;
 }
 
@@ -118,11 +100,12 @@ void VideoTransform::convert( const Frame& srcFrame, Frame& dstFrame )
 	if( ! _isInit )
 		_isInit = init( srcFrame, dstFrame );
 
-	for( size_t plane = 0; plane < MAX_SWS_PLANE; ++plane )
-	{
-		_srcData.at( plane ) = (uint8_t*) src.getPtr() + _srcOffsets.at( plane );
-		_dstData.at( plane ) = (uint8_t*) dst.getPtr() + _dstOffsets.at( plane );
-	}
+	const AVPixelFormat srcPixelFormat = src.desc().getPixelDesc().findPixel();
+	const AVPixelFormat dstPixelFormat = dst.desc().getPixelDesc().findPixel();
+
+	// Fill plane data pointers
+	av_image_fill_pointers(&_srcData[0], srcPixelFormat, src.desc().getHeight(), (uint8_t*) src.getPtr(), &_srcLineSize[0]);
+	av_image_fill_pointers(&_dstData[0], dstPixelFormat, dst.desc().getHeight(), (uint8_t*) dst.getPtr(), &_dstLineSize[0]);
 	
 	if( ! _imageConvertContext )
 	{
@@ -131,23 +114,11 @@ void VideoTransform::convert( const Frame& srcFrame, Frame& dstFrame )
 
 	if( _verbose )
 	{
-		std::clog << "source, offset:" << std::endl;
-		std::clog << "[0] = " << &_srcOffsets[0] << std::endl;
-		std::clog << "[1] = " << &_srcOffsets[1] << std::endl;
-		std::clog << "[2] = " << &_srcOffsets[2] << std::endl;
-		std::clog << "[3] = " << &_srcOffsets[3] << std::endl;
-		
 		std::clog << "source, slice:" << std::endl;
 		std::clog << "[0] = " << &_srcData[0] << std::endl;
 		std::clog << "[1] = " << &_srcData[1] << std::endl;
 		std::clog << "[2] = " << &_srcData[2] << std::endl;
 		std::clog << "[3] = " << &_srcData[3] << std::endl;
-		
-		std::clog << "destination, offset:" << std::endl;
-		std::clog << "[0] = " << &_dstOffsets[0] << std::endl;
-		std::clog << "[1] = " << &_dstOffsets[1] << std::endl;
-		std::clog << "[2] = " << &_dstOffsets[2] << std::endl;
-		std::clog << "[3] = " << &_dstOffsets[3] << std::endl;
 		
 		std::clog << "destination, slice:" << std::endl;
 		std::clog << "[0] = " << &_dstData[0] << std::endl;

@@ -64,10 +64,10 @@ void Pixel::init( const AVPixelFormat avPixelFormat )
 	}
 	
 	setBitsPerPixel   ( av_get_bits_per_pixel( pix_desc ) );
-	setBigEndian      ( pix_desc->flags & PIX_FMT_BE );
+	setBigEndian      ( ( pix_desc->flags & PIX_FMT_BE ) == PIX_FMT_BE );
 	setComponents     ( pix_desc->nb_components );
-	setAlpha          ( pix_desc->flags & PIX_FMT_ALPHA );
-	setPlanar         ( ( pix_desc->flags & PIX_FMT_PLANAR ) != 0 );
+	setAlpha          ( ( pix_desc->flags & PIX_FMT_ALPHA ) == PIX_FMT_ALPHA );
+	setPlanar         ( ( pix_desc->flags & PIX_FMT_PLANAR ) == PIX_FMT_PLANAR );
 
 	if( pix_desc->nb_components == 1 )
 		setColorComponents( eComponentGray );

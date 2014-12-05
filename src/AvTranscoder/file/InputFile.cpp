@@ -147,9 +147,10 @@ AvInputStream& InputFile::getStream( size_t index )
 bool InputFile::readNextPacket( CodedData& data, const size_t streamIndex )
 {
 	AVPacket packet;
-	av_init_packet( &packet );
-	while( 1 )
+	bool nextPacketFound = false;
+	while( ! nextPacketFound )
 	{
+		av_init_packet( &packet );
 		int ret = av_read_frame( _formatContext, &packet );
 		if( ret < 0 ) // error or end of file
 		{
@@ -161,23 +162,17 @@ bool InputFile::readNextPacket( CodedData& data, const size_t streamIndex )
 		// copy and return the packet data
 		if( packet.stream_index == (int)streamIndex )
 		{
-			data.getBuffer().resize( packet.size );
-			if( packet.size != 0 )
-				memcpy( data.getPtr(), packet.data, packet.size );
-			av_free_packet( &packet );
-			return true;
+			data.copyData( packet.data, packet.size );
+			nextPacketFound = true;
 		}
 		// else add the packet data to the stream cache
 		else
 		{
 			_inputStreams.at( packet.stream_index )->addPacket( packet );
 		}
-
-		// do not delete these 2 lines
-		// need to skip packet, delete this one and re-init for reading the next one
 		av_free_packet( &packet );
-		av_init_packet( &packet );
 	}
+	return true;
 }
 
 void InputFile::seekAtFrame( const size_t frame )
@@ -198,14 +193,14 @@ void InputFile::seekAtFrame( const size_t frame )
 	}
 }
 
-void InputFile::readStream( const size_t streamIndex, bool readStream )
+void InputFile::activateStream( const size_t streamIndex, bool activate )
 {
-	_inputStreams.at( streamIndex )->setBufferred( readStream );
+	_inputStreams.at( streamIndex )->activate( activate );
 }
 
-bool InputFile::getReadStream( const size_t streamIndex )
+bool InputFile::isStreamActivated( const size_t streamIndex )
 {
-	return _inputStreams.at( streamIndex )->getBufferred();
+	return _inputStreams.at( streamIndex )->isActivated();
 }
 
 void InputFile::setProfile( const ProfileLoader::Profile& profile )

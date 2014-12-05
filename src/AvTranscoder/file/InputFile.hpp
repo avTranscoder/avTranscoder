@@ -55,16 +55,6 @@ public:
 	 **/
 	const FileProperties& getProperties() const { return _properties; }
 
-	void getProperties( FileProperties& properties ) const { properties = _properties; }
-
-	/**
-	 * @brief Get media file properties using static method.
-	 * @param filename input filename
-	 * @param progress callback to get analysis progression
-	 * @return structure of media metadatas
-	 **/
-	static FileProperties analyseFile( const std::string& filename, IProgress& progress, const EAnalyseLevel level = eAnalyseLevelFirstGop );
-
 	/**
 	 * @brief Get stream type: video, audio, subtitle, etc.
 	 * @param index stream index
@@ -88,37 +78,42 @@ public:
 	/**
 	 * @brief Read the next packet of the specified stream
 	 * @param data: data of next packet read
-	 * @note For performances, each read stream needs to be bufferized using the readStream() method.
-	 * @return if next packet was succefully read
+	 * @return if next packet was read succefully
 	 **/
 	bool readNextPacket( CodedData& data, const size_t streamIndex );
 
 	/**
 	 * @brief Seek input stream at specified frame
 	 * @note clean also buffers in each InputStream
-	 * @return if next packet was succefully read
+	 * @return if next packet was read succefully
 	 **/
 	void seekAtFrame( const size_t frame );
 
 	/** 
-	 * @brief Indicate that the stream should be bufferized
-	 * @param streamIndex index of the stream need to be read 
-	 * @param readStream specify if the stream need to be buffurized 
+	 * @brief Activate the indicated stream
+         * @note Activate a stream results in buffered its data when processing
 	 **/
-	void readStream( const size_t streamIndex, const bool readStream = true );
+	void activateStream( const size_t streamIndex, const bool activate = true );
 
 	/** 
-	 * @brief Indicate that the stream will be bufferized during the read
-	 * @param streamIndex specify stream index
-	 * @return the reading status of the streamIndex
+	 * @brief Indicate that the stream is activated
 	 **/
-	bool getReadStream( const size_t streamIndex );
+	bool isStreamActivated( const size_t streamIndex );
 	
 	/**
 	 * @brief Set the format of the input file
 	 * @param profile: the profile of the input format
 	 */
 	virtual void setProfile( const ProfileLoader::Profile& profile );
+
+public:
+	/**
+	 * @brief Get media file properties using static method.
+	 * @param filename input filename
+	 * @param progress callback to get analysis progression
+	 * @return structure of media metadatas
+	 **/
+	static FileProperties analyseFile( const std::string& filename, IProgress& progress, const EAnalyseLevel level = eAnalyseLevelFirstGop );
 
 protected:
 	AVFormatContext*            _formatContext;

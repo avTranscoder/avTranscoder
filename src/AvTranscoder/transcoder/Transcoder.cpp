@@ -439,7 +439,7 @@ InputFile* Transcoder::addInputFile( const std::string& filename, const size_t s
 	for( std::vector< InputFile* >::iterator it = _inputFiles.begin(); it != _inputFiles.end(); ++it )
 	{
 		if( ( (*it)->getFilename() == filename ) &&
-			( ! (*it)->getReadStream( streamIndex ) ) )
+			( ! (*it)->isStreamActivated( streamIndex ) ) )
 		{
 			referenceFile = (*it);
 			break;
@@ -454,7 +454,7 @@ InputFile* Transcoder::addInputFile( const std::string& filename, const size_t s
 		referenceFile = _inputFiles.back();
 	}
 
-	referenceFile->readStream( streamIndex );
+	referenceFile->activateStream( streamIndex );
 
 	return referenceFile;
 }
