@@ -92,15 +92,13 @@ bool AvOutputVideo::encodeFrame( const Frame& sourceFrame, Frame& codedFrame )
 	int ret = avcodec_encode_video2( codecContext, &packet, frame, &gotPacket );
 	if( ret == 0 && gotPacket == 1 )
 	{
-		codedFrame.getBuffer().resize( packet.size );
-		memcpy( codedFrame.getPtr(), packet.data, packet.size );
+		codedFrame.copyData( packet.data, packet.size );
 	}
 #else
 	int ret = avcodec_encode_video( codecContext, packet.data, packet.size, frame );
 	if( ret > 0 )
 	{
-		codedFrame.getBuffer().resize( packet.size );
-		memcpy( codedFrame.getPtr(), packet.data, packet.size );
+		codedFrame.copyData( packet.data, packet.size );
 	}
 #endif
 
@@ -135,8 +133,7 @@ bool AvOutputVideo::encodeFrame( Frame& codedFrame )
 	int ret = avcodec_encode_video2( codecContext, &packet, NULL, &gotPacket );
 	if( ret == 0 && gotPacket == 1 )
 	{
-		codedFrame.getBuffer().resize( packet.size );
-		memcpy( codedFrame.getPtr(), packet.data, packet.size );
+		codedFrame.copyData( packet.data, packet.size );
 	}
 	av_free_packet( &packet );
 	return ret == 0 && gotPacket == 1;
@@ -145,8 +142,7 @@ bool AvOutputVideo::encodeFrame( Frame& codedFrame )
 	int ret = avcodec_encode_video( codecContext, packet.data, packet.size, NULL );
 	if( ret > 0 )
 	{
-		codedFrame.getBuffer().resize( packet.size );
-		memcpy( codedFrame.getPtr(), packet.data, packet.size );
+		codedFrame.copyData( packet.data, packet.size );
 	}
 	av_free_packet( &packet );
 	return ret == 0;

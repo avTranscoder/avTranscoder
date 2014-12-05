@@ -97,9 +97,7 @@ void AvInputStream::addPacket( AVPacket& packet )
 
 	CodedData data;
 	_streamCache.push( data );
-	_streamCache.back().getBuffer().resize( packet.size );
-	if( packet.size != 0 )
-		memcpy( _streamCache.back().getPtr(), packet.data, packet.size );
+	_streamCache.back().copyData( packet.data, packet.size );
 }
 
 VideoCodec& AvInputStream::getVideoCodec()

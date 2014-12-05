@@ -14,16 +14,25 @@ class AvExport Frame
 {
 public:
 	Frame(){};
-	
+
 	~Frame(){};
+
+	void copyData(unsigned char* buffer, const size_t size)
+	{
+		_dataBuffer.resize( size );
+		if ( size != 0 )
+			memcpy( getPtr(), buffer, size );
+	}
 
 	DataBuffer& getBuffer() { return _dataBuffer; }
 	unsigned char* getPtr() { return &_dataBuffer[0]; }
+
 #ifndef SWIG
 	const unsigned char* getPtr() const { return &_dataBuffer[0]; }
 #endif
+
 	size_t getSize() const { return _dataBuffer.size(); }
-	
+
 protected:
 	DataBuffer _dataBuffer;
 };

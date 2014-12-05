@@ -162,9 +162,7 @@ bool InputFile::readNextPacket( CodedData& data, const size_t streamIndex )
 		// copy and return the packet data
 		if( packet.stream_index == (int)streamIndex )
 		{
-			data.getBuffer().resize( packet.size );
-			if( packet.size != 0 )
-				memcpy( data.getPtr(), packet.data, packet.size );
+			data.copyData( packet.data, packet.size );
 			nextPacketFound = true;
 		}
 		// else add the packet data to the stream cache

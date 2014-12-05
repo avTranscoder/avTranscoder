@@ -30,9 +30,6 @@ bool GeneratorVideo::readNextFrame( Frame& frameBuffer )
 		// @todo support PAL (0 to 255) and NTFS (16 to 235)
 		char fillChar = 0;
 
-		if( frameBuffer.getSize() != _frameDesc.getDataSize() )
-			frameBuffer.getBuffer().resize( _frameDesc.getDataSize() );
-
 		VideoFrameDesc desc( _frameDesc );
 		Pixel rgbPixel;
 		rgbPixel.setColorComponents( eComponentRgb );
@@ -45,14 +42,12 @@ bool GeneratorVideo::readNextFrame( Frame& frameBuffer )
 
 		VideoTransform videoEssenceTransform;
 		videoEssenceTransform.convert( intermediateBuffer, frameBuffer );
-
-		return true;
 	}
-
 	// Take image from _inputFrame
-	if( frameBuffer.getSize() != _inputFrame->getSize() )
-		frameBuffer.getBuffer().resize( _inputFrame->getSize() );
-	std::memcpy( frameBuffer.getPtr(), _inputFrame->getPtr(), _inputFrame->getSize() );
+	else
+	{
+		frameBuffer.copyData( _inputFrame->getPtr(), _inputFrame->getSize() );
+	}
 	return true;
 }
 
