@@ -479,6 +479,13 @@ size_t VideoProperties::getComponentsCount() const
 	return _pixFmt->nb_components;
 }
 
+size_t VideoProperties::getBitDepth() const
+{
+	if( ! _pixFmt )
+		throw std::runtime_error( "unknown pixel format" );
+	return av_get_bits_per_pixel( _pixFmt );
+}
+
 size_t VideoProperties::getChromaWidth() const
 {
 	if( ! _pixFmt )
