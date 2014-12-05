@@ -30,8 +30,6 @@ private:
 	std::vector<uint8_t *> _dstData;
 	std::vector<int>       _srcLineSize;
 	std::vector<int>       _dstLineSize;
-	std::vector<size_t>    _srcOffsets;
-	std::vector<size_t>    _dstOffsets;
 
 	bool _isInit;
 
