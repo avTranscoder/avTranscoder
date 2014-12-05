@@ -90,8 +90,6 @@ def testTranscodeDummyAudio():
 	audioCodec.setAudioParameters( audioDesc )
 	transcoder.add( "", 0, "wave24b48kmono", audioCodec )
 
-	transcoder.init()
-
 	ouputFile.beginWrap()
 	transcoder.processFrame()
 	ouputFile.endWrap()
@@ -115,8 +113,6 @@ def testTranscodeDummyVideo():
 	videoCodec = av.VideoCodec( av.eCodecTypeEncoder, "mpeg2video" )
 	videoCodec.setImageParameters( imageDesc )
 	transcoder.add( "", 0, "dnxhd120", videoCodec )
-
-	transcoder.init()
 
 	ouputFile.beginWrap()
 	transcoder.processFrame()
