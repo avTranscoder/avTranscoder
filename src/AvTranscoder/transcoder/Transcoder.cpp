@@ -285,9 +285,10 @@ void Transcoder::process( IProgress& progress )
 
 	if( _verbose )
 		std::cout << "begin transcoding" << std::endl;
-	preProcessCodecLatency();
-	
+
 	_outputFile.beginWrap();
+
+	preProcessCodecLatency();
 
 	double totalDuration = getTotalDurationFromProcessMethod();
 
