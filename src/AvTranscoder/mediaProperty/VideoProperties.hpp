@@ -65,6 +65,7 @@ public:
 	int getProfile() const;
 	int getLevel() const;
 	size_t getComponentsCount() const;
+	size_t getBitDepth() const;
 	size_t getChromaWidth() const;
 	size_t getChromaHeight() const;
 
