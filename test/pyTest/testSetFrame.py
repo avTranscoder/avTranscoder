@@ -35,7 +35,7 @@ def testSetVideoFrame():
 	videoEssence = transcoder.getStreamTranscoder( 0 ).getCurrentEssence()
 
 	# start process
-	transcoder.init()
+	transcoder.preProcessCodecLatency()
 	ouputFile.beginWrap()
 
 	# process 255 frames
@@ -88,7 +88,7 @@ def testSetAudioFrame():
 	audioEssence = transcoder.getStreamTranscoder( 0 ).getCurrentEssence()
 
 	# start process
-	transcoder.init()
+	transcoder.preProcessCodecLatency()
 	ouputFile.beginWrap()
 
 	# process 255 frames

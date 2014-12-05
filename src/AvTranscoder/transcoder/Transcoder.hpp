@@ -100,11 +100,11 @@ public:
 	void add( StreamTranscoder& streamTranscoder);
 
 	/**
-	 * @brief Initialize all streams added, by ensure process necessary frames in case of latency.
+	 * @brief Initialize all added streams, processing codec latency.
 	 * @note This can be called several times with no side effects.
 	 * @note Can take a little bit of time.
 	 */
-	void init();
+	void preProcessCodecLatency();
 	
 	/**
 	 * @brief Process the next frame of all streams.

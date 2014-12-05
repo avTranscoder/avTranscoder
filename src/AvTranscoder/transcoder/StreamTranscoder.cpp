@@ -257,7 +257,7 @@ StreamTranscoder::~StreamTranscoder()
 	delete _inputEssence;
 }
 
-void StreamTranscoder::init()
+void StreamTranscoder::preProcessCodecLatency()
 {
 	// rewrap case: no need to take care of the latency of codec
 	if( ! _inputEssence )
