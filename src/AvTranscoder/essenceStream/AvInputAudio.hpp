@@ -28,8 +28,6 @@ private:
 	AvInputStream* _inputStream;  ///< Stream from which we read next frames
 	const AudioCodec* _codec;  ///< Audio decoder. Has link (no ownership)
 	AVFrame* _frame;  ///< Libav object to store decoded data
-
-	int _selectedStream;  ///< Index of the selected stream in the input file
 };
 
 }

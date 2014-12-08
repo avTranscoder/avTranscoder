@@ -22,7 +22,6 @@ AvInputAudio::AvInputAudio( AvInputStream& inputStream )
 	, _inputStream   ( &inputStream )
 	, _codec( &inputStream.getAudioCodec() )
 	, _frame         ( NULL )
-	, _selectedStream( inputStream.getStreamIndex() )
 {
 }
 
@@ -156,25 +155,28 @@ bool AvInputAudio::decodeNextFrame()
 	while( ! got_frame )
 	{
 		CodedData data;
-		if( ! _inputStream->readNextPacket( data ) ) // error or end of file
-			return false;
 
 		AVPacket packet;
 		av_init_packet( &packet );
 		
-		packet.stream_index = _selectedStream;
-		packet.data         = data.getPtr();
-		packet.size         = data.getSize();
+		bool nextPacketRead = _inputStream->readNextPacket( data );
+		
+		packet.stream_index = _inputStream->getStreamIndex();
+		packet.data = nextPacketRead ? data.getPtr(): NULL;
+		packet.size = data.getSize();
 		
 		int ret = avcodec_decode_audio4( _codec->getAVCodecContext(), _frame, &got_frame, &packet );
+		av_free_packet( &packet );
+
+		if( ! nextPacketRead && ret == 0 && got_frame == 0 ) // error or end of file
+			return false;
+		
 		if( ret < 0 )
 		{
 			char err[AV_ERROR_MAX_STRING_SIZE];
 			av_strerror( ret, err, sizeof(err) );
 			throw std::runtime_error( "an error occured during audio decoding" + std::string( err ) );
 		}
-
-		av_free_packet( &packet );
 	}
 	return true;
 }
