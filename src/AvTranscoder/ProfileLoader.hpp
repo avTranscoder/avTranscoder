@@ -48,7 +48,7 @@ public:
 	Profiles getVideoProfiles();
 	Profiles getAudioProfiles();
 
-	Profile& getProfile( const std::string& searchProfile );
+	Profile& getProfile( const std::string& avProfileIdentificator );
 
 private:
 	Profiles _profiles;
