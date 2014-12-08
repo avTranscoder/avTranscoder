@@ -22,7 +22,6 @@ AvInputVideo::AvInputVideo( AvInputStream& inputStream )
 	, _inputStream   ( &inputStream )
 	, _codec( &inputStream.getVideoCodec() )
 	, _frame         ( NULL )
-	, _selectedStream( inputStream.getStreamIndex() )
 {
 }
 
@@ -106,24 +105,28 @@ bool AvInputVideo::decodeNextFrame()
 	while( ! got_frame )
 	{
 		CodedData data;
-		if( ! _inputStream->readNextPacket( data ) ) // error or end of file
-			return false;
 
 		AVPacket packet;
 		av_init_packet( &packet );
 
-		packet.stream_index = _selectedStream; //_inputStream->getStreamIndex();
-		packet.data = data.getPtr(); //nextPacketRead ? data.getPtr(): NULL;
+		bool nextPacketRead = _inputStream->readNextPacket( data );
+		
+		packet.stream_index = _inputStream->getStreamIndex();
+		packet.data = nextPacketRead ? data.getPtr(): NULL;
 		packet.size = data.getSize();
 
 		int ret = avcodec_decode_video2( _codec->getAVCodecContext(), _frame, &got_frame, &packet );
+		av_free_packet( &packet );
+
+		if( ! nextPacketRead && ret == 0 && got_frame == 0 ) // error or end of file
+			return false;
+
 		if( ret < 0 )
 		{
 			char err[AV_ERROR_MAX_STRING_SIZE];
 			av_strerror( ret, err, sizeof(err) );
 			throw std::runtime_error( "an error occured during video decoding - " + std::string(err) );
 		}
-		av_free_packet( &packet );
 	}
 	return true;
 }
