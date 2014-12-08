@@ -248,7 +248,7 @@ void OutputFile::setProfile( const ProfileLoader::Profile& profile )
 	}
 	_outputFormat = av_guess_format( profile.find( constants::avProfileFormat )->second.c_str(), _filename.c_str(), NULL);
 	
-	Context formatContext( _formatContext );
+	Context formatContext( _formatContext, AV_OPT_FLAG_ENCODING_PARAM );
 	
 	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
 	{

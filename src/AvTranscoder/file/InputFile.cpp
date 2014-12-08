@@ -206,7 +206,7 @@ bool InputFile::isStreamActivated( const size_t streamIndex )
 
 void InputFile::setProfile( const ProfileLoader::Profile& profile )
 {	
-	Context formatContext( _formatContext );
+	Context formatContext( _formatContext, AV_OPT_FLAG_DECODING_PARAM );
 	
 	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
 	{

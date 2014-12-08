@@ -167,7 +167,7 @@ void AvOutputVideo::setProfile( const ProfileLoader::Profile& profile, const avt
 
 	_codec.setImageParameters( frameDesc );
 
-	Context codecContext( _codec.getAVCodecContext() );
+	Context codecContext( _codec.getAVCodecContext(), AV_OPT_FLAG_ENCODING_PARAM | AV_OPT_FLAG_VIDEO_PARAM );
 	
 	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
 	{
