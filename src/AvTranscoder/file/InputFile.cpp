@@ -26,6 +26,7 @@ InputFile::InputFile( const std::string& filename )
 	: _formatContext ( NULL )
 	, _properties( NULL )
 	, _filename( filename )
+	, _verbose( false )
 {
 	av_register_all();
 	if( avformat_open_input( &_formatContext, _filename.c_str(), NULL, NULL ) < 0 )
@@ -221,7 +222,8 @@ void InputFile::setProfile( const ProfileLoader::Profile& profile )
 		}
 		catch( std::exception& e )
 		{
-			std::cout << "[InputFile] warning: " << e.what() << std::endl;
+			if( _verbose )
+				std::cout << "[InputFile] warning: " << e.what() << std::endl;
 		}
 	}
 }

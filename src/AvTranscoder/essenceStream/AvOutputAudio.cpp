@@ -16,6 +16,7 @@ namespace avtranscoder
 
 AvOutputAudio::AvOutputAudio()
 	: _codec( eCodecTypeEncoder, "pcm_s16le" )
+	, _verbose( false )
 {
 }
 
@@ -193,9 +194,7 @@ void AvOutputAudio::setProfile( const ProfileLoader::Profile& profile, const Aud
 			encodeOption.setString( (*it).second );
 		}
 		catch( std::exception& e )
-		{
-			//std::cout << "[OutputAudio] warning: " << e.what() << std::endl;
-		}
+		{}
 	}
 
 	setup();
@@ -216,7 +215,8 @@ void AvOutputAudio::setProfile( const ProfileLoader::Profile& profile, const Aud
 		}
 		catch( std::exception& e )
 		{
-			std::cout << "[OutputAudio] warning - can't set option " << (*it).first << " to " << (*it).second << ": " << e.what() << std::endl;
+			if( _verbose )
+				std::cout << "[OutputAudio] warning - can't set option " << (*it).first << " to " << (*it).second << ": " << e.what() << std::endl;
 		}
 	}
 }

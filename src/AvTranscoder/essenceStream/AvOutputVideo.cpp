@@ -17,6 +17,7 @@ namespace avtranscoder
 
 AvOutputVideo::AvOutputVideo( )
 	: _codec( eCodecTypeEncoder, "mpeg2video" )
+	, _verbose( false )
 {
 }
 
@@ -184,9 +185,7 @@ void AvOutputVideo::setProfile( const ProfileLoader::Profile& profile, const avt
 			encodeOption.setString( (*it).second );
 		}
 		catch( std::exception& e )
-		{
-			//std::cout << "[OutputVideo] warning: " << e.what() << std::endl;
-		}
+		{}
 	}
 
 	setup();
@@ -208,7 +207,8 @@ void AvOutputVideo::setProfile( const ProfileLoader::Profile& profile, const avt
 		}
 		catch( std::exception& e )
 		{
-			std::cout << "[OutputVideo] warning - can't set option " << (*it).first << " to " << (*it).second << ": " << e.what() << std::endl;
+			if( _verbose )
+				std::cout << "[OutputVideo] warning - can't set option " << (*it).first << " to " << (*it).second << ": " << e.what() << std::endl;
 		}
 	}
 }
