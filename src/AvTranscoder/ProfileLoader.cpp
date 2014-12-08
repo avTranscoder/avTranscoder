@@ -42,7 +42,8 @@ void ProfileLoader::loadProfile( const std::string& avProfileFile )
 		customProfile.count( constants::avProfileIdentificator ) &&
 		customProfile.count( constants::avProfileIdentificatorHuman ) &&
 		customProfile.count( constants::avProfileType ) &&
-		( customProfile.find( constants::avProfileType )->second == constants::avProfileTypeVideo ||
+		( customProfile.find( constants::avProfileType )->second == constants::avProfileTypeFormat ||
+		customProfile.find( constants::avProfileType )->second == constants::avProfileTypeVideo ||
 		customProfile.find( constants::avProfileType )->second == constants::avProfileTypeAudio )
 		)
 	{
