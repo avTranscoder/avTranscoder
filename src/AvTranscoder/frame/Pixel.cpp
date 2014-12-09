@@ -69,13 +69,23 @@ void Pixel::init( const AVPixelFormat avPixelFormat )
 	setAlpha          ( ( pix_desc->flags & PIX_FMT_ALPHA ) == PIX_FMT_ALPHA );
 	setPlanar         ( ( pix_desc->flags & PIX_FMT_PLANAR ) == PIX_FMT_PLANAR );
 
-	if( pix_desc->nb_components == 1 )
-		setColorComponents( eComponentGray );
-
-	if( pix_desc->flags & PIX_FMT_RGB )
+	// set color components
+	if( pix_desc->nb_components == 1 || pix_desc->nb_components == 2 )
+	{
+        setColorComponents( eComponentGray );
+	}
+	else if( pix_desc->flags & PIX_FMT_PAL || pix_desc->flags & PIX_FMT_RGB )
+	{
 		setColorComponents( eComponentRgb );
+	}
+	else if( pix_desc->name && ! strncmp( pix_desc->name, "yuvj", 4 ) )
+	{
+		setColorComponents( eComponentYuvJPEG );
+	}
 	else
+	{
 		setColorComponents( eComponentYuv );
+	}
 
 	setSubsampling( eSubsamplingNone );
 
@@ -108,10 +118,20 @@ void Pixel::init( const AVPixelFormat avPixelFormat )
 
 bool Pixel::asCorrectColorComponents( const AVPixFmtDescriptor* pix_desc, const EComponentType componentType ) const 
 {
-	if( componentType == eComponentRgb && pix_desc->flags & PIX_FMT_RGB )
-		return true;
-	if( ( componentType != eComponentRgb ) && ( ! ( pix_desc->flags & PIX_FMT_RGB ) ) )
-		return true;
+	switch( componentType )
+	{
+		case eComponentGray:
+			return ( pix_desc->nb_components == 1 ) ||
+			       ( pix_desc->nb_components == 2 );
+		case eComponentRgb:
+			return ( pix_desc->flags & PIX_FMT_PAL ) ||
+			       ( pix_desc->flags & PIX_FMT_RGB );
+		case eComponentYuvJPEG:
+			return ( pix_desc->name ) &&
+			       ( ! strncmp( pix_desc->name, "yuvj", 4 ) );
+		case eComponentYuv:
+			return ( pix_desc->nb_components == 3 );
+	}
 	return false;
 }
 

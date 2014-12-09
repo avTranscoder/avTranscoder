@@ -15,9 +15,10 @@ namespace avtranscoder
 
 enum EComponentType
 {
-	eComponentGray = 0,
-	eComponentRgb,
-	eComponentYuv
+	eComponentGray = 0,  ///< Gray color space
+	eComponentRgb,  ///< RGB color space
+	eComponentYuv,  ///< YUV color space. 16 <= Y <= 235, 16 <= U, V <= 240
+	eComponentYuvJPEG  ///< YUV color space. 0 <= Y <= 255, 0 <= U, V <= 255
 };
 
 enum ESubsamplingType
