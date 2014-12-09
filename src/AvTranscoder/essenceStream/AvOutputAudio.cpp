@@ -37,7 +37,7 @@ void AvOutputAudio::setup()
 	{
 		char err[AV_ERROR_MAX_STRING_SIZE];
 		av_strerror( ret, err, sizeof(err) );
-		std::string msg = "could not open audio encoder: ";
+		std::string msg = "could not open audio encoder " + _codec.getCodecName() +": ";
 		msg += err;
 		throw std::runtime_error( msg );
 	}

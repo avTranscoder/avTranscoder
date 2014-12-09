@@ -38,7 +38,7 @@ void AvOutputVideo::setup( )
 	{
 		char err[AV_ERROR_MAX_STRING_SIZE];
 		av_strerror( ret, err, sizeof(err) );
-		std::string msg = "could not open video encoder: ";
+		std::string msg = "could not open video encoder " + _codec.getCodecName() +": ";
 		msg += err;
 		throw std::runtime_error( msg );
 	}
