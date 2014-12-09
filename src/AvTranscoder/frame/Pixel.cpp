@@ -33,6 +33,7 @@ AVPixelFormat Pixel::findPixel() const
 	{
 		const AVPixFmtDescriptor *pix_desc = &av_pix_fmt_descriptors[ pixFmtIndex ];
 #endif
+
 		if( _components   == (size_t) pix_desc->nb_components &&
 			_pixelSize    == (size_t) av_get_bits_per_pixel( pix_desc ) &&
 			_endianess    == ( pix_desc->flags & PIX_FMT_BE ) &&
@@ -62,7 +63,7 @@ void Pixel::init( const AVPixelFormat avPixelFormat )
 	{
 		throw std::runtime_error( "unable to find pixel format." ); 
 	}
-	
+
 	setBitsPerPixel   ( av_get_bits_per_pixel( pix_desc ) );
 	setBigEndian      ( ( pix_desc->flags & PIX_FMT_BE ) == PIX_FMT_BE );
 	setComponents     ( pix_desc->nb_components );
@@ -87,8 +88,7 @@ void Pixel::init( const AVPixelFormat avPixelFormat )
 		setColorComponents( eComponentYuv );
 	}
 
-	setSubsampling( eSubsamplingNone );
-
+	// set chroma sub sampling
 	if( ( pix_desc->log2_chroma_w == 0 ) &&
 		( pix_desc->log2_chroma_h == 1 ) )
 	{
@@ -113,6 +113,10 @@ void Pixel::init( const AVPixelFormat avPixelFormat )
 		( pix_desc->log2_chroma_h == 2 ) )
 	{
 		setSubsampling( eSubsampling410 );
+	}
+	else
+	{
+		setSubsampling( eSubsamplingNone );
 	}
 }
 

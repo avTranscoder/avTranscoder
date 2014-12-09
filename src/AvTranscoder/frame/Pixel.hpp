@@ -78,8 +78,6 @@ private:
 	bool             _endianess;
 	bool             _withAlpha;
 	bool             _planar;
-
-	//AVChromaLocation
 };
 
 }
