@@ -168,8 +168,7 @@ bool AvOutputAudio::encodeFrame( Frame& codedFrame )
 
 void AvOutputAudio::setProfile( const ProfileLoader::Profile& profile, const AudioFrameDesc& frameDesc  )
 {
-	if( ! profile.count( constants::avProfileCodec ) || 		
-		! profile.count( constants::avProfileSampleFormat ) )
+	if( ! profile.count( constants::avProfileCodec ) )
 	{
 		throw std::runtime_error( "The profile " + profile.find( constants::avProfileIdentificatorHuman )->second + " is invalid." );
 	}
@@ -184,8 +183,7 @@ void AvOutputAudio::setProfile( const ProfileLoader::Profile& profile, const Aud
 		if( (*it).first == constants::avProfileIdentificator ||
 			(*it).first == constants::avProfileIdentificatorHuman ||
 			(*it).first == constants::avProfileType ||
-			(*it).first == constants::avProfileCodec ||
-			(*it).first == constants::avProfileSampleFormat )
+			(*it).first == constants::avProfileCodec )
 			continue;
 
 		try
@@ -204,8 +202,7 @@ void AvOutputAudio::setProfile( const ProfileLoader::Profile& profile, const Aud
 		if( (*it).first == constants::avProfileIdentificator ||
 			(*it).first == constants::avProfileIdentificatorHuman ||
 			(*it).first == constants::avProfileType ||
-			(*it).first == constants::avProfileCodec ||
-			(*it).first == constants::avProfileSampleFormat )
+			(*it).first == constants::avProfileCodec )
 			continue;
 
 		try

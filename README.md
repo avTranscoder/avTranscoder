@@ -40,7 +40,6 @@ avProfileName=profileName
 avProfileLongName=profileLongName
 avProfileType=avProfileTypeAudio
 codec=codecName
-sample_fmt=sampleFormat
 ```
 
 #### Continuous Integration
