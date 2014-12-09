@@ -31,7 +31,6 @@ avProfileName=profileName
 avProfileLongName=profileLongName
 avProfileType=avProfileTypeVideo
 codec=codecName
-pix_fmt=pixelFormat
 r=frameRate
 ```
 

@@ -138,7 +138,6 @@ bool AvOutputVideo::encodeFrame( Frame& codedFrame )
 	}
 	av_free_packet( &packet );
 	return ret == 0 && gotPacket == 1;
-
 #else
 	int ret = avcodec_encode_video( codecContext, packet.data, packet.size, NULL );
 	if( ret > 0 )
@@ -147,14 +146,12 @@ bool AvOutputVideo::encodeFrame( Frame& codedFrame )
 	}
 	av_free_packet( &packet );
 	return ret == 0;
-
 #endif
 }
 
 void AvOutputVideo::setProfile( const ProfileLoader::Profile& profile, const avtranscoder::VideoFrameDesc& frameDesc )
 {
 	if( ! profile.count( constants::avProfileCodec ) ||
-		! profile.count( constants::avProfilePixelFormat ) || 
 		! profile.count( constants::avProfileFrameRate ) )
 	{
 		throw std::runtime_error( "The profile " + profile.find( constants::avProfileIdentificatorHuman )->second + " is invalid." );
@@ -175,7 +172,6 @@ void AvOutputVideo::setProfile( const ProfileLoader::Profile& profile, const avt
 			(*it).first == constants::avProfileIdentificatorHuman ||
 			(*it).first == constants::avProfileType ||
 			(*it).first == constants::avProfileCodec ||
-			(*it).first == constants::avProfilePixelFormat ||
 			(*it).first == constants::avProfileFrameRate )
 			continue;
 
@@ -196,7 +192,6 @@ void AvOutputVideo::setProfile( const ProfileLoader::Profile& profile, const avt
 			(*it).first == constants::avProfileIdentificatorHuman ||
 			(*it).first == constants::avProfileType ||
 			(*it).first == constants::avProfileCodec ||
-			(*it).first == constants::avProfilePixelFormat ||
 			(*it).first == constants::avProfileFrameRate )
 			continue;
 
