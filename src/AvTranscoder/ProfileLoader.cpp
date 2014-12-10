@@ -2,12 +2,6 @@
 
 #include "common.hpp"
 
-#include <AvTranscoder/profile/XdCamHd422.hpp>
-#include <AvTranscoder/profile/DNxHD.hpp>
-#include <AvTranscoder/profile/Wave.hpp>
-#include <AvTranscoder/profile/Avi.hpp>
-#include <AvTranscoder/profile/Mkv.hpp>
-
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
@@ -52,13 +46,7 @@ void ProfileLoader::loadProfile( const std::string& avProfileFile )
 }
 
 void ProfileLoader::loadProfiles( const std::string& avProfilesPath )
-{
-	loadXdCamHD422( _profiles );
-	loadDNxHD( _profiles );
-	loadWave( _profiles );
-	loadAvi( _profiles );
-	loadMkv( _profiles );
-	
+{	
 	std::string realAvProfilesPath = avProfilesPath;
 	if( realAvProfilesPath.empty() )
 	{
