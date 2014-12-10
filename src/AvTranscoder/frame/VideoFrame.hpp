@@ -43,11 +43,11 @@ public:
 	void setPixel( const Pixel&  pixel ) { _pixel = pixel; }
 	void setDar( const size_t num, const size_t den ) { _displayAspectRatio.num = num; _displayAspectRatio.den = den; }
 	void setDar( const Rational ratio ) { _displayAspectRatio = ratio; }
-	
+
 	void setParameters( const ProfileLoader::Profile& profile )
 	{
 		if( profile.find( constants::avProfilePixelFormat ) != profile.end() )
-			setPixel( Pixel( profile.find( constants::avProfilePixelFormat )->second.c_str() ) );
+			setPixel( Pixel( profile.find( constants::avProfilePixelFormat )->second ) );
 	}
 
 	size_t               getWidth ()    const { return _width;  }
