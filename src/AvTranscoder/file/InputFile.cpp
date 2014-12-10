@@ -32,7 +32,7 @@ InputFile::InputFile( const std::string& filename )
 	{
 		std::string msg = "unable to open file: ";
 		msg += _filename;
-		throw std::runtime_error( msg );
+		throw std::ios_base::failure( msg );
 	}
 
 	// update format context informations from streams
@@ -40,7 +40,7 @@ InputFile::InputFile( const std::string& filename )
 	{
 		avformat_close_input( &_formatContext );
 		_formatContext = NULL;
-		throw std::runtime_error( "unable to find stream informations" );
+		throw std::ios_base::failure( "unable to find stream informations" );
 	}
 
 	// Initialize FileProperties
@@ -67,7 +67,7 @@ InputFile::~InputFile()
 	}
 }
 
-InputFile& InputFile::analyse( IProgress& progress, const EAnalyseLevel level )
+void InputFile::analyse( IProgress& progress, const EAnalyseLevel level )
 {
 	assert( _formatContext != NULL );
 
@@ -121,8 +121,6 @@ InputFile& InputFile::analyse( IProgress& progress, const EAnalyseLevel level )
 	}
 
 	seekAtFrame( 0 );
-
-	return *this;
 }
 
 FileProperties InputFile::analyseFile( const std::string& filename, IProgress& progress, const EAnalyseLevel level )
