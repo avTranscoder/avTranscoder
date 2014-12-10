@@ -37,7 +37,7 @@ bool OutputFile::setup()
 
 	if( ! _outputFormat )
 	{
-		throw std::runtime_error( "unable to find format" );
+		throw std::ios_base::failure( "unable to find format" );
 	}
 
 	_formatContext->oformat = _outputFormat;
@@ -48,7 +48,7 @@ bool OutputFile::setup()
 		{
 			avformat_close_input( &_formatContext );
 			_formatContext = NULL;
-			throw std::runtime_error( "error when opening output format" );
+			throw std::ios_base::failure( "error when opening output format" );
 		}
 	}
 
