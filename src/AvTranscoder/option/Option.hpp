@@ -49,11 +49,11 @@ public:
 	
 	// flags
 	int getFlags() const { return _avOption->flags; }
-	bool isEncodingOpt() const { return _avOption->flags & AV_OPT_FLAG_ENCODING_PARAM; }
-	bool isDecodingOpt() const { return _avOption->flags & AV_OPT_FLAG_DECODING_PARAM; }
-	bool isAudioOpt() const { return _avOption->flags & AV_OPT_FLAG_AUDIO_PARAM; }
-	bool isVideoOpt() const { return _avOption->flags & AV_OPT_FLAG_VIDEO_PARAM; }
-	bool isSubtitleOpt() const { return _avOption->flags & AV_OPT_FLAG_SUBTITLE_PARAM; }
+	bool isEncodingOpt() const { return ( _avOption->flags & AV_OPT_FLAG_ENCODING_PARAM ) == AV_OPT_FLAG_ENCODING_PARAM; }
+	bool isDecodingOpt() const { return ( _avOption->flags & AV_OPT_FLAG_DECODING_PARAM ) == AV_OPT_FLAG_DECODING_PARAM; }
+	bool isAudioOpt() const { return ( _avOption->flags & AV_OPT_FLAG_AUDIO_PARAM ) == AV_OPT_FLAG_AUDIO_PARAM; }
+	bool isVideoOpt() const { return ( _avOption->flags & AV_OPT_FLAG_VIDEO_PARAM ) == AV_OPT_FLAG_VIDEO_PARAM; }
+	bool isSubtitleOpt() const { return ( _avOption->flags & AV_OPT_FLAG_SUBTITLE_PARAM ) == AV_OPT_FLAG_SUBTITLE_PARAM; }
 	
 	// get default value
 	bool getDefaultBool() const;
