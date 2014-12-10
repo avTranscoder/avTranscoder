@@ -45,8 +45,9 @@ public:
 	 * @brief Run the analyse on the file after a setup.
 	 *        call this function before getProperties().
 	 * @param progress callback to get analysis progression
+	 * @param level by default eAnalyseLevelFirstGop
 	 **/
-	InputFile& analyse( IProgress& progress, const EAnalyseLevel level = eAnalyseLevelFirstGop );
+	void analyse( IProgress& progress, const EAnalyseLevel level = eAnalyseLevelFirstGop );
 	
 	/**
 	 * @brief Return media properties on the current InputFile.

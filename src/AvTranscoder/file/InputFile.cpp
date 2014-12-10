@@ -67,7 +67,7 @@ InputFile::~InputFile()
 	}
 }
 
-InputFile& InputFile::analyse( IProgress& progress, const EAnalyseLevel level )
+void InputFile::analyse( IProgress& progress, const EAnalyseLevel level )
 {
 	assert( _formatContext != NULL );
 
@@ -121,8 +121,6 @@ InputFile& InputFile::analyse( IProgress& progress, const EAnalyseLevel level )
 	}
 
 	seekAtFrame( 0 );
-
-	return *this;
 }
 
 FileProperties InputFile::analyseFile( const std::string& filename, IProgress& progress, const EAnalyseLevel level )
