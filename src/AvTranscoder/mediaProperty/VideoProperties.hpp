@@ -53,7 +53,7 @@ public:
 
 	size_t getStreamId() const { return _streamId; }
 	size_t getCodecId() const;
-	size_t getBitRate() const;
+	size_t getBitRate() const;  ///< in bits/s
 	size_t getMaxBitRate() const;
 	size_t getMinBitRate() const;
 	size_t getTicksPerFrame() const;
