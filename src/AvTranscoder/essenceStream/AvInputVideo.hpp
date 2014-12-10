@@ -26,6 +26,7 @@ public:
 	void flushDecoder();
 	
 	void setProfile( const ProfileLoader::Profile& profile );
+	void setVerbose( bool verbose = true ) { _verbose = verbose; }
 	
 private:
 	bool decodeNextFrame();
@@ -34,6 +35,8 @@ private:
 	AvInputStream* _inputStream;  ///< Stream from which we read next frames
 	const VideoCodec* _codec;  ///< Video decoder. Has link (no ownership)
 	AVFrame* _frame;  ///< Libav object to store decoded data
+
+	bool _verbose;
 };
 
 }

@@ -15,23 +15,19 @@ public:
 	
 	void setup();
 
-	/**
-	 * @param[out] codedFrame
-	 */
 	bool encodeFrame( const Frame& sourceFrame, Frame& codedFrame );
-	
-	/**
-	 * get delayed encoded frames
-	 */
-	bool encodeFrame( Frame& codedFrame );
-	
-	void setProfile( const ProfileLoader::Profile& profile, const AudioFrameDesc& frameDesc );
+	bool encodeFrame( Frame& codedFrame );  ///<  Encode delayed encoded frames
 
 	ICodec& getCodec() { return _codec; }
 	AudioCodec& getAudioCodec() { return _codec; }
 
+	void setProfile( const ProfileLoader::Profile& profile, const AudioFrameDesc& frameDesc );
+	void setVerbose( bool verbose = true ) { _verbose = verbose; }
+
 private:
 	AudioCodec _codec;
+
+	bool _verbose;
 };
 
 }

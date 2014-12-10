@@ -16,6 +16,7 @@ namespace avtranscoder
 
 AvOutputAudio::AvOutputAudio()
 	: _codec( eCodecTypeEncoder, "pcm_s16le" )
+	, _verbose( false )
 {
 }
 
@@ -36,7 +37,7 @@ void AvOutputAudio::setup()
 	{
 		char err[AV_ERROR_MAX_STRING_SIZE];
 		av_strerror( ret, err, sizeof(err) );
-		std::string msg = "could not open audio encoder: ";
+		std::string msg = "could not open audio encoder " + _codec.getCodecName() +": ";
 		msg += err;
 		throw std::runtime_error( msg );
 	}
@@ -167,8 +168,7 @@ bool AvOutputAudio::encodeFrame( Frame& codedFrame )
 
 void AvOutputAudio::setProfile( const ProfileLoader::Profile& profile, const AudioFrameDesc& frameDesc  )
 {
-	if( ! profile.count( constants::avProfileCodec ) || 		
-		! profile.count( constants::avProfileSampleFormat ) )
+	if( ! profile.count( constants::avProfileCodec ) )
 	{
 		throw std::runtime_error( "The profile " + profile.find( constants::avProfileIdentificatorHuman )->second + " is invalid." );
 	}
@@ -176,15 +176,14 @@ void AvOutputAudio::setProfile( const ProfileLoader::Profile& profile, const Aud
 	_codec.setCodec( eCodecTypeEncoder, profile.find( constants::avProfileCodec )->second );
 	_codec.setAudioParameters( frameDesc );
 
-	Context codecContext( _codec.getAVCodecContext() );
+	Context codecContext( _codec.getAVCodecContext(), AV_OPT_FLAG_ENCODING_PARAM | AV_OPT_FLAG_AUDIO_PARAM );
 	
 	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
 	{
 		if( (*it).first == constants::avProfileIdentificator ||
 			(*it).first == constants::avProfileIdentificatorHuman ||
 			(*it).first == constants::avProfileType ||
-			(*it).first == constants::avProfileCodec ||
-			(*it).first == constants::avProfileSampleFormat )
+			(*it).first == constants::avProfileCodec )
 			continue;
 
 		try
@@ -193,9 +192,7 @@ void AvOutputAudio::setProfile( const ProfileLoader::Profile& profile, const Aud
 			encodeOption.setString( (*it).second );
 		}
 		catch( std::exception& e )
-		{
-			//std::cout << "[OutputAudio] warning: " << e.what() << std::endl;
-		}
+		{}
 	}
 
 	setup();
@@ -205,8 +202,7 @@ void AvOutputAudio::setProfile( const ProfileLoader::Profile& profile, const Aud
 		if( (*it).first == constants::avProfileIdentificator ||
 			(*it).first == constants::avProfileIdentificatorHuman ||
 			(*it).first == constants::avProfileType ||
-			(*it).first == constants::avProfileCodec ||
-			(*it).first == constants::avProfileSampleFormat )
+			(*it).first == constants::avProfileCodec )
 			continue;
 
 		try
@@ -216,7 +212,8 @@ void AvOutputAudio::setProfile( const ProfileLoader::Profile& profile, const Aud
 		}
 		catch( std::exception& e )
 		{
-			std::cout << "[OutputAudio] warning - can't set option " << (*it).first << " to " << (*it).second << ": " << e.what() << std::endl;
+			if( _verbose )
+				std::cout << "[OutputAudio] warning - can't set option " << (*it).first << " to " << (*it).second << ": " << e.what() << std::endl;
 		}
 	}
 }

@@ -31,7 +31,6 @@ avProfileName=profileName
 avProfileLongName=profileLongName
 avProfileType=avProfileTypeVideo
 codec=codecName
-pix_fmt=pixelFormat
 r=frameRate
 ```
 
@@ -41,7 +40,6 @@ avProfileName=profileName
 avProfileLongName=profileLongName
 avProfileType=avProfileTypeAudio
 codec=codecName
-sample_fmt=sampleFormat
 ```
 
 #### Continuous Integration

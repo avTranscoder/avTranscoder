@@ -42,7 +42,8 @@ void ProfileLoader::loadProfile( const std::string& avProfileFile )
 		customProfile.count( constants::avProfileIdentificator ) &&
 		customProfile.count( constants::avProfileIdentificatorHuman ) &&
 		customProfile.count( constants::avProfileType ) &&
-		( customProfile.find( constants::avProfileType )->second == constants::avProfileTypeVideo ||
+		( customProfile.find( constants::avProfileType )->second == constants::avProfileTypeFormat ||
+		customProfile.find( constants::avProfileType )->second == constants::avProfileTypeVideo ||
 		customProfile.find( constants::avProfileType )->second == constants::avProfileTypeAudio )
 		)
 	{
@@ -146,16 +147,16 @@ ProfileLoader::Profiles ProfileLoader::getAudioProfiles()
 	return profiles;
 }
 
-ProfileLoader::Profile& ProfileLoader::getProfile( const std::string& searchProfile )
+ProfileLoader::Profile& ProfileLoader::getProfile( const std::string& avProfileIdentificator )
 {
 	for( Profiles::iterator it = _profiles.begin(); it != _profiles.end(); ++it )
 	{
-		if( (*it).find( constants::avProfileIdentificator )->second == searchProfile )
+		if( (*it).find( constants::avProfileIdentificator )->second == avProfileIdentificator )
 		{
 			return (*it);
 		}
 	}
-	throw std::runtime_error( "unable to find profile: " + searchProfile );
+	throw std::runtime_error( "unable to find profile: " + avProfileIdentificator );
 }
 
 }

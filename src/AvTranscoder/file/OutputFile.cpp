@@ -248,7 +248,7 @@ void OutputFile::setProfile( const ProfileLoader::Profile& profile )
 	}
 	_outputFormat = av_guess_format( profile.find( constants::avProfileFormat )->second.c_str(), _filename.c_str(), NULL);
 	
-	Context formatContext( _formatContext );
+	Context formatContext( _formatContext, AV_OPT_FLAG_ENCODING_PARAM );
 	
 	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
 	{
@@ -264,9 +264,7 @@ void OutputFile::setProfile( const ProfileLoader::Profile& profile )
 			formatOption.setString( (*it).second );
 		}
 		catch( std::exception& e )
-		{
-			//std::cout << "[OutputFile] warning: " << e.what() << std::endl;
-		}
+		{}
 	}
 	
 	setup();
@@ -286,7 +284,8 @@ void OutputFile::setProfile( const ProfileLoader::Profile& profile )
 		}
 		catch( std::exception& e )
 		{
-			std::cout << "[OutputFile] warning - can't set option " << (*it).first << " to " << (*it).second << ": " << e.what() << std::endl;
+			if( _verbose )
+				std::cout << "[OutputFile] warning - can't set option " << (*it).first << " to " << (*it).second << ": " << e.what() << std::endl;
 		}
 	}
 }

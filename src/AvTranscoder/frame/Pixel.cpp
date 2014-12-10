@@ -33,6 +33,7 @@ AVPixelFormat Pixel::findPixel() const
 	{
 		const AVPixFmtDescriptor *pix_desc = &av_pix_fmt_descriptors[ pixFmtIndex ];
 #endif
+
 		if( _components   == (size_t) pix_desc->nb_components &&
 			_pixelSize    == (size_t) av_get_bits_per_pixel( pix_desc ) &&
 			_endianess    == ( pix_desc->flags & PIX_FMT_BE ) &&
@@ -62,23 +63,32 @@ void Pixel::init( const AVPixelFormat avPixelFormat )
 	{
 		throw std::runtime_error( "unable to find pixel format." ); 
 	}
-	
+
 	setBitsPerPixel   ( av_get_bits_per_pixel( pix_desc ) );
 	setBigEndian      ( ( pix_desc->flags & PIX_FMT_BE ) == PIX_FMT_BE );
 	setComponents     ( pix_desc->nb_components );
 	setAlpha          ( ( pix_desc->flags & PIX_FMT_ALPHA ) == PIX_FMT_ALPHA );
 	setPlanar         ( ( pix_desc->flags & PIX_FMT_PLANAR ) == PIX_FMT_PLANAR );
 
-	if( pix_desc->nb_components == 1 )
-		setColorComponents( eComponentGray );
-
-	if( pix_desc->flags & PIX_FMT_RGB )
+	// set color components
+	if( pix_desc->nb_components == 1 || pix_desc->nb_components == 2 )
+	{
+        setColorComponents( eComponentGray );
+	}
+	else if( pix_desc->flags & PIX_FMT_PAL || pix_desc->flags & PIX_FMT_RGB )
+	{
 		setColorComponents( eComponentRgb );
+	}
+	else if( pix_desc->name && ! strncmp( pix_desc->name, "yuvj", 4 ) )
+	{
+		setColorComponents( eComponentYuvJPEG );
+	}
 	else
+	{
 		setColorComponents( eComponentYuv );
+	}
 
-	setSubsampling( eSubsamplingNone );
-
+	// set chroma sub sampling
 	if( ( pix_desc->log2_chroma_w == 0 ) &&
 		( pix_desc->log2_chroma_h == 1 ) )
 	{
@@ -104,14 +114,28 @@ void Pixel::init( const AVPixelFormat avPixelFormat )
 	{
 		setSubsampling( eSubsampling410 );
 	}
+	else
+	{
+		setSubsampling( eSubsamplingNone );
+	}
 }
 
 bool Pixel::asCorrectColorComponents( const AVPixFmtDescriptor* pix_desc, const EComponentType componentType ) const 
 {
-	if( componentType == eComponentRgb && pix_desc->flags & PIX_FMT_RGB )
-		return true;
-	if( ( componentType != eComponentRgb ) && ( ! ( pix_desc->flags & PIX_FMT_RGB ) ) )
-		return true;
+	switch( componentType )
+	{
+		case eComponentGray:
+			return ( pix_desc->nb_components == 1 ) ||
+			       ( pix_desc->nb_components == 2 );
+		case eComponentRgb:
+			return ( pix_desc->flags & PIX_FMT_PAL ) ||
+			       ( pix_desc->flags & PIX_FMT_RGB );
+		case eComponentYuvJPEG:
+			return ( pix_desc->name ) &&
+			       ( ! strncmp( pix_desc->name, "yuvj", 4 ) );
+		case eComponentYuv:
+			return ( pix_desc->nb_components == 3 );
+	}
 	return false;
 }
 
