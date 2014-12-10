@@ -62,6 +62,13 @@ public:
 	std::string getDefaultString() const;
 	std::pair<int, int> getDefaultRatio() const;
 
+	// get value
+	bool getBool() const;
+	int getInt() const;
+	double getDouble() const;
+	std::string getString() const;
+	std::pair<int, int> getRatio() const;
+
 	// set value
 	void setFlag( const std::string& flag, const bool enable );
 	void setBool( const bool value );
@@ -82,8 +89,15 @@ public:
 private:
 	EOptionBaseType getTypeFromAVOption( const std::string& unit, const AVOptionType avType );
 
+	/**
+	 * @brief Check the return value from FFmpeg functions
+	 * @note Throw run_time exception if error
+	 */
+	void checkFFmpegGetOption( const int ffmpegReturnCode ) const;
+	void checkFFmpegSetOption( const int ffmpegReturnCode, const std::string& optionValue );
+
 private:
-	AVOption* _avOption;
+	AVOption* _avOption;   ///< Has link (no ownership)
 	EOptionBaseType _type;
 
 	/**
