@@ -66,9 +66,9 @@ public:
 	void setFlag( const std::string& flag, const bool enable );
 	void setBool( const bool value );
 	void setInt( const int value );
-	void setRatio( const int num, const int den );
 	void setDouble( const double value );
 	void setString( const std::string& value );
+	void setRatio( const int num, const int den );
 	
 	// array of childs
 	bool hasChild() const { return _childOptions.size(); }

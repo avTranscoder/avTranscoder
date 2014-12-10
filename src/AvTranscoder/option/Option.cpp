@@ -140,22 +140,6 @@ void Option::setInt( const int value )
 	}
 }
 
-void Option::setRatio( const int num, const int den )
-{
-	Rational ratio;
-	ratio.num = num;
-	ratio.den = den;
-	int error = av_opt_set_q( _avContext, getName().c_str(), ratio, AV_OPT_SEARCH_CHILDREN );
-	if( error )
-	{
-		std::ostringstream os;
-		os << num << "/" << den;
-		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( error, err, sizeof(err) );
-		throw std::runtime_error( "setting " + getName() + " parameter to " + os.str() + ": " + err );
-	}
-}
-
 void Option::setDouble( const double value )
 {
 	int error = av_opt_set_double( _avContext, getName().c_str(), value, AV_OPT_SEARCH_CHILDREN );
@@ -177,6 +161,22 @@ void Option::setString( const std::string& value )
 		char err[AV_ERROR_MAX_STRING_SIZE];
 		av_strerror( error, err, sizeof(err) );
 		throw std::runtime_error( "setting " + getName() + " parameter to " + value + ": " + err );
+	}
+}
+
+void Option::setRatio( const int num, const int den )
+{
+	Rational ratio;
+	ratio.num = num;
+	ratio.den = den;
+	int error = av_opt_set_q( _avContext, getName().c_str(), ratio, AV_OPT_SEARCH_CHILDREN );
+	if( error )
+	{
+		std::ostringstream os;
+		os << num << "/" << den;
+		char err[AV_ERROR_MAX_STRING_SIZE];
+		av_strerror( error, err, sizeof(err) );
+		throw std::runtime_error( "setting " + getName() + " parameter to " + os.str() + ": " + err );
 	}
 }
 
