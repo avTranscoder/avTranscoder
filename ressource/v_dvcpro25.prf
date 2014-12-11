@@ -1,0 +1,7 @@
+avProfileName=dvcpro25
+avProfileLongName=DVCPRO 25
+avProfileType=avProfileTypeVideo
+codec=dvvideo
+pix_fmt=yuv411p
+b=25M
+r=25

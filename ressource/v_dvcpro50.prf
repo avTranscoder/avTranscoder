@@ -1,0 +1,7 @@
+avProfileName=dvcpro50
+avProfileLongName=DVCPRO 50
+avProfileType=avProfileTypeVideo
+codec=dvvideo
+pix_fmt=yuv422p
+b=50M
+r=25

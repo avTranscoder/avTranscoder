@@ -1,0 +1,6 @@
+avProfileName=x264
+avProfileLongName=x264 High
+avProfileType=avProfileTypeVideo
+codec=libx264
+profile=High
+r=25

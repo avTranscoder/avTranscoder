@@ -1,0 +1,8 @@
+avProfileName=dnxhd185
+avProfileLongName=DNxHD 185Mbps
+avProfileType=avProfileTypeVideo
+codec=dnxhd
+pix_fmt=yuv422p
+b=185M
+g=1
+r=25
