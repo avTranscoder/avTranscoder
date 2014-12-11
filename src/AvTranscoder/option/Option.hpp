@@ -49,11 +49,11 @@ public:
 	
 	// flags
 	int getFlags() const { return _avOption->flags; }
-	bool isEncodingOpt() const { return _avOption->flags & AV_OPT_FLAG_ENCODING_PARAM; }
-	bool isDecodingOpt() const { return _avOption->flags & AV_OPT_FLAG_DECODING_PARAM; }
-	bool isAudioOpt() const { return _avOption->flags & AV_OPT_FLAG_AUDIO_PARAM; }
-	bool isVideoOpt() const { return _avOption->flags & AV_OPT_FLAG_VIDEO_PARAM; }
-	bool isSubtitleOpt() const { return _avOption->flags & AV_OPT_FLAG_SUBTITLE_PARAM; }
+	bool isEncodingOpt() const { return ( _avOption->flags & AV_OPT_FLAG_ENCODING_PARAM ) == AV_OPT_FLAG_ENCODING_PARAM; }
+	bool isDecodingOpt() const { return ( _avOption->flags & AV_OPT_FLAG_DECODING_PARAM ) == AV_OPT_FLAG_DECODING_PARAM; }
+	bool isAudioOpt() const { return ( _avOption->flags & AV_OPT_FLAG_AUDIO_PARAM ) == AV_OPT_FLAG_AUDIO_PARAM; }
+	bool isVideoOpt() const { return ( _avOption->flags & AV_OPT_FLAG_VIDEO_PARAM ) == AV_OPT_FLAG_VIDEO_PARAM; }
+	bool isSubtitleOpt() const { return ( _avOption->flags & AV_OPT_FLAG_SUBTITLE_PARAM ) == AV_OPT_FLAG_SUBTITLE_PARAM; }
 	
 	// get default value
 	bool getDefaultBool() const;
@@ -62,13 +62,20 @@ public:
 	std::string getDefaultString() const;
 	std::pair<int, int> getDefaultRatio() const;
 
+	// get value
+	bool getBool() const;
+	int getInt() const;
+	double getDouble() const;
+	std::string getString() const;
+	std::pair<int, int> getRatio() const;
+
 	// set value
 	void setFlag( const std::string& flag, const bool enable );
 	void setBool( const bool value );
 	void setInt( const int value );
-	void setRatio( const int num, const int den );
 	void setDouble( const double value );
 	void setString( const std::string& value );
+	void setRatio( const int num, const int den );
 	
 	// array of childs
 	bool hasChild() const { return _childOptions.size(); }
@@ -82,8 +89,15 @@ public:
 private:
 	EOptionBaseType getTypeFromAVOption( const std::string& unit, const AVOptionType avType );
 
+	/**
+	 * @brief Check the return value from FFmpeg functions
+	 * @note Throw run_time exception if error
+	 */
+	void checkFFmpegGetOption( const int ffmpegReturnCode ) const;
+	void checkFFmpegSetOption( const int ffmpegReturnCode, const std::string& optionValue );
+
 private:
-	AVOption* _avOption;
+	AVOption* _avOption;   ///< Has link (no ownership)
 	EOptionBaseType _type;
 
 	/**

@@ -90,17 +90,62 @@ std::pair<int, int> Option::getDefaultRatio() const
 {
 	return std::make_pair( _avOption->default_val.q.num, _avOption->default_val.q.den );
 }
-//av_make_error_string
+
+bool Option::getBool() const
+{
+	int64_t out_val;
+	int error = av_opt_get_int( _avContext, getName().c_str(), AV_OPT_SEARCH_CHILDREN, &out_val );
+	checkFFmpegGetOption( error );
+
+	return out_val ? true : false;
+}
+
+int Option::getInt() const
+{
+	int64_t out_val;
+	int error =  av_opt_get_int( _avContext, getName().c_str(), AV_OPT_SEARCH_CHILDREN, &out_val );
+	checkFFmpegGetOption( error );
+
+	return out_val;
+}
+
+double Option::getDouble() const
+{
+	double out_val;
+	int error = av_opt_get_double( _avContext, getName().c_str(), AV_OPT_SEARCH_CHILDREN, &out_val );
+	checkFFmpegGetOption( error );
+
+	return out_val;
+}
+
+std::string Option::getString() const
+{
+	void* out_val = av_malloc( 128 );
+	int error = av_opt_get( _avContext, getName().c_str(), AV_OPT_SEARCH_CHILDREN, (uint8_t**)&out_val );
+
+	std::string strValue( out_val ? reinterpret_cast<const char*>( out_val ) : "" );
+
+	av_free( out_val );
+
+	checkFFmpegGetOption( error );
+
+	return strValue;
+}
+
+std::pair<int, int> Option::getRatio() const
+{
+	Rational out_val;
+	int error = av_opt_get_q( _avContext, getName().c_str(), AV_OPT_SEARCH_CHILDREN, &out_val );
+	checkFFmpegGetOption( error );
+
+	return std::make_pair( out_val.num, out_val.den );
+}
+
 void Option::setFlag( const std::string& flag, const bool enable )
 {
 	int64_t optVal;
 	int error = av_opt_get_int( _avContext, getName().c_str(), AV_OPT_SEARCH_CHILDREN, &optVal );
-	if( error )
-	{
-		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( error, err, sizeof(err) );
-		throw std::runtime_error( "unknown key " + getName() + ": " + err );
-	}
+	checkFFmpegGetOption( error );
 
 	if( enable )
 		optVal = optVal |  _avOption->default_val.i64;
@@ -108,36 +153,40 @@ void Option::setFlag( const std::string& flag, const bool enable )
 		optVal = optVal &~ _avOption->default_val.i64;
 
 	error = av_opt_set_int( _avContext, getName().c_str(), optVal, AV_OPT_SEARCH_CHILDREN );
-	if( error )
-	{
-		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( error, err, sizeof(err) );
-		throw std::runtime_error( "setting " + getName() + " parameter to " + flag + ": " + err );
-	}
+	checkFFmpegSetOption( error, flag );
 }
 
 void Option::setBool( const bool value )
 {
 	int error = av_opt_set_int( _avContext, getName().c_str(), value, AV_OPT_SEARCH_CHILDREN );
-	if( error )
-	{
-		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( error, err, sizeof(err) );
-		throw std::runtime_error( "setting " + getName() + " parameter to " + ( value ? "true" : "false" ) + ": " + err );
-	}
+
+	std::ostringstream os;
+	os << ( value ? "true" : "false" );
+	checkFFmpegSetOption( error, os.str() );
 }
 
 void Option::setInt( const int value )
 {
 	int error = av_opt_set_int( _avContext, getName().c_str(), value, AV_OPT_SEARCH_CHILDREN );
-	if( error )
-	{
-		std::ostringstream os;
-		os << value;
-		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( error, err, sizeof(err) );
-		throw std::runtime_error( "setting " + getName() + " parameter to " + os.str() + ": " + err );
-	}
+
+	std::ostringstream os;
+	os << value;
+	checkFFmpegSetOption( error, os.str() );
+}
+
+void Option::setDouble( const double value )
+{
+	int error = av_opt_set_double( _avContext, getName().c_str(), value, AV_OPT_SEARCH_CHILDREN );
+
+	std::ostringstream os;
+	os << value;
+	checkFFmpegSetOption( error, os.str() );
+}
+
+void Option::setString( const std::string& value )
+{
+	int error = av_opt_set( _avContext, getName().c_str(), value.c_str(), AV_OPT_SEARCH_CHILDREN );
+	checkFFmpegSetOption( error, value );
 }
 
 void Option::setRatio( const int num, const int den )
@@ -146,43 +195,35 @@ void Option::setRatio( const int num, const int den )
 	ratio.num = num;
 	ratio.den = den;
 	int error = av_opt_set_q( _avContext, getName().c_str(), ratio, AV_OPT_SEARCH_CHILDREN );
-	if( error )
-	{
-		std::ostringstream os;
-		os << num << "/" << den;
-		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( error, err, sizeof(err) );
-		throw std::runtime_error( "setting " + getName() + " parameter to " + os.str() + ": " + err );
-	}
-}
 
-void Option::setDouble( const double value )
-{
-	int error = av_opt_set_double( _avContext, getName().c_str(), value, AV_OPT_SEARCH_CHILDREN );
-	if( error )
-	{
-		std::ostringstream os;
-		os << value;
-		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( error, err, sizeof(err) );
-		throw std::runtime_error( "setting " + getName() + " parameter to " + os.str() + ": " + err );
-	}
-}
-
-void Option::setString( const std::string& value )
-{
-	int error = av_opt_set( _avContext, getName().c_str(), value.c_str(), AV_OPT_SEARCH_CHILDREN );
-	if( error )
-	{
-		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( error, err, sizeof(err) );
-		throw std::runtime_error( "setting " + getName() + " parameter to " + value + ": " + err );
-	}
+	std::ostringstream os;
+	os << num << "/" << den;
+	checkFFmpegSetOption( error, os.str() );
 }
 
 void Option::appendChild( const Option& child )
 {
 	_childOptions.push_back( child );
+}
+
+void Option::checkFFmpegGetOption( const int ffmpegReturnCode ) const
+{
+	if( ffmpegReturnCode )
+	{
+		char err[AV_ERROR_MAX_STRING_SIZE];
+		av_strerror( ffmpegReturnCode, err, sizeof(err) );
+		throw std::runtime_error( "unknown key " + getName() + ": " + err );
+	}
+}
+
+void Option::checkFFmpegSetOption( const int ffmpegReturnCode, const std::string& optionValue )
+{
+	if( ffmpegReturnCode )
+	{
+		char err[AV_ERROR_MAX_STRING_SIZE];
+		av_strerror( ffmpegReturnCode, err, sizeof(err) );
+		throw std::runtime_error( "setting " + getName() + " parameter to " + optionValue + ": " + err );
+	}
 }
 
 }
