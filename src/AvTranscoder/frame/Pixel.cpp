@@ -104,7 +104,7 @@ void Pixel::init( const AVPixelFormat avPixelFormat )
 	{
 		setSubsampling( eSubsampling420 );
 	}
-	else if( ( pix_desc->log2_chroma_w == 3 ) &&
+	else if( ( pix_desc->log2_chroma_w == 2 ) &&
 		( pix_desc->log2_chroma_h == 0 ) )
 	{
 		setSubsampling( eSubsampling411 );
@@ -165,7 +165,7 @@ bool Pixel::asCorrectSubsampling( const AVPixFmtDescriptor* pix_desc, const ESub
 		}
 		case eSubsampling411:
 		{
-			return  ( pix_desc->log2_chroma_w == 3 ) &&
+			return  ( pix_desc->log2_chroma_w == 2 ) &&
 			        ( pix_desc->log2_chroma_h == 0 );
 		}
 		case eSubsampling410 :
