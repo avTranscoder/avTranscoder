@@ -1,0 +1,7 @@
+avProfileName=wave24b48kstereo
+avProfileLongName=Wave 24bits 48kHz stereo
+avProfileType=avProfileTypeAudio
+codec=pcm_s24le
+sample_fmt=s32
+ar=48000
+ac=2

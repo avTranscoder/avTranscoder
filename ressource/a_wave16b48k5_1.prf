@@ -1,0 +1,7 @@
+avProfileName=wave16b48k5_1
+avProfileLongName=Wave 16bits 48kHz 5.1
+avProfileType=avProfileTypeAudio
+codec=pcm_s16le
+sample_fmt=s16
+ar=48000
+ac=6
