@@ -68,8 +68,8 @@ public:
 private:
 	void init( const AVPixelFormat avPixelFormat );
 
-	bool asCorrectColorComponents( const AVPixFmtDescriptor* pix_desc, const EComponentType componentType ) const;
-	bool asCorrectSubsampling( const AVPixFmtDescriptor* pix_desc, const ESubsamplingType subsamplingType ) const;
+	ESubsamplingType getSubsampling( const AVPixFmtDescriptor* pix_desc ) const;
+	EComponentType getColorComponents( const AVPixFmtDescriptor* pix_desc ) const;
 
 	size_t           _pixelSize;
 	size_t           _components;

@@ -42,8 +42,8 @@ AVPixelFormat Pixel::findPixel() const
 			// @todo what need todo if libavutil <= 51 ?
 #endif
 			_planar       == ( ( pix_desc->flags & PIX_FMT_PLANAR ) != 0 ) &&
-			asCorrectColorComponents( pix_desc, _componentType ) &&
-			asCorrectSubsampling( pix_desc, _subsamplingType ) )
+			_componentType == getColorComponents( pix_desc ) &&
+			_subsamplingType == getSubsampling( pix_desc ) )
 		{
 #if LIBAVUTIL_VERSION_MAJOR > 51
 			return av_pix_fmt_desc_get_id( pix_desc );
@@ -69,112 +69,61 @@ void Pixel::init( const AVPixelFormat avPixelFormat )
 	setComponents     ( pix_desc->nb_components );
 	setAlpha          ( ( pix_desc->flags & PIX_FMT_ALPHA ) == PIX_FMT_ALPHA );
 	setPlanar         ( ( pix_desc->flags & PIX_FMT_PLANAR ) == PIX_FMT_PLANAR );
+	setColorComponents( getColorComponents( pix_desc ) );
+	setSubsampling( getSubsampling( pix_desc ) );
+}
 
-	// set color components
-	if( pix_desc->nb_components == 1 || pix_desc->nb_components == 2 )
-	{
-        setColorComponents( eComponentGray );
-	}
-	else if( pix_desc->flags & PIX_FMT_PAL || pix_desc->flags & PIX_FMT_RGB )
-	{
-		setColorComponents( eComponentRgb );
-	}
-	else if( pix_desc->name && ! strncmp( pix_desc->name, "yuvj", 4 ) )
-	{
-		setColorComponents( eComponentYuvJPEG );
-	}
-	else
-	{
-		setColorComponents( eComponentYuv );
-	}
-
-	// set chroma sub sampling
+ESubsamplingType Pixel::getSubsampling( const AVPixFmtDescriptor* pix_desc ) const
+{
 	if( ( pix_desc->log2_chroma_w == 0 ) &&
 		( pix_desc->log2_chroma_h == 1 ) )
 	{
-		setSubsampling( eSubsampling440 );
+		return eSubsampling440;
 	}
 	else if( ( pix_desc->log2_chroma_w == 1 ) &&
 		( pix_desc->log2_chroma_h == 0 ) )
 	{
-		setSubsampling( eSubsampling422 );
+		return eSubsampling422;
 	}
 	else if( ( pix_desc->log2_chroma_w == 1 ) &&
 		( pix_desc->log2_chroma_h == 1 ) )
 	{
-		setSubsampling( eSubsampling420 );
+		return eSubsampling420;
 	}
 	else if( ( pix_desc->log2_chroma_w == 2 ) &&
 		( pix_desc->log2_chroma_h == 0 ) )
 	{
-		setSubsampling( eSubsampling411 );
+		return eSubsampling411;
 	}
 	else if( ( pix_desc->log2_chroma_w == 2 ) &&
 		( pix_desc->log2_chroma_h == 2 ) )
 	{
-		setSubsampling( eSubsampling410 );
+		return eSubsampling410;
 	}
 	else
 	{
-		setSubsampling( eSubsamplingNone );
+		return eSubsamplingNone;
 	}
 }
 
-bool Pixel::asCorrectColorComponents( const AVPixFmtDescriptor* pix_desc, const EComponentType componentType ) const 
+EComponentType Pixel::getColorComponents( const AVPixFmtDescriptor* pix_desc ) const
 {
-	switch( componentType )
+	if( pix_desc->nb_components == 1 || pix_desc->nb_components == 2 )
 	{
-		case eComponentGray:
-			return ( pix_desc->nb_components == 1 ) ||
-			       ( pix_desc->nb_components == 2 );
-		case eComponentRgb:
-			return ( pix_desc->flags & PIX_FMT_PAL ) ||
-			       ( pix_desc->flags & PIX_FMT_RGB );
-		case eComponentYuvJPEG:
-			return ( pix_desc->name ) &&
-			       ( ! strncmp( pix_desc->name, "yuvj", 4 ) );
-		case eComponentYuv:
-			return ( pix_desc->nb_components == 3 );
+        return eComponentGray;
 	}
-	return false;
-}
-
-bool Pixel::asCorrectSubsampling( const AVPixFmtDescriptor* pix_desc, const ESubsamplingType subsamplingType ) const
-{
-	switch( subsamplingType )
+	else if( pix_desc->flags & PIX_FMT_PAL || pix_desc->flags & PIX_FMT_RGB )
 	{
-		case eSubsamplingNone :
-		{
-			return  ( pix_desc->log2_chroma_w == 0 ) &&
-			        ( pix_desc->log2_chroma_h == 0 );
-		}
-		case eSubsampling440 :
-		{
-			return  ( pix_desc->log2_chroma_w == 0 ) &&
-			        ( pix_desc->log2_chroma_h == 1 );
-		}
-		case eSubsampling422 :
-		{
-			return  ( pix_desc->log2_chroma_w == 1 ) &&
-			        ( pix_desc->log2_chroma_h == 0 );
-		}
-		case eSubsampling420 :
-		{
-			return  ( pix_desc->log2_chroma_w == 1 ) &&
-			        ( pix_desc->log2_chroma_h == 1 );
-		}
-		case eSubsampling411:
-		{
-			return  ( pix_desc->log2_chroma_w == 2 ) &&
-			        ( pix_desc->log2_chroma_h == 0 );
-		}
-		case eSubsampling410 :
-		{
-			return  ( pix_desc->log2_chroma_w == 2 ) &&
-			        ( pix_desc->log2_chroma_h == 2  );
-		}
+		return eComponentRgb;
 	}
-	return false;
+	else if( pix_desc->name && ! strncmp( pix_desc->name, "yuvj", 4 ) )
+	{
+		return eComponentYuvJPEG;
+	}
+	else
+	{
+		return eComponentYuv;
+	}
 }
 
 }
