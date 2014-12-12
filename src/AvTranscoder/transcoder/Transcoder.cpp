@@ -301,7 +301,8 @@ void Transcoder::process( IProgress& progress )
 
 		frameProcessed =  processFrame();
 
-		if( progress.progress( _outputFile.getProgressDuration(), totalDuration ) == eJobStatusCancel )
+		double progressDuration = _outputFile.getProgressDuration();
+		if( progress.progress( ( progressDuration > totalDuration )? totalDuration : progressDuration, totalDuration ) == eJobStatusCancel )
 			break;
 
 		++frame;
