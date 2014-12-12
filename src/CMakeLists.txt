@@ -37,16 +37,23 @@ target_link_libraries(avtranscoder-shared ${FFMPEG_LIBRARIES})
 ### Install AvTranscoder libs and include
 install(
 	DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/AvTranscoder"
-	DESTINATION "include/"
+	DESTINATION "include"
 	FILES_MATCHING
 	PATTERN "*.hpp"
 	PATTERN "*.i"
-	PATTERN "Profiles" EXCLUDE
 )
 set(LIBRARY_OUTPUT_PATH "${PROJECT_BINARY_DIR}/lib")
 install(
 	DIRECTORY "${LIBRARY_OUTPUT_PATH}"
 	DESTINATION "${CMAKE_INSTALL_PREFIX}"
+)
+
+### Install AvTranscoder ressource
+install(
+	DIRECTORY "${PROJECT_SOURCE_DIR}/ressource"
+	DESTINATION "share"
+	FILES_MATCHING
+	PATTERN "*.prf"
 )
 
 ### SWIG
