@@ -5,7 +5,6 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 include(AvTranscoderMacros)
 
 # Build app
-include_directories(${AVTRANSCODER_SRC_PATH} ${FFMPEG_INCLUDE_DIR})
 # Add C++11 flag
 if(NOT WIN32)
 	set(CMAKE_CXX_FLAGS "-std=c++0x")

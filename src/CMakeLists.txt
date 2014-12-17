@@ -33,6 +33,9 @@ endif()
 set_target_properties(avtranscoder-shared PROPERTIES SOVERSION ${AVTRANSCODER_VERSION_MAJOR})
 set_target_properties(avtranscoder-shared PROPERTIES VERSION ${AVTRANSCODER_VERSION})
 target_link_libraries(avtranscoder-shared ${FFMPEG_LIBRARIES})
+target_include_directories(avtranscoder-shared PUBLIC
+    ${AVTRANSCODER_SRC_PATH} ${FFMPEG_INCLUDE_DIR})
+
 
 ### Install AvTranscoder libs and include
 install(
