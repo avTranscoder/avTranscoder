@@ -607,7 +607,7 @@ void VideoProperties::analyseGopStructure( IProgress& progress )
 					if( gotFrame )
 					{
 						_gopStructure.push_back( std::make_pair( av_get_picture_type_char( frame->pict_type ), frame->key_frame ) );
-						_isInterlaced  = frame->interlaced_frame;
+						_isInterlaced = frame->interlaced_frame;
 						_isTopFieldFirst = frame->top_field_first;
 						++count;
 						if( progress.progress( count, _codecContext->gop_size ) == eJobStatusCancel )
@@ -701,11 +701,10 @@ PropertiesMap VideoProperties::getPropertiesAsMap() const
 
 	std::string gop;
 	NoDisplayProgress progress;
-	std::vector< std::pair< char, bool > > gopStructure = getGopStructure();
-	for( size_t frameIndex = 0; frameIndex < gopStructure.size(); ++frameIndex )
+	for( size_t frameIndex = 0; frameIndex < _gopStructure.size(); ++frameIndex )
 	{
-		gop += gopStructure.at( frameIndex ).first;
-		gop += ( gopStructure.at( frameIndex ).second ? "*" : " " );
+		gop += _gopStructure.at( frameIndex ).first;
+		gop += ( _gopStructure.at( frameIndex ).second ? "*" : " " );
 	}
 	detail::add( dataMap, "gop", gop );
 
