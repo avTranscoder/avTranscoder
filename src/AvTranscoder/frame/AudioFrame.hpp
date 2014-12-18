@@ -1,5 +1,5 @@
-#ifndef _AV_TRANSCODER_DATA_AUDIO_FRAME_HPP_
-#define _AV_TRANSCODER_DATA_AUDIO_FRAME_HPP_
+#ifndef _AV_TRANSCODER_FRAME_AUDIO_FRAME_HPP_
+#define _AV_TRANSCODER_FRAME_AUDIO_FRAME_HPP_
 
 #include "Frame.hpp"
 #include <AvTranscoder/ProfileLoader.hpp>

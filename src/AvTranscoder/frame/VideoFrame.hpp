@@ -1,5 +1,5 @@
-#ifndef _AV_TRANSCODER_DATA_IMAGE_HPP_
-#define _AV_TRANSCODER_DATA_IMAGE_HPP_
+#ifndef _AV_TRANSCODER_FRAME_VIDEO_FRAME_HPP_
+#define _AV_TRANSCODER_FRAME_VIDEO_FRAME_HPP_
 
 #include "Frame.hpp"
 #include "Pixel.hpp"
@@ -15,14 +15,6 @@ extern "C" {
 
 namespace avtranscoder
 {
-
-// struct ColorProperties
-// {
-// 	//EColorspace     eColorspace;
-// 	AVColorTransferCharacteristic eColorTransfer;
-// 	AVColorPrimaries              eColorPrimaries;
-// 	//EColorRange     eColorRange;
-// };
 
 class AvExport VideoFrameDesc
 {
@@ -77,7 +69,6 @@ private:
 	size_t          _height;
 	Rational      _displayAspectRatio;
 	Pixel           _pixel;
-	// ColorProperties _color;
 
 	bool            _interlaced;
 	bool            _topFieldFirst;

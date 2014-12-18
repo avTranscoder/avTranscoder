@@ -1,5 +1,5 @@
-#ifndef _AV_TRANSCODER_DATA_PIXEL_HPP_
-#define _AV_TRANSCODER_DATA_PIXEL_HPP_
+#ifndef _AV_TRANSCODER_FRAME_PIXEL_HPP_
+#define _AV_TRANSCODER_FRAME_PIXEL_HPP_
 
 #include <AvTranscoder/common.hpp>
 
