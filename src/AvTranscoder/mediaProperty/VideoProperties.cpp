@@ -673,6 +673,7 @@ PropertiesMap VideoProperties::getPropertiesAsMap() const
 	detail::add( dataMap, "displayAspectRatio", getDar().num / getDar().den );
 	detail::add( dataMap, "dtgActiveFormat", getDtgActiveFormat() );
 	detail::add( dataMap, "componentsCount", getComponentsCount() );
+	detail::add( dataMap, "bitDepth", getBitDepth() );
 	detail::add( dataMap, "pixelType", getPixelName() );
 	detail::add( dataMap, "bitWiseAcked", isBitWisePacked() );
 	detail::add( dataMap, "rgbPixel", isRgbPixelData() );
