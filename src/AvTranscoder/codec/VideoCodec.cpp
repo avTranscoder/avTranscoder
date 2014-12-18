@@ -46,9 +46,8 @@ std::pair< size_t, size_t > VideoCodec::getTimeBase() const
 
 void VideoCodec::setImageParameters( const VideoFrameDesc& videoFrameDesc )
 {
-	setImageParameters( videoFrameDesc.getWidth(), videoFrameDesc.getHeight(), videoFrameDesc.getPixelDesc() );
+	setImageParameters( videoFrameDesc.getWidth(), videoFrameDesc.getHeight(), videoFrameDesc.getPixel() );
 }
-
 
 void VideoCodec::setImageParameters( const size_t width, const size_t height, const Pixel& pixel )
 {

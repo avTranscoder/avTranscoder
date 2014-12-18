@@ -42,7 +42,7 @@ public:
 	void setHeight( const size_t height    ) { _height = height; }
 	void setPixel( const Pixel&  pixel ) { _pixel = pixel; }
 	void setDar( const size_t num, const size_t den ) { _displayAspectRatio.num = num; _displayAspectRatio.den = den; }
-	void setDar( const Rational ratio ) { _displayAspectRatio = ratio; }
+	void setDar( const Rational& ratio ) { _displayAspectRatio = ratio; }
 
 	void setParameters( const ProfileLoader::Profile& profile )
 	{
@@ -55,7 +55,7 @@ public:
 	Rational getDar() const { return _displayAspectRatio; }
 	int getDarNum() const { return _displayAspectRatio.num; }
 	int getDarDen() const { return _displayAspectRatio.den; }
-	Pixel                getPixelDesc() const { return _pixel; }
+	const Pixel& getPixel() const { return _pixel; }
 
 	size_t getDataSize() const
 	{
