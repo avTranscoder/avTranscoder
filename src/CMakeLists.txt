@@ -33,6 +33,9 @@ endif()
 set_target_properties(avtranscoder-shared PROPERTIES SOVERSION ${AVTRANSCODER_VERSION_MAJOR})
 set_target_properties(avtranscoder-shared PROPERTIES VERSION ${AVTRANSCODER_VERSION})
 target_link_libraries(avtranscoder-shared ${FFMPEG_LIBRARIES})
+target_include_directories(avtranscoder-shared PUBLIC
+    ${AVTRANSCODER_SRC_PATH} ${FFMPEG_INCLUDE_DIR})
+
 
 ### Install AvTranscoder libs and include
 install(
@@ -71,20 +74,6 @@ if(SWIG_FOUND)
 	find_package(PythonLibs)
 	if(PYTHONLIBS_FOUND)
 		include_directories(${PYTHON_INCLUDE_PATH})
-
-		if(${CMAKE_VERSION} STRLESS 2.8.8)
-			# Get Python version from include path
-			string(LENGTH ${PYTHON_INCLUDE_DIR} PYTHON_INCLUDE_DIRS_LENGTH)
-			if(WIN32)
-				set(PYTHON_INCLUDE_DIRS_LENGTH_EXPRESSION "${PYTHON_INCLUDE_DIRS_LENGTH} - 10")
-				set(PYTHON_VERSION_LENGTH_EXPRESSION "2")
-			else()
-				set(PYTHON_INCLUDE_DIRS_LENGTH_EXPRESSION "${PYTHON_INCLUDE_DIRS_LENGTH} - 3")
-				set(PYTHON_VERSION_LENGTH_EXPRESSION "3")		
-			endif()
-			math(EXPR PYTHON_INCLUDE_DIRS_LENGTH ${PYTHON_INCLUDE_DIRS_LENGTH_EXPRESSION} )
-			string(SUBSTRING ${PYTHON_INCLUDE_DIR} ${PYTHON_INCLUDE_DIRS_LENGTH} ${PYTHON_VERSION_LENGTH_EXPRESSION} PYTHONLIBS_VERSION_STRING)
-		endif()
 
 		# Swig flags
 		set(CMAKE_SWIG_FLAGS -c++ -fcompact)

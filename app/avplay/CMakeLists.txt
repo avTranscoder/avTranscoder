@@ -24,7 +24,6 @@ if(NOT GLUT_FOUND)
 endif()
 
 # Build app
-include_directories(${AVTRANSCODER_SRC_PATH} ${FFMPEG_INCLUDE_DIR})
 include_directories( ${OPENGL_INCLUDE_DIRS}  ${GLUT_INCLUDE_DIR} )
 
 file(GLOB AVPLAY_SRC_FILES "*.cpp" "*.hpp")
