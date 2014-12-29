@@ -42,11 +42,6 @@ void VideoCodec::setImageParameters( const VideoFrameDesc& videoFrameDesc )
 	setImageParameters( videoFrameDesc.getWidth(), videoFrameDesc.getHeight(), videoFrameDesc.getPixelFormat() );
 }
 
-void VideoCodec::setImageParameters( const size_t width, const size_t height, const Pixel& pixel )
-{
-	setImageParameters( width, height, pixel.getAVPixelFormat() );
-}
-
 void VideoCodec::setImageParameters( const size_t width, const size_t height, const AVPixelFormat& pixel )
 {
 	_codecContext->width   = width;

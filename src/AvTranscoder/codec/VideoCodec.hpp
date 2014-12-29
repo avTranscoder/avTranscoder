@@ -2,7 +2,6 @@
 #define _AV_TRANSCODER_CODEC_VIDEO_CODEC_HPP_
 
 #include "ICodec.hpp"
-#include <AvTranscoder/frame/Pixel.hpp>
 #include <AvTranscoder/frame/VideoFrame.hpp>
 
 #include <utility>
@@ -21,7 +20,6 @@ public:
 	std::pair< size_t, size_t > getTimeBase() const;
 	
 	void setImageParameters( const VideoFrameDesc& videoFrameDesc );
-	void setImageParameters( const size_t width, const size_t height, const Pixel& pixel );
 	void setImageParameters( const size_t width, const size_t height, const AVPixelFormat& pixel );
 
 	void setTimeBase( const size_t num, const size_t den, const size_t ticksPerFrame = 1 );
