@@ -28,7 +28,7 @@ def testSetVideoFrame():
 
 	# create transcoder and add a video stream
 	transcoder = av.Transcoder( ouputFile )
-	transcoder.add(  "", 0, "xdcamhd422", inputVideoCodec )
+	transcoder.add(  "", 0, "mpeg2", inputVideoCodec )
 	videoEssence = transcoder.getStreamTranscoder( 0 ).getCurrentEssence()
 
 	# start process
