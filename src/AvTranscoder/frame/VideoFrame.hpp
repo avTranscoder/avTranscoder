@@ -40,19 +40,6 @@ public:
 		_displayAspectRatio.den = height;
 	}
 
-	void setWidth ( const size_t width     ) { _width = width; }
-	void setHeight( const size_t height    ) { _height = height; }
-	void setPixelFormat( const std::string& pixelFormat ) { _pixelFormat = av_get_pix_fmt( pixelFormat.c_str() ); }
-	void setPixelFormat( const AVPixelFormat pixelFormat ) { _pixelFormat = pixelFormat; }
-	void setDar( const size_t num, const size_t den ) { _displayAspectRatio.num = num; _displayAspectRatio.den = den; }
-	void setDar( const Rational& ratio ) { _displayAspectRatio = ratio; }
-
-	void setParameters( const ProfileLoader::Profile& profile )
-	{
-		if( profile.find( constants::avProfilePixelFormat ) != profile.end() )
-			setPixelFormat( profile.find( constants::avProfilePixelFormat )->second );
-	}
-
 	size_t getWidth () const { return _width;  }
 	size_t getHeight() const { return _height; }
 	Rational getDar() const { return _displayAspectRatio; }
@@ -81,14 +68,26 @@ public:
 		return size;
 	}
 
-private:
-	size_t          _width;
-	size_t          _height;
-	Rational      _displayAspectRatio;
-	AVPixelFormat _pixelFormat;
+	void setWidth ( const size_t width ) { _width = width; }
+	void setHeight( const size_t height ) { _height = height; }
+	void setPixelFormat( const std::string& pixelFormat ) { _pixelFormat = av_get_pix_fmt( pixelFormat.c_str() ); }
+	void setPixelFormat( const AVPixelFormat pixelFormat ) { _pixelFormat = pixelFormat; }
+	void setDar( const size_t num, const size_t den ) { _displayAspectRatio.num = num; _displayAspectRatio.den = den; }
+	void setDar( const Rational& ratio ) { _displayAspectRatio = ratio; }
 
-	bool            _interlaced;
-	bool            _topFieldFirst;
+	void setParameters( const ProfileLoader::Profile& profile )
+	{
+		if( profile.find( constants::avProfilePixelFormat ) != profile.end() )
+			setPixelFormat( profile.find( constants::avProfilePixelFormat )->second );
+	}
+
+private:
+	size_t _width;
+	size_t _height;
+	Rational  _displayAspectRatio;
+	AVPixelFormat _pixelFormat;
+	bool _interlaced;
+	bool _topFieldFirst;
 };
 
 //template< template<typename> Alloc >
