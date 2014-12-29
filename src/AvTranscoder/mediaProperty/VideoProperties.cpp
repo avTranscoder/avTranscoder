@@ -404,6 +404,13 @@ size_t VideoProperties::getMinBitRate() const
 	return _codecContext->rc_min_rate;
 }
 
+size_t VideoProperties::getNbFrames() const
+{
+	if( ! _formatContext )
+		throw std::runtime_error( "unknown format context" );
+	return _formatContext->streams[_streamId]->nb_frames;
+}
+
 size_t VideoProperties::getTicksPerFrame() const
 {
 	if( ! _codecContext )
