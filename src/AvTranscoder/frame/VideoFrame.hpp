@@ -11,7 +11,6 @@ extern "C" {
 }
 
 #include <stdexcept>
-#include <utility>
 
 namespace avtranscoder
 {
@@ -48,23 +47,19 @@ public:
 	AVPixelFormat getPixelFormat() const { return _pixelFormat; }
 	std::string getPixelFormatName() const
 	{
-	    const char* pixelName = av_get_pix_fmt_name( _pixelFormat );
-	    if( pixelName )
-		return std::string( pixelName );
-	    return std::string( "unknown pixel format" );
+	    const char* formatName = av_get_pix_fmt_name( _pixelFormat );
+	    return formatName ? std::string( formatName ) : "unknown pixel format";
 	}
 
 	size_t getDataSize() const
 	{
 		if( _pixelFormat == AV_PIX_FMT_NONE )
-		{
-			throw std::runtime_error( "incorrect pixel description" );
-		}
+			throw std::runtime_error( "incorrect pixel format" );
+
 		size_t size = avpicture_get_size( _pixelFormat, _width, _height );
 		if( size == 0 )
-		{
 			throw std::runtime_error( "unable to determine image buffer size" );
-		}
+
 		return size;
 	}
 
