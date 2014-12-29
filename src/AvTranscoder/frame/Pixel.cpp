@@ -235,6 +235,51 @@ PropertiesMap Pixel::getPropertiesAsMap() const
 	detail::add( dataMap, "chromaWidth", getChromaWidth() );
 	detail::add( dataMap, "chromaHeight", getChromaHeight() );
 
+	std::string colorComponents;
+	switch( getColorComponents() )
+	{
+		case eComponentGray:
+			colorComponents = "gray";
+			break;
+		case eComponentRgb:
+			colorComponents = "RGB";
+			break;
+		case eComponentYuvJPEG:
+			colorComponents = "YUVJPEG";
+			break;
+		case eComponentYuvA:
+			colorComponents = "YUVA";
+			break;
+		case eComponentYuv:
+			colorComponents = "YUV";
+			break;
+	}
+	detail::add( dataMap, "colorComponents", colorComponents );
+
+	std::string subsampling;
+	switch( getSubsampling() )
+	{
+		case eSubsampling440:
+			subsampling = "440";
+			break;
+		case eSubsampling422:
+			subsampling = "422";
+			break;
+		case eSubsampling420:
+			subsampling = "420";
+			break;
+		case eSubsampling411:
+			subsampling = "411";
+			break;
+		case eSubsampling410:
+			subsampling = "410";
+			break;
+		case eSubsamplingNone:
+			subsampling = "None";
+			break;
+	}
+	detail::add( dataMap, "subsampling", subsampling );
+
 	detail::add( dataMap, "isBigEndian", isBigEndian() );
 	detail::add( dataMap, "hasAlpha", hasAlpha() );
 	detail::add( dataMap, "isPlanar", isPlanar() );
