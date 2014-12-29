@@ -29,7 +29,15 @@ VideoProperties::VideoProperties( const AVFormatContext* formatContext, const si
 	, _gopStructure()
 {
 	if( _formatContext )
-		_codecContext = formatContext->streams[index]->codec;
+	{
+		if( _streamId > formatContext->nb_streams )
+		{
+			std::stringstream ss;
+			ss << "video stream at index " << _streamId << " does not exist";
+			throw std::runtime_error( ss.str() );
+		}
+		_codecContext = formatContext->streams[_streamId]->codec;
+	}
 
 	if( _formatContext && _codecContext )
 		_codec = avcodec_find_decoder( _codecContext->codec_id );
