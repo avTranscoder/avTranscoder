@@ -43,6 +43,7 @@ namespace std {
 %template(ChannelVector)   vector< avtranscoder::Channel >;
 }
 
+%include <AvTranscoder/frame/Pixel.hpp>
 %include <AvTranscoder/mediaProperty/util.hpp>
 %include <AvTranscoder/mediaProperty/FileProperties.hpp>
 %include <AvTranscoder/mediaProperty/VideoProperties.hpp>

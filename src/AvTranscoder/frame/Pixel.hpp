@@ -2,12 +2,15 @@
 #define _AV_TRANSCODER_FRAME_PIXEL_HPP_
 
 #include <AvTranscoder/common.hpp>
+#include <AvTranscoder/mediaProperty/util.hpp>
 
 extern "C" {
 #include <libavutil/pixfmt.h>
 #include <libavutil/pixdesc.h>
 }
+
 #include <string>
+#include <vector>
 
 struct AVPixFmtDescriptor;
 
@@ -33,6 +36,13 @@ enum ESubsamplingType
 	eSubsampling410       // 4:1:0
 };
 
+struct AvExport Channel
+{
+	size_t id;
+	size_t chromaHeight;
+	size_t bitStep;
+};
+
 class AvExport Pixel
 {
 public:
@@ -42,15 +52,30 @@ public:
 	Pixel( const std::string& avPixelFormat = "" );
 	Pixel( const AVPixelFormat avPixelFormat );
 
+	std::string getPixelName() const;
+
 	size_t           getBitsPerPixel   () const;
-	bool             getBigEndian      () const;
 	size_t           getComponents     () const;
+	size_t getChromaWidth() const;
+	size_t getChromaHeight() const;
+
 	EComponentType   getColorComponents() const;
 	ESubsamplingType getSubsampling    () const;
+
+	bool             getBigEndian      () const;
 	bool             getAlpha          () const;
 	bool             getPlanar         () const;
+	bool isIndexedColors() const;
+	bool isBitWisePacked() const;
+	bool isHardwareAccelerated() const;
+	bool isRgbPixelData() const;
+	bool isPseudoPaletted() const;
+
+	std::vector<Channel> getChannels() const;
 
 	AVPixelFormat    findPixel() const;
+
+	PropertiesMap getPropertiesAsMap() const;  ///< Return all pixel properties as a map (name of property: value)
 
 private:
 	void init( const AVPixelFormat avPixelFormat );

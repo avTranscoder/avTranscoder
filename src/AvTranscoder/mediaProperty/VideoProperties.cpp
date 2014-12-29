@@ -22,7 +22,7 @@ VideoProperties::VideoProperties( const AVFormatContext* formatContext, const si
 	: _formatContext( formatContext )
 	, _codecContext( NULL )
 	, _codec( NULL )
-	, _pixFmt( NULL )
+	, _pixel()
 	, _streamId( index )
 	, _isInterlaced( false )
 	, _isTopFieldFirst( false )
@@ -37,16 +37,11 @@ VideoProperties::VideoProperties( const AVFormatContext* formatContext, const si
 	if( formatContext )
 		detail::fillMetadataDictionnary( _formatContext->streams[index]->metadata, _metadatas );
 
+	if( _codecContext )
+		_pixel = Pixel( _codecContext->pix_fmt );
+
 	// Skip decoding for selected frames
 	_codecContext->skip_frame = AVDISCARD_NONE;
-
-	// Get pixel format
-#if LIBAVUTIL_VERSION_MAJOR > 51
-	_pixFmt = av_pix_fmt_desc_get( _codecContext->pix_fmt );
-#else
-	if( _codecContext->pix_fmt >= 0 && _codecContext->pix_fmt < PIX_FMT_NB )
-		_pixFmt = &av_pix_fmt_descriptors[ _codecContext->pix_fmt ];
-#endif
 
 	if( level == eAnalyseLevelFirstGop )
 		analyseGopStructure( progress );
@@ -310,21 +305,6 @@ std::string VideoProperties::getFieldOrder() const
 	}
 }
 
-std::string VideoProperties::getPixelName() const
-{
-	if( _pixFmt && _pixFmt->name )
-		return std::string( _pixFmt->name );
-	return "unknown pixel name";
-}
-
-std::string VideoProperties::getEndianess() const
-{
-	if( _pixFmt )
-		return ( _pixFmt->flags & PIX_FMT_BE ) ? "big" : "little";
-	return "unknown pixel format";
-}
-
-
 int64_t VideoProperties::getStartTimecode() const
 {
 	if( ! _codecContext )
@@ -472,34 +452,6 @@ int VideoProperties::getLevel() const
 	return _codecContext->level;
 }
 
-size_t VideoProperties::getComponentsCount() const
-{
-	if( ! _pixFmt )
-		throw std::runtime_error( "unknown pixel format" );
-	return _pixFmt->nb_components;
-}
-
-size_t VideoProperties::getBitDepth() const
-{
-	if( ! _pixFmt )
-		throw std::runtime_error( "unknown pixel format" );
-	return av_get_bits_per_pixel( _pixFmt );
-}
-
-size_t VideoProperties::getChromaWidth() const
-{
-	if( ! _pixFmt )
-		throw std::runtime_error( "unknown pixel format" );
-	return _pixFmt->log2_chroma_w;
-}
-
-size_t VideoProperties::getChromaHeight() const
-{
-	if( ! _pixFmt )
-		throw std::runtime_error( "unknown pixel format" );
-	return _pixFmt->log2_chroma_h;
-}
-
 double VideoProperties::getFps() const
 {
 	Rational timeBase = getTimeBase();
@@ -514,65 +466,6 @@ bool VideoProperties::hasBFrames() const
 	if( ! _codecContext )
 		throw std::runtime_error( "unknown codec context" );
 	return (bool) _codecContext->has_b_frames;
-}
-
-bool VideoProperties::isIndexedColors() const
-{
-	if( ! _pixFmt )
-		throw std::runtime_error( "unknown pixel format" );
-	return (bool) _pixFmt->flags & PIX_FMT_PAL;
-}
-
-bool VideoProperties::isBitWisePacked() const
-{
-	if( ! _pixFmt )
-		throw std::runtime_error( "unknown pixel format" );
-	return (bool) _pixFmt->flags & PIX_FMT_BITSTREAM;
-}
-
-bool VideoProperties::isHardwareAccelerated() const
-{
-	if( ! _pixFmt )
-		throw std::runtime_error( "unknown pixel format" );
-	return (bool) _pixFmt->flags & PIX_FMT_HWACCEL;
-}
-
-bool VideoProperties::isPlanar() const
-{
-	if( ! _pixFmt )
-		throw std::runtime_error( "unknown pixel format" );
-	return (bool) _pixFmt->flags & PIX_FMT_PLANAR;
-}
-
-bool VideoProperties::isRgbPixelData() const
-{
-	if( ! _pixFmt )
-		throw std::runtime_error( "unknown pixel format" );
-	return (bool) _pixFmt->flags & PIX_FMT_RGB;
-}
-
-bool VideoProperties::isPseudoPaletted() const
-{
-	if( ! _pixFmt )
-		throw std::runtime_error( "unknown pixel format" );
-
-#if LIBAVCODEC_VERSION_MAJOR > 53
-	return (bool) _pixFmt->flags & PIX_FMT_PSEUDOPAL;
-#else
-	return false;
-#endif
-}
-
-bool VideoProperties::hasAlpha() const
-{
-	if( ! _pixFmt )
-		throw std::runtime_error( "unknown pixel format" );
-
-#if LIBAVCODEC_VERSION_MAJOR > 53
-	return (bool) _pixFmt->flags & PIX_FMT_ALPHA;
-#else
-	return false;
-#endif
 }
 
 void VideoProperties::analyseGopStructure( IProgress& progress )
@@ -638,23 +531,6 @@ void VideoProperties::analyseGopStructure( IProgress& progress )
 	}
 }
 
-std::vector<Channel> VideoProperties::getChannels() const
-{
-	std::vector<Channel> channels;
-	if( _pixFmt )
-	{
-		for( size_t channel = 0; channel < (size_t)_pixFmt->nb_components; ++channel )
-		{
-			Channel c;
-			c.id = channel;
-			c.chromaHeight = (size_t)_pixFmt->comp[channel].plane;
-			c.bitStep = (size_t)_pixFmt->comp[channel].step_minus1;
-			channels.push_back( c );
-		}
-	}
-	return channels;
-}
-
 PropertiesMap VideoProperties::getPropertiesAsMap() const
 {
 	PropertiesMap dataMap;
@@ -672,21 +548,10 @@ PropertiesMap VideoProperties::getPropertiesAsMap() const
 	detail::add( dataMap, "pixelAspectRatio", getSar().num / getSar().den );
 	detail::add( dataMap, "displayAspectRatio", getDar().num / getDar().den );
 	detail::add( dataMap, "dtgActiveFormat", getDtgActiveFormat() );
-	detail::add( dataMap, "componentsCount", getComponentsCount() );
-	detail::add( dataMap, "bitDepth", getBitDepth() );
-	detail::add( dataMap, "pixelType", getPixelName() );
-	detail::add( dataMap, "bitWiseAcked", isBitWisePacked() );
-	detail::add( dataMap, "rgbPixel", isRgbPixelData() );
-	detail::add( dataMap, "asAlpha", hasAlpha() );
-	detail::add( dataMap, "chromaWidth", getChromaWidth() );
-	detail::add( dataMap, "chromaHeight", getChromaHeight() );
-	detail::add( dataMap, "endianess", getEndianess() );
 	detail::add( dataMap, "colorTransfert", getColorTransfert() );
 	detail::add( dataMap, "colorspace", getColorspace() );
 	detail::add( dataMap, "colorRange", getColorRange() );
 	detail::add( dataMap, "colorPrimaries", getColorPrimaries() );
-	detail::add( dataMap, "indexedColors", isIndexedColors() );
-	detail::add( dataMap, "pseudoPaletted", isPseudoPaletted() );
 	detail::add( dataMap, "chromaSampleLocation", getChromaSampleLocation() );
 	detail::add( dataMap, "interlaced ", isInterlaced() );
 	detail::add( dataMap, "topFieldFirst", isTopFieldFirst() );
@@ -700,7 +565,6 @@ PropertiesMap VideoProperties::getPropertiesAsMap() const
 	detail::add( dataMap, "gopSize", getGopSize() );
 
 	std::string gop;
-	NoDisplayProgress progress;
 	for( size_t frameIndex = 0; frameIndex < _gopStructure.size(); ++frameIndex )
 	{
 		gop += _gopStructure.at( frameIndex ).first;
@@ -715,6 +579,10 @@ PropertiesMap VideoProperties::getPropertiesAsMap() const
 	{
 		detail::add( dataMap, _metadatas.at( metadataIndex ).first, _metadatas.at( metadataIndex ).second );
 	}
+
+	// Add properties of the pixel
+	PropertiesMap pixelProperties = _pixel.getPropertiesAsMap();
+	dataMap.insert( dataMap.end(), pixelProperties.begin(), pixelProperties.end() );
 
 	return dataMap;
 }

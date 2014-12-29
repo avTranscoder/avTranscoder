@@ -107,8 +107,7 @@ def testRewrapVideoStream():
 	assert_equals( src_videoStream.getColorPrimaries(), dst_videoStream.getColorPrimaries() )
 	assert_equals( src_videoStream.getChromaSampleLocation(), dst_videoStream.getChromaSampleLocation() )
 	assert_equals( src_videoStream.getFieldOrder(), dst_videoStream.getFieldOrder() )
-	assert_equals( src_videoStream.getPixelName(), dst_videoStream.getPixelName() )
-	assert_equals( src_videoStream.getEndianess(), dst_videoStream.getEndianess() )
+
 	assert_equals( src_videoStream.getStartTimecodeString(), dst_videoStream.getStartTimecodeString() )
 
 	assert_equals( src_videoStream.getTimeBase().num, dst_videoStream.getTimeBase().num )
@@ -131,20 +130,11 @@ def testRewrapVideoStream():
 	assert_equals( src_videoStream.getReferencesFrames(), dst_videoStream.getReferencesFrames() )
 	assert_equals( src_videoStream.getProfile(), dst_videoStream.getProfile() )
 	assert_equals( src_videoStream.getLevel(), dst_videoStream.getLevel() )
-	assert_equals( src_videoStream.getComponentsCount(), dst_videoStream.getComponentsCount() )
-	assert_equals( src_videoStream.getChromaWidth(), dst_videoStream.getChromaWidth() )
-	assert_equals( src_videoStream.getChromaHeight(), dst_videoStream.getChromaHeight() )
+
 	assert_equals( src_videoStream.getFps(), dst_videoStream.getFps() )
 	assert_equals( src_videoStream.hasBFrames(), dst_videoStream.hasBFrames() )
-	assert_equals( src_videoStream.isIndexedColors(), dst_videoStream.isIndexedColors() )
-	assert_equals( src_videoStream.isBitWisePacked(), dst_videoStream.isBitWisePacked() )
-	assert_equals( src_videoStream.isHardwareAccelerated(), dst_videoStream.isHardwareAccelerated() )
-	assert_equals( src_videoStream.isPlanar(), dst_videoStream.isPlanar() )
-	assert_equals( src_videoStream.isRgbPixelData(), dst_videoStream.isRgbPixelData() )
-	assert_equals( src_videoStream.isPseudoPaletted(), dst_videoStream.isPseudoPaletted() )
-	assert_equals( src_videoStream.hasAlpha(), dst_videoStream.hasAlpha() )
-	assert_equals( src_videoStream.isInterlaced(), dst_videoStream.isInterlaced() )
 	assert_equals( src_videoStream.isTopFieldFirst(), dst_videoStream.isTopFieldFirst() )
+	assert_equals( src_videoStream.isInterlaced(), dst_videoStream.isInterlaced() )
 
 	assert_equals( len( src_videoStream.getGopStructure() ), len( dst_videoStream.getGopStructure() ) )
 	for gop in range( 0, len( src_videoStream.getGopStructure() ) ):
@@ -153,15 +143,6 @@ def testRewrapVideoStream():
 
 		assert_equals( src_gop, dst_gop )
 
-	assert_equals( len( src_videoStream.getChannels() ), len( dst_videoStream.getChannels() ) )
-	for channel in range( 0, len( src_videoStream.getChannels() ) ):
-		src_channel = src_videoStream.getChannels()[channel]
-		dst_channel = dst_videoStream.getChannels()[channel]
-
-		assert_equals( src_channel.id, dst_channel.id )
-		assert_equals( src_channel.chromaHeight, dst_channel.chromaHeight )
-		assert_equals( src_channel.bitStep, dst_channel.bitStep )
-
 	assert_equals( len( src_videoStream.getMetadatas() ), len( dst_videoStream.getMetadatas() ) )
 	for metadata in range( 0, len( src_videoStream.getMetadatas() ) ):
 		src_metadata = src_videoStream.getMetadatas()[metadata]
@@ -169,3 +150,25 @@ def testRewrapVideoStream():
 
 		assert_equals( src_metadata, dst_metadata )
 
+	# check pixel
+	assert_equals( src_videoStream.getPixel().getPixelName(), dst_videoStream.getPixel().getPixelName() )
+	assert_equals( src_videoStream.getPixel().getBigEndian(), dst_videoStream.getPixel().getBigEndian() )
+	assert_equals( src_videoStream.getPixel().getChromaWidth(), dst_videoStream.getPixel().getChromaWidth() )
+	assert_equals( src_videoStream.getPixel().getChromaHeight(), dst_videoStream.getPixel().getChromaHeight() )
+	assert_equals( src_videoStream.getPixel().getComponents(), dst_videoStream.getPixel().getComponents() )
+	assert_equals( src_videoStream.getPixel().isIndexedColors(), dst_videoStream.getPixel().isIndexedColors() )
+	assert_equals( src_videoStream.getPixel().isBitWisePacked(), dst_videoStream.getPixel().isBitWisePacked() )
+	assert_equals( src_videoStream.getPixel().isHardwareAccelerated(), dst_videoStream.getPixel().isHardwareAccelerated() )
+	assert_equals( src_videoStream.getPixel().getPlanar(), dst_videoStream.getPixel().getPlanar() )
+	assert_equals( src_videoStream.getPixel().isRgbPixelData(), dst_videoStream.getPixel().isRgbPixelData() )
+	assert_equals( src_videoStream.getPixel().isPseudoPaletted(), dst_videoStream.getPixel().isPseudoPaletted() )
+	assert_equals( src_videoStream.getPixel().getAlpha(), dst_videoStream.getPixel().getAlpha() )
+
+	assert_equals( len( src_videoStream.getPixel().getChannels() ), len( dst_videoStream.getPixel().getChannels() ) )
+	for channel in range( 0, len( src_videoStream.getPixel().getChannels() ) ):
+		src_channel = src_videoStream.getPixel().getChannels()[channel]
+		dst_channel = dst_videoStream.getPixel().getChannels()[channel]
+
+		assert_equals( src_channel.id, dst_channel.id )
+		assert_equals( src_channel.chromaHeight, dst_channel.chromaHeight )
+		assert_equals( src_channel.bitStep, dst_channel.bitStep )

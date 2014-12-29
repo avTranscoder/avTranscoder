@@ -62,7 +62,7 @@ public:
 
 	size_t getComponents()
 	{
-		return _inputFile.getProperties().getVideoProperties().at(0).getComponentsCount();
+		return _inputFile.getProperties().getVideoProperties().at(0).getPixel().getComponents();
 	}
 
 	size_t getBitDepth()
