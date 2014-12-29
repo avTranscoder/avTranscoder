@@ -13,7 +13,7 @@ public:
 	virtual ~IInputEssence() {};
 
 	/**
-	 * @brief Setup the decoder
+	 * @brief Open the decoder
 	 */
 	virtual void setup() = 0;
 
