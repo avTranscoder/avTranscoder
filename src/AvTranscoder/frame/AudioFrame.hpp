@@ -4,18 +4,30 @@
 #include "Frame.hpp"
 #include <AvTranscoder/ProfileLoader.hpp>
 
+extern "C" {
+#include <libavutil/samplefmt.h>
+}
+
+#include <stdexcept>
+
 namespace avtranscoder
 {
 
 class AvExport AudioFrameDesc
 {
 public:
-	AudioFrameDesc()
-		: _sampleRate( 0 )
-		, _channels( 0 )
+	AudioFrameDesc( const size_t sampleRate = 0, const size_t channels = 0, const AVSampleFormat sampleFormat = AV_SAMPLE_FMT_NONE )
+		: _sampleRate( sampleRate )
+		, _channels( channels )
 		, _fps( 1.0 )
-		, _sampleFormat( AV_SAMPLE_FMT_NONE )
-	{};
+		, _sampleFormat( sampleFormat )
+	{}
+	AudioFrameDesc( const size_t sampleRate, const size_t channels, const std::string& sampleFormat )
+		: _sampleRate( sampleRate )
+		, _channels( channels )
+		, _fps( 1.0 )
+		, _sampleFormat( av_get_sample_fmt( sampleFormat.c_str() ) )
+	{}
 
 	void setSampleRate  ( const size_t sampleRate ){ _sampleRate = sampleRate; }
 	void setChannels    ( const size_t channels   ){ _channels   = channels;   }
@@ -25,7 +37,14 @@ public:
 
 	size_t getDataSize() const
 	{
-		return ( _sampleRate / _fps ) * _channels * av_get_bytes_per_sample( _sampleFormat );
+		if( _sampleFormat == AV_SAMPLE_FMT_NONE )
+			throw std::runtime_error( "incorrect sample format" );
+
+		size_t size = ( _sampleRate / _fps ) * _channels * av_get_bytes_per_sample( _sampleFormat );
+		if( size == 0 )
+			throw std::runtime_error( "unable to determine audio buffer size" );
+
+		return size;
 	}
 	
 	void setParameters( const ProfileLoader::Profile& profile )
@@ -41,7 +60,7 @@ public:
 	std::string getSampleFormat() const
 	{
 		const char* formatName = av_get_sample_fmt_name( _sampleFormat );
-		return formatName ? std::string( formatName ) : "unknown audio sample format";
+		return formatName ? std::string( formatName ) : "unknown sample format";
 	}
 
 private:

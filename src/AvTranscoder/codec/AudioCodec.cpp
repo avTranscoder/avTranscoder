@@ -23,11 +23,8 @@ AudioCodec::AudioCodec( const ICodec& codec )
 AudioFrameDesc AudioCodec::getAudioFrameDesc() const
 {
 	assert( _codecContext != NULL );
-	AudioFrameDesc audioFrameDesc;
-	
-	audioFrameDesc.setChannels( _codecContext->channels );
-	audioFrameDesc.setSampleRate( _codecContext->sample_rate );
-	audioFrameDesc.setSampleFormat( _codecContext->sample_fmt );
+
+	AudioFrameDesc audioFrameDesc( _codecContext->sample_rate, _codecContext->channels, _codecContext->sample_fmt );
 	// audioFrameDesc.setFps( 25 );
 	
 	return audioFrameDesc;

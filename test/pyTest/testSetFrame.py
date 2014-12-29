@@ -64,12 +64,8 @@ def testSetAudioFrame():
 	ouputFile = av.OutputFile( outputFileName )
 
 	# create video frame and codec
-	audioDesc = av.AudioFrameDesc()
-	audioDesc.setSampleRate( 48000 )
-	audioDesc.setChannels( 1 )
-	audioDesc.setSampleFormat( "s32" )
-
 	inputAudioCodec = av.AudioCodec( av.eCodecTypeEncoder, "pcm_s24le" );
+	audioDesc = av.AudioFrameDesc( 48000, 1, "s32" )
 	inputAudioCodec.setAudioParameters( audioDesc );
 
 	# create transcoder and add a video stream
