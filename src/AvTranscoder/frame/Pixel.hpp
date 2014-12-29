@@ -73,7 +73,10 @@ public:
 
 	std::vector<Channel> getChannels() const;
 
-	AVPixelFormat    findPixel() const;
+#ifndef SWIG
+	AVPixelFormat getAVPixelFormat() const { return _pixelFormat; }
+	const AVPixFmtDescriptor* getAVPixFmtDescriptor() const { return _pixelDesc; }
+#endif
 
 	PropertiesMap getPropertiesAsMap() const;  ///< Return all pixel properties as a map (name of property: value)
 

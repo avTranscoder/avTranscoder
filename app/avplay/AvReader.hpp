@@ -36,9 +36,7 @@ public:
 		_videoFrameDescToDisplay.setWidth( _sourceImage->desc().getWidth() );
 		_videoFrameDescToDisplay.setHeight( _sourceImage->desc().getHeight() );
 		_videoFrameDescToDisplay.setDar( _sourceImage->desc().getDar() );
-
-		avtranscoder::Pixel pixel( "rgb24" ); // need to get this pixel form VideoProperties of input file
-		_videoFrameDescToDisplay.setPixel( pixel.findPixel() );
+		_videoFrameDescToDisplay.setPixel( getPixelFormat() );
 		
 		_imageToDisplay = new avtranscoder::VideoFrame( _videoFrameDescToDisplay );
 	}
@@ -67,7 +65,12 @@ public:
 
 	size_t getBitDepth()
 	{
-		return 8;
+		return _inputFile.getProperties().getVideoProperties().at(0).getPixel().getBitsPerPixel();
+	}
+
+	AVPixelFormat getPixelFormat()
+	{
+		return _inputFile.getProperties().getVideoProperties().at(0).getPixel().getAVPixelFormat();
 	}
 
 	const char* readNextFrame()

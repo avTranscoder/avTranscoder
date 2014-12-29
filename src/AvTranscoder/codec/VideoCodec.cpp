@@ -51,7 +51,7 @@ void VideoCodec::setImageParameters( const VideoFrameDesc& videoFrameDesc )
 
 void VideoCodec::setImageParameters( const size_t width, const size_t height, const Pixel& pixel )
 {
-	setImageParameters( width, height, pixel.findPixel() );
+	setImageParameters( width, height, pixel.getAVPixelFormat() );
 }
 
 void VideoCodec::setImageParameters( const size_t width, const size_t height, const AVPixelFormat& pixel )

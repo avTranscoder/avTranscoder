@@ -220,11 +220,6 @@ std::vector<Channel> Pixel::getChannels() const
 	return channels;
 }
 
-AVPixelFormat Pixel::findPixel() const
-{
-	return _pixelFormat;
-}
-
 PropertiesMap Pixel::getPropertiesAsMap() const
 {
 	PropertiesMap dataMap;

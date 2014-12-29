@@ -51,7 +51,7 @@ public:
 
 	size_t getDataSize() const
 	{
-		AVPixelFormat pixelFormat = _pixel.findPixel();
+		AVPixelFormat pixelFormat = _pixel.getAVPixelFormat();
 		if( pixelFormat == AV_PIX_FMT_NONE )
 		{
 			throw std::runtime_error( "incorrect pixel description" );
