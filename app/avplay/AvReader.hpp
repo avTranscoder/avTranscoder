@@ -33,18 +33,12 @@ public:
 
 		_sourceImage = new avtranscoder::VideoFrame( _inputFile.getStream( _videoStream ).getVideoCodec().getVideoFrameDesc() );
 
-		_pixel.setBitsPerPixel( getComponents() * getBitDepth() );
-		_pixel.setComponents( getComponents() );
-		_pixel.setColorComponents( avtranscoder::eComponentRgb );
-		_pixel.setSubsampling( avtranscoder::eSubsamplingNone );
-		_pixel.setAlpha( false );
-		_pixel.setPlanar( false );
-
 		_videoFrameDescToDisplay.setWidth( _sourceImage->desc().getWidth() );
 		_videoFrameDescToDisplay.setHeight( _sourceImage->desc().getHeight() );
 		_videoFrameDescToDisplay.setDar( _sourceImage->desc().getDar() );
-		
-		_videoFrameDescToDisplay.setPixel( _pixel.findPixel() );
+
+		avtranscoder::Pixel pixel( "rgb24" ); // need to get this pixel form VideoProperties of input file
+		_videoFrameDescToDisplay.setPixel( pixel.findPixel() );
 		
 		_imageToDisplay = new avtranscoder::VideoFrame( _videoFrameDescToDisplay );
 	}
@@ -111,7 +105,6 @@ private:
 	avtranscoder::VideoFrame* _sourceImage;
 	avtranscoder::VideoFrame* _imageToDisplay;
 
-	avtranscoder::Pixel          _pixel;
 	avtranscoder::VideoFrameDesc _videoFrameDescToDisplay;
 
 	avtranscoder::VideoTransform _videoTransform;

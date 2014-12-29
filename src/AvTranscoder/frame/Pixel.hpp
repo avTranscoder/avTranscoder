@@ -5,6 +5,7 @@
 
 extern "C" {
 #include <libavutil/pixfmt.h>
+#include <libavutil/pixdesc.h>
 }
 #include <string>
 
@@ -34,50 +35,28 @@ enum ESubsamplingType
 class AvExport Pixel
 {
 public:
-	Pixel()
-	: _pixelSize  ( 24 )
-	, _components ( 3 )
-	, _componentType ( eComponentYuv )
-	, _subsamplingType ( eSubsamplingNone )
-	, _endianess  ( false )
-	, _withAlpha  ( false )
-	, _planar     ( true )
-	{ }
-
-	Pixel( const std::string& avPixelFormat );
+	/**
+	 * If parameter is an unknown pixel, its format is AV_PIX_FMT_NONE with no access to pixel description.
+	 */
+	Pixel( const std::string& avPixelFormat = "" );
 	Pixel( const AVPixelFormat avPixelFormat );
 
-	void setBitsPerPixel   ( const size_t pixelSize ) { _pixelSize = pixelSize; }
-	void setBigEndian      ( const bool endianess ) { _endianess = endianess; }
-	void setComponents     ( const size_t components ) { _components = components; }
-	void setColorComponents( const EComponentType componentType ) { _componentType = componentType; }
-	void setSubsampling    ( const ESubsamplingType subsamplingType = eSubsamplingNone ) { _subsamplingType = subsamplingType; }
-	void setAlpha          ( const bool withAlpha = true ) { _withAlpha = withAlpha; }
-	void setPlanar         ( const bool isPlanar ) { _planar = isPlanar; }
-
-	size_t           getBitsPerPixel   () const { return _pixelSize; }
-	bool             getBigEndian      () const { return _endianess; }
-	size_t           getComponents     () const { return _components; }
-	EComponentType   getColorComponents() const { return _componentType; }
-	ESubsamplingType getSubsampling    () const { return _subsamplingType; }
-	bool             getAlpha          () const { return _withAlpha; }
-	bool             getPlanar         () const { return _planar; }
+	size_t           getBitsPerPixel   () const;
+	bool             getBigEndian      () const;
+	size_t           getComponents     () const;
+	EComponentType   getColorComponents() const;
+	ESubsamplingType getSubsampling    () const;
+	bool             getAlpha          () const;
+	bool             getPlanar         () const;
 
 	AVPixelFormat    findPixel() const;
 
 private:
 	void init( const AVPixelFormat avPixelFormat );
 
-	ESubsamplingType getSubsampling( const AVPixFmtDescriptor* pix_desc ) const;
-	EComponentType getColorComponents( const AVPixFmtDescriptor* pix_desc ) const;
-
-	size_t           _pixelSize;
-	size_t           _components;
-	EComponentType   _componentType;
-	ESubsamplingType _subsamplingType;
-	bool             _endianess;
-	bool             _withAlpha;
-	bool             _planar;
+private:
+	AVPixelFormat _pixelFormat;
+	const AVPixFmtDescriptor* _pixelDesc;
 };
 
 }

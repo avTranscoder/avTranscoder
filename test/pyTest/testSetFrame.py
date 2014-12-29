@@ -20,10 +20,7 @@ def testSetVideoFrame():
 	imageDesc.setHeight( 1080 )
 	imageDesc.setDar( 1920, 1080 )
 
-	inputPixel = av.Pixel()
-	inputPixel.setColorComponents( av.eComponentRgb );
-	inputPixel.setPlanar( False );
-
+	inputPixel = av.Pixel( "rgb24" )
 	imageDesc.setPixel( inputPixel );
 
 	inputVideoCodec = av.VideoCodec( av.eCodecTypeEncoder, "mpeg2video" );
