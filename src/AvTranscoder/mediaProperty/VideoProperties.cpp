@@ -340,8 +340,8 @@ Rational VideoProperties::getTimeBase() const
 		throw std::runtime_error( "unknown codec context" );
 
 	Rational timeBase = {
-		_codecContext->time_base.num,
-		_codecContext->time_base.den,
+		_formatContext->streams[_streamId]->time_base.num,
+		_formatContext->streams[_streamId]->time_base.den,
 	};
 	return timeBase;
 }
@@ -476,6 +476,16 @@ double VideoProperties::getFps() const
 	return fps;
 }
 
+double VideoProperties::getDuration() const
+{
+	if( ! _formatContext )
+		throw std::runtime_error( "unknown format context" );
+
+	Rational timeBase = getTimeBase();
+	double duration = ( timeBase.num / (double) timeBase.den ) * _formatContext->streams[_streamId]->duration;
+	return duration;
+}
+
 bool VideoProperties::hasBFrames() const
 {
 	if( ! _codecContext )
@@ -571,8 +581,10 @@ PropertiesMap VideoProperties::getPropertiesAsMap() const
 	detail::add( dataMap, "interlaced ", isInterlaced() );
 	detail::add( dataMap, "topFieldFirst", isTopFieldFirst() );
 	detail::add( dataMap, "fieldOrder", getFieldOrder() );
-	detail::add( dataMap, "timeBase", getTimeBase().num / getTimeBase().den );
+	detail::add( dataMap, "timeBase", getTimeBase().num / (double) getTimeBase().den );
+	detail::add( dataMap, "duration", getDuration() );
 	detail::add( dataMap, "fps", getFps() );
+	detail::add( dataMap, "nbFrame", getNbFrames() );
 	detail::add( dataMap, "ticksPerFrame", getTicksPerFrame() );
 	detail::add( dataMap, "bitRate", getBitRate() );
 	detail::add( dataMap, "maxBitRate", getMaxBitRate() );

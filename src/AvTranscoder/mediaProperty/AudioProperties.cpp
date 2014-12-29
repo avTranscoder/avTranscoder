@@ -161,7 +161,6 @@ size_t AudioProperties::getNbSamples() const
 	return _formatContext->streams[_streamId]->nb_frames;
 }
 
-
 PropertiesMap AudioProperties::getPropertiesAsMap() const
 {
 	PropertiesMap dataMap;

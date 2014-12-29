@@ -59,6 +59,7 @@ public:
 	int getLevel() const;
 
 	double getFps() const;
+	double getDuration() const;  ///< in seconds
 
 	bool hasBFrames() const;
 

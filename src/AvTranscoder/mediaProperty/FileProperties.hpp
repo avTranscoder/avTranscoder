@@ -31,7 +31,7 @@ public:
 
 	size_t getProgramsCount() const;
 	double getStartTime() const;
-	double getDuration() const;
+	double getDuration() const;  ///< in seconds
 	size_t getBitRate() const;
 	size_t getPacketSize() const;
 
