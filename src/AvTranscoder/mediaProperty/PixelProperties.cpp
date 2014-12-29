@@ -1,31 +1,31 @@
-#include "Pixel.hpp"
+#include "PixelProperties.hpp"
 
 #include <stdexcept>
 
 namespace avtranscoder
 {
 
-Pixel::Pixel( const std::string& avPixelFormat )
+PixelProperties::PixelProperties( const std::string& avPixelFormat )
 	: _pixelFormat( AV_PIX_FMT_NONE )
 	,_pixelDesc( NULL )
 {
 	init( av_get_pix_fmt( avPixelFormat.c_str() ) );
 }
 
-Pixel::Pixel( const AVPixelFormat avPixelFormat )
+PixelProperties::PixelProperties( const AVPixelFormat avPixelFormat )
 	: _pixelFormat( AV_PIX_FMT_NONE )
 	,_pixelDesc( NULL )
 {
 	init( avPixelFormat );
 }
 
-void Pixel::init( const AVPixelFormat avPixelFormat )
+void PixelProperties::init( const AVPixelFormat avPixelFormat )
 {
 	_pixelFormat = avPixelFormat;
 	_pixelDesc = av_pix_fmt_desc_get( avPixelFormat );
 }
 
-std::string Pixel::getPixelName() const
+std::string PixelProperties::getPixelName() const
 {
 	if( ! _pixelDesc )
 		throw std::runtime_error( "unable to find pixel description." ); 
@@ -35,7 +35,7 @@ std::string Pixel::getPixelName() const
 	return "unknown pixel name";
 }
 
-size_t Pixel::getBitsPerPixel() const
+size_t PixelProperties::getBitsPerPixel() const
 {
 	if( ! _pixelDesc )
 		throw std::runtime_error( "unable to find pixel description." ); 
@@ -43,7 +43,7 @@ size_t Pixel::getBitsPerPixel() const
 	return av_get_bits_per_pixel( _pixelDesc );
 }
 
-size_t Pixel::getComponents() const
+size_t PixelProperties::getComponents() const
 {
 	if( ! _pixelDesc )
 		throw std::runtime_error( "unable to find pixel description." ); 
@@ -51,7 +51,7 @@ size_t Pixel::getComponents() const
 	return _pixelDesc->nb_components;
 }
 
-size_t Pixel::getChromaWidth() const
+size_t PixelProperties::getChromaWidth() const
 {
 	if( ! _pixelDesc )
 		throw std::runtime_error( "unable to find pixel description." );
@@ -59,7 +59,7 @@ size_t Pixel::getChromaWidth() const
 	return _pixelDesc->log2_chroma_w;
 }
 
-size_t Pixel::getChromaHeight() const
+size_t PixelProperties::getChromaHeight() const
 {
 	if( ! _pixelDesc )
 		throw std::runtime_error( "unable to find pixel description." );
@@ -67,7 +67,7 @@ size_t Pixel::getChromaHeight() const
 	return _pixelDesc->log2_chroma_h;
 }
 
-EComponentType Pixel::getColorComponents() const
+EComponentType PixelProperties::getColorComponents() const
 {
 	if( ! _pixelDesc )
 		throw std::runtime_error( "unable to find pixel description." ); 
@@ -94,7 +94,7 @@ EComponentType Pixel::getColorComponents() const
 	}
 }
 
-ESubsamplingType Pixel::getSubsampling() const
+ESubsamplingType PixelProperties::getSubsampling() const
 {
 	if( ! _pixelDesc )
 		throw std::runtime_error( "unable to find pixel description." ); 
@@ -130,7 +130,7 @@ ESubsamplingType Pixel::getSubsampling() const
 	}
 }
 
-bool Pixel::isBigEndian() const
+bool PixelProperties::isBigEndian() const
 {	
 	if( ! _pixelDesc )
 		throw std::runtime_error( "unable to find pixel description." ); 
@@ -138,7 +138,7 @@ bool Pixel::isBigEndian() const
 	return ( _pixelDesc->flags & PIX_FMT_BE ) == PIX_FMT_BE;
 }
 
-bool Pixel::hasAlpha() const
+bool PixelProperties::hasAlpha() const
 {
 	if( ! _pixelDesc )
 		throw std::runtime_error( "unable to find pixel description." ); 
@@ -150,7 +150,7 @@ bool Pixel::hasAlpha() const
 #endif
 }
 
-bool Pixel::isPlanar() const
+bool PixelProperties::isPlanar() const
 {
 	if( ! _pixelDesc )
 		throw std::runtime_error( "unable to find pixel description." ); 
@@ -158,7 +158,7 @@ bool Pixel::isPlanar() const
 	return ( _pixelDesc->flags & PIX_FMT_PLANAR ) == PIX_FMT_PLANAR;
 }
 
-bool Pixel::isIndexedColors() const
+bool PixelProperties::isIndexedColors() const
 {
 	if( ! _pixelDesc )
 		throw std::runtime_error( "unable to find pixel description." ); 
@@ -166,7 +166,7 @@ bool Pixel::isIndexedColors() const
 	return ( _pixelDesc->flags & PIX_FMT_PAL ) == PIX_FMT_PAL;
 }
 
-bool Pixel::isBitWisePacked() const
+bool PixelProperties::isBitWisePacked() const
 {
 	if( ! _pixelDesc )
 		throw std::runtime_error( "unable to find pixel description." ); 
@@ -174,7 +174,7 @@ bool Pixel::isBitWisePacked() const
 	return ( _pixelDesc->flags & PIX_FMT_BITSTREAM ) == PIX_FMT_BITSTREAM;
 }
 
-bool Pixel::isHardwareAccelerated() const
+bool PixelProperties::isHardwareAccelerated() const
 {
 	if( ! _pixelDesc )
 		throw std::runtime_error( "unable to find pixel description." ); 
@@ -182,7 +182,7 @@ bool Pixel::isHardwareAccelerated() const
 	return ( _pixelDesc->flags & PIX_FMT_HWACCEL ) == PIX_FMT_HWACCEL;
 }
 
-bool Pixel::isRgbPixelData() const
+bool PixelProperties::isRgbPixelData() const
 {
 	if( ! _pixelDesc )
 		throw std::runtime_error( "unable to find pixel description." ); 
@@ -190,7 +190,7 @@ bool Pixel::isRgbPixelData() const
 	return ( _pixelDesc->flags & PIX_FMT_RGB ) == PIX_FMT_RGB;
 }
 
-bool Pixel::isPseudoPaletted() const
+bool PixelProperties::isPseudoPaletted() const
 {
 	if( ! _pixelDesc )
 		throw std::runtime_error( "unable to find pixel description." ); 
@@ -203,7 +203,7 @@ bool Pixel::isPseudoPaletted() const
 #endif
 }
 
-std::vector<Channel> Pixel::getChannels() const
+std::vector<Channel> PixelProperties::getChannels() const
 {
 	if( ! _pixelDesc )
 		throw std::runtime_error( "unable to find pixel description." ); 
@@ -220,7 +220,7 @@ std::vector<Channel> Pixel::getChannels() const
 	return channels;
 }
 
-PropertiesMap Pixel::getPropertiesAsMap() const
+PropertiesMap PixelProperties::getPropertiesAsMap() const
 {
 	PropertiesMap dataMap;
 

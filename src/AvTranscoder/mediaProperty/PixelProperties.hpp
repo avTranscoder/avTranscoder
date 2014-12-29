@@ -1,5 +1,5 @@
-#ifndef _AV_TRANSCODER_FRAME_PIXEL_HPP_
-#define _AV_TRANSCODER_FRAME_PIXEL_HPP_
+#ifndef _AV_TRANSCODER_FRAME_PIXEL_PROPERTIES_HPP_
+#define _AV_TRANSCODER_FRAME_PIXEL_PROPERTIES_HPP_
 
 #include <AvTranscoder/common.hpp>
 #include <AvTranscoder/mediaProperty/util.hpp>
@@ -43,14 +43,14 @@ struct AvExport Channel
 	size_t bitStep;
 };
 
-class AvExport Pixel
+class AvExport PixelProperties
 {
 public:
 	/**
 	 * If parameter is an unknown pixel, its format is AV_PIX_FMT_NONE with no access to pixel description.
 	 */
-	Pixel( const std::string& avPixelFormat = "" );
-	Pixel( const AVPixelFormat avPixelFormat );
+	PixelProperties( const std::string& avPixelFormat = "" );
+	PixelProperties( const AVPixelFormat avPixelFormat );
 
 	std::string getPixelName() const;
 
@@ -85,7 +85,7 @@ private:
 
 private:
 	AVPixelFormat _pixelFormat;
-	const AVPixFmtDescriptor* _pixelDesc;
+	const AVPixFmtDescriptor* _pixelDesc;  ///< Has link (no ownership)
 };
 
 }

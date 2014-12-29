@@ -54,17 +54,17 @@ public:
 
 	size_t getComponents()
 	{
-		return _inputFile.getProperties().getVideoProperties().at(0).getPixel().getComponents();
+		return _inputFile.getProperties().getVideoProperties().at(0).getPixelProperties().getComponents();
 	}
 
 	size_t getBitDepth()
 	{
-		return _inputFile.getProperties().getVideoProperties().at(0).getPixel().getBitsPerPixel();
+		return _inputFile.getProperties().getVideoProperties().at(0).getPixelProperties().getBitsPerPixel();
 	}
 
 	AVPixelFormat getPixelFormat()
 	{
-		return _inputFile.getProperties().getVideoProperties().at(0).getPixel().getAVPixelFormat();
+		return _inputFile.getProperties().getVideoProperties().at(0).getPixelProperties().getAVPixelFormat();
 	}
 
 	const char* readNextFrame()

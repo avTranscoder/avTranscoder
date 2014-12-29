@@ -22,8 +22,8 @@ VideoProperties::VideoProperties( const AVFormatContext* formatContext, const si
 	: _formatContext( formatContext )
 	, _codecContext( NULL )
 	, _codec( NULL )
-	, _pixel()
 	, _streamId( index )
+	, _pixelProperties()
 	, _isInterlaced( false )
 	, _isTopFieldFirst( false )
 	, _gopStructure()
@@ -38,7 +38,7 @@ VideoProperties::VideoProperties( const AVFormatContext* formatContext, const si
 		detail::fillMetadataDictionnary( _formatContext->streams[index]->metadata, _metadatas );
 
 	if( _codecContext )
-		_pixel = Pixel( _codecContext->pix_fmt );
+		_pixelProperties = PixelProperties( _codecContext->pix_fmt );
 
 	// Skip decoding for selected frames
 	_codecContext->skip_frame = AVDISCARD_NONE;
@@ -581,7 +581,7 @@ PropertiesMap VideoProperties::getPropertiesAsMap() const
 	}
 
 	// Add properties of the pixel
-	PropertiesMap pixelProperties = _pixel.getPropertiesAsMap();
+	PropertiesMap pixelProperties = _pixelProperties.getPropertiesAsMap();
 	dataMap.insert( dataMap.end(), pixelProperties.begin(), pixelProperties.end() );
 
 	return dataMap;

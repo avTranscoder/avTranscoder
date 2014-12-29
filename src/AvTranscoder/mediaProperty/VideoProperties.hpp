@@ -2,7 +2,7 @@
 #define _AV_TRANSCODER_MEDIA_PROPERTY_VIDEO_PROPERTIES_HPP
 
 #include <AvTranscoder/common.hpp>
-#include "Pixel.hpp"
+#include "PixelProperties.hpp"
 #include <AvTranscoder/mediaProperty/util.hpp>
 #include <AvTranscoder/file/util.hpp>
 #include <AvTranscoder/progress/IProgress.hpp>
@@ -34,7 +34,7 @@ public:
 	std::string getChromaSampleLocation() const;
 	std::string getFieldOrder() const;
 
-	Pixel& getPixel() { return _pixel; }
+	PixelProperties& getPixelProperties() { return _pixelProperties; }
 
 	int64_t getStartTimecode() const;
 	std::string getStartTimecodeString() const;
@@ -75,7 +75,7 @@ public:
 #ifndef SWIG
 	const AVFormatContext& getAVFormatContext() { return *_formatContext; }
 	AVCodecContext& getAVCodecContext() { return *_codecContext; }
-	const Pixel& getPixel() const { return _pixel; }
+	const PixelProperties& getPixelProperties() const { return _pixelProperties; }
 #endif
 
 	PropertiesMap getPropertiesAsMap() const;  ///< Return all video properties as a map (name of property: value)
@@ -91,9 +91,9 @@ private:
 	const AVFormatContext* _formatContext;  ///< Has link (no ownership)
 	AVCodecContext* _codecContext;  ///< Has link (no ownership)
 	AVCodec* _codec;  ///< Has link (no ownership)
-	Pixel _pixel;
 
 	size_t _streamId;
+	PixelProperties _pixelProperties;
 	//@{
 	// Can acces these data when analyse first gop
 	bool _isInterlaced;
