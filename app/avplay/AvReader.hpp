@@ -24,21 +24,15 @@ public:
 
 		_inputFile.analyse( p );
 		_videoStream = _inputFile.getProperties().getVideoProperties().at(0).getStreamId();
-
 		_inputFile.activateStream( _videoStream );
 
 		_inputVideo = new avtranscoder::AvInputVideo( _inputFile.getStream( _videoStream ) );
-		
 		_inputVideo->setup();
 
 		_sourceImage = new avtranscoder::VideoFrame( _inputFile.getStream( _videoStream ).getVideoCodec().getVideoFrameDesc() );
 
-		_videoFrameDescToDisplay.setWidth( _sourceImage->desc().getWidth() );
-		_videoFrameDescToDisplay.setHeight( _sourceImage->desc().getHeight() );
-		_videoFrameDescToDisplay.setDar( _sourceImage->desc().getDar() );
-		_videoFrameDescToDisplay.setPixel( getPixelFormat() );
-		
-		_imageToDisplay = new avtranscoder::VideoFrame( _videoFrameDescToDisplay );
+		avtranscoder::VideoFrameDesc videoFrameDescToDisplay( _sourceImage->desc().getWidth(), _sourceImage->desc().getHeight(), getPixelFormat() );
+		_imageToDisplay = new avtranscoder::VideoFrame( videoFrameDescToDisplay );
 	}
 
 	~AvReader()
@@ -102,13 +96,11 @@ public:
 
 private:
 	avtranscoder::InputFile   _inputFile;
-	
+
 	avtranscoder::AvInputVideo* _inputVideo;
 
 	avtranscoder::VideoFrame* _sourceImage;
 	avtranscoder::VideoFrame* _imageToDisplay;
-
-	avtranscoder::VideoFrameDesc _videoFrameDescToDisplay;
 
 	avtranscoder::VideoTransform _videoTransform;
 	size_t _videoStream;

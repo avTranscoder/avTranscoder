@@ -39,8 +39,8 @@ bool VideoTransform::init( const Frame& srcFrame, const Frame& dstFrame )
 	const VideoFrame& dst = static_cast<const VideoFrame&>( dstFrame );
 
 
-	const AVPixelFormat srcPixelFormat = src.desc().getPixel().getAVPixelFormat();
-	const AVPixelFormat dstPixelFormat = dst.desc().getPixel().getAVPixelFormat();
+	const AVPixelFormat srcPixelFormat = src.desc().getPixelFormat();
+	const AVPixelFormat dstPixelFormat = dst.desc().getPixelFormat();
 
 	_imageConvertContext = sws_getContext(
 		src.desc().getWidth(), src.desc().getHeight(), srcPixelFormat,
@@ -93,13 +93,13 @@ void VideoTransform::convert( const Frame& srcFrame, Frame& dstFrame )
 
 	assert( src.desc().getWidth()  != 0 );
 	assert( src.desc().getHeight() != 0 );
-	assert( src.desc().getPixel().getComponents() != 0 );
+	assert( src.desc().getPixelFormat() != AV_PIX_FMT_NONE );
 
 	if( ! _isInit )
 		_isInit = init( srcFrame, dstFrame );
 
-	const AVPixelFormat srcPixelFormat = src.desc().getPixel().getAVPixelFormat();
-	const AVPixelFormat dstPixelFormat = dst.desc().getPixel().getAVPixelFormat();
+	const AVPixelFormat srcPixelFormat = src.desc().getPixelFormat();
+	const AVPixelFormat dstPixelFormat = dst.desc().getPixelFormat();
 
 	// Fill plane data pointers
 	av_image_fill_pointers(&_srcData[0], srcPixelFormat, src.desc().getHeight(), (uint8_t*) src.getPtr(), &_srcLineSize[0]);

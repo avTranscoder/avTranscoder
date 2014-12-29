@@ -2,6 +2,7 @@
 #define _AV_TRANSCODER_CODEC_VIDEO_CODEC_HPP_
 
 #include "ICodec.hpp"
+#include <AvTranscoder/frame/Pixel.hpp>
 #include <AvTranscoder/frame/VideoFrame.hpp>
 
 #include <utility>

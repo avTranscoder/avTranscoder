@@ -104,14 +104,10 @@ def testTranscodeDummyVideo():
 	transcoder = av.Transcoder( ouputFile )
 
 	# add a dummy video stream
-	imageDesc = av.VideoFrameDesc()
-	imageDesc.setWidth( 1920 )
-	imageDesc.setHeight( 1080 )
-	imageDesc.setDar( 1, 1 )
-	inputPixel = av.Pixel( "yuv422p" )
-	imageDesc.setPixel( inputPixel )
 	videoCodec = av.VideoCodec( av.eCodecTypeEncoder, "mpeg2video" )
+	imageDesc = av.VideoFrameDesc( 1920, 1080, "yuv422p" )
 	videoCodec.setImageParameters( imageDesc )
+
 	transcoder.add( "", 0, "dnxhd120", videoCodec )
 
 	ouputFile.beginWrap()

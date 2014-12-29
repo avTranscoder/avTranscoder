@@ -2,12 +2,12 @@
 #define _AV_TRANSCODER_FRAME_VIDEO_FRAME_HPP_
 
 #include "Frame.hpp"
-#include "Pixel.hpp"
 #include <AvTranscoder/ProfileLoader.hpp>
 
 extern "C" {
-#include <libavutil/pixdesc.h>
 #include <libavutil/rational.h>
+#include <libavutil/pixfmt.h>
+#include <libavutil/pixdesc.h>
 }
 
 #include <stdexcept>
@@ -19,44 +19,61 @@ namespace avtranscoder
 class AvExport VideoFrameDesc
 {
 public:
-	VideoFrameDesc()
-		: _width( 0 )
-		, _height( 0 )
-		, _pixel()
+	VideoFrameDesc( const size_t width = 0, const size_t height = 0, const AVPixelFormat pixelFormat = AV_PIX_FMT_NONE )
+		: _width( width )
+		, _height( height )
+		, _pixelFormat( pixelFormat )
 		, _interlaced( false )
 		, _topFieldFirst( false )
 	{
-		_displayAspectRatio.num = 0;
-		_displayAspectRatio.den = 0;
+		_displayAspectRatio.num = width;
+		_displayAspectRatio.den = height;
 	}
-	
+	VideoFrameDesc( const size_t width, const size_t height, const std::string& pixelFormat )
+		: _width( width )
+		, _height( height )
+		, _pixelFormat( av_get_pix_fmt( pixelFormat.c_str() ) )
+		, _interlaced( false )
+		, _topFieldFirst( false )
+	{
+		_displayAspectRatio.num = width;
+		_displayAspectRatio.den = height;
+	}
+
 	void setWidth ( const size_t width     ) { _width = width; }
 	void setHeight( const size_t height    ) { _height = height; }
-	void setPixel( const Pixel&  pixel ) { _pixel = pixel; }
+	void setPixelFormat( const std::string& pixelFormat ) { _pixelFormat = av_get_pix_fmt( pixelFormat.c_str() ); }
+	void setPixelFormat( const AVPixelFormat pixelFormat ) { _pixelFormat = pixelFormat; }
 	void setDar( const size_t num, const size_t den ) { _displayAspectRatio.num = num; _displayAspectRatio.den = den; }
 	void setDar( const Rational& ratio ) { _displayAspectRatio = ratio; }
 
 	void setParameters( const ProfileLoader::Profile& profile )
 	{
 		if( profile.find( constants::avProfilePixelFormat ) != profile.end() )
-			setPixel( Pixel( profile.find( constants::avProfilePixelFormat )->second ) );
+			setPixelFormat( profile.find( constants::avProfilePixelFormat )->second );
 	}
 
-	size_t               getWidth ()    const { return _width;  }
-	size_t               getHeight()    const { return _height; }
+	size_t getWidth () const { return _width;  }
+	size_t getHeight() const { return _height; }
 	Rational getDar() const { return _displayAspectRatio; }
 	int getDarNum() const { return _displayAspectRatio.num; }
 	int getDarDen() const { return _displayAspectRatio.den; }
-	const Pixel& getPixel() const { return _pixel; }
+	AVPixelFormat getPixelFormat() const { return _pixelFormat; }
+	std::string getPixelFormatName() const
+	{
+	    const char* pixelName = av_get_pix_fmt_name( _pixelFormat );
+	    if( pixelName )
+		return std::string( pixelName );
+	    return std::string( "unknown pixel format" );
+	}
 
 	size_t getDataSize() const
 	{
-		AVPixelFormat pixelFormat = _pixel.getAVPixelFormat();
-		if( pixelFormat == AV_PIX_FMT_NONE )
+		if( _pixelFormat == AV_PIX_FMT_NONE )
 		{
 			throw std::runtime_error( "incorrect pixel description" );
 		}
-		size_t size = avpicture_get_size( pixelFormat, _width, _height );
+		size_t size = avpicture_get_size( _pixelFormat, _width, _height );
 		if( size == 0 )
 		{
 			throw std::runtime_error( "unable to determine image buffer size" );
@@ -68,7 +85,7 @@ private:
 	size_t          _width;
 	size_t          _height;
 	Rational      _displayAspectRatio;
-	Pixel           _pixel;
+	AVPixelFormat _pixelFormat;
 
 	bool            _interlaced;
 	bool            _topFieldFirst;

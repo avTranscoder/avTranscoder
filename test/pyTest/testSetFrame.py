@@ -15,15 +15,8 @@ def testSetVideoFrame():
 	ouputFile = av.OutputFile( outputFileName )
 
 	# create video frame and codec
-	imageDesc = av.VideoFrameDesc()
-	imageDesc.setWidth( 1920 )
-	imageDesc.setHeight( 1080 )
-	imageDesc.setDar( 1920, 1080 )
-
-	inputPixel = av.Pixel( "rgb24" )
-	imageDesc.setPixel( inputPixel );
-
 	inputVideoCodec = av.VideoCodec( av.eCodecTypeEncoder, "mpeg2video" );
+	imageDesc = av.VideoFrameDesc( 1920, 1080, "rgb24" )
 	inputVideoCodec.setImageParameters( imageDesc );
 
 	# create transcoder and add a video stream
