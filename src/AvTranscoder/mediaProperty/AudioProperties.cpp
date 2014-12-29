@@ -154,6 +154,14 @@ size_t AudioProperties::getBitRate() const
 	return _codecContext->bit_rate;
 }
 
+size_t AudioProperties::getNbSamples() const
+{
+	if( ! _formatContext )
+		throw std::runtime_error( "unknown format context" );
+	return _formatContext->streams[_streamId]->nb_frames;
+}
+
+
 PropertiesMap AudioProperties::getPropertiesAsMap() const
 {
 	PropertiesMap dataMap;
@@ -166,6 +174,7 @@ PropertiesMap AudioProperties::getPropertiesAsMap() const
 	detail::add( dataMap, "sampleFormatLongName", getSampleFormatLongName() );
 	detail::add( dataMap, "sampleRate", getSampleRate() );
 	detail::add( dataMap, "bitRate", getBitRate() );
+	detail::add( dataMap, "nbSamples", getNbSamples() );
 	detail::add( dataMap, "channels", getChannels() );
 	detail::add( dataMap, "channelLayout", getChannelLayout() );
 	detail::add( dataMap, "channelName", getChannelName() );

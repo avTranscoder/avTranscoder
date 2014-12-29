@@ -33,6 +33,7 @@ public:
 	size_t getSampleRate() const;
 	size_t getChannels() const;
 	size_t getBitRate() const;
+	size_t getNbSamples() const;
 	PropertiesMap& getMetadatas() { return _metadatas; }
 
 #ifndef SWIG
