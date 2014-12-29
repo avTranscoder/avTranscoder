@@ -66,6 +66,10 @@ EComponentType Pixel::getColorComponents() const
 	{
 		return eComponentYuvJPEG;
 	}
+	else if( _pixelDesc->name && ! strncmp( _pixelDesc->name, "yuva", 4 ) )
+	{
+		return eComponentYuvA;
+	}
 	else
 	{
 		return eComponentYuv;
