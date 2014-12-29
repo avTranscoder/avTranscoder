@@ -1,7 +1,10 @@
 #!/bin/bash
 
 # Get avtranscoder library
-export PYTHONPATH=`pwd`/build/dist/lib:`pwd`/build/dist/lib/python2.7/site-packages/:$PYTHONPATH
+export PYTHONPATH=`pwd`/build/dist/lib:`pwd`/build/dist/lib/python2.7.6/site-packages/:$PYTHONPATH
+
+# Get avtranscoder profiles
+export AVPROFILES=`pwd`/build/dist/share/ressource
 
 # Get assets
 git clone https://github.com/avTranscoder/avTranscoder-data.git
