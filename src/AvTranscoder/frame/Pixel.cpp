@@ -130,7 +130,7 @@ ESubsamplingType Pixel::getSubsampling() const
 	}
 }
 
-bool Pixel::getBigEndian() const
+bool Pixel::isBigEndian() const
 {	
 	if( ! _pixelDesc )
 		throw std::runtime_error( "unable to find pixel description." ); 
@@ -138,7 +138,7 @@ bool Pixel::getBigEndian() const
 	return ( _pixelDesc->flags & PIX_FMT_BE ) == PIX_FMT_BE;
 }
 
-bool Pixel::getAlpha() const
+bool Pixel::hasAlpha() const
 {
 	if( ! _pixelDesc )
 		throw std::runtime_error( "unable to find pixel description." ); 
@@ -150,7 +150,7 @@ bool Pixel::getAlpha() const
 #endif
 }
 
-bool Pixel::getPlanar() const
+bool Pixel::isPlanar() const
 {
 	if( ! _pixelDesc )
 		throw std::runtime_error( "unable to find pixel description." ); 
@@ -235,9 +235,9 @@ PropertiesMap Pixel::getPropertiesAsMap() const
 	detail::add( dataMap, "chromaWidth", getChromaWidth() );
 	detail::add( dataMap, "chromaHeight", getChromaHeight() );
 
-	detail::add( dataMap, "isBigEndian", getBigEndian() );
-	detail::add( dataMap, "hasAlpha", getAlpha() );
-	detail::add( dataMap, "isPlanar", getPlanar() );
+	detail::add( dataMap, "isBigEndian", isBigEndian() );
+	detail::add( dataMap, "hasAlpha", hasAlpha() );
+	detail::add( dataMap, "isPlanar", isPlanar() );
 	detail::add( dataMap, "isIndexedColors", isIndexedColors() );
 	detail::add( dataMap, "bitWiseAcked", isBitWisePacked() );
 	detail::add( dataMap, "isHardwareAccelerated", isHardwareAccelerated() );

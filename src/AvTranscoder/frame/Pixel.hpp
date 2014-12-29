@@ -54,17 +54,17 @@ public:
 
 	std::string getPixelName() const;
 
-	size_t           getBitsPerPixel   () const;
-	size_t           getComponents     () const;
+	size_t getBitsPerPixel() const;
+	size_t getComponents() const;
 	size_t getChromaWidth() const;
 	size_t getChromaHeight() const;
 
-	EComponentType   getColorComponents() const;
-	ESubsamplingType getSubsampling    () const;
+	EComponentType getColorComponents() const;
+	ESubsamplingType getSubsampling() const;
 
-	bool             getBigEndian      () const;
-	bool             getAlpha          () const;
-	bool             getPlanar         () const;
+	bool isBigEndian() const;
+	bool hasAlpha() const;
+	bool isPlanar() const;
 	bool isIndexedColors() const;
 	bool isBitWisePacked() const;
 	bool isHardwareAccelerated() const;
