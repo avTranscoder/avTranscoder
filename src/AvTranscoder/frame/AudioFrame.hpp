@@ -29,11 +29,15 @@ public:
 		, _sampleFormat( av_get_sample_fmt( sampleFormat.c_str() ) )
 	{}
 
-	void setSampleRate  ( const size_t sampleRate ){ _sampleRate = sampleRate; }
-	void setChannels    ( const size_t channels   ){ _channels   = channels;   }
-	void setFps         ( const size_t fps        ){ _fps        = fps;        }
-	void setSampleFormat( const std::string& sampleFormatName ){ _sampleFormat = av_get_sample_fmt( sampleFormatName.c_str() ); }
-	void setSampleFormat( const AVSampleFormat sampleFormat ){ _sampleFormat = sampleFormat; }
+	size_t getSampleRate() const { return _sampleRate; }
+	size_t getChannels() const { return _channels; }
+	size_t getFps() const { return _fps; }
+	AVSampleFormat getSampleFormat() const { return _sampleFormat; }
+	std::string getSampleFormatName() const
+	{
+		const char* formatName = av_get_sample_fmt_name( _sampleFormat );
+		return formatName ? std::string( formatName ) : "unknown sample format";
+	}
 
 	size_t getDataSize() const
 	{
@@ -47,20 +51,16 @@ public:
 		return size;
 	}
 	
+	void setSampleRate( const size_t sampleRate ) { _sampleRate = sampleRate; }
+	void setChannels( const size_t channels ) { _channels = channels; }
+	void setFps( const size_t fps ) { _fps = fps; }
+	void setSampleFormat( const std::string& sampleFormatName ) { _sampleFormat = av_get_sample_fmt( sampleFormatName.c_str() ); }
+	void setSampleFormat( const AVSampleFormat sampleFormat ) { _sampleFormat = sampleFormat; }
+	
 	void setParameters( const ProfileLoader::Profile& profile )
 	{
 		if( profile.find( constants::avProfileSampleFormat ) != profile.end() )
 			setSampleFormat( profile.find( constants::avProfileSampleFormat )->second );
-	}
-
-	size_t getSampleRate() const { return _sampleRate; }
-	size_t getChannels  () const { return _channels; }
-	size_t getFps       () const { return _fps; }
-	AVSampleFormat getAVSampleFormat() const { return _sampleFormat; }
-	std::string getSampleFormat() const
-	{
-		const char* formatName = av_get_sample_fmt_name( _sampleFormat );
-		return formatName ? std::string( formatName ) : "unknown sample format";
 	}
 
 private:

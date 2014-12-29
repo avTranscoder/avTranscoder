@@ -53,8 +53,8 @@ bool AudioTransform::init( const Frame& srcFrame, const Frame& dstFrame )
 	av_opt_set_int(  _audioConvertContext, "out_channel_layout", av_get_default_channel_layout( dst.desc().getChannels() ), 0 );
 	av_opt_set_int(  _audioConvertContext, "in_sample_rate",     src.desc().getSampleRate(), 0 );
 	av_opt_set_int(  _audioConvertContext, "out_sample_rate",    dst.desc().getSampleRate(), 0 );
-	SetSampleFormat( _audioConvertContext, "in_sample_fmt",      src.desc().getAVSampleFormat(), 0 );
-	SetSampleFormat( _audioConvertContext, "out_sample_fmt",     dst.desc().getAVSampleFormat(), 0 );
+	SetSampleFormat( _audioConvertContext, "in_sample_fmt",      src.desc().getSampleFormat(), 0 );
+	SetSampleFormat( _audioConvertContext, "out_sample_fmt",     dst.desc().getSampleFormat(), 0 );
 	
 	if( InitResampleContext( _audioConvertContext ) < 0 )
 	{
@@ -70,7 +70,7 @@ bool AudioTransform::initFrames( const Frame& srcFrame, Frame& dstFrame )
 	const AudioFrame& src = static_cast<const AudioFrame&>( srcFrame );
 	const AudioFrame& dst = static_cast<const AudioFrame&>( dstFrame );
 
-	int dstSampleSize = av_get_bytes_per_sample( dst.desc().getAVSampleFormat() );
+	int dstSampleSize = av_get_bytes_per_sample( dst.desc().getSampleFormat() );
 	dstFrame.getBuffer().resize( src.getNbSamples() * dstSampleSize );
 	_previousProcessedAudioFrameSize = srcFrame.getSize();
 	return true;
