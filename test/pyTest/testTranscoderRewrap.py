@@ -153,7 +153,7 @@ def testRewrapVideoStream():
 	# check pixel
 	assert_equals( src_videoStream.getPixelProperties().getPixelName(), dst_videoStream.getPixelProperties().getPixelName() )
 	assert_equals( src_videoStream.getPixelProperties().getBitsPerPixel(), dst_videoStream.getPixelProperties().getBitsPerPixel() )
-	assert_equals( src_videoStream.getPixelProperties().getComponents(), dst_videoStream.getPixelProperties().getComponents() )
+	assert_equals( src_videoStream.getPixelProperties().getNbComponents(), dst_videoStream.getPixelProperties().getNbComponents() )
 	assert_equals( src_videoStream.getPixelProperties().getChromaWidth(), dst_videoStream.getPixelProperties().getChromaWidth() )
 	assert_equals( src_videoStream.getPixelProperties().getChromaHeight(), dst_videoStream.getPixelProperties().getChromaHeight() )
 	assert_equals( src_videoStream.getPixelProperties().getColorComponents(), dst_videoStream.getPixelProperties().getColorComponents() )

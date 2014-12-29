@@ -39,15 +39,13 @@ size_t PixelProperties::getBitsPerPixel() const
 {
 	if( ! _pixelDesc )
 		throw std::runtime_error( "unable to find pixel description." ); 
-
 	return av_get_bits_per_pixel( _pixelDesc );
 }
 
-size_t PixelProperties::getComponents() const
+size_t PixelProperties::getNbComponents() const
 {
 	if( ! _pixelDesc )
 		throw std::runtime_error( "unable to find pixel description." ); 
-
 	return _pixelDesc->nb_components;
 }
 
@@ -55,7 +53,6 @@ size_t PixelProperties::getChromaWidth() const
 {
 	if( ! _pixelDesc )
 		throw std::runtime_error( "unable to find pixel description." );
-
 	return _pixelDesc->log2_chroma_w;
 }
 
@@ -63,7 +60,6 @@ size_t PixelProperties::getChromaHeight() const
 {
 	if( ! _pixelDesc )
 		throw std::runtime_error( "unable to find pixel description." );
-
 	return _pixelDesc->log2_chroma_h;
 }
 
@@ -134,7 +130,6 @@ bool PixelProperties::isBigEndian() const
 {	
 	if( ! _pixelDesc )
 		throw std::runtime_error( "unable to find pixel description." ); 
-
 	return ( _pixelDesc->flags & PIX_FMT_BE ) == PIX_FMT_BE;
 }
 
@@ -154,7 +149,6 @@ bool PixelProperties::isPlanar() const
 {
 	if( ! _pixelDesc )
 		throw std::runtime_error( "unable to find pixel description." ); 
-
 	return ( _pixelDesc->flags & PIX_FMT_PLANAR ) == PIX_FMT_PLANAR;
 }
 
@@ -162,7 +156,6 @@ bool PixelProperties::isIndexedColors() const
 {
 	if( ! _pixelDesc )
 		throw std::runtime_error( "unable to find pixel description." ); 
-
 	return ( _pixelDesc->flags & PIX_FMT_PAL ) == PIX_FMT_PAL;
 }
 
@@ -170,7 +163,6 @@ bool PixelProperties::isBitWisePacked() const
 {
 	if( ! _pixelDesc )
 		throw std::runtime_error( "unable to find pixel description." ); 
-
 	return ( _pixelDesc->flags & PIX_FMT_BITSTREAM ) == PIX_FMT_BITSTREAM;
 }
 
@@ -178,7 +170,6 @@ bool PixelProperties::isHardwareAccelerated() const
 {
 	if( ! _pixelDesc )
 		throw std::runtime_error( "unable to find pixel description." ); 
-
 	return ( _pixelDesc->flags & PIX_FMT_HWACCEL ) == PIX_FMT_HWACCEL;
 }
 
@@ -186,7 +177,6 @@ bool PixelProperties::isRgbPixelData() const
 {
 	if( ! _pixelDesc )
 		throw std::runtime_error( "unable to find pixel description." ); 
-
 	return ( _pixelDesc->flags & PIX_FMT_RGB ) == PIX_FMT_RGB;
 }
 
@@ -194,7 +184,6 @@ bool PixelProperties::isPseudoPaletted() const
 {
 	if( ! _pixelDesc )
 		throw std::runtime_error( "unable to find pixel description." ); 
-
 
 #if LIBAVCODEC_VERSION_MAJOR > 53
 	return ( _pixelDesc->flags & PIX_FMT_PSEUDOPAL ) == PIX_FMT_PSEUDOPAL;
@@ -226,7 +215,7 @@ PropertiesMap PixelProperties::getPropertiesAsMap() const
 
 	detail::add( dataMap, "pixelName", getPixelName() );
 	detail::add( dataMap, "bitDepth", getBitsPerPixel() );
-	detail::add( dataMap, "nbComponents", getComponents() );
+	detail::add( dataMap, "nbComponents", getNbComponents() );
 	detail::add( dataMap, "chromaWidth", getChromaWidth() );
 	detail::add( dataMap, "chromaHeight", getChromaHeight() );
 
