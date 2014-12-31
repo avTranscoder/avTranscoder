@@ -322,14 +322,19 @@ int64_t VideoProperties::getStartTimecode() const
 
 std::string VideoProperties::getStartTimecodeString() const
 {
-	int64_t stratTimeCode = getStartTimecode();
+	int64_t startTimeCode = getStartTimecode();
 	std::ostringstream os;
-	os << std::setfill( '0' );
-	os << std::setw(2) << ( stratTimeCode >> 19 & 0x1f ) << ":";   // 5-bit hours
-	os << std::setw(2) << ( stratTimeCode >> 13 & 0x3f ) << ":";   // 6-bit minutes
-	os << std::setw(2) << ( stratTimeCode >>  6 & 0x3f ) ;         // 6-bit seconds
-	os << ( stratTimeCode & 1 << 24 ? ';' : ':' ); // 1-bit drop flag
-	os << std::setw(2) << ( stratTimeCode       & 0x3f );   // 6-bit frames
+	if( startTimeCode == -1 )
+		os << "unset";
+	else
+	{
+		os << std::setfill( '0' );
+		os << std::setw(2) << ( startTimeCode >> 19 & 0x1f ) << ":";   // 5-bit hours
+		os << std::setw(2) << ( startTimeCode >> 13 & 0x3f ) << ":";   // 6-bit minutes
+		os << std::setw(2) << ( startTimeCode >>  6 & 0x3f ) ;         // 6-bit seconds
+		os << ( startTimeCode & 1 << 24 ? ';' : ':' ); // 1-bit drop flag
+		os << std::setw(2) << ( startTimeCode       & 0x3f );   // 6-bit frames
+	}
 	return os.str();
 }
 
