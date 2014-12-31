@@ -142,7 +142,18 @@ AVMediaType InputFile::getStreamType( size_t index )
 
 AvInputStream& InputFile::getStream( size_t index )
 {
-	return *_inputStreams.at( index );
+	try
+	{
+		return *_inputStreams.at( index );
+	}
+	catch( const std::out_of_range& e )
+	{
+		std::stringstream msg;
+		msg << getFilename();
+		msg << " has no stream at index ";
+		msg << index;
+		throw std::runtime_error( msg.str() );
+	}
 }
 
 bool InputFile::readNextPacket( CodedData& data, const size_t streamIndex )
@@ -196,12 +207,12 @@ void InputFile::seekAtFrame( const size_t frame )
 
 void InputFile::activateStream( const size_t streamIndex, bool activate )
 {
-	_inputStreams.at( streamIndex )->activate( activate );
+	getStream( streamIndex ).activate( activate );
 }
 
 bool InputFile::isStreamActivated( const size_t streamIndex )
 {
-	return _inputStreams.at( streamIndex )->isActivated();
+	return getStream( streamIndex ).isActivated();
 }
 
 void InputFile::setProfile( const ProfileLoader::Profile& profile )
