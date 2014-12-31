@@ -32,6 +32,7 @@ public:
 		_sourceImage = new avtranscoder::VideoFrame( _inputFile.getStream( _videoStream ).getVideoCodec().getVideoFrameDesc() );
 
 		avtranscoder::VideoFrameDesc videoFrameDescToDisplay( _sourceImage->desc().getWidth(), _sourceImage->desc().getHeight(), getPixelFormat() );
+		videoFrameDescToDisplay.setPixelFormat( "rgb24" );
 		_imageToDisplay = new avtranscoder::VideoFrame( videoFrameDescToDisplay );
 	}
 
