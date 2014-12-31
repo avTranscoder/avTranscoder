@@ -15,23 +15,13 @@ def testSetVideoFrame():
 	ouputFile = av.OutputFile( outputFileName )
 
 	# create video frame and codec
-	imageDesc = av.VideoFrameDesc()
-	imageDesc.setWidth( 1920 )
-	imageDesc.setHeight( 1080 )
-	imageDesc.setDar( 1920, 1080 )
-
-	inputPixel = av.Pixel()
-	inputPixel.setColorComponents( av.eComponentRgb );
-	inputPixel.setPlanar( False );
-
-	imageDesc.setPixel( inputPixel );
-
 	inputVideoCodec = av.VideoCodec( av.eCodecTypeEncoder, "mpeg2video" );
+	imageDesc = av.VideoFrameDesc( 1920, 1080, "rgb24" )
 	inputVideoCodec.setImageParameters( imageDesc );
 
 	# create transcoder and add a video stream
 	transcoder = av.Transcoder( ouputFile )
-	transcoder.add(  "", 0, "xdcamhd422", inputVideoCodec )
+	transcoder.add(  "", 0, "mpeg2", inputVideoCodec )
 	videoEssence = transcoder.getStreamTranscoder( 0 ).getCurrentEssence()
 
 	# start process
@@ -74,12 +64,8 @@ def testSetAudioFrame():
 	ouputFile = av.OutputFile( outputFileName )
 
 	# create video frame and codec
-	audioDesc = av.AudioFrameDesc()
-	audioDesc.setSampleRate( 48000 )
-	audioDesc.setChannels( 1 )
-	audioDesc.setSampleFormat( "s32" )
-
 	inputAudioCodec = av.AudioCodec( av.eCodecTypeEncoder, "pcm_s24le" );
+	audioDesc = av.AudioFrameDesc( 48000, 1, "s32" )
 	inputAudioCodec.setAudioParameters( audioDesc );
 
 	# create transcoder and add a video stream

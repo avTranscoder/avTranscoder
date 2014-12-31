@@ -24,29 +24,15 @@ public:
 
 		_inputFile.analyse( p );
 		_videoStream = _inputFile.getProperties().getVideoProperties().at(0).getStreamId();
-
 		_inputFile.activateStream( _videoStream );
 
 		_inputVideo = new avtranscoder::AvInputVideo( _inputFile.getStream( _videoStream ) );
-		
 		_inputVideo->setup();
 
 		_sourceImage = new avtranscoder::VideoFrame( _inputFile.getStream( _videoStream ).getVideoCodec().getVideoFrameDesc() );
 
-		_pixel.setBitsPerPixel( getComponents() * getBitDepth() );
-		_pixel.setComponents( getComponents() );
-		_pixel.setColorComponents( avtranscoder::eComponentRgb );
-		_pixel.setSubsampling( avtranscoder::eSubsamplingNone );
-		_pixel.setAlpha( false );
-		_pixel.setPlanar( false );
-
-		_videoFrameDescToDisplay.setWidth( _sourceImage->desc().getWidth() );
-		_videoFrameDescToDisplay.setHeight( _sourceImage->desc().getHeight() );
-		_videoFrameDescToDisplay.setDar( _sourceImage->desc().getDar() );
-		
-		_videoFrameDescToDisplay.setPixel( _pixel.findPixel() );
-		
-		_imageToDisplay = new avtranscoder::VideoFrame( _videoFrameDescToDisplay );
+		avtranscoder::VideoFrameDesc videoFrameDescToDisplay( _sourceImage->desc().getWidth(), _sourceImage->desc().getHeight(), getPixelFormat() );
+		_imageToDisplay = new avtranscoder::VideoFrame( videoFrameDescToDisplay );
 	}
 
 	~AvReader()
@@ -68,12 +54,17 @@ public:
 
 	size_t getComponents()
 	{
-		return _inputFile.getProperties().getVideoProperties().at(0).getComponentsCount();
+		return _inputFile.getProperties().getVideoProperties().at(0).getPixelProperties().getNbComponents();
 	}
 
 	size_t getBitDepth()
 	{
-		return 8;
+		return _inputFile.getProperties().getVideoProperties().at(0).getPixelProperties().getBitsPerPixel();
+	}
+
+	AVPixelFormat getPixelFormat()
+	{
+		return _inputFile.getProperties().getVideoProperties().at(0).getPixelProperties().getAVPixelFormat();
 	}
 
 	const char* readNextFrame()
@@ -105,14 +96,11 @@ public:
 
 private:
 	avtranscoder::InputFile   _inputFile;
-	
+
 	avtranscoder::AvInputVideo* _inputVideo;
 
 	avtranscoder::VideoFrame* _sourceImage;
 	avtranscoder::VideoFrame* _imageToDisplay;
-
-	avtranscoder::Pixel          _pixel;
-	avtranscoder::VideoFrameDesc _videoFrameDescToDisplay;
 
 	avtranscoder::VideoTransform _videoTransform;
 	size_t _videoStream;

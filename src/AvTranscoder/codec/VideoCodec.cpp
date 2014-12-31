@@ -24,14 +24,7 @@ VideoFrameDesc VideoCodec::getVideoFrameDesc() const
 {
 	assert( _codecContext != NULL );
 
-	VideoFrameDesc videoFrameDesc;
-	videoFrameDesc.setWidth ( _codecContext->width  );
-	videoFrameDesc.setHeight( _codecContext->height );
-	videoFrameDesc.setDar( _codecContext->width, _codecContext->height );
-
-	Pixel pixel( _codecContext->pix_fmt );
-	videoFrameDesc.setPixel( pixel );
-
+	VideoFrameDesc videoFrameDesc( _codecContext->width, _codecContext->height, _codecContext->pix_fmt );
 	return videoFrameDesc;
 }
 
@@ -46,13 +39,7 @@ std::pair< size_t, size_t > VideoCodec::getTimeBase() const
 
 void VideoCodec::setImageParameters( const VideoFrameDesc& videoFrameDesc )
 {
-	setImageParameters( videoFrameDesc.getWidth(), videoFrameDesc.getHeight(), videoFrameDesc.getPixelDesc() );
-}
-
-
-void VideoCodec::setImageParameters( const size_t width, const size_t height, const Pixel& pixel )
-{
-	setImageParameters( width, height, pixel.findPixel() );
+	setImageParameters( videoFrameDesc.getWidth(), videoFrameDesc.getHeight(), videoFrameDesc.getPixelFormat() );
 }
 
 void VideoCodec::setImageParameters( const size_t width, const size_t height, const AVPixelFormat& pixel )

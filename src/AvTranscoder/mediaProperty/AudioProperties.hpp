@@ -28,11 +28,14 @@ public:
 	std::string getChannelLayout() const;
 	std::string getChannelName() const;
 	std::string getChannelDescription() const;
+
 	size_t getStreamId() const { return _streamId; }
 	size_t getCodecId() const;
 	size_t getSampleRate() const;
 	size_t getChannels() const;
 	size_t getBitRate() const;
+	size_t getNbSamples() const;
+
 	PropertiesMap& getMetadatas() { return _metadatas; }
 
 #ifndef SWIG

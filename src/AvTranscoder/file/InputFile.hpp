@@ -30,7 +30,7 @@ public:
 	/**
 	 * @brief Open a media file
 	 * @param filename resource to access
-	 * \exception runtime_error launched if unable to open file
+	 * @exception ios_base::failure launched if unable to open file
 	**/
 	InputFile( const std::string& filename );
 

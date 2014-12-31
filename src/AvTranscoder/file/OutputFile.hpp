@@ -44,6 +44,7 @@ public:
 	/**
 	 * @brief Initialize the OutputFile, create format context to wrap essences into output file.
 	 * @note call this before adding streams using addVideoStream() or addAudioStream()
+	 * @exception ios_base::failure launched if unable to guess format or open output
 	**/
 	virtual bool setup();
 

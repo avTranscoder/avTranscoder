@@ -1,8 +1,6 @@
 #include "VideoTransform.hpp"
 
-#include <AvTranscoder/frame/Pixel.hpp>
 #include <AvTranscoder/frame/VideoFrame.hpp>
-#include <AvTranscoder/common.hpp>
 
 extern "C" {
 #include <libavcodec/avcodec.h>
@@ -38,18 +36,19 @@ bool VideoTransform::init( const Frame& srcFrame, const Frame& dstFrame )
 	const VideoFrame& src = static_cast<const VideoFrame&>( srcFrame );
 	const VideoFrame& dst = static_cast<const VideoFrame&>( dstFrame );
 
+
+	const AVPixelFormat srcPixelFormat = src.desc().getPixelFormat();
+	const AVPixelFormat dstPixelFormat = dst.desc().getPixelFormat();
+
 	_imageConvertContext = sws_getContext(
-		src.desc().getWidth(), src.desc().getHeight(), src.desc().getPixelDesc().findPixel(),
-		dst.desc().getWidth(), dst.desc().getHeight(), dst.desc().getPixelDesc().findPixel(),
+		src.desc().getWidth(), src.desc().getHeight(), srcPixelFormat,
+		dst.desc().getWidth(), dst.desc().getHeight(), dstPixelFormat,
 		SWS_POINT, NULL, NULL, NULL);
 
 	if( ! _imageConvertContext )
 	{
 		throw std::runtime_error( "unable to create color convert context" );
 	}
-
-	const AVPixelFormat srcPixelFormat = src.desc().getPixelDesc().findPixel();
-	const AVPixelFormat dstPixelFormat = dst.desc().getPixelDesc().findPixel();
 
 	av_image_fill_linesizes( &_srcLineSize[0], srcPixelFormat, src.desc().getWidth() );
 	av_image_fill_linesizes( &_dstLineSize[0], dstPixelFormat, dst.desc().getWidth() );
@@ -92,16 +91,13 @@ void VideoTransform::convert( const Frame& srcFrame, Frame& dstFrame )
 
 	assert( src.desc().getWidth()  != 0 );
 	assert( src.desc().getHeight() != 0 );
-	assert( src.desc().getWidth()  == dst.desc().getWidth()  );
-	assert( src.desc().getHeight() == dst.desc().getHeight() );
-	assert( src.desc().getPixelDesc().getComponents() != 0 );
-	assert( src.desc().getPixelDesc().getComponents() == dst.desc().getPixelDesc().getComponents() );
+	assert( src.desc().getPixelFormat() != AV_PIX_FMT_NONE );
 
 	if( ! _isInit )
 		_isInit = init( srcFrame, dstFrame );
 
-	const AVPixelFormat srcPixelFormat = src.desc().getPixelDesc().findPixel();
-	const AVPixelFormat dstPixelFormat = dst.desc().getPixelDesc().findPixel();
+	const AVPixelFormat srcPixelFormat = src.desc().getPixelFormat();
+	const AVPixelFormat dstPixelFormat = dst.desc().getPixelFormat();
 
 	// Fill plane data pointers
 	av_image_fill_pointers(&_srcData[0], srcPixelFormat, src.desc().getHeight(), (uint8_t*) src.getPtr(), &_srcLineSize[0]);

@@ -31,8 +31,7 @@ bool GeneratorVideo::readNextFrame( Frame& frameBuffer )
 		char fillChar = 0;
 
 		VideoFrameDesc desc( _frameDesc );
-		Pixel rgbPixel( "rgb24" );
-		desc.setPixel( rgbPixel );
+		desc.setPixelFormat( "rgb24" );
 
 		VideoFrame intermediateBuffer( desc );
 		intermediateBuffer.getBuffer().resize( _frameDesc.getDataSize() );

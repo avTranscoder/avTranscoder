@@ -72,7 +72,8 @@ void InputFile::analyse( IProgress& progress, const EAnalyseLevel level )
 {
 	assert( _formatContext != NULL );
 
-	seekAtFrame( 0 );
+	if( level > eAnalyseLevelHeader )
+		seekAtFrame( 0 );
 
 	for( size_t streamId = 0; streamId < _formatContext->nb_streams; streamId++ )
 	{
@@ -121,7 +122,8 @@ void InputFile::analyse( IProgress& progress, const EAnalyseLevel level )
 		}
 	}
 
-	seekAtFrame( 0 );
+	if( level > eAnalyseLevelHeader )
+		seekAtFrame( 0 );
 }
 
 FileProperties InputFile::analyseFile( const std::string& filename, IProgress& progress, const EAnalyseLevel level )
