@@ -572,7 +572,7 @@ PropertiesMap VideoProperties::getPropertiesAsMap() const
 	detail::add( dataMap, "profile", getProfile() );
 	detail::add( dataMap, "profileName", getProfileName() );
 	detail::add( dataMap, "level", getLevel() );
-	detail::add( dataMap, "startTimecode", getStartTimecode() );
+	detail::add( dataMap, "startTimecode", getStartTimecodeString() );
 	detail::add( dataMap, "width", getWidth() );
 	detail::add( dataMap, "height", getHeight() );
 	detail::add( dataMap, "pixelAspectRatio", getSar().num / getSar().den );

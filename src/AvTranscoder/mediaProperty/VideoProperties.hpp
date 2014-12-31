@@ -80,7 +80,7 @@ public:
 	const PixelProperties& getPixelProperties() const { return _pixelProperties; }
 #endif
 
-	PropertiesMap getPropertiesAsMap() const;  ///< Return all video properties as a map (name of property: value)
+	PropertiesMap getPropertiesAsMap() const;  ///< Return all video and pixel properties as a map (name of property: value)
 
 private:
 	/**
