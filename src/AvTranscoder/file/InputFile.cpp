@@ -62,10 +62,7 @@ InputFile::~InputFile()
 	}
 
 	if( _formatContext != NULL )
-	{
 		avformat_close_input( &_formatContext );
-		_formatContext = NULL;
-	}
 }
 
 void InputFile::analyse( IProgress& progress, const EAnalyseLevel level )
