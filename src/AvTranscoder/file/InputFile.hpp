@@ -37,44 +37,12 @@ public:
 	virtual ~InputFile();
 
 	/**
-	 * @return Return the resource to access
-	**/
-	std::string getFilename() const { return _filename; }
-
-	/**
 	 * @brief Run the analyse on the file after a setup.
 	 *        call this function before getProperties().
 	 * @param progress callback to get analysis progression
 	 * @param level by default eAnalyseLevelFirstGop
 	 **/
 	void analyse( IProgress& progress, const EAnalyseLevel level = eAnalyseLevelFirstGop );
-	
-	/**
-	 * @brief Return media properties on the current InputFile.
-	 * @note require to launch analyse() before to fill the property struture
-	 * @return structure of media metadatas
-	 **/
-	const FileProperties& getProperties() const { return _properties; }
-
-	/**
-	 * @brief Get stream type: video, audio, subtitle, etc.
-	 * @param index stream index
-	 * @return media stream type of specified index stream
-	 **/
-	AVMediaType getStreamType( size_t index );
-
-	/**
-	 * @brief Get stream type: video, audio, subtitle, etc.
-	 * @param index stream index
-	 * @return media stream type of specified index stream
-	 **/
-	AvInputStream& getStream( size_t index );
-
-	/**
-	 * @brief Get LibAV/FFmpeg AVFormatContext
-	 * @return format context on current InputFile
-	 **/
-	AVFormatContext& getAVFormatContext() const { return *_formatContext; }
 
 	/**
 	 * @brief Read the next packet of the specified stream
@@ -95,11 +63,43 @@ public:
          * @note Activate a stream results in buffered its data when processing
 	 **/
 	void activateStream( const size_t streamIndex, const bool activate = true );
+	
+	/**
+	 * @return Return the resource to access
+	**/
+	std::string getFilename() const { return _filename; }
+
+	/**
+	 * @brief Return media properties on the current InputFile.
+	 * @note require to launch analyse() before to fill the property struture
+	 * @return structure of media metadatas
+	 **/
+	const FileProperties& getProperties() const { return _properties; }
+
+	/**
+	 * @brief Get stream type: video, audio, subtitle, etc.
+	 * @param index stream index
+	 * @return media stream type of specified index stream
+	 **/
+	AvInputStream& getStream( size_t index );
+
+	/**
+	 * @brief Get stream type: video, audio, subtitle, etc.
+	 * @param index stream index
+	 * @return media stream type of specified index stream
+	 **/
+	AVMediaType getStreamType( size_t index );
 
 	/** 
 	 * @brief Indicate that the stream is activated
 	 **/
 	bool isStreamActivated( const size_t streamIndex );
+
+	/**
+	 * @brief Get LibAV/FFmpeg AVFormatContext
+	 * @return format context on current InputFile
+	 **/
+	AVFormatContext& getAVFormatContext() const { return *_formatContext; }
 	
 	/**
 	 * @brief Set the format of the input file

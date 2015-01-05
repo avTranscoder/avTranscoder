@@ -133,18 +133,6 @@ FileProperties InputFile::analyseFile( const std::string& filename, IProgress& p
 	return file.getProperties();
 }
 
-AVMediaType InputFile::getStreamType( size_t index )
-{
-	if( index >= _formatContext->nb_streams )
-		return AVMEDIA_TYPE_UNKNOWN;
-	return _formatContext->streams[index]->codec->codec_type;
-}
-
-AvInputStream& InputFile::getStream( size_t index )
-{
-	return *_inputStreams.at( index );
-}
-
 bool InputFile::readNextPacket( CodedData& data, const size_t streamIndex )
 {
 	AVPacket packet;
@@ -197,6 +185,29 @@ void InputFile::seekAtFrame( const size_t frame )
 void InputFile::activateStream( const size_t streamIndex, bool activate )
 {
 	_inputStreams.at( streamIndex )->activate( activate );
+}
+
+AvInputStream& InputFile::getStream( size_t index )
+{
+	try
+	{
+		return *_inputStreams.at( index );
+	}
+	catch( const std::out_of_range& e )
+	{
+		std::stringstream msg;
+		msg << getFilename();
+		msg << " has no stream at index ";
+		msg << index;
+		throw std::runtime_error( msg.str() );
+	}
+}
+
+AVMediaType InputFile::getStreamType( size_t index )
+{
+	if( index >= _formatContext->nb_streams )
+		return AVMEDIA_TYPE_UNKNOWN;
+	return _formatContext->streams[index]->codec->codec_type;
 }
 
 bool InputFile::isStreamActivated( const size_t streamIndex )
