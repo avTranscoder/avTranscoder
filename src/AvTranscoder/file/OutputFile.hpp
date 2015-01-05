@@ -113,21 +113,18 @@ public:
 	virtual double getProgressDuration();
 
 private:
-	std::vector<AvOutputStream*> _outputStreams;
-	AVOutputFormat*  _outputFormat;
-	AVFormatContext* _formatContext;
-
+	std::vector<AvOutputStream*> _outputStreams;  ///< Has ownership
+	AVFormatContext* _formatContext;  ///< Has ownership
+	AVOutputFormat*  _outputFormat;   ///< Output format (has link, no ownership)
 	AVStream*        _stream;
 
-	std::vector<size_t> _frameCount;
+	std::vector<size_t> _frameCount;  ///< Number of wrapped frames
 
-	std::string      _filename;
+	std::string _filename;  ///< Output filename
 
-	size_t           _packetCount;
-	
-	double           _previousProcessedStreamDuration;
+	double _previousProcessedStreamDuration;  ///< To manage process streams order
 
-	bool             _verbose;
+	bool _verbose;
 };
 
 }

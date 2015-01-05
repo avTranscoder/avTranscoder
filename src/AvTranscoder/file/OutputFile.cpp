@@ -15,11 +15,10 @@ namespace avtranscoder
 {
 
 OutputFile::OutputFile( const std::string& filename )
-	: _outputFormat  ( NULL )
-	, _formatContext ( NULL )
+	: _formatContext ( NULL )
+	, _outputFormat  ( NULL )
 	, _stream        ( NULL )
 	, _filename      ( filename )
-	, _packetCount   ( 0 )
 	, _previousProcessedStreamDuration( 0.0 )
 	, _verbose       ( false )
 {
@@ -194,7 +193,6 @@ IOutputStream::EWrappingStatus OutputFile::wrap( const CodedData& data, const si
 
 	_previousProcessedStreamDuration = currentStreamDuration;
 	
-	_packetCount++;
 	_frameCount.at( streamId )++;
 	return IOutputStream::eWrappingSuccess;
 }
