@@ -93,7 +93,7 @@ VideoCodec& AvInputStream::getVideoCodec()
 {
 	assert( _streamIndex <= _inputFile->getAVFormatContext().nb_streams );
 
-	if( getAVStream()->codec->codec_type != AVMEDIA_TYPE_VIDEO )
+	if( getStreamType() != AVMEDIA_TYPE_VIDEO )
 	{
 		throw std::runtime_error( "unable to get video descriptor on non-video stream" );
 	}
@@ -105,7 +105,7 @@ AudioCodec& AvInputStream::getAudioCodec()
 {
 	assert( _streamIndex <= _inputFile->getAVFormatContext().nb_streams );
 
-	if( getAVStream()->codec->codec_type != AVMEDIA_TYPE_AUDIO )
+	if( getStreamType() != AVMEDIA_TYPE_AUDIO )
 	{
 		throw std::runtime_error( "unable to get audio descriptor on non-audio stream" );
 	}
@@ -117,7 +117,7 @@ DataCodec& AvInputStream::getDataCodec()
 {
 	assert( _streamIndex <= _inputFile->getAVFormatContext().nb_streams );
 
-	if( getAVStream()->codec->codec_type != AVMEDIA_TYPE_DATA )
+	if( getStreamType() != AVMEDIA_TYPE_DATA )
 	{
 		throw std::runtime_error( "unable to get data descriptor on non-data stream" );
 	}
@@ -127,7 +127,7 @@ DataCodec& AvInputStream::getDataCodec()
 
 AVMediaType AvInputStream::getStreamType() const
 {
-	return _inputFile->getStreamType( _streamIndex );
+	return getAVCodecContext().codec_type;
 }
 
 double AvInputStream::getDuration() const
@@ -151,9 +151,14 @@ void AvInputStream::clearBuffering()
 	_streamCache = std::queue<CodedData>();
 }
 
-AVStream* AvInputStream::getAVStream() const
+AVStream& AvInputStream::getAVStream() const
 {
-	return _inputFile->getAVFormatContext().streams[_streamIndex];
+	return *_inputFile->getAVFormatContext().streams[_streamIndex];
+}
+
+AVCodecContext& AvInputStream::getAVCodecContext() const
+{
+	return *getAVStream().codec;
 }
 
 }

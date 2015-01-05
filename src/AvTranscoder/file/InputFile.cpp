@@ -203,18 +203,6 @@ AvInputStream& InputFile::getStream( size_t index )
 	}
 }
 
-AVMediaType InputFile::getStreamType( size_t index )
-{
-	if( index >= _formatContext->nb_streams )
-		return AVMEDIA_TYPE_UNKNOWN;
-	return _formatContext->streams[index]->codec->codec_type;
-}
-
-bool InputFile::isStreamActivated( const size_t streamIndex )
-{
-	return _inputStreams.at( streamIndex )->isActivated();
-}
-
 void InputFile::setProfile( const ProfileLoader::Profile& profile )
 {	
 	Context formatContext( _formatContext, AV_OPT_FLAG_DECODING_PARAM );

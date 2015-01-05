@@ -16,7 +16,7 @@ class AvExport AvInputStream : public IInputStream
 {
 public:
 	AvInputStream( InputFile& inputFile, const size_t streamIndex );
-	AvInputStream( const AvInputStream& inputStream );
+	AvInputStream( const AvInputStream& inputStream );  ///< Does not copy _streamCache
 	~AvInputStream( );
 
 	bool readNextPacket( CodedData& data );
@@ -40,7 +40,8 @@ public:
 	//@}
 
 private:
-	AVStream* getAVStream() const;
+	AVStream& getAVStream() const;
+	AVCodecContext& getAVCodecContext() const;
 
 private:
 	InputFile* _inputFile;  ///< Has link (no ownership)

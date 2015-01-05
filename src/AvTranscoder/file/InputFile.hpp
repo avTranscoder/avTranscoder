@@ -84,18 +84,6 @@ public:
 	AvInputStream& getStream( size_t index );
 
 	/**
-	 * @brief Get stream type: video, audio, subtitle, etc.
-	 * @param index stream index
-	 * @return media stream type of specified index stream
-	 **/
-	AVMediaType getStreamType( size_t index );
-
-	/** 
-	 * @brief Indicate that the stream is activated
-	 **/
-	bool isStreamActivated( const size_t streamIndex );
-
-	/**
 	 * @brief Get LibAV/FFmpeg AVFormatContext
 	 * @return format context on current InputFile
 	 **/
