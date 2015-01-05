@@ -89,17 +89,6 @@ bool AvInputStream::readNextPacket( CodedData& data )
 	return true;
 }
 
-void AvInputStream::addPacket( AVPacket& packet )
-{
-	// Do not cache data if the stream is declared as unused in process
-	if( ! _isActivated )
-		return;
-
-	CodedData data;
-	_streamCache.push( data );
-	_streamCache.back().copyData( packet.data, packet.size );
-}
-
 VideoCodec& AvInputStream::getVideoCodec()
 {
 	assert( _streamIndex <= _inputFile->getAVFormatContext().nb_streams );
@@ -144,6 +133,17 @@ AVMediaType AvInputStream::getStreamType() const
 double AvInputStream::getDuration() const
 {
 	return 1.0 * _inputFile->getAVFormatContext().duration / AV_TIME_BASE;
+}
+
+void AvInputStream::addPacket( AVPacket& packet )
+{
+	// Do not cache data if the stream is declared as unused in process
+	if( ! _isActivated )
+		return;
+
+	CodedData data;
+	_streamCache.push( data );
+	_streamCache.back().copyData( packet.data, packet.size );
 }
 
 void AvInputStream::clearBuffering()
