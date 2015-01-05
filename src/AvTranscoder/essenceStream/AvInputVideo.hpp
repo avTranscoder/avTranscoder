@@ -2,7 +2,6 @@
 #define _AV_TRANSCODER_ESSENCE_STREAM_AV_INPUT_VIDEO_HPP_
 
 #include "IInputEssence.hpp"
-#include <AvTranscoder/codec/VideoCodec.hpp>
 #include <AvTranscoder/ProfileLoader.hpp>
 
 struct AVFrame;
@@ -32,9 +31,8 @@ private:
 	bool decodeNextFrame();
 
 private:
-	AvInputStream* _inputStream;  ///< Stream from which we read next frames
-	const VideoCodec* _codec;  ///< Video decoder. Has link (no ownership)
-	AVFrame* _frame;  ///< Libav object to store decoded data
+	AvInputStream* _inputStream;  ///< Stream from which we read next frames (no ownership, has link)
+	AVFrame* _frame;  ///< Libav object to store decoded data (has ownership)
 
 	bool _verbose;
 };

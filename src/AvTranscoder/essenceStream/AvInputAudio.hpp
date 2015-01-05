@@ -2,7 +2,6 @@
 #define _AV_TRANSCODER_ESSENCE_STREAM_AV_INPUT_AUDIO_HPP_
 
 #include "IInputEssence.hpp"
-#include <AvTranscoder/codec/AudioCodec.hpp>
 
 struct AVFrame;
 
@@ -25,9 +24,9 @@ public:
 private:
 	bool decodeNextFrame();
 
-	AvInputStream* _inputStream;  ///< Stream from which we read next frames
-	const AudioCodec* _codec;  ///< Audio decoder. Has link (no ownership)
-	AVFrame* _frame;  ///< Libav object to store decoded data
+private:
+	AvInputStream* _inputStream;  ///< Stream from which we read next frames (no ownership, has link)
+	AVFrame* _frame;  ///< Libav object to store decoded data (has ownership)
 };
 
 }

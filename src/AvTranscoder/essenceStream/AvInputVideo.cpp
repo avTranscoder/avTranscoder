@@ -1,5 +1,6 @@
 #include "AvInputVideo.hpp"
 
+#include <AvTranscoder/codec/ICodec.hpp>
 #include <AvTranscoder/option/Context.hpp>
 #include <AvTranscoder/codedStream/AvInputStream.hpp>
 #include <AvTranscoder/frame/VideoFrame.hpp>
@@ -20,7 +21,6 @@ namespace avtranscoder
 AvInputVideo::AvInputVideo( AvInputStream& inputStream )
 	: IInputEssence()
 	, _inputStream   ( &inputStream )
-	, _codec( &inputStream.getVideoCodec() )
 	, _frame         ( NULL )
 	, _verbose( false )
 {
@@ -45,8 +45,8 @@ AvInputVideo::~AvInputVideo()
 
 void AvInputVideo::setup()
 {
-	AVCodecContext* avCodecContext = _codec->getAVCodecContext();
-	AVCodec* avCodec = _codec->getAVCodec();
+	AVCodecContext* avCodecContext = _inputStream->getVideoCodec().getAVCodecContext();
+	AVCodec* avCodec = _inputStream->getVideoCodec().getAVCodec();
 
 	// if( avCodec->capabilities & CODEC_CAP_TRUNCATED )
 	// 	avCodecContext->flags |= CODEC_FLAG_TRUNCATED;
@@ -116,7 +116,7 @@ bool AvInputVideo::decodeNextFrame()
 		packet.data = nextPacketRead ? data.getPtr(): NULL;
 		packet.size = data.getSize();
 
-		int ret = avcodec_decode_video2( _codec->getAVCodecContext(), _frame, &got_frame, &packet );
+		int ret = avcodec_decode_video2( _inputStream->getVideoCodec().getAVCodecContext(), _frame, &got_frame, &packet );
 		av_free_packet( &packet );
 
 		if( ! nextPacketRead && ret == 0 && got_frame == 0 ) // error or end of file
@@ -134,12 +134,12 @@ bool AvInputVideo::decodeNextFrame()
 
 void AvInputVideo::flushDecoder()
 {
-	avcodec_flush_buffers( _codec->getAVCodecContext() );
+	avcodec_flush_buffers( _inputStream->getVideoCodec().getAVCodecContext() );
 }
 
 void AvInputVideo::setProfile( const ProfileLoader::Profile& profile )
 {
-	Context codecContext( _codec->getAVCodecContext(), AV_OPT_FLAG_DECODING_PARAM | AV_OPT_FLAG_VIDEO_PARAM );
+	Context codecContext( _inputStream->getVideoCodec().getAVCodecContext(), AV_OPT_FLAG_DECODING_PARAM | AV_OPT_FLAG_VIDEO_PARAM );
 
 	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
 	{
