@@ -17,7 +17,6 @@ namespace avtranscoder
 OutputFile::OutputFile( const std::string& filename )
 	: _formatContext ( NULL )
 	, _outputFormat  ( NULL )
-	, _stream        ( NULL )
 	, _filename      ( filename )
 	, _previousProcessedStreamDuration( 0.0 )
 	, _verbose       ( false )
@@ -58,32 +57,32 @@ IOutputStream& OutputFile::addVideoStream( const VideoCodec& videoDesc )
 {
 	assert( _formatContext != NULL );
 
-	if( ( _stream = avformat_new_stream( _formatContext, videoDesc.getAVCodec() ) ) == NULL )
+	AVStream* stream = avformat_new_stream( _formatContext, videoDesc.getAVCodec() );
+	if( stream == NULL )
 	{
 		throw std::runtime_error( "unable to add new video stream" );
 	}
 
-	_stream->codec->width  = videoDesc.getAVCodecContext()->width;
-	_stream->codec->height = videoDesc.getAVCodecContext()->height;
-	_stream->codec->bit_rate = videoDesc.getAVCodecContext()->bit_rate;
-	_stream->codec->pix_fmt = videoDesc.getAVCodecContext()->pix_fmt;
-	_stream->codec->profile = videoDesc.getAVCodecContext()->profile;
-	_stream->codec->level = videoDesc.getAVCodecContext()->level;
+	stream->codec->width  = videoDesc.getAVCodecContext()->width;
+	stream->codec->height = videoDesc.getAVCodecContext()->height;
+	stream->codec->bit_rate = videoDesc.getAVCodecContext()->bit_rate;
+	stream->codec->pix_fmt = videoDesc.getAVCodecContext()->pix_fmt;
+	stream->codec->profile = videoDesc.getAVCodecContext()->profile;
+	stream->codec->level = videoDesc.getAVCodecContext()->level;
 
 	// need to set the time_base on the AVCodecContext and the AVStream
 	// compensating the frame rate with the ticks_per_frame and keeping
 	// a coherent reading speed.
 	av_reduce(
-		&_stream->codec->time_base.num,
-		&_stream->codec->time_base.den,
+		&stream->codec->time_base.num,
+		&stream->codec->time_base.den,
 		videoDesc.getAVCodecContext()->time_base.num * videoDesc.getAVCodecContext()->ticks_per_frame,
 		videoDesc.getAVCodecContext()->time_base.den,
 		INT_MAX );
 
-	_stream->time_base = _stream->codec->time_base;
-	
-	AvOutputStream* avOutputStream = new AvOutputStream( *this, _formatContext->nb_streams - 1 );
+	stream->time_base = stream->codec->time_base;
 
+	AvOutputStream* avOutputStream = new AvOutputStream( *this, _formatContext->nb_streams - 1 );
 	_outputStreams.push_back( avOutputStream );
 
 	return *_outputStreams.back();
@@ -93,14 +92,15 @@ IOutputStream& OutputFile::addAudioStream( const AudioCodec& audioDesc )
 {
 	assert( _formatContext != NULL );
 
-	if( ( _stream = avformat_new_stream( _formatContext, audioDesc.getAVCodec() ) ) == NULL )
+	AVStream* stream = avformat_new_stream( _formatContext, audioDesc.getAVCodec() );
+	if( stream == NULL )
 	{
 		throw std::runtime_error( "unable to add new audio stream" );
 	}
 
-	_stream->codec->sample_rate = audioDesc.getAVCodecContext()->sample_rate;
-	_stream->codec->channels = audioDesc.getAVCodecContext()->channels;
-	_stream->codec->sample_fmt = audioDesc.getAVCodecContext()->sample_fmt;
+	stream->codec->sample_rate = audioDesc.getAVCodecContext()->sample_rate;
+	stream->codec->channels = audioDesc.getAVCodecContext()->channels;
+	stream->codec->sample_fmt = audioDesc.getAVCodecContext()->sample_fmt;
 
 	AvOutputStream* avOutputStream = new AvOutputStream( *this, _formatContext->nb_streams - 1 );
 	_outputStreams.push_back( avOutputStream );
@@ -112,7 +112,8 @@ IOutputStream& OutputFile::addDataStream( const DataCodec& dataDesc )
 {
 	assert( _formatContext != NULL );
 
-	if( ( _stream = avformat_new_stream( _formatContext, dataDesc.getAVCodec() ) ) == NULL )
+	AVStream* stream = avformat_new_stream( _formatContext, dataDesc.getAVCodec() );
+	if( stream == NULL )
 	{
 		throw std::runtime_error( "unable to add new data stream" );
 	}

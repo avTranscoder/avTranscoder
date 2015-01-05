@@ -18,9 +18,6 @@
 
 struct AVOutputFormat;
 struct AVFormatContext;
-struct AVCodec;
-struct AVCodecContext;
-struct AVStream;
 
 namespace avtranscoder
 {
@@ -115,8 +112,7 @@ public:
 private:
 	std::vector<AvOutputStream*> _outputStreams;  ///< Has ownership
 	AVFormatContext* _formatContext;  ///< Has ownership
-	AVOutputFormat*  _outputFormat;   ///< Output format (has link, no ownership)
-	AVStream*        _stream;
+	AVOutputFormat*  _outputFormat;  ///< Output format (has link, no ownership)
 
 	std::vector<size_t> _frameCount;  ///< Number of wrapped frames
 
