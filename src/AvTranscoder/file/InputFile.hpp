@@ -74,7 +74,7 @@ public:
 	 * @brief Get LibAV/FFmpeg AVFormatContext
 	 * @return format context on current InputFile
 	 **/
-	AVFormatContext& getFormatContext() const { return *_formatContext; }
+	AVFormatContext& getAVFormatContext() const { return *_formatContext; }
 
 	/**
 	 * @brief Read the next packet of the specified stream

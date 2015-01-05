@@ -21,7 +21,7 @@ AvInputStream::AvInputStream( InputFile& inputFile, const size_t streamIndex )
 	, _streamIndex( streamIndex )
 	, _isActivated( false )
 {
-	AVCodecContext* context = _inputFile->getFormatContext().streams[_streamIndex]->codec;
+	AVCodecContext* context = _inputFile->getAVFormatContext().streams[_streamIndex]->codec;
 
 	switch( context->codec_type )
 	{
@@ -102,7 +102,7 @@ void AvInputStream::addPacket( AVPacket& packet )
 
 VideoCodec& AvInputStream::getVideoCodec()
 {
-	assert( _streamIndex <= _inputFile->getFormatContext().nb_streams );
+	assert( _streamIndex <= _inputFile->getAVFormatContext().nb_streams );
 
 	if( getAVStream()->codec->codec_type != AVMEDIA_TYPE_VIDEO )
 	{
@@ -114,7 +114,7 @@ VideoCodec& AvInputStream::getVideoCodec()
 
 AudioCodec& AvInputStream::getAudioCodec()
 {
-	assert( _streamIndex <= _inputFile->getFormatContext().nb_streams );
+	assert( _streamIndex <= _inputFile->getAVFormatContext().nb_streams );
 
 	if( getAVStream()->codec->codec_type != AVMEDIA_TYPE_AUDIO )
 	{
@@ -126,7 +126,7 @@ AudioCodec& AvInputStream::getAudioCodec()
 
 DataCodec& AvInputStream::getDataCodec()
 {
-	assert( _streamIndex <= _inputFile->getFormatContext().nb_streams );
+	assert( _streamIndex <= _inputFile->getAVFormatContext().nb_streams );
 
 	if( getAVStream()->codec->codec_type != AVMEDIA_TYPE_DATA )
 	{
@@ -143,7 +143,7 @@ AVMediaType AvInputStream::getStreamType() const
 
 double AvInputStream::getDuration() const
 {
-	return 1.0 * _inputFile->getFormatContext().duration / AV_TIME_BASE;
+	return 1.0 * _inputFile->getAVFormatContext().duration / AV_TIME_BASE;
 }
 
 void AvInputStream::clearBuffering()
@@ -153,7 +153,7 @@ void AvInputStream::clearBuffering()
 
 AVStream* AvInputStream::getAVStream() const
 {
-	return _inputFile->getFormatContext().streams[_streamIndex];
+	return _inputFile->getAVFormatContext().streams[_streamIndex];
 }
 
 }
