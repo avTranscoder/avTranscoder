@@ -75,7 +75,7 @@ void AvInputVideo::setup()
 	}
 }
 
-bool AvInputVideo::readNextFrame( Frame& frameBuffer )
+bool AvInputVideo::decodeNextFrame( Frame& frameBuffer )
 {
 	if( ! decodeNextFrame() )
 		return false;
@@ -95,7 +95,7 @@ bool AvInputVideo::readNextFrame( Frame& frameBuffer )
 	return true;
 }
 
-bool AvInputVideo::readNextFrame( Frame& frameBuffer, const size_t subStreamIndex )
+bool AvInputVideo::decodeNextFrame( Frame& frameBuffer, const size_t subStreamIndex )
 {
 	return false;
 }

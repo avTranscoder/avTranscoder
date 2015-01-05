@@ -19,8 +19,8 @@ public:
 
 	void setup();
 
-	bool readNextFrame( Frame& frameBuffer );
-	bool readNextFrame( Frame& frameBuffer, const size_t subStreamIndex );
+	bool decodeNextFrame( Frame& frameBuffer );
+	bool decodeNextFrame( Frame& frameBuffer, const size_t subStreamIndex );
 
 private:
 	bool decodeNextFrame();

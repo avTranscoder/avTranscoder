@@ -79,7 +79,7 @@ void AvInputAudio::setup()
 	}
 }
 
-bool AvInputAudio::readNextFrame( Frame& frameBuffer )
+bool AvInputAudio::decodeNextFrame( Frame& frameBuffer )
 {
 	if( ! decodeNextFrame() )
 		return false;
@@ -107,7 +107,7 @@ bool AvInputAudio::readNextFrame( Frame& frameBuffer )
 	return true;
 }
 
-bool AvInputAudio::readNextFrame( Frame& frameBuffer, const size_t subStreamIndex )
+bool AvInputAudio::decodeNextFrame( Frame& frameBuffer, const size_t subStreamIndex )
 {
 	if( ! decodeNextFrame() )
 		return false;

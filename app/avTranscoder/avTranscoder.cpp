@@ -65,7 +65,7 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 
 	size_t frame = 1;
 
-	while( inputVideo.readNextFrame( sourceImage ) )
+	while( inputVideo.decodeNextFrame( sourceImage ) )
 	{
 		std::cout << "\rprocess frame " << frame << std::flush;
 		
