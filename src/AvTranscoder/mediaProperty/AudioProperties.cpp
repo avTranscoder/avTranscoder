@@ -1,7 +1,5 @@
 #include "AudioProperties.hpp"
 
-#include <stdexcept>
-
 extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
@@ -9,6 +7,8 @@ extern "C" {
 #include <libavutil/pixdesc.h>
 #include <libavutil/channel_layout.h>
 }
+
+#include <stdexcept>
 
 namespace avtranscoder
 {
@@ -151,7 +151,9 @@ size_t AudioProperties::getBitRate() const
 {
 	if( ! _codecContext )
 		throw std::runtime_error( "unknown codec context" );
-	return _codecContext->bit_rate;
+	int bitsPerSample = av_get_bits_per_sample( _codecContext->codec_id );
+	size_t bitRate = bitsPerSample ? _codecContext->sample_rate * _codecContext->channels * bitsPerSample : _codecContext->bit_rate;
+	return bitRate;
 }
 
 size_t AudioProperties::getNbSamples() const
