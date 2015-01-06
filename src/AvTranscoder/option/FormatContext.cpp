@@ -1,22 +1,10 @@
 #include "FormatContext.hpp"
 
-extern "C" {
-#include <libavformat/avformat.h>
-}
-
 namespace avtranscoder
 {
 
-FormatContext::FormatContext( int req_flags )
-	: _avFormatContext( NULL )
-{
-	_avFormatContext = avformat_alloc_context();
-	loadOptions( _avFormatContext, req_flags );
-}
-
-FormatContext::~FormatContext()
-{
-	avformat_free_context( _avFormatContext );
-}
+FormatContext::FormatContext( AVFormatContext& avFormatContext, int req_flags )
+	: Context( &avFormatContext, req_flags )
+{}
 
 }

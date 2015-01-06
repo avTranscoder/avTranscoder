@@ -3,23 +3,24 @@
 
 #include "Context.hpp"
 
-struct AVFormatContext;
+extern "C" {
+#include <libavformat/avformat.h>
+}
 
 namespace avtranscoder
 {
 
 /**
  * @brief Wrapper of an AVFormatContext.
- * @note The AVFormatContext is allocated and free by the class. It is not the case of the base class.
  */
 class FormatContext : public Context
 {
 public:
-	FormatContext( int req_flags = 0 );
-	~FormatContext();
+	FormatContext( AVFormatContext& avFormatContext, int req_flags = 0 );
 
-private:
-	AVFormatContext* _avFormatContext;
+#ifndef SWIG
+	AVFormatContext& getAVFormatContext() const { return *static_cast<AVFormatContext*>( _avContext ); }
+#endif
 };
 
 }

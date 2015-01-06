@@ -12,7 +12,7 @@ namespace avtranscoder
 {
 
 typedef std::vector<Option> OptionArray;
-typedef std::map<std::string, Option> OptionMap;
+typedef std::map<std::string, Option> OptionMap;  ///< Key: option name / value: option
 
 /**
  * @brief Wrapper of AVContext.
@@ -40,8 +40,8 @@ public:
 		loadOptions( avContext, req_flags );
 	}
 
-	OptionArray getOptions();
-	OptionMap& getOptionsMap() { return _options; }
+	OptionArray getOptions();  ///< Get options as array
+	OptionMap& getOptionsMap() { return _options; }  ///< Get options as map
 
 	Option& getOption( const std::string& optionName ) { return _options.at(optionName); }
 
