@@ -602,7 +602,7 @@ PropertiesMap VideoProperties::getPropertiesAsMap() const
 	for( size_t frameIndex = 0; frameIndex < _gopStructure.size(); ++frameIndex )
 	{
 		gop += _gopStructure.at( frameIndex ).first;
-		gop += ( _gopStructure.at( frameIndex ).second ? "*" : " " );
+		gop += " ";
 	}
 	detail::add( dataMap, "gop", gop );
 	detail::add( dataMap, "isClosedGop", isClosedGop() );
