@@ -62,7 +62,7 @@ public:
 	double getDuration() const;  ///< in seconds
 
 	bool hasBFrames() const;
-	bool isClosedGop() const;
+	//bool isClosedGop() const;
 
 	//@{
 	// Warning: Can acces these data when analyse first gop
