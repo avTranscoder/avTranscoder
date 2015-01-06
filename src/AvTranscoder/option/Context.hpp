@@ -48,7 +48,7 @@ public:
 protected:
 	void loadOptions( void* av_class, int req_flags );
 
-private:
+protected:
 	OptionMap _options;
 	void* _avContext;  ///< Has link (no ownership)
 };

@@ -3,23 +3,24 @@
 
 #include "Context.hpp"
 
-struct AVCodecContext;
+extern "C" {
+#include <libavcodec/avcodec.h>
+}
 
 namespace avtranscoder
 {
 
 /**
  * @brief Wrapper of an AVCodecContext.
- * @note The AVCodecContext is allocated and free by the class. It is not the case of the base class.
  */
 class AvExport  CodecContext : public Context
 {
 public:
-	CodecContext( int req_flags = 0 );
-	~CodecContext();
-	
-private:
-	AVCodecContext* _avCodecContext;
+	CodecContext( AVCodecContext& avCodecContext, int req_flags = 0 );
+
+#ifndef SWIG
+	AVCodecContext& getAVCodecContext() const { return *static_cast<AVCodecContext*>( _avContext ); }
+#endif
 };
 
 }

@@ -73,7 +73,8 @@ void optionChecker( const std::string& inputfilename )
 	displayOptions( formatOptions );
 
 	// codec options
-	avtranscoder::CodecContext codecContext( AV_OPT_FLAG_DECODING_PARAM | AV_OPT_FLAG_AUDIO_PARAM );
+	AVCodecContext* avCodecContext = avcodec_alloc_context3( NULL );
+	avtranscoder::CodecContext codecContext( *avCodecContext, AV_OPT_FLAG_DECODING_PARAM | AV_OPT_FLAG_AUDIO_PARAM );
 	std::vector<avtranscoder::Option> codecOptions = codecContext.getOptions();
 	displayOptions( codecOptions );
 
