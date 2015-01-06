@@ -493,6 +493,13 @@ bool VideoProperties::hasBFrames() const
 	return (bool) _codecContext->has_b_frames;
 }
 
+bool VideoProperties::isClosedGop() const
+{
+	if( ! _codecContext )
+		throw std::runtime_error( "unknown codec context" );
+	return ( _codecContext->flags & CODEC_FLAG_CLOSED_GOP ) == CODEC_FLAG_CLOSED_GOP;
+}
+
 void VideoProperties::analyseGopStructure( IProgress& progress )
 {
 	if( _formatContext && _codecContext && _codec )
@@ -598,6 +605,7 @@ PropertiesMap VideoProperties::getPropertiesAsMap() const
 		gop += ( _gopStructure.at( frameIndex ).second ? "*" : " " );
 	}
 	detail::add( dataMap, "gop", gop );
+	detail::add( dataMap, "isClosedGop", isClosedGop() );
 
 	detail::add( dataMap, "hasBFrames", hasBFrames() );
 	detail::add( dataMap, "referencesFrames", getReferencesFrames() );
