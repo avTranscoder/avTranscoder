@@ -48,9 +48,6 @@ VideoProperties::VideoProperties( const AVFormatContext* formatContext, const si
 	if( _codecContext )
 		_pixelProperties = PixelProperties( _codecContext->pix_fmt );
 
-	// Skip decoding for selected frames
-	_codecContext->skip_frame = AVDISCARD_NONE;
-
 	if( level == eAnalyseLevelFirstGop )
 		analyseGopStructure( progress );
 }
@@ -506,6 +503,9 @@ void VideoProperties::analyseGopStructure( IProgress& progress )
 	{
 		if( _codecContext->width && _codecContext->height )
 		{
+			// Discard no frame type when decode
+			_codecContext->skip_frame = AVDISCARD_NONE;
+
 			AVPacket pkt;
 
 #if LIBAVCODEC_VERSION_MAJOR > 54
