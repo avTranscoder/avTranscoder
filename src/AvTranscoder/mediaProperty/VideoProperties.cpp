@@ -504,9 +504,6 @@ void VideoProperties::analyseGopStructure( IProgress& progress )
 {
 	if( _formatContext && _codecContext && _codec )
 	{
-		if( _codec->capabilities & CODEC_CAP_TRUNCATED )
-			_codecContext->flags|= CODEC_FLAG_TRUNCATED;
-
 		if( _codecContext->width && _codecContext->height )
 		{
 			AVPacket pkt;
