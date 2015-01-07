@@ -16,7 +16,9 @@ namespace avtranscoder
 class AvExport  CodecContext : public Context
 {
 public:
-	CodecContext( AVCodecContext& avCodecContext, int req_flags = 0 );
+	CodecContext( AVCodec& avCodec, int req_flags = 0 );  ///< Allocate an AVCodecContext with the given AVCodec
+	CodecContext( int req_flags = 0 );  ///< Allocate an AVCodecContext with default values
+	~CodecContext();
 
 #ifndef SWIG
 	AVCodecContext& getAVCodecContext() const { return *static_cast<AVCodecContext*>( _avContext ); }
