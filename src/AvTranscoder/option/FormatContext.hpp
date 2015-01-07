@@ -20,14 +20,60 @@ public:
 	FormatContext( int req_flags = 0 );  ///< Allocate an AVFormatContext with default values
 	~FormatContext();
 
-	void findStreamInfo( AVDictionary** options = NULL );  ///< Read packets of a media file to get stream information.
+	/**
+	 * @brief Read packets of a media file to get stream information
+	 */
+	void findStreamInfo( AVDictionary** options = NULL );
+
+	/**
+	 * @brief Create and initialize a AVIOContext for accessing the resource indicated by url
+	 * @param url: url of ressource
+	 * @param flags: AVIO_FLAG_READ / AVIO_FLAG_WRITE / AVIO_FLAG_READ_WRITE
+	 */
+	void openRessource( const std::string& url, int flags );
+
+	/**
+	 * @brief Close the resource accessed by the AVIOContext and free it
+	 * @note Should be called after openRessource
+	 */
+	void closeRessource();
+
+	void writeHeader( AVDictionary** options = NULL );  ///< Write the stream header to an output media file
+
+	/**
+	 * @brief Write a packet to an output media file
+	 * @param packet: packet to write (must be allocate and free by the caller
+	 * @param interleaved: to ensuring correct interleaving (available by default)
+	 */
+	void writeFrame( AVPacket& packet, bool interleaved = true );
+
+	/**
+	 * @brief Write the stream trailer to an output media file
+	 * @note Should be called after writeHeader
+	 */
+	void writeTrailer();
+
+	void addMetaData( const std::string& key, const std::string& value );
+	AVStream& addAVStream( AVCodec& avCodec );
 
 	size_t getNbStreams() const { return getAVFormatContext().nb_streams; }
 	size_t getDuration() const { return getAVFormatContext().duration; }
 	size_t getStartTime() const { return getAVFormatContext().start_time; }
 
+	/**
+	 * Guess format from arguments.
+	 * @param filename: checks if it terminates with the extensions of the registered formats
+	 * @param shortName: checks if it matches with the names of the registered formats
+	 * @param mimeType: checks if it matches with the MIME type of the registered formats
+	 */
+	void setOutputFormat( const std::string& filename, const std::string& shortName = "", const std::string& mimeType = "" );
+
 #ifndef SWIG
 	AVFormatContext& getAVFormatContext() const { return *static_cast<AVFormatContext*>( _avContext ); }
+	AVOutputFormat& getAVOutputFormat() const { return *getAVFormatContext().oformat; }
+	AVInputFormat& getAVInputFormat() const { return *getAVFormatContext().iformat; }
+	AVIOContext& getAVIOContext() const { return *getAVFormatContext().pb; }
+	AVDictionary& getAVMetaData() const { return *getAVFormatContext().metadata; }
 	AVStream& getAVStream( size_t index ) const;
 #endif
 

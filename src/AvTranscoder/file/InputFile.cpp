@@ -16,7 +16,6 @@ extern "C" {
 }
 
 #include <stdexcept>
-#include <cassert>
 
 namespace avtranscoder
 {
