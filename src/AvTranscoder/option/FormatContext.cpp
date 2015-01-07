@@ -42,6 +42,7 @@ FormatContext::~FormatContext()
 		avformat_close_input( reinterpret_cast<AVFormatContext**>( &_avContext ) );
 	else
 		avformat_free_context( &getAVFormatContext() );
+	_avContext = NULL;
 }
 
 void FormatContext::findStreamInfo( AVDictionary** options )
