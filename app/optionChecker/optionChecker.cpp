@@ -1,5 +1,4 @@
 #include <AvTranscoder/util.hpp>
-#include <AvTranscoder/option/Context.hpp>
 #include "AvTranscoder/option/FormatContext.hpp"
 #include <AvTranscoder/option/CodecContext.hpp>
 #include <AvTranscoder/option/Option.hpp>

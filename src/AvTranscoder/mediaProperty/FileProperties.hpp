@@ -3,16 +3,13 @@
 
 #include <AvTranscoder/common.hpp>
 #include <AvTranscoder/mediaProperty/util.hpp>
+#include <AvTranscoder/option/FormatContext.hpp>
 #include <AvTranscoder/mediaProperty/VideoProperties.hpp>
 #include <AvTranscoder/mediaProperty/AudioProperties.hpp>
 #include <AvTranscoder/mediaProperty/DataProperties.hpp>
 #include <AvTranscoder/mediaProperty/SubtitleProperties.hpp>
 #include <AvTranscoder/mediaProperty/AttachementProperties.hpp>
 #include <AvTranscoder/mediaProperty/UnknownProperties.hpp>
-
-extern "C" {
-#include <libavformat/avformat.h>
-}
 
 #include <string>
 #include <vector>
@@ -23,7 +20,7 @@ namespace avtranscoder
 class AvExport FileProperties
 {
 public:
-	FileProperties( const AVFormatContext* formatContext );
+	FileProperties( const FormatContext& formatContext );
 
 	std::string getFilename() const;
 	std::string getFormatName() const;

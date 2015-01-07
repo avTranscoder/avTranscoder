@@ -40,10 +40,6 @@ public:
 	//@}
 
 private:
-	AVStream& getAVStream() const;
-	AVCodecContext& getAVCodecContext() const;
-
-private:
 	InputFile* _inputFile;  ///< Has link (no ownership)
 	ICodec* _codec;  ///< Has ownership
 

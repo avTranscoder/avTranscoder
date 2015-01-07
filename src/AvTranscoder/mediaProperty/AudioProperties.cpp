@@ -13,19 +13,19 @@ extern "C" {
 namespace avtranscoder
 {
 
-AudioProperties::AudioProperties( const AVFormatContext* formatContext, const size_t index )
-	: _formatContext( formatContext )
+AudioProperties::AudioProperties( const FormatContext& formatContext, const size_t index )
+	: _formatContext( &formatContext.getAVFormatContext() )
 	, _codecContext( NULL )
 	, _codec( NULL )
 	, _streamId( index )
 {
 	if( _formatContext )
-		_codecContext = formatContext->streams[index]->codec;
+		_codecContext = _formatContext->streams[index]->codec;
 
 	if( _formatContext && _codecContext )
 		_codec = avcodec_find_decoder( _codecContext->codec_id );
 
-	if( formatContext )
+	if( _formatContext )
 		detail::fillMetadataDictionnary( _formatContext->streams[index]->metadata, _metadatas );
 }
 

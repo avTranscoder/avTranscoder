@@ -21,7 +21,7 @@ AvInputStream::AvInputStream( InputFile& inputFile, const size_t streamIndex )
 	, _streamIndex( streamIndex )
 	, _isActivated( false )
 {
-	AVCodecContext* context = _inputFile->getAVFormatContext().streams[_streamIndex]->codec;
+	AVCodecContext* context = _inputFile->getFormatContext().getAVStream( _streamIndex ).codec;
 
 	switch( context->codec_type )
 	{
@@ -91,7 +91,7 @@ bool AvInputStream::readNextPacket( CodedData& data )
 
 VideoCodec& AvInputStream::getVideoCodec()
 {
-	assert( _streamIndex <= _inputFile->getAVFormatContext().nb_streams );
+	assert( _streamIndex <= _inputFile->getFormatContext().getNbStreams() );
 
 	if( getStreamType() != AVMEDIA_TYPE_VIDEO )
 	{
@@ -103,7 +103,7 @@ VideoCodec& AvInputStream::getVideoCodec()
 
 AudioCodec& AvInputStream::getAudioCodec()
 {
-	assert( _streamIndex <= _inputFile->getAVFormatContext().nb_streams );
+	assert( _streamIndex <= _inputFile->getFormatContext().getNbStreams() );
 
 	if( getStreamType() != AVMEDIA_TYPE_AUDIO )
 	{
@@ -115,7 +115,7 @@ AudioCodec& AvInputStream::getAudioCodec()
 
 DataCodec& AvInputStream::getDataCodec()
 {
-	assert( _streamIndex <= _inputFile->getAVFormatContext().nb_streams );
+	assert( _streamIndex <= _inputFile->getFormatContext().getNbStreams() );
 
 	if( getStreamType() != AVMEDIA_TYPE_DATA )
 	{
@@ -127,12 +127,12 @@ DataCodec& AvInputStream::getDataCodec()
 
 AVMediaType AvInputStream::getStreamType() const
 {
-	return getAVCodecContext().codec_type;
+	return _inputFile->getFormatContext().getAVStream( _streamIndex ).codec->codec_type;
 }
 
 double AvInputStream::getDuration() const
 {
-	return 1.0 * _inputFile->getAVFormatContext().duration / AV_TIME_BASE;
+	return 1.0 * _inputFile->getFormatContext().getDuration() / AV_TIME_BASE;
 }
 
 void AvInputStream::addPacket( AVPacket& packet )
@@ -149,16 +149,6 @@ void AvInputStream::addPacket( AVPacket& packet )
 void AvInputStream::clearBuffering()
 {
 	_streamCache = std::queue<CodedData>();
-}
-
-AVStream& AvInputStream::getAVStream() const
-{
-	return *_inputFile->getAVFormatContext().streams[_streamIndex];
-}
-
-AVCodecContext& AvInputStream::getAVCodecContext() const
-{
-	return *getAVStream().codec;
 }
 
 }

@@ -3,11 +3,7 @@
 
 #include <AvTranscoder/common.hpp>
 #include <AvTranscoder/mediaProperty/util.hpp>
-
-extern "C" {
-#include <libavformat/avformat.h>
-#include <libavcodec/avcodec.h>
-}
+#include <AvTranscoder/option/FormatContext.hpp>
 
 #include <string>
 
@@ -19,7 +15,7 @@ namespace avtranscoder
 class AvExport AudioProperties
 {
 public:
-	AudioProperties( const AVFormatContext* formatContext, const size_t index );
+	AudioProperties( const FormatContext& formatContext, const size_t index );
 
 	std::string getCodecName() const;
 	std::string getCodecLongName() const;

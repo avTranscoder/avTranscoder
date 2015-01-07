@@ -11,7 +11,6 @@
 
 extern "C" {
 #include <libavcodec/avcodec.h>
-#include <libavformat/avformat.h>
 #include <libavutil/avutil.h>
 #include <libavutil/pixdesc.h>
 }
@@ -23,32 +22,16 @@ namespace avtranscoder
 {
 
 InputFile::InputFile( const std::string& filename )
-	: _formatContext ( NULL )
-	, _properties( NULL )
+	: _formatContext( filename, AV_OPT_FLAG_DECODING_PARAM )
+	, _properties( _formatContext )
 	, _filename( filename )
+	, _inputStreams()
 	, _verbose( false )
 {
-	av_register_all();
-	if( avformat_open_input( &_formatContext, _filename.c_str(), NULL, NULL ) < 0 )
-	{
-		std::string msg = "unable to open file: ";
-		msg += _filename;
-		throw std::ios_base::failure( msg );
-	}
-
-	// update format context informations from streams
-	if( avformat_find_stream_info( _formatContext, NULL ) < 0 )
-	{
-		avformat_close_input( &_formatContext );
-		_formatContext = NULL;
-		throw std::ios_base::failure( "unable to find stream informations" );
-	}
-
-	// Initialize FileProperties
-	_properties = FileProperties( _formatContext );
+	_formatContext.findStreamInfo();
 
 	// Create streams
-	for( size_t streamIndex = 0; streamIndex < _formatContext->nb_streams; ++streamIndex )
+	for( size_t streamIndex = 0; streamIndex < _formatContext.getNbStreams(); ++streamIndex )
 	{
 		_inputStreams.push_back( new AvInputStream( *this, streamIndex ) );
 	}
@@ -60,21 +43,16 @@ InputFile::~InputFile()
 	{
 		delete (*it);
 	}
-
-	if( _formatContext != NULL )
-		avformat_close_input( &_formatContext );
 }
 
 void InputFile::analyse( IProgress& progress, const EAnalyseLevel level )
 {
-	assert( _formatContext != NULL );
-
 	if( level > eAnalyseLevelHeader )
 		seekAtFrame( 0 );
 
-	for( size_t streamId = 0; streamId < _formatContext->nb_streams; streamId++ )
+	for( size_t streamId = 0; streamId < _formatContext.getNbStreams(); streamId++ )
 	{
-		switch( _formatContext->streams[streamId]->codec->codec_type )
+		switch( _formatContext.getAVStream( streamId ).codec->codec_type )
 		{
 			case AVMEDIA_TYPE_VIDEO:
 			{
@@ -137,7 +115,7 @@ bool InputFile::readNextPacket( CodedData& data, const size_t streamIndex )
 	while( ! nextPacketFound )
 	{
 		av_init_packet( &packet );
-		int ret = av_read_frame( _formatContext, &packet );
+		int ret = av_read_frame( &_formatContext.getAVFormatContext(), &packet );
 		if( ret < 0 ) // error or end of file
 		{
 			av_free_packet( &packet );
@@ -165,10 +143,10 @@ void InputFile::seekAtFrame( const size_t frame )
 {
 	uint64_t pos = frame / 25 * AV_TIME_BASE;  // WARNING: hardcoded fps
 
-	if( (int)_formatContext->start_time != AV_NOPTS_VALUE )
-		pos += _formatContext->start_time;
+	if( (int)_formatContext.getStartTime() != AV_NOPTS_VALUE )
+		pos += _formatContext.getStartTime();
 
-	if( av_seek_frame( _formatContext, -1, pos, AVSEEK_FLAG_BACKWARD ) < 0 )
+	if( av_seek_frame( &_formatContext.getAVFormatContext(), -1, pos, AVSEEK_FLAG_BACKWARD ) < 0 )
 	{
 		std::cerr << "Error during seek at " << frame << " (" << pos << ") in file" << std::endl;
 	}
@@ -202,8 +180,6 @@ AvInputStream& InputFile::getStream( size_t index )
 
 void InputFile::setProfile( const ProfileLoader::Profile& profile )
 {	
-	Context formatContext( _formatContext, AV_OPT_FLAG_DECODING_PARAM );
-	
 	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
 	{
 		if( (*it).first == constants::avProfileIdentificator ||
@@ -213,7 +189,7 @@ void InputFile::setProfile( const ProfileLoader::Profile& profile )
 		
 		try
 		{
-			Option& formatOption = formatContext.getOption( (*it).first );
+			Option& formatOption = _formatContext.getOption( (*it).first );
 			formatOption.setString( (*it).second );
 		}
 		catch( std::exception& e )

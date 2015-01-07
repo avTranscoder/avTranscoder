@@ -5,8 +5,8 @@
 namespace avtranscoder
 {
 
-FileProperties::FileProperties( const AVFormatContext* formatContext )
-	: _formatContext( formatContext )
+FileProperties::FileProperties( const FormatContext& formatContext )
+	: _formatContext( &formatContext.getAVFormatContext() )
 	, _videoStreams()
 	, _audioStreams()
 	, _dataStreams()
@@ -14,7 +14,7 @@ FileProperties::FileProperties( const AVFormatContext* formatContext )
 	, _attachementStreams()
 	, _unknownStreams()
 {
-	if( formatContext )
+	if( _formatContext )
 		detail::fillMetadataDictionnary( _formatContext->metadata, _metadatas );
 }
 
