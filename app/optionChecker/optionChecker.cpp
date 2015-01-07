@@ -69,8 +69,7 @@ void optionChecker( const std::string& inputfilename )
 	avtranscoder::InputFile file( inputfilename );
 
 	// format options
-	AVFormatContext* avFormatContext = avformat_alloc_context();
-	avtranscoder::FormatContext formatContext( *avFormatContext );
+	avtranscoder::FormatContext formatContext;
 	std::vector<avtranscoder::Option> formatOptions = formatContext.getOptions();
 	displayOptions( formatOptions );
 

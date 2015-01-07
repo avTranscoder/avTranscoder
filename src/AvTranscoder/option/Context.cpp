@@ -14,6 +14,16 @@ extern "C" {
 namespace avtranscoder
 {
 
+Context::Context( void* avContext, int req_flags )
+	: _avContext( avContext )
+{
+	if( avContext )
+		loadOptions( avContext, req_flags );
+}
+
+Context::~Context()
+{}
+
 std::vector<Option> Context::getOptions()
 {
 	std::vector<Option> optionsArray;
