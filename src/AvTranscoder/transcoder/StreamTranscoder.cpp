@@ -96,7 +96,7 @@ StreamTranscoder::StreamTranscoder(
 			_inputEssence = new AvInputVideo( *static_cast<AvInputStream*>( _inputStream ) );
 			_inputEssence->setup();
 
-			AvOutputVideo* outputVideo = new AvOutputVideo();
+			AvOutputVideo* outputVideo = new AvOutputVideo( profile.at( constants::avProfileCodec ) );
 
 			_outputEssence = outputVideo;
 
@@ -122,7 +122,7 @@ StreamTranscoder::StreamTranscoder(
 			_inputEssence = new AvInputAudio( *static_cast<AvInputStream*>( _inputStream ) );
 			_inputEssence->setup();
 			
-			AvOutputAudio* outputAudio = new AvOutputAudio();
+			AvOutputAudio* outputAudio = new AvOutputAudio( profile.at( constants::avProfileCodec )  );
 
 			_outputEssence = outputAudio;
 			
@@ -203,7 +203,7 @@ StreamTranscoder::StreamTranscoder(
 		_frameBuffer  = new VideoFrame( outputFrameDesc );
 
 		// Create output essence
-		AvOutputVideo* outputVideo = new AvOutputVideo();
+		AvOutputVideo* outputVideo = new AvOutputVideo( profile.at( constants::avProfileCodec ) );
 		outputVideo->setProfile( profile, outputFrameDesc );
 		_outputEssence = outputVideo;
 
@@ -230,7 +230,7 @@ StreamTranscoder::StreamTranscoder(
 		_frameBuffer  = new AudioFrame( outputFrameDesc );
 
 		// Create output essence
-		AvOutputAudio* outputAudio = new AvOutputAudio();
+		AvOutputAudio* outputAudio = new AvOutputAudio( profile.at( constants::avProfileCodec ) );
 		outputAudio->setProfile( profile, outputFrameDesc );
 		_outputEssence = outputAudio;
 

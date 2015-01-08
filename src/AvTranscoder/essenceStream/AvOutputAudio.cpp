@@ -12,8 +12,8 @@ extern "C" {
 namespace avtranscoder
 {
 
-AvOutputAudio::AvOutputAudio()
-	: _codec( eCodecTypeEncoder, "pcm_s16le" )
+AvOutputAudio::AvOutputAudio( const std::string& audioCodecName )
+	: _codec( eCodecTypeEncoder, audioCodecName )
 	, _verbose( false )
 {
 }

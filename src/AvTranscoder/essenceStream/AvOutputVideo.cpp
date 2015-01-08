@@ -13,8 +13,8 @@ extern "C" {
 namespace avtranscoder
 {
 
-AvOutputVideo::AvOutputVideo( )
-	: _codec( eCodecTypeEncoder, "mpeg2video" )
+AvOutputVideo::AvOutputVideo( const std::string& videoCodecName )
+	: _codec( eCodecTypeEncoder, videoCodecName )
 	, _verbose( false )
 {
 }

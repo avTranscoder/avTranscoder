@@ -11,7 +11,7 @@ namespace avtranscoder
 class AvExport AvOutputAudio : public IOutputEssence
 {
 public:
-	AvOutputAudio();
+	AvOutputAudio( const std::string& audioCodecName );
 	
 	void setup();
 

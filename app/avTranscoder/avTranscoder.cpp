@@ -36,7 +36,7 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 	VideoFrame sourceImage( VideoFrameDesc );
 
 	// init video encoder
-	AvOutputVideo outputVideo;
+	AvOutputVideo outputVideo( "mpeg2video" );
 	outputVideo.setProfile( profileLoader.getProfile( "xdcamhd422" ), VideoFrameDesc );
 	VideoFrame imageToEncode( outputVideo.getVideoCodec().getVideoFrameDesc() );
 	
