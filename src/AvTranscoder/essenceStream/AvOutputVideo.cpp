@@ -15,7 +15,6 @@ namespace avtranscoder
 
 AvOutputVideo::AvOutputVideo( const std::string& videoCodecName )
 	: _codec( eCodecTypeEncoder, videoCodecName )
-	, _verbose( false )
 {
 }
 
@@ -198,8 +197,7 @@ void AvOutputVideo::setProfile( const ProfileLoader::Profile& profile, const avt
 		}
 		catch( std::exception& e )
 		{
-			if( _verbose )
-				std::cout << "[OutputVideo] warning - can't set option " << (*it).first << " to " << (*it).second << ": " << e.what() << std::endl;
+			std::cout << "[OutputVideo] warning - can't set option " << (*it).first << " to " << (*it).second << ": " << e.what() << std::endl;
 		}
 	}
 }

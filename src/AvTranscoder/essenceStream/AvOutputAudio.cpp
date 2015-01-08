@@ -14,7 +14,6 @@ namespace avtranscoder
 
 AvOutputAudio::AvOutputAudio( const std::string& audioCodecName )
 	: _codec( eCodecTypeEncoder, audioCodecName )
-	, _verbose( false )
 {
 }
 
@@ -208,8 +207,7 @@ void AvOutputAudio::setProfile( const ProfileLoader::Profile& profile, const Aud
 		}
 		catch( std::exception& e )
 		{
-			if( _verbose )
-				std::cout << "[OutputAudio] warning - can't set option " << (*it).first << " to " << (*it).second << ": " << e.what() << std::endl;
+			std::cout << "[OutputAudio] warning - can't set option " << (*it).first << " to " << (*it).second << ": " << e.what() << std::endl;
 		}
 	}
 }

@@ -22,12 +22,9 @@ public:
 	AudioCodec& getAudioCodec() { return _codec; }
 
 	void setProfile( const ProfileLoader::Profile& profile, const AudioFrameDesc& frameDesc );
-	void setVerbose( bool verbose = true ) { _verbose = verbose; }
 
 private:
 	AudioCodec _codec;
-
-	bool _verbose;
 };
 
 }
