@@ -28,8 +28,8 @@ def testSetVideoFrame():
 	ouputFile.beginWrap()
 	transcoder.preProcessCodecLatency()
 
-	# process 255 frames
-	for i in range(0,255):
+	# process 10 frames
+	for i in range(0, 10):
 		transcoder.processFrame()
 		# set video frame
 		frame = av.VideoFrame( imageDesc )
@@ -77,8 +77,8 @@ def testSetAudioFrame():
 	ouputFile.beginWrap()
 	transcoder.preProcessCodecLatency()
 
-	# process 255 frames
-	for i in range(0,255):
+	# process 10 frames
+	for i in range(0, 10):
 		transcoder.processFrame()
 		# set video frame
 		frame = av.AudioFrame( audioDesc )
