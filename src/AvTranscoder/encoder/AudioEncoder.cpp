@@ -161,11 +161,6 @@ bool AudioEncoder::encodeFrame( Frame& codedFrame )
 
 void AudioEncoder::setProfile( const ProfileLoader::Profile& profile, const AudioFrameDesc& frameDesc  )
 {
-	if( ! profile.count( constants::avProfileCodec ) )
-	{
-		throw std::runtime_error( "The profile " + profile.find( constants::avProfileIdentificatorHuman )->second + " is invalid." );
-	}
-	
 	_codec.setAudioParameters( frameDesc );
 	
 	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )

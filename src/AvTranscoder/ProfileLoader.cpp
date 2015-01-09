@@ -31,18 +31,35 @@ void ProfileLoader::loadProfile( const std::string& avProfileFile )
 		if( keyValue.size() == 2 )
 			customProfile[ keyValue.at( 0 ) ] = keyValue.at( 1 );
 	}
-	// check if profile contains required values
-	if( 
-		customProfile.count( constants::avProfileIdentificator ) &&
-		customProfile.count( constants::avProfileIdentificatorHuman ) &&
-		customProfile.count( constants::avProfileType ) &&
-		( customProfile.find( constants::avProfileType )->second == constants::avProfileTypeFormat ||
-		customProfile.find( constants::avProfileType )->second == constants::avProfileTypeVideo ||
-		customProfile.find( constants::avProfileType )->second == constants::avProfileTypeAudio )
-		)
+
+	// check profile long name
+	if( ! customProfile.count( constants::avProfileIdentificator ) )
 	{
-		_profiles.push_back( customProfile );
+		std::cout << "Warning: A profile has no name. It will not be loaded." << std::endl;
+		return;
 	}
+
+	// check profile type
+	if( customProfile.count( constants::avProfileType ) == 0 )
+	{
+		std::cout << "Warning: The profile " << customProfile.find( constants::avProfileIdentificator )->second << " has not type. It will not be loaded." << std::endl;
+		return;
+	}
+
+	// check complete profile
+	bool isValid = false;
+	std::string type( customProfile.find( constants::avProfileType )->second );
+	if( type == constants::avProfileTypeFormat )
+		isValid = checkFormatProfile( customProfile );
+	else if( type == constants::avProfileTypeVideo )
+		isValid = checkVideoProfile( customProfile );
+	else if( type == constants::avProfileTypeAudio )
+		isValid = checkAudioProfile( customProfile );
+
+	if( isValid )
+		_profiles.push_back( customProfile );
+	else
+		std::cout << "Warning: The profile " << customProfile.find( constants::avProfileIdentificator )->second << " is invalid. It will not be loaded." << std::endl;
 }
 
 void ProfileLoader::loadProfiles( const std::string& avProfilesPath )
@@ -146,5 +163,53 @@ ProfileLoader::Profile& ProfileLoader::getProfile( const std::string& avProfileI
 	}
 	throw std::runtime_error( "unable to find profile: " + avProfileIdentificator );
 }
+
+
+bool ProfileLoader::checkFormatProfile( const Profile& profileToCheck )
+{
+	bool isValid = true;
+
+	if( ! profileToCheck.count( constants::avProfileIdentificator ) ||
+		! profileToCheck.count( constants::avProfileIdentificatorHuman ) ||
+		! profileToCheck.count( constants::avProfileType ) ||
+		! profileToCheck.count( constants::avProfileFormat ) )
+	{
+		isValid = false;
+	}
+
+	return isValid;
+}
+
+bool ProfileLoader::checkVideoProfile( const Profile& profileToCheck )
+{
+	bool isValid = true;
+
+	if( ! profileToCheck.count( constants::avProfileIdentificator ) ||
+		! profileToCheck.count( constants::avProfileIdentificatorHuman ) ||
+		! profileToCheck.count( constants::avProfileType ) ||
+		! profileToCheck.count( constants::avProfileCodec ) ||
+		! profileToCheck.count( constants::avProfileFrameRate ) )
+	{
+		isValid = false;
+	}
+
+	return isValid;
+}
+
+bool ProfileLoader::checkAudioProfile( const Profile& profileToCheck )
+{
+	bool isValid = true;
+
+	if( ! profileToCheck.count( constants::avProfileIdentificator ) ||
+		! profileToCheck.count( constants::avProfileIdentificatorHuman ) ||
+		! profileToCheck.count( constants::avProfileType ) ||
+		! profileToCheck.count( constants::avProfileCodec ) )
+	{
+		isValid = false;
+	}
+
+	return isValid;
+}
+
 
 }

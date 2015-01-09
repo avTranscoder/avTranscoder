@@ -148,12 +148,6 @@ bool VideoEncoder::encodeFrame( Frame& codedFrame )
 
 void VideoEncoder::setProfile( const ProfileLoader::Profile& profile, const avtranscoder::VideoFrameDesc& frameDesc )
 {
-	if( ! profile.count( constants::avProfileCodec ) ||
-		! profile.count( constants::avProfileFrameRate ) )
-	{
-		throw std::runtime_error( "The profile " + profile.find( constants::avProfileIdentificatorHuman )->second + " is invalid." );
-	}
-
 	const size_t frameRate = std::strtoul( profile.find( constants::avProfileFrameRate )->second.c_str(), NULL, 0 );
 	_codec.setTimeBase( 1, frameRate );
 

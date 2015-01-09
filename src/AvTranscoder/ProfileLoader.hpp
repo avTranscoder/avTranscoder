@@ -51,6 +51,11 @@ public:
 	Profile& getProfile( const std::string& avProfileIdentificator );
 
 private:
+	bool checkFormatProfile( const Profile& profileToCheck );
+	bool checkVideoProfile( const Profile& profileToCheck );
+	bool checkAudioProfile( const Profile& profileToCheck );
+
+private:
 	Profiles _profiles;
 };
 
