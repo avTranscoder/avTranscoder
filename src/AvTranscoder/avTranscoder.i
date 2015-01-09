@@ -26,13 +26,13 @@
 #include <AvTranscoder/codedStream/IInputStream.hpp>
 #include <AvTranscoder/codedStream/AvInputStream.hpp>
 
-#include <AvTranscoder/essenceStream/IOutputEssence.hpp>
-#include <AvTranscoder/essenceStream/AvOutputAudio.hpp>
-#include <AvTranscoder/essenceStream/AvOutputVideo.hpp>
+#include <AvTranscoder/essenceStream/IEncoder.hpp>
+#include <AvTranscoder/essenceStream/AudioEncoder.hpp>
+#include <AvTranscoder/essenceStream/VideoEncoder.hpp>
 
-#include <AvTranscoder/essenceStream/IInputEssence.hpp>
-#include <AvTranscoder/essenceStream/AvInputAudio.hpp>
-#include <AvTranscoder/essenceStream/AvInputVideo.hpp>
+#include <AvTranscoder/essenceStream/IDecoder.hpp>
+#include <AvTranscoder/essenceStream/AudioDecoder.hpp>
+#include <AvTranscoder/essenceStream/VideoDecoder.hpp>
 #include <AvTranscoder/essenceStream/GeneratorVideo.hpp>
 #include <AvTranscoder/essenceStream/GeneratorAudio.hpp>
 
@@ -64,13 +64,13 @@ namespace std {
 %include <AvTranscoder/codedStream/IInputStream.hpp>
 %include <AvTranscoder/codedStream/AvInputStream.hpp>
 
-%include <AvTranscoder/essenceStream/IOutputEssence.hpp>
-%include <AvTranscoder/essenceStream/AvOutputAudio.hpp>
-%include <AvTranscoder/essenceStream/AvOutputVideo.hpp>
+%include <AvTranscoder/essenceStream/IEncoder.hpp>
+%include <AvTranscoder/essenceStream/AudioEncoder.hpp>
+%include <AvTranscoder/essenceStream/VideoEncoder.hpp>
 
-%include <AvTranscoder/essenceStream/IInputEssence.hpp>
-%include <AvTranscoder/essenceStream/AvInputAudio.hpp>
-%include <AvTranscoder/essenceStream/AvInputVideo.hpp>
+%include <AvTranscoder/essenceStream/IDecoder.hpp>
+%include <AvTranscoder/essenceStream/AudioDecoder.hpp>
+%include <AvTranscoder/essenceStream/VideoDecoder.hpp>
 %include <AvTranscoder/essenceStream/GeneratorVideo.hpp>
 %include <AvTranscoder/essenceStream/GeneratorAudio.hpp>
 

@@ -6,8 +6,7 @@ namespace avtranscoder
 {
 
 GeneratorVideo::GeneratorVideo( )
-	: IInputEssence( )
-	, _inputFrame( NULL )
+	: _inputFrame( NULL )
 	, _frameDesc()
 {
 }

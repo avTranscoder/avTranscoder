@@ -1,4 +1,4 @@
-#include "AvInputVideo.hpp"
+#include "VideoDecoder.hpp"
 
 #include <AvTranscoder/codec/ICodec.hpp>
 #include <AvTranscoder/codedStream/AvInputStream.hpp>
@@ -17,14 +17,13 @@ extern "C" {
 namespace avtranscoder
 {
 
-AvInputVideo::AvInputVideo( AvInputStream& inputStream )
-	: IInputEssence()
-	, _inputStream   ( &inputStream )
+VideoDecoder::VideoDecoder( AvInputStream& inputStream )
+	: _inputStream   ( &inputStream )
 	, _frame         ( NULL )
 {
 }
 
-AvInputVideo::~AvInputVideo()
+VideoDecoder::~VideoDecoder()
 {
 	if( _frame != NULL )
 	{
@@ -41,7 +40,7 @@ AvInputVideo::~AvInputVideo()
 	}
 }
 
-void AvInputVideo::setup()
+void VideoDecoder::setup()
 {
 	AVCodecContext& avCodecContext = _inputStream->getVideoCodec().getAVCodecContext();
 	AVCodec& avCodec = _inputStream->getVideoCodec().getAVCodec();
@@ -73,7 +72,7 @@ void AvInputVideo::setup()
 	}
 }
 
-bool AvInputVideo::decodeNextFrame( Frame& frameBuffer )
+bool VideoDecoder::decodeNextFrame( Frame& frameBuffer )
 {
 	if( ! decodeNextFrame() )
 		return false;
@@ -93,12 +92,12 @@ bool AvInputVideo::decodeNextFrame( Frame& frameBuffer )
 	return true;
 }
 
-bool AvInputVideo::decodeNextFrame( Frame& frameBuffer, const size_t subStreamIndex )
+bool VideoDecoder::decodeNextFrame( Frame& frameBuffer, const size_t subStreamIndex )
 {
 	return false;
 }
 
-bool AvInputVideo::decodeNextFrame()
+bool VideoDecoder::decodeNextFrame()
 {
 	int got_frame = 0;
 	while( ! got_frame )
@@ -130,12 +129,12 @@ bool AvInputVideo::decodeNextFrame()
 	return true;
 }
 
-void AvInputVideo::flushDecoder()
+void VideoDecoder::flushDecoder()
 {
 	avcodec_flush_buffers( &_inputStream->getVideoCodec().getAVCodecContext() );
 }
 
-void AvInputVideo::setProfile( const ProfileLoader::Profile& profile )
+void VideoDecoder::setProfile( const ProfileLoader::Profile& profile )
 {
 	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
 	{

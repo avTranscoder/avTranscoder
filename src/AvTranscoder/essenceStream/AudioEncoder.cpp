@@ -1,4 +1,4 @@
-#include "AvOutputAudio.hpp"
+#include "AudioEncoder.hpp"
 
 extern "C" {
 #include <libavcodec/avcodec.h>
@@ -12,12 +12,12 @@ extern "C" {
 namespace avtranscoder
 {
 
-AvOutputAudio::AvOutputAudio( const std::string& audioCodecName )
+AudioEncoder::AudioEncoder( const std::string& audioCodecName )
 	: _codec( eCodecTypeEncoder, audioCodecName )
 {
 }
 
-void AvOutputAudio::setup()
+void AudioEncoder::setup()
 {
 	av_register_all();
 
@@ -36,7 +36,7 @@ void AvOutputAudio::setup()
 	}
 }
 
-bool AvOutputAudio::encodeFrame( const Frame& sourceFrame, Frame& codedFrame )
+bool AudioEncoder::encodeFrame( const Frame& sourceFrame, Frame& codedFrame )
 {
 #if LIBAVCODEC_VERSION_MAJOR > 54
 	AVFrame* frame = av_frame_alloc();
@@ -126,7 +126,7 @@ bool AvOutputAudio::encodeFrame( const Frame& sourceFrame, Frame& codedFrame )
 	return ret == 0;
 }
 
-bool AvOutputAudio::encodeFrame( Frame& codedFrame )
+bool AudioEncoder::encodeFrame( Frame& codedFrame )
 {
 	AVCodecContext& avCodecContext = _codec.getAVCodecContext();
 
@@ -159,7 +159,7 @@ bool AvOutputAudio::encodeFrame( Frame& codedFrame )
 #endif
 }
 
-void AvOutputAudio::setProfile( const ProfileLoader::Profile& profile, const AudioFrameDesc& frameDesc  )
+void AudioEncoder::setProfile( const ProfileLoader::Profile& profile, const AudioFrameDesc& frameDesc  )
 {
 	if( ! profile.count( constants::avProfileCodec ) )
 	{

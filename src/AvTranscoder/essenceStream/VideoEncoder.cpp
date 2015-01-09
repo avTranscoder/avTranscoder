@@ -1,4 +1,4 @@
-#include "AvOutputVideo.hpp"
+#include "VideoEncoder.hpp"
 
 extern "C" {
 #include <libavcodec/avcodec.h>
@@ -13,12 +13,12 @@ extern "C" {
 namespace avtranscoder
 {
 
-AvOutputVideo::AvOutputVideo( const std::string& videoCodecName )
+VideoEncoder::VideoEncoder( const std::string& videoCodecName )
 	: _codec( eCodecTypeEncoder, videoCodecName )
 {
 }
 
-void AvOutputVideo::setup( )
+void VideoEncoder::setup()
 {
 	av_register_all();
 
@@ -42,7 +42,7 @@ void AvOutputVideo::setup( )
 }
 
 
-bool AvOutputVideo::encodeFrame( const Frame& sourceFrame, Frame& codedFrame )
+bool VideoEncoder::encodeFrame( const Frame& sourceFrame, Frame& codedFrame )
 {
 #if LIBAVCODEC_VERSION_MAJOR > 54
 	AVFrame* frame = av_frame_alloc();
@@ -115,7 +115,7 @@ bool AvOutputVideo::encodeFrame( const Frame& sourceFrame, Frame& codedFrame )
 	return ret == 0;
 }
 
-bool AvOutputVideo::encodeFrame( Frame& codedFrame )
+bool VideoEncoder::encodeFrame( Frame& codedFrame )
 {
 	AVCodecContext& avCodecContext = _codec.getAVCodecContext();
 
@@ -146,7 +146,7 @@ bool AvOutputVideo::encodeFrame( Frame& codedFrame )
 #endif
 }
 
-void AvOutputVideo::setProfile( const ProfileLoader::Profile& profile, const avtranscoder::VideoFrameDesc& frameDesc )
+void VideoEncoder::setProfile( const ProfileLoader::Profile& profile, const avtranscoder::VideoFrameDesc& frameDesc )
 {
 	if( ! profile.count( constants::avProfileCodec ) ||
 		! profile.count( constants::avProfileFrameRate ) )

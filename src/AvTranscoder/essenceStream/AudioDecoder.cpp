@@ -1,4 +1,4 @@
-#include "AvInputAudio.hpp"
+#include "AudioDecoder.hpp"
 
 #include <AvTranscoder/codec/ICodec.hpp>
 #include <AvTranscoder/codedStream/AvInputStream.hpp>
@@ -18,14 +18,13 @@ extern "C" {
 namespace avtranscoder
 {
 
-AvInputAudio::AvInputAudio( AvInputStream& inputStream ) 
-	: IInputEssence()
-	, _inputStream   ( &inputStream )
+AudioDecoder::AudioDecoder( AvInputStream& inputStream ) 
+	: _inputStream   ( &inputStream )
 	, _frame         ( NULL )
 {
 }
 
-AvInputAudio::~AvInputAudio()
+AudioDecoder::~AudioDecoder()
 {
 	if( _frame != NULL )
 	{
@@ -43,7 +42,7 @@ AvInputAudio::~AvInputAudio()
 }
 
 
-void AvInputAudio::setup()
+void AudioDecoder::setup()
 {
 	AVCodecContext& avCodecContext = _inputStream->getAudioCodec().getAVCodecContext();
 	AVCodec& avCodec = _inputStream->getAudioCodec().getAVCodec();
@@ -79,7 +78,7 @@ void AvInputAudio::setup()
 	}
 }
 
-bool AvInputAudio::decodeNextFrame( Frame& frameBuffer )
+bool AudioDecoder::decodeNextFrame( Frame& frameBuffer )
 {
 	if( ! decodeNextFrame() )
 		return false;
@@ -107,7 +106,7 @@ bool AvInputAudio::decodeNextFrame( Frame& frameBuffer )
 	return true;
 }
 
-bool AvInputAudio::decodeNextFrame( Frame& frameBuffer, const size_t subStreamIndex )
+bool AudioDecoder::decodeNextFrame( Frame& frameBuffer, const size_t subStreamIndex )
 {
 	if( ! decodeNextFrame() )
 		return false;
@@ -151,7 +150,7 @@ bool AvInputAudio::decodeNextFrame( Frame& frameBuffer, const size_t subStreamIn
 	return true;
 }
 
-bool AvInputAudio::decodeNextFrame()
+bool AudioDecoder::decodeNextFrame()
 {
 	int got_frame = 0;
 	while( ! got_frame )

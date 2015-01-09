@@ -1,7 +1,7 @@
 #ifndef _AV_TRANSCODER_ESSENCE_STREAM_AV_INPUT_AUDIO_HPP_
 #define _AV_TRANSCODER_ESSENCE_STREAM_AV_INPUT_AUDIO_HPP_
 
-#include "IInputEssence.hpp"
+#include "IDecoder.hpp"
 
 struct AVFrame;
 
@@ -10,11 +10,11 @@ namespace avtranscoder
 
 class AvInputStream;
 
-class AvExport AvInputAudio : public IInputEssence
+class AvExport AudioDecoder : public IDecoder
 {
 public:
-	AvInputAudio( AvInputStream& inputStream );
-	~AvInputAudio();
+	AudioDecoder( AvInputStream& inputStream );
+	~AudioDecoder();
 
 	void setup();
 

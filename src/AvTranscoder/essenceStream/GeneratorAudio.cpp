@@ -4,8 +4,7 @@ namespace avtranscoder
 {
 
 GeneratorAudio::GeneratorAudio( )
-	: IInputEssence( )
-	, _inputFrame( NULL )
+	: _inputFrame( NULL )
 	, _frameDesc()
 {
 }

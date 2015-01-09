@@ -1,7 +1,7 @@
 #ifndef _AV_TRANSCODER_ESSENCE_STREAM_AV_INPUT_VIDEO_HPP_
 #define _AV_TRANSCODER_ESSENCE_STREAM_AV_INPUT_VIDEO_HPP_
 
-#include "IInputEssence.hpp"
+#include "IDecoder.hpp"
 #include <AvTranscoder/ProfileLoader.hpp>
 
 struct AVFrame;
@@ -11,11 +11,11 @@ namespace avtranscoder
 
 class AvInputStream;
 
-class AvExport AvInputVideo : public IInputEssence
+class AvExport VideoDecoder : public IDecoder
 {
 public:
-	AvInputVideo( AvInputStream& inputStream );
-	~AvInputVideo();
+	VideoDecoder( AvInputStream& inputStream );
+	~VideoDecoder();
 	
 	void setup();
 

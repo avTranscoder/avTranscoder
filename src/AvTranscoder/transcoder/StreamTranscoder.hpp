@@ -6,8 +6,8 @@
 #include <AvTranscoder/codedStream/IInputStream.hpp>
 #include <AvTranscoder/codedStream/IOutputStream.hpp>
 
-#include <AvTranscoder/essenceStream/AvInputVideo.hpp>
-#include <AvTranscoder/essenceStream/AvOutputVideo.hpp>
+#include <AvTranscoder/essenceStream/IDecoder.hpp>
+#include <AvTranscoder/essenceStream/IEncoder.hpp>
 
 #include <AvTranscoder/file/OutputFile.hpp>
 
@@ -63,10 +63,8 @@ public:
 	 */
 	double getDuration() const;
 
-	/**
-	 * @return a reference to the current essence processed in this stream.
-	 */
-	IInputEssence& getCurrentEssence() const { return *_currentEssence; }
+	/// Returns a reference to the current decoder used by the streamTranscoder (from input file or from generator)
+	IDecoder& getCurrentDecoder() const { return *_currentDecoder; }
 
 	void setVerbose( bool verbose = true ){ _verbose = verbose; }
 
@@ -85,10 +83,10 @@ private:
 	Frame*         _sourceBuffer;
 	Frame*         _frameBuffer;
 
-	IInputEssence*  _inputEssence;
-	IInputEssence*  _generatorEssence;
-	IInputEssence*  _currentEssence;
-	IOutputEssence* _outputEssence;
+	IDecoder* _inputDecoder;
+	IDecoder* _generator;
+	IDecoder* _currentDecoder;
+	IEncoder* _outputEncoder;
 
 	ITransform* _transform;
 

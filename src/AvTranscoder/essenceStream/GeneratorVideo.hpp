@@ -1,16 +1,16 @@
 #ifndef _AV_TRANSCODER_ESSENCE_STREAM_GENERATOR_VIDEO_HPP_
 #define _AV_TRANSCODER_ESSENCE_STREAM_GENERATOR_VIDEO_HPP_
 
-#include "IInputEssence.hpp"
+#include "IDecoder.hpp"
 #include <AvTranscoder/codec/VideoCodec.hpp>
 
 namespace avtranscoder
 {
 
-class AvExport GeneratorVideo : public IInputEssence
+class AvExport GeneratorVideo : public IDecoder
 {
 public:
-	GeneratorVideo( );
+	GeneratorVideo();
 
 	VideoFrameDesc& getVideoFrameDesc() { return _frameDesc; }
 	void setVideoFrameDesc( const VideoFrameDesc& frameDesc );

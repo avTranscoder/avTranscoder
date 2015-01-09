@@ -7,10 +7,8 @@
 
 #include <AvTranscoder/frame/Frame.hpp>
 
-#include <AvTranscoder/essenceStream/AvInputAudio.hpp>
-#include <AvTranscoder/essenceStream/AvInputVideo.hpp>
-#include <AvTranscoder/essenceStream/AvOutputAudio.hpp>
-#include <AvTranscoder/essenceStream/AvOutputVideo.hpp>
+#include <AvTranscoder/essenceStream/VideoDecoder.hpp>
+#include <AvTranscoder/essenceStream/VideoEncoder.hpp>
 
 #include <AvTranscoder/transform/VideoTransform.hpp>
 
@@ -31,12 +29,12 @@ void transcodeVideo( const char* inputfilename, const char* outputFilename )
 	input.activateStream( input.getProperties().getVideoProperties().at( 0 ).getStreamId() );
 
 	// init video decoders
-	AvInputVideo inputVideo( input.getStream( 0 ) );
+	VideoDecoder inputVideo( input.getStream( 0 ) );
 	VideoFrameDesc VideoFrameDesc = input.getStream( 0 ).getVideoCodec().getVideoFrameDesc();
 	VideoFrame sourceImage( VideoFrameDesc );
 
 	// init video encoder
-	AvOutputVideo outputVideo( "mpeg2video" );
+	VideoEncoder outputVideo( "mpeg2video" );
 	outputVideo.setProfile( profileLoader.getProfile( "xdcamhd422" ), VideoFrameDesc );
 	VideoFrame imageToEncode( outputVideo.getVideoCodec().getVideoFrameDesc() );
 	

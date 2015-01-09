@@ -22,7 +22,7 @@ def testSetVideoFrame():
 	# create transcoder and add a video stream
 	transcoder = av.Transcoder( ouputFile )
 	transcoder.add(  "", 0, "mpeg2", inputVideoCodec )
-	videoEssence = transcoder.getStreamTranscoder( 0 ).getCurrentEssence()
+	videoDecoder = transcoder.getStreamTranscoder( 0 ).getCurrentDecoder()
 
 	# start process
 	ouputFile.beginWrap()
@@ -34,7 +34,7 @@ def testSetVideoFrame():
 		# set video frame
 		frame = av.VideoFrame( imageDesc )
 		frame.getBuffer().assign(frame.getBuffer().size(), i)
-		videoEssence.setNextFrame( frame )
+		videoDecoder.setNextFrame( frame )
 
 	# end process
 	ouputFile.endWrap()
@@ -71,7 +71,7 @@ def testSetAudioFrame():
 	# create transcoder and add a video stream
 	transcoder = av.Transcoder( ouputFile )
 	transcoder.add(  "", 0, "wave24b48kmono", inputAudioCodec )
-	audioEssence = transcoder.getStreamTranscoder( 0 ).getCurrentEssence()
+	audioDecoder = transcoder.getStreamTranscoder( 0 ).getCurrentDecoder()
 
 	# start process
 	ouputFile.beginWrap()
@@ -83,7 +83,7 @@ def testSetAudioFrame():
 		# set video frame
 		frame = av.AudioFrame( audioDesc )
 		frame.getBuffer().assign(frame.getBuffer().size(), i)
-		audioEssence.setNextFrame( frame )
+		audioDecoder.setNextFrame( frame )
 
 	# end process
 	ouputFile.endWrap()

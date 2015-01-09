@@ -3,8 +3,8 @@
 #include <iomanip>
 #include <AvTranscoder/ProfileLoader.hpp>
 
-#include <AvTranscoder/essenceStream/AvOutputVideo.hpp>
-#include <AvTranscoder/essenceStream/AvOutputAudio.hpp>
+#include <AvTranscoder/essenceStream/VideoEncoder.hpp>
+#include <AvTranscoder/essenceStream/AudioEncoder.hpp>
 
 
 int main( int argc, char** argv )
@@ -27,13 +27,13 @@ int main( int argc, char** argv )
 		try{
 			if( profile.find( avtranscoder::constants::avProfileType )->second == avtranscoder::constants::avProfileTypeVideo )
 			{
-				avtranscoder::AvOutputVideo outputVideo( profile.at( avtranscoder::constants::avProfileCodec ) );
+				avtranscoder::VideoEncoder outputVideo( profile.at( avtranscoder::constants::avProfileCodec ) );
 				outputVideo.setProfile( profile, outputVideo.getVideoCodec().getVideoFrameDesc() );
 			}
 
 			if( profile.find( avtranscoder::constants::avProfileType )->second == avtranscoder::constants::avProfileTypeAudio )
 			{
-				avtranscoder::AvOutputAudio outputAudio( profile.at( avtranscoder::constants::avProfileCodec ) );
+				avtranscoder::AudioEncoder outputAudio( profile.at( avtranscoder::constants::avProfileCodec ) );
 				outputAudio.setProfile( profile, outputAudio.getAudioCodec().getAudioFrameDesc() );
 			}
 		}
