@@ -7,8 +7,8 @@
 #include <AvTranscoder/essenceStream/AudioDecoder.hpp>
 #include <AvTranscoder/essenceStream/VideoEncoder.hpp>
 #include <AvTranscoder/essenceStream/AudioEncoder.hpp>
-#include <AvTranscoder/essenceStream/GeneratorVideo.hpp>
-#include <AvTranscoder/essenceStream/GeneratorAudio.hpp>
+#include <AvTranscoder/essenceStream/VideoGenerator.hpp>
+#include <AvTranscoder/essenceStream/AudioGenerator.hpp>
 
 #include <AvTranscoder/transform/AudioTransform.hpp>
 #include <AvTranscoder/transform/VideoTransform.hpp>
@@ -111,7 +111,7 @@ StreamTranscoder::StreamTranscoder(
 			
 			_transform = new VideoTransform();
 
-			GeneratorVideo* generatorVideo = new GeneratorVideo();
+			VideoGenerator* generatorVideo = new VideoGenerator();
 			generatorVideo->setVideoFrameDesc( outputVideo->getVideoCodec().getVideoFrameDesc() );
 			_generator = generatorVideo;
 			
@@ -146,7 +146,7 @@ StreamTranscoder::StreamTranscoder(
 			
 			_transform = new AudioTransform();
 
-			GeneratorAudio* generatorAudio = new GeneratorAudio();
+			AudioGenerator* generatorAudio = new AudioGenerator();
 			generatorAudio->setAudioFrameDesc( outputAudio->getAudioCodec().getAudioFrameDesc() );
 			_generator = generatorAudio;
 
@@ -190,7 +190,7 @@ StreamTranscoder::StreamTranscoder(
 	if( profile.find( constants::avProfileType )->second == constants::avProfileTypeVideo )
 	{
 		// Create input essence based on a given input VideoCodec
-		GeneratorVideo* generatorVideo = new GeneratorVideo();
+		VideoGenerator* generatorVideo = new VideoGenerator();
 		const VideoCodec& inputVideoCodec = static_cast<const VideoCodec&>( inputCodec );
 		generatorVideo->setVideoFrameDesc( inputVideoCodec.getVideoFrameDesc() );
 		_inputDecoder = generatorVideo;
@@ -217,7 +217,7 @@ StreamTranscoder::StreamTranscoder(
 	else if( profile.find( constants::avProfileType )->second == constants::avProfileTypeAudio )
 	{
 		// Create input essence based on a given input AudioCodec
-		GeneratorAudio* generatorAudio = new GeneratorAudio();
+		AudioGenerator* generatorAudio = new AudioGenerator();
 		const AudioCodec& inputAudioCodec = static_cast<const AudioCodec&>( inputCodec );
 		generatorAudio->setAudioFrameDesc( inputAudioCodec.getAudioFrameDesc() );
 		_inputDecoder = generatorAudio;

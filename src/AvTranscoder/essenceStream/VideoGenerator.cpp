@@ -1,27 +1,27 @@
-#include "GeneratorVideo.hpp"
+#include "VideoGenerator.hpp"
 
 #include <AvTranscoder/transform/VideoTransform.hpp>
 
 namespace avtranscoder
 {
 
-GeneratorVideo::GeneratorVideo( )
+VideoGenerator::VideoGenerator()
 	: _inputFrame( NULL )
 	, _frameDesc()
 {
 }
 
-void GeneratorVideo::setVideoFrameDesc( const VideoFrameDesc& frameDesc )
+void VideoGenerator::setVideoFrameDesc( const VideoFrameDesc& frameDesc )
 {
 	_frameDesc = frameDesc;
 }
 
-void GeneratorVideo::setNextFrame( Frame& inputFrame )
+void VideoGenerator::setNextFrame( Frame& inputFrame )
 {
 	_inputFrame = &inputFrame;
 }
 
-bool GeneratorVideo::decodeNextFrame( Frame& frameBuffer )
+bool VideoGenerator::decodeNextFrame( Frame& frameBuffer )
 {
 	// Generate black image
 	if( ! _inputFrame )
@@ -47,7 +47,7 @@ bool GeneratorVideo::decodeNextFrame( Frame& frameBuffer )
 	return true;
 }
 
-bool GeneratorVideo::decodeNextFrame( Frame& frameBuffer, const size_t subStreamIndex )
+bool VideoGenerator::decodeNextFrame( Frame& frameBuffer, const size_t subStreamIndex )
 {
 	return false;
 }

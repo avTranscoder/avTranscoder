@@ -7,10 +7,10 @@
 namespace avtranscoder
 {
 
-class AvExport GeneratorAudio : public IDecoder
+class AvExport AudioGenerator : public IDecoder
 {
 public:
-	GeneratorAudio( );
+	AudioGenerator();
 
 	AudioFrameDesc& getAudioFrameDesc() { return _frameDesc; }
 	void setAudioFrameDesc( const AudioFrameDesc& frameDesc );

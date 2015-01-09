@@ -7,10 +7,10 @@
 namespace avtranscoder
 {
 
-class AvExport GeneratorVideo : public IDecoder
+class AvExport VideoGenerator : public IDecoder
 {
 public:
-	GeneratorVideo();
+	VideoGenerator();
 
 	VideoFrameDesc& getVideoFrameDesc() { return _frameDesc; }
 	void setVideoFrameDesc( const VideoFrameDesc& frameDesc );

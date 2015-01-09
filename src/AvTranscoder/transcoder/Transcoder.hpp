@@ -8,8 +8,8 @@
 
 #include <AvTranscoder/codedStream/IInputStream.hpp>
 
-#include <AvTranscoder/essenceStream/GeneratorAudio.hpp>
-#include <AvTranscoder/essenceStream/GeneratorVideo.hpp>
+#include <AvTranscoder/essenceStream/AudioGenerator.hpp>
+#include <AvTranscoder/essenceStream/VideoGenerator.hpp>
 
 #include <AvTranscoder/ProfileLoader.hpp>
 

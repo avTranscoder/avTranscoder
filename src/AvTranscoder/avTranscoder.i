@@ -33,8 +33,8 @@
 #include <AvTranscoder/essenceStream/IDecoder.hpp>
 #include <AvTranscoder/essenceStream/AudioDecoder.hpp>
 #include <AvTranscoder/essenceStream/VideoDecoder.hpp>
-#include <AvTranscoder/essenceStream/GeneratorVideo.hpp>
-#include <AvTranscoder/essenceStream/GeneratorAudio.hpp>
+#include <AvTranscoder/essenceStream/VideoGenerator.hpp>
+#include <AvTranscoder/essenceStream/AudioGenerator.hpp>
 
 #include <AvTranscoder/transcoder/StreamTranscoder.hpp>
 #include <AvTranscoder/transcoder/Transcoder.hpp>
@@ -71,8 +71,8 @@ namespace std {
 %include <AvTranscoder/essenceStream/IDecoder.hpp>
 %include <AvTranscoder/essenceStream/AudioDecoder.hpp>
 %include <AvTranscoder/essenceStream/VideoDecoder.hpp>
-%include <AvTranscoder/essenceStream/GeneratorVideo.hpp>
-%include <AvTranscoder/essenceStream/GeneratorAudio.hpp>
+%include <AvTranscoder/essenceStream/VideoGenerator.hpp>
+%include <AvTranscoder/essenceStream/AudioGenerator.hpp>
 
 %include "AvTranscoder/file/file.i"
 
