@@ -1,7 +1,7 @@
 #include "AudioDecoder.hpp"
 
 #include <AvTranscoder/codec/ICodec.hpp>
-#include <AvTranscoder/codedStream/AvInputStream.hpp>
+#include <AvTranscoder/codedStream/InputStream.hpp>
 #include <AvTranscoder/frame/AudioFrame.hpp>
 
 extern "C" {
@@ -18,7 +18,7 @@ extern "C" {
 namespace avtranscoder
 {
 
-AudioDecoder::AudioDecoder( AvInputStream& inputStream ) 
+AudioDecoder::AudioDecoder( InputStream& inputStream ) 
 	: _inputStream   ( &inputStream )
 	, _frame         ( NULL )
 {

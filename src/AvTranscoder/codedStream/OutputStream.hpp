@@ -8,10 +8,10 @@ namespace avtranscoder
 
 class OutputFile;
 
-class AvExport AvOutputStream : public IOutputStream
+class AvExport OutputStream : public IOutputStream
 {
 public:
-	AvOutputStream( OutputFile& outputFile, const size_t streamIndex );
+	OutputStream( OutputFile& outputFile, const size_t streamIndex );
 
 	size_t getStreamIndex() const { return _streamIndex; }
 

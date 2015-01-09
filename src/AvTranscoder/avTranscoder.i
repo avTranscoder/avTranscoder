@@ -21,10 +21,10 @@
 #include <AvTranscoder/codec/DataCodec.hpp>
 
 #include <AvTranscoder/codedStream/IOutputStream.hpp>
-#include <AvTranscoder/codedStream/AvOutputStream.hpp>
+#include <AvTranscoder/codedStream/OutputStream.hpp>
 
 #include <AvTranscoder/codedStream/IInputStream.hpp>
-#include <AvTranscoder/codedStream/AvInputStream.hpp>
+#include <AvTranscoder/codedStream/InputStream.hpp>
 
 #include <AvTranscoder/transcoder/StreamTranscoder.hpp>
 #include <AvTranscoder/transcoder/Transcoder.hpp>
@@ -49,10 +49,10 @@ namespace std {
 %include <AvTranscoder/codec/DataCodec.hpp>
 
 %include <AvTranscoder/codedStream/IOutputStream.hpp>
-%include <AvTranscoder/codedStream/AvOutputStream.hpp>
+%include <AvTranscoder/codedStream/OutputStream.hpp>
 
 %include <AvTranscoder/codedStream/IInputStream.hpp>
-%include <AvTranscoder/codedStream/AvInputStream.hpp>
+%include <AvTranscoder/codedStream/InputStream.hpp>
 
 %include "AvTranscoder/decoder/decoder.i"
 %include "AvTranscoder/encoder/encoder.i"

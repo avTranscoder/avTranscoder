@@ -9,7 +9,7 @@
 #include <AvTranscoder/codec/AudioCodec.hpp>
 #include <AvTranscoder/codec/DataCodec.hpp>
 
-#include <AvTranscoder/codedStream/AvOutputStream.hpp>
+#include <AvTranscoder/codedStream/OutputStream.hpp>
 #include <AvTranscoder/ProfileLoader.hpp>
 
 #include <string>
@@ -107,7 +107,7 @@ public:
 
 private:
 	FormatContext _formatContext;
-	std::vector<AvOutputStream*> _outputStreams;  ///< Has ownership
+	std::vector<OutputStream*> _outputStreams;  ///< Has ownership
 	std::vector<size_t> _frameCount;  ///< Number of wrapped frames
 
 	std::string _filename;  ///< Output filename

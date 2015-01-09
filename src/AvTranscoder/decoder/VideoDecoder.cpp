@@ -1,7 +1,7 @@
 #include "VideoDecoder.hpp"
 
 #include <AvTranscoder/codec/ICodec.hpp>
-#include <AvTranscoder/codedStream/AvInputStream.hpp>
+#include <AvTranscoder/codedStream/InputStream.hpp>
 #include <AvTranscoder/frame/VideoFrame.hpp>
 
 extern "C" {
@@ -17,7 +17,7 @@ extern "C" {
 namespace avtranscoder
 {
 
-VideoDecoder::VideoDecoder( AvInputStream& inputStream )
+VideoDecoder::VideoDecoder( InputStream& inputStream )
 	: _inputStream   ( &inputStream )
 	, _frame         ( NULL )
 {

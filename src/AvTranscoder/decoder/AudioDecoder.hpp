@@ -8,12 +8,12 @@ struct AVFrame;
 namespace avtranscoder
 {
 
-class AvInputStream;
+class InputStream;
 
 class AvExport AudioDecoder : public IDecoder
 {
 public:
-	AudioDecoder( AvInputStream& inputStream );
+	AudioDecoder( InputStream& inputStream );
 	~AudioDecoder();
 
 	void setup();
@@ -25,7 +25,7 @@ private:
 	bool decodeNextFrame();
 
 private:
-	AvInputStream* _inputStream;  ///< Stream from which we read next frames (no ownership, has link)
+	InputStream* _inputStream;  ///< Stream from which we read next frames (no ownership, has link)
 	AVFrame* _frame;  ///< Libav object to store decoded data (has ownership)
 };
 

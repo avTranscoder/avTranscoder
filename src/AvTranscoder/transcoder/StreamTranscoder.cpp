@@ -1,7 +1,7 @@
 
 #include "StreamTranscoder.hpp"
 
-#include <AvTranscoder/codedStream/AvInputStream.hpp>
+#include <AvTranscoder/codedStream/InputStream.hpp>
 
 #include <AvTranscoder/decoder/VideoDecoder.hpp>
 #include <AvTranscoder/decoder/AudioDecoder.hpp>
@@ -93,7 +93,7 @@ StreamTranscoder::StreamTranscoder(
 	{
 		case AVMEDIA_TYPE_VIDEO :
 		{
-			_inputDecoder = new VideoDecoder( *static_cast<AvInputStream*>( _inputStream ) );
+			_inputDecoder = new VideoDecoder( *static_cast<InputStream*>( _inputStream ) );
 			_inputDecoder->setup();
 
 			VideoEncoder* outputVideo = new VideoEncoder( profile.at( constants::avProfileCodec ) );
@@ -119,7 +119,7 @@ StreamTranscoder::StreamTranscoder(
 		}
 		case AVMEDIA_TYPE_AUDIO :
 		{
-			_inputDecoder = new AudioDecoder( *static_cast<AvInputStream*>( _inputStream ) );
+			_inputDecoder = new AudioDecoder( *static_cast<InputStream*>( _inputStream ) );
 			_inputDecoder->setup();
 			
 			AudioEncoder* outputAudio = new AudioEncoder( profile.at( constants::avProfileCodec )  );
