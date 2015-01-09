@@ -26,16 +26,6 @@
 #include <AvTranscoder/codedStream/IInputStream.hpp>
 #include <AvTranscoder/codedStream/AvInputStream.hpp>
 
-#include <AvTranscoder/essenceStream/IEncoder.hpp>
-#include <AvTranscoder/essenceStream/AudioEncoder.hpp>
-#include <AvTranscoder/essenceStream/VideoEncoder.hpp>
-
-#include <AvTranscoder/essenceStream/IDecoder.hpp>
-#include <AvTranscoder/essenceStream/AudioDecoder.hpp>
-#include <AvTranscoder/essenceStream/VideoDecoder.hpp>
-#include <AvTranscoder/essenceStream/VideoGenerator.hpp>
-#include <AvTranscoder/essenceStream/AudioGenerator.hpp>
-
 #include <AvTranscoder/transcoder/StreamTranscoder.hpp>
 #include <AvTranscoder/transcoder/Transcoder.hpp>
 %}
@@ -64,16 +54,8 @@ namespace std {
 %include <AvTranscoder/codedStream/IInputStream.hpp>
 %include <AvTranscoder/codedStream/AvInputStream.hpp>
 
-%include <AvTranscoder/essenceStream/IEncoder.hpp>
-%include <AvTranscoder/essenceStream/AudioEncoder.hpp>
-%include <AvTranscoder/essenceStream/VideoEncoder.hpp>
-
-%include <AvTranscoder/essenceStream/IDecoder.hpp>
-%include <AvTranscoder/essenceStream/AudioDecoder.hpp>
-%include <AvTranscoder/essenceStream/VideoDecoder.hpp>
-%include <AvTranscoder/essenceStream/VideoGenerator.hpp>
-%include <AvTranscoder/essenceStream/AudioGenerator.hpp>
-
+%include "AvTranscoder/decoder/decoder.i"
+%include "AvTranscoder/encoder/encoder.i"
 %include "AvTranscoder/file/file.i"
 
 %include <AvTranscoder/transcoder/StreamTranscoder.hpp>

@@ -6,8 +6,8 @@
 #include <AvTranscoder/codedStream/IInputStream.hpp>
 #include <AvTranscoder/codedStream/IOutputStream.hpp>
 
-#include <AvTranscoder/essenceStream/IDecoder.hpp>
-#include <AvTranscoder/essenceStream/IEncoder.hpp>
+#include <AvTranscoder/decoder/IDecoder.hpp>
+#include <AvTranscoder/encoder/IEncoder.hpp>
 
 #include <AvTranscoder/file/OutputFile.hpp>
 

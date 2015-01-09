@@ -3,8 +3,8 @@
 #include <iomanip>
 #include <AvTranscoder/ProfileLoader.hpp>
 
-#include <AvTranscoder/essenceStream/VideoEncoder.hpp>
-#include <AvTranscoder/essenceStream/AudioEncoder.hpp>
+#include <AvTranscoder/encoder/VideoEncoder.hpp>
+#include <AvTranscoder/encoder/AudioEncoder.hpp>
 
 
 int main( int argc, char** argv )

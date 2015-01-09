@@ -7,8 +7,8 @@
 
 #include <AvTranscoder/frame/Frame.hpp>
 
-#include <AvTranscoder/essenceStream/VideoDecoder.hpp>
-#include <AvTranscoder/essenceStream/VideoEncoder.hpp>
+#include <AvTranscoder/decoder/VideoDecoder.hpp>
+#include <AvTranscoder/encoder/VideoEncoder.hpp>
 
 #include <AvTranscoder/transform/VideoTransform.hpp>
 
