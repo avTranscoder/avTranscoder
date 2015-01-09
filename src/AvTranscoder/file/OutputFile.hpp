@@ -9,7 +9,7 @@
 #include <AvTranscoder/codec/AudioCodec.hpp>
 #include <AvTranscoder/codec/DataCodec.hpp>
 
-#include <AvTranscoder/codedStream/OutputStream.hpp>
+#include <AvTranscoder/stream/OutputStream.hpp>
 #include <AvTranscoder/ProfileLoader.hpp>
 
 #include <string>

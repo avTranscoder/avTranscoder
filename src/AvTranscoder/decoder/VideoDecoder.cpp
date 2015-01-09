@@ -1,7 +1,7 @@
 #include "VideoDecoder.hpp"
 
 #include <AvTranscoder/codec/ICodec.hpp>
-#include <AvTranscoder/codedStream/InputStream.hpp>
+#include <AvTranscoder/stream/InputStream.hpp>
 #include <AvTranscoder/frame/VideoFrame.hpp>
 
 extern "C" {

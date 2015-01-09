@@ -1,7 +1,7 @@
 #include "AudioDecoder.hpp"
 
 #include <AvTranscoder/codec/ICodec.hpp>
-#include <AvTranscoder/codedStream/InputStream.hpp>
+#include <AvTranscoder/stream/InputStream.hpp>
 #include <AvTranscoder/frame/AudioFrame.hpp>
 
 extern "C" {

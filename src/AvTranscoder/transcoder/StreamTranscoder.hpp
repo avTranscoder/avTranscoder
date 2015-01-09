@@ -3,8 +3,8 @@
 
 #include <AvTranscoder/common.hpp>
 
-#include <AvTranscoder/codedStream/IInputStream.hpp>
-#include <AvTranscoder/codedStream/IOutputStream.hpp>
+#include <AvTranscoder/stream/IInputStream.hpp>
+#include <AvTranscoder/stream/IOutputStream.hpp>
 
 #include <AvTranscoder/decoder/IDecoder.hpp>
 #include <AvTranscoder/encoder/IEncoder.hpp>

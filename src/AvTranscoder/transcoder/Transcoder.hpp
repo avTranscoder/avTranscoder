@@ -4,7 +4,7 @@
 #include <AvTranscoder/common.hpp>
 #include <AvTranscoder/file/InputFile.hpp>
 #include <AvTranscoder/file/OutputFile.hpp>
-#include <AvTranscoder/codedStream/IInputStream.hpp>
+#include <AvTranscoder/stream/IInputStream.hpp>
 #include <AvTranscoder/ProfileLoader.hpp>
 
 #include "StreamTranscoder.hpp"

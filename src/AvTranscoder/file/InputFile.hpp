@@ -4,7 +4,7 @@
 #include <AvTranscoder/common.hpp>
 #include <AvTranscoder/option/FormatContext.hpp>
 #include <AvTranscoder/file/util.hpp>
-#include <AvTranscoder/codedStream/InputStream.hpp>
+#include <AvTranscoder/stream/InputStream.hpp>
 #include <AvTranscoder/mediaProperty/FileProperties.hpp>
 #include <AvTranscoder/progress/IProgress.hpp>
 #include <AvTranscoder/ProfileLoader.hpp>
