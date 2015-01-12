@@ -1,15 +1,8 @@
 #include "util.hpp"
 
-#include <AvTranscoder/option/Context.hpp>
-#include <AvTranscoder/option/Option.hpp>
-
 extern "C" {
-#ifndef __STDC_CONSTANT_MACROS
-	#define __STDC_CONSTANT_MACROS
-#endif
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
-#include <libavutil/opt.h>
 #include <libavutil/pixdesc.h>
 }
 
@@ -280,8 +273,9 @@ OptionArrayMap getOutputFormatOptions()
 			if( outputFormat->priv_class )
 			{
 				std::string outputFormatName( outputFormat->name );
-				Context formatContext( (void*)&outputFormat->priv_class );
-				optionsPerFormat.insert( std::make_pair( outputFormatName, formatContext.getOptions() ) );
+				OptionArray options;
+				loadOptions( options, (void*)&outputFormat->priv_class, 0  );
+				optionsPerFormat.insert( std::make_pair( outputFormatName, options ) );
 			}
 		}
 		outputFormat = av_oformat_next( outputFormat );
@@ -310,8 +304,9 @@ OptionArrayMap getVideoCodecOptions()
 				if( codec->priv_class )
 				{
 					std::string videoCodecName( codec->name );
-					Context codecContext( (void*)&codec->priv_class );
-					videoCodecOptions.insert( std::make_pair( videoCodecName, codecContext.getOptions() ) );
+					OptionArray options;
+					loadOptions( options, (void*)&codec->priv_class, 0  );
+					videoCodecOptions.insert( std::make_pair( videoCodecName, options ) );
 				}
 			}
 		}
@@ -341,8 +336,9 @@ OptionArrayMap getAudioCodecOptions()
 				if( codec->priv_class )
 				{
 					std::string audioCodecName( codec->name );
-					Context codecContext( (void*)&codec->priv_class );					
-					audioCodecOptions.insert( std::make_pair( audioCodecName, codecContext.getOptions() ) );
+					OptionArray options;
+					loadOptions( options, (void*)&codec->priv_class, 0  );
+					audioCodecOptions.insert( std::make_pair( audioCodecName, options ) );
 				}
 			}
 		}

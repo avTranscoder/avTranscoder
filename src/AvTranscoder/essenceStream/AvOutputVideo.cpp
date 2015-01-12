@@ -1,7 +1,5 @@
 #include "AvOutputVideo.hpp"
 
-#include <AvTranscoder/option/Context.hpp>
-
 extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
@@ -163,8 +161,6 @@ void AvOutputVideo::setProfile( const ProfileLoader::Profile& profile, const avt
 	_codec.setTimeBase( 1, frameRate );
 
 	_codec.setImageParameters( frameDesc );
-
-	Context codecContext( &_codec.getAVCodecContext(), AV_OPT_FLAG_ENCODING_PARAM | AV_OPT_FLAG_VIDEO_PARAM );
 	
 	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
 	{
@@ -177,7 +173,7 @@ void AvOutputVideo::setProfile( const ProfileLoader::Profile& profile, const avt
 
 		try
 		{
-			Option& encodeOption = codecContext.getOption( (*it).first );
+			Option& encodeOption = _codec.getCodecContext().getOption( (*it).first );
 			encodeOption.setString( (*it).second );
 		}
 		catch( std::exception& e )
@@ -197,7 +193,7 @@ void AvOutputVideo::setProfile( const ProfileLoader::Profile& profile, const avt
 
 		try
 		{
-			Option& encodeOption = codecContext.getOption( (*it).first );
+			Option& encodeOption = _codec.getCodecContext().getOption( (*it).first );
 			encodeOption.setString( (*it).second );
 		}
 		catch( std::exception& e )

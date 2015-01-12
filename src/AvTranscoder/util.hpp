@@ -3,7 +3,7 @@
 
 #include "common.hpp"
 
-#include <AvTranscoder/option/Context.hpp>
+#include <AvTranscoder/option/Option.hpp>
 
 extern "C" {
 #include <libavutil/pixfmt.h>

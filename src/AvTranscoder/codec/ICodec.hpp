@@ -2,6 +2,7 @@
 #define _AV_TRANSCODER_CODEC_ICODEC_HPP_
 
 #include <AvTranscoder/common.hpp>
+#include <AvTranscoder/option/CodecContext.hpp>
 
 #include <string>
 
@@ -30,17 +31,19 @@ public:
 	ECodecType getCodecType() const { return _type; }
 	int getLatency() const;
 
+	CodecContext& getCodecContext() const { return *_codecContext; }
+
 	void setCodec( const ECodecType type, const std::string& codecName );
 	void setCodec( const ECodecType type, const AVCodecID codecId );
 	
 #ifndef SWIG
-	AVCodec& getAVCodec() const { return *_codec; }
-	AVCodecContext& getAVCodecContext() const { return *_codecContext; }
+	AVCodec& getAVCodec() const { return *_avCodec; }
+	AVCodecContext& getAVCodecContext() const { return _codecContext->getAVCodecContext(); }
 #endif
 
 protected:
-	AVCodec*        _codec; ///< Codec abstract description
-	AVCodecContext* _codecContext; ///< Full codec instance description
+	CodecContext* _codecContext; ///< Contains the AVCodecContext, which is the full codec instance description (has ownership)
+	AVCodec* _avCodec; ///< Codec abstract description
 
 	ECodecType _type;
 };

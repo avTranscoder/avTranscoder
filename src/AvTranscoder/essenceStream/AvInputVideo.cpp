@@ -1,7 +1,6 @@
 #include "AvInputVideo.hpp"
 
 #include <AvTranscoder/codec/ICodec.hpp>
-#include <AvTranscoder/option/Context.hpp>
 #include <AvTranscoder/codedStream/AvInputStream.hpp>
 #include <AvTranscoder/frame/VideoFrame.hpp>
 
@@ -139,8 +138,6 @@ void AvInputVideo::flushDecoder()
 
 void AvInputVideo::setProfile( const ProfileLoader::Profile& profile )
 {
-	Context codecContext( &_inputStream->getVideoCodec().getAVCodecContext(), AV_OPT_FLAG_DECODING_PARAM | AV_OPT_FLAG_VIDEO_PARAM );
-
 	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
 	{
 		if( (*it).first == constants::avProfileIdentificator ||
@@ -150,7 +147,7 @@ void AvInputVideo::setProfile( const ProfileLoader::Profile& profile )
 
 		try
 		{
-			Option& decodeOption = codecContext.getOption( (*it).first );
+			Option& decodeOption = _inputStream->getVideoCodec().getCodecContext().getOption( (*it).first );
 			decodeOption.setString( (*it).second );
 		}
 		catch( std::exception& e )

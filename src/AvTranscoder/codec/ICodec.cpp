@@ -11,19 +11,16 @@ extern "C" {
 namespace avtranscoder {
 
 ICodec::ICodec( const ECodecType type, const std::string& codecName )
-	: _codec( NULL )
-	, _codecContext( NULL )
+	: _codecContext( NULL )
+	, _avCodec( NULL )
 	, _type( type )
 {
-	if( codecName.size() )
-	{
-		setCodec( type, codecName );
-	}
+	setCodec( type, codecName );
 }
 
 ICodec::ICodec( const ECodecType type, const AVCodecID codecId )
-	: _codec( NULL )
-	, _codecContext( NULL )
+	: _codecContext( NULL )
+	, _avCodec( NULL )
 	, _type( type )
 {
 	setCodec( type, codecId );
@@ -31,31 +28,25 @@ ICodec::ICodec( const ECodecType type, const AVCodecID codecId )
 
 ICodec::~ICodec()
 {
-	if( _codecContext && _codec )
-	{
-		avcodec_close( _codecContext );
-		av_free( _codecContext );
-		_codecContext = NULL;
-		_codec = NULL;
-	}
+	delete _codecContext;
 }
 
 std::string ICodec::getCodecName() const
 {
-	assert( _codecContext != NULL );
-	return avcodec_descriptor_get( _codecContext->codec_id )->name;
+	assert( _avCodec != NULL );
+	return avcodec_descriptor_get( _avCodec->id )->name;
 }
 
 AVCodecID ICodec::getCodecId() const
 {
-	assert( _codecContext != NULL );
-	return _codecContext->codec_id;
+	assert( _avCodec != NULL );
+	return _avCodec->id;
 }
 
 int ICodec::getLatency()  const
 {
 	assert( _codecContext != NULL );
-	return _codecContext->delay;
+	return _codecContext->getAVCodecContext().delay;
 }
 
 void ICodec::setCodec( const ECodecType type, const std::string& codecName )
@@ -82,18 +73,14 @@ void ICodec::setCodec( const ECodecType type, const AVCodecID codecId )
 	avcodec_register_all();
 
 	if( type == eCodecTypeEncoder )
-		_codec = avcodec_find_encoder( codecId );
-	else if( type == eCodecTypeDecoder )
-		_codec = avcodec_find_decoder( codecId );
-
-	if( _codec == NULL )
 	{
-		throw std::runtime_error( "unknown codec" );
+		_avCodec = avcodec_find_encoder( codecId );
+		_codecContext = new CodecContext( *_avCodec, AV_OPT_FLAG_ENCODING_PARAM );
 	}
-
-	if( ( _codecContext = avcodec_alloc_context3( _codec ) ) == NULL )
+	else if( type == eCodecTypeDecoder )
 	{
-		throw std::runtime_error( "unable to allocate codec context and set its fields to default values" );
+		_avCodec = avcodec_find_decoder( codecId );
+		_codecContext = new CodecContext( *_avCodec, AV_OPT_FLAG_DECODING_PARAM );
 	}
 }
 

@@ -1,7 +1,5 @@
 #include "AvOutputAudio.hpp"
 
-#include <AvTranscoder/option/Context.hpp>
-
 extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
@@ -175,8 +173,6 @@ void AvOutputAudio::setProfile( const ProfileLoader::Profile& profile, const Aud
 	
 	_codec.setCodec( eCodecTypeEncoder, profile.find( constants::avProfileCodec )->second );
 	_codec.setAudioParameters( frameDesc );
-
-	Context codecContext( &_codec.getAVCodecContext(), AV_OPT_FLAG_ENCODING_PARAM | AV_OPT_FLAG_AUDIO_PARAM );
 	
 	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
 	{
@@ -188,7 +184,7 @@ void AvOutputAudio::setProfile( const ProfileLoader::Profile& profile, const Aud
 
 		try
 		{
-			Option& encodeOption = codecContext.getOption( (*it).first );
+			Option& encodeOption = _codec.getCodecContext().getOption( (*it).first );
 			encodeOption.setString( (*it).second );
 		}
 		catch( std::exception& e )
@@ -207,7 +203,7 @@ void AvOutputAudio::setProfile( const ProfileLoader::Profile& profile, const Aud
 
 		try
 		{
-			Option& encodeOption = codecContext.getOption( (*it).first );
+			Option& encodeOption = _codec.getCodecContext().getOption( (*it).first );
 			encodeOption.setString( (*it).second );
 		}
 		catch( std::exception& e )

@@ -1,6 +1,5 @@
 #include "InputFile.hpp"
 
-#include <AvTranscoder/option/Context.hpp>
 #include <AvTranscoder/mediaProperty/util.hpp>
 #include <AvTranscoder/mediaProperty/VideoProperties.hpp>
 #include <AvTranscoder/mediaProperty/AudioProperties.hpp>
