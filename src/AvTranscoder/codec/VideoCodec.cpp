@@ -22,18 +22,17 @@ VideoCodec::VideoCodec( const ICodec& codec )
 
 VideoFrameDesc VideoCodec::getVideoFrameDesc() const
 {
-	assert( _codecContext != NULL );
-
-	VideoFrameDesc videoFrameDesc( _codecContext->getAVCodecContext().width, _codecContext->getAVCodecContext().height, _codecContext->getAVCodecContext().pix_fmt );
+	assert( _avCodecContext != NULL );
+	VideoFrameDesc videoFrameDesc( _avCodecContext->width, _avCodecContext->height, _avCodecContext->pix_fmt );
 	return videoFrameDesc;
 }
 
 std::pair< size_t, size_t > VideoCodec::getTimeBase() const
 {
-	assert( _codecContext != NULL );
+	assert( _avCodecContext != NULL );
 	std::pair< size_t, size_t > timeBase;
-	timeBase.first = _codecContext->getAVCodecContext().time_base.num;
-	timeBase.second = _codecContext->getAVCodecContext().time_base.den;
+	timeBase.first = _avCodecContext->time_base.num;
+	timeBase.second = _avCodecContext->time_base.den;
 	return timeBase;
 }
 
@@ -44,16 +43,16 @@ void VideoCodec::setImageParameters( const VideoFrameDesc& videoFrameDesc )
 
 void VideoCodec::setImageParameters( const size_t width, const size_t height, const AVPixelFormat& pixel )
 {
-	_codecContext->getAVCodecContext().width   = width;
-	_codecContext->getAVCodecContext().height  = height;
-	_codecContext->getAVCodecContext().pix_fmt = pixel;
+	_avCodecContext->width = width;
+	_avCodecContext->height = height;
+	_avCodecContext->pix_fmt = pixel;
 }
 
 void VideoCodec::setTimeBase( const size_t num, const size_t den, const size_t ticksPerFrame )
 {
-	_codecContext->getAVCodecContext().time_base.num = num;
-	_codecContext->getAVCodecContext().time_base.den = den;
-	_codecContext->getAVCodecContext().ticks_per_frame = ticksPerFrame;
+	_avCodecContext->time_base.num = num;
+	_avCodecContext->time_base.den = den;
+	_avCodecContext->ticks_per_frame = ticksPerFrame;
 }
 
 }

@@ -2,7 +2,7 @@
 #define _AV_TRANSCODER_CODEC_ICODEC_HPP_
 
 #include <AvTranscoder/common.hpp>
-#include <AvTranscoder/option/CodecContext.hpp>
+#include <AvTranscoder/option/Option.hpp>
 
 #include <string>
 
@@ -31,21 +31,32 @@ public:
 	ECodecType getCodecType() const { return _type; }
 	int getLatency() const;
 
-	CodecContext& getCodecContext() const { return *_codecContext; }
+	OptionArray getOptions();  ///< Get options as array
+	OptionMap& getOptionsMap() { return _options; }  ///< Get options as map
+
+	Option& getOption( const std::string& optionName ) { return _options.at(optionName); }
 
 	void setCodec( const ECodecType type, const std::string& codecName );
 	void setCodec( const ECodecType type, const AVCodecID codecId );
 	
 #ifndef SWIG
-	AVCodec& getAVCodec() const { return *_avCodec; }
-	AVCodecContext& getAVCodecContext() const { return _codecContext->getAVCodecContext(); }
+	AVCodecContext& getAVCodecContext() { return *_avCodecContext; }
+	const AVCodecContext& getAVCodecContext() const { return *_avCodecContext; }
+	AVCodec& getAVCodec() { return *_avCodec; }
+	const AVCodec& getAVCodec() const { return *_avCodec; }
 #endif
 
+private:
+	void allocateContext();
+	void loadCodecOptions();
+
 protected:
-	CodecContext* _codecContext; ///< Contains the AVCodecContext, which is the full codec instance description (has ownership)
+	AVCodecContext* _avCodecContext; ///< Full codec instance description (has ownership)
 	AVCodec* _avCodec; ///< Codec abstract description
 
 	ECodecType _type;
+
+	OptionMap _options;
 };
 
 }

@@ -21,15 +21,11 @@ void AvOutputAudio::setup()
 {
 	av_register_all();
 
-	AVCodecContext& avCodecContext( _codec.getAVCodecContext() );
+	AVCodecContext& avCodecContext = _codec.getAVCodecContext();
+	const AVCodec& avCodec = _codec.getAVCodec();
 
-	if( &avCodecContext == NULL )
-	{
-		throw std::runtime_error( "could not allocate audio codec context" );
-	}
-	
 	// try to open encoder with parameters.
-	int ret = avcodec_open2( &avCodecContext, &_codec.getAVCodec(), NULL );
+	int ret = avcodec_open2( &avCodecContext, &avCodec, NULL );
 	if( ret < 0 )
 	{
 		char err[AV_ERROR_MAX_STRING_SIZE];
@@ -183,7 +179,7 @@ void AvOutputAudio::setProfile( const ProfileLoader::Profile& profile, const Aud
 
 		try
 		{
-			Option& encodeOption = _codec.getCodecContext().getOption( (*it).first );
+			Option& encodeOption = _codec.getOption( (*it).first );
 			encodeOption.setString( (*it).second );
 		}
 		catch( std::exception& e )
@@ -202,7 +198,7 @@ void AvOutputAudio::setProfile( const ProfileLoader::Profile& profile, const Aud
 
 		try
 		{
-			Option& encodeOption = _codec.getCodecContext().getOption( (*it).first );
+			Option& encodeOption = _codec.getOption( (*it).first );
 			encodeOption.setString( (*it).second );
 		}
 		catch( std::exception& e )

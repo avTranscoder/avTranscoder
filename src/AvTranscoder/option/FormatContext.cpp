@@ -133,7 +133,7 @@ void FormatContext::addMetaData( const std::string& key, const std::string& valu
 	}
 }
 
-AVStream& FormatContext::addAVStream( AVCodec& avCodec )
+AVStream& FormatContext::addAVStream( const AVCodec& avCodec )
 {
 	AVStream* stream = avformat_new_stream( _avFormatContext, &avCodec );
 	if( stream == NULL )

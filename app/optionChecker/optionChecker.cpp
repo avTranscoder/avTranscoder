@@ -1,8 +1,8 @@
 #include <AvTranscoder/util.hpp>
-#include "AvTranscoder/option/FormatContext.hpp"
-#include <AvTranscoder/option/CodecContext.hpp>
+#include <AvTranscoder/option/FormatContext.hpp>
 #include <AvTranscoder/option/Option.hpp>
 #include <AvTranscoder/file/InputFile.hpp>
+#include <AvTranscoder/codec/VideoCodec.hpp>
 
 #include <string>
 #include <iostream>
@@ -73,8 +73,8 @@ void optionChecker( const std::string& inputfilename )
 	displayOptions( formatOptions );
 
 	// codec options
-	avtranscoder::CodecContext codecContext( AV_OPT_FLAG_DECODING_PARAM | AV_OPT_FLAG_AUDIO_PARAM );
-	std::vector<avtranscoder::Option> codecOptions = codecContext.getOptions();
+	avtranscoder::VideoCodec codec( avtranscoder::eCodecTypeDecoder, "mpeg2video" );
+	std::vector<avtranscoder::Option> codecOptions = codec.getOptions();
 	displayOptions( codecOptions );
 
 	// pixel formats

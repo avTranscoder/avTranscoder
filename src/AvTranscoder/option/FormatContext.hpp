@@ -54,7 +54,7 @@ public:
 	void writeTrailer();
 
 	void addMetaData( const std::string& key, const std::string& value );
-	AVStream& addAVStream( AVCodec& avCodec );
+	AVStream& addAVStream( const AVCodec& avCodec );
 
 	size_t getNbStreams() const { return _avFormatContext->nb_streams; }
 	size_t getDuration() const { return _avFormatContext->duration; }
