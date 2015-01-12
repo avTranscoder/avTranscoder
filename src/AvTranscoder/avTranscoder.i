@@ -33,5 +33,6 @@ namespace std {
 %include "AvTranscoder/stream/stream.i"
 %include "AvTranscoder/decoder/decoder.i"
 %include "AvTranscoder/encoder/encoder.i"
+%include "AvTranscoder/transform/transform.i"
 %include "AvTranscoder/file/file.i"
 %include "AvTranscoder/transcoder/transcoder.i"
