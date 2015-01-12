@@ -14,9 +14,6 @@
 
 %{
 #include <AvTranscoder/ProfileLoader.hpp>
-
-#include <AvTranscoder/transcoder/StreamTranscoder.hpp>
-#include <AvTranscoder/transcoder/Transcoder.hpp>
 %}
 
 namespace std {
@@ -37,6 +34,4 @@ namespace std {
 %include "AvTranscoder/decoder/decoder.i"
 %include "AvTranscoder/encoder/encoder.i"
 %include "AvTranscoder/file/file.i"
-
-%include <AvTranscoder/transcoder/StreamTranscoder.hpp>
-%include <AvTranscoder/transcoder/Transcoder.hpp>
+%include "AvTranscoder/transcoder/transcoder.i"
