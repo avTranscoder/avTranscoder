@@ -10,6 +10,9 @@ Based on Libav/FFmpeg libraries to support various video and audio formats, avTr
 * multiplateform (Linux, MAC, Windows)
 * your call to be based on Libav, FFmpeg, or your custom fork of one of these librairies
 
+#### License
+See [**COPYING.md**](COPYING.md)
+
 #### How to use
 Check out applications contained in the project to see examples of how to use the library in C++, Java or Python.
 
