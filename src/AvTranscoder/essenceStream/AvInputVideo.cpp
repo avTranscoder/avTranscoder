@@ -21,7 +21,6 @@ AvInputVideo::AvInputVideo( AvInputStream& inputStream )
 	: IInputEssence()
 	, _inputStream   ( &inputStream )
 	, _frame         ( NULL )
-	, _verbose( false )
 {
 }
 
@@ -152,8 +151,7 @@ void AvInputVideo::setProfile( const ProfileLoader::Profile& profile )
 		}
 		catch( std::exception& e )
 		{
-			if( _verbose )
-				std::cout << "[InputVideo] warning - can't set option " << (*it).first << " to " << (*it).second << ": " << e.what() << std::endl;
+			std::cout << "[InputVideo] warning - can't set option " << (*it).first << " to " << (*it).second << ": " << e.what() << std::endl;
 		}
 	}
 }
