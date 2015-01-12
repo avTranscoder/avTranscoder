@@ -93,12 +93,6 @@ void ICodec::setCodec( const ECodecType type, const AVCodecID codecId )
 	{
 		throw std::runtime_error( "unable to allocate codec context and set its fields to default values" );
 	}
-
-	// Set default codec parameters
-	if( avcodec_get_context_defaults3( _codecContext, _codec ) != 0 )
-	{
-		throw std::runtime_error( "unable to find codec default values" );
-	}
 }
 
 }
