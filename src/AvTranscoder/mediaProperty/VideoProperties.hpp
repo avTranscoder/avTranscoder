@@ -62,6 +62,7 @@ public:
 	double getDuration() const;  ///< in seconds
 
 	bool hasBFrames() const;
+	//bool isClosedGop() const;
 
 	//@{
 	// Warning: Can acces these data when analyse first gop
@@ -80,7 +81,7 @@ public:
 	const PixelProperties& getPixelProperties() const { return _pixelProperties; }
 #endif
 
-	PropertiesMap getPropertiesAsMap() const;  ///< Return all video properties as a map (name of property: value)
+	PropertiesMap getPropertiesAsMap() const;  ///< Return all video and pixel properties as a map (name of property: value)
 
 private:
 	/**

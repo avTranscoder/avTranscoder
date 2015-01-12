@@ -158,7 +158,7 @@ void InputFile::seekAtFrame( const size_t frame )
 
 void InputFile::activateStream( const size_t streamIndex, bool activate )
 {
-	_inputStreams.at( streamIndex )->activate( activate );
+	getStream( streamIndex ).activate( activate );
 }
 
 AvInputStream& InputFile::getStream( size_t index )
