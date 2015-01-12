@@ -13,6 +13,7 @@ namespace avtranscoder {
 ICodec::ICodec( const ECodecType type, const std::string& codecName )
 	: _codec( NULL )
 	, _codecContext( NULL )
+	, _type( type )
 {
 	if( codecName.size() )
 	{
@@ -23,6 +24,7 @@ ICodec::ICodec( const ECodecType type, const std::string& codecName )
 ICodec::ICodec( const ECodecType type, const AVCodecID codecId )
 	: _codec( NULL )
 	, _codecContext( NULL )
+	, _type( type )
 {
 	setCodec( type, codecId );
 }

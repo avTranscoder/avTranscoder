@@ -24,11 +24,11 @@ public:
 	ICodec( const ECodecType type, const AVCodecID codecId );
 
 	virtual ~ICodec() = 0;
-	
-	std::string getCodecName()  const;
-	AVCodecID   getCodecId()  const;
-	
-	int getLatency()  const;
+
+	std::string getCodecName() const;
+	AVCodecID getCodecId() const;
+	ECodecType getCodecType() const { return _type; }
+	int getLatency() const;
 
 	void setCodec( const ECodecType type, const std::string& codecName );
 	void setCodec( const ECodecType type, const AVCodecID codecId );
@@ -41,6 +41,8 @@ public:
 protected:
 	AVCodec*        _codec; ///< Codec abstract description
 	AVCodecContext* _codecContext; ///< Full codec instance description
+
+	ECodecType _type;
 };
 
 }
