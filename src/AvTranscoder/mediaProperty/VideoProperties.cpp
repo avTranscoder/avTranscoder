@@ -48,9 +48,6 @@ VideoProperties::VideoProperties( const AVFormatContext* formatContext, const si
 	if( _codecContext )
 		_pixelProperties = PixelProperties( _codecContext->pix_fmt );
 
-	// Skip decoding for selected frames
-	_codecContext->skip_frame = AVDISCARD_NONE;
-
 	if( level == eAnalyseLevelFirstGop )
 		analyseGopStructure( progress );
 }
@@ -493,15 +490,24 @@ bool VideoProperties::hasBFrames() const
 	return (bool) _codecContext->has_b_frames;
 }
 
+// CODEC_FLAG_CLOSED_GOP is superior of INT_MAX, and _codecContext->flags is an int
+// => Need a patch from FFmpeg
+//bool VideoProperties::isClosedGop() const
+//{
+//	if( ! _codecContext )
+//		throw std::runtime_error( "unknown codec context" );
+//	return ( _codecContext->flags & CODEC_FLAG_CLOSED_GOP ) == CODEC_FLAG_CLOSED_GOP;
+//}
+
 void VideoProperties::analyseGopStructure( IProgress& progress )
 {
 	if( _formatContext && _codecContext && _codec )
 	{
-		if( _codec->capabilities & CODEC_CAP_TRUNCATED )
-			_codecContext->flags|= CODEC_FLAG_TRUNCATED;
-
 		if( _codecContext->width && _codecContext->height )
 		{
+			// Discard no frame type when decode
+			_codecContext->skip_frame = AVDISCARD_NONE;
+
 			AVPacket pkt;
 
 #if LIBAVCODEC_VERSION_MAJOR > 54
@@ -595,9 +601,10 @@ PropertiesMap VideoProperties::getPropertiesAsMap() const
 	for( size_t frameIndex = 0; frameIndex < _gopStructure.size(); ++frameIndex )
 	{
 		gop += _gopStructure.at( frameIndex ).first;
-		gop += ( _gopStructure.at( frameIndex ).second ? "*" : " " );
+		gop += " ";
 	}
 	detail::add( dataMap, "gop", gop );
+	//detail::add( dataMap, "isClosedGop", isClosedGop() );
 
 	detail::add( dataMap, "hasBFrames", hasBFrames() );
 	detail::add( dataMap, "referencesFrames", getReferencesFrames() );
