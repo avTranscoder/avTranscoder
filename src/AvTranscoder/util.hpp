@@ -2,8 +2,7 @@
 #define	_AV_TRANSCODER_UTIL_HPP
 
 #include "common.hpp"
-
-#include <AvTranscoder/option/Option.hpp>
+#include "Option.hpp"
 
 extern "C" {
 #include <libavutil/pixfmt.h>

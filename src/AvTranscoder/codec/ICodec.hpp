@@ -2,7 +2,7 @@
 #define _AV_TRANSCODER_CODEC_ICODEC_HPP_
 
 #include <AvTranscoder/common.hpp>
-#include <AvTranscoder/option/Option.hpp>
+#include <AvTranscoder/Option.hpp>
 
 #include <string>
 

@@ -1,6 +1,6 @@
 #include <AvTranscoder/util.hpp>
-#include <AvTranscoder/option/FormatContext.hpp>
-#include <AvTranscoder/option/Option.hpp>
+#include <AvTranscoder/Option.hpp>
+#include <AvTranscoder/file/FormatContext.hpp>
 #include <AvTranscoder/file/InputFile.hpp>
 #include <AvTranscoder/codec/VideoCodec.hpp>
 

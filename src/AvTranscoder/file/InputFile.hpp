@@ -2,8 +2,8 @@
 #define _AV_TRANSCODER_FILE_INPUT_FILE_HPP_
 
 #include <AvTranscoder/common.hpp>
-#include <AvTranscoder/option/FormatContext.hpp>
 #include <AvTranscoder/file/util.hpp>
+#include <AvTranscoder/file/FormatContext.hpp>
 #include <AvTranscoder/stream/InputStream.hpp>
 #include <AvTranscoder/mediaProperty/FileProperties.hpp>
 #include <AvTranscoder/progress/IProgress.hpp>
