@@ -15,11 +15,6 @@
 %{
 #include <AvTranscoder/ProfileLoader.hpp>
 
-#include <AvTranscoder/codec/ICodec.hpp>
-#include <AvTranscoder/codec/VideoCodec.hpp>
-#include <AvTranscoder/codec/AudioCodec.hpp>
-#include <AvTranscoder/codec/DataCodec.hpp>
-
 #include <AvTranscoder/transcoder/StreamTranscoder.hpp>
 #include <AvTranscoder/transcoder/Transcoder.hpp>
 %}
@@ -37,11 +32,7 @@ namespace std {
 
 %include <AvTranscoder/ProfileLoader.hpp>
 
-%include <AvTranscoder/codec/ICodec.hpp>
-%include <AvTranscoder/codec/VideoCodec.hpp>
-%include <AvTranscoder/codec/AudioCodec.hpp>
-%include <AvTranscoder/codec/DataCodec.hpp>
-
+%include "AvTranscoder/codec/codec.i"
 %include "AvTranscoder/stream/stream.i"
 %include "AvTranscoder/decoder/decoder.i"
 %include "AvTranscoder/encoder/encoder.i"
