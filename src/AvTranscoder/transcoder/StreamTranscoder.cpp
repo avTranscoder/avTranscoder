@@ -343,9 +343,9 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 
 	bool decodingStatus = false;
 	if( subStreamIndex == -1 )
-		decodingStatus = _currentEssence->readNextFrame( *_sourceBuffer );
+		decodingStatus = _currentEssence->decodeNextFrame( *_sourceBuffer );
 	else
-		decodingStatus = _currentEssence->readNextFrame( *_sourceBuffer, subStreamIndex );
+		decodingStatus = _currentEssence->decodeNextFrame( *_sourceBuffer, subStreamIndex );
 
 	if( decodingStatus )
 	{

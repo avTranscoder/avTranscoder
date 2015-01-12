@@ -12,13 +12,13 @@ extern "C" {
 namespace avtranscoder
 {
 
-DataProperties::DataProperties( const AVFormatContext* formatContext, const size_t index )
-	: _formatContext( formatContext )
+DataProperties::DataProperties( const FormatContext& formatContext, const size_t index )
+	: _formatContext( &formatContext.getAVFormatContext() )
 	, _streamId( index )
 {
 	//detectAncillaryData( _formatContext, _streamId );
 
-	if( formatContext )
+	if( _formatContext )
 		detail::fillMetadataDictionnary( _formatContext->streams[index]->metadata, _metadatas );
 }
 

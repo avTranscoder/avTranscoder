@@ -17,12 +17,12 @@ void GeneratorVideo::setVideoFrameDesc( const VideoFrameDesc& frameDesc )
 	_frameDesc = frameDesc;
 }
 
-void GeneratorVideo::setFrame( Frame& inputFrame )
+void GeneratorVideo::setNextFrame( Frame& inputFrame )
 {
 	_inputFrame = &inputFrame;
 }
 
-bool GeneratorVideo::readNextFrame( Frame& frameBuffer )
+bool GeneratorVideo::decodeNextFrame( Frame& frameBuffer )
 {
 	// Generate black image
 	if( ! _inputFrame )
@@ -48,7 +48,7 @@ bool GeneratorVideo::readNextFrame( Frame& frameBuffer )
 	return true;
 }
 
-bool GeneratorVideo::readNextFrame( Frame& frameBuffer, const size_t subStreamIndex )
+bool GeneratorVideo::decodeNextFrame( Frame& frameBuffer, const size_t subStreamIndex )
 {
 	return false;
 }

@@ -22,7 +22,7 @@ public:
 	 * @param frameBuffer: the frame decoded
 	 * @return status of decoding
 	 */
-	virtual bool readNextFrame( Frame& frameBuffer ) = 0;
+	virtual bool decodeNextFrame( Frame& frameBuffer ) = 0;
 
 	/**
 	 * @brief Decode substream of next frame
@@ -30,14 +30,14 @@ public:
 	 * @param subStreamIndex: index of substream to extract
 	 * @return status of decoding
 	 */
-	virtual bool readNextFrame( Frame& frameBuffer, const size_t subStreamIndex ) = 0;
+	virtual bool decodeNextFrame( Frame& frameBuffer, const size_t subStreamIndex ) = 0;
 
 	/**
 	 * Set the next frame of the input stream
 	 * @note Not yet implemented for AvInputVideo and AvInputAudio
 	 * @param inputFrame: the new next frame
 	 */
-	virtual void setFrame( Frame& inputFrame ) {}
+	virtual void setNextFrame( Frame& inputFrame ) {}
 };
 
 }

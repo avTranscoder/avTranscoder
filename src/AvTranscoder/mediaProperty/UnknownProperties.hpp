@@ -3,10 +3,7 @@
 
 #include <AvTranscoder/common.hpp>
 #include <AvTranscoder/mediaProperty/util.hpp>
-
-extern "C" {
-#include <libavformat/avformat.h>
-}
+#include <AvTranscoder/option/FormatContext.hpp>
 
 namespace avtranscoder
 {
@@ -14,7 +11,7 @@ namespace avtranscoder
 class AvExport UnknownProperties
 {
 public:
-	UnknownProperties( const AVFormatContext* formatContext, const size_t index );
+	UnknownProperties( const FormatContext& formatContext, const size_t index );
 
 	size_t getStreamId() const { return _streamId; }
 	PropertiesMap& getMetadatas() { return _metadatas; }

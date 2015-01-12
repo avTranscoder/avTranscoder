@@ -21,7 +21,7 @@ void GeneratorAudio::setFrame( Frame& inputFrame )
 	_inputFrame = &inputFrame;
 }
 
-bool GeneratorAudio::readNextFrame( Frame& frameBuffer )
+bool GeneratorAudio::decodeNextFrame( Frame& frameBuffer )
 {
 	if( ! _inputFrame )
 	{
@@ -45,7 +45,7 @@ bool GeneratorAudio::readNextFrame( Frame& frameBuffer )
 	return true;
 }
 
-bool GeneratorAudio::readNextFrame( Frame& frameBuffer, const size_t subStreamIndex )
+bool GeneratorAudio::decodeNextFrame( Frame& frameBuffer, const size_t subStreamIndex )
 {
 	return false;
 }

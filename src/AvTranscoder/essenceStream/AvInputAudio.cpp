@@ -1,5 +1,9 @@
 #include "AvInputAudio.hpp"
 
+#include <AvTranscoder/codec/ICodec.hpp>
+#include <AvTranscoder/codedStream/AvInputStream.hpp>
+#include <AvTranscoder/frame/AudioFrame.hpp>
+
 extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
@@ -7,9 +11,6 @@ extern "C" {
 #include <libavutil/pixdesc.h>
 #include <libavutil/channel_layout.h>
 }
-
-#include <AvTranscoder/codedStream/AvInputStream.hpp>
-#include <AvTranscoder/frame/AudioFrame.hpp>
 
 #include <iostream>
 #include <stdexcept>
@@ -20,7 +21,6 @@ namespace avtranscoder
 AvInputAudio::AvInputAudio( AvInputStream& inputStream ) 
 	: IInputEssence()
 	, _inputStream   ( &inputStream )
-	, _codec( &inputStream.getAudioCodec() )
 	, _frame         ( NULL )
 {
 }
@@ -45,8 +45,8 @@ AvInputAudio::~AvInputAudio()
 
 void AvInputAudio::setup()
 {
-	AVCodecContext* avCodecContext = _codec->getAVCodecContext();
-	AVCodec* avCodec = _codec->getAVCodec();
+	AVCodecContext* avCodecContext = _inputStream->getAudioCodec().getAVCodecContext();
+	AVCodec* avCodec = _inputStream->getAudioCodec().getAVCodec();
 
 	avCodecContext->channels = _inputStream->getAudioCodec().getAudioFrameDesc().getChannels();
 	
@@ -79,12 +79,12 @@ void AvInputAudio::setup()
 	}
 }
 
-bool AvInputAudio::readNextFrame( Frame& frameBuffer )
+bool AvInputAudio::decodeNextFrame( Frame& frameBuffer )
 {
 	if( ! decodeNextFrame() )
 		return false;
 
-	AVCodecContext* avCodecContext = _codec->getAVCodecContext();
+	AVCodecContext* avCodecContext = _inputStream->getAudioCodec().getAVCodecContext();
 
 	size_t decodedSize = av_samples_get_buffer_size( NULL, avCodecContext->channels, _frame->nb_samples, avCodecContext->sample_fmt, 1 );
 	
@@ -107,16 +107,16 @@ bool AvInputAudio::readNextFrame( Frame& frameBuffer )
 	return true;
 }
 
-bool AvInputAudio::readNextFrame( Frame& frameBuffer, const size_t subStreamIndex )
+bool AvInputAudio::decodeNextFrame( Frame& frameBuffer, const size_t subStreamIndex )
 {
 	if( ! decodeNextFrame() )
 		return false;
 
 	const int output_nbChannels = 1;
 	const int output_align = 1;
-	size_t decodedSize = av_samples_get_buffer_size(NULL, output_nbChannels, _frame->nb_samples, _codec->getAVCodecContext()->sample_fmt, output_align);
+	size_t decodedSize = av_samples_get_buffer_size(NULL, output_nbChannels, _frame->nb_samples, _inputStream->getAudioCodec().getAVCodecContext()->sample_fmt, output_align);
 	
-	size_t nbSubStreams = _codec->getAVCodecContext()->channels;
+	size_t nbSubStreams = _inputStream->getAudioCodec().getAVCodecContext()->channels;
 	size_t bytePerSample = av_get_bytes_per_sample( (AVSampleFormat)_frame->format );
 
 	if( subStreamIndex > nbSubStreams - 1 )
@@ -165,7 +165,7 @@ bool AvInputAudio::decodeNextFrame()
 		packet.data = nextPacketRead ? data.getPtr(): NULL;
 		packet.size = data.getSize();
 		
-		int ret = avcodec_decode_audio4( _codec->getAVCodecContext(), _frame, &got_frame, &packet );
+		int ret = avcodec_decode_audio4( _inputStream->getAudioCodec().getAVCodecContext(), _frame, &got_frame, &packet );
 		av_free_packet( &packet );
 
 		if( ! nextPacketRead && ret == 0 && got_frame == 0 ) // error or end of file

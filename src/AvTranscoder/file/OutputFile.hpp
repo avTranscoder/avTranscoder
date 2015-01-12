@@ -2,25 +2,18 @@
 #define _AV_TRANSCODER_FILE_OUTPUT_FILE_HPP_
 
 #include <AvTranscoder/common.hpp>
-
 #include <AvTranscoder/mediaProperty/util.hpp>
+#include <AvTranscoder/option/FormatContext.hpp>
 
 #include <AvTranscoder/codec/VideoCodec.hpp>
 #include <AvTranscoder/codec/AudioCodec.hpp>
 #include <AvTranscoder/codec/DataCodec.hpp>
 
 #include <AvTranscoder/codedStream/AvOutputStream.hpp>
-
 #include <AvTranscoder/ProfileLoader.hpp>
 
 #include <string>
 #include <vector>
-
-struct AVOutputFormat;
-struct AVFormatContext;
-struct AVCodec;
-struct AVCodecContext;
-struct AVStream;
 
 namespace avtranscoder
 {
@@ -113,21 +106,13 @@ public:
 	virtual double getProgressDuration();
 
 private:
-	std::vector<AvOutputStream*> _outputStreams;
-	AVOutputFormat*  _outputFormat;
-	AVFormatContext* _formatContext;
+	FormatContext _formatContext;
+	std::vector<AvOutputStream*> _outputStreams;  ///< Has ownership
+	std::vector<size_t> _frameCount;  ///< Number of wrapped frames
 
-	AVStream*        _stream;
-
-	std::vector<size_t> _frameCount;
-
-	std::string      _filename;
-
-	size_t           _packetCount;
-	
-	double           _previousProcessedStreamDuration;
-
-	bool             _verbose;
+	std::string _filename;  ///< Output filename
+	double _previousProcessedStreamDuration;  ///< To manage process streams order
+	bool _verbose;
 };
 
 }

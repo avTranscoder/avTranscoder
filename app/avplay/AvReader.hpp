@@ -70,7 +70,7 @@ public:
 	const char* readNextFrame()
 	{
 		++_currentFrame;
-		_inputVideo->readNextFrame( *_sourceImage );
+		_inputVideo->decodeNextFrame( *_sourceImage );
 		_videoTransform.convert( *_sourceImage, *_imageToDisplay );
 		return (const char*)_imageToDisplay->getPtr();
 	}

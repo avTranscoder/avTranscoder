@@ -3,11 +3,11 @@
 namespace avtranscoder
 {
 
-UnknownProperties::UnknownProperties( const AVFormatContext* formatContext, const size_t index )
-	: _formatContext( formatContext )
+UnknownProperties::UnknownProperties( const FormatContext& formatContext, const size_t index )
+	: _formatContext( &formatContext.getAVFormatContext() )
 	, _streamId( index )
 {
-	if( formatContext )
+	if( _formatContext )
 		detail::fillMetadataDictionnary( _formatContext->streams[index]->metadata, _metadatas );
 }
 

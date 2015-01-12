@@ -21,7 +21,7 @@ AvInputStream::AvInputStream( InputFile& inputFile, const size_t streamIndex )
 	, _streamIndex( streamIndex )
 	, _isActivated( false )
 {
-	AVCodecContext* context = _inputFile->getFormatContext().streams[_streamIndex]->codec;
+	AVCodecContext* context = _inputFile->getFormatContext().getAVStream( _streamIndex ).codec;
 
 	switch( context->codec_type )
 	{
@@ -89,6 +89,52 @@ bool AvInputStream::readNextPacket( CodedData& data )
 	return true;
 }
 
+VideoCodec& AvInputStream::getVideoCodec()
+{
+	assert( _streamIndex <= _inputFile->getFormatContext().getNbStreams() );
+
+	if( getStreamType() != AVMEDIA_TYPE_VIDEO )
+	{
+		throw std::runtime_error( "unable to get video descriptor on non-video stream" );
+	}
+
+	return *static_cast<VideoCodec*>( _codec );;
+}
+
+AudioCodec& AvInputStream::getAudioCodec()
+{
+	assert( _streamIndex <= _inputFile->getFormatContext().getNbStreams() );
+
+	if( getStreamType() != AVMEDIA_TYPE_AUDIO )
+	{
+		throw std::runtime_error( "unable to get audio descriptor on non-audio stream" );
+	}
+
+	return *static_cast<AudioCodec*>( _codec );;
+}
+
+DataCodec& AvInputStream::getDataCodec()
+{
+	assert( _streamIndex <= _inputFile->getFormatContext().getNbStreams() );
+
+	if( getStreamType() != AVMEDIA_TYPE_DATA )
+	{
+		throw std::runtime_error( "unable to get data descriptor on non-data stream" );
+	}
+
+	return *static_cast<DataCodec*>( _codec );;
+}
+
+AVMediaType AvInputStream::getStreamType() const
+{
+	return _inputFile->getFormatContext().getAVStream( _streamIndex ).codec->codec_type;
+}
+
+double AvInputStream::getDuration() const
+{
+	return 1.0 * _inputFile->getFormatContext().getDuration() / AV_TIME_BASE;
+}
+
 void AvInputStream::addPacket( AVPacket& packet )
 {
 	// Do not cache data if the stream is declared as unused in process
@@ -100,60 +146,9 @@ void AvInputStream::addPacket( AVPacket& packet )
 	_streamCache.back().copyData( packet.data, packet.size );
 }
 
-VideoCodec& AvInputStream::getVideoCodec()
-{
-	assert( _streamIndex <= _inputFile->getFormatContext().nb_streams );
-
-	if( getAVStream()->codec->codec_type != AVMEDIA_TYPE_VIDEO )
-	{
-		throw std::runtime_error( "unable to get video descriptor on non-video stream" );
-	}
-
-	return *static_cast<VideoCodec*>( _codec );;
-}
-
-AudioCodec& AvInputStream::getAudioCodec()
-{
-	assert( _streamIndex <= _inputFile->getFormatContext().nb_streams );
-
-	if( getAVStream()->codec->codec_type != AVMEDIA_TYPE_AUDIO )
-	{
-		throw std::runtime_error( "unable to get audio descriptor on non-audio stream" );
-	}
-
-	return *static_cast<AudioCodec*>( _codec );;
-}
-
-DataCodec& AvInputStream::getDataCodec()
-{
-	assert( _streamIndex <= _inputFile->getFormatContext().nb_streams );
-
-	if( getAVStream()->codec->codec_type != AVMEDIA_TYPE_DATA )
-	{
-		throw std::runtime_error( "unable to get data descriptor on non-data stream" );
-	}
-
-	return *static_cast<DataCodec*>( _codec );;
-}
-
-AVMediaType AvInputStream::getStreamType() const
-{
-	return _inputFile->getStreamType( _streamIndex );
-}
-
-double AvInputStream::getDuration() const
-{
-	return 1.0 * _inputFile->getFormatContext().duration / AV_TIME_BASE;
-}
-
 void AvInputStream::clearBuffering()
 {
 	_streamCache = std::queue<CodedData>();
-}
-
-AVStream* AvInputStream::getAVStream() const
-{
-	return _inputFile->getFormatContext().streams[_streamIndex];
 }
 
 }

@@ -1,5 +1,5 @@
 #include <AvTranscoder/util.hpp>
-#include <AvTranscoder/option/Context.hpp>
+#include "AvTranscoder/option/FormatContext.hpp"
 #include <AvTranscoder/option/CodecContext.hpp>
 #include <AvTranscoder/option/Option.hpp>
 #include <AvTranscoder/file/InputFile.hpp>
@@ -68,7 +68,7 @@ void optionChecker( const std::string& inputfilename )
 	avtranscoder::InputFile file( inputfilename );
 
 	// format options
-	avtranscoder::Context formatContext( &file.getFormatContext() );
+	avtranscoder::FormatContext formatContext;
 	std::vector<avtranscoder::Option> formatOptions = formatContext.getOptions();
 	displayOptions( formatOptions );
 

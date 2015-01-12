@@ -16,32 +16,29 @@ class AvExport AvInputStream : public IInputStream
 {
 public:
 	AvInputStream( InputFile& inputFile, const size_t streamIndex );
-	AvInputStream( const AvInputStream& inputStream );
-
+	AvInputStream( const AvInputStream& inputStream );  ///< Does not copy _streamCache
 	~AvInputStream( );
-
-	size_t getStreamIndex() const { return _streamIndex; }
 
 	bool readNextPacket( CodedData& data );
 
-	// Stream properties
+	size_t getStreamIndex() const { return _streamIndex; }
+	double getDuration() const;
+	AVMediaType getStreamType() const;
+
 	VideoCodec& getVideoCodec();
 	AudioCodec& getAudioCodec();
 	DataCodec& getDataCodec();
 
-	AVMediaType getStreamType() const;
-
-	double getDuration() const;
-
-	void addPacket( AVPacket& packet );
-
+	//@{
+	/**
+	 * @brief Functions about buffering
+	 * @see IInputStream methods
+	 */
 	void activate( const bool activate = true ){ _isActivated = activate; };
 	bool isActivated() const { return _isActivated; };
-
+	void addPacket( AVPacket& packet );
 	void clearBuffering();
-
-private:
-	AVStream* getAVStream() const;
+	//@}
 
 private:
 	InputFile* _inputFile;  ///< Has link (no ownership)

@@ -16,8 +16,7 @@ public:
 	void setup();
 
 	bool encodeFrame( const Frame& sourceFrame, Frame& codedFrame );
-	bool encodeFrame( Frame& codedFrame );  ///< Encode delayed encoded frames
-
+	bool encodeFrame( Frame& codedFrame );
 	
 	ICodec& getCodec() { return _codec; }
 	VideoCodec& getVideoCodec() { return _codec; }

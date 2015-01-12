@@ -3,11 +3,11 @@
 namespace avtranscoder
 {
 
-AttachementProperties::AttachementProperties( const AVFormatContext* formatContext, const size_t index )
-	: _formatContext( formatContext )
+AttachementProperties::AttachementProperties( const FormatContext& formatContext, const size_t index )
+	: _formatContext( &formatContext.getAVFormatContext() )
 	, _streamId( index )
 {
-	if( formatContext )
+	if( _formatContext )
 		detail::fillMetadataDictionnary( _formatContext->streams[index]->metadata, _metadatas );
 }
 
