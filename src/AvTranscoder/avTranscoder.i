@@ -21,7 +21,6 @@ namespace std {
 %template(IntPair)         pair< size_t, size_t >;
 %template(ProfileMap)      map< string, string >;
 %template(ProfilesVector)  vector< map< string, string > >;
-%template(DataBuffer)      std::vector< unsigned char >;
 }
 
 %include "AvTranscoder/progress/progress.i"
