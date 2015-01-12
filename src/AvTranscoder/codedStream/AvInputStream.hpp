@@ -32,6 +32,7 @@ public:
 	//@{
 	/**
 	 * @brief Functions about buffering
+	 * @see IInputStream methods
 	 */
 	void activate( const bool activate = true ){ _isActivated = activate; };
 	bool isActivated() const { return _isActivated; };
