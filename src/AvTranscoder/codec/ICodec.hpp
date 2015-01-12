@@ -35,9 +35,6 @@ public:
 	OptionMap& getOptionsMap() { return _options; }  ///< Get options as map
 
 	Option& getOption( const std::string& optionName ) { return _options.at(optionName); }
-
-	void setCodec( const ECodecType type, const std::string& codecName );
-	void setCodec( const ECodecType type, const AVCodecID codecId );
 	
 #ifndef SWIG
 	AVCodecContext& getAVCodecContext() { return *_avCodecContext; }
@@ -47,6 +44,8 @@ public:
 #endif
 
 private:
+	void setCodec( const ECodecType type, const std::string& codecName );
+	void setCodec( const ECodecType type, const AVCodecID codecId );
 	void allocateContext();
 	void loadCodecOptions();
 

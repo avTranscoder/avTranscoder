@@ -166,7 +166,6 @@ void AvOutputAudio::setProfile( const ProfileLoader::Profile& profile, const Aud
 		throw std::runtime_error( "The profile " + profile.find( constants::avProfileIdentificatorHuman )->second + " is invalid." );
 	}
 	
-	_codec.setCodec( eCodecTypeEncoder, profile.find( constants::avProfileCodec )->second );
 	_codec.setAudioParameters( frameDesc );
 	
 	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
