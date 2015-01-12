@@ -38,11 +38,6 @@ public:
 	AVCodecContext& getAVCodecContext() const { return *_codecContext; }
 #endif
 
-private:
-	void initCodecContext( );
-
-	void checkError( int error );
-
 protected:
 	AVCodec*        _codec; ///< Codec abstract description
 	AVCodecContext* _codecContext; ///< Full codec instance description

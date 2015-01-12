@@ -58,12 +58,15 @@ int ICodec::getLatency()  const
 
 void ICodec::setCodec( const ECodecType type, const std::string& codecName )
 {
-	avcodec_register_all();
-	if( type == eCodecTypeEncoder )
-		_codec = avcodec_find_encoder_by_name( codecName.c_str() );
-	else if( type == eCodecTypeDecoder )
-		_codec = avcodec_find_decoder_by_name( codecName.c_str() );
-	initCodecContext();
+	const AVCodecDescriptor* avCodecDescriptor = avcodec_descriptor_get_by_name( codecName.c_str() );
+	if( ! avCodecDescriptor )
+	{
+		std::string msg( "unable to find codec " );
+		msg += codecName;
+		throw std::runtime_error( msg );
+	}
+
+	setCodec( type, avCodecDescriptor->id );
 }
 
 void ICodec::setCodec( const ECodecType type, const AVCodecID codecId )
@@ -73,16 +76,14 @@ void ICodec::setCodec( const ECodecType type, const AVCodecID codecId )
 		std::cout << "Warning: Unsupported codec with id 0" << std::endl;
 		return;
 	}
+
 	avcodec_register_all();
+
 	if( type == eCodecTypeEncoder )
 		_codec = avcodec_find_encoder( codecId );
 	else if( type == eCodecTypeDecoder )
 		_codec = avcodec_find_decoder( codecId );
-	initCodecContext();
-}
 
-void ICodec::initCodecContext( )
-{
 	if( _codec == NULL )
 	{
 		throw std::runtime_error( "unknown codec" );
