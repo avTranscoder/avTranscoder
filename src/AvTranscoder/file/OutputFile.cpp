@@ -24,14 +24,14 @@ bool OutputFile::setup()
 
 IOutputStream& OutputFile::addVideoStream( const VideoCodec& videoDesc )
 {
-	AVStream& stream = _formatContext.addAVStream( *videoDesc.getAVCodec() );
+	AVStream& stream = _formatContext.addAVStream( videoDesc.getAVCodec() );
 
-	stream.codec->width  = videoDesc.getAVCodecContext()->width;
-	stream.codec->height = videoDesc.getAVCodecContext()->height;
-	stream.codec->bit_rate = videoDesc.getAVCodecContext()->bit_rate;
-	stream.codec->pix_fmt = videoDesc.getAVCodecContext()->pix_fmt;
-	stream.codec->profile = videoDesc.getAVCodecContext()->profile;
-	stream.codec->level = videoDesc.getAVCodecContext()->level;
+	stream.codec->width  = videoDesc.getAVCodecContext().width;
+	stream.codec->height = videoDesc.getAVCodecContext().height;
+	stream.codec->bit_rate = videoDesc.getAVCodecContext().bit_rate;
+	stream.codec->pix_fmt = videoDesc.getAVCodecContext().pix_fmt;
+	stream.codec->profile = videoDesc.getAVCodecContext().profile;
+	stream.codec->level = videoDesc.getAVCodecContext().level;
 
 	// need to set the time_base on the AVCodecContext and the AVStream
 	// compensating the frame rate with the ticks_per_frame and keeping
@@ -39,8 +39,8 @@ IOutputStream& OutputFile::addVideoStream( const VideoCodec& videoDesc )
 	av_reduce(
 		&stream.codec->time_base.num,
 		&stream.codec->time_base.den,
-		videoDesc.getAVCodecContext()->time_base.num * videoDesc.getAVCodecContext()->ticks_per_frame,
-		videoDesc.getAVCodecContext()->time_base.den,
+		videoDesc.getAVCodecContext().time_base.num * videoDesc.getAVCodecContext().ticks_per_frame,
+		videoDesc.getAVCodecContext().time_base.den,
 		INT_MAX );
 
 	stream.time_base = stream.codec->time_base;
@@ -53,11 +53,11 @@ IOutputStream& OutputFile::addVideoStream( const VideoCodec& videoDesc )
 
 IOutputStream& OutputFile::addAudioStream( const AudioCodec& audioDesc )
 {
-	AVStream& stream = _formatContext.addAVStream( *audioDesc.getAVCodec() );
+	AVStream& stream = _formatContext.addAVStream( audioDesc.getAVCodec() );
 
-	stream.codec->sample_rate = audioDesc.getAVCodecContext()->sample_rate;
-	stream.codec->channels = audioDesc.getAVCodecContext()->channels;
-	stream.codec->sample_fmt = audioDesc.getAVCodecContext()->sample_fmt;
+	stream.codec->sample_rate = audioDesc.getAVCodecContext().sample_rate;
+	stream.codec->channels = audioDesc.getAVCodecContext().channels;
+	stream.codec->sample_fmt = audioDesc.getAVCodecContext().sample_fmt;
 
 	AvOutputStream* avOutputStream = new AvOutputStream( *this, _formatContext.getNbStreams() - 1 );
 	_outputStreams.push_back( avOutputStream );
@@ -67,7 +67,7 @@ IOutputStream& OutputFile::addAudioStream( const AudioCodec& audioDesc )
 
 IOutputStream& OutputFile::addDataStream( const DataCodec& dataDesc )
 {
-	_formatContext.addAVStream( *dataDesc.getAVCodec() );
+	_formatContext.addAVStream( dataDesc.getAVCodec() );
 
 	AvOutputStream* avOutputStream = new AvOutputStream( *this, _formatContext.getNbStreams() - 1 );
 	_outputStreams.push_back( avOutputStream );

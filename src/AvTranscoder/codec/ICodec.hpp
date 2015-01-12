@@ -34,8 +34,8 @@ public:
 	void setCodec( const ECodecType type, const AVCodecID codecId );
 	
 #ifndef SWIG
-	AVCodec*        getAVCodec()        const { return _codec; }
-	AVCodecContext* getAVCodecContext() const { return _codecContext; }
+	AVCodec& getAVCodec() const { return *_codec; }
+	AVCodecContext& getAVCodecContext() const { return *_codecContext; }
 #endif
 
 private:

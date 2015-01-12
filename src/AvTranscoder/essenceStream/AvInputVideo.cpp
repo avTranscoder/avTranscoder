@@ -45,22 +45,22 @@ AvInputVideo::~AvInputVideo()
 
 void AvInputVideo::setup()
 {
-	AVCodecContext* avCodecContext = _inputStream->getVideoCodec().getAVCodecContext();
-	AVCodec* avCodec = _inputStream->getVideoCodec().getAVCodec();
+	AVCodecContext& avCodecContext = _inputStream->getVideoCodec().getAVCodecContext();
+	AVCodec& avCodec = _inputStream->getVideoCodec().getAVCodec();
 
 	// if( avCodec->capabilities & CODEC_CAP_TRUNCATED )
 	// 	avCodecContext->flags |= CODEC_FLAG_TRUNCATED;
 
-	int ret = avcodec_open2( avCodecContext, avCodec, NULL );
+	int ret = avcodec_open2( &avCodecContext, &avCodec, NULL );
 
-	if( ret < 0 || avCodecContext == NULL || avCodec == NULL )
+	if( ret < 0 || &avCodecContext == NULL || &avCodec == NULL )
 	{
 		std::string msg = "unable open video codec: ";
-		msg +=  avCodec->long_name;
+		msg +=  avCodec.long_name;
 		msg += " (";
-		msg += avCodec->name;
+		msg += avCodec.name;
 		msg += ")";
-		avcodec_close( avCodecContext );
+		avcodec_close( &avCodecContext );
 		throw std::runtime_error( msg );
 	}
 
@@ -116,7 +116,7 @@ bool AvInputVideo::decodeNextFrame()
 		packet.data = nextPacketRead ? data.getPtr(): NULL;
 		packet.size = data.getSize();
 
-		int ret = avcodec_decode_video2( _inputStream->getVideoCodec().getAVCodecContext(), _frame, &got_frame, &packet );
+		int ret = avcodec_decode_video2( &_inputStream->getVideoCodec().getAVCodecContext(), _frame, &got_frame, &packet );
 		av_free_packet( &packet );
 
 		if( ! nextPacketRead && ret == 0 && got_frame == 0 ) // error or end of file
@@ -134,12 +134,12 @@ bool AvInputVideo::decodeNextFrame()
 
 void AvInputVideo::flushDecoder()
 {
-	avcodec_flush_buffers( _inputStream->getVideoCodec().getAVCodecContext() );
+	avcodec_flush_buffers( &_inputStream->getVideoCodec().getAVCodecContext() );
 }
 
 void AvInputVideo::setProfile( const ProfileLoader::Profile& profile )
 {
-	Context codecContext( _inputStream->getVideoCodec().getAVCodecContext(), AV_OPT_FLAG_DECODING_PARAM | AV_OPT_FLAG_VIDEO_PARAM );
+	Context codecContext( &_inputStream->getVideoCodec().getAVCodecContext(), AV_OPT_FLAG_DECODING_PARAM | AV_OPT_FLAG_VIDEO_PARAM );
 
 	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
 	{

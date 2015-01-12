@@ -24,15 +24,15 @@ void AvOutputAudio::setup()
 {
 	av_register_all();
 
-	AVCodecContext* codecContext( _codec.getAVCodecContext() );
+	AVCodecContext& avCodecContext( _codec.getAVCodecContext() );
 
-	if( codecContext == NULL )
+	if( &avCodecContext == NULL )
 	{
 		throw std::runtime_error( "could not allocate audio codec context" );
 	}
 	
 	// try to open encoder with parameters.
-	int ret = avcodec_open2( codecContext, _codec.getAVCodec(), NULL );
+	int ret = avcodec_open2( &avCodecContext, &_codec.getAVCodec(), NULL );
 	if( ret < 0 )
 	{
 		char err[AV_ERROR_MAX_STRING_SIZE];
@@ -51,7 +51,7 @@ bool AvOutputAudio::encodeFrame( const Frame& sourceFrame, Frame& codedFrame )
 	AVFrame* frame = avcodec_alloc_frame();
 #endif
 
-	AVCodecContext* codecContext = _codec.getAVCodecContext();
+	AVCodecContext& avCodecContext = _codec.getAVCodecContext();
 
 	// Set default frame parameters
 #if LIBAVCODEC_VERSION_MAJOR > 54
@@ -63,11 +63,11 @@ bool AvOutputAudio::encodeFrame( const Frame& sourceFrame, Frame& codedFrame )
 	const AudioFrame& sourceAudioFrame = static_cast<const AudioFrame&>( sourceFrame );
 	
 	frame->nb_samples     = sourceAudioFrame.getNbSamples();
-	frame->format         = codecContext->sample_fmt;
-	frame->channel_layout = codecContext->channel_layout;
+	frame->format         = avCodecContext.sample_fmt;
+	frame->channel_layout = avCodecContext.channel_layout;
 	
 	// we calculate the size of the samples buffer in bytes
-	int buffer_size = av_samples_get_buffer_size( NULL, codecContext->channels, frame->nb_samples, codecContext->sample_fmt, 0 );
+	int buffer_size = av_samples_get_buffer_size( NULL, avCodecContext.channels, frame->nb_samples, avCodecContext.sample_fmt, 0 );
 	if( buffer_size < 0 )
 	{
 		char err[AV_ERROR_MAX_STRING_SIZE];
@@ -75,7 +75,7 @@ bool AvOutputAudio::encodeFrame( const Frame& sourceFrame, Frame& codedFrame )
 		throw std::runtime_error( "EncodeFrame error: buffer size < 0 - " + std::string(err) );
 	}
 
-	int retvalue = avcodec_fill_audio_frame( frame, codecContext->channels, codecContext->sample_fmt, sourceAudioFrame.getPtr(), buffer_size, 0 );
+	int retvalue = avcodec_fill_audio_frame( frame, avCodecContext.channels, avCodecContext.sample_fmt, sourceAudioFrame.getPtr(), buffer_size, 0 );
 	if( retvalue < 0 )
 	{
 		char err[AV_ERROR_MAX_STRING_SIZE];
@@ -90,27 +90,27 @@ bool AvOutputAudio::encodeFrame( const Frame& sourceFrame, Frame& codedFrame )
 	packet.data = NULL;
 	packet.stream_index = 0;
 	
-	if( ( codecContext->coded_frame ) &&
-		( codecContext->coded_frame->pts != (int)AV_NOPTS_VALUE ) )
+	if( ( avCodecContext.coded_frame ) &&
+		( avCodecContext.coded_frame->pts != (int)AV_NOPTS_VALUE ) )
 	{
-		packet.pts = codecContext->coded_frame->pts;
+		packet.pts = avCodecContext.coded_frame->pts;
 	}
 
-	if( codecContext->coded_frame &&
-		codecContext->coded_frame->key_frame )
+	if( avCodecContext.coded_frame &&
+		avCodecContext.coded_frame->key_frame )
 	{
 		packet.flags |= AV_PKT_FLAG_KEY;
 	}
 	
 #if LIBAVCODEC_VERSION_MAJOR > 53
 	int gotPacket = 0;
-	int ret = avcodec_encode_audio2( codecContext, &packet, frame, &gotPacket );
+	int ret = avcodec_encode_audio2( &avCodecContext, &packet, frame, &gotPacket );
 	if( ret == 0 && gotPacket == 1 )
 	{
 		codedFrame.copyData( packet.data, packet.size );
 	}
 #else
-	int ret = avcodec_encode_audio( codecContext, packet.data, packet.size, frame );
+	int ret = avcodec_encode_audio( &avCodecContext, packet.data, packet.size, frame );
 	if( ret > 0 )
 	{
 		codedFrame.copyData( packet.data, packet.size );
@@ -135,7 +135,7 @@ bool AvOutputAudio::encodeFrame( const Frame& sourceFrame, Frame& codedFrame )
 
 bool AvOutputAudio::encodeFrame( Frame& codedFrame )
 {
-	AVCodecContext* codecContext = _codec.getAVCodecContext();
+	AVCodecContext& avCodecContext = _codec.getAVCodecContext();
 
 	AVPacket packet;
 	av_init_packet( &packet );
@@ -146,7 +146,7 @@ bool AvOutputAudio::encodeFrame( Frame& codedFrame )
 
 #if LIBAVCODEC_VERSION_MAJOR > 53
 	int gotPacket = 0;
-	int ret = avcodec_encode_audio2( codecContext, &packet, NULL, &gotPacket );
+	int ret = avcodec_encode_audio2( &avCodecContext, &packet, NULL, &gotPacket );
 	if( ret == 0 && gotPacket == 1 )
 	{
 		codedFrame.copyData( packet.data, packet.size );
@@ -155,7 +155,7 @@ bool AvOutputAudio::encodeFrame( Frame& codedFrame )
 	return ret == 0 && gotPacket == 1;
 
 #else
-	int ret = avcodec_encode_audio( codecContext, packet.data, packet.size, NULL );
+	int ret = avcodec_encode_audio( &avCodecContext, packet.data, packet.size, NULL );
 	if( ret > 0 )
 	{
 		codedFrame.copyData( packet.data, packet.size );
@@ -176,7 +176,7 @@ void AvOutputAudio::setProfile( const ProfileLoader::Profile& profile, const Aud
 	_codec.setCodec( eCodecTypeEncoder, profile.find( constants::avProfileCodec )->second );
 	_codec.setAudioParameters( frameDesc );
 
-	Context codecContext( _codec.getAVCodecContext(), AV_OPT_FLAG_ENCODING_PARAM | AV_OPT_FLAG_AUDIO_PARAM );
+	Context codecContext( &_codec.getAVCodecContext(), AV_OPT_FLAG_ENCODING_PARAM | AV_OPT_FLAG_AUDIO_PARAM );
 	
 	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
 	{

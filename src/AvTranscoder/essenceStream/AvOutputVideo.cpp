@@ -25,15 +25,15 @@ void AvOutputVideo::setup( )
 {
 	av_register_all();
 
-	AVCodecContext* codecContext( _codec.getAVCodecContext() );
+	AVCodecContext& avCodecContext( _codec.getAVCodecContext() );
 
-	if( codecContext == NULL )
+	if( &avCodecContext == NULL )
 	{
 		throw std::runtime_error( "could not allocate video codec context" );
 	}
 
 	// try to open encoder with parameters
-	int ret = avcodec_open2( codecContext, _codec.getAVCodec(), NULL );
+	int ret = avcodec_open2( &avCodecContext, &_codec.getAVCodec(), NULL );
 	if( ret < 0 )
 	{
 		char err[AV_ERROR_MAX_STRING_SIZE];
@@ -53,7 +53,7 @@ bool AvOutputVideo::encodeFrame( const Frame& sourceFrame, Frame& codedFrame )
 	AVFrame* frame = avcodec_alloc_frame();
 #endif
 
-	AVCodecContext* codecContext = _codec.getAVCodecContext();
+	AVCodecContext& avCodecContext = _codec.getAVCodecContext();
 
 	// Set default frame parameters
 #if LIBAVCODEC_VERSION_MAJOR > 54
@@ -64,10 +64,10 @@ bool AvOutputVideo::encodeFrame( const Frame& sourceFrame, Frame& codedFrame )
 
 	const VideoFrame& sourceImageFrame = static_cast<const VideoFrame&>( sourceFrame );
 
-	frame->width  = codecContext->width;
-	frame->height = codecContext->height;
-	frame->format = codecContext->pix_fmt;
-	avpicture_fill( (AVPicture*)frame, const_cast< unsigned char * >( sourceImageFrame.getPtr() ), codecContext->pix_fmt, codecContext->width, codecContext->height );
+	frame->width  = avCodecContext.width;
+	frame->height = avCodecContext.height;
+	frame->format = avCodecContext.pix_fmt;
+	avpicture_fill( (AVPicture*)frame, const_cast< unsigned char * >( sourceImageFrame.getPtr() ), avCodecContext.pix_fmt, avCodecContext.width, avCodecContext.height );
 
 	AVPacket packet;
 	av_init_packet( &packet );
@@ -76,27 +76,27 @@ bool AvOutputVideo::encodeFrame( const Frame& sourceFrame, Frame& codedFrame )
 	packet.data = NULL;
 	packet.stream_index = 0;
 
-	if( ( codecContext->coded_frame ) &&
-		( codecContext->coded_frame->pts != (int)AV_NOPTS_VALUE ) )
+	if( ( avCodecContext.coded_frame ) &&
+		( avCodecContext.coded_frame->pts != (int)AV_NOPTS_VALUE ) )
 	{
-		packet.pts = codecContext->coded_frame->pts;
+		packet.pts = avCodecContext.coded_frame->pts;
 	}
 
-	if( codecContext->coded_frame &&
-		codecContext->coded_frame->key_frame )
+	if( avCodecContext.coded_frame &&
+		avCodecContext.coded_frame->key_frame )
 	{
 		packet.flags |= AV_PKT_FLAG_KEY;
 	}
 
 #if LIBAVCODEC_VERSION_MAJOR > 53
 	int gotPacket = 0;
-	int ret = avcodec_encode_video2( codecContext, &packet, frame, &gotPacket );
+	int ret = avcodec_encode_video2( &avCodecContext, &packet, frame, &gotPacket );
 	if( ret == 0 && gotPacket == 1 )
 	{
 		codedFrame.copyData( packet.data, packet.size );
 	}
 #else
-	int ret = avcodec_encode_video( codecContext, packet.data, packet.size, frame );
+	int ret = avcodec_encode_video( &avCodecContext, packet.data, packet.size, frame );
 	if( ret > 0 )
 	{
 		codedFrame.copyData( packet.data, packet.size );
@@ -120,7 +120,7 @@ bool AvOutputVideo::encodeFrame( const Frame& sourceFrame, Frame& codedFrame )
 
 bool AvOutputVideo::encodeFrame( Frame& codedFrame )
 {
-	AVCodecContext* codecContext = _codec.getAVCodecContext();
+	AVCodecContext& avCodecContext = _codec.getAVCodecContext();
 
 	AVPacket packet;
 	av_init_packet( &packet );
@@ -131,7 +131,7 @@ bool AvOutputVideo::encodeFrame( Frame& codedFrame )
 
 #if LIBAVCODEC_VERSION_MAJOR > 53
 	int gotPacket = 0;
-	int ret = avcodec_encode_video2( codecContext, &packet, NULL, &gotPacket );
+	int ret = avcodec_encode_video2( &avCodecContext, &packet, NULL, &gotPacket );
 	if( ret == 0 && gotPacket == 1 )
 	{
 		codedFrame.copyData( packet.data, packet.size );
@@ -139,7 +139,7 @@ bool AvOutputVideo::encodeFrame( Frame& codedFrame )
 	av_free_packet( &packet );
 	return ret == 0 && gotPacket == 1;
 #else
-	int ret = avcodec_encode_video( codecContext, packet.data, packet.size, NULL );
+	int ret = avcodec_encode_video( &avCodecContext, packet.data, packet.size, NULL );
 	if( ret > 0 )
 	{
 		codedFrame.copyData( packet.data, packet.size );
@@ -164,7 +164,7 @@ void AvOutputVideo::setProfile( const ProfileLoader::Profile& profile, const avt
 
 	_codec.setImageParameters( frameDesc );
 
-	Context codecContext( _codec.getAVCodecContext(), AV_OPT_FLAG_ENCODING_PARAM | AV_OPT_FLAG_VIDEO_PARAM );
+	Context codecContext( &_codec.getAVCodecContext(), AV_OPT_FLAG_ENCODING_PARAM | AV_OPT_FLAG_VIDEO_PARAM );
 	
 	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
 	{
