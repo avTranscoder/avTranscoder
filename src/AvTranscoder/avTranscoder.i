@@ -14,6 +14,7 @@
 
 %{
 #include <AvTranscoder/ProfileLoader.hpp>
+#include <AvTranscoder/Option.hpp>
 %}
 
 namespace std {
@@ -28,6 +29,7 @@ namespace std {
 %include "AvTranscoder/frame/frame.i"
 
 %include <AvTranscoder/ProfileLoader.hpp>
+%include <AvTranscoder/Option.hpp>
 
 %include "AvTranscoder/codec/codec.i"
 %include "AvTranscoder/stream/stream.i"
