@@ -15,8 +15,8 @@ VideoCodec::VideoCodec( const ECodecType type, const AVCodecID codecId )
 {
 }
 
-VideoCodec::VideoCodec( const ICodec& codec )
-	: ICodec( codec )
+VideoCodec::VideoCodec( const ECodecType type, AVCodecContext& avCodecContext )
+	: ICodec( type, avCodecContext )
 {
 }
 

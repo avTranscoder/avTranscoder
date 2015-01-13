@@ -15,8 +15,8 @@ AudioCodec::AudioCodec( const ECodecType type, const AVCodecID codecId )
 {
 }
 
-AudioCodec::AudioCodec( const ICodec& codec )
-	: ICodec( codec )
+AudioCodec::AudioCodec( const ECodecType type, AVCodecContext& avCodecContext )
+	: ICodec( type, avCodecContext )
 {
 }
 

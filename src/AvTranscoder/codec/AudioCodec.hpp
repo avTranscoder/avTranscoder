@@ -12,7 +12,7 @@ class AvExport AudioCodec : public ICodec
 public:
 	AudioCodec( const ECodecType type, const std::string& codecName = "" );
 	AudioCodec( const ECodecType type, const AVCodecID codecId );
-	AudioCodec( const ICodec& codec );
+	AudioCodec( const ECodecType type, AVCodecContext& avCodecContext );
 
 	AudioFrameDesc getAudioFrameDesc() const;
 

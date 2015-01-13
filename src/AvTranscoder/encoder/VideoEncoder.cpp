@@ -20,23 +20,7 @@ VideoEncoder::VideoEncoder( const std::string& videoCodecName )
 
 void VideoEncoder::setup()
 {
-	AVCodecContext& avCodecContext( _codec.getAVCodecContext() );
-
-	if( &avCodecContext == NULL )
-	{
-		throw std::runtime_error( "could not allocate video codec context" );
-	}
-
-	// try to open encoder with parameters
-	int ret = avcodec_open2( &avCodecContext, &_codec.getAVCodec(), NULL );
-	if( ret < 0 )
-	{
-		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( ret, err, sizeof(err) );
-		std::string msg = "could not open video encoder " + _codec.getCodecName() +": ";
-		msg += err;
-		throw std::runtime_error( msg );
-	}
+	_codec.open();
 }
 
 
