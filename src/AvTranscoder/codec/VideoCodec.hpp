@@ -15,7 +15,6 @@ public:
 	VideoCodec( const ECodecType type, const std::string& codecName = "" );
 	VideoCodec( const ECodecType type, const AVCodecID codecId );
 	VideoCodec( const ECodecType type, AVCodecContext& avCodecContext );
-	VideoCodec( const ICodec& codec );
 	
 	VideoFrameDesc getVideoFrameDesc() const;
 	std::pair< size_t, size_t > getTimeBase() const;

@@ -18,9 +18,4 @@ DataCodec::DataCodec( const ECodecType type, AVCodecContext& avCodecContext )
 {
 }
 
-DataCodec::DataCodec( const ICodec& codec )
-	: ICodec( codec )
-{
-}
-
 }

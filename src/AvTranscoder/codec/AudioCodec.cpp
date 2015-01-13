@@ -20,11 +20,6 @@ AudioCodec::AudioCodec( const ECodecType type, AVCodecContext& avCodecContext )
 {
 }
 
-AudioCodec::AudioCodec( const ICodec& codec )
-	: ICodec( codec )
-{
-}
-
 AudioFrameDesc AudioCodec::getAudioFrameDesc() const
 {
 	assert( _avCodecContext != NULL );

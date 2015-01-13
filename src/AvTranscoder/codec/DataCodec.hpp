@@ -12,7 +12,6 @@ public:
 	DataCodec( const ECodecType type, const std::string& codecName = "" );
 	DataCodec( const ECodecType type, const AVCodecID codecId );
 	DataCodec( const ECodecType type, AVCodecContext& avCodecContext );
-	DataCodec( const ICodec& codec );
 };
 
 }

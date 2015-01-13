@@ -20,11 +20,6 @@ VideoCodec::VideoCodec( const ECodecType type, AVCodecContext& avCodecContext )
 {
 }
 
-VideoCodec::VideoCodec( const ICodec& codec )
-	: ICodec( codec )
-{
-}
-
 VideoFrameDesc VideoCodec::getVideoFrameDesc() const
 {
 	assert( _avCodecContext != NULL );
