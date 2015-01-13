@@ -2,6 +2,8 @@ from nose.tools import *
 
 from pyAvTranscoder import avtranscoder as av
 
+av.preloadCodecsAndFormats()
+
 
 @raises(RuntimeError)
 def testTranscodeNoStream():
