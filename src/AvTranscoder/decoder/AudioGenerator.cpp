@@ -12,7 +12,6 @@ AudioGenerator::AudioGenerator()
 void AudioGenerator::setAudioFrameDesc( const AudioFrameDesc& frameDesc )
 {
 	_frameDesc = frameDesc;
-	_frameDesc.setFps( 25. );
 }
 
 void AudioGenerator::setFrame( Frame& inputFrame )
@@ -25,7 +24,7 @@ bool AudioGenerator::decodeNextFrame( Frame& frameBuffer )
 	if( ! _inputFrame )
 	{
 		AudioFrame& audioFrameBuffer = static_cast<AudioFrame&>( frameBuffer );
-		audioFrameBuffer.setNbSamples( 1.0 * _frameDesc.getSampleRate() / _frameDesc.getFps() );
+		audioFrameBuffer.setNbSamples( 1.0 * _frameDesc.getSampleRate() / 25. );
 
 		//av_samples_set_silence( data.getPtr(), offset, nb_samples, nb_channels, sample_fmt );
 		int fill_char = (
