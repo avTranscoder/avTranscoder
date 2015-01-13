@@ -140,7 +140,8 @@ void VideoEncoder::setProfile( const ProfileLoader::Profile& profile, const avtr
 			(*it).first == constants::avProfileIdentificatorHuman ||
 			(*it).first == constants::avProfileType ||
 			(*it).first == constants::avProfileCodec ||
-			(*it).first == constants::avProfileFrameRate )
+			(*it).first == constants::avProfileFrameRate ||
+			(*it).first == constants::avProfilePixelFormat )
 			continue;
 
 		try
@@ -160,7 +161,8 @@ void VideoEncoder::setProfile( const ProfileLoader::Profile& profile, const avtr
 			(*it).first == constants::avProfileIdentificatorHuman ||
 			(*it).first == constants::avProfileType ||
 			(*it).first == constants::avProfileCodec ||
-			(*it).first == constants::avProfileFrameRate )
+			(*it).first == constants::avProfileFrameRate ||
+			(*it).first == constants::avProfilePixelFormat )
 			continue;
 
 		try

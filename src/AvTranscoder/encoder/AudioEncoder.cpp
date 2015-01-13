@@ -156,7 +156,8 @@ void AudioEncoder::setProfile( const ProfileLoader::Profile& profile, const Audi
 		if( (*it).first == constants::avProfileIdentificator ||
 			(*it).first == constants::avProfileIdentificatorHuman ||
 			(*it).first == constants::avProfileType ||
-			(*it).first == constants::avProfileCodec )
+			(*it).first == constants::avProfileCodec ||
+			(*it).first == constants::avProfileSampleFormat )
 			continue;
 
 		try
@@ -175,7 +176,8 @@ void AudioEncoder::setProfile( const ProfileLoader::Profile& profile, const Audi
 		if( (*it).first == constants::avProfileIdentificator ||
 			(*it).first == constants::avProfileIdentificatorHuman ||
 			(*it).first == constants::avProfileType ||
-			(*it).first == constants::avProfileCodec )
+			(*it).first == constants::avProfileCodec ||
+			(*it).first == constants::avProfileSampleFormat )
 			continue;
 
 		try
