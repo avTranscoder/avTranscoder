@@ -4,8 +4,6 @@
 #include "ICodec.hpp"
 #include <AvTranscoder/frame/VideoFrame.hpp>
 
-#include <utility>
-
 namespace avtranscoder
 {
 
@@ -15,13 +13,10 @@ public:
 	VideoCodec( const ECodecType type, const std::string& codecName = "" );
 	VideoCodec( const ECodecType type, const AVCodecID codecId );
 	VideoCodec( const ECodecType type, AVCodecContext& avCodecContext );
-	
-	VideoFrameDesc getVideoFrameDesc() const;
-	std::pair< size_t, size_t > getTimeBase() const;
-	
-	void setImageParameters( const VideoFrameDesc& videoFrameDesc );
 
-	void setTimeBase( const size_t num, const size_t den, const size_t ticksPerFrame = 1 );
+	VideoFrameDesc getVideoFrameDesc() const;
+
+	void setImageParameters( const VideoFrameDesc& videoFrameDesc );
 };
 
 }

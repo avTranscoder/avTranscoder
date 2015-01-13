@@ -5,12 +5,12 @@
 #include <AvTranscoder/ProfileLoader.hpp>
 
 extern "C" {
-#include <libavutil/rational.h>
 #include <libavutil/pixfmt.h>
 #include <libavutil/pixdesc.h>
 }
 
 #include <stdexcept>
+#include <stdlib.h>
 
 namespace avtranscoder
 {
@@ -22,12 +22,14 @@ public:
 		: _width( width )
 		, _height( height )
 		, _pixelFormat( pixelFormat )
+		, _fps( 1.0 )
 	{
 	}
 	VideoFrameDesc( const size_t width, const size_t height, const std::string& pixelFormat )
 		: _width( width )
 		, _height( height )
 		, _pixelFormat( av_get_pix_fmt( pixelFormat.c_str() ) )
+		, _fps( 1.0 )
 	{
 	}
 
@@ -39,6 +41,7 @@ public:
 	    const char* formatName = av_get_pix_fmt_name( _pixelFormat );
 	    return formatName ? std::string( formatName ) : "unknown pixel format";
 	}
+	double getFps() const { return _fps; }
 
 	size_t getDataSize() const
 	{
@@ -56,17 +59,23 @@ public:
 	void setHeight( const size_t height ) { _height = height; }
 	void setPixelFormat( const std::string& pixelFormat ) { _pixelFormat = av_get_pix_fmt( pixelFormat.c_str() ); }
 	void setPixelFormat( const AVPixelFormat pixelFormat ) { _pixelFormat = pixelFormat; }
+	void setFps( const double fps ) { _fps = fps; }
 
 	void setParameters( const ProfileLoader::Profile& profile )
 	{
-		if( profile.find( constants::avProfilePixelFormat ) != profile.end() )
+		// pixel format	
+		if( profile.count( constants::avProfilePixelFormat ) )
 			setPixelFormat( profile.find( constants::avProfilePixelFormat )->second );
+		// fps
+		if( profile.count( constants::avProfileFrameRate ) )
+			setFps( atof( profile.find( constants::avProfileFrameRate )->second.c_str() ) );
 	}
 
 private:
 	size_t _width;
 	size_t _height;
 	AVPixelFormat _pixelFormat;
+	double _fps;
 };
 
 //template< template<typename> Alloc >

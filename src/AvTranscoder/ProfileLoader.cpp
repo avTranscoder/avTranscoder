@@ -187,8 +187,7 @@ bool ProfileLoader::checkVideoProfile( const Profile& profileToCheck )
 	if( ! profileToCheck.count( constants::avProfileIdentificator ) ||
 		! profileToCheck.count( constants::avProfileIdentificatorHuman ) ||
 		! profileToCheck.count( constants::avProfileType ) ||
-		! profileToCheck.count( constants::avProfileCodec ) ||
-		! profileToCheck.count( constants::avProfileFrameRate ) )
+		! profileToCheck.count( constants::avProfileCodec ) )
 	{
 		isValid = false;
 	}

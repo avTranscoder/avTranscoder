@@ -130,11 +130,10 @@ bool VideoEncoder::encodeFrame( Frame& codedFrame )
 
 void VideoEncoder::setProfile( const ProfileLoader::Profile& profile, const avtranscoder::VideoFrameDesc& frameDesc )
 {
-	const size_t frameRate = std::strtoul( profile.find( constants::avProfileFrameRate )->second.c_str(), NULL, 0 );
-	_codec.setTimeBase( 1, frameRate );
-
+	// set width, height, pixel format, fps
 	_codec.setImageParameters( frameDesc );
-	
+
+	// set encoder options
 	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
 	{
 		if( (*it).first == constants::avProfileIdentificator ||
