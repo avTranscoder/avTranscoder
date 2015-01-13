@@ -19,21 +19,7 @@ AudioEncoder::AudioEncoder( const std::string& audioCodecName )
 
 void AudioEncoder::setup()
 {
-	av_register_all();
-
-	AVCodecContext& avCodecContext = _codec.getAVCodecContext();
-	const AVCodec& avCodec = _codec.getAVCodec();
-
-	// try to open encoder with parameters.
-	int ret = avcodec_open2( &avCodecContext, &avCodec, NULL );
-	if( ret < 0 )
-	{
-		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( ret, err, sizeof(err) );
-		std::string msg = "could not open audio encoder " + _codec.getCodecName() +": ";
-		msg += err;
-		throw std::runtime_error( msg );
-	}
+	_codec.open();
 }
 
 bool AudioEncoder::encodeFrame( const Frame& sourceFrame, Frame& codedFrame )

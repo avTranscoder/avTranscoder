@@ -23,8 +23,12 @@ class AvExport ICodec
 public:
 	ICodec( const ECodecType type, const std::string& codecName );
 	ICodec( const ECodecType type, const AVCodecID codecId );
+	ICodec( const ECodecType type, AVCodecContext& avCodecContext );
 
 	virtual ~ICodec() = 0;
+
+	/// Initialize the codec context.
+	void open();
 
 	std::string getCodecName() const;
 	AVCodecID getCodecId() const;
@@ -52,6 +56,7 @@ private:
 protected:
 	AVCodecContext* _avCodecContext; ///< Full codec instance description (has ownership)
 	AVCodec* _avCodec; ///< Codec abstract description
+	const bool _isCodecContextAllocated;  ///< Is the AVCodecContext allocated by the class
 
 	ECodecType _type;
 

@@ -42,24 +42,8 @@ VideoDecoder::~VideoDecoder()
 
 void VideoDecoder::setup()
 {
-	AVCodecContext& avCodecContext = _inputStream->getVideoCodec().getAVCodecContext();
-	AVCodec& avCodec = _inputStream->getVideoCodec().getAVCodec();
-
-	// if( avCodec->capabilities & CODEC_CAP_TRUNCATED )
-	// 	avCodecContext->flags |= CODEC_FLAG_TRUNCATED;
-
-	int ret = avcodec_open2( &avCodecContext, &avCodec, NULL );
-
-	if( ret < 0 || &avCodecContext == NULL || &avCodec == NULL )
-	{
-		std::string msg = "unable open video codec: ";
-		msg +=  avCodec.long_name;
-		msg += " (";
-		msg += avCodec.name;
-		msg += ")";
-		avcodec_close( &avCodecContext );
-		throw std::runtime_error( msg );
-	}
+	
+	_inputStream->getVideoCodec().open();
 
 #if LIBAVCODEC_VERSION_MAJOR > 54
 	_frame = av_frame_alloc();

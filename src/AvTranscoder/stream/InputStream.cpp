@@ -27,26 +27,17 @@ InputStream::InputStream( InputFile& inputFile, const size_t streamIndex )
 	{
 		case AVMEDIA_TYPE_VIDEO:
 		{
-			VideoCodec* videoCodec = new VideoCodec( eCodecTypeDecoder, context->codec_id );
-			videoCodec->setImageParameters( context->width, context->height, context->pix_fmt );
-			videoCodec->setTimeBase( context->time_base.num, context->time_base.den, context->ticks_per_frame );
-
-			_codec = videoCodec;
+			_codec = new VideoCodec( eCodecTypeDecoder, *context );
 			break;
 		}
 		case AVMEDIA_TYPE_AUDIO:
 		{
-			AudioCodec* audioCodec = new AudioCodec( eCodecTypeDecoder, context->codec_id );
-			audioCodec->setAudioParameters( context->sample_rate, context->channels, context->sample_fmt );
-
-			_codec = audioCodec;
+			_codec = new AudioCodec( eCodecTypeDecoder, *context );
 			break;
 		}
 		case AVMEDIA_TYPE_DATA:
 		{
-			DataCodec* dataCodec = new DataCodec( eCodecTypeDecoder, context->codec_id );
-
-			_codec= dataCodec;
+			_codec = new DataCodec( eCodecTypeDecoder, *context );
 			break;
 		}
 		default:
