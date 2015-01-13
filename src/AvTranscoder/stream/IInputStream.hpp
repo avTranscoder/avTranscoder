@@ -9,7 +9,7 @@
 namespace avtranscoder
 {
 
-class IInputStream
+class AvExport IInputStream
 {
 public:
 	virtual ~IInputStream() {};

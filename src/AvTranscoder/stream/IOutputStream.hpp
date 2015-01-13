@@ -8,7 +8,7 @@
 namespace avtranscoder
 {
 
-class IOutputStream
+class AvExport IOutputStream
 {
 public:
 
