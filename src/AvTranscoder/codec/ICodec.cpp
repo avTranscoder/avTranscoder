@@ -13,6 +13,7 @@ namespace avtranscoder {
 ICodec::ICodec( const ECodecType type, const std::string& codecName )
 	: _avCodecContext( NULL )
 	, _avCodec( NULL )
+	, _isCodecContextAllocated( true )
 	, _type( type )
 {
 	avcodec_register_all();  // TODO: call only once
@@ -25,6 +26,7 @@ ICodec::ICodec( const ECodecType type, const std::string& codecName )
 ICodec::ICodec( const ECodecType type, const AVCodecID codecId )
 	: _avCodecContext( NULL )
 	, _avCodec( NULL )
+	, _isCodecContextAllocated( true )
 	, _type( type )
 {
 	avcodec_register_all();  // TODO: call only once
@@ -34,11 +36,48 @@ ICodec::ICodec( const ECodecType type, const AVCodecID codecId )
 	loadCodecOptions();
 }
 
+ICodec::ICodec( const ECodecType type, AVCodecContext& avCodecContext )
+	: _avCodecContext( &avCodecContext )
+	, _avCodec( NULL )
+	, _isCodecContextAllocated( false )
+	, _type( type )
+{
+	avcodec_register_all();  // TODO: call only once
+
+	setCodec( type, _avCodecContext->codec_id );
+}
+
 ICodec::~ICodec()
 {
+	if( ! _isCodecContextAllocated )
+		return;
+
 	avcodec_close( _avCodecContext );
 	av_free( _avCodecContext );
 	_avCodecContext = NULL;
+}
+
+void ICodec::open()
+{
+	if( ! _avCodecContext )
+		throw std::runtime_error( "unable to open a codec with no codec context" );
+
+	int ret = avcodec_open2( _avCodecContext, _avCodec, NULL );
+	if( ret < 0 )
+	{
+		std::string msg = "unable open codec: ";
+		msg +=  _avCodec->long_name;
+		msg += " (";
+		msg += _avCodec->name;
+		msg += ") ";
+		avcodec_close( _avCodecContext );
+
+		char err[AV_ERROR_MAX_STRING_SIZE];
+		av_strerror( ret, err, sizeof(err) );
+		msg += err;
+
+		throw std::runtime_error( msg );
+	}
 }
 
 std::string ICodec::getCodecName() const

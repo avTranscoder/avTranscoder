@@ -11,7 +11,7 @@ class AvExport DataCodec : public ICodec
 public:
 	DataCodec( const ECodecType type, const std::string& codecName = "" );
 	DataCodec( const ECodecType type, const AVCodecID codecId );
-	DataCodec( const ICodec& codec );
+	DataCodec( const ECodecType type, AVCodecContext& avCodecContext );
 };
 
 }
