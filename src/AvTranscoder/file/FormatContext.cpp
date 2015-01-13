@@ -12,8 +12,6 @@ FormatContext::FormatContext( const std::string& filename, int req_flags )
 	, _options()
 	, _isOpen( true )
 {
-	av_register_all();  // TODO: call it once
-
 	int err = avformat_open_input( &_avFormatContext, filename.c_str(), NULL, NULL );
 	if( err < 0 )
 	{
@@ -29,8 +27,6 @@ FormatContext::FormatContext( int req_flags )
 	, _options()
 	, _isOpen( false )
 {
-	av_register_all();  // TODO: call it once
-
 	_avFormatContext = avformat_alloc_context();
 	loadOptions( _options, _avFormatContext, req_flags );
 }
