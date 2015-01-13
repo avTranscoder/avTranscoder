@@ -1,6 +1,7 @@
 #ifndef _AV_TRANSCODER_FORMAT_CONTEXT_HPP_
 #define _AV_TRANSCODER_FORMAT_CONTEXT_HPP_
 
+#include <AvTranscoder/common.hpp>
 #include <AvTranscoder/Option.hpp>
 
 extern "C" {
@@ -13,7 +14,7 @@ namespace avtranscoder
 /**
  * @brief Wrapper of an AVFormatContext.
  */
-class FormatContext
+class AvExport FormatContext
 {
 public:
 	FormatContext( const std::string& filename, int req_flags = 0 );  ///< Allocate an AVFormatContext by opening an input file

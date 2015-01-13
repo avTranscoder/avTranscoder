@@ -123,8 +123,8 @@ typedef std::map<std::string, Option> OptionMap;  ///< Key: option name / value:
  * @param av_class: a libav context (could be an AVFormatContext or an AVCodecContext).
  * @param req_flags: libav flag (AV_OPT_FLAG_XXX), which is a filter for AVOption loaded by the Context (default = 0: no flag restriction).
  */
-void loadOptions( OptionMap& outOptions, void* av_class, int req_flags = 0 );
-void loadOptions( OptionArray& outOptions, void* av_class, int req_flags = 0 );
+void AvExport loadOptions( OptionMap& outOptions, void* av_class, int req_flags = 0 );
+void AvExport loadOptions( OptionArray& outOptions, void* av_class, int req_flags = 0 );
 
 }
 
