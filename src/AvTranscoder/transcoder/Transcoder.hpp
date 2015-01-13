@@ -2,15 +2,9 @@
 #define _AV_TRANSCODER_TRANSCODER_HPP_
 
 #include <AvTranscoder/common.hpp>
-
 #include <AvTranscoder/file/InputFile.hpp>
 #include <AvTranscoder/file/OutputFile.hpp>
-
-#include <AvTranscoder/codedStream/IInputStream.hpp>
-
-#include <AvTranscoder/essenceStream/GeneratorAudio.hpp>
-#include <AvTranscoder/essenceStream/GeneratorVideo.hpp>
-
+#include <AvTranscoder/stream/IInputStream.hpp>
 #include <AvTranscoder/ProfileLoader.hpp>
 
 #include "StreamTranscoder.hpp"

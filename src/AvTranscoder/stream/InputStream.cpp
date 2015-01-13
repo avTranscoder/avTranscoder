@@ -1,4 +1,4 @@
-#include "AvInputStream.hpp"
+#include "InputStream.hpp"
 
 #include <AvTranscoder/file/InputFile.hpp>
 
@@ -13,7 +13,7 @@ extern "C" {
 namespace avtranscoder
 {
 
-AvInputStream::AvInputStream( InputFile& inputFile, const size_t streamIndex )
+InputStream::InputStream( InputFile& inputFile, const size_t streamIndex )
 	: IInputStream( )
 	, _inputFile( &inputFile )
 	, _codec( NULL )
@@ -54,7 +54,7 @@ AvInputStream::AvInputStream( InputFile& inputFile, const size_t streamIndex )
 	}
 }
 
-AvInputStream::AvInputStream( const AvInputStream& inputStream )
+InputStream::InputStream( const InputStream& inputStream )
 	: IInputStream( )
 	, _inputFile( inputStream._inputFile )
 	, _codec( inputStream._codec )
@@ -64,12 +64,12 @@ AvInputStream::AvInputStream( const AvInputStream& inputStream )
 {
 }
 
-AvInputStream::~AvInputStream( )
+InputStream::~InputStream( )
 {
 	delete _codec;
 }
 
-bool AvInputStream::readNextPacket( CodedData& data )
+bool InputStream::readNextPacket( CodedData& data )
 {
 	if( ! _isActivated )
 		throw std::runtime_error( "Can't read packet on non-activated input stream." );
@@ -89,7 +89,7 @@ bool AvInputStream::readNextPacket( CodedData& data )
 	return true;
 }
 
-VideoCodec& AvInputStream::getVideoCodec()
+VideoCodec& InputStream::getVideoCodec()
 {
 	assert( _streamIndex <= _inputFile->getFormatContext().getNbStreams() );
 
@@ -101,7 +101,7 @@ VideoCodec& AvInputStream::getVideoCodec()
 	return *static_cast<VideoCodec*>( _codec );;
 }
 
-AudioCodec& AvInputStream::getAudioCodec()
+AudioCodec& InputStream::getAudioCodec()
 {
 	assert( _streamIndex <= _inputFile->getFormatContext().getNbStreams() );
 
@@ -113,7 +113,7 @@ AudioCodec& AvInputStream::getAudioCodec()
 	return *static_cast<AudioCodec*>( _codec );;
 }
 
-DataCodec& AvInputStream::getDataCodec()
+DataCodec& InputStream::getDataCodec()
 {
 	assert( _streamIndex <= _inputFile->getFormatContext().getNbStreams() );
 
@@ -125,17 +125,17 @@ DataCodec& AvInputStream::getDataCodec()
 	return *static_cast<DataCodec*>( _codec );;
 }
 
-AVMediaType AvInputStream::getStreamType() const
+AVMediaType InputStream::getStreamType() const
 {
 	return _inputFile->getFormatContext().getAVStream( _streamIndex ).codec->codec_type;
 }
 
-double AvInputStream::getDuration() const
+double InputStream::getDuration() const
 {
 	return 1.0 * _inputFile->getFormatContext().getDuration() / AV_TIME_BASE;
 }
 
-void AvInputStream::addPacket( AVPacket& packet )
+void InputStream::addPacket( AVPacket& packet )
 {
 	// Do not cache data if the stream is declared as unused in process
 	if( ! _isActivated )
@@ -146,7 +146,7 @@ void AvInputStream::addPacket( AVPacket& packet )
 	_streamCache.back().copyData( packet.data, packet.size );
 }
 
-void AvInputStream::clearBuffering()
+void InputStream::clearBuffering()
 {
 	_streamCache = std::queue<CodedData>();
 }

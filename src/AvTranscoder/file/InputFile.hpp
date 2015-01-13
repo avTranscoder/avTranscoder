@@ -2,9 +2,9 @@
 #define _AV_TRANSCODER_FILE_INPUT_FILE_HPP_
 
 #include <AvTranscoder/common.hpp>
-#include <AvTranscoder/option/FormatContext.hpp>
 #include <AvTranscoder/file/util.hpp>
-#include <AvTranscoder/codedStream/AvInputStream.hpp>
+#include <AvTranscoder/file/FormatContext.hpp>
+#include <AvTranscoder/stream/InputStream.hpp>
 #include <AvTranscoder/mediaProperty/FileProperties.hpp>
 #include <AvTranscoder/progress/IProgress.hpp>
 #include <AvTranscoder/ProfileLoader.hpp>
@@ -72,7 +72,7 @@ public:
 	 * @param index stream index
 	 * @return media stream type of specified index stream
 	 **/
-	AvInputStream& getStream( size_t index );
+	InputStream& getStream( size_t index );
 
 	FormatContext& getFormatContext() { return _formatContext; }
 
@@ -100,7 +100,7 @@ protected:
 	FormatContext _formatContext;
 	FileProperties _properties;
 	std::string _filename;
-	std::vector<AvInputStream*> _inputStreams;
+	std::vector<InputStream*> _inputStreams;
 
 	bool _verbose;
 };

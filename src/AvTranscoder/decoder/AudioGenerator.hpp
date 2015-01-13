@@ -1,16 +1,16 @@
-#ifndef _AV_TRANSCODER_ESSENCE_STREAM_GENERATOR_AUDIO_HPP_
-#define _AV_TRANSCODER_ESSENCE_STREAM_GENERATOR_AUDIO_HPP_
+#ifndef _AV_TRANSCODER_DECODER_AUDIO_GENERATOR_HPP_
+#define _AV_TRANSCODER_DECODER_AUDIO_GENERATOR_HPP_
 
-#include "IInputEssence.hpp"
+#include "IDecoder.hpp"
 #include <AvTranscoder/codec/AudioCodec.hpp>
 
 namespace avtranscoder
 {
 
-class AvExport GeneratorAudio : public IInputEssence
+class AvExport AudioGenerator : public IDecoder
 {
 public:
-	GeneratorAudio( );
+	AudioGenerator();
 
 	AudioFrameDesc& getAudioFrameDesc() { return _frameDesc; }
 	void setAudioFrameDesc( const AudioFrameDesc& frameDesc );

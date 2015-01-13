@@ -1,5 +1,5 @@
-#ifndef _AV_TRANSCODER_CODED_STREAM_AV_INPUT_STREAM_HPP_
-#define _AV_TRANSCODER_CODED_STREAM_AV_INPUT_STREAM_HPP_
+#ifndef _AV_TRANSCODER_STREAM_INPUT_STREAM_HPP_
+#define _AV_TRANSCODER_STREAM_INPUT_STREAM_HPP_
 
 #include "IInputStream.hpp"
 
@@ -12,12 +12,12 @@ namespace avtranscoder
 
 class InputFile;
 
-class AvExport AvInputStream : public IInputStream
+class AvExport InputStream : public IInputStream
 {
 public:
-	AvInputStream( InputFile& inputFile, const size_t streamIndex );
-	AvInputStream( const AvInputStream& inputStream );  ///< Does not copy _streamCache
-	~AvInputStream( );
+	InputStream( InputFile& inputFile, const size_t streamIndex );
+	InputStream( const InputStream& inputStream );  ///< Does not copy _streamCache
+	~InputStream( );
 
 	bool readNextPacket( CodedData& data );
 

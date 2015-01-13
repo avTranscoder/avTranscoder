@@ -11,59 +11,75 @@ extern "C" {
 namespace avtranscoder {
 
 ICodec::ICodec( const ECodecType type, const std::string& codecName )
-	: _codec( NULL )
-	, _codecContext( NULL )
+	: _avCodecContext( NULL )
+	, _avCodec( NULL )
+	, _type( type )
 {
-	if( codecName.size() )
-	{
-		setCodec( type, codecName );
-	}
+	avcodec_register_all();  // TODO: call only once
+
+	setCodec( type, codecName );
+	allocateContext();
+	loadCodecOptions();
 }
 
 ICodec::ICodec( const ECodecType type, const AVCodecID codecId )
-	: _codec( NULL )
-	, _codecContext( NULL )
+	: _avCodecContext( NULL )
+	, _avCodec( NULL )
+	, _type( type )
 {
+	avcodec_register_all();  // TODO: call only once
+
 	setCodec( type, codecId );
+	allocateContext();
+	loadCodecOptions();
 }
 
 ICodec::~ICodec()
 {
-	if( _codecContext && _codec )
-	{
-		avcodec_close( _codecContext );
-		av_free( _codecContext );
-		_codecContext = NULL;
-		_codec = NULL;
-	}
+	avcodec_close( _avCodecContext );
+	av_free( _avCodecContext );
+	_avCodecContext = NULL;
 }
 
 std::string ICodec::getCodecName() const
 {
-	assert( _codecContext != NULL );
-	return avcodec_descriptor_get( _codecContext->codec_id )->name;
+	assert( _avCodec != NULL );
+	return avcodec_descriptor_get( _avCodec->id )->name;
 }
 
 AVCodecID ICodec::getCodecId() const
 {
-	assert( _codecContext != NULL );
-	return _codecContext->codec_id;
+	assert( _avCodec != NULL );
+	return _avCodec->id;
 }
 
 int ICodec::getLatency()  const
 {
-	assert( _codecContext != NULL );
-	return _codecContext->delay;
+	assert( _avCodecContext != NULL );
+	return _avCodecContext->delay;
+}
+
+std::vector<Option> ICodec::getOptions()
+{
+	std::vector<Option> optionsArray;
+	for( OptionMap::iterator it = _options.begin(); it != _options.end(); ++it )
+	{
+		optionsArray.push_back( it->second );
+	}
+	return optionsArray;
 }
 
 void ICodec::setCodec( const ECodecType type, const std::string& codecName )
 {
-	avcodec_register_all();
-	if( type == eCodecTypeEncoder )
-		_codec = avcodec_find_encoder_by_name( codecName.c_str() );
-	else if( type == eCodecTypeDecoder )
-		_codec = avcodec_find_decoder_by_name( codecName.c_str() );
-	initCodecContext();
+	const AVCodecDescriptor* avCodecDescriptor = avcodec_descriptor_get_by_name( codecName.c_str() );
+	if( ! avCodecDescriptor )
+	{
+		std::string msg( "unable to find codec " );
+		msg += codecName;
+		throw std::runtime_error( msg );
+	}
+
+	setCodec( type, avCodecDescriptor->id );
 }
 
 void ICodec::setCodec( const ECodecType type, const AVCodecID codecId )
@@ -73,31 +89,37 @@ void ICodec::setCodec( const ECodecType type, const AVCodecID codecId )
 		std::cout << "Warning: Unsupported codec with id 0" << std::endl;
 		return;
 	}
-	avcodec_register_all();
+
 	if( type == eCodecTypeEncoder )
-		_codec = avcodec_find_encoder( codecId );
+	{
+		_avCodec = avcodec_find_encoder( codecId );
+		if( _avCodecContext )
+			_avCodecContext->codec = _avCodec;
+	}
 	else if( type == eCodecTypeDecoder )
-		_codec = avcodec_find_decoder( codecId );
-	initCodecContext();
+	{
+		_avCodec = avcodec_find_decoder( codecId );
+		if( _avCodecContext )
+			_avCodecContext->codec = _avCodec;
+	}
 }
 
-void ICodec::initCodecContext( )
+
+void ICodec::allocateContext()
 {
-	if( _codec == NULL )
+	_avCodecContext = avcodec_alloc_context3( _avCodec );
+	if( ! _avCodecContext )
 	{
-		throw std::runtime_error( "unknown codec" );
+		throw std::runtime_error( "unable to allocate the codecContext and set its fields to default values" );
 	}
+}
 
-	if( ( _codecContext = avcodec_alloc_context3( _codec ) ) == NULL )
-	{
-		throw std::runtime_error( "unable to allocate codec context and set its fields to default values" );
-	}
-
-	// Set default codec parameters
-	if( avcodec_get_context_defaults3( _codecContext, _codec ) != 0 )
-	{
-		throw std::runtime_error( "unable to find codec default values" );
-	}
+void ICodec::loadCodecOptions()
+{
+	if( _type == eCodecTypeEncoder )
+		loadOptions( _options, _avCodecContext, AV_OPT_FLAG_ENCODING_PARAM );
+	else if( _type == eCodecTypeDecoder )
+		loadOptions( _options, _avCodecContext, AV_OPT_FLAG_DECODING_PARAM );
 }
 
 }

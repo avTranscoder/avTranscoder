@@ -2,12 +2,12 @@
 #define _AVPLAYER_AVREADER_
 
 #include <AvTranscoder/file/InputFile.hpp>
-#include <AvTranscoder/essenceStream/AvInputAudio.hpp>
-#include <AvTranscoder/essenceStream/AvInputVideo.hpp>
-#include <AvTranscoder/transform/VideoTransform.hpp>
+#include <AvTranscoder/progress/ConsoleProgress.hpp>
 #include <AvTranscoder/mediaProperty/print.hpp>
 
-#include <AvTranscoder/progress/ConsoleProgress.hpp>
+#include <AvTranscoder/decoder/VideoDecoder.hpp>
+
+#include <AvTranscoder/transform/VideoTransform.hpp>
 
 #include "Reader.hpp"
 
@@ -26,7 +26,7 @@ public:
 		_videoStream = _inputFile.getProperties().getVideoProperties().at(0).getStreamId();
 		_inputFile.activateStream( _videoStream );
 
-		_inputVideo = new avtranscoder::AvInputVideo( _inputFile.getStream( _videoStream ) );
+		_inputVideo = new avtranscoder::VideoDecoder( _inputFile.getStream( _videoStream ) );
 		_inputVideo->setup();
 
 		_sourceImage = new avtranscoder::VideoFrame( _inputFile.getStream( _videoStream ).getVideoCodec().getVideoFrameDesc() );
@@ -97,7 +97,7 @@ public:
 private:
 	avtranscoder::InputFile   _inputFile;
 
-	avtranscoder::AvInputVideo* _inputVideo;
+	avtranscoder::VideoDecoder* _inputVideo;
 
 	avtranscoder::VideoFrame* _sourceImage;
 	avtranscoder::VideoFrame* _imageToDisplay;

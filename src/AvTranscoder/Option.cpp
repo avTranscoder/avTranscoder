@@ -4,6 +4,7 @@ extern "C" {
 #include <libavutil/error.h>
 }
 
+#include <iostream>
 #include <sstream>
 #include <stdexcept>
 
@@ -224,6 +225,84 @@ void Option::checkFFmpegSetOption( const int ffmpegReturnCode, const std::string
 		av_strerror( ffmpegReturnCode, err, sizeof(err) );
 		throw std::runtime_error( "setting " + getName() + " parameter to " + optionValue + ": " + err );
 	}
+}
+
+void loadOptions( OptionMap& outOptions, void* av_class, int req_flags )
+{
+	if( ! av_class )
+		return;
+
+	std::multimap<std::string, std::string> optionUnitToParentName;
+	std::vector<Option> childOptions;
+	
+	const AVOption* avOption = NULL;
+	
+	// iterate on options
+#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT( 51, 12, 0 )
+	while( ( avOption = av_next_option( av_class, avOption ) ) )
+#else
+	while( ( avOption = av_opt_next( av_class, avOption ) ) )
+#endif
+	{
+		if( ! avOption || 
+			! avOption->name ||
+			( avOption->flags & req_flags ) != req_flags )
+		{
+			continue;
+		}
+
+		Option option( *const_cast<AVOption*>( avOption ), av_class );
+
+		if( option.getType() == eOptionBaseTypeChild )
+		{
+			childOptions.push_back( option );
+		}
+		else
+		{
+			outOptions.insert( std::make_pair( option.getName(), option ) );
+			optionUnitToParentName.insert( std::make_pair( option.getUnit(), option.getName() ) );
+		}
+	}
+
+	// iterate on child options
+	for( std::vector<Option>::iterator itOption = childOptions.begin(); itOption != childOptions.end(); ++itOption )
+	{
+		bool parentFound = false;
+		for( std::multimap<std::string, std::string>::iterator itUnit = optionUnitToParentName.begin(); itUnit != optionUnitToParentName.end(); ++itUnit )
+		{
+			if( itUnit->first == itOption->getUnit() )
+			{
+				std::string nameParentOption = itUnit->second;
+				Option& parentOption = outOptions.at( nameParentOption );
+
+				parentOption.appendChild( *itOption );
+
+				// child of a Choice
+				if( parentOption.getType() == eOptionBaseTypeChoice )
+				{
+					if( itOption->getDefaultInt() == parentOption.getDefaultInt() )
+						parentOption.setDefaultChildIndex( parentOption.getChilds().size() - 1 );
+				}
+
+				parentFound = true;
+				break;
+			}
+		}
+
+		if( ! parentFound )
+		{
+			std::cout << "Warning: Can't find a choice option for " << itOption->getName() << std::endl;
+		}
+	}
+}
+
+void loadOptions( OptionArray& outOptions, void* av_class, int req_flags )
+{
+	OptionMap optionMap;
+	loadOptions( optionMap, av_class, req_flags );
+
+	for( OptionMap::iterator it = optionMap.begin(); it != optionMap.end(); ++it )
+		outOptions.push_back( it->second );
 }
 
 }

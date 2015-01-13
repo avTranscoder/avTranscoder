@@ -3,7 +3,7 @@
 
 #include <AvTranscoder/common.hpp>
 #include <AvTranscoder/mediaProperty/util.hpp>
-#include <AvTranscoder/option/FormatContext.hpp>
+#include <AvTranscoder/file/FormatContext.hpp>
 #include <AvTranscoder/mediaProperty/VideoProperties.hpp>
 #include <AvTranscoder/mediaProperty/AudioProperties.hpp>
 #include <AvTranscoder/mediaProperty/DataProperties.hpp>

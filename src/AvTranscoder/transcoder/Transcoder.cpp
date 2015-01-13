@@ -7,7 +7,6 @@
 #include <iostream>
 #include <algorithm>
 #include <sstream>
-#include <libavformat/avformat.h>
 
 namespace avtranscoder
 {

@@ -1,6 +1,5 @@
 #include "InputFile.hpp"
 
-#include <AvTranscoder/option/Context.hpp>
 #include <AvTranscoder/mediaProperty/util.hpp>
 #include <AvTranscoder/mediaProperty/VideoProperties.hpp>
 #include <AvTranscoder/mediaProperty/AudioProperties.hpp>
@@ -32,13 +31,13 @@ InputFile::InputFile( const std::string& filename )
 	// Create streams
 	for( size_t streamIndex = 0; streamIndex < _formatContext.getNbStreams(); ++streamIndex )
 	{
-		_inputStreams.push_back( new AvInputStream( *this, streamIndex ) );
+		_inputStreams.push_back( new InputStream( *this, streamIndex ) );
 	}
 }
 
 InputFile::~InputFile()
 {
-	for( std::vector< AvInputStream* >::iterator it = _inputStreams.begin(); it != _inputStreams.end(); ++it )
+	for( std::vector< InputStream* >::iterator it = _inputStreams.begin(); it != _inputStreams.end(); ++it )
 	{
 		delete (*it);
 	}
@@ -150,7 +149,7 @@ void InputFile::seekAtFrame( const size_t frame )
 		std::cerr << "Error during seek at " << frame << " (" << pos << ") in file" << std::endl;
 	}
 
-	for( std::vector<AvInputStream*>::iterator it = _inputStreams.begin(); it != _inputStreams.end(); ++it )
+	for( std::vector<InputStream*>::iterator it = _inputStreams.begin(); it != _inputStreams.end(); ++it )
 	{
 		(*it)->clearBuffering();
 	}
@@ -161,7 +160,7 @@ void InputFile::activateStream( const size_t streamIndex, bool activate )
 	getStream( streamIndex ).activate( activate );
 }
 
-AvInputStream& InputFile::getStream( size_t index )
+InputStream& InputFile::getStream( size_t index )
 {
 	try
 	{

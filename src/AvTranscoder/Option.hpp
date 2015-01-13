@@ -9,6 +9,7 @@ extern "C" {
 
 #include <vector>
 #include <string>
+#include <map>
 #include <utility>
 
 namespace avtranscoder
@@ -113,6 +114,17 @@ private:
 	std::vector<Option> _childOptions;
 	size_t _defaultChildIndex;
 };
+
+typedef std::vector<Option> OptionArray;
+typedef std::map<std::string, Option> OptionMap;  ///< Key: option name / value: option
+
+/**
+ * @param outOptions: map or array of options
+ * @param av_class: a libav context (could be an AVFormatContext or an AVCodecContext).
+ * @param req_flags: libav flag (AV_OPT_FLAG_XXX), which is a filter for AVOption loaded by the Context (default = 0: no flag restriction).
+ */
+void loadOptions( OptionMap& outOptions, void* av_class, int req_flags = 0 );
+void loadOptions( OptionArray& outOptions, void* av_class, int req_flags = 0 );
 
 }
 

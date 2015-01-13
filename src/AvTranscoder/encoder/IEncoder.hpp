@@ -1,5 +1,5 @@
-#ifndef _AV_TRANSCODER_ESSENCE_STREAM_IOUTPUT_ESSENCE_HPP_
-#define _AV_TRANSCODER_ESSENCE_STREAM_IOUTPUT_ESSENCE_HPP_
+#ifndef _AV_TRANSCODER_ESSENCE_STREAM_IENCODER_HPP_
+#define _AV_TRANSCODER_ESSENCE_STREAM_IENCODER_HPP_
 
 #include <AvTranscoder/frame/Frame.hpp>
 #include <AvTranscoder/codec/ICodec.hpp>
@@ -7,10 +7,10 @@
 namespace avtranscoder
 {
 
-class AvExport IOutputEssence
+class AvExport IEncoder
 {
 public:
-	virtual ~IOutputEssence() {}
+	virtual ~IEncoder() {}
 
 	/**
 	 * @brief Setup the encoder

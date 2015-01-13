@@ -1,8 +1,7 @@
-#include "AvInputVideo.hpp"
+#include "VideoDecoder.hpp"
 
 #include <AvTranscoder/codec/ICodec.hpp>
-#include <AvTranscoder/option/Context.hpp>
-#include <AvTranscoder/codedStream/AvInputStream.hpp>
+#include <AvTranscoder/stream/InputStream.hpp>
 #include <AvTranscoder/frame/VideoFrame.hpp>
 
 extern "C" {
@@ -18,15 +17,13 @@ extern "C" {
 namespace avtranscoder
 {
 
-AvInputVideo::AvInputVideo( AvInputStream& inputStream )
-	: IInputEssence()
-	, _inputStream   ( &inputStream )
+VideoDecoder::VideoDecoder( InputStream& inputStream )
+	: _inputStream   ( &inputStream )
 	, _frame         ( NULL )
-	, _verbose( false )
 {
 }
 
-AvInputVideo::~AvInputVideo()
+VideoDecoder::~VideoDecoder()
 {
 	if( _frame != NULL )
 	{
@@ -43,24 +40,24 @@ AvInputVideo::~AvInputVideo()
 	}
 }
 
-void AvInputVideo::setup()
+void VideoDecoder::setup()
 {
-	AVCodecContext* avCodecContext = _inputStream->getVideoCodec().getAVCodecContext();
-	AVCodec* avCodec = _inputStream->getVideoCodec().getAVCodec();
+	AVCodecContext& avCodecContext = _inputStream->getVideoCodec().getAVCodecContext();
+	AVCodec& avCodec = _inputStream->getVideoCodec().getAVCodec();
 
 	// if( avCodec->capabilities & CODEC_CAP_TRUNCATED )
 	// 	avCodecContext->flags |= CODEC_FLAG_TRUNCATED;
 
-	int ret = avcodec_open2( avCodecContext, avCodec, NULL );
+	int ret = avcodec_open2( &avCodecContext, &avCodec, NULL );
 
-	if( ret < 0 || avCodecContext == NULL || avCodec == NULL )
+	if( ret < 0 || &avCodecContext == NULL || &avCodec == NULL )
 	{
 		std::string msg = "unable open video codec: ";
-		msg +=  avCodec->long_name;
+		msg +=  avCodec.long_name;
 		msg += " (";
-		msg += avCodec->name;
+		msg += avCodec.name;
 		msg += ")";
-		avcodec_close( avCodecContext );
+		avcodec_close( &avCodecContext );
 		throw std::runtime_error( msg );
 	}
 
@@ -75,7 +72,7 @@ void AvInputVideo::setup()
 	}
 }
 
-bool AvInputVideo::decodeNextFrame( Frame& frameBuffer )
+bool VideoDecoder::decodeNextFrame( Frame& frameBuffer )
 {
 	if( ! decodeNextFrame() )
 		return false;
@@ -95,12 +92,12 @@ bool AvInputVideo::decodeNextFrame( Frame& frameBuffer )
 	return true;
 }
 
-bool AvInputVideo::decodeNextFrame( Frame& frameBuffer, const size_t subStreamIndex )
+bool VideoDecoder::decodeNextFrame( Frame& frameBuffer, const size_t subStreamIndex )
 {
 	return false;
 }
 
-bool AvInputVideo::decodeNextFrame()
+bool VideoDecoder::decodeNextFrame()
 {
 	int got_frame = 0;
 	while( ! got_frame )
@@ -116,7 +113,7 @@ bool AvInputVideo::decodeNextFrame()
 		packet.data = nextPacketRead ? data.getPtr(): NULL;
 		packet.size = data.getSize();
 
-		int ret = avcodec_decode_video2( _inputStream->getVideoCodec().getAVCodecContext(), _frame, &got_frame, &packet );
+		int ret = avcodec_decode_video2( &_inputStream->getVideoCodec().getAVCodecContext(), _frame, &got_frame, &packet );
 		av_free_packet( &packet );
 
 		if( ! nextPacketRead && ret == 0 && got_frame == 0 ) // error or end of file
@@ -132,15 +129,13 @@ bool AvInputVideo::decodeNextFrame()
 	return true;
 }
 
-void AvInputVideo::flushDecoder()
+void VideoDecoder::flushDecoder()
 {
-	avcodec_flush_buffers( _inputStream->getVideoCodec().getAVCodecContext() );
+	avcodec_flush_buffers( &_inputStream->getVideoCodec().getAVCodecContext() );
 }
 
-void AvInputVideo::setProfile( const ProfileLoader::Profile& profile )
+void VideoDecoder::setProfile( const ProfileLoader::Profile& profile )
 {
-	Context codecContext( _inputStream->getVideoCodec().getAVCodecContext(), AV_OPT_FLAG_DECODING_PARAM | AV_OPT_FLAG_VIDEO_PARAM );
-
 	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
 	{
 		if( (*it).first == constants::avProfileIdentificator ||
@@ -150,13 +145,12 @@ void AvInputVideo::setProfile( const ProfileLoader::Profile& profile )
 
 		try
 		{
-			Option& decodeOption = codecContext.getOption( (*it).first );
+			Option& decodeOption = _inputStream->getVideoCodec().getOption( (*it).first );
 			decodeOption.setString( (*it).second );
 		}
 		catch( std::exception& e )
 		{
-			if( _verbose )
-				std::cout << "[InputVideo] warning - can't set option " << (*it).first << " to " << (*it).second << ": " << e.what() << std::endl;
+			std::cout << "[InputVideo] warning - can't set option " << (*it).first << " to " << (*it).second << ": " << e.what() << std::endl;
 		}
 	}
 }

@@ -1,17 +1,17 @@
-#ifndef _AV_TRANSCODER_ESSENCE_STREAM_AV_OUTPUT_VIDEO_HPP_
-#define _AV_TRANSCODER_ESSENCE_STREAM_AV_OUTPUT_VIDEO_HPP_
+#ifndef _AV_TRANSCODER_ENCODER_VIDEO_ENCODER_HPP_
+#define _AV_TRANSCODER_ENCODER_VIDEO_ENCODER_HPP_
 
-#include "IOutputEssence.hpp"
+#include "IEncoder.hpp"
 #include <AvTranscoder/codec/VideoCodec.hpp>
 #include <AvTranscoder/ProfileLoader.hpp>
 
 namespace avtranscoder
 {
 
-class AvExport AvOutputVideo : public IOutputEssence
+class AvExport VideoEncoder : public IEncoder
 {
 public:
-	AvOutputVideo();
+	VideoEncoder( const std::string& videoCodecName );
 
 	void setup();
 
@@ -22,12 +22,9 @@ public:
 	VideoCodec& getVideoCodec() { return _codec; }
 
 	void setProfile( const ProfileLoader::Profile& profile, const avtranscoder::VideoFrameDesc& frameDesc );
-	void setVerbose( bool verbose = true ) { _verbose = verbose; }
 
 private:
 	VideoCodec _codec;
-
-	bool _verbose;
 };
 
 }

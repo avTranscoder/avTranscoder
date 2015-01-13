@@ -1,5 +1,5 @@
-#ifndef _AV_TRANSCODER_ESSENCE_STREAM_IINPUT_ESSENCE_HPP_
-#define _AV_TRANSCODER_ESSENCE_STREAM_IINPUT_ESSENCE_HPP_
+#ifndef _AV_TRANSCODER_ESSENCE_STREAM_IDECODER_HPP_
+#define _AV_TRANSCODER_ESSENCE_STREAM_IDECODER_HPP_
 
 #include <AvTranscoder/common.hpp>
 #include <AvTranscoder/frame/Frame.hpp>
@@ -7,10 +7,10 @@
 namespace avtranscoder
 {
 
-class AvExport IInputEssence
+class AvExport IDecoder
 {
 public:
-	virtual ~IInputEssence() {};
+	virtual ~IDecoder() {};
 
 	/**
 	 * @brief Open the decoder
@@ -33,8 +33,8 @@ public:
 	virtual bool decodeNextFrame( Frame& frameBuffer, const size_t subStreamIndex ) = 0;
 
 	/**
-	 * Set the next frame of the input stream
-	 * @note Not yet implemented for AvInputVideo and AvInputAudio
+	 * @brief Set the next frame of the input stream (which bypass the work of decoding)
+	 * @note Not yet implemented for VideoDecoder and AudioDecoder
 	 * @param inputFrame: the new next frame
 	 */
 	virtual void setNextFrame( Frame& inputFrame ) {}

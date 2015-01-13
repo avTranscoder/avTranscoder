@@ -1,5 +1,5 @@
-#ifndef _AV_TRANSCODER_CODED_STREAM_AV_OUTPUT_STREAM_HPP_
-#define _AV_TRANSCODER_CODED_STREAM_AV_OUTPUT_STREAM_HPP_
+#ifndef _AV_TRANSCODER_STREAM_OUTPUT_STREAM_HPP_
+#define _AV_TRANSCODER_STREAM_OUTPUT_STREAM_HPP_
 
 #include "IOutputStream.hpp"
 
@@ -8,10 +8,10 @@ namespace avtranscoder
 
 class OutputFile;
 
-class AvExport AvOutputStream : public IOutputStream
+class AvExport OutputStream : public IOutputStream
 {
 public:
-	AvOutputStream( OutputFile& outputFile, const size_t streamIndex );
+	OutputStream( OutputFile& outputFile, const size_t streamIndex );
 
 	size_t getStreamIndex() const { return _streamIndex; }
 

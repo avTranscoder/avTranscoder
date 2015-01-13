@@ -1,5 +1,5 @@
-#ifndef _AV_TRANSCODER_CODED_STREAM_I_OUTPUT_STREAM_HPP_
-#define _AV_TRANSCODER_CODED_STREAM_I_OUTPUT_STREAM_HPP_
+#ifndef _AV_TRANSCODER_STREAM_I_OUTPUT_STREAM_HPP_
+#define _AV_TRANSCODER_STREAM_I_OUTPUT_STREAM_HPP_
 
 #include <AvTranscoder/codec/AudioCodec.hpp>
 #include <AvTranscoder/codec/VideoCodec.hpp>

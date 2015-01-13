@@ -1,27 +1,26 @@
-#include "GeneratorAudio.hpp"
+#include "AudioGenerator.hpp"
 
 namespace avtranscoder
 {
 
-GeneratorAudio::GeneratorAudio( )
-	: IInputEssence( )
-	, _inputFrame( NULL )
+AudioGenerator::AudioGenerator()
+	: _inputFrame( NULL )
 	, _frameDesc()
 {
 }
 
-void GeneratorAudio::setAudioFrameDesc( const AudioFrameDesc& frameDesc )
+void AudioGenerator::setAudioFrameDesc( const AudioFrameDesc& frameDesc )
 {
 	_frameDesc = frameDesc;
 	_frameDesc.setFps( 25. );
 }
 
-void GeneratorAudio::setFrame( Frame& inputFrame )
+void AudioGenerator::setFrame( Frame& inputFrame )
 {
 	_inputFrame = &inputFrame;
 }
 
-bool GeneratorAudio::decodeNextFrame( Frame& frameBuffer )
+bool AudioGenerator::decodeNextFrame( Frame& frameBuffer )
 {
 	if( ! _inputFrame )
 	{
@@ -45,7 +44,7 @@ bool GeneratorAudio::decodeNextFrame( Frame& frameBuffer )
 	return true;
 }
 
-bool GeneratorAudio::decodeNextFrame( Frame& frameBuffer, const size_t subStreamIndex )
+bool AudioGenerator::decodeNextFrame( Frame& frameBuffer, const size_t subStreamIndex )
 {
 	return false;
 }

@@ -1,7 +1,7 @@
 #ifndef _AV_TRANSCODER_FORMAT_CONTEXT_HPP_
 #define _AV_TRANSCODER_FORMAT_CONTEXT_HPP_
 
-#include "Context.hpp"
+#include <AvTranscoder/Option.hpp>
 
 extern "C" {
 #include <libavformat/avformat.h>
@@ -13,7 +13,7 @@ namespace avtranscoder
 /**
  * @brief Wrapper of an AVFormatContext.
  */
-class FormatContext : public Context
+class FormatContext
 {
 public:
 	FormatContext( const std::string& filename, int req_flags = 0 );  ///< Allocate an AVFormatContext by opening an input file
@@ -54,11 +54,16 @@ public:
 	void writeTrailer();
 
 	void addMetaData( const std::string& key, const std::string& value );
-	AVStream& addAVStream( AVCodec& avCodec );
+	AVStream& addAVStream( const AVCodec& avCodec );
 
-	size_t getNbStreams() const { return getAVFormatContext().nb_streams; }
-	size_t getDuration() const { return getAVFormatContext().duration; }
-	size_t getStartTime() const { return getAVFormatContext().start_time; }
+	size_t getNbStreams() const { return _avFormatContext->nb_streams; }
+	size_t getDuration() const { return _avFormatContext->duration; }
+	size_t getStartTime() const { return _avFormatContext->start_time; }
+
+	OptionArray getOptions();  ///< Get options as array
+	OptionMap& getOptionsMap() { return _options; }  ///< Get options as map
+
+	Option& getOption( const std::string& optionName ) { return _options.at(optionName); }
 
 	/**
 	 * Guess format from arguments.
@@ -69,16 +74,18 @@ public:
 	void setOutputFormat( const std::string& filename, const std::string& shortName = "", const std::string& mimeType = "" );
 
 #ifndef SWIG
-	AVFormatContext& getAVFormatContext() const { return *static_cast<AVFormatContext*>( _avContext ); }
-	AVOutputFormat& getAVOutputFormat() const { return *getAVFormatContext().oformat; }
-	AVInputFormat& getAVInputFormat() const { return *getAVFormatContext().iformat; }
-	AVIOContext& getAVIOContext() const { return *getAVFormatContext().pb; }
-	AVDictionary& getAVMetaData() const { return *getAVFormatContext().metadata; }
+	AVFormatContext& getAVFormatContext() const { return *_avFormatContext; }
+	AVOutputFormat& getAVOutputFormat() const { return *_avFormatContext->oformat; }
+	AVInputFormat& getAVInputFormat() const { return *_avFormatContext->iformat; }
+	AVIOContext& getAVIOContext() const { return *_avFormatContext->pb; }
+	AVDictionary& getAVMetaData() const { return *_avFormatContext->metadata; }
 	AVStream& getAVStream( size_t index ) const;
 #endif
 
 private:
-	bool _isOpen;  ///< Is the AVFormatContext open (in constructor with a filename)
+	AVFormatContext* _avFormatContext;  ///< Has ownership
+	OptionMap _options;
+	const bool _isOpen;  ///< Is the AVFormatContext open (in constructor with a filename)
 };
 
 }
