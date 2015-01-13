@@ -5,4 +5,3 @@ codec=dnxhd
 b=120M
 pix_fmt=yuv422p
 g=1
-r=25

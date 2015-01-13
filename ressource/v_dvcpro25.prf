@@ -4,4 +4,3 @@ avProfileType=avProfileTypeVideo
 codec=dvvideo
 pix_fmt=yuv411p
 b=25M
-r=25
