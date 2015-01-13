@@ -15,8 +15,6 @@ ICodec::ICodec( const ECodecType type, const std::string& codecName )
 	, _avCodec( NULL )
 	, _type( type )
 {
-	avcodec_register_all();  // TODO: call only once
-
 	setCodec( type, codecName );
 	allocateContext();
 	loadCodecOptions();
@@ -27,8 +25,6 @@ ICodec::ICodec( const ECodecType type, const AVCodecID codecId )
 	, _avCodec( NULL )
 	, _type( type )
 {
-	avcodec_register_all();  // TODO: call only once
-
 	setCodec( type, codecId );
 	allocateContext();
 	loadCodecOptions();

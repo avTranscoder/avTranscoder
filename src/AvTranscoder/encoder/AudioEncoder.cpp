@@ -19,8 +19,6 @@ AudioEncoder::AudioEncoder( const std::string& audioCodecName )
 
 void AudioEncoder::setup()
 {
-	av_register_all();
-
 	AVCodecContext& avCodecContext = _codec.getAVCodecContext();
 	const AVCodec& avCodec = _codec.getAVCodec();
 

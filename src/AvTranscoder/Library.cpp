@@ -91,7 +91,6 @@ Libraries getLibraries()
 
 std::vector<std::string> getInputExtensions()
 {
-	av_register_all();
 	std::vector<std::string> extensions;
 	AVInputFormat* iFormat = NULL;
 
@@ -130,7 +129,6 @@ std::vector<std::string> getInputExtensions()
 
 std::vector<std::string> getOutputExtensions()
 {
-	av_register_all();
 	std::vector<std::string> extensions;
 	AVOutputFormat* oFormat = NULL;
 

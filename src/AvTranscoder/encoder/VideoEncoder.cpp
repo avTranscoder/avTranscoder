@@ -20,8 +20,6 @@ VideoEncoder::VideoEncoder( const std::string& videoCodecName )
 
 void VideoEncoder::setup()
 {
-	av_register_all();
-
 	AVCodecContext& avCodecContext( _codec.getAVCodecContext() );
 
 	if( &avCodecContext == NULL )

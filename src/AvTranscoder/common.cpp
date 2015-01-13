@@ -12,6 +12,11 @@ extern "C" {
 namespace avtranscoder
 {
 
+void preloadCodecsAndFormats()
+{
+	av_register_all();
+}
+
 void split( std::vector< std::string >& splitedString, const std::string& inputString, const std::string& splitChars )
 {
 	char* part = strtok( const_cast<char*>( inputString.c_str() ), splitChars.c_str() );
@@ -47,7 +52,6 @@ std::string getFormat( const std::string& filename )
 {
 	std::string format( "" );
 	
-	av_register_all();
 	AVOutputFormat* avOutputFormat = av_guess_format( NULL, filename.c_str(), NULL);
 	if( avOutputFormat )
 	{

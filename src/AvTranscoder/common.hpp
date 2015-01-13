@@ -56,6 +56,9 @@ namespace avtranscoder
 
 typedef AVRational Rational;
 
+/// Register all the codecs and formats which are enabled at configuration time.
+void preloadCodecsAndFormats();
+
 #ifndef SWIG
 void split( std::vector< std::string >& splitedString, const std::string& inputString, const std::string& splitChars = ";" );
 int getFilesInDir( const std::string& dir, std::vector< std::string >& files );

@@ -4,6 +4,8 @@ from nose.tools import *
 
 from pyAvTranscoder import avtranscoder as av
 
+av.preloadCodecsAndFormats()
+
 
 def testSetVideoFrame():
 	"""
