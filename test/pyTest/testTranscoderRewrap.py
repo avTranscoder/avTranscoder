@@ -8,22 +8,21 @@ def testRewrapAudioStream():
 	"""
 	Rewrap one audio stream.
 	"""
+        # get src file of wrap
 	inputFileName = os.environ['AVTRANSCODER_TEST_AUDIO_FILE']
-	outputFileName = "testRewrapAudioStream.wav"
-
-	ouputFile = av.OutputFile( outputFileName )
-	transcoder = av.Transcoder( ouputFile )
-
-	transcoder.add( inputFileName, 0, "" )
-
-	progress = av.NoDisplayProgress()
-	transcoder.process( progress )
-
-	# get src file of wrap
 	src_inputFile = av.InputFile( inputFileName )
+	progress = av.NoDisplayProgress()
 	src_inputFile.analyse( progress )
 	src_properties = src_inputFile.getProperties()
 	src_audioStream = src_properties.getAudioProperties()[0]
+
+	formatList = src_properties.getFormatName().split(",")
+	outputFileName = "testRewrapAudioStream." + formatList[0]
+	ouputFile = av.OutputFile( outputFileName )
+
+	transcoder = av.Transcoder( ouputFile )
+	transcoder.add( inputFileName, 0, "" )
+	transcoder.process( progress )
 
 	# get dst file of wrap
 	dst_inputFile = av.InputFile( outputFileName )
@@ -65,22 +64,21 @@ def testRewrapVideoStream():
 	"""
 	Rewrap one video stream.
 	"""
-	inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_FILE']
-	outputFileName = "testRewrapVideoStream.avi"
-
-	ouputFile = av.OutputFile( outputFileName )
-	transcoder = av.Transcoder( ouputFile )
-
-	transcoder.add( inputFileName, 0, "" )
-
-	progress = av.NoDisplayProgress()
-	transcoder.process( progress )
-
 	# get src file of wrap
+	inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_FILE']
 	src_inputFile = av.InputFile( inputFileName )
+	progress = av.NoDisplayProgress()
 	src_inputFile.analyse( progress )
 	src_properties = src_inputFile.getProperties()	
         src_videoStream = src_properties.getVideoProperties()[0]
+
+	formatList = src_properties.getFormatName().split(",")
+	outputFileName = "testRewrapVideoStream." + formatList[0]
+	ouputFile = av.OutputFile( outputFileName )
+
+	transcoder = av.Transcoder( ouputFile )
+	transcoder.add( inputFileName, 0, "" )
+	transcoder.process( progress )
 
 	# get dst file of wrap
 	dst_inputFile = av.InputFile( outputFileName )

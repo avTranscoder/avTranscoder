@@ -23,7 +23,7 @@ public:
 	FileProperties( const FormatContext& formatContext );
 
 	std::string getFilename() const;
-	std::string getFormatName() const;
+	std::string getFormatName() const;  ///< A comma separated list of short names for the format
 	std::string getFormatLongName() const;
 
 	size_t getProgramsCount() const;
