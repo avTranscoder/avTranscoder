@@ -44,28 +44,7 @@ AudioDecoder::~AudioDecoder()
 
 void AudioDecoder::setup()
 {
-	AVCodecContext& avCodecContext = _inputStream->getAudioCodec().getAVCodecContext();
-	AVCodec& avCodec = _inputStream->getAudioCodec().getAVCodec();
-
-	avCodecContext.channels = _inputStream->getAudioCodec().getAudioFrameDesc().getChannels();
-	
-	int ret = avcodec_open2( &avCodecContext, &avCodec, NULL );
-
-	if( ret < 0 || &avCodecContext == NULL || &avCodec == NULL )
-	{
-		std::string msg = "unable open audio codec: ";
-		msg +=  avCodec.long_name;
-		msg += " (";
-		msg += avCodec.name;
-		msg += ") ";
-		avcodec_close( &avCodecContext );
-
-		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( ret, err, sizeof(err) );
-		msg += err;
-
-		throw std::runtime_error( msg );
-	}
+	_inputStream->getAudioCodec().open();
 
 #if LIBAVCODEC_VERSION_MAJOR > 54
 	_frame = av_frame_alloc();

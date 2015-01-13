@@ -41,6 +41,29 @@ ICodec::~ICodec()
 	_avCodecContext = NULL;
 }
 
+void ICodec::open()
+{
+	if( ! _avCodecContext )
+		throw std::runtime_error( "unable to open a codec with no codec context" );
+
+	int ret = avcodec_open2( _avCodecContext, _avCodec, NULL );
+	if( ret < 0 )
+	{
+		std::string msg = "unable open codec: ";
+		msg +=  _avCodec->long_name;
+		msg += " (";
+		msg += _avCodec->name;
+		msg += ") ";
+		avcodec_close( _avCodecContext );
+
+		char err[AV_ERROR_MAX_STRING_SIZE];
+		av_strerror( ret, err, sizeof(err) );
+		msg += err;
+
+		throw std::runtime_error( msg );
+	}
+}
+
 std::string ICodec::getCodecName() const
 {
 	assert( _avCodec != NULL );
