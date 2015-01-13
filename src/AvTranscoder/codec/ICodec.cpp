@@ -13,6 +13,7 @@ namespace avtranscoder {
 ICodec::ICodec( const ECodecType type, const std::string& codecName )
 	: _avCodecContext( NULL )
 	, _avCodec( NULL )
+	, _isCodecContextAllocated( true )
 	, _type( type )
 {
 	avcodec_register_all();  // TODO: call only once
@@ -25,6 +26,7 @@ ICodec::ICodec( const ECodecType type, const std::string& codecName )
 ICodec::ICodec( const ECodecType type, const AVCodecID codecId )
 	: _avCodecContext( NULL )
 	, _avCodec( NULL )
+	, _isCodecContextAllocated( true )
 	, _type( type )
 {
 	avcodec_register_all();  // TODO: call only once
@@ -34,8 +36,22 @@ ICodec::ICodec( const ECodecType type, const AVCodecID codecId )
 	loadCodecOptions();
 }
 
+ICodec::ICodec( const ECodecType type, AVCodecContext& avCodecContext )
+	: _avCodecContext( &avCodecContext )
+	, _avCodec( NULL )
+	, _isCodecContextAllocated( false )
+	, _type( type )
+{
+	avcodec_register_all();  // TODO: call only once
+
+	setCodec( type, _avCodecContext->codec_id );
+}
+
 ICodec::~ICodec()
 {
+	if( ! _isCodecContextAllocated )
+		return;
+
 	avcodec_close( _avCodecContext );
 	av_free( _avCodecContext );
 	_avCodecContext = NULL;

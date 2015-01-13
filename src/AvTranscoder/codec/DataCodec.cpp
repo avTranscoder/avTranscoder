@@ -13,6 +13,11 @@ DataCodec::DataCodec( const ECodecType type, const AVCodecID codecId )
 {
 }
 
+DataCodec::DataCodec( const ECodecType type, AVCodecContext& avCodecContext )
+	: ICodec( type, avCodecContext )
+{
+}
+
 DataCodec::DataCodec( const ICodec& codec )
 	: ICodec( codec )
 {
