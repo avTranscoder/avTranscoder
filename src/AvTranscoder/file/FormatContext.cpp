@@ -165,7 +165,21 @@ void FormatContext::setOutputFormat( const std::string& filename, const std::str
 {
 	AVOutputFormat* oformat = av_guess_format( shortName.c_str(), filename.c_str(), mimeType.c_str() );
 	if( ! oformat )
-		throw std::ios_base::failure( "unable to find format" );
+	{
+		std::string msg( "unable to find format for " );
+		msg += filename;
+		if( ! shortName.empty() )
+		{
+			msg += ", ";
+			msg += shortName;
+		}
+		if( ! mimeType.empty() )
+		{
+			msg += ", ";
+			msg += mimeType;
+		}
+		throw std::ios_base::failure( msg );
+	}
 
 	_avFormatContext->oformat = oformat;
 }
