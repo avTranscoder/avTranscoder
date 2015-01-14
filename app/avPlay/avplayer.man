@@ -1,4 +1,4 @@
-.\" Manpage for avplayer.
+.\" Manpage for avplay.
 .\" Contact arnaud.marcantoine@gmail.com to correct errors or typos.
 .TH man 1 "21 May 2014" "1.0" "avinfo man page"
 .SH NOM
