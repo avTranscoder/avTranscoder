@@ -13,6 +13,7 @@ extern "C" {
 namespace avtranscoder
 {
 
+/// @brief Description of a number of samples, which corresponds to one video frame
 class AvExport AudioFrameDesc
 {
 public:
@@ -20,11 +21,13 @@ public:
 		: _sampleRate( sampleRate )
 		, _channels( channels )
 		, _sampleFormat( sampleFormat )
+		, _fps( 25. )
 	{}
 	AudioFrameDesc( const size_t sampleRate, const size_t channels, const std::string& sampleFormat )
 		: _sampleRate( sampleRate )
 		, _channels( channels )
 		, _sampleFormat( av_get_sample_fmt( sampleFormat.c_str() ) )
+		, _fps( 25. )
 	{}
 
 	size_t getSampleRate() const { return _sampleRate; }
@@ -35,6 +38,7 @@ public:
 		const char* formatName = av_get_sample_fmt_name( _sampleFormat );
 		return formatName ? std::string( formatName ) : "unknown sample format";
 	}
+	double getFps() const { return _fps; }
 
 	size_t getDataSize() const
 	{
@@ -52,6 +56,7 @@ public:
 	void setChannels( const size_t channels ) { _channels = channels; }
 	void setSampleFormat( const std::string& sampleFormatName ) { _sampleFormat = av_get_sample_fmt( sampleFormatName.c_str() ); }
 	void setSampleFormat( const AVSampleFormat sampleFormat ) { _sampleFormat = sampleFormat; }
+	void setFps( const double fps ) { _fps = fps; }
 	
 	void setParameters( const ProfileLoader::Profile& profile )
 	{
@@ -63,6 +68,7 @@ private:
 	size_t _sampleRate;
 	size_t _channels;
 	AVSampleFormat _sampleFormat;
+	double _fps;
 };
 
 class AvExport AudioFrame : public Frame
