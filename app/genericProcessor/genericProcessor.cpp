@@ -92,6 +92,7 @@ int main( int argc, char** argv )
 	{
 		if( verbose )
 			std::cout << "start ..." << std::endl;
+		avtranscoder::preloadCodecsAndFormats();
 
 		if( verbose )
 			std::cout << "output file: " << argv[2] << std::endl;
