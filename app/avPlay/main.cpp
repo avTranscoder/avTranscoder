@@ -1,6 +1,3 @@
-
-#include <iostream>
-
 #include "AvReader.hpp"
 #include "Window.hpp"
 
