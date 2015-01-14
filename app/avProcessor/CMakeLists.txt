@@ -5,7 +5,7 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 include(AvTranscoderMacros)
 
 # Build app
-add_executable(avprocessor genericProcessor.cpp)
+add_executable(avprocessor avProcessor.cpp)
 set_target_properties(avprocessor PROPERTIES VERSION ${AVTRANSCODER_VERSION})
 target_link_libraries(avprocessor avtranscoder-shared)
 
