@@ -11,6 +11,7 @@ extern "C" {
 }
 
 #include <stdexcept>
+#include <stdlib.h>
 
 namespace avtranscoder
 {
@@ -72,6 +73,13 @@ public:
 
 	void setParameters( const ProfileLoader::Profile& profile )
 	{
+		// width
+		if( profile.count( constants::avProfileWidth ) )
+			setWidth( atoi( profile.find( constants::avProfileWidth )->second.c_str() ) );
+		// height
+		if( profile.count( constants::avProfileHeight ) )
+			setHeight( atoi( profile.find( constants::avProfileHeight )->second.c_str() ) );
+		// pixel format
 		if( profile.find( constants::avProfilePixelFormat ) != profile.end() )
 			setPixelFormat( profile.find( constants::avProfilePixelFormat )->second );
 	}
