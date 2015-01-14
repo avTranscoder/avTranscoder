@@ -139,7 +139,6 @@ void ICodec::setCodec( const ECodecType type, const AVCodecID codecId )
 	}
 }
 
-
 void ICodec::allocateContext()
 {
 	_avCodecContext = avcodec_alloc_context3( _avCodec );
@@ -152,9 +151,17 @@ void ICodec::allocateContext()
 void ICodec::loadCodecOptions()
 {
 	if( _type == eCodecTypeEncoder )
+	{
 		loadOptions( _options, _avCodecContext, AV_OPT_FLAG_ENCODING_PARAM );
+		// load specific options of the codec
+		loadOptions( _options, _avCodecContext->priv_data, AV_OPT_FLAG_ENCODING_PARAM );
+	}
 	else if( _type == eCodecTypeDecoder )
+	{
 		loadOptions( _options, _avCodecContext, AV_OPT_FLAG_DECODING_PARAM );
+		// load specific options of the codec
+		loadOptions( _options, _avCodecContext->priv_data, AV_OPT_FLAG_DECODING_PARAM );
+	}
 }
 
 }
