@@ -65,155 +65,116 @@ def testTranscodeWave16b48kmono():
 	# assert_equals( "1 channels", dst_audioStream.getChannelLayout() )  # '1 channels' != '0 channels'
 	assert_equals( 1, dst_audioStream.getChannels() )
 
-# def testTranscodeDnxhd120():
-# 	"""
-# 	Transcode one video stream (profile dnxhd120).
-# 	"""
-# 	inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_FILE']
-# 	outputFileName = "testTranscodeDnxhd120.mxf"
+def testTranscodeDnxhd120():
+	"""
+	Transcode one video stream (profile dnxhd120).
+	"""
+	inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_FILE']
+	outputFileName = "testTranscodeDnxhd120.mxf"
 
-# 	ouputFile = av.OutputFile( outputFileName )
-# 	transcoder = av.Transcoder( ouputFile )
+	ouputFile = av.OutputFile( outputFileName )
+	transcoder = av.Transcoder( ouputFile )
 
-# 	transcoder.add( inputFileName, 0, "dnxhd120" )
+	transcoder.add( inputFileName, 0, "dnxhd120" )
 
-# 	progress = av.ConsoleProgress()
-# 	transcoder.process( progress )
+	progress = av.ConsoleProgress()
+	transcoder.process( progress )
 
-# 	# get dst file of transcode
-# 	dst_inputFile = av.InputFile( outputFileName )
-# 	dst_inputFile.analyse( progress, av.eAnalyseLevelFast )
-# 	dst_properties = dst_inputFile.getProperties()
-# 	dst_videoStream = dst_properties.getVideoProperties()[0]
+	# get dst file of transcode
+	dst_inputFile = av.InputFile( outputFileName )
+	dst_inputFile.analyse( progress, av.eAnalyseLevelFirstGop )
+	dst_properties = dst_inputFile.getProperties()
+	dst_videoStream = dst_properties.getVideoProperties()[0]
 
-# 	assert_equals( "dnxhd", dst_videoStream.codecName )
-# 	assert_equals( "VC3/DNxHD", dst_videoStream.codecLongName )
-# 	# assert_equals( 120000000, dst_videoStream.bitRate )  # 120000000 != 0L
-# 	assert_equals( "yuv422p", dst_videoStream.pixelName )
-# 	# assert_equals( 1, dst_videoStream.gopSize )  # 1 != 12L
+	assert_equals( "dnxhd", dst_videoStream.getCodecName() )
+	assert_equals( "VC3/DNxHD", dst_videoStream.getCodecLongName() )
+	# assert_equals( 120000000, dst_videoStream.getBitRate() )  # 120000000 != 0L
+	assert_equals( "yuv422p", dst_videoStream.getPixelProperties().getPixelName() )
+	# assert_equals( 1, dst_videoStream.getGopSize() )  # 1 != 12L
 
-# def testTranscodeDnxhd185():
-# 	"""
-# 	Transcode one video stream (profile dnxhd185).
-# 	"""
-# 	inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_FILE']
-# 	outputFileName = "testTranscodeDnxhd185.mxf"
+def testTranscodeDnxhd185():
+	"""
+	Transcode one video stream (profile dnxhd185).
+	"""
+	inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_FILE']
+	outputFileName = "testTranscodeDnxhd185.mxf"
 
-# 	ouputFile = av.OutputFile( outputFileName )
-# 	transcoder = av.Transcoder( ouputFile )
+	ouputFile = av.OutputFile( outputFileName )
+	transcoder = av.Transcoder( ouputFile )
 
-# 	transcoder.add( inputFileName, 0, "dnxhd185" )
+	transcoder.add( inputFileName, 0, "dnxhd185" )
 
-# 	progress = av.ConsoleProgress()
-# 	transcoder.process( progress )
+	progress = av.ConsoleProgress()
+	transcoder.process( progress )
 
-# 	# get dst file of transcode
-# 	dst_inputFile = av.InputFile( outputFileName )
-# 	dst_inputFile.analyse( progress, av.eAnalyseLevelFast )
-# 	dst_properties = dst_inputFile.getProperties()
-# 	dst_videoStream = dst_properties.getVideoProperties()[0]
+	# get dst file of transcode
+	dst_inputFile = av.InputFile( outputFileName )
+	dst_inputFile.analyse( progress, av.eAnalyseLevelHeader )
+	dst_properties = dst_inputFile.getProperties()
+	dst_videoStream = dst_properties.getVideoProperties()[0]
 
-# 	assert_equals( "dnxhd", dst_videoStream.codecName )
-# 	assert_equals( "VC3/DNxHD", dst_videoStream.codecLongName )
-# 	assert_equals( 185000000, dst_videoStream.bitRate )
-# 	assert_equals( "yuv422p", dst_videoStream.pixelName )
-# 	assert_equals( 1, dst_videoStream.gopSize )
+	assert_equals( "dnxhd", dst_videoStream.getCodecName() )
+	assert_equals( "VC3/DNxHD", dst_videoStream.getCodecLongName() )
+	# assert_equals( 185000000, dst_videoStream.getBitRate() )  # 185000000 != 0L
+	assert_equals( "yuv422p", dst_videoStream.getPixelProperties().getPixelName() )
+	# assert_equals( 1, dst_videoStream.getGopSize() )  # 1 != 12L
 
-# def testTranscodeDnxhd185x():
-# 	"""
-# 	Transcode one video stream (profile dnxhd185x).
-# 	"""
-# 	inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_FILE']
-# 	outputFileName = "testTranscodeDnxhd185x.mxf"
+def testTranscodeDnxhd185x():
+	"""
+	Transcode one video stream (profile dnxhd185x).
+	"""
+	inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_FILE']
+	outputFileName = "testTranscodeDnxhd185x.mxf"
 
-# 	ouputFile = av.OutputFile( outputFileName )
-# 	transcoder = av.Transcoder( ouputFile )
+	ouputFile = av.OutputFile( outputFileName )
+	transcoder = av.Transcoder( ouputFile )
 
-# 	transcoder.add( inputFileName, 0, "dnxhd185x" )
+	transcoder.add( inputFileName, 0, "dnxhd185x" )
 
-# 	progress = av.ConsoleProgress()
-# 	transcoder.process( progress )
+	progress = av.ConsoleProgress()
+	transcoder.process( progress )
 
-# 	# get dst file of transcode
-# 	dst_inputFile = av.InputFile( outputFileName )
-# 	dst_inputFile.analyse( progress, av.eAnalyseLevelFast )
-# 	dst_properties = dst_inputFile.getProperties()
-# 	dst_videoStream = dst_properties.getVideoProperties()[0]
+	# get dst file of transcode
+	dst_inputFile = av.InputFile( outputFileName )
+	dst_inputFile.analyse( progress, av.eAnalyseLevelHeader )
+	dst_properties = dst_inputFile.getProperties()
+	dst_videoStream = dst_properties.getVideoProperties()[0]
 
-# 	assert_equals( "dnxhd", dst_videoStream.codecName )
-# 	assert_equals( "VC3/DNxHD", dst_videoStream.codecLongName )
-# 	assert_equals( 185000000, dst_videoStream.bitRate )
-# 	assert_equals( "yuv422p10", dst_videoStream.pixelName )
-# 	assert_equals( 1, dst_videoStream.gopSize )
+	assert_equals( "dnxhd", dst_videoStream.getCodecName() )
+	assert_equals( "VC3/DNxHD", dst_videoStream.getCodecLongName() )
+	# assert_equals( 185000000, dst_videoStream.getBitRate() )  # 185000000 != 0L
+	assert_equals( "yuv422p10le", dst_videoStream.getPixelProperties().getPixelName() )
+	# assert_equals( 1, dst_videoStream.getGopSize() )  # 1 != 12L
 
-# def testTranscodeXdcamhd422():
-# 	"""
-# 	Transcode one video stream (profile xdcamhd422).
-# 	"""
-# 	inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_FILE']
-# 	outputFileName = "testTranscodeXdcamhd422.mxf"
+def testTranscodeYUV420():
+	"""
+	Process one video stream (custom profile of encoding, with pixel format YUV420).
+	"""
+	inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_FILE']
+	outputFileName = "testTranscodeYUV420.avi"
 
-# 	ouputFile = av.OutputFile( outputFileName )
-# 	transcoder = av.Transcoder( ouputFile )
+	ouputFile = av.OutputFile( outputFileName )
+	transcoder = av.Transcoder( ouputFile )
 
-# 	transcoder.add( inputFileName, 0, "xdcamhd422" )
+	# create custom profile
+	customProfile = av.ProfileMap()
+	customProfile[av.avProfileIdentificator] = "customProfile"
+	customProfile[av.avProfileIdentificatorHuman] = "custom profile"
+	customProfile[av.avProfileType] = av.avProfileTypeVideo
+	customProfile[av.avProfileCodec] = "mpeg2video"
+	customProfile[av.avProfilePixelFormat] = "yuv420p"
 
-# 	progress = av.ConsoleProgress()
-# 	transcoder.process( progress )
+	transcoder.add( inputFileName, 0, customProfile )
 
-# 	# get dst file of transcode
-# 	dst_inputFile = av.InputFile( outputFileName )
-# 	dst_inputFile.analyse( progress, av.eAnalyseLevelFast )
-# 	dst_properties = dst_inputFile.getProperties()
-# 	dst_videoStream = dst_properties.getVideoProperties()[0]
+	progress = av.ConsoleProgress()
+	transcoder.process( progress )
 
-# 	assert_equals( "mpeg2video", dst_videoStream.codecName )
-# 	assert_equals( "MPEG-2 video", dst_videoStream.codecLongName )
-# 	assert_equals( 0, dst_videoStream.profile )
-# 	assert_equals( 2, dst_videoStream.level )
-# 	assert_equals( 12, dst_videoStream.gopSize )
-# 	assert_equals( True, dst_videoStream.hasBFrames )
-# 	# assert_equals( 10, dst_videoStream.dtgActiveFormat )  # 10 != 0L
-# 	# assert_equals( 1, dst_videoStream.colorspace )  # 1 != 'unspecified'
-# 	# assert_equals( 1, dst_videoStream.colorTransfert )  # 1 != 'unspecified
-# 	# assert_equals( 1, dst_videoStream.colorPrimaries )  # 1 != 'unspecified'
-# 	assert_equals( "Head", dst_videoStream.colorRange )
-# 	assert_equals( "10:00:00:00", dst_videoStream.startTimecode )
-# 	# assert_equals( 50000, dst_videoStream.bitRate )  # 5000 != 0L
-# 	# assert_equals( 50000, dst_videoStream.maxBitRate )  # 5000 != 0L
-# 	# assert_equals( 50000, dst_videoStream.minBitRate )  # 5000 != 0L
-# 	assert_equals( "bottom bottom", dst_videoStream.fieldOrder )
+	# get dst file of transcode
+	dst_inputFile = av.InputFile( outputFileName )
+	dst_inputFile.analyse( progress, av.eAnalyseLevelHeader )
+	dst_properties = dst_inputFile.getProperties()
+	dst_videoStream = dst_properties.getVideoProperties()[0]
 
-# def testTranscodeYUV420():
-# 	"""
-# 	Process one video stream (custom profile of encoding, with pixel format YUV420).
-# 	"""
-# 	inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_FILE']
-# 	outputFileName = "testTranscodeYUV420.avi"
-
-# 	ouputFile = av.OutputFile( outputFileName )
-# 	transcoder = av.Transcoder( ouputFile )
-
-# 	# create custom profile
-# 	customProfile = av.ProfileMap()
-# 	customProfile[av.Profile.avProfileIdentificator] = "customProfile"
-# 	customProfile[av.Profile.avProfileIdentificatorHuman] = "custom profile"
-# 	customProfile[av.Profile.avProfileType] = av.Profile.avProfileTypeVideo
-# 	customProfile[av.Profile.avProfileFrameRate] = "25"
-# 	customProfile[av.Profile.avProfileCodec] = "mpeg2video"
-# 	customProfile[av.Profile.avProfilePixelFormat] = "yuv420p"
-
-# 	transcoder.add( inputFileName, 0, customProfile )
-
-# 	progress = av.ConsoleProgress()
-# 	transcoder.process( progress )
-
-# 	# get dst file of transcode
-# 	dst_inputFile = av.InputFile( outputFileName )
-# 	dst_inputFile.analyse( progress, av.eAnalyseLevelFast )
-# 	dst_properties = dst_inputFile.getProperties()
-# 	dst_videoStream = dst_properties.getVideoProperties()[0]
-
-# 	assert_equals( "mpeg2video", dst_videoStream.codecName )
-# 	assert_equals( "yuv420p", dst_videoStream.pixelName )
+	assert_equals( "mpeg2video", dst_videoStream.getCodecName() )
+	assert_equals( "yuv420p", dst_videoStream.getPixelProperties().getPixelName() )
 
