@@ -24,6 +24,8 @@ namespace constants
 	const std::string avProfilePixelFormat = "pix_fmt";
 	const std::string avProfileSampleFormat = "sample_fmt";
 	const std::string avProfileFrameRate = "r";
+	const std::string avProfileWidth = "width";
+	const std::string avProfileHeight = "height";
 	const std::string avProfileSampleRate = "ar";
 	const std::string avProfileChannel = "ac";
 }
