@@ -126,17 +126,12 @@ void ICodec::setCodec( const ECodecType type, const AVCodecID codecId )
 	}
 
 	if( type == eCodecTypeEncoder )
-	{
 		_avCodec = avcodec_find_encoder( codecId );
-		if( _avCodecContext )
-			_avCodecContext->codec = _avCodec;
-	}
 	else if( type == eCodecTypeDecoder )
-	{
 		_avCodec = avcodec_find_decoder( codecId );
-		if( _avCodecContext )
-			_avCodecContext->codec = _avCodec;
-	}
+
+	if( _avCodecContext )
+		_avCodecContext->codec = _avCodec;
 }
 
 void ICodec::allocateContext()
@@ -146,6 +141,7 @@ void ICodec::allocateContext()
 	{
 		throw std::runtime_error( "unable to allocate the codecContext and set its fields to default values" );
 	}
+	_avCodecContext->codec = _avCodec;
 }
 
 void ICodec::loadCodecOptions()
