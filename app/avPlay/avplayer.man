@@ -1,10 +1,10 @@
-.\" Manpage for avprofiles.
+.\" Manpage for avplay.
 .\" Contact arnaud.marcantoine@gmail.com to correct errors or typos.
 .TH man 1 "21 May 2014" "1.0" "avinfo man page"
 .SH NOM
-avprofiles - check options for each profile detected
+avplayer - play media file
 .SH SYNOPSIS
-avprofiles
+avplayer inputfile.ext
 .SH AUTHOR
 Written by Marc-Antoine ARNAUD (arnaud.marcantoine@gmail.com)
 .SH COPYRIGHT

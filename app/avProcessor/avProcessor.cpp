@@ -1,5 +1,4 @@
 #include <AvTranscoder/transcoder/Transcoder.hpp>
-
 #include <AvTranscoder/progress/ConsoleProgress.hpp>
 
 #include <iostream>
@@ -92,6 +91,7 @@ int main( int argc, char** argv )
 	{
 		if( verbose )
 			std::cout << "start ..." << std::endl;
+		avtranscoder::preloadCodecsAndFormats();
 
 		if( verbose )
 			std::cout << "output file: " << argv[2] << std::endl;

@@ -12,7 +12,6 @@ AudioGenerator::AudioGenerator()
 void AudioGenerator::setAudioFrameDesc( const AudioFrameDesc& frameDesc )
 {
 	_frameDesc = frameDesc;
-	_frameDesc.setFps( 25. );
 }
 
 void AudioGenerator::setFrame( Frame& inputFrame )

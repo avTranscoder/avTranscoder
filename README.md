@@ -34,7 +34,6 @@ avProfileName=profileName
 avProfileLongName=profileLongName
 avProfileType=avProfileTypeVideo
 codec=codecName
-r=frameRate
 ```
 
 The minimum audio profile is:

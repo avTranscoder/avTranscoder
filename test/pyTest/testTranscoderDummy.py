@@ -82,10 +82,8 @@ def testTranscodeDummyAudio():
 	transcoder = av.Transcoder( ouputFile )
 
 	# add a dummy video stream
-	audioDesc = av.AudioFrameDesc( 48000, 1, "s16" )
-	audioDesc.setFps( 25 )
-
 	audioCodec = av.AudioCodec( av.eCodecTypeEncoder, "pcm_s16le" )
+	audioDesc = av.AudioFrameDesc( 48000, 1, "s16" )
 	audioCodec.setAudioParameters( audioDesc )
 	transcoder.add( "", 0, "wave24b48kmono", audioCodec )
 

@@ -91,7 +91,6 @@ def testTranscodeDnxhd120():
 	# assert_equals( 120000000, dst_videoStream.getBitRate() )  # 120000000 != 0L
 	assert_equals( "yuv422p", dst_videoStream.getPixelProperties().getPixelName() )
 	# assert_equals( 1, dst_videoStream.getGopSize() )  # 1 != 12L
-	assert_equals( 25, dst_videoStream.getFps() )
 
 def testTranscodeDnxhd185():
 	"""
@@ -119,7 +118,6 @@ def testTranscodeDnxhd185():
 	# assert_equals( 185000000, dst_videoStream.getBitRate() )  # 185000000 != 0L
 	assert_equals( "yuv422p", dst_videoStream.getPixelProperties().getPixelName() )
 	# assert_equals( 1, dst_videoStream.getGopSize() )  # 1 != 12L
-	assert_equals( 25, dst_videoStream.getFps() )
 
 def testTranscodeDnxhd185x():
 	"""
@@ -147,7 +145,6 @@ def testTranscodeDnxhd185x():
 	# assert_equals( 185000000, dst_videoStream.getBitRate() )  # 185000000 != 0L
 	assert_equals( "yuv422p10le", dst_videoStream.getPixelProperties().getPixelName() )
 	# assert_equals( 1, dst_videoStream.getGopSize() )  # 1 != 12L
-	assert_equals( 25, dst_videoStream.getFps() )
 
 def testTranscodeYUV420():
 	"""

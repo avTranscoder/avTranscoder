@@ -24,6 +24,8 @@ namespace constants
 	const std::string avProfilePixelFormat = "pix_fmt";
 	const std::string avProfileSampleFormat = "sample_fmt";
 	const std::string avProfileFrameRate = "r";
+	const std::string avProfileWidth = "width";
+	const std::string avProfileHeight = "height";
 	const std::string avProfileSampleRate = "ar";
 	const std::string avProfileChannel = "ac";
 }
@@ -37,11 +39,23 @@ public:
 public:
 	ProfileLoader( bool autoload = false );
 
+	/**
+	 * @brief Load profiles from files in avProfilesPath directory
+	 * @param avProfilesPath: if empty, the path is replaced by value of AVPROFILES environment variable
+	 */
 	void loadProfiles( const std::string& avProfilesPath = "" );
-	void loadProfile( const std::string& avProfileFile );
 
-	void update( const Profile& profile );
-	
+	/**
+	 * @brief Load the profile defines in the given file
+	 */
+	void loadProfile( const std::string& avProfileFileName );
+
+	/**
+	 * @brief  Load the given profile
+	 * @exception throw std::runtime_error if the profile is invalid
+	 */
+	void loadProfile( const Profile& profile );
+
 	const Profiles& getProfiles();
 
 	Profiles getFormatProfiles();
@@ -49,6 +63,11 @@ public:
 	Profiles getAudioProfiles();
 
 	Profile& getProfile( const std::string& avProfileIdentificator );
+
+private:
+	bool checkFormatProfile( const Profile& profileToCheck );
+	bool checkVideoProfile( const Profile& profileToCheck );
+	bool checkAudioProfile( const Profile& profileToCheck );
 
 private:
 	Profiles _profiles;
