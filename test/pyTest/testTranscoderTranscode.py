@@ -91,7 +91,6 @@ def testTranscodeWave16b48kmono():
 # 	# assert_equals( 120000000, dst_videoStream.bitRate )  # 120000000 != 0L
 # 	assert_equals( "yuv422p", dst_videoStream.pixelName )
 # 	# assert_equals( 1, dst_videoStream.gopSize )  # 1 != 12L
-# 	assert_equals( 25, dst_videoStream.fps )
 
 # def testTranscodeDnxhd185():
 # 	"""
@@ -119,7 +118,6 @@ def testTranscodeWave16b48kmono():
 # 	assert_equals( 185000000, dst_videoStream.bitRate )
 # 	assert_equals( "yuv422p", dst_videoStream.pixelName )
 # 	assert_equals( 1, dst_videoStream.gopSize )
-# 	assert_equals( 25, dst_videoStream.fps )
 
 # def testTranscodeDnxhd185x():
 # 	"""
@@ -147,7 +145,6 @@ def testTranscodeWave16b48kmono():
 # 	assert_equals( 185000000, dst_videoStream.bitRate )
 # 	assert_equals( "yuv422p10", dst_videoStream.pixelName )
 # 	assert_equals( 1, dst_videoStream.gopSize )
-# 	assert_equals( 25, dst_videoStream.fps )
 
 # def testTranscodeXdcamhd422():
 # 	"""
@@ -177,7 +174,6 @@ def testTranscodeWave16b48kmono():
 # 	assert_equals( 12, dst_videoStream.gopSize )
 # 	assert_equals( True, dst_videoStream.hasBFrames )
 # 	# assert_equals( 10, dst_videoStream.dtgActiveFormat )  # 10 != 0L
-# 	assert_equals( 25, dst_videoStream.fps )
 # 	# assert_equals( 1, dst_videoStream.colorspace )  # 1 != 'unspecified'
 # 	# assert_equals( 1, dst_videoStream.colorTransfert )  # 1 != 'unspecified
 # 	# assert_equals( 1, dst_videoStream.colorPrimaries )  # 1 != 'unspecified'

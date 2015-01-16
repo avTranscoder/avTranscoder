@@ -147,19 +147,17 @@ bool AudioEncoder::encodeFrame( Frame& codedFrame )
 
 void AudioEncoder::setProfile( const ProfileLoader::Profile& profile, const AudioFrameDesc& frameDesc  )
 {
-	if( ! profile.count( constants::avProfileCodec ) )
-	{
-		throw std::runtime_error( "The profile " + profile.find( constants::avProfileIdentificatorHuman )->second + " is invalid." );
-	}
-	
+	// set sampleRate, number of channels, sample format
 	_codec.setAudioParameters( frameDesc );
-	
+
+	// set encoder options
 	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
 	{
 		if( (*it).first == constants::avProfileIdentificator ||
 			(*it).first == constants::avProfileIdentificatorHuman ||
 			(*it).first == constants::avProfileType ||
-			(*it).first == constants::avProfileCodec )
+			(*it).first == constants::avProfileCodec ||
+			(*it).first == constants::avProfileSampleFormat )
 			continue;
 
 		try
@@ -178,7 +176,8 @@ void AudioEncoder::setProfile( const ProfileLoader::Profile& profile, const Audi
 		if( (*it).first == constants::avProfileIdentificator ||
 			(*it).first == constants::avProfileIdentificatorHuman ||
 			(*it).first == constants::avProfileType ||
-			(*it).first == constants::avProfileCodec )
+			(*it).first == constants::avProfileCodec ||
+			(*it).first == constants::avProfileSampleFormat )
 			continue;
 
 		try

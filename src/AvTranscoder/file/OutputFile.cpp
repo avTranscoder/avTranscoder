@@ -150,11 +150,6 @@ void OutputFile::addMetadata( const std::string& key, const std::string& value )
 
 void OutputFile::setProfile( const ProfileLoader::Profile& profile )
 {
-	if( ! profile.count( constants::avProfileFormat ) )
-	{
-		throw std::runtime_error( "The profile " + profile.find( constants::avProfileIdentificatorHuman )->second + " is invalid." );
-	}
-	
 	if( ! matchFormat( profile.find( constants::avProfileFormat )->second, _filename ) )
 	{
 		throw std::runtime_error( "Invalid format according to the file extension." );

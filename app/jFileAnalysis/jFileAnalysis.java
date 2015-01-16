@@ -2,7 +2,7 @@ import org.avtranscoder.NoDisplayProgress;
 import org.avtranscoder.InputFile;
 
 
-public class jTranscoder {
+public class jFileAnalysis {
 	public static void main( String[] args ){
 		System.loadLibrary("avutil");
 		System.loadLibrary("swscale");
@@ -24,9 +24,9 @@ public class jTranscoder {
 
 // How to use
 
-// Compile on UNIX: javac -cp "/path/to/jar/avtranscoder-<version>.jar:." jTranscoder.java
-// Run on UNIX: java -Djava.library.path=/path/to/lib/ -cp "/path/to/jar/avtranscoder-<version>.jar:." jTranscoder <input_image>
+// Compile on UNIX: javac -cp "/path/to/jar/avtranscoder-<version>.jar:." jFileAnalysis.java
+// Run on UNIX: java -Djava.library.path=/path/to/lib/ -cp "/path/to/jar/avtranscoder-<version>.jar:." jFileAnalysis <input_image>
 
-// Compile on Windows: javac -cp "/path/to/jar/avtranscoder-<version>.jar;." jTranscoder.java
-// Run on Windows: java -Djava.library.path=/path/to/lib/ -cp "/path/to/jar/avtranscoder-<version>.jar;." jTranscoder <input_image>
+// Compile on Windows: javac -cp "/path/to/jar/avtranscoder-<version>.jar;." jFileAnalysis.java
+// Run on Windows: java -Djava.library.path=/path/to/lib/ -cp "/path/to/jar/avtranscoder-<version>.jar;." jFileAnalysis <input_image>
 

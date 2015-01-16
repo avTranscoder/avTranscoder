@@ -17,19 +17,18 @@ int main( int argc, char** argv )
 		std::cout << std::endl;
 	}
 
-	// std::cout << "avinfo" << std::endl;
+	avtranscoder::preloadCodecsAndFormats();
+
 	std::vector<std::string> inputExtension  = avtranscoder::getInputExtensions();
 	std::vector<std::string> outputExtension = avtranscoder::getOutputExtensions();
 	
-	std::cout << "----- inputExtension -----" << std::endl;
-	std::cout << "nb inputExtension: " << inputExtension.size() << std::endl;
+	std::cout << "Supported input extensions: " << inputExtension.size() << std::endl;
 	for( std::vector<std::string>::iterator it = inputExtension.begin(); it != inputExtension.end(); ++it )
-		std::cout << *it << std::endl;
+		std::cout << *it << ", ";;
 	
-	std::cout << "----- outputExtension -----" << std::endl;
-	std::cout << "nb outputExtension: " << outputExtension.size() << std::endl;
+	std::cout << std::endl << std::endl << "Supported output extensions: " << outputExtension.size() << std::endl;
 	for( std::vector<std::string>::iterator it = outputExtension.begin(); it != outputExtension.end(); ++it )
-		std::cout << *it << std::endl;
-	
+		std::cout << *it << ", ";
+	std::cout << std::endl;
 	return 0;
 }

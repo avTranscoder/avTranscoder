@@ -86,9 +86,6 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 
 void Transcoder::add( const std::string& filename, const size_t streamIndex, ProfileLoader::Profile& profile, const size_t offset )
 {
-	// Add profile if new
-	_profileLoader.update( profile );
-
 	// Check filename
 	if( ! filename.length() )
 		throw std::runtime_error( "Can't transcode a stream without filename indicated" );
@@ -100,9 +97,6 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, Pro
 
 void Transcoder::add( const std::string& filename, const size_t streamIndex, ProfileLoader::Profile& profile, ICodec& codec, const size_t offset )
 {
-	// Add profile if new
-	_profileLoader.update( profile );
-
 	// Generator
 	if( ! filename.length() )
 	{
@@ -192,9 +186,6 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 
 void Transcoder::add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, ProfileLoader::Profile& profile, const size_t offset )
 {
-	// Add profile if new
-	_profileLoader.update( profile );
-
 	// No subStream selected
 	if( subStreamIndex < 0 )
 	{
@@ -213,9 +204,6 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 
 void Transcoder::add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, ProfileLoader::Profile& profile, ICodec& codec, const size_t offset )
 {
-	// Add profile if new
-	_profileLoader.update( profile );
-	
 	// No subStream selected
 	if( subStreamIndex < 0 )
 	{
@@ -372,7 +360,7 @@ void Transcoder::addTranscodeStream( const std::string& filename, const size_t s
 	profile[ constants::avProfileChannel ] = "1";
 
 	// Add profile
-	_profileLoader.update( profile );
+	_profileLoader.loadProfile( profile );
 
 	switch( referenceFile->getStream( streamIndex ).getStreamType() )
 	{
@@ -394,6 +382,10 @@ void Transcoder::addTranscodeStream( const std::string& filename, const size_t s
 
 void Transcoder::addTranscodeStream( const std::string& filename, const size_t streamIndex, const size_t subStreamIndex, ProfileLoader::Profile& profile, const size_t offset )
 {
+	// Add profile
+	_profileLoader.loadProfile( profile );
+
+	// Add input file
 	InputFile* referenceFile = addInputFile( filename, streamIndex );
 
 	switch( referenceFile->getStream( streamIndex ).getStreamType() )
@@ -417,8 +409,8 @@ void Transcoder::addTranscodeStream( const std::string& filename, const size_t s
 
 void Transcoder::addDummyStream( const ProfileLoader::Profile& profile, const ICodec& codec )
 {
-	if( ! profile.count( constants::avProfileType ) )
-		throw std::runtime_error( "unable to found stream type (audio, video, etc.)" );
+	// Add profile
+	_profileLoader.loadProfile( profile );
 
 	if( _verbose )
 	{

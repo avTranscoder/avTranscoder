@@ -38,8 +38,6 @@ ICodec::ICodec( const ECodecType type, AVCodecContext& avCodecContext )
 	, _isCodecContextAllocated( false )
 	, _type( type )
 {
-	avcodec_register_all();  // TODO: call only once
-
 	setCodec( type, _avCodecContext->codec_id );
 }
 

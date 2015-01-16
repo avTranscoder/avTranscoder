@@ -13,11 +13,13 @@ int main( int argc, char** argv )
 		return( -1 );
 	}
 
-	avtranscoder::NoDisplayProgress p;
+	avtranscoder::preloadCodecsAndFormats();
 
+	// analyse inputFile
 	avtranscoder::InputFile input( argv[1] );
+	avtranscoder::NoDisplayProgress p;
 	input.analyse( p, avtranscoder::eAnalyseLevelFirstGop );
 
-	// a simply metadata display
+	// display file properties
 	std::cout << input;
 }
