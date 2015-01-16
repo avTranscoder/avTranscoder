@@ -78,14 +78,14 @@ void ICodec::open()
 
 std::string ICodec::getCodecName() const
 {
-	assert( _avCodec != NULL );
-	return avcodec_descriptor_get( _avCodec->id )->name;
+	assert( _avCodecContext != NULL );
+	return avcodec_descriptor_get( _avCodecContext->codec_id )->name;
 }
 
 AVCodecID ICodec::getCodecId() const
 {
-	assert( _avCodec != NULL );
-	return _avCodec->id;
+	assert( _avCodecContext != NULL );
+	return _avCodecContext->codec_id;
 }
 
 int ICodec::getLatency()  const
