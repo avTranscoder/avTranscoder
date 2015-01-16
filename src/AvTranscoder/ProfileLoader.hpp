@@ -37,11 +37,23 @@ public:
 public:
 	ProfileLoader( bool autoload = false );
 
+	/**
+	 * @brief Load profiles from files in avProfilesPath directory
+	 * @param avProfilesPath: if empty, the path is replaced by value of AVPROFILES environment variable
+	 */
 	void loadProfiles( const std::string& avProfilesPath = "" );
-	void loadProfile( const std::string& avProfileFile );
 
-	void update( const Profile& profile );
-	
+	/**
+	 * @brief Load the profile defines in the given file
+	 */
+	void loadProfile( const std::string& avProfileFileName );
+
+	/**
+	 * @brief  Load the given profile
+	 * @exception throw std::runtime_error if the profile is invalid
+	 */
+	void loadProfile( const Profile& profile );
+
 	const Profiles& getProfiles();
 
 	Profiles getFormatProfiles();
