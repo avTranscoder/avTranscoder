@@ -3,4 +3,3 @@ avProfileLongName=MPEG-2
 avProfileType=avProfileTypeVideo
 codec=mpeg2video
 pix_fmt=yuv422p
-r=25

@@ -130,24 +130,18 @@ bool VideoEncoder::encodeFrame( Frame& codedFrame )
 
 void VideoEncoder::setProfile( const ProfileLoader::Profile& profile, const avtranscoder::VideoFrameDesc& frameDesc )
 {
-	if( ! profile.count( constants::avProfileCodec ) ||
-		! profile.count( constants::avProfileFrameRate ) )
-	{
-		throw std::runtime_error( "The profile " + profile.find( constants::avProfileIdentificatorHuman )->second + " is invalid." );
-	}
-
-	const size_t frameRate = std::strtoul( profile.find( constants::avProfileFrameRate )->second.c_str(), NULL, 0 );
-	_codec.setTimeBase( 1, frameRate );
-
+	// set width, height, pixel format, fps
 	_codec.setImageParameters( frameDesc );
-	
+
+	// set encoder options
 	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
 	{
 		if( (*it).first == constants::avProfileIdentificator ||
 			(*it).first == constants::avProfileIdentificatorHuman ||
 			(*it).first == constants::avProfileType ||
 			(*it).first == constants::avProfileCodec ||
-			(*it).first == constants::avProfileFrameRate )
+			(*it).first == constants::avProfileFrameRate ||
+			(*it).first == constants::avProfilePixelFormat )
 			continue;
 
 		try
@@ -167,7 +161,8 @@ void VideoEncoder::setProfile( const ProfileLoader::Profile& profile, const avtr
 			(*it).first == constants::avProfileIdentificatorHuman ||
 			(*it).first == constants::avProfileType ||
 			(*it).first == constants::avProfileCodec ||
-			(*it).first == constants::avProfileFrameRate )
+			(*it).first == constants::avProfileFrameRate ||
+			(*it).first == constants::avProfilePixelFormat )
 			continue;
 
 		try

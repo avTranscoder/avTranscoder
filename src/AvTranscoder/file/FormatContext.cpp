@@ -12,11 +12,15 @@ FormatContext::FormatContext( const std::string& filename, int req_flags )
 	, _options()
 	, _isOpen( true )
 {
-	int err = avformat_open_input( &_avFormatContext, filename.c_str(), NULL, NULL );
-	if( err < 0 )
+	int ret = avformat_open_input( &_avFormatContext, filename.c_str(), NULL, NULL );
+	if( ret < 0 )
 	{
-		std::string msg = "unable to open file: ";
+		char err[AV_ERROR_MAX_STRING_SIZE];
+		av_strerror( ret, err, sizeof(err) );
+		std::string msg = "unable to open file ";
 		msg += filename;
+		msg += ": ";
+		msg += err;
 		throw std::ios_base::failure( msg );
 	}
 	loadOptions( _options, _avFormatContext, req_flags );

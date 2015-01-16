@@ -3,4 +3,3 @@ avProfileLongName=Raw YUV
 avProfileType=avProfileTypeVideo
 codec=rawvideo
 pix_fmt=rgb24
-r=25

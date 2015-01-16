@@ -100,7 +100,7 @@ protected:
 	FormatContext _formatContext;
 	FileProperties _properties;
 	std::string _filename;
-	std::vector<InputStream*> _inputStreams;
+	std::vector<InputStream*> _inputStreams;  ///< Has ownership
 
 	bool _verbose;
 };

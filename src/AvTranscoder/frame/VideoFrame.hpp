@@ -5,12 +5,12 @@
 #include <AvTranscoder/ProfileLoader.hpp>
 
 extern "C" {
-#include <libavutil/rational.h>
 #include <libavutil/pixfmt.h>
 #include <libavutil/pixdesc.h>
 }
 
 #include <stdexcept>
+#include <stdlib.h>
 
 namespace avtranscoder
 {
@@ -22,34 +22,26 @@ public:
 		: _width( width )
 		, _height( height )
 		, _pixelFormat( pixelFormat )
-		, _interlaced( false )
-		, _topFieldFirst( false )
+		, _fps( 1.0 )
 	{
-		_displayAspectRatio.num = width;
-		_displayAspectRatio.den = height;
 	}
 	VideoFrameDesc( const size_t width, const size_t height, const std::string& pixelFormat )
 		: _width( width )
 		, _height( height )
 		, _pixelFormat( av_get_pix_fmt( pixelFormat.c_str() ) )
-		, _interlaced( false )
-		, _topFieldFirst( false )
+		, _fps( 1.0 )
 	{
-		_displayAspectRatio.num = width;
-		_displayAspectRatio.den = height;
 	}
 
 	size_t getWidth () const { return _width;  }
 	size_t getHeight() const { return _height; }
-	Rational getDar() const { return _displayAspectRatio; }
-	int getDarNum() const { return _displayAspectRatio.num; }
-	int getDarDen() const { return _displayAspectRatio.den; }
 	AVPixelFormat getPixelFormat() const { return _pixelFormat; }
 	std::string getPixelFormatName() const
 	{
 	    const char* formatName = av_get_pix_fmt_name( _pixelFormat );
 	    return formatName ? std::string( formatName ) : "unknown pixel format";
 	}
+	double getFps() const { return _fps; }
 
 	size_t getDataSize() const
 	{
@@ -67,22 +59,23 @@ public:
 	void setHeight( const size_t height ) { _height = height; }
 	void setPixelFormat( const std::string& pixelFormat ) { _pixelFormat = av_get_pix_fmt( pixelFormat.c_str() ); }
 	void setPixelFormat( const AVPixelFormat pixelFormat ) { _pixelFormat = pixelFormat; }
-	void setDar( const size_t num, const size_t den ) { _displayAspectRatio.num = num; _displayAspectRatio.den = den; }
-	void setDar( const Rational& ratio ) { _displayAspectRatio = ratio; }
+	void setFps( const double fps ) { _fps = fps; }
 
 	void setParameters( const ProfileLoader::Profile& profile )
 	{
-		if( profile.find( constants::avProfilePixelFormat ) != profile.end() )
+		// pixel format	
+		if( profile.count( constants::avProfilePixelFormat ) )
 			setPixelFormat( profile.find( constants::avProfilePixelFormat )->second );
+		// fps
+		if( profile.count( constants::avProfileFrameRate ) )
+			setFps( atof( profile.find( constants::avProfileFrameRate )->second.c_str() ) );
 	}
 
 private:
 	size_t _width;
 	size_t _height;
-	Rational  _displayAspectRatio;
 	AVPixelFormat _pixelFormat;
-	bool _interlaced;
-	bool _topFieldFirst;
+	double _fps;
 };
 
 //template< template<typename> Alloc >

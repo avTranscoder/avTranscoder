@@ -17,7 +17,6 @@ public:
 	AudioFrameDesc getAudioFrameDesc() const;
 
 	void setAudioParameters( const AudioFrameDesc& audioFrameDesc );
-	void setAudioParameters( const size_t sampleRate, const size_t channels, const AVSampleFormat sampleFormat );
 };
 
 }
