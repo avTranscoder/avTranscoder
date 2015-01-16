@@ -161,9 +161,8 @@ def testTranscodeYUV420():
 	customProfile[av.avProfileIdentificator] = "customProfile"
 	customProfile[av.avProfileIdentificatorHuman] = "custom profile"
 	customProfile[av.avProfileType] = av.avProfileTypeVideo
-	customProfile[av.avProfileFrameRate] = "25"
 	customProfile[av.avProfileCodec] = "mpeg2video"
-	customProfile[av.avProfilePixelFormat] = "yuv422p"
+	customProfile[av.avProfilePixelFormat] = "yuv420p"
 
 	transcoder.add( inputFileName, 0, customProfile )
 
@@ -177,5 +176,5 @@ def testTranscodeYUV420():
 	dst_videoStream = dst_properties.getVideoProperties()[0]
 
 	assert_equals( "mpeg2video", dst_videoStream.getCodecName() )
-	assert_equals( "yuv422p", dst_videoStream.getPixelProperties().getPixelName() )
+	assert_equals( "yuv420p", dst_videoStream.getPixelProperties().getPixelName() )
 
