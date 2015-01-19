@@ -32,6 +32,11 @@ public:
 	size_t getBitRate() const;
 	size_t getNbSamples() const;
 
+	size_t getTicksPerFrame() const;
+	Rational getTimeBase() const;
+	double getFps() const;
+	double getDuration() const;
+
 	PropertiesMap& getMetadatas() { return _metadatas; }
 
 #ifndef SWIG
