@@ -337,8 +337,8 @@ std::string VideoProperties::getStartTimecodeString() const
 
 Rational VideoProperties::getTimeBase() const
 {
-	if( ! _codecContext )
-		throw std::runtime_error( "unknown codec context" );
+	if( ! _formatContext )
+		throw std::runtime_error( "unknown format context" );
 
 	Rational timeBase = {
 		_formatContext->streams[_streamId]->time_base.num,
@@ -479,9 +479,6 @@ double VideoProperties::getFps() const
 
 double VideoProperties::getDuration() const
 {
-	if( ! _formatContext )
-		throw std::runtime_error( "unknown format context" );
-
 	Rational timeBase = getTimeBase();
 	double duration = ( timeBase.num / (double) timeBase.den ) * _formatContext->streams[_streamId]->duration;
 	return duration;
