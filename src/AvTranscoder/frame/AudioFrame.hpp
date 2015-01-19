@@ -17,12 +17,18 @@ namespace avtranscoder
 class AvExport AudioFrameDesc
 {
 public:
+	/**
+	 * @warning FPS value is set to 25 by default
+	 */
 	AudioFrameDesc( const size_t sampleRate = 0, const size_t channels = 0, const AVSampleFormat sampleFormat = AV_SAMPLE_FMT_NONE )
 		: _sampleRate( sampleRate )
 		, _channels( channels )
 		, _sampleFormat( sampleFormat )
 		, _fps( 25. )
 	{}
+	/**
+	 * @warning FPS value is set to 25 by default
+	 */
 	AudioFrameDesc( const size_t sampleRate, const size_t channels, const std::string& sampleFormat )
 		: _sampleRate( sampleRate )
 		, _channels( channels )
