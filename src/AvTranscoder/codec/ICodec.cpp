@@ -39,6 +39,7 @@ ICodec::ICodec( const ECodecType type, AVCodecContext& avCodecContext )
 	, _type( type )
 {
 	setCodec( type, _avCodecContext->codec_id );
+	loadCodecOptions();
 }
 
 ICodec::~ICodec()
