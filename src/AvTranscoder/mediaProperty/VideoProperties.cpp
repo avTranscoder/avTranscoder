@@ -335,7 +335,6 @@ std::string VideoProperties::getStartTimecodeString() const
 	return os.str();
 }
 
-
 Rational VideoProperties::getTimeBase() const
 {
 	if( ! _codecContext )
@@ -592,7 +591,7 @@ PropertiesMap VideoProperties::getPropertiesAsMap() const
 	detail::add( dataMap, "interlaced ", isInterlaced() );
 	detail::add( dataMap, "topFieldFirst", isTopFieldFirst() );
 	detail::add( dataMap, "fieldOrder", getFieldOrder() );
-	detail::add( dataMap, "timeBase", getTimeBase().num / (double) getTimeBase().den );
+	detail::add( dataMap, "timeBase", getTimeBase() );
 	detail::add( dataMap, "duration", getDuration() );
 	detail::add( dataMap, "fps", getFps() );
 	detail::add( dataMap, "nbFrame", getNbFrames() );
