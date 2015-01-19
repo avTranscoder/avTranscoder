@@ -89,7 +89,7 @@ VideoCodec& InputStream::getVideoCodec()
 		throw std::runtime_error( "unable to get video descriptor on non-video stream" );
 	}
 
-	return *static_cast<VideoCodec*>( _codec );;
+	return *static_cast<VideoCodec*>( _codec );
 }
 
 AudioCodec& InputStream::getAudioCodec()
@@ -101,7 +101,7 @@ AudioCodec& InputStream::getAudioCodec()
 		throw std::runtime_error( "unable to get audio descriptor on non-audio stream" );
 	}
 
-	return *static_cast<AudioCodec*>( _codec );;
+	return *static_cast<AudioCodec*>( _codec );
 }
 
 DataCodec& InputStream::getDataCodec()
@@ -113,7 +113,7 @@ DataCodec& InputStream::getDataCodec()
 		throw std::runtime_error( "unable to get data descriptor on non-data stream" );
 	}
 
-	return *static_cast<DataCodec*>( _codec );;
+	return *static_cast<DataCodec*>( _codec );
 }
 
 AVMediaType InputStream::getStreamType() const
