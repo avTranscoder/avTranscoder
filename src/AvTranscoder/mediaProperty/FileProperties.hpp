@@ -61,6 +61,8 @@ public:
 
 	PropertiesMap getPropertiesAsMap() const;  ///< Return all file properties as a map (name of property: value)
 
+	void clearStreamProperties();  ///< Clear all array of stream properties
+
 private:
 	const AVFormatContext* _formatContext;  ///< Has link (no ownership)
 

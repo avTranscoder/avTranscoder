@@ -109,4 +109,14 @@ PropertiesMap FileProperties::getPropertiesAsMap() const
 	return dataMap;
 }
 
+void FileProperties::clearStreamProperties()
+{
+	_videoStreams.clear();
+	_audioStreams.clear();
+	_dataStreams.clear();
+	_subtitleStreams.clear();
+	_attachementStreams.clear();
+	_unknownStreams.clear();
+}
+
 }

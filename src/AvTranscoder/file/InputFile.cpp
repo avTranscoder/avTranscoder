@@ -7,6 +7,7 @@
 #include <AvTranscoder/mediaProperty/SubtitleProperties.hpp>
 #include <AvTranscoder/mediaProperty/AttachementProperties.hpp>
 #include <AvTranscoder/mediaProperty/UnknownProperties.hpp>
+#include <AvTranscoder/progress/NoDisplayProgress.hpp>
 
 extern "C" {
 #include <libavcodec/avcodec.h>
@@ -28,6 +29,10 @@ InputFile::InputFile( const std::string& filename )
 {
 	_formatContext.findStreamInfo();
 
+	// Analyse header
+	NoDisplayProgress p;
+	analyse( p, eAnalyseLevelHeader );
+
 	// Create streams
 	for( size_t streamIndex = 0; streamIndex < _formatContext.getNbStreams(); ++streamIndex )
 	{
@@ -45,6 +50,8 @@ InputFile::~InputFile()
 
 void InputFile::analyse( IProgress& progress, const EAnalyseLevel level )
 {
+	_properties.clearStreamProperties();
+
 	if( level > eAnalyseLevelHeader )
 		seekAtFrame( 0 );
 
