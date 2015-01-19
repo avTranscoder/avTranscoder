@@ -42,7 +42,6 @@ VideoDecoder::~VideoDecoder()
 
 void VideoDecoder::setup()
 {
-	
 	_inputStream->getVideoCodec().open();
 
 #if LIBAVCODEC_VERSION_MAJOR > 54
@@ -134,7 +133,7 @@ void VideoDecoder::setProfile( const ProfileLoader::Profile& profile )
 		}
 		catch( std::exception& e )
 		{
-			std::cout << "[InputVideo] warning - can't set option " << (*it).first << " to " << (*it).second << ": " << e.what() << std::endl;
+			std::cout << "[VideoDecoder] warning - can't set option " << (*it).first << " to " << (*it).second << ": " << e.what() << std::endl;
 		}
 	}
 }

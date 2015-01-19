@@ -187,7 +187,7 @@ void AudioEncoder::setProfile( const ProfileLoader::Profile& profile, const Audi
 		}
 		catch( std::exception& e )
 		{
-			std::cout << "[OutputAudio] warning - can't set option " << (*it).first << " to " << (*it).second << ": " << e.what() << std::endl;
+			std::cout << "[AudioEncoder] warning - can't set option " << (*it).first << " to " << (*it).second << ": " << e.what() << std::endl;
 		}
 	}
 }

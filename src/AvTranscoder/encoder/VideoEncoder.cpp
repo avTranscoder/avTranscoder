@@ -176,7 +176,7 @@ void VideoEncoder::setProfile( const ProfileLoader::Profile& profile, const avtr
 		}
 		catch( std::exception& e )
 		{
-			std::cout << "[OutputVideo] warning - can't set option " << (*it).first << " to " << (*it).second << ": " << e.what() << std::endl;
+			std::cout << "[VideoEncoder] warning - can't set option " << (*it).first << " to " << (*it).second << ": " << e.what() << std::endl;
 		}
 	}
 }
