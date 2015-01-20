@@ -183,10 +183,6 @@ StreamTranscoder::StreamTranscoder(
 	, _offsetPassed( false )
 	, _infinityStream( false )
 {
-	// create a coding case based on a InputEssence (aka generator)
-	if( ! profile.count( constants::avProfileType ) )
-		throw std::runtime_error( "unable to found stream type (audio, video, etc.)" );
-
 	if( profile.find( constants::avProfileType )->second == constants::avProfileTypeVideo )
 	{
 		// Create input essence based on a given input VideoCodec
