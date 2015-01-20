@@ -163,6 +163,41 @@ size_t AudioProperties::getNbSamples() const
 	return _formatContext->streams[_streamId]->nb_frames;
 }
 
+size_t AudioProperties::getTicksPerFrame() const
+{
+	if( ! _codecContext )
+		throw std::runtime_error( "unknown codec context" );
+	return _codecContext->ticks_per_frame;
+}
+
+Rational AudioProperties::getTimeBase() const
+{
+	if( ! _formatContext )
+		throw std::runtime_error( "unknown format context" );
+
+	Rational timeBase = {
+		_formatContext->streams[_streamId]->time_base.num,
+		_formatContext->streams[_streamId]->time_base.den,
+	};
+	return timeBase;
+}
+
+double AudioProperties::getFps() const
+{
+	Rational timeBase = getTimeBase();
+	double fps = timeBase.den / (double) timeBase.num;
+	if( isinf( fps ) )
+		fps = 0.0;
+	return fps;
+}
+
+double AudioProperties::getDuration() const
+{
+	Rational timeBase = getTimeBase();
+	double duration = ( timeBase.num / (double) timeBase.den ) * _formatContext->streams[_streamId]->duration;
+	return duration;
+}
+
 PropertiesMap AudioProperties::getPropertiesAsMap() const
 {
 	PropertiesMap dataMap;
@@ -180,6 +215,10 @@ PropertiesMap AudioProperties::getPropertiesAsMap() const
 	detail::add( dataMap, "channelLayout", getChannelLayout() );
 	detail::add( dataMap, "channelName", getChannelName() );
 	detail::add( dataMap, "channelDescription", getChannelDescription() );
+	detail::add( dataMap, "ticksPerFrame", getTicksPerFrame() );
+	detail::add( dataMap, "timeBase", getTimeBase() );
+	detail::add( dataMap, "fps", getFps() );
+	detail::add( dataMap, "duration", getDuration() );
 
 	for( size_t metadataIndex = 0; metadataIndex < _metadatas.size(); ++metadataIndex )
 	{

@@ -33,6 +33,9 @@ void add( PropertiesMap& propertiesMap, const std::string& key, const std::strin
 template<>
 void add( PropertiesMap& propertiesMap, const std::string& key, const bool& value );
 
+template<>
+void add( PropertiesMap& propertiesMap, const std::string& key, const Rational& value );
+
 /**
  * @brief Fill metadata parameter with the given AVDictionary.
  */

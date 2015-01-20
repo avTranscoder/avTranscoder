@@ -7,6 +7,7 @@
 #include <AvTranscoder/mediaProperty/SubtitleProperties.hpp>
 #include <AvTranscoder/mediaProperty/AttachementProperties.hpp>
 #include <AvTranscoder/mediaProperty/UnknownProperties.hpp>
+#include <AvTranscoder/progress/NoDisplayProgress.hpp>
 
 extern "C" {
 #include <libavcodec/avcodec.h>
@@ -28,6 +29,10 @@ InputFile::InputFile( const std::string& filename )
 {
 	_formatContext.findStreamInfo();
 
+	// Analyse header
+	NoDisplayProgress p;
+	analyse( p, eAnalyseLevelHeader );
+
 	// Create streams
 	for( size_t streamIndex = 0; streamIndex < _formatContext.getNbStreams(); ++streamIndex )
 	{
@@ -45,6 +50,8 @@ InputFile::~InputFile()
 
 void InputFile::analyse( IProgress& progress, const EAnalyseLevel level )
 {
+	_properties.clearStreamProperties();
+
 	if( level > eAnalyseLevelHeader )
 		seekAtFrame( 0 );
 
@@ -139,8 +146,16 @@ bool InputFile::readNextPacket( CodedData& data, const size_t streamIndex )
 
 void InputFile::seekAtFrame( const size_t frame )
 {
-	uint64_t pos = frame / 25 * AV_TIME_BASE;  // WARNING: hardcoded fps
+	// Get Fps from first video stream or first audio stream if no video
+	double fps = 1;
+	if( _properties.getNbVideoStreams() )
+		fps = _properties.getVideoProperties().at( 0 ).getFps();
+	else if( _properties.getNbAudioStreams() )
+		fps = _properties.getAudioProperties().at( 0 ).getFps();
 
+	uint64_t pos = frame / fps * AV_TIME_BASE;
+
+	// Offset of start time
 	if( (int)_formatContext.getStartTime() != AV_NOPTS_VALUE )
 		pos += _formatContext.getStartTime();
 

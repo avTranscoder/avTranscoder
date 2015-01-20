@@ -22,6 +22,12 @@ void add( PropertiesMap& propertiesMap, const std::string& key, const bool& valu
 	add( propertiesMap, key, value ? "True" : "False" );
 }
 
+template<>
+void add( PropertiesMap& propertiesMap, const std::string& key, const Rational& value )
+{
+	add( propertiesMap, key, value.num / (double) value.den );
+}
+
 void fillMetadataDictionnary( AVDictionary* avdictionnary, PropertiesMap& metadata )
 {
 	AVDictionaryEntry* tag = NULL;

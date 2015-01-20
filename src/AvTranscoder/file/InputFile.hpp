@@ -20,6 +20,7 @@ class AvExport InputFile
 public:
 	/**
 	 * @brief Open a media file
+	 * @note The constructor also analyses header of input file
 	 * @param filename resource to access
 	 * @exception ios_base::failure launched if unable to open file
 	**/
