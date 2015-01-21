@@ -10,7 +10,7 @@ namespace avtranscoder
 FormatContext::FormatContext( const std::string& filename, int req_flags )
 	: _avFormatContext( NULL )
 	, _options()
-	, _isOpen( true )
+	, _isOpen( false )
 {
 	int ret = avformat_open_input( &_avFormatContext, filename.c_str(), NULL, NULL );
 	if( ret < 0 )
@@ -23,6 +23,7 @@ FormatContext::FormatContext( const std::string& filename, int req_flags )
 		msg += err;
 		throw std::ios_base::failure( msg );
 	}
+	_isOpen = true;
 	loadOptions( _options, _avFormatContext, req_flags );
 }
 
