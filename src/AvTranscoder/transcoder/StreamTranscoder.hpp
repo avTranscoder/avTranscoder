@@ -70,7 +70,11 @@ public:
 
 	void setVerbose( bool verbose = true ){ _verbose = verbose; }
 
-	void setInfinityStream( bool isInfinity ) { _infinityStream = isInfinity; }
+	/**
+	 * @brief Returns if the stream can switch to a generator when ended
+	 * @note Not applicable for rewrap and generator cases
+	 */
+	void canSwitchToGenerator( bool canSwitch ) { _canSwitchToGenerator = canSwitch; }
 
 	void setOffset( bool offset = true ){ _offset = offset; }
 
@@ -98,9 +102,9 @@ private:
 	size_t _offset;  ///< Offset, in frame, at the beginning of the StreamTranscoder.
 
 	bool _takeFromGenerator;  ///< Is the data processed are taken from a generator.
+	bool _canSwitchToGenerator;  ///< Automatically switch to a generator at the end of the stream
 	bool _verbose;
 	bool _offsetPassed;  ///< Is the offset at the beginning of the stream is finished.
-	bool _infinityStream;  ///< Automatically switch to a generator at the end of the stream (not applicable when rewrap);
 };
 
 }
