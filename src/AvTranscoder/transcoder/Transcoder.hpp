@@ -18,9 +18,9 @@ namespace avtranscoder
 /**
  * @brief Enum to set a policy of how we manage the transcode in case of several streams.
  * eProcessMethodShortest: stop transcode at the end of the shortest stream.
- * eProcessMethodLongest: stop transcode at the end of the longest stream (default method).
- * eProcessMethodBasedOnStream: stop transcode at the end of an indicated stream (@see _indexBasedStream of Transcoder).
- * eProcessMethodInfinity: stop transcode by outside of avTranscoder.
+ * eProcessMethodLongest: stop transcode at the end of the longest stream.
+ * eProcessMethodBasedOnStream: stop transcode at the end of an indicated stream (@see _indexBasedStream attribute of Transcoder).
+ * eProcessMethodInfinity: stop transcode by outside of avTranscoder (streaming mode)
  */
 enum EProcessMethod
 {
@@ -121,8 +121,8 @@ public:
 	StreamTranscoder& getStreamTranscoder( size_t streamIndex ) const { return *_streamTranscoders.at( streamIndex ); }
 
 	/**
-	 * @brief Set the transcodage politic.
-	 * @note By default eProcessMethodLongest.
+	 * @brief Set the transcoding policy.
+	 * @note By default eProcessMethodBasedOnStream at index 0.
 	 * @param indexBasedStream: in case of process method eProcessMethodBasedOnStream, stop transcode at the end of the indicated stream.
 	 */
 	void setProcessMethod( const EProcessMethod eProcessMethod, const size_t indexBasedStream = 0 );
