@@ -39,7 +39,7 @@ FormatContext::~FormatContext()
 {
 	if( ! _avFormatContext )
 		return;
-	
+
 	if( _isOpen )
 		avformat_close_input( &_avFormatContext );
 	else
@@ -52,7 +52,6 @@ void FormatContext::findStreamInfo( AVDictionary** options )
 	int err = avformat_find_stream_info( _avFormatContext, options );
 	if( err < 0 )
 	{
-		avformat_close_input( &_avFormatContext );
 		throw std::ios_base::failure( "unable to find stream informations" );
 	}
 }
@@ -65,7 +64,6 @@ void FormatContext::openRessource( const std::string& url, int flags )
 	int err = avio_open2( &_avFormatContext->pb, url.c_str(), flags, NULL, NULL );
 	if( err < 0 )
 	{
-		avformat_close_input( &_avFormatContext );
 		throw std::ios_base::failure( "error when opening output format" );
 	}
 }
@@ -78,7 +76,6 @@ void FormatContext::closeRessource()
 	int err = avio_close( _avFormatContext->pb );
 	if( err < 0 )
 	{
-		avformat_close_input( &_avFormatContext );
 		throw std::ios_base::failure( "error when close output format" );
 	}
 }
