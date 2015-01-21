@@ -53,9 +53,11 @@ public:
 	 */
 	bool processFrame();
 
-	void switchEssence( bool swithToGenerator = true );
-	void switchToGeneratorEssence();
-	void switchToInputEssence();
+	//@{
+	/** Switch decoder */
+	void switchToGeneratorDecoder();
+	void switchToInputDecoder();
+	//@}
 
 	/**
 	 * @brief Get the duration of the stream.

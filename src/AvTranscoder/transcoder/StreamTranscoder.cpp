@@ -114,7 +114,9 @@ StreamTranscoder::StreamTranscoder(
 			VideoGenerator* generatorVideo = new VideoGenerator();
 			generatorVideo->setVideoFrameDesc( outputVideo->getVideoCodec().getVideoFrameDesc() );
 			_generator = generatorVideo;
-			
+
+			_currentDecoder = _inputDecoder;
+
 			break;
 		}
 		case AVMEDIA_TYPE_AUDIO :
@@ -150,6 +152,8 @@ StreamTranscoder::StreamTranscoder(
 			generatorAudio->setAudioFrameDesc( outputAudio->getAudioCodec().getAudioFrameDesc() );
 			_generator = generatorAudio;
 
+			_currentDecoder = _inputDecoder;
+
 			break;
 		}
 		default:
@@ -158,7 +162,8 @@ StreamTranscoder::StreamTranscoder(
 			break;
 		}
 	}
-	switchEssence( offset != 0 );
+	if( offset )
+		switchToGeneratorDecoder();
 }
 
 StreamTranscoder::StreamTranscoder(
@@ -333,7 +338,7 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 		! _offsetPassed &&
 		_takeFromGenerator )
 	{
-		switchToInputEssence();
+		switchToInputDecoder();
 		_offsetPassed = true;
 	}
 
@@ -360,7 +365,7 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 		{
 			if( _infinityStream )
 			{
-				switchToGeneratorEssence();
+				switchToGeneratorDecoder();
 				return processTranscode();
 			}
 			return false;
@@ -385,21 +390,18 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 	return true;
 }
 
-void StreamTranscoder::switchEssence( bool swithToGenerator )
+void StreamTranscoder::switchToGeneratorDecoder()
 {
-	_takeFromGenerator = swithToGenerator;
-	_currentDecoder = swithToGenerator ? _generator : _inputDecoder;
+	_takeFromGenerator = true;
+	_currentDecoder = _generator;
 	assert( _currentDecoder != NULL );
 }
 
-void StreamTranscoder::switchToGeneratorEssence()
+void StreamTranscoder::switchToInputDecoder()
 {
-	switchEssence( true );
-}
-
-void StreamTranscoder::switchToInputEssence()
-{
-	switchEssence( false );
+	_takeFromGenerator = false;
+	_currentDecoder = _inputDecoder;
+	assert( _currentDecoder != NULL );
 }
 
 double StreamTranscoder::getDuration() const
