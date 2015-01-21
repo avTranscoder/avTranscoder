@@ -20,6 +20,7 @@ namespace avtranscoder
  * eProcessMethodShortest: stop transcode at the end of the shortest stream.
  * eProcessMethodLongest: stop transcode at the end of the longest stream.
  * eProcessMethodBasedOnStream: stop transcode at the end of an indicated stream (@see _indexBasedStream attribute of Transcoder).
+ * eProcessMethodBasedOnDuration: stop transcode at the end of an indicated duration, in seconds (@see _outputDuration attribute of Transcoder).
  * eProcessMethodInfinity: stop transcode by outside of avTranscoder (streaming mode)
  */
 enum EProcessMethod
@@ -27,6 +28,7 @@ enum EProcessMethod
 	eProcessMethodShortest = 0,
 	eProcessMethodLongest,
 	eProcessMethodBasedOnStream,
+	eProcessMethodBasedOnDuration,
 	eProcessMethodInfinity,
 };
 
@@ -124,8 +126,9 @@ public:
 	 * @brief Set the transcoding policy.
 	 * @note By default eProcessMethodBasedOnStream at index 0.
 	 * @param indexBasedStream: in case of process method eProcessMethodBasedOnStream, stop transcode at the end of the indicated stream.
+	 * @param outputDuration: in case of process method eProcessMethodBasedOnDuration, stop transcode at the end of the indicated duration.
 	 */
-	void setProcessMethod( const EProcessMethod eProcessMethod, const size_t indexBasedStream = 0 );
+	void setProcessMethod( const EProcessMethod eProcessMethod, const size_t indexBasedStream = 0, const double outputDuration = 0 );
 
 	/**
 	 * @brief Set verbose mode for the Transcoder, its streams, and its output file.
@@ -182,6 +185,7 @@ private:
 
 	EProcessMethod _eProcessMethod;  ///< Transcoding policy
 	size_t _mainStreamIndex;  ///< Index of stream used to stop the process of transcode in case of eProcessMethodBasedOnStream.
+	double _outputDuration;  ///< Duration of output media used to stop the process of transcode in case of eProcessMethodBasedOnDuration.
 
 	bool    _verbose;
 };
