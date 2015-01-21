@@ -146,18 +146,17 @@ private:
 
 	/**
 	 * @brief Get the duration of the stream.
+	 * @note If the stream is a generator, return limit of double.
 	 */
 	double getStreamDuration( size_t indexStream ) const;
 
 	/**
 	* @brief Get the duration of the shortest stream.
-	* @note if there is only generated streams, return limit of double.
 	*/
 	double getMinTotalDuration() const;
 
 	/**
 	 * @brief Get the duration of the longest stream.
-	 * @note if there is only generated streams, return limit of double.
 	 */
 	double getMaxTotalDuration() const;
 
@@ -165,7 +164,7 @@ private:
 	 * @brief Get the duration of the output program
 	 * @note Depends on the streams, the process method, and the main stream index.
          */
-	double getTotalDurationFromProcessMethod() const;
+	double getOutputDuration() const;
 
 	/**
 	 * @brief Set for each StreamTranscoder if it is an infinity stream (switch to generator at the end of the stream).
