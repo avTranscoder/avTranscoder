@@ -329,10 +329,10 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 	assert( _frameBuffer    != NULL );
 	assert( _transform      != NULL );
 
-	CodedData data;
 	if( _verbose )
 		std::cout << "transcode a frame " << std::endl;
 
+	// check offset
 	if( _offset &&
 		_frameProcessed > _offset &&
 		! _offsetPassed &&
@@ -348,6 +348,7 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 	else
 		decodingStatus = _currentDecoder->decodeNextFrame( *_sourceBuffer, subStreamIndex );
 
+	CodedData data;
 	if( decodingStatus )
 	{
 		if( _verbose )
@@ -375,7 +376,6 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 		std::cout << "wrap (" << data.getSize() << " bytes)" << std::endl;
 
 	IOutputStream::EWrappingStatus wrappingStatus = _outputStream->wrap( data );
-
 	switch( wrappingStatus )
 	{
 		case IOutputStream::eWrappingSuccess:

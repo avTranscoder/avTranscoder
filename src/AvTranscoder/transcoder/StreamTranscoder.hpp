@@ -79,18 +79,18 @@ private:
 	bool processTranscode( const int subStreamIndex = -1 );  ///< By default transcode all channels
 
 private:
-	IInputStream*   _inputStream;
-	IOutputStream*  _outputStream;
+	IInputStream* _inputStream;  ///< Input stream to read next packet (has link, no ownership)
+	IOutputStream* _outputStream;  ///< Output stream to wrap next packet (has link, no ownership)
 
-	Frame*         _sourceBuffer;
-	Frame*         _frameBuffer;
+	Frame* _sourceBuffer;  ///< Has ownership
+	Frame* _frameBuffer;  ///< Has ownership
 
-	IDecoder* _inputDecoder;
-	IDecoder* _generator;
-	IDecoder* _currentDecoder;
-	IEncoder* _outputEncoder;
+	IDecoder* _inputDecoder;  ///< Decoder of packets read from _inputStream (has ownership)
+	IDecoder* _generator;  ///< Generator of audio or video packets (has ownership)
+	IDecoder* _currentDecoder;  ///< Link to _inputDecoder or _generator
+	IEncoder* _outputEncoder;  ///< Encoder of packets which will be wrapped by _outputStream (has ownership)
 
-	ITransform* _transform;
+	ITransform* _transform;  ///< Video or audio transform (has ownership)
 
 	int  _subStreamIndex;  ///< Index of channel that is processed from the input stream (-1 if no demultiplexing).
 
