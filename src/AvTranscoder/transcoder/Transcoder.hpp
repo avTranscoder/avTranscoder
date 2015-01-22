@@ -145,18 +145,18 @@ private:
 	InputFile* addInputFile( const std::string& filename, const size_t streamIndex );
 
 	/**
-	 * @brief Get the duration of the stream.
+	 * @brief Get the duration of the stream, in seconds
 	 * @note If the stream is a generator, return limit of double.
 	 */
 	double getStreamDuration( size_t indexStream ) const;
 
 	/**
-	* @brief Get the duration of the shortest stream.
+	* @brief Get the duration of the shortest stream, in seconds
 	*/
 	double getMinTotalDuration() const;
 
 	/**
-	 * @brief Get the duration of the longest stream.
+	 * @brief Get the duration of the longest stream, in seconds
 	 */
 	double getMaxTotalDuration() const;
 

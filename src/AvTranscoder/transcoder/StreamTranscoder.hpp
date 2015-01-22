@@ -60,7 +60,7 @@ public:
 	//@}
 
 	/**
-	 * @brief Get the duration of the stream.
+	 * @brief Get the duration of the stream, in seconds
 	 * @note if it's a generated stream, return limit of double.
 	 */
 	double getDuration() const;
@@ -98,7 +98,7 @@ private:
 
 	int  _subStreamIndex;  ///< Index of channel that is processed from the input stream (-1 if no demultiplexing).
 
-	size_t _frameProcessed;  ///< How many frame processed for this StreamTranscoder.
+	size_t _frameProcessed;  ///< How many frames have been processed by the StreamTranscoder.
 	size_t _offset;  ///< Offset, in frame, at the beginning of the StreamTranscoder.
 
 	bool _takeFromGenerator;  ///< Is the data processed are taken from a generator.
