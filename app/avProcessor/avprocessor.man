@@ -2,17 +2,9 @@
 .\" Contact arnaud.marcantoine@gmail.com to correct errors or typos.
 .TH man 1 "21 May 2014" "1.0" "avprocessor man page"
 .SH NOM
-avprocessor - rewrap medias
-.SH SYNOPSIS
-avmeta [
-.I CONFIG
-] [
-.I FILE
-]
+avprocessor - process media files
 .SH DESCRIPTION
-Simple rewrap of media files
-.SH BUGS
-Actually no transcode
+Transcode or rewrap media files
 .SH AUTHOR
 Written by Marc-Antoine ARNAUD <arnaud.marcantoine@gmail.com>
 .SH COPYRIGHT
