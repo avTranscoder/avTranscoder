@@ -12,7 +12,14 @@ static const size_t dummyWidth = 1920;
 static const size_t dummyHeight = 1080;
 static const std::string dummyPixelFormat = "yuv420p";
 static const std::string dummyVideoCodec = "mpeg2video";
+
+static const size_t dummySampleRate = 48000;
+static const size_t dummyChannels = 1;
+static const std::string dummySampleFormat = "s16";
 static const std::string dummyAudioCodec = "pcm_s16le";
+
+static bool useVideoGenerator = false;
+static bool useAudioGenerator = false;
 
 bool verbose = false;
 
@@ -56,12 +63,24 @@ void parseConfigFile( const std::string& configFilename, avtranscoder::Transcode
 				// dummy stream, need a ICodec (audio or video)
 				if( ! filename.length() )
 				{
-					// video
-					avtranscoder::VideoCodec inputVideoCodec( avtranscoder::eCodecTypeEncoder, dummyVideoCodec );
-					avtranscoder::VideoFrameDesc imageDesc( dummyWidth, dummyHeight, dummyPixelFormat );
-					inputVideoCodec.setImageParameters( imageDesc );
-					
-					transcoder.add( filename, streamIndex, subStreamIndex, transcodeProfile, inputVideoCodec );
+					if( useVideoGenerator )
+					{
+						// video
+						avtranscoder::VideoCodec inputCodec( avtranscoder::eCodecTypeEncoder, dummyVideoCodec );
+						avtranscoder::VideoFrameDesc imageDesc( dummyWidth, dummyHeight, dummyPixelFormat );
+						inputCodec.setImageParameters( imageDesc );
+
+						transcoder.add( filename, streamIndex, subStreamIndex, transcodeProfile, inputCodec );
+					}
+					else
+					{
+						// audio
+						avtranscoder::AudioCodec inputCodec( avtranscoder::eCodecTypeEncoder, dummyAudioCodec );
+						avtranscoder::AudioFrameDesc audioDesc( dummySampleRate, dummyChannels, dummySampleFormat );
+						inputCodec.setAudioParameters( audioDesc );
+
+						transcoder.add( filename, streamIndex, subStreamIndex, transcodeProfile, inputCodec );
+					}
 				}
 				else
 				{
@@ -76,14 +95,30 @@ void parseConfigFile( const std::string& configFilename, avtranscoder::Transcode
 
 int main( int argc, char** argv )
 {
-	if( argc != 3 )
+	if( argc < 3 )
 	{
 		std::cout << "avprocessor require an input config file and an output media filename" << std::endl;
 		return( -1 );
 	}
 
-	av_log_set_level( AV_LOG_FATAL );
+	std::vector< std::string > arguments;
+	for( int argument = 1; argument < argc; ++argument )
+	{
+		arguments.push_back( argv[argument] );
+	}
+	for( size_t argument = 0; argument < arguments.size(); ++argument )
+	{
+		if( arguments.at( argument ) == "--generate-black" )
+		{
+			useVideoGenerator = true;
+		}
+		else if( arguments.at( argument ) == "--generate-silence" )
+		{
+			useAudioGenerator = true;
+		}
+	}
 
+	av_log_set_level( AV_LOG_FATAL );
 	if( verbose )
 		av_log_set_level( AV_LOG_DEBUG );
 
