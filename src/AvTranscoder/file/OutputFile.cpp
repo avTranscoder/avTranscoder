@@ -112,10 +112,7 @@ IOutputStream::EWrappingStatus OutputFile::wrap( const CodedData& data, const si
 
 	av_free_packet( &packet );
 
-	// compute the duration of current stream
-	AVStream& currentStream = _formatContext.getAVStream( streamId );
-	double currentStreamDuration = (double)currentStream.cur_dts * currentStream.time_base.num / currentStream.time_base.den;
-
+	double currentStreamDuration = getProgressDuration( 0 );
 	if( currentStreamDuration < _previousProcessedStreamDuration )
 	{
 		// if the current stream is strictly shorter than the previous, wait for more data
@@ -197,12 +194,10 @@ void OutputFile::setProfile( const ProfileLoader::Profile& profile )
 	}
 }
 
-double OutputFile::getProgressDuration()
+double OutputFile::getProgressDuration( const size_t streamIndex )
 {
-	if( _formatContext.getNbStreams() == 0 )
-		throw std::runtime_error( "at least one stream must be set to get the progress duration" );
-	AVStream& firstOutputStream = _formatContext.getAVStream( 0 );
-	return av_q2d( firstOutputStream.time_base ) * firstOutputStream.cur_dts;
+	AVStream& outputStream = _formatContext.getAVStream( streamIndex );
+	return av_q2d( outputStream.time_base ) * outputStream.cur_dts;
 }
 
 }
