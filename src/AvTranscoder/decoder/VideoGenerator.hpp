@@ -23,8 +23,9 @@ public:
 	bool decodeNextFrame( Frame& frameBuffer, const size_t subStreamIndex );
 
 private:
-	Frame* _inputFrame;  ///< Has link (no ownership)
-	VideoFrameDesc _frameDesc;
+	Frame* _inputFrame;  ///< A frame given from outside (has link, no ownership)
+	VideoFrame* _blackImage;   ///< The generated black image (has ownership)
+	VideoFrameDesc _frameDesc;  ///< The description of the black image (width, height...) 
 };
 
 }
