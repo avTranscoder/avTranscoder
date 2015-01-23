@@ -95,12 +95,22 @@ void parseConfigFile( const std::string& configFilename, avtranscoder::Transcode
 
 int main( int argc, char** argv )
 {
-	if( argc < 3 )
-	{
-		std::cout << "avprocessor require an input config file and an output media filename" << std::endl;
-		return( -1 );
-	}
+	std::string help;
+	help += "Usage\n";
+	help += "\tavprocessor CONFIG.TXT OUTPUT_FILE_NAME [--generate-black] [--generate-silence] [--help]\n";
+	help += "CONFIG.TXT\n";
+	help += "\tEach line will be one stream in the output.\n";
+	help += "\tPattern of each line is:\n";
+	help += "\t[inputFile]=STREAM_ID.[subStreamId]:[profileName]\n";
+	help += "\tNo inputFile: will generate black image / audio silence (audio by default)\n";
+	help += "\tNo subStreamId: will process of channels of the stream\n";
+	help += "\tNo profileName: will rewrap the stream\n";
+	help += "Command line options\n";
+	help += "\t--generate-black: stream which not referred to an input, will generate an output video stream with black images\n";
+	help += "\t--generate-silent: stream which not referred to an input, will generate an output audio stream with silence\n";
+	help += "\t--help: display this help\n";
 
+	// List command line arguments
 	std::vector< std::string > arguments;
 	for( int argument = 1; argument < argc; ++argument )
 	{
@@ -116,6 +126,19 @@ int main( int argc, char** argv )
 		{
 			useAudioGenerator = true;
 		}
+		else if( arguments.at( argument ) == "--help" )
+		{
+			std::cout << help << std::endl;
+			return 0;
+		}
+	}
+
+	// Check required arguments
+	if( argc < 3 )
+	{
+		std::cout << "avprocessor can rewrap or transcode inputs to create an output media file." << std::endl;
+		std::cout << "Use option --help to display help" << std::endl; 
+		return( -1 );
 	}
 
 	av_log_set_level( AV_LOG_FATAL );
