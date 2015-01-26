@@ -7,10 +7,12 @@ find_package(FFmpeg
 	COMPONENTS avcodec avformat avutil swscale swresample avresample)
 
 # Check if FFmpeg or libav dependency
-if(EXISTS "${FFMPEG_INCLUDE_DIR}/libavresample/avresample.h")
+if(avresample_VERSION)
 	add_definitions(-DAV_RESAMPLE_LIBRARY)
-else()
+elseif(swresample_VERSION)
 	add_definitions(-DFF_RESAMPLE_LIBRARY)
+else()
+        message(SEND_ERROR, "Need 'swresample' or 'avresample'.")
 endif()
 
 # Include AvTranscoder and FFmpeg
