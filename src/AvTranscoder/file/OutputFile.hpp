@@ -102,8 +102,9 @@ public:
 	virtual void addMetadata( const std::string& key, const std::string& value );
 
 	virtual void setVerbose( bool verbose = false ){ _verbose = verbose; }
-	
-	virtual double getProgressDuration();
+
+	/// By default get the duration, in seconds, of the first output stream
+	virtual double getProgressDuration( const size_t streamIndex = 0 );
 
 private:
 	FormatContext _formatContext;
