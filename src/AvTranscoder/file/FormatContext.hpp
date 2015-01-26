@@ -86,7 +86,7 @@ public:
 private:
 	AVFormatContext* _avFormatContext;  ///< Has ownership
 	OptionMap _options;
-	const bool _isOpen;  ///< Is the AVFormatContext open (in constructor with a filename)
+	bool _isOpen;  ///< Is the AVFormatContext open (in constructor with a filename)
 };
 
 }
