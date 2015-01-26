@@ -101,7 +101,6 @@ private:
 	size_t _frameProcessed;  ///< How many frames have been processed by the StreamTranscoder.
 	size_t _offset;  ///< Offset, in frame, at the beginning of the StreamTranscoder.
 
-	bool _takeFromGenerator;  ///< Is the data processed are taken from a generator.
 	bool _canSwitchToGenerator;  ///< Automatically switch to a generator at the end of the stream
 	bool _verbose;
 	bool _offsetPassed;  ///< Is the offset at the beginning of the stream is finished.

@@ -36,7 +36,6 @@ StreamTranscoder::StreamTranscoder(
 	, _subStreamIndex( -1 )
 	, _frameProcessed( 0 )
 	, _offset( 0 )
-	, _takeFromGenerator( false )
 	, _canSwitchToGenerator( false )
 	, _verbose( false )
 	, _offsetPassed( false )
@@ -83,7 +82,6 @@ StreamTranscoder::StreamTranscoder(
 	, _subStreamIndex( subStreamIndex )
 	, _frameProcessed( 0 )
 	, _offset( offset )
-	, _takeFromGenerator( false )
 	, _canSwitchToGenerator( false )
 	, _verbose( false )
 	, _offsetPassed( false )
@@ -183,7 +181,6 @@ StreamTranscoder::StreamTranscoder(
 	, _subStreamIndex( -1 )
 	, _frameProcessed( 0 )
 	, _offset( 0 )
-	, _takeFromGenerator( false )
 	, _canSwitchToGenerator( false )
 	, _verbose( false )
 	, _offsetPassed( false )
@@ -392,14 +389,12 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 
 void StreamTranscoder::switchToGeneratorDecoder()
 {
-	_takeFromGenerator = true;
 	_currentDecoder = _generator;
 	assert( _currentDecoder != NULL );
 }
 
 void StreamTranscoder::switchToInputDecoder()
 {
-	_takeFromGenerator = false;
 	_currentDecoder = _inputDecoder;
 	assert( _currentDecoder != NULL );
 }
