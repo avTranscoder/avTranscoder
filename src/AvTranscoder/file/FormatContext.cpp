@@ -133,7 +133,8 @@ void FormatContext::addMetaData( const std::string& key, const std::string& valu
 
 AVStream& FormatContext::addAVStream( const AVCodec& avCodec )
 {
-	AVStream* stream = avformat_new_stream( _avFormatContext, &avCodec );
+	// Need const_cast<AVCodec*> for libav versions < 54.34.
+	AVStream* stream = avformat_new_stream( _avFormatContext, const_cast<AVCodec*>(&avCodec) );
 	if( stream == NULL )
 	{
 		throw std::runtime_error( "unable to add new video stream" );
