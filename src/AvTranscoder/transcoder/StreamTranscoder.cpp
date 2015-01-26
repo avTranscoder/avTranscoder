@@ -38,7 +38,6 @@ StreamTranscoder::StreamTranscoder(
 	, _offset( 0 )
 	, _canSwitchToGenerator( false )
 	, _verbose( false )
-	, _offsetPassed( false )
 {
 	// create a re-wrapping case
 	switch( _inputStream->getStreamType() )
@@ -84,7 +83,6 @@ StreamTranscoder::StreamTranscoder(
 	, _offset( offset )
 	, _canSwitchToGenerator( false )
 	, _verbose( false )
-	, _offsetPassed( false )
 {
 	// create a transcode case
 	switch( _inputStream->getStreamType() )
@@ -183,7 +181,6 @@ StreamTranscoder::StreamTranscoder(
 	, _offset( 0 )
 	, _canSwitchToGenerator( false )
 	, _verbose( false )
-	, _offsetPassed( false )
 {
 	if( profile.find( constants::avProfileType )->second == constants::avProfileTypeVideo )
 	{
@@ -330,13 +327,9 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 		std::cout << "transcode a frame " << std::endl;
 
 	// check offset
-	if( _offset &&
-		_frameProcessed > _offset &&
-		! _offsetPassed &&
-		_canSwitchToGenerator )
+	if( _offset && _frameProcessed == _offset + 1 )
 	{
 		switchToInputDecoder();
-		_offsetPassed = true;
 	}
 
 	bool decodingStatus = false;
