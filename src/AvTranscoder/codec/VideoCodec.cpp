@@ -1,5 +1,6 @@
 #include "VideoCodec.hpp"
 
+#include <cmath>
 #include <cassert>
 
 namespace avtranscoder
@@ -25,7 +26,7 @@ VideoFrameDesc VideoCodec::getVideoFrameDesc() const
 	assert( _avCodecContext != NULL );
 	VideoFrameDesc videoFrameDesc( _avCodecContext->width, _avCodecContext->height, _avCodecContext->pix_fmt );
 	double fps = 1.0 * _avCodecContext->time_base.den / ( _avCodecContext->time_base.num * _avCodecContext->ticks_per_frame );
-	if( ! isinf( fps ) )
+	if( ! std::isinf( fps ) )
 		videoFrameDesc.setFps( fps );
 	return videoFrameDesc;
 }

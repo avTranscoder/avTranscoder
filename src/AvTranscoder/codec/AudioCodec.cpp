@@ -1,5 +1,6 @@
 #include "AudioCodec.hpp"
 
+#include <cmath>
 #include <cassert>
 
 namespace avtranscoder
@@ -25,7 +26,7 @@ AudioFrameDesc AudioCodec::getAudioFrameDesc() const
 	assert( _avCodecContext != NULL );
 	AudioFrameDesc audioFrameDesc( _avCodecContext->sample_rate, _avCodecContext->channels, _avCodecContext->sample_fmt );
 	double fps = 1.0 * _avCodecContext->time_base.den / ( _avCodecContext->time_base.num * _avCodecContext->ticks_per_frame );
-	if( ! isinf( fps ) )
+	if( ! std::isinf( fps ) )
 		audioFrameDesc.setFps( fps );
 	return audioFrameDesc;
 }
