@@ -107,7 +107,6 @@ int main( int argc, char** argv )
 
 		// set verbose of all stream
 		transcoder.setVerbose( verbose );
-		transcoder.setProcessMethod( avtranscoder::eProcessMethodLongest );
 		
 		if( verbose )
 			std::cout << "start Transcode" << std::endl;
