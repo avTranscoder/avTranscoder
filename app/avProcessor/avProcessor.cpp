@@ -19,7 +19,6 @@ static const std::string dummySampleFormat = "s16";
 static const std::string dummyAudioCodec = "pcm_s16le";
 
 static bool useVideoGenerator = false;
-static bool useAudioGenerator = false;
 
 bool verbose = false;
 
@@ -97,7 +96,7 @@ int main( int argc, char** argv )
 {
 	std::string help;
 	help += "Usage\n";
-	help += "\tavprocessor CONFIG.TXT OUTPUT_FILE_NAME [--generate-black] [--generate-silence] [--help]\n";
+	help += "\tavprocessor CONFIG.TXT OUTPUT_FILE_NAME [--generate-black] [--help]\n";
 	help += "CONFIG.TXT\n";
 	help += "\tEach line will be one stream in the output.\n";
 	help += "\tPattern of each line is:\n";
@@ -106,8 +105,7 @@ int main( int argc, char** argv )
 	help += "\tNo subStreamId: will process of channels of the stream\n";
 	help += "\tNo profileName: will rewrap the stream\n";
 	help += "Command line options\n";
-	help += "\t--generate-black: stream which not referred to an input, will generate an output video stream with black images\n";
-	help += "\t--generate-silent: stream which not referred to an input, will generate an output audio stream with silence\n";
+	help += "\t--generate-black: stream which not referred to an input, will generate an output video stream with black images (by default generate audio stream with silence)\n";
 	help += "\t--help: display this help\n";
 
 	// List command line arguments
@@ -121,10 +119,6 @@ int main( int argc, char** argv )
 		if( arguments.at( argument ) == "--generate-black" )
 		{
 			useVideoGenerator = true;
-		}
-		else if( arguments.at( argument ) == "--generate-silence" )
-		{
-			useAudioGenerator = true;
 		}
 		else if( arguments.at( argument ) == "--help" )
 		{
