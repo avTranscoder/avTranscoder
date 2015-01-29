@@ -20,7 +20,7 @@ static const std::string dummyAudioCodec = "pcm_s16le";
 
 static bool useVideoGenerator = false;
 
-bool verbose = false;
+static bool verbose = false;
 
 void parseConfigFile( const std::string& configFilename, avtranscoder::Transcoder& transcoder )
 {
@@ -96,7 +96,7 @@ int main( int argc, char** argv )
 {
 	std::string help;
 	help += "Usage\n";
-	help += "\tavprocessor CONFIG.TXT OUTPUT_FILE_NAME [--generate-black] [--help]\n";
+	help += "\tavprocessor CONFIG.TXT OUTPUT_FILE_NAME [--generate-black] [--verbose] [--help]\n";
 	help += "CONFIG.TXT\n";
 	help += "\tEach line will be one stream in the output.\n";
 	help += "\tPattern of each line is:\n";
@@ -116,14 +116,18 @@ int main( int argc, char** argv )
 	}
 	for( size_t argument = 0; argument < arguments.size(); ++argument )
 	{
+		if( arguments.at( argument ) == "--help" )
+		{
+			std::cout << help << std::endl;
+			return 0;
+		}
 		if( arguments.at( argument ) == "--generate-black" )
 		{
 			useVideoGenerator = true;
 		}
-		else if( arguments.at( argument ) == "--help" )
+		if( arguments.at( argument ) == "--verbose" )
 		{
-			std::cout << help << std::endl;
-			return 0;
+			verbose = true;
 		}
 	}
 
