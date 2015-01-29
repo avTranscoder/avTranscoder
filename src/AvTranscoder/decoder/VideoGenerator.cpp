@@ -7,6 +7,7 @@ namespace avtranscoder
 
 VideoGenerator::VideoGenerator()
 	: _inputFrame( NULL )
+	, _blackImage( NULL )
 	, _frameDesc()
 {
 }
@@ -26,18 +27,27 @@ bool VideoGenerator::decodeNextFrame( Frame& frameBuffer )
 	// Generate black image
 	if( ! _inputFrame )
 	{
-		// @todo support PAL (0 to 255) and NTFS (16 to 235)
-		char fillChar = 0;
+		// Generate the black image only once
+		if( ! _blackImage )
+		{
+			// @todo support PAL (0 to 255) and NTFS (16 to 235)
+			char fillChar = 0;
 
-		VideoFrameDesc desc( _frameDesc );
-		desc.setPixelFormat( "rgb24" );
+			VideoFrameDesc desc( _frameDesc );
+			desc.setPixelFormat( "rgb24" );
 
-		VideoFrame intermediateBuffer( desc );
-		intermediateBuffer.getBuffer().resize( _frameDesc.getDataSize() );
-		memset( intermediateBuffer.getPtr(), fillChar, _frameDesc.getDataSize() );
+			VideoFrame intermediateBuffer( desc );
+			intermediateBuffer.getBuffer().resize( _frameDesc.getDataSize() );
+			memset( intermediateBuffer.getPtr(), fillChar, _frameDesc.getDataSize() );
 
-		VideoTransform videoEssenceTransform;
-		videoEssenceTransform.convert( intermediateBuffer, frameBuffer );
+			VideoTransform videoTransform;
+			videoTransform.convert( intermediateBuffer, frameBuffer );
+
+			VideoFrame& imageBuffer = static_cast<VideoFrame&>( frameBuffer );
+			_blackImage = new VideoFrame( imageBuffer.desc() );
+			_blackImage->copyData( imageBuffer.getPtr(), imageBuffer.getSize() );
+		}
+		frameBuffer = *_blackImage;
 	}
 	// Take image from _inputFrame
 	else

@@ -24,7 +24,8 @@ public:
 
 private:
 	Frame* _inputFrame;  ///< Has link (no ownership)
-	AudioFrameDesc _frameDesc;
+	AudioFrame* _silent;   ///< The generated silent (has ownership)
+	AudioFrameDesc _frameDesc;  ///< The description of the silent (sample rate...) 
 };
 
 }
