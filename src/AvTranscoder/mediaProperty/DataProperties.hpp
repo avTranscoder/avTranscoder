@@ -13,7 +13,8 @@ class AvExport DataProperties
 public:
 	DataProperties( const FormatContext& formatContext, const size_t index );
 
-	size_t getStreamId() const { return _streamId; }
+	size_t getStreamIndex() const { return _streamIndex; }
+	size_t getStreamId() const;
 	PropertiesMap& getMetadatas() { return _metadatas; }
 
 #ifndef SWIG
@@ -28,7 +29,7 @@ private:
 private:
 	const AVFormatContext* _formatContext;  ///< Has link (no ownership)
 
-	size_t _streamId;
+	size_t _streamIndex;
 	PropertiesMap _metadatas;
 };
 
