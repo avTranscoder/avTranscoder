@@ -3,7 +3,7 @@
 
 #include <AvTranscoder/common.hpp>
 #include <AvTranscoder/file/InputFile.hpp>
-#include <AvTranscoder/file/OutputFile.hpp>
+#include <AvTranscoder/file/IOutputFile.hpp>
 #include <AvTranscoder/stream/IInputStream.hpp>
 #include <AvTranscoder/ProfileLoader.hpp>
 
@@ -40,7 +40,7 @@ public:
 	/**
 	 * @note Set FFmpeg log level to quite.
 	 */
-	Transcoder( OutputFile& outputFile );
+	Transcoder( IOutputFile& outputFile );
 	
 	~Transcoder();
 
@@ -172,7 +172,7 @@ private:
 	void manageInfinityStreamFromProcessMethod();
 
 private:
-	OutputFile&                      _outputFile;  ///< The output media file after process.
+	IOutputFile& _outputFile;  ///< The output media file after process.
 	std::vector< InputFile* >        _inputFiles;  ///< The list of input files which contain added streams.
 
 	std::vector< StreamTranscoder* > _streamTranscoders;  ///< All streams of the output media file after process.

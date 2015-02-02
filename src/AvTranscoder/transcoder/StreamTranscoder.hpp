@@ -9,7 +9,7 @@
 #include <AvTranscoder/decoder/IDecoder.hpp>
 #include <AvTranscoder/encoder/IEncoder.hpp>
 
-#include <AvTranscoder/file/OutputFile.hpp>
+#include <AvTranscoder/file/IOutputFile.hpp>
 
 #include <AvTranscoder/ProfileLoader.hpp>
 
@@ -25,18 +25,18 @@ public:
 	 * @brief rewrap stream
 	 * @note offset feature when rewrap a stream is not supported
 	 **/
-	StreamTranscoder( IInputStream& inputStream, OutputFile& outputFile );
+	StreamTranscoder( IInputStream& inputStream, IOutputFile& outputFile );
 
 	/**
 	 * @brief transcode stream
 	 **/
-	StreamTranscoder( IInputStream& inputStream, OutputFile& outputFile, const ProfileLoader::Profile& profile, const int subStreamIndex = -1, const size_t offset = 0 );
+	StreamTranscoder( IInputStream& inputStream, IOutputFile& outputFile, const ProfileLoader::Profile& profile, const int subStreamIndex = -1, const size_t offset = 0 );
 
 	/**
 	 * @brief encode from a generated stream
 	 * @note offset feature has no sense here
 	 **/
-	StreamTranscoder( const ICodec& inputCodec, OutputFile& outputFile, const ProfileLoader::Profile& profile );
+	StreamTranscoder( const ICodec& inputCodec, IOutputFile& outputFile, const ProfileLoader::Profile& profile );
 
 	~StreamTranscoder();
 

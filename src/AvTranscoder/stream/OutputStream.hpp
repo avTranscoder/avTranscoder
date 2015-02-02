@@ -14,6 +14,7 @@ public:
 	OutputStream( OutputFile& outputFile, const size_t streamIndex );
 
 	size_t getStreamIndex() const { return _streamIndex; }
+	double getStreamDuration() const;
 
 	IOutputStream::EWrappingStatus wrap( const CodedData& data );
 
