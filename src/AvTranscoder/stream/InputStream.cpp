@@ -68,7 +68,7 @@ bool InputStream::readNextPacket( CodedData& data )
 	// if packet is already cached
 	if( ! _streamCache.empty() )
 	{
-		data.copyData( _streamCache.front().getPtr(), _streamCache.front().getSize() );
+		data.refData( _streamCache.front().getData(), _streamCache.front().getSize() );
 		_streamCache.pop();
 	}
 	// else read next packet

@@ -54,7 +54,7 @@ bool AudioEncoder::encodeFrame( const Frame& sourceFrame, Frame& codedFrame )
 		throw std::runtime_error( "EncodeFrame error: buffer size < 0 - " + std::string(err) );
 	}
 
-	int retvalue = avcodec_fill_audio_frame( frame, avCodecContext.channels, avCodecContext.sample_fmt, sourceAudioFrame.getPtr(), buffer_size, 0 );
+	int retvalue = avcodec_fill_audio_frame( frame, avCodecContext.channels, avCodecContext.sample_fmt, sourceAudioFrame.getData(), buffer_size, 0 );
 	if( retvalue < 0 )
 	{
 		char err[AV_ERROR_MAX_STRING_SIZE];

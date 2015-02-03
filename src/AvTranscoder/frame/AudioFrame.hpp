@@ -81,7 +81,7 @@ class AvExport AudioFrame : public Frame
 {
 public:
 	AudioFrame( const AudioFrameDesc& ref )
-		: Frame( ref.getDataSize() )
+		: Frame( ref.getDataSize(), 0 )
 		, _audioFrameDesc( ref )
 		, _nbSamples( 0 )
 	{}

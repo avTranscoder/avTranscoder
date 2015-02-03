@@ -84,8 +84,8 @@ void AudioTransform::convert( const Frame& srcFrame, Frame& dstFrame )
 	if( srcFrame.getSize() != _previousProcessedAudioFrameSize )
 		initFrames( srcFrame, dstFrame );
 
-	const unsigned char* srcData = srcFrame.getPtr();
-	unsigned char* dstData = dstFrame.getPtr();
+	const unsigned char* srcData = srcFrame.getData();
+	unsigned char* dstData = dstFrame.getData();
 
 	int nbOutputSamplesPerChannel;
 #ifdef AV_RESAMPLE_LIBRARY

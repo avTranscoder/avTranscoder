@@ -32,24 +32,25 @@ bool AudioGenerator::decodeNextFrame( Frame& frameBuffer )
 		{
 			int fillChar = 0;
 
+			// input of convert
 			AudioFrame intermediateBuffer( _frameDesc );
-			intermediateBuffer.resize( _frameDesc.getDataSize() );
-			memset( intermediateBuffer.getPtr(), fillChar, _frameDesc.getDataSize() );
+			intermediateBuffer.assign( _frameDesc.getDataSize(), fillChar );
 
-			AudioTransform audioTransform;
-			audioTransform.convert( intermediateBuffer, frameBuffer );
-
+			// output of convert
 			AudioFrame& audioBuffer = static_cast<AudioFrame&>( frameBuffer );
 			audioBuffer.setNbSamples( 1.0 * _frameDesc.getSampleRate() / _frameDesc.getFps() );
 			_silent = new AudioFrame( audioBuffer.desc() );
-			_silent->copyData( audioBuffer.getPtr(), audioBuffer.getSize() );
+
+			// convert and store the silence
+			AudioTransform audioTransform;
+			audioTransform.convert( intermediateBuffer, *_silent );
 		}
-		frameBuffer = *_silent;
+		frameBuffer.refData( *_silent );
 	}
 	// Take audio frame from _inputFrame
 	else
 	{
-		frameBuffer.copyData( _inputFrame->getPtr(), _inputFrame->getSize() );
+		frameBuffer.refData( _inputFrame->getData(), _inputFrame->getSize() );
 	}
 	return true;
 }

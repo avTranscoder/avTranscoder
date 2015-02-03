@@ -76,7 +76,7 @@ bool AudioDecoder::decodeNextFrame( Frame& frameBuffer )
 
 		// @todo manage cases with data of frame not only on data[0] (use _frame.linesize)
 		unsigned char* const src = _frame->data[0];
-		unsigned char* dst = audioBuffer.getPtr();
+		unsigned char* dst = audioBuffer.getData();
 
 		av_samples_copy( &dst, &src, 0, 0, _frame->nb_samples, avCodecContext.channels, avCodecContext.sample_fmt );
 	}
@@ -112,7 +112,7 @@ bool AudioDecoder::decodeNextFrame( Frame& frameBuffer, const size_t subStreamIn
 
 		// @todo manage cases with data of frame not only on data[0] (use _frame.linesize)
 		unsigned char* src = _frame->data[0];
-		unsigned char* dst = audioBuffer.getPtr();
+		unsigned char* dst = audioBuffer.getData();
 
 		// offset
 		src += subStreamIndex * bytePerSample;

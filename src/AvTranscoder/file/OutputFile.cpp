@@ -99,11 +99,11 @@ IOutputStream::EWrappingStatus OutputFile::wrap( const CodedData& data, const si
 	AVPacket packet;
 	av_init_packet( &packet );
 
-	//av_packet_from_data( &packet, (uint8_t*)data.getPtr(), data.getSize() );
+	//av_packet_from_data( &packet, (uint8_t*)data.getData(), data.getSize() );
 
 	packet.stream_index = streamId;
 
-	packet.data = (uint8_t*)data.getPtr();
+	packet.data = (uint8_t*)data.getData();
 	packet.size = data.getSize();
 	// packet.dts = _frameCount.at( streamId );
 	// packet.pts = ;

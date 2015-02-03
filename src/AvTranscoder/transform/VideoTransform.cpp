@@ -100,8 +100,8 @@ void VideoTransform::convert( const Frame& srcFrame, Frame& dstFrame )
 	const AVPixelFormat dstPixelFormat = dst.desc().getPixelFormat();
 
 	// Fill plane data pointers
-	av_image_fill_pointers(&_srcData[0], srcPixelFormat, src.desc().getHeight(), (uint8_t*) src.getPtr(), &_srcLineSize[0]);
-	av_image_fill_pointers(&_dstData[0], dstPixelFormat, dst.desc().getHeight(), (uint8_t*) dst.getPtr(), &_dstLineSize[0]);
+	av_image_fill_pointers(&_srcData[0], srcPixelFormat, src.desc().getHeight(), (uint8_t*) src.getData(), &_srcLineSize[0]);
+	av_image_fill_pointers(&_dstData[0], dstPixelFormat, dst.desc().getHeight(), (uint8_t*) dst.getData(), &_dstLineSize[0]);
 	
 	if( ! _imageConvertContext )
 	{

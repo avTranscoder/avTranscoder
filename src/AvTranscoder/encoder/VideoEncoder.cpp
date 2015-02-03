@@ -46,7 +46,7 @@ bool VideoEncoder::encodeFrame( const Frame& sourceFrame, Frame& codedFrame )
 	frame->width  = avCodecContext.width;
 	frame->height = avCodecContext.height;
 	frame->format = avCodecContext.pix_fmt;
-	avpicture_fill( (AVPicture*)frame, const_cast< unsigned char * >( sourceImageFrame.getPtr() ), avCodecContext.pix_fmt, avCodecContext.width, avCodecContext.height );
+	avpicture_fill( (AVPicture*)frame, const_cast< unsigned char * >( sourceImageFrame.getData() ), avCodecContext.pix_fmt, avCodecContext.width, avCodecContext.height );
 
 	AVPacket& packet = codedFrame.getAVPacket();
 	packet.stream_index = 0;

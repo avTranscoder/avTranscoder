@@ -69,7 +69,7 @@ bool VideoDecoder::decodeNextFrame( Frame& frameBuffer )
 	imageBuffer.resize( decodedSize );
 
 	// Copy pixel data from an AVPicture into one contiguous buffer.
-	avpicture_layout( (AVPicture*)_frame, (AVPixelFormat)_frame->format, _frame->width, _frame->height, imageBuffer.getPtr(), frameBuffer.getSize() );
+	avpicture_layout( (AVPicture*)_frame, (AVPixelFormat)_frame->format, _frame->width, _frame->height, imageBuffer.getData(), frameBuffer.getSize() );
 
 	return true;
 }

@@ -13,68 +13,49 @@ namespace avtranscoder
 class AvExport Frame
 {
 public:
-	Frame()
-	{
-		av_init_packet( &_packet );
-		_packet.data = NULL;
-		_packet.size = 0;
-	}
+	/// Create a frame with empty buffer data
+	Frame();
 
-	Frame( const size_t dataSize )
-	{
-		av_new_packet( &_packet, dataSize );
-	}
+	/// Create a frame with a the given buffer size
+	Frame( const size_t dataSize, const int value );
 
-	Frame(AVPacket& avPacket)
-	{
-		av_copy_packet( &_packet, &avPacket );
-	}
+	/// Create a frame from the given AVPAcket (copy data)
+	Frame( AVPacket& avPacket );
 
-	~Frame()
-	{
-		av_free_packet( &_packet );
-	}
+	/// Free buffer of data
+	~Frame();
 
-	void resize( const size_t newSize )
-	{
-		if( (int) newSize < _packet.size )
-			av_shrink_packet( &_packet, newSize );
-		 else if( (int) newSize > _packet.size )
-			av_grow_packet( &_packet, newSize );
-	}
+	/// Resize data buffer
+	void resize( const size_t newSize );
 
-	void copyData(unsigned char* buffer, const size_t size)
-	{
-		_packet.data = buffer;
-		_packet.size = size;
-	}
+	///@{
+	/// Ref to external data buffer
+	void refData( Frame& frame );
+	void refData( unsigned char* buffer, const size_t size );
+	///@}
 
-	void clear()
-	{
-		av_free_packet( &_packet );
+	/**
+	 * @brief Resize the buffer with the given size, and copy the given value
+	 * @note Use this function to check if we can modify the buffer
+	 */
+	void assign( const size_t size, const int value );
 
-	        av_init_packet( &_packet );
-		_packet.data = NULL;
-		_packet.size = 0;
-	}
-
-	/// Use this function in pyTest to check if we can modify the buffer
-	void assign( const size_t size, const int value )
-	{
-	    resize( size );
-	    memset( _packet.data, value, size );
-	}
+	/// Clear existing data and set size to 0
+	void clear();
 
 	AVPacket& getAVPacket() { return _packet; }
-	unsigned char* getPtr() { return _packet.data; }
+	unsigned char* getData() { return _packet.data; }
 	size_t getSize() const { return _packet.size; }
 
 #ifndef SWIG
 	const AVPacket& getAVPacket() const { return _packet; }
-	const unsigned char* getPtr() const { return _packet.data; }
+	const unsigned char* getData() const { return _packet.data; }
 #endif
 
-protected:
+private:
+	void initAVPacket();
+
+private:
 	AVPacket _packet;
 };
 
