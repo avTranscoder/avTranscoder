@@ -13,6 +13,7 @@ extern "C" {
 #include <libavcodec/version.h>
 #include <libavcodec/avcodec.h>
 #include <libavutil/rational.h>
+#include <libavutil/log.h>
 }
 
 #include <string>
@@ -58,6 +59,12 @@ typedef AVRational Rational;
 
 /// Register all the codecs and formats which are enabled at configuration time.
 void AvExport preloadCodecsAndFormats();
+
+/**
+ * @brief Set the log level of ffmpeg/libav.
+ * @param level: refer to define AV_LOG_*** (from AV_LOG_QUIET to AV_LOG_MAX_OFFSET)
+ */
+void AvExport setLogLevel( const int level );
 
 #ifndef SWIG
 void split( std::vector< std::string >& splitedString, const std::string& inputString, const std::string& splitChars = ";" );

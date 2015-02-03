@@ -17,6 +17,11 @@ void preloadCodecsAndFormats()
 	av_register_all();
 }
 
+void setLogLevel( const int level )
+{
+	av_log_set_level( level );
+}
+
 void split( std::vector< std::string >& splitedString, const std::string& inputString, const std::string& splitChars )
 {
 	char* part = strtok( const_cast<char*>( inputString.c_str() ), splitChars.c_str() );
