@@ -41,11 +41,10 @@ bool VideoTransform::init( const Frame& srcFrame, const Frame& dstFrame )
 	const VideoFrame& src = static_cast<const VideoFrame&>( srcFrame );
 	const VideoFrame& dst = static_cast<const VideoFrame&>( dstFrame );
 
-
 	const AVPixelFormat srcPixelFormat = src.desc().getPixelFormat();
 	const AVPixelFormat dstPixelFormat = dst.desc().getPixelFormat();
 
-	_imageConvertContext = sws_getContext(
+	_imageConvertContext = sws_getCachedContext( _imageConvertContext,
 		src.desc().getWidth(), src.desc().getHeight(), srcPixelFormat,
 		dst.desc().getWidth(), dst.desc().getHeight(), dstPixelFormat,
 		SWS_POINT, NULL, NULL, NULL);
