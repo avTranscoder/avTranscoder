@@ -60,7 +60,8 @@ void AvExport preloadCodecsAndFormats();
 
 /**
  * @brief Set the log level of ffmpeg/libav.
- * @param level: refer to define AV_LOG_*** (from AV_LOG_QUIET to AV_LOG_MAX_OFFSET)
+ * @param level: refer to define AV_LOG_xxx (from AV_LOG_QUIET to AV_LOG_DEBUG)
+ * @see SWIG interface avLogLevel.i
  */
 void AvExport setLogLevel( const int level );
 

@@ -11,6 +11,7 @@
 %include "AvTranscoder/swig/avExport.i"
 %include "AvTranscoder/swig/avDocumentation.i"
 %include "AvTranscoder/swig/avRational.i"
+%include "AvTranscoder/swig/avLogLevel.i"
 
 %{
 #include <AvTranscoder/ProfileLoader.hpp>
