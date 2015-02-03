@@ -32,7 +32,7 @@ public:
 	**/
 	OutputFile( const std::string& filename = "" );
 
-	virtual ~OutputFile(){};
+	virtual ~OutputFile();
 
 	/**
 	 * @brief Initialize the OutputFile, create format context to wrap essences into output file.
