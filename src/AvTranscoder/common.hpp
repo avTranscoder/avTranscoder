@@ -9,9 +9,8 @@ extern "C" {
 	#define INT64_C(c) (c ## LL)
 	#define UINT64_C(c) (c ## ULL)
 #endif
-#include <libavformat/version.h>
 #include <libavcodec/version.h>
-#include <libavcodec/avcodec.h>
+#include <libavutil/error.h>
 #include <libavutil/rational.h>
 #include <libavutil/log.h>
 }
@@ -64,9 +63,6 @@ void AvExport preloadCodecsAndFormats();
  * @param level: refer to define AV_LOG_*** (from AV_LOG_QUIET to AV_LOG_MAX_OFFSET)
  */
 void AvExport setLogLevel( const int level );
-
-std::string AvExport getFormat( const std::string& filename );
-bool AvExport matchFormat( const std::string& format, const std::string& filename );
 
 }
 

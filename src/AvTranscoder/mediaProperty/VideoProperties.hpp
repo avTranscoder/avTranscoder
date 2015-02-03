@@ -1,8 +1,9 @@
 #ifndef _AV_TRANSCODER_MEDIA_PROPERTY_VIDEO_PROPERTIES_HPP
 #define _AV_TRANSCODER_MEDIA_PROPERTY_VIDEO_PROPERTIES_HPP
 
-#include <AvTranscoder/common.hpp>
 #include "PixelProperties.hpp"
+
+#include <AvTranscoder/common.hpp>
 #include <AvTranscoder/mediaProperty/util.hpp>
 #include <AvTranscoder/file/util.hpp>
 #include <AvTranscoder/file/FormatContext.hpp>
