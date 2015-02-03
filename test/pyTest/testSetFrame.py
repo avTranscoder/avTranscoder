@@ -29,13 +29,17 @@ def testSetVideoFrame():
 	# start process
 	ouputFile.beginWrap()
 	transcoder.preProcessCodecLatency()
+	p = av.ConsoleProgress()
 
 	# process 10 frames
-	for i in range(0, 10):
+        nbFrames = 10
+	for i in range(0, nbFrames):
 		transcoder.processFrame()
+                p.progress( i, nbFrames )
+
 		# set video frame
 		frame = av.VideoFrame( imageDesc )
-		frame.getBuffer().assign(frame.getBuffer().size(), i)
+		frame.assign(frame.getSize(), i)
 		videoDecoder.setNextFrame( frame )
 
 	# end process
@@ -78,13 +82,17 @@ def testSetAudioFrame():
 	# start process
 	ouputFile.beginWrap()
 	transcoder.preProcessCodecLatency()
+	p = av.ConsoleProgress()
 
 	# process 10 frames
-	for i in range(0, 10):
+        nbFrames = 10
+	for i in range(0, nbFrames):
 		transcoder.processFrame()
+                p.progress( i, nbFrames )
+
 		# set video frame
 		frame = av.AudioFrame( audioDesc )
-		frame.getBuffer().assign(frame.getBuffer().size(), i)
+		frame.assign(frame.getSize(), i)
 		audioDecoder.setNextFrame( frame )
 
 	# end process

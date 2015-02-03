@@ -48,11 +48,7 @@ bool VideoEncoder::encodeFrame( const Frame& sourceFrame, Frame& codedFrame )
 	frame->format = avCodecContext.pix_fmt;
 	avpicture_fill( (AVPicture*)frame, const_cast< unsigned char * >( sourceImageFrame.getPtr() ), avCodecContext.pix_fmt, avCodecContext.width, avCodecContext.height );
 
-	AVPacket packet;
-	av_init_packet( &packet );
-	// avcodec_encode_video allocate packet
-	packet.size = 0;
-	packet.data = NULL;
+	AVPacket& packet = codedFrame.getAVPacket();
 	packet.stream_index = 0;
 
 	if( ( avCodecContext.coded_frame ) &&
@@ -70,19 +66,22 @@ bool VideoEncoder::encodeFrame( const Frame& sourceFrame, Frame& codedFrame )
 #if LIBAVCODEC_VERSION_MAJOR > 53
 	int gotPacket = 0;
 	int ret = avcodec_encode_video2( &avCodecContext, &packet, frame, &gotPacket );
-	if( ret == 0 && gotPacket == 1 )
+	if( ret != 0 && gotPacket == 0 )
 	{
-		codedFrame.copyData( packet.data, packet.size );
+		char err[AV_ERROR_MAX_STRING_SIZE];
+		av_strerror( ret, err, sizeof(err) );
+		throw std::runtime_error( "EncodeFrame error: avcodec encode video frame - " + std::string( err ) );
 	}
 #else
 	int ret = avcodec_encode_video( &avCodecContext, packet.data, packet.size, frame );
-	if( ret > 0 )
+	if( ret < 0 )
 	{
-		codedFrame.copyData( packet.data, packet.size );
+		char err[AV_ERROR_MAX_STRING_SIZE];
+		av_strerror( ret, err, sizeof(err) );
+		throw std::runtime_error( "EncodeFrame error: avcodec encode video frame - " + std::string( err ) );
 	}
 #endif
 
-	av_free_packet( &packet );
 #if LIBAVCODEC_VERSION_MAJOR > 54
 	av_frame_free( &frame );
 	return ret == 0 && gotPacket == 1;
@@ -101,29 +100,27 @@ bool VideoEncoder::encodeFrame( Frame& codedFrame )
 {
 	AVCodecContext& avCodecContext = _codec.getAVCodecContext();
 
-	AVPacket packet;
-	av_init_packet( &packet );
-	// avcodec_encode_video allocate packet
-	packet.size = 0;
-	packet.data = NULL;
+	AVPacket& packet = codedFrame.getAVPacket();
 	packet.stream_index = 0;
 
 #if LIBAVCODEC_VERSION_MAJOR > 53
 	int gotPacket = 0;
 	int ret = avcodec_encode_video2( &avCodecContext, &packet, NULL, &gotPacket );
-	if( ret == 0 && gotPacket == 1 )
+	if( ret != 0 && gotPacket == 0 )
 	{
-		codedFrame.copyData( packet.data, packet.size );
+		char err[AV_ERROR_MAX_STRING_SIZE];
+		av_strerror( ret, err, sizeof(err) );
+		throw std::runtime_error( "EncodeFrame error: avcodec encode last video frame - " + std::string( err ) );
 	}
-	av_free_packet( &packet );
 	return ret == 0 && gotPacket == 1;
 #else
 	int ret = avcodec_encode_video( &avCodecContext, packet.data, packet.size, NULL );
-	if( ret > 0 )
+	if( ret < 0 )
 	{
-		codedFrame.copyData( packet.data, packet.size );
+		char err[AV_ERROR_MAX_STRING_SIZE];
+		av_strerror( ret, err, sizeof(err) );
+		throw std::runtime_error( "EncodeFrame error: avcodec encode last video frame - " + std::string( err ) );
 	}
-	av_free_packet( &packet );
 	return ret == 0;
 #endif
 }

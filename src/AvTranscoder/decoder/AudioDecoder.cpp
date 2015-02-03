@@ -72,8 +72,7 @@ bool AudioDecoder::decodeNextFrame( Frame& frameBuffer )
 	
 	if( decodedSize )
 	{
-		if( audioBuffer.getSize() != decodedSize )
-			audioBuffer.getBuffer().resize( decodedSize, 0 );
+		audioBuffer.resize( decodedSize );
 
 		// @todo manage cases with data of frame not only on data[0] (use _frame.linesize)
 		unsigned char* const src = _frame->data[0];
@@ -109,8 +108,7 @@ bool AudioDecoder::decodeNextFrame( Frame& frameBuffer, const size_t subStreamIn
 	
 	if( decodedSize )
 	{
-		if( audioBuffer.getSize() != decodedSize )
-			audioBuffer.getBuffer().resize( decodedSize, 0 );
+		audioBuffer.resize( decodedSize );
 
 		// @todo manage cases with data of frame not only on data[0] (use _frame.linesize)
 		unsigned char* src = _frame->data[0];
@@ -136,19 +134,12 @@ bool AudioDecoder::decodeNextFrame()
 	{
 		CodedData data;
 
-		AVPacket packet;
-		av_init_packet( &packet );
-		
 		bool nextPacketRead = _inputStream->readNextPacket( data );
-		
-		packet.stream_index = _inputStream->getStreamIndex();
-		packet.data = nextPacketRead ? data.getPtr(): NULL;
-		packet.size = data.getSize();
-		
-		int ret = avcodec_decode_audio4( &_inputStream->getAudioCodec().getAVCodecContext(), _frame, &got_frame, &packet );
-		av_free_packet( &packet );
+		if( ! nextPacketRead ) // error or end of file
+			return false;
 
-		if( ! nextPacketRead && ret == 0 && got_frame == 0 ) // error or end of file
+		int ret = avcodec_decode_audio4( &_inputStream->getAudioCodec().getAVCodecContext(), _frame, &got_frame, &data.getAVPacket() );
+		if( ret == 0 && got_frame == 0 ) // no frame could be decompressed
 			return false;
 		
 		if( ret < 0 )

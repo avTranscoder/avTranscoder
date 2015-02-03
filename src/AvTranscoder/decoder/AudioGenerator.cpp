@@ -33,7 +33,7 @@ bool AudioGenerator::decodeNextFrame( Frame& frameBuffer )
 			int fillChar = 0;
 
 			AudioFrame intermediateBuffer( _frameDesc );
-			intermediateBuffer.getBuffer().resize( _frameDesc.getDataSize() );
+			intermediateBuffer.resize( _frameDesc.getDataSize() );
 			memset( intermediateBuffer.getPtr(), fillChar, _frameDesc.getDataSize() );
 
 			AudioTransform audioTransform;

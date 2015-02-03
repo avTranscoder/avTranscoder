@@ -37,7 +37,7 @@ bool VideoGenerator::decodeNextFrame( Frame& frameBuffer )
 			desc.setPixelFormat( "rgb24" );
 
 			VideoFrame intermediateBuffer( desc );
-			intermediateBuffer.getBuffer().resize( _frameDesc.getDataSize() );
+			intermediateBuffer.resize( _frameDesc.getDataSize() );
 			memset( intermediateBuffer.getPtr(), fillChar, _frameDesc.getDataSize() );
 
 			VideoTransform videoTransform;

@@ -3,38 +3,79 @@
 
 #include <AvTranscoder/common.hpp>
 
-#include <vector>
+extern "C" {
+#include <libavcodec/avcodec.h>
+}
 
 namespace avtranscoder
 {
 
-typedef std::vector< unsigned char > DataBuffer;
-
 class AvExport Frame
 {
 public:
-	Frame(){};
+	Frame()
+	{
+		av_init_packet( &_packet );
+		_packet.data = NULL;
+		_packet.size = 0;
+	}
 
-	~Frame(){};
+	Frame( const size_t dataSize )
+	{
+		av_new_packet( &_packet, dataSize );
+	}
+
+	Frame(AVPacket& avPacket)
+	{
+		av_copy_packet( &_packet, &avPacket );
+	}
+
+	~Frame()
+	{
+		av_free_packet( &_packet );
+	}
+
+	void resize( const size_t newSize )
+	{
+		if( (int) newSize < _packet.size )
+			av_shrink_packet( &_packet, newSize );
+		 else if( (int) newSize > _packet.size )
+			av_grow_packet( &_packet, newSize );
+	}
 
 	void copyData(unsigned char* buffer, const size_t size)
 	{
-		_dataBuffer.resize( size );
-		if ( size != 0 )
-			memcpy( getPtr(), buffer, size );
+		_packet.data = buffer;
+		_packet.size = size;
 	}
 
-	DataBuffer& getBuffer() { return _dataBuffer; }
-	unsigned char* getPtr() { return &_dataBuffer[0]; }
+	void clear()
+	{
+		av_free_packet( &_packet );
+
+	        av_init_packet( &_packet );
+		_packet.data = NULL;
+		_packet.size = 0;
+	}
+
+	/// Use this function in pyTest to check if we can modify the buffer
+	void assign( const size_t size, const int value )
+	{
+	    resize( size );
+	    memset( _packet.data, value, size );
+	}
+
+	AVPacket& getAVPacket() { return _packet; }
+	unsigned char* getPtr() { return _packet.data; }
+	size_t getSize() const { return _packet.size; }
 
 #ifndef SWIG
-	const unsigned char* getPtr() const { return &_dataBuffer[0]; }
+	const AVPacket& getAVPacket() const { return _packet; }
+	const unsigned char* getPtr() const { return _packet.data; }
 #endif
 
-	size_t getSize() const { return _dataBuffer.size(); }
-
 protected:
-	DataBuffer _dataBuffer;
+	AVPacket _packet;
 };
 
 // Typedef to represent buffer of coded data.

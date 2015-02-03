@@ -81,11 +81,10 @@ class AvExport AudioFrame : public Frame
 {
 public:
 	AudioFrame( const AudioFrameDesc& ref )
-		: _audioFrameDesc( ref )
+		: Frame( ref.getDataSize() )
+		, _audioFrameDesc( ref )
 		, _nbSamples( 0 )
-	{
-		_dataBuffer = DataBuffer( ref.getDataSize(), (unsigned char) 0 );
-	}
+	{}
 
 	const AudioFrameDesc& desc() const    { return _audioFrameDesc; }
 	

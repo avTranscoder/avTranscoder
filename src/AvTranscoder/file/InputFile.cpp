@@ -115,31 +115,28 @@ FileProperties InputFile::analyseFile( const std::string& filename, IProgress& p
 
 bool InputFile::readNextPacket( CodedData& data, const size_t streamIndex )
 {
-	AVPacket packet;
 	bool nextPacketFound = false;
 	while( ! nextPacketFound )
 	{
-		av_init_packet( &packet );
-		int ret = av_read_frame( &_formatContext.getAVFormatContext(), &packet );
+		int ret = av_read_frame( &_formatContext.getAVFormatContext(), &data.getAVPacket() );
 		if( ret < 0 ) // error or end of file
 		{
-			av_free_packet( &packet );
 			return false;
 		}
 
 		// if the packet stream is the expected one
-		// copy and return the packet data
-		if( packet.stream_index == (int)streamIndex )
+		// return the packet data
+		int packetStreamIndex = data.getAVPacket().stream_index;
+		if( packetStreamIndex == (int)streamIndex )
 		{
-			data.copyData( packet.data, packet.size );
 			nextPacketFound = true;
 		}
 		// else add the packet data to the stream cache
 		else
 		{
-			_inputStreams.at( packet.stream_index )->addPacket( packet );
+			_inputStreams.at( packetStreamIndex )->addPacket( data.getAVPacket() );
+			data.clear();
 		}
-		av_free_packet( &packet );
 	}
 	return true;
 }
