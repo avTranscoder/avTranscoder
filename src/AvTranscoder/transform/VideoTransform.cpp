@@ -31,6 +31,11 @@ VideoTransform::VideoTransform()
 {
 }
 
+VideoTransform::~VideoTransform()
+{
+	sws_freeContext( _imageConvertContext );
+}
+
 bool VideoTransform::init( const Frame& srcFrame, const Frame& dstFrame )
 {
 	const VideoFrame& src = static_cast<const VideoFrame&>( srcFrame );
