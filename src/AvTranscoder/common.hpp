@@ -18,7 +18,6 @@ extern "C" {
 
 #include <string>
 #include <cstring>
-#include <vector>
 
 #ifdef SWIG
  #define AvExport
@@ -65,11 +64,6 @@ void AvExport preloadCodecsAndFormats();
  * @param level: refer to define AV_LOG_*** (from AV_LOG_QUIET to AV_LOG_MAX_OFFSET)
  */
 void AvExport setLogLevel( const int level );
-
-#ifndef SWIG
-void split( std::vector< std::string >& splitedString, const std::string& inputString, const std::string& splitChars = ";" );
-int getFilesInDir( const std::string& dir, std::vector< std::string >& files );
-#endif
 
 std::string AvExport getFormat( const std::string& filename );
 bool AvExport matchFormat( const std::string& format, const std::string& filename );
