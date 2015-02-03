@@ -1,6 +1,4 @@
-/**
- * Rational number numerator/denominator.
- */
+/// ffmpeg/libav Rational number numerator/denominator
 typedef struct AVRational{
     int num; ///< numerator
     int den; ///< denominator
