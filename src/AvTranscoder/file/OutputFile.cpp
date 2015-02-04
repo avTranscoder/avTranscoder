@@ -109,11 +109,11 @@ IOutputStream::EWrappingStatus OutputFile::wrap( const CodedData& data, const si
 	AVPacket packet;
 	av_init_packet( &packet );
 
-	//av_packet_from_data( &packet, (uint8_t*)data.getPtr(), data.getSize() );
+	//av_packet_from_data( &packet, (uint8_t*)data.getData(), data.getSize() );
 
 	packet.stream_index = streamId;
 
-	packet.data = (uint8_t*)data.getPtr();
+	packet.data = (uint8_t*)data.getData();
 	packet.size = data.getSize();
 	// packet.dts = _frameCount.at( streamId );
 	// packet.pts = ;
@@ -122,8 +122,7 @@ IOutputStream::EWrappingStatus OutputFile::wrap( const CodedData& data, const si
 
 	av_free_packet( &packet );
 
-	// get duration of stream 0
-	double currentStreamDuration = _outputStreams.at( 0 )->getStreamDuration();
+	double currentStreamDuration = _outputStreams.at( streamId )->getStreamDuration();
 	if( currentStreamDuration < _previousProcessedStreamDuration )
 	{
 		// if the current stream is strictly shorter than the previous, wait for more data

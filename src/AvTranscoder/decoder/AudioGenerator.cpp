@@ -12,6 +12,11 @@ AudioGenerator::AudioGenerator()
 {
 }
 
+AudioGenerator::~AudioGenerator()
+{
+	delete _silent;
+}
+
 void AudioGenerator::setAudioFrameDesc( const AudioFrameDesc& frameDesc )
 {
 	_frameDesc = frameDesc;
@@ -27,29 +32,32 @@ bool AudioGenerator::decodeNextFrame( Frame& frameBuffer )
 	// Generate silent
 	if( ! _inputFrame )
 	{
+		AudioFrame& audioBuffer = static_cast<AudioFrame&>( frameBuffer );
+		audioBuffer.setNbSamples( _frameDesc.getSampleRate() / _frameDesc.getFps() );
+
 		// Generate the silent only once
 		if( ! _silent )
 		{
 			int fillChar = 0;
 
+			// input of convert
 			AudioFrame intermediateBuffer( _frameDesc );
-			intermediateBuffer.getBuffer().resize( _frameDesc.getDataSize() );
-			memset( intermediateBuffer.getPtr(), fillChar, _frameDesc.getDataSize() );
+			intermediateBuffer.assign( _frameDesc.getDataSize(), fillChar );
+			intermediateBuffer.setNbSamples( audioBuffer.getNbSamples() );
 
-			AudioTransform audioTransform;
-			audioTransform.convert( intermediateBuffer, frameBuffer );
-
-			AudioFrame& audioBuffer = static_cast<AudioFrame&>( frameBuffer );
-			audioBuffer.setNbSamples( 1.0 * _frameDesc.getSampleRate() / _frameDesc.getFps() );
+			// output of convert
 			_silent = new AudioFrame( audioBuffer.desc() );
-			_silent->copyData( audioBuffer.getPtr(), audioBuffer.getSize() );
+
+			// convert and store the silence
+			AudioTransform audioTransform;
+			audioTransform.convert( intermediateBuffer, *_silent );
 		}
-		frameBuffer = *_silent;
+		frameBuffer.refData( *_silent );
 	}
 	// Take audio frame from _inputFrame
 	else
 	{
-		frameBuffer.copyData( _inputFrame->getPtr(), _inputFrame->getSize() );
+		frameBuffer.refData( _inputFrame->getData(), _inputFrame->getSize() );
 	}
 	return true;
 }

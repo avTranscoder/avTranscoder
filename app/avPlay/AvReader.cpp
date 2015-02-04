@@ -62,7 +62,7 @@ const char* AvReader::readNextFrame()
 	++_currentFrame;
 	_inputVideo->decodeNextFrame( *_sourceImage );
 	_videoTransform.convert( *_sourceImage, *_imageToDisplay );
-	return (const char*)_imageToDisplay->getPtr();
+	return (const char*)_imageToDisplay->getData();
 }
 
 const char* AvReader::readPrevFrame()

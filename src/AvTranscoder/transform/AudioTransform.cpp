@@ -44,16 +44,15 @@ AudioTransform::~AudioTransform()
 
 bool AudioTransform::init( const Frame& srcFrame, const Frame& dstFrame )
 {
-	const AudioFrame& src = static_cast<const AudioFrame&>( srcFrame );
-	const AudioFrame& dst = static_cast<const AudioFrame&>( dstFrame );
-
 	_audioConvertContext = AllocResampleContext();
-
 	if( !_audioConvertContext )
 	{
 		throw std::runtime_error( "unable to create audio convert context" );
 	}
-	
+
+	const AudioFrame& src = static_cast<const AudioFrame&>( srcFrame );
+	const AudioFrame& dst = static_cast<const AudioFrame&>( dstFrame );
+
 	av_opt_set_int(  _audioConvertContext, "in_channel_layout",  av_get_default_channel_layout( src.desc().getChannels() ), 0 );
 	av_opt_set_int(  _audioConvertContext, "out_channel_layout", av_get_default_channel_layout( dst.desc().getChannels() ), 0 );
 	av_opt_set_int(  _audioConvertContext, "in_sample_rate",     src.desc().getSampleRate(), 0 );
@@ -70,15 +69,19 @@ bool AudioTransform::init( const Frame& srcFrame, const Frame& dstFrame )
 	return true;
 }
 
-bool AudioTransform::initFrames( const Frame& srcFrame, Frame& dstFrame )
+void AudioTransform::initFrames( const Frame& srcFrame, Frame& dstFrame )
 {
 	const AudioFrame& src = static_cast<const AudioFrame&>( srcFrame );
-	const AudioFrame& dst = static_cast<const AudioFrame&>( dstFrame );
+	AudioFrame& dst = static_cast<AudioFrame&>( dstFrame );
 
+	// resize buffer of output frame
 	int dstSampleSize = av_get_bytes_per_sample( dst.desc().getSampleFormat() );
-	dstFrame.getBuffer().resize( src.getNbSamples() * dstSampleSize );
+	dstFrame.resize( src.getNbSamples() * src.desc().getChannels() * dstSampleSize );
+
+	// set nbSamples of output frame
+	dst.setNbSamples( src.getNbSamples() );
+
 	_previousProcessedAudioFrameSize = srcFrame.getSize();
-	return true;
 }
 
 void AudioTransform::convert( const Frame& srcFrame, Frame& dstFrame )
@@ -89,8 +92,8 @@ void AudioTransform::convert( const Frame& srcFrame, Frame& dstFrame )
 	if( srcFrame.getSize() != _previousProcessedAudioFrameSize )
 		initFrames( srcFrame, dstFrame );
 
-	const unsigned char* srcData = srcFrame.getPtr();
-	unsigned char* dstData = dstFrame.getPtr();
+	const unsigned char* srcData = srcFrame.getData();
+	unsigned char* dstData = dstFrame.getData();
 
 	int nbOutputSamplesPerChannel;
 #ifdef AV_RESAMPLE_LIBRARY
@@ -103,12 +106,6 @@ void AudioTransform::convert( const Frame& srcFrame, Frame& dstFrame )
 	{
 		throw std::runtime_error( "unable to convert audio samples" );
 	}
-
-	size_t nbOutputSamples = nbOutputSamplesPerChannel * static_cast<const AudioFrame&>( dstFrame ).desc().getChannels();
-	
-	if( dstFrame.getSize() != nbOutputSamples )
-		dstFrame.getBuffer().resize( nbOutputSamples, 0 );
-	static_cast<AudioFrame&>( dstFrame ).setNbSamples( static_cast<const AudioFrame&>( srcFrame ).getNbSamples() );
 }
 
 }

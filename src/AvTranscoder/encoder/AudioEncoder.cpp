@@ -46,27 +46,23 @@ bool AudioEncoder::encodeFrame( const Frame& sourceFrame, Frame& codedFrame )
 	frame->channel_layout = avCodecContext.channel_layout;
 	
 	// we calculate the size of the samples buffer in bytes
-	int buffer_size = av_samples_get_buffer_size( NULL, avCodecContext.channels, frame->nb_samples, avCodecContext.sample_fmt, 0 );
-	if( buffer_size < 0 )
+	int bufferSize = av_samples_get_buffer_size( NULL, avCodecContext.channels, frame->nb_samples, avCodecContext.sample_fmt, 0 );
+	if( bufferSize < 0 )
 	{
 		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( buffer_size, err, sizeof(err) );
-		throw std::runtime_error( "EncodeFrame error: buffer size < 0 - " + std::string(err) );
+		av_strerror( bufferSize, err, sizeof(err) );
+		throw std::runtime_error( "Encode audio frame error: buffer size < 0 - " + std::string(err) );
 	}
 
-	int retvalue = avcodec_fill_audio_frame( frame, avCodecContext.channels, avCodecContext.sample_fmt, sourceAudioFrame.getPtr(), buffer_size, 0 );
+	int retvalue = avcodec_fill_audio_frame( frame, avCodecContext.channels, avCodecContext.sample_fmt, sourceAudioFrame.getData(), bufferSize, 0 );
 	if( retvalue < 0 )
 	{
 		char err[AV_ERROR_MAX_STRING_SIZE];
 		av_strerror( retvalue, err, sizeof(err) );
-		throw std::runtime_error( "EncodeFrame error: avcodec fill audio frame - " + std::string( err ) );
+		throw std::runtime_error( "Encode audio frame error: avcodec fill audio frame - " + std::string( err ) );
 	}
 	
-	AVPacket packet;
-	av_init_packet( &packet );
-	
-	packet.size = 0;
-	packet.data = NULL;
+	AVPacket& packet = codedFrame.getAVPacket();
 	packet.stream_index = 0;
 	
 	if( ( avCodecContext.coded_frame ) &&
@@ -84,19 +80,21 @@ bool AudioEncoder::encodeFrame( const Frame& sourceFrame, Frame& codedFrame )
 #if LIBAVCODEC_VERSION_MAJOR > 53
 	int gotPacket = 0;
 	int ret = avcodec_encode_audio2( &avCodecContext, &packet, frame, &gotPacket );
-	if( ret == 0 && gotPacket == 1 )
+	if( ret != 0 && gotPacket == 0 )
 	{
-		codedFrame.copyData( packet.data, packet.size );
+		char err[AV_ERROR_MAX_STRING_SIZE];
+		av_strerror( ret, err, sizeof(err) );
+		throw std::runtime_error( "Encode audio frame error: avcodec encode audio frame - " + std::string( err ) );
 	}
 #else
 	int ret = avcodec_encode_audio( &avCodecContext, packet.data, packet.size, frame );
-	if( ret > 0 )
+	if( ret < 0 )
 	{
-		codedFrame.copyData( packet.data, packet.size );
+		char err[AV_ERROR_MAX_STRING_SIZE];
+		av_strerror( ret, err, sizeof(err) );
+		throw std::runtime_error( "Encode audio frame error: avcodec encode audio frame - " + std::string( err ) );
 	}
 #endif
-	
-	av_free_packet( &packet );
 	
 #if LIBAVCODEC_VERSION_MAJOR > 54
 	av_frame_free( &frame );
@@ -116,30 +114,28 @@ bool AudioEncoder::encodeFrame( Frame& codedFrame )
 {
 	AVCodecContext& avCodecContext = _codec.getAVCodecContext();
 
-	AVPacket packet;
-	av_init_packet( &packet );
-	
-	packet.size = 0;
-	packet.data = NULL;
+	AVPacket& packet = codedFrame.getAVPacket();
 	packet.stream_index = 0;
 
 #if LIBAVCODEC_VERSION_MAJOR > 53
 	int gotPacket = 0;
 	int ret = avcodec_encode_audio2( &avCodecContext, &packet, NULL, &gotPacket );
-	if( ret == 0 && gotPacket == 1 )
+	if( ret != 0 && gotPacket == 0 )
 	{
-		codedFrame.copyData( packet.data, packet.size );
+		char err[AV_ERROR_MAX_STRING_SIZE];
+		av_strerror( ret, err, sizeof(err) );
+		throw std::runtime_error( "Encode audio frame error: avcodec encode last audio frame - " + std::string( err ) );
 	}
-	av_free_packet( &packet );
 	return ret == 0 && gotPacket == 1;
 
 #else
 	int ret = avcodec_encode_audio( &avCodecContext, packet.data, packet.size, NULL );
-	if( ret > 0 )
+	if( ret < 0 )
 	{
-		codedFrame.copyData( packet.data, packet.size );
+		char err[AV_ERROR_MAX_STRING_SIZE];
+		av_strerror( ret, err, sizeof(err) );
+		throw std::runtime_error( "Encode audio frame error: avcodec encode last audio frame - " + std::string( err ) );
 	}
-	av_free_packet( &packet );
 	return ret == 0;
 
 #endif

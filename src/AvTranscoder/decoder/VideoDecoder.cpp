@@ -60,17 +60,15 @@ bool VideoDecoder::decodeNextFrame( Frame& frameBuffer )
 	if( ! decodeNextFrame() )
 		return false;
 
-	VideoFrame& imageBuffer = static_cast<VideoFrame&>( frameBuffer );
-
 	size_t decodedSize = avpicture_get_size( (AVPixelFormat)_frame->format, _frame->width, _frame->height );
-	if( ! decodedSize )
+	if( decodedSize == 0 )
 		return false;
 
-	if( imageBuffer.getBuffer().size() != decodedSize )
-		imageBuffer.getBuffer().resize( decodedSize );
+	VideoFrame& imageBuffer = static_cast<VideoFrame&>( frameBuffer );
+	imageBuffer.resize( decodedSize );
 
 	// Copy pixel data from an AVPicture into one contiguous buffer.
-	avpicture_layout( (AVPicture*)_frame, (AVPixelFormat)_frame->format, _frame->width, _frame->height, &imageBuffer.getBuffer()[0], frameBuffer.getBuffer().size() );
+	avpicture_layout( (AVPicture*)_frame, (AVPixelFormat)_frame->format, _frame->width, _frame->height, imageBuffer.getData(), frameBuffer.getSize() );
 
 	return true;
 }
@@ -87,19 +85,12 @@ bool VideoDecoder::decodeNextFrame()
 	{
 		CodedData data;
 
-		AVPacket packet;
-		av_init_packet( &packet );
-
 		bool nextPacketRead = _inputStream->readNextPacket( data );
-		
-		packet.stream_index = _inputStream->getStreamIndex();
-		packet.data = nextPacketRead ? data.getPtr(): NULL;
-		packet.size = data.getSize();
+		if( ! nextPacketRead ) // error or end of file
+			return false;
 
-		int ret = avcodec_decode_video2( &_inputStream->getVideoCodec().getAVCodecContext(), _frame, &got_frame, &packet );
-		av_free_packet( &packet );
-
-		if( ! nextPacketRead && ret == 0 && got_frame == 0 ) // error or end of file
+		int ret = avcodec_decode_video2( &_inputStream->getVideoCodec().getAVCodecContext(), _frame, &got_frame, &data.getAVPacket() );
+		if( ret == 0 && got_frame == 0 ) // no frame could be decompressed
 			return false;
 
 		if( ret < 0 )
