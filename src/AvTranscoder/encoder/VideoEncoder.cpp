@@ -46,7 +46,14 @@ bool VideoEncoder::encodeFrame( const Frame& sourceFrame, Frame& codedFrame )
 	frame->width  = avCodecContext.width;
 	frame->height = avCodecContext.height;
 	frame->format = avCodecContext.pix_fmt;
-	avpicture_fill( (AVPicture*)frame, const_cast< unsigned char * >( sourceImageFrame.getData() ), avCodecContext.pix_fmt, avCodecContext.width, avCodecContext.height );
+
+	int bufferSize = avpicture_fill( (AVPicture*)frame, const_cast< unsigned char * >( sourceImageFrame.getData() ), avCodecContext.pix_fmt, avCodecContext.width, avCodecContext.height );
+	if( bufferSize < 0 )
+	{
+		char err[AV_ERROR_MAX_STRING_SIZE];
+		av_strerror( bufferSize, err, sizeof(err) );
+		throw std::runtime_error( "Encode video frame error: buffer size < 0 - " + std::string(err) );
+	}
 
 	AVPacket& packet = codedFrame.getAVPacket();
 	packet.stream_index = 0;
