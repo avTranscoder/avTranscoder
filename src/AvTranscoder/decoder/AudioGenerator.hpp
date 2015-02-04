@@ -11,6 +11,7 @@ class AvExport AudioGenerator : public IDecoder
 {
 public:
 	AudioGenerator();
+	~AudioGenerator();
 
 	AudioFrameDesc& getAudioFrameDesc() { return _frameDesc; }
 	void setAudioFrameDesc( const AudioFrameDesc& frameDesc );

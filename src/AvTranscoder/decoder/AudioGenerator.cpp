@@ -12,6 +12,11 @@ AudioGenerator::AudioGenerator()
 {
 }
 
+AudioGenerator::~AudioGenerator()
+{
+	delete _silent;
+}
+
 void AudioGenerator::setAudioFrameDesc( const AudioFrameDesc& frameDesc )
 {
 	_frameDesc = frameDesc;
