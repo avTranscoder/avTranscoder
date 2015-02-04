@@ -14,6 +14,12 @@ OutputStream::OutputStream( OutputFile& outputFile, const size_t streamIndex )
 {
 }
 
+double OutputStream::getStreamDuration() const
+{
+	AVStream& outputStream = _outputFile->getFormatContext().getAVStream( _streamIndex );
+	return av_q2d( outputStream.time_base ) * outputStream.cur_dts;
+}
+
 IOutputStream::EWrappingStatus OutputStream::wrap( const CodedData& data )
 {
 	assert( _outputFile != NULL );

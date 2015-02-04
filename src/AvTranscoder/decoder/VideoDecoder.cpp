@@ -119,6 +119,10 @@ void VideoDecoder::flushDecoder()
 
 void VideoDecoder::setProfile( const ProfileLoader::Profile& profile )
 {
+	// set threads if not in profile
+	if( ! profile.count( "threads" ) )
+		_inputStream->getVideoCodec().getOption( "threads" ).setString( "auto" );
+
 	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
 	{
 		if( (*it).first == constants::avProfileIdentificator ||

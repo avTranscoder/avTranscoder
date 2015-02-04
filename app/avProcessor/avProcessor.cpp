@@ -1,4 +1,5 @@
 #include <AvTranscoder/transcoder/Transcoder.hpp>
+#include <AvTranscoder/file/OutputFile.hpp>
 #include <AvTranscoder/progress/ConsoleProgress.hpp>
 
 #include <iostream>
