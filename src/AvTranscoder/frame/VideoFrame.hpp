@@ -90,7 +90,7 @@ class AvExport VideoFrame : public Frame
 {
 public:
 	VideoFrame( const VideoFrameDesc& ref )
-		: Frame( ref.getDataSize(), 0 )
+		: Frame( ref.getDataSize() )
 		, _videoFrameDesc( ref )
 	{}
 

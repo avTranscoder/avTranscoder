@@ -8,10 +8,9 @@ Frame::Frame()
 	initAVPacket();
 }
 
-Frame::Frame( const size_t dataSize, const int value )
+Frame::Frame( const size_t dataSize )
 {
 	av_new_packet( &_packet, dataSize );
-	assign( dataSize, value );
 }
 
 Frame::Frame(AVPacket& avPacket)
