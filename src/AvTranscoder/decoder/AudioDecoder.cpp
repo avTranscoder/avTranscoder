@@ -161,4 +161,29 @@ bool AudioDecoder::decodeNextFrame()
 	return true;
 }
 
+void AudioDecoder::setProfile( const ProfileLoader::Profile& profile )
+{
+	// set threads if not in profile
+	if( ! profile.count( "threads" ) )
+		_inputStream->getAudioCodec().getOption( "threads" ).setString( "auto" );
+
+	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
+	{
+		if( (*it).first == constants::avProfileIdentificator ||
+			(*it).first == constants::avProfileIdentificatorHuman ||
+			(*it).first == constants::avProfileType )
+			continue;
+
+		try
+		{
+			Option& decodeOption = _inputStream->getAudioCodec().getOption( (*it).first );
+			decodeOption.setString( (*it).second );
+		}
+		catch( std::exception& e )
+		{
+			std::cout << "[AudioDecoder] warning - can't set option " << (*it).first << " to " << (*it).second << ": " << e.what() << std::endl;
+		}
+	}
+}
+
 }

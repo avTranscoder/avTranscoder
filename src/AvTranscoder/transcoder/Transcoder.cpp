@@ -11,7 +11,7 @@
 namespace avtranscoder
 {
 
-Transcoder::Transcoder( OutputFile& outputFile )
+Transcoder::Transcoder( IOutputFile& outputFile )
 	: _outputFile( outputFile )
 	, _inputFiles()
 	, _streamTranscoders()
@@ -288,7 +288,7 @@ void Transcoder::process( IProgress& progress )
 
 		frameProcessed =  processFrame();
 
-		double progressDuration = _outputFile.getProgressDuration();
+		double progressDuration = _outputFile.getStream( 0 ).getStreamDuration();
 		if( progress.progress( ( progressDuration > totalDuration )? totalDuration : progressDuration, totalDuration ) == eJobStatusCancel )
 			break;
 
@@ -314,7 +314,6 @@ void Transcoder::setVerbose( bool verbose )
 	{
 		(*it)->setVerbose( _verbose );
 	}
-	_outputFile.setVerbose( _verbose );
 
 	// Print stuff which is only useful for ffmpeg developers.
 	if( _verbose )
