@@ -5,6 +5,7 @@
 #include <AvTranscoder/ProfileLoader.hpp>
 
 extern "C" {
+#include <libavcodec/avcodec.h>
 #include <libavutil/pixfmt.h>
 #include <libavutil/pixdesc.h>
 }

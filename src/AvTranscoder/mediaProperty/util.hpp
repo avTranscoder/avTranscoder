@@ -3,6 +3,10 @@
 
 #include <AvTranscoder/common.hpp>
 
+extern "C" {
+#include <libavutil/dict.h>
+}
+
 #include <vector>
 #include <utility>
 #include <string>

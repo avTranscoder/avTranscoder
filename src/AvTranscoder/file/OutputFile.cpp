@@ -1,5 +1,7 @@
 #include "OutputFile.hpp"
 
+#include <AvTranscoder/util.hpp>
+
 #include <iostream>
 #include <stdexcept>
 
