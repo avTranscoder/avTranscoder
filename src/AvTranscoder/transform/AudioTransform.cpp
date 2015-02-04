@@ -37,6 +37,11 @@ AudioTransform::AudioTransform()
 {
 }
 
+AudioTransform::~AudioTransform()
+{
+	FreeResampleContext( &_audioConvertContext );
+}
+
 bool AudioTransform::init( const Frame& srcFrame, const Frame& dstFrame )
 {
 	_audioConvertContext = AllocResampleContext();

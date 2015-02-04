@@ -10,7 +10,9 @@
 %include "AvTranscoder/swig/avException.i"
 %include "AvTranscoder/swig/avExport.i"
 %include "AvTranscoder/swig/avDocumentation.i"
+%include "AvTranscoder/swig/avMediaType.i"
 %include "AvTranscoder/swig/avRational.i"
+%include "AvTranscoder/swig/avLogLevel.i"
 
 %{
 #include <AvTranscoder/ProfileLoader.hpp>

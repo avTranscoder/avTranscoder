@@ -25,6 +25,7 @@ public:
 	virtual ~IOutputStream() {};
 
 	virtual size_t getStreamIndex() const = 0;
+	virtual double getStreamDuration() const = 0;
 
 	virtual EWrappingStatus wrap( const CodedData& data ) = 0;
 };

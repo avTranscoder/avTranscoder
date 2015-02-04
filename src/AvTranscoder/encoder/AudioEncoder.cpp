@@ -146,6 +146,10 @@ void AudioEncoder::setProfile( const ProfileLoader::Profile& profile, const Audi
 	// set sampleRate, number of channels, sample format
 	_codec.setAudioParameters( frameDesc );
 
+	// set threads if not in profile
+	if( ! profile.count( "threads" ) )
+		_codec.getOption( "threads" ).setString( "auto" );
+
 	// set encoder options
 	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
 	{

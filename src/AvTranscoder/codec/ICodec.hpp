@@ -4,6 +4,10 @@
 #include <AvTranscoder/common.hpp>
 #include <AvTranscoder/Option.hpp>
 
+extern "C" {
+#include <libavcodec/avcodec.h>
+}
+
 #include <string>
 
 namespace avtranscoder

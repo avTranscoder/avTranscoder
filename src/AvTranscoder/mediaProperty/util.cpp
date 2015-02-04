@@ -1,8 +1,6 @@
 #include "util.hpp"
 
-extern "C" {
-#include <libavutil/dict.h>
-}
+#include <sstream>
 
 namespace avtranscoder
 {

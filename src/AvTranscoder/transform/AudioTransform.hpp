@@ -21,6 +21,7 @@ class AvExport AudioTransform : public ITransform
 {
 public:
 	AudioTransform();
+	~AudioTransform();
 
 	void convert( const Frame& srcFrame, Frame& dstFrame );
 

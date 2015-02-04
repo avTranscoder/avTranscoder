@@ -8,6 +8,7 @@ extern "C" {
 
 #include <stdexcept>
 #include <iomanip>
+#include <sstream>
 
 #ifdef _MSC_VER
 #include <float.h>

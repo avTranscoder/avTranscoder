@@ -1,5 +1,7 @@
 #include "OutputFile.hpp"
 
+#include <AvTranscoder/util.hpp>
+
 #include <iostream>
 #include <stdexcept>
 
@@ -14,6 +16,14 @@ OutputFile::OutputFile( const std::string& filename )
 	, _previousProcessedStreamDuration( 0.0 )
 	, _verbose( false )
 {}
+
+OutputFile::~OutputFile()
+{
+	for( std::vector< OutputStream* >::iterator it = _outputStreams.begin(); it != _outputStreams.end(); ++it )
+	{
+		delete (*it);
+	}
+}
 
 bool OutputFile::setup()
 {
@@ -112,7 +122,7 @@ IOutputStream::EWrappingStatus OutputFile::wrap( const CodedData& data, const si
 
 	av_free_packet( &packet );
 
-	double currentStreamDuration = getProgressDuration( streamId );
+	double currentStreamDuration = _outputStreams.at( streamId )->getStreamDuration();
 	if( currentStreamDuration < _previousProcessedStreamDuration )
 	{
 		// if the current stream is strictly shorter than the previous, wait for more data
@@ -192,12 +202,6 @@ void OutputFile::setProfile( const ProfileLoader::Profile& profile )
 				std::cout << "[OutputFile] warning - can't set option " << (*it).first << " to " << (*it).second << ": " << e.what() << std::endl;
 		}
 	}
-}
-
-double OutputFile::getProgressDuration( const size_t streamIndex )
-{
-	AVStream& outputStream = _formatContext.getAVStream( streamIndex );
-	return av_q2d( outputStream.time_base ) * outputStream.cur_dts;
 }
 
 }

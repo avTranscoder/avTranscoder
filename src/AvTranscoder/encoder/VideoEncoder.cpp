@@ -137,6 +137,10 @@ void VideoEncoder::setProfile( const ProfileLoader::Profile& profile, const avtr
 	// set width, height, pixel format, fps
 	_codec.setImageParameters( frameDesc );
 
+	// set threads if not in profile
+	if( ! profile.count( "threads" ) )
+		_codec.getOption( "threads" ).setString( "auto" );
+
 	// set encoder options
 	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
 	{

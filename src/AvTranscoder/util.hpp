@@ -19,6 +19,16 @@ namespace avtranscoder
 typedef std::map<std::string, OptionArray> OptionArrayMap;
 
 /**
+ * @brief Get format name from a given filename 
+ */
+std::string AvExport getFormat( const std::string& filename );
+
+/**
+ * @brief Check if a format name corresponds to the format of a given filename
+ */
+bool AvExport matchFormat( const std::string& format, const std::string& filename );
+
+/**
 *  @brief Get pixel format supported by a video codec.
 *  @param videoCodecName: the video codec name (empty if not indicated, and so get all pixel formats supported by all video codecs).
 */
