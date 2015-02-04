@@ -12,6 +12,11 @@ VideoGenerator::VideoGenerator()
 {
 }
 
+VideoGenerator::~VideoGenerator()
+{
+	delete _blackImage;
+}
+
 void VideoGenerator::setVideoFrameDesc( const VideoFrameDesc& frameDesc )
 {
 	_frameDesc = frameDesc;

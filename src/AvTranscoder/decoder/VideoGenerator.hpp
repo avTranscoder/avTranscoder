@@ -11,6 +11,7 @@ class AvExport VideoGenerator : public IDecoder
 {
 public:
 	VideoGenerator();
+	~VideoGenerator();
 
 	VideoFrameDesc& getVideoFrameDesc() { return _frameDesc; }
 	void setVideoFrameDesc( const VideoFrameDesc& frameDesc );
