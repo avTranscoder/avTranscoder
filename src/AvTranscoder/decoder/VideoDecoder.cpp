@@ -60,12 +60,11 @@ bool VideoDecoder::decodeNextFrame( Frame& frameBuffer )
 	if( ! decodeNextFrame() )
 		return false;
 
-	VideoFrame& imageBuffer = static_cast<VideoFrame&>( frameBuffer );
-
 	size_t decodedSize = avpicture_get_size( (AVPixelFormat)_frame->format, _frame->width, _frame->height );
-	if( ! decodedSize )
+	if( decodedSize == 0 )
 		return false;
 
+	VideoFrame& imageBuffer = static_cast<VideoFrame&>( frameBuffer );
 	imageBuffer.resize( decodedSize );
 
 	// Copy pixel data from an AVPicture into one contiguous buffer.
