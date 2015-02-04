@@ -65,21 +65,18 @@ bool AudioDecoder::decodeNextFrame( Frame& frameBuffer )
 	AVCodecContext& avCodecContext = _inputStream->getAudioCodec().getAVCodecContext();
 
 	size_t decodedSize = av_samples_get_buffer_size( NULL, avCodecContext.channels, _frame->nb_samples, avCodecContext.sample_fmt, 1 );
-	
+	if( decodedSize == 0 )
+		return false;
+
 	AudioFrame& audioBuffer = static_cast<AudioFrame&>( frameBuffer );
-
 	audioBuffer.setNbSamples( _frame->nb_samples );
-	
-	if( decodedSize )
-	{
-		audioBuffer.resize( decodedSize );
+	audioBuffer.resize( decodedSize );
 
-		// @todo manage cases with data of frame not only on data[0] (use _frame.linesize)
-		unsigned char* const src = _frame->data[0];
-		unsigned char* dst = audioBuffer.getData();
+	// @todo manage cases with data of frame not only on data[0] (use _frame.linesize)
+	unsigned char* const src = _frame->data[0];
+	unsigned char* dst = audioBuffer.getData();
 
-		av_samples_copy( &dst, &src, 0, 0, _frame->nb_samples, avCodecContext.channels, avCodecContext.sample_fmt );
-	}
+	av_samples_copy( &dst, &src, 0, 0, _frame->nb_samples, avCodecContext.channels, avCodecContext.sample_fmt );
 
 	return true;
 }
@@ -102,28 +99,28 @@ bool AudioDecoder::decodeNextFrame( Frame& frameBuffer, const size_t subStreamIn
 	{
 		throw std::runtime_error( "The subStream doesn't exist");
 	}
-	
+
+	if( decodedSize == 0 )
+		return false;
+
 	AudioFrame& audioBuffer = static_cast<AudioFrame&>( frameBuffer );
 	audioBuffer.setNbSamples( _frame->nb_samples );
-	
-	if( decodedSize )
+	audioBuffer.resize( decodedSize );
+
+	// @todo manage cases with data of frame not only on data[0] (use _frame.linesize)
+	unsigned char* src = _frame->data[0];
+	unsigned char* dst = audioBuffer.getData();
+
+	// offset
+	src += subStreamIndex * bytePerSample;
+
+	for( int sample = 0; sample < _frame->nb_samples; ++sample )
 	{
-		audioBuffer.resize( decodedSize );
-
-		// @todo manage cases with data of frame not only on data[0] (use _frame.linesize)
-		unsigned char* src = _frame->data[0];
-		unsigned char* dst = audioBuffer.getData();
-
-		// offset
-		src += subStreamIndex * bytePerSample;
-		
-		for( int sample = 0; sample < _frame->nb_samples; ++sample )
-		{
-			memcpy( dst, src, bytePerSample );
-			dst += bytePerSample;
-			src += bytePerSample * nbSubStreams;
-		}
+		memcpy( dst, src, bytePerSample );
+		dst += bytePerSample;
+		src += bytePerSample * nbSubStreams;
 	}
+
 	return true;
 }
 
