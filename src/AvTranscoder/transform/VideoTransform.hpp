@@ -16,6 +16,7 @@ class AvExport VideoTransform : public ITransform
 {
 public:
 	VideoTransform();
+	~VideoTransform();
 
 	void convert( const Frame& srcFrame, Frame& dstFrame );
 

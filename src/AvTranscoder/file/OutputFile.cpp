@@ -17,6 +17,14 @@ OutputFile::OutputFile( const std::string& filename )
 	, _verbose( false )
 {}
 
+OutputFile::~OutputFile()
+{
+	for( std::vector< OutputStream* >::iterator it = _outputStreams.begin(); it != _outputStreams.end(); ++it )
+	{
+		delete (*it);
+	}
+}
+
 bool OutputFile::setup()
 {
 	_formatContext.setOutputFormat( _filename );
