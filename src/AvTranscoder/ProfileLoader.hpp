@@ -74,7 +74,7 @@ private:
 };
 
 #ifndef SWIG
-void split( std::vector< std::string >& splitedString, const std::string& inputString, const std::string& splitChars = ";" );
+void split( std::vector< std::string >& splitString, const std::string& inputString, const std::string& splitChars = ";" );
 int getFilesInDir( const std::string& dir, std::vector< std::string >& files );
 #endif
 

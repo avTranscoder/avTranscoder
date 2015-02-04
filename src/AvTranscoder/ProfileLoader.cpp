@@ -201,12 +201,12 @@ bool ProfileLoader::checkAudioProfile( const Profile& profileToCheck )
 	return isValid;
 }
 
-void split( std::vector< std::string >& splitedString, const std::string& inputString, const std::string& splitChars )
+void split( std::vector< std::string >& splitString, const std::string& inputString, const std::string& splitChars )
 {
 	char* part = strtok( const_cast<char*>( inputString.c_str() ), splitChars.c_str() );
 	while( part != NULL )
 	{
-		splitedString.push_back( std::string( part ) );
+		splitString.push_back( std::string( part ) );
 		part = strtok( NULL, splitChars.c_str() );
 	}
 }
