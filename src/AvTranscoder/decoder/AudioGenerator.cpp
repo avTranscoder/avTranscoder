@@ -1,7 +1,5 @@
 #include "AudioGenerator.hpp"
 
-#include <AvTranscoder/transform/AudioTransform.hpp>
-
 namespace avtranscoder
 {
 
@@ -20,6 +18,7 @@ AudioGenerator::~AudioGenerator()
 void AudioGenerator::setAudioFrameDesc( const AudioFrameDesc& frameDesc )
 {
 	_frameDesc = frameDesc;
+	_frameDesc.setFps( 25. );
 }
 
 void AudioGenerator::setFrame( Frame& inputFrame )
@@ -40,17 +39,9 @@ bool AudioGenerator::decodeNextFrame( Frame& frameBuffer )
 		{
 			int fillChar = 0;
 
-			// input of convert
-			AudioFrame intermediateBuffer( _frameDesc );
-			intermediateBuffer.assign( _frameDesc.getDataSize(), fillChar );
-			intermediateBuffer.setNbSamples( audioBuffer.getNbSamples() );
-
-			// output of convert
 			_silent = new AudioFrame( audioBuffer.desc() );
-
-			// convert and store the silence
-			AudioTransform audioTransform;
-			audioTransform.convert( intermediateBuffer, *_silent );
+			_silent->assign( _frameDesc.getDataSize(), fillChar );
+			_silent->setNbSamples( audioBuffer.getNbSamples() );
 		}
 		frameBuffer.refData( *_silent );
 	}

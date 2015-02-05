@@ -34,7 +34,6 @@ StreamTranscoder::StreamTranscoder(
 	, _outputEncoder( NULL )
 	, _transform( NULL )
 	, _subStreamIndex( -1 )
-	, _frameProcessed( 0 )
 	, _offset( 0 )
 	, _canSwitchToGenerator( false )
 	, _verbose( false )
@@ -67,7 +66,7 @@ StreamTranscoder::StreamTranscoder(
 		IOutputFile& outputFile,
 		const ProfileLoader::Profile& profile,
 		const int subStreamIndex,
-		const size_t offset
+		const double offset
 	)
 	: _inputStream( &inputStream )
 	, _outputStream( NULL )
@@ -79,7 +78,6 @@ StreamTranscoder::StreamTranscoder(
 	, _outputEncoder( NULL )
 	, _transform( NULL )
 	, _subStreamIndex( subStreamIndex )
-	, _frameProcessed( 0 )
 	, _offset( offset )
 	, _canSwitchToGenerator( false )
 	, _verbose( false )
@@ -177,7 +175,6 @@ StreamTranscoder::StreamTranscoder(
 	, _outputEncoder( NULL )
 	, _transform( NULL )
 	, _subStreamIndex( -1 )
-	, _frameProcessed( 0 )
 	, _offset( 0 )
 	, _canSwitchToGenerator( false )
 	, _verbose( false )
@@ -274,8 +271,6 @@ void StreamTranscoder::preProcessCodecLatency()
 
 bool StreamTranscoder::processFrame()
 {
-	++_frameProcessed;
-
 	if( ! _inputDecoder )
 	{
 		return processRewrap();
@@ -327,9 +322,16 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 		std::cout << "transcode a frame " << std::endl;
 
 	// check offset
-	if( _offset && _frameProcessed == _offset + 1 )
+	if( _offset )
 	{
-		switchToInputDecoder();
+		bool endOfOffset = _outputStream->getStreamDuration() >= _offset;
+		if( endOfOffset )
+		{
+			// switch to essence from input stream
+			switchToInputDecoder();
+			// reset offset
+			_offset = 0;
+		}
 	}
 
 	bool decodingStatus = false;
@@ -396,9 +398,7 @@ double StreamTranscoder::getDuration() const
 {	
 	if( _inputStream )
 	{
-		double totalDuration = 0;
-		totalDuration += _inputStream->getDuration();
-		// @todo add offset
+		double totalDuration = _inputStream->getDuration() + _offset;
 		return totalDuration;
 	}
 	else
