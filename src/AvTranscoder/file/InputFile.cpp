@@ -147,8 +147,6 @@ void InputFile::seekAtFrame( const size_t frame )
 	double fps = 1;
 	if( _properties.getNbVideoStreams() )
 		fps = _properties.getVideoProperties().at( 0 ).getFps();
-	else if( _properties.getNbAudioStreams() )
-		fps = _properties.getAudioProperties().at( 0 ).getFps();
 
 	uint64_t pos = frame / fps * AV_TIME_BASE;
 
