@@ -278,7 +278,7 @@ void Transcoder::process( IProgress& progress )
 
 	preProcessCodecLatency();
 
-	double totalDuration = getOutputDuration();
+	double outputDuration = getOutputDuration();
 
 	size_t frame = 0;
 	bool frameProcessed = true;
@@ -292,11 +292,11 @@ void Transcoder::process( IProgress& progress )
 		double progressDuration = _outputFile.getStream( 0 ).getStreamDuration();
 
 		// check progressDuration
-		if( progressDuration > totalDuration)
+		if( progressDuration > outputDuration )
 			break;
 
 		// check if JobStatusCancel
-		if( progress.progress( ( progressDuration > totalDuration )? totalDuration : progressDuration, totalDuration ) == eJobStatusCancel )
+		if( progress.progress( ( progressDuration > outputDuration ) ? outputDuration : progressDuration, outputDuration ) == eJobStatusCancel )
 			break;
 
 		++frame;
