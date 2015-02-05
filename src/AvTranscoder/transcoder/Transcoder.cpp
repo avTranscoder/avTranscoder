@@ -269,7 +269,7 @@ void Transcoder::process( IProgress& progress )
 	if( _streamTranscoders.size() == 0 )
 		throw std::runtime_error( "missing input streams in transcoder" );
 
-	manageInfinityStreamFromProcessMethod();
+	manageSwitchToGenerator();
 
 	if( _verbose )
 		std::cout << "begin transcoding" << std::endl;
@@ -504,7 +504,7 @@ double Transcoder::getOutputDuration() const
 	}	
 }
 
-void Transcoder::manageInfinityStreamFromProcessMethod()
+void Transcoder::manageSwitchToGenerator()
 {
 	for( size_t i = 0; i < _streamTranscoders.size(); ++i )
 	{

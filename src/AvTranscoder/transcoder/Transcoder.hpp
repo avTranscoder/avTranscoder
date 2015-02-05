@@ -170,9 +170,9 @@ private:
 	double getOutputDuration() const;
 
 	/**
-	 * @brief Set for each StreamTranscoder if it is an infinity stream (switch to generator at the end of the stream).
+	 * @brief Set for each StreamTranscoder if it can switch to generator at the end.
          */
-	void manageInfinityStreamFromProcessMethod();
+	void manageSwitchToGenerator();
 
 private:
 	IOutputFile& _outputFile;  ///< The output media file after process (has link)
