@@ -1,6 +1,7 @@
 #include "AudioFrame.hpp"
 
 #include <stdexcept>
+#include <stdlib.h>
 
 namespace avtranscoder
 {
@@ -44,8 +45,18 @@ void AudioFrameDesc::setSampleFormat( const std::string& sampleFormatName )
 
 void AudioFrameDesc::setParameters( const ProfileLoader::Profile& profile )
 {
-	if( profile.find( constants::avProfileSampleFormat ) != profile.end() )
+	// sample rate
+	if( profile.count( constants::avProfileSampleRate ) )
+		setSampleRate( atoi( profile.find( constants::avProfileSampleRate )->second.c_str() ) );
+	// channel
+	if( profile.count( constants::avProfileChannel ) )
+		setChannels( atoi( profile.find( constants::avProfileChannel )->second.c_str() ) );
+	// sample format	
+	if( profile.count( constants::avProfileSampleFormat ) )
 		setSampleFormat( profile.find( constants::avProfileSampleFormat )->second );
+	// fps
+	if( profile.count( constants::avProfileFrameRate ) )
+		setFps( atof( profile.find( constants::avProfileFrameRate )->second.c_str() ) );
 }
 
 }
