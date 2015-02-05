@@ -189,15 +189,6 @@ Rational AudioProperties::getTimeBase() const
 	return timeBase;
 }
 
-double AudioProperties::getFps() const
-{
-	Rational timeBase = getTimeBase();
-	double fps = timeBase.den / (double) timeBase.num;
-	if( isinf( fps ) )
-		fps = 0.0;
-	return fps;
-}
-
 double AudioProperties::getDuration() const
 {
 	Rational timeBase = getTimeBase();
@@ -224,7 +215,6 @@ PropertiesMap AudioProperties::getPropertiesAsMap() const
 	detail::add( dataMap, "channelDescription", getChannelDescription() );
 	detail::add( dataMap, "ticksPerFrame", getTicksPerFrame() );
 	detail::add( dataMap, "timeBase", getTimeBase() );
-	detail::add( dataMap, "fps", getFps() );
 	detail::add( dataMap, "duration", getDuration() );
 
 	for( size_t metadataIndex = 0; metadataIndex < _metadatas.size(); ++metadataIndex )
