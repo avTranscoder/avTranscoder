@@ -502,24 +502,24 @@ void Transcoder::manageInfinityStreamFromProcessMethod()
 		{
 			case eProcessMethodShortest :
 				if( _streamTranscoders.at( i )->getDuration() == getMinTotalDuration() )
-					_streamTranscoders.at( i )->setInfinityStream( false );
+					_streamTranscoders.at( i )->canSwitchToGenerator( false );
 				else
-					_streamTranscoders.at( i )->setInfinityStream( true );
+					_streamTranscoders.at( i )->canSwitchToGenerator( true );
 				break;
 			case eProcessMethodLongest :
 				if( _streamTranscoders.at( i )->getDuration() == getMaxTotalDuration() )
-					_streamTranscoders.at( i )->setInfinityStream( false );
+					_streamTranscoders.at( i )->canSwitchToGenerator( false );
 				else
-					_streamTranscoders.at( i )->setInfinityStream( true );
+					_streamTranscoders.at( i )->canSwitchToGenerator( true );
 				break;
 			case eProcessMethodBasedOnStream :
 				if( i != _mainStreamIndex )
-					_streamTranscoders.at( i )->setInfinityStream( true );
+					_streamTranscoders.at( i )->canSwitchToGenerator( true );
 				else
-					_streamTranscoders.at( i )->setInfinityStream( false );
+					_streamTranscoders.at( i )->canSwitchToGenerator( false );
 				break;
 			case eProcessMethodInfinity :
-				_streamTranscoders.at( i )->setInfinityStream( true );
+				_streamTranscoders.at( i )->canSwitchToGenerator( true );
 				break;
 		}
 	}

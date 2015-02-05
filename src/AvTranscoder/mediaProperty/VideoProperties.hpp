@@ -44,7 +44,8 @@ public:
 	Rational getSar() const; // sample/pixel aspect ratio
 	Rational getDar() const; // display aspect ratio
 
-	size_t getStreamId() const { return _streamId; }
+	size_t getStreamIndex() const { return _streamIndex; }
+	size_t getStreamId() const;
 	size_t getCodecId() const;
 	size_t getBitRate() const;  ///< in bits/s
 	size_t getMaxBitRate() const;
@@ -96,7 +97,7 @@ private:
 	AVCodecContext* _codecContext;  ///< Has link (no ownership)
 	AVCodec* _codec;  ///< Has link (no ownership)
 
-	size_t _streamId;
+	size_t _streamIndex;
 	PixelProperties _pixelProperties;
 	//@{
 	// Can acces these data when analyse first gop
