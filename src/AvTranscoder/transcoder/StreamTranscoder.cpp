@@ -36,10 +36,8 @@ StreamTranscoder::StreamTranscoder(
 	, _subStreamIndex( -1 )
 	, _frameProcessed( 0 )
 	, _offset( 0 )
-	, _takeFromGenerator( false )
+	, _canSwitchToGenerator( false )
 	, _verbose( false )
-	, _offsetPassed( false )
-	, _infinityStream( false )
 {
 	// create a re-wrapping case
 	switch( _inputStream->getStreamType() )
@@ -83,10 +81,8 @@ StreamTranscoder::StreamTranscoder(
 	, _subStreamIndex( subStreamIndex )
 	, _frameProcessed( 0 )
 	, _offset( offset )
-	, _takeFromGenerator( false )
+	, _canSwitchToGenerator( false )
 	, _verbose( false )
-	, _offsetPassed( false )
-	, _infinityStream( false )
 {
 	// create a transcode case
 	switch( _inputStream->getStreamType() )
@@ -114,7 +110,9 @@ StreamTranscoder::StreamTranscoder(
 			VideoGenerator* generatorVideo = new VideoGenerator();
 			generatorVideo->setVideoFrameDesc( outputVideo->getVideoCodec().getVideoFrameDesc() );
 			_generator = generatorVideo;
-			
+
+			_currentDecoder = _inputDecoder;
+
 			break;
 		}
 		case AVMEDIA_TYPE_AUDIO :
@@ -150,6 +148,8 @@ StreamTranscoder::StreamTranscoder(
 			generatorAudio->setAudioFrameDesc( outputAudio->getAudioCodec().getAudioFrameDesc() );
 			_generator = generatorAudio;
 
+			_currentDecoder = _inputDecoder;
+
 			break;
 		}
 		default:
@@ -158,7 +158,8 @@ StreamTranscoder::StreamTranscoder(
 			break;
 		}
 	}
-	switchEssence( offset != 0 );
+	if( offset )
+		switchToGeneratorDecoder();
 }
 
 StreamTranscoder::StreamTranscoder(
@@ -178,10 +179,8 @@ StreamTranscoder::StreamTranscoder(
 	, _subStreamIndex( -1 )
 	, _frameProcessed( 0 )
 	, _offset( 0 )
-	, _takeFromGenerator( false )
+	, _canSwitchToGenerator( false )
 	, _verbose( false )
-	, _offsetPassed( false )
-	, _infinityStream( false )
 {
 	if( profile.find( constants::avProfileType )->second == constants::avProfileTypeVideo )
 	{
@@ -324,17 +323,13 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 	assert( _frameBuffer    != NULL );
 	assert( _transform      != NULL );
 
-	CodedData data;
 	if( _verbose )
 		std::cout << "transcode a frame " << std::endl;
 
-	if( _offset &&
-		_frameProcessed > _offset &&
-		! _offsetPassed &&
-		_takeFromGenerator )
+	// check offset
+	if( _offset && _frameProcessed == _offset + 1 )
 	{
-		switchToInputEssence();
-		_offsetPassed = true;
+		switchToInputDecoder();
 	}
 
 	bool decodingStatus = false;
@@ -343,6 +338,7 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 	else
 		decodingStatus = _currentDecoder->decodeNextFrame( *_sourceBuffer, subStreamIndex );
 
+	CodedData data;
 	if( decodingStatus )
 	{
 		if( _verbose )
@@ -358,9 +354,9 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 			std::cout << "encode last frame(s)" << std::endl;
 		if( ! _outputEncoder->encodeFrame( data ) )
 		{
-			if( _infinityStream )
+			if( _canSwitchToGenerator )
 			{
-				switchToGeneratorEssence();
+				switchToGeneratorDecoder();
 				return processTranscode();
 			}
 			return false;
@@ -370,7 +366,6 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 		std::cout << "wrap (" << data.getSize() << " bytes)" << std::endl;
 
 	IOutputStream::EWrappingStatus wrappingStatus = _outputStream->wrap( data );
-
 	switch( wrappingStatus )
 	{
 		case IOutputStream::eWrappingSuccess:
@@ -385,21 +380,16 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 	return true;
 }
 
-void StreamTranscoder::switchEssence( bool swithToGenerator )
+void StreamTranscoder::switchToGeneratorDecoder()
 {
-	_takeFromGenerator = swithToGenerator;
-	_currentDecoder = swithToGenerator ? _generator : _inputDecoder;
+	_currentDecoder = _generator;
 	assert( _currentDecoder != NULL );
 }
 
-void StreamTranscoder::switchToGeneratorEssence()
+void StreamTranscoder::switchToInputDecoder()
 {
-	switchEssence( true );
-}
-
-void StreamTranscoder::switchToInputEssence()
-{
-	switchEssence( false );
+	_currentDecoder = _inputDecoder;
+	assert( _currentDecoder != NULL );
 }
 
 double StreamTranscoder::getDuration() const

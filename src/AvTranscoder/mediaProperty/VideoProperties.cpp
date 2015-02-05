@@ -23,7 +23,7 @@ VideoProperties::VideoProperties( const FormatContext& formatContext, const size
 	: _formatContext( &formatContext.getAVFormatContext() )
 	, _codecContext( NULL )
 	, _codec( NULL )
-	, _streamId( index )
+	, _streamIndex( index )
 	, _pixelProperties()
 	, _isInterlaced( false )
 	, _isTopFieldFirst( false )
@@ -31,13 +31,13 @@ VideoProperties::VideoProperties( const FormatContext& formatContext, const size
 {
 	if( _formatContext )
 	{
-		if( _streamId > _formatContext->nb_streams )
+		if( _streamIndex > _formatContext->nb_streams )
 		{
 			std::stringstream ss;
-			ss << "video stream at index " << _streamId << " does not exist";
+			ss << "video stream at index " << _streamIndex << " does not exist";
 			throw std::runtime_error( ss.str() );
 		}
-		_codecContext = _formatContext->streams[_streamId]->codec;
+		_codecContext = _formatContext->streams[_streamIndex]->codec;
 	}
 
 	if( _formatContext && _codecContext )
@@ -342,8 +342,8 @@ Rational VideoProperties::getTimeBase() const
 		throw std::runtime_error( "unknown format context" );
 
 	Rational timeBase = {
-		_formatContext->streams[_streamId]->time_base.num,
-		_formatContext->streams[_streamId]->time_base.den,
+		_formatContext->streams[_streamIndex]->time_base.num,
+		_formatContext->streams[_streamIndex]->time_base.den,
 	};
 	return timeBase;
 }
@@ -378,6 +378,13 @@ Rational VideoProperties::getDar() const
 	return dar;
 }
 
+size_t VideoProperties::getStreamId() const
+{
+	if( ! _formatContext )
+		throw std::runtime_error( "unknown format context" );
+	return _formatContext->streams[_streamIndex]->id;
+}
+
 size_t VideoProperties::getCodecId() const
 {
 	if( ! _codecContext )
@@ -410,7 +417,7 @@ size_t VideoProperties::getNbFrames() const
 {
 	if( ! _formatContext )
 		throw std::runtime_error( "unknown format context" );
-	return _formatContext->streams[_streamId]->nb_frames;
+	return _formatContext->streams[_streamIndex]->nb_frames;
 }
 
 size_t VideoProperties::getTicksPerFrame() const
@@ -481,7 +488,7 @@ double VideoProperties::getFps() const
 double VideoProperties::getDuration() const
 {
 	Rational timeBase = getTimeBase();
-	double duration = ( timeBase.num / (double) timeBase.den ) * _formatContext->streams[_streamId]->duration;
+	double duration = ( timeBase.num / (double) timeBase.den ) * _formatContext->streams[_streamIndex]->duration;
 	return duration;
 }
 
@@ -527,7 +534,7 @@ void VideoProperties::analyseGopStructure( IProgress& progress )
 
 			while( ! av_read_frame( const_cast<AVFormatContext*>( _formatContext ), &pkt ) )
 			{
-				if( pkt.stream_index == (int)_streamId )
+				if( pkt.stream_index == (int)_streamIndex )
 				{
 					avcodec_decode_video2( _codecContext, frame, &gotFrame, &pkt );
 					if( gotFrame )

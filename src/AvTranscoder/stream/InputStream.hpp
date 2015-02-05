@@ -22,6 +22,7 @@ public:
 	bool readNextPacket( CodedData& data );
 
 	size_t getStreamIndex() const { return _streamIndex; }
+	/// Get duration of the stream, in seconds
 	double getDuration() const;
 	AVMediaType getStreamType() const;
 

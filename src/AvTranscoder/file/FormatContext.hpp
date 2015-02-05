@@ -58,6 +58,7 @@ public:
 	AVStream& addAVStream( const AVCodec& avCodec );
 
 	size_t getNbStreams() const { return _avFormatContext->nb_streams; }
+	/// Get duration of the program, in seconds
 	size_t getDuration() const { return _avFormatContext->duration; }
 	size_t getStartTime() const { return _avFormatContext->start_time; }
 

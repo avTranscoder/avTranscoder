@@ -53,12 +53,14 @@ public:
 	 */
 	bool processFrame();
 
-	void switchEssence( bool swithToGenerator = true );
-	void switchToGeneratorEssence();
-	void switchToInputEssence();
+	//@{
+	/** Switch decoder */
+	void switchToGeneratorDecoder();
+	void switchToInputDecoder();
+	//@}
 
 	/**
-	 * @brief Get the duration of the stream.
+	 * @brief Get the duration of the stream, in seconds
 	 * @note if it's a generated stream, return limit of double.
 	 */
 	double getDuration() const;
@@ -68,7 +70,11 @@ public:
 
 	void setVerbose( bool verbose = true ){ _verbose = verbose; }
 
-	void setInfinityStream( bool isInfinity ) { _infinityStream = isInfinity; }
+	/**
+	 * @brief Returns if the stream can switch to a generator when ended
+	 * @note Not applicable for rewrap and generator cases
+	 */
+	void canSwitchToGenerator( bool canSwitch ) { _canSwitchToGenerator = canSwitch; }
 
 	void setOffset( bool offset = true ){ _offset = offset; }
 
@@ -77,28 +83,26 @@ private:
 	bool processTranscode( const int subStreamIndex = -1 );  ///< By default transcode all channels
 
 private:
-	IInputStream*   _inputStream;
-	IOutputStream*  _outputStream;
+	IInputStream* _inputStream;  ///< Input stream to read next packet (has link, no ownership)
+	IOutputStream* _outputStream;  ///< Output stream to wrap next packet (has link, no ownership)
 
-	Frame*         _sourceBuffer;
-	Frame*         _frameBuffer;
+	Frame* _sourceBuffer;  ///< Has ownership
+	Frame* _frameBuffer;  ///< Has ownership
 
-	IDecoder* _inputDecoder;
-	IDecoder* _generator;
-	IDecoder* _currentDecoder;
-	IEncoder* _outputEncoder;
+	IDecoder* _inputDecoder;  ///< Decoder of packets read from _inputStream (has ownership)
+	IDecoder* _generator;  ///< Generator of audio or video packets (has ownership)
+	IDecoder* _currentDecoder;  ///< Link to _inputDecoder or _generator
+	IEncoder* _outputEncoder;  ///< Encoder of packets which will be wrapped by _outputStream (has ownership)
 
-	ITransform* _transform;
+	ITransform* _transform;  ///< Video or audio transform (has ownership)
 
 	int  _subStreamIndex;  ///< Index of channel that is processed from the input stream (-1 if no demultiplexing).
 
-	size_t _frameProcessed;  ///< How many frame processed for this StreamTranscoder.
+	size_t _frameProcessed;  ///< How many frames have been processed by the StreamTranscoder.
 	size_t _offset;  ///< Offset, in frame, at the beginning of the StreamTranscoder.
 
-	bool _takeFromGenerator;  ///< Is the data processed are taken from a generator.
+	bool _canSwitchToGenerator;  ///< Automatically switch to a generator at the end of the stream
 	bool _verbose;
-	bool _offsetPassed;  ///< Is the offset at the beginning of the stream is finished.
-	bool _infinityStream;  ///< Automatically switch to a generator at the end of the stream (not applicable when rewrap);
 };
 
 }

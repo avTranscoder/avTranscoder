@@ -145,18 +145,18 @@ private:
 	InputFile* addInputFile( const std::string& filename, const size_t streamIndex );
 
 	/**
-	 * @brief Get the duration of the stream.
+	 * @brief Get the duration of the stream, in seconds
 	 * @note If the stream is a generator, return limit of double.
 	 */
 	double getStreamDuration( size_t indexStream ) const;
 
 	/**
-	* @brief Get the duration of the shortest stream.
+	* @brief Get the duration of the shortest stream, in seconds
 	*/
 	double getMinTotalDuration() const;
 
 	/**
-	 * @brief Get the duration of the longest stream.
+	 * @brief Get the duration of the longest stream, in seconds
 	 */
 	double getMaxTotalDuration() const;
 
@@ -172,16 +172,15 @@ private:
 	void manageInfinityStreamFromProcessMethod();
 
 private:
-	IOutputFile& _outputFile;  ///< The output media file after process.
-	std::vector< InputFile* >        _inputFiles;  ///< The list of input files which contain added streams.
+	IOutputFile& _outputFile;  ///< The output media file after process (has link)
+	std::vector< InputFile* > _inputFiles;  ///< The list of input files which contain added streams (has ownership)
 
 	std::vector< StreamTranscoder* > _streamTranscoders;  ///< All streams of the output media file after process.
-	std::vector< StreamTranscoder* > _streamTranscodersAllocated;  ///< Streams allocated inside the Transcoder.
+	std::vector< StreamTranscoder* > _streamTranscodersAllocated;  ///< Streams allocated inside the Transcoder (has ownership)
 
 	ProfileLoader _profileLoader;  ///< Objet to get existing profiles, and add new ones for the Transcoder.
 
-	EProcessMethod _eProcessMethod;
-
+	EProcessMethod _eProcessMethod;  ///< Transcoding policy
 	size_t _mainStreamIndex;  ///< Index of stream used to stop the process of transcode in case of eProcessMethodBasedOnStream.
 
 	bool    _verbose;
