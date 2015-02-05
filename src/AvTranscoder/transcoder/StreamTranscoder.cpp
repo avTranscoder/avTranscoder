@@ -324,7 +324,7 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 	// check offset
 	if( _offset )
 	{
-		bool endOfOffset = _outputStream->getStreamDuration() >= _offset ? true : false;
+		bool endOfOffset = _outputStream->getStreamDuration() >= _offset;
 		if( endOfOffset )
 		{
 			// switch to essence from input stream
