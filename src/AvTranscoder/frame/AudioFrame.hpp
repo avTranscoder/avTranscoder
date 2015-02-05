@@ -8,8 +8,6 @@ extern "C" {
 #include <libavutil/samplefmt.h>
 }
 
-#include <stdexcept>
-
 namespace avtranscoder
 {
 
@@ -17,53 +15,25 @@ namespace avtranscoder
 class AvExport AudioFrameDesc
 {
 public:
-	AudioFrameDesc( const size_t sampleRate = 0, const size_t channels = 0, const AVSampleFormat sampleFormat = AV_SAMPLE_FMT_NONE )
-		: _sampleRate( sampleRate )
-		, _channels( channels )
-		, _sampleFormat( sampleFormat )
-		, _fps( 1. )
-	{}
+	AudioFrameDesc( const size_t sampleRate = 0, const size_t channels = 0, const AVSampleFormat sampleFormat = AV_SAMPLE_FMT_NONE );
 
-	AudioFrameDesc( const size_t sampleRate, const size_t channels, const std::string& sampleFormat )
-		: _sampleRate( sampleRate )
-		, _channels( channels )
-		, _sampleFormat( av_get_sample_fmt( sampleFormat.c_str() ) )
-		, _fps( 1. )
-	{}
+	AudioFrameDesc( const size_t sampleRate, const size_t channels, const std::string& sampleFormat );
 
 	size_t getSampleRate() const { return _sampleRate; }
 	size_t getChannels() const { return _channels; }
 	AVSampleFormat getSampleFormat() const { return _sampleFormat; }
-	std::string getSampleFormatName() const
-	{
-		const char* formatName = av_get_sample_fmt_name( _sampleFormat );
-		return formatName ? std::string( formatName ) : "unknown sample format";
-	}
+	std::string getSampleFormatName() const;
 	double getFps() const { return _fps; }
 
-	size_t getDataSize() const
-	{
-		if( _sampleFormat == AV_SAMPLE_FMT_NONE )
-			throw std::runtime_error( "incorrect sample format" );
-
-		size_t size = ( _sampleRate / _fps ) * _channels * av_get_bytes_per_sample( _sampleFormat );
-		if( size == 0 )
-			throw std::runtime_error( "unable to determine audio buffer size" );
-
-		return size;
-	}
+	size_t getDataSize() const;
 	
 	void setSampleRate( const size_t sampleRate ) { _sampleRate = sampleRate; }
 	void setChannels( const size_t channels ) { _channels = channels; }
-	void setSampleFormat( const std::string& sampleFormatName ) { _sampleFormat = av_get_sample_fmt( sampleFormatName.c_str() ); }
+	void setSampleFormat( const std::string& sampleFormatName );
 	void setSampleFormat( const AVSampleFormat sampleFormat ) { _sampleFormat = sampleFormat; }
 	void setFps( const double fps ) { _fps = fps; }
 	
-	void setParameters( const ProfileLoader::Profile& profile )
-	{
-		if( profile.find( constants::avProfileSampleFormat ) != profile.end() )
-			setSampleFormat( profile.find( constants::avProfileSampleFormat )->second );
-	}
+	void setParameters( const ProfileLoader::Profile& profile );
 
 private:
 	size_t _sampleRate;

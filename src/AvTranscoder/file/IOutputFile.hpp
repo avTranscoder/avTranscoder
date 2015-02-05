@@ -11,7 +11,7 @@
 #include <AvTranscoder/ProfileLoader.hpp>
 
 #include <string>
-#include <exception>
+#include <stdexcept>
 
 namespace avtranscoder
 {
