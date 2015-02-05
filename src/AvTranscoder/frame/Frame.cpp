@@ -38,6 +38,13 @@ void Frame::refData( unsigned char* buffer, const size_t size )
 	_packet.size = size;
 }
 
+void Frame::copyData( unsigned char* buffer, const size_t size )
+{
+	resize( size );
+	if ( size != 0 )
+		memcpy( _packet.data, buffer, _packet.size );
+}
+
 void Frame::refData( Frame& frame )
 {
 	_packet.data = frame.getData();

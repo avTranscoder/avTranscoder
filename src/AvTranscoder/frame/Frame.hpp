@@ -34,6 +34,9 @@ public:
 	void refData( unsigned char* buffer, const size_t size );
 	///@}
 
+	/// Copy external data buffer
+	void copyData( unsigned char* buffer, const size_t size );
+
 	/**
 	 * @brief Resize the buffer with the given size, and copy the given value
 	 * @note Use this function to check if we can modify the buffer
