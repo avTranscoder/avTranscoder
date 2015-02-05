@@ -478,11 +478,7 @@ int VideoProperties::getLevel() const
 
 double VideoProperties::getFps() const
 {
-	Rational timeBase = getTimeBase();
-	double fps = timeBase.den / (double) timeBase.num;
-	if( isinf( fps ) )
-		fps = 0.0;
-	return fps;
+	return getNbFrames() / getDuration();
 }
 
 double VideoProperties::getDuration() const
