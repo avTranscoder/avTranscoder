@@ -19,6 +19,7 @@ Transcoder::Transcoder( IOutputFile& outputFile )
 	, _profileLoader( true )
 	, _eProcessMethod ( eProcessMethodBasedOnStream )
 	, _mainStreamIndex( 0 )
+	, _outputDuration( 0 )
 	, _verbose( false )
 {
 	// Initialize the OutputFile
@@ -268,7 +269,7 @@ void Transcoder::process( IProgress& progress )
 	if( _streamTranscoders.size() == 0 )
 		throw std::runtime_error( "missing input streams in transcoder" );
 
-	manageInfinityStreamFromProcessMethod();
+	manageSwitchToGenerator();
 
 	if( _verbose )
 		std::cout << "begin transcoding" << std::endl;
@@ -277,7 +278,7 @@ void Transcoder::process( IProgress& progress )
 
 	preProcessCodecLatency();
 
-	double totalDuration = getOutputDuration();
+	double outputDuration = getOutputDuration();
 
 	size_t frame = 0;
 	bool frameProcessed = true;
@@ -289,7 +290,13 @@ void Transcoder::process( IProgress& progress )
 		frameProcessed =  processFrame();
 
 		double progressDuration = _outputFile.getStream( 0 ).getStreamDuration();
-		if( progress.progress( ( progressDuration > totalDuration )? totalDuration : progressDuration, totalDuration ) == eJobStatusCancel )
+
+		// check progressDuration
+		if( progressDuration > outputDuration )
+			break;
+
+		// check if JobStatusCancel
+		if( progress.progress( ( progressDuration > outputDuration ) ? outputDuration : progressDuration, outputDuration ) == eJobStatusCancel )
 			break;
 
 		++frame;
@@ -301,10 +308,11 @@ void Transcoder::process( IProgress& progress )
 	_outputFile.endWrap();
 }
 
-void Transcoder::setProcessMethod( const EProcessMethod eProcessMethod, const size_t indexBasedStream )
+void Transcoder::setProcessMethod( const EProcessMethod eProcessMethod, const size_t indexBasedStream, const double outputDuration )
 {
 	_eProcessMethod	= eProcessMethod;
 	_mainStreamIndex = indexBasedStream;
+	_outputDuration = outputDuration;
 }
 
 void Transcoder::setVerbose( bool verbose )
@@ -487,6 +495,8 @@ double Transcoder::getOutputDuration() const
 			return getMaxTotalDuration();
 		case eProcessMethodBasedOnStream :
 			return getStreamDuration( _mainStreamIndex );
+		case eProcessMethodBasedOnDuration :
+			return _outputDuration;
 		case eProcessMethodInfinity :
 			return std::numeric_limits<double>::max();
 		default:
@@ -494,7 +504,7 @@ double Transcoder::getOutputDuration() const
 	}	
 }
 
-void Transcoder::manageInfinityStreamFromProcessMethod()
+void Transcoder::manageSwitchToGenerator()
 {
 	for( size_t i = 0; i < _streamTranscoders.size(); ++i )
 	{
@@ -517,6 +527,12 @@ void Transcoder::manageInfinityStreamFromProcessMethod()
 					_streamTranscoders.at( i )->canSwitchToGenerator( true );
 				else
 					_streamTranscoders.at( i )->canSwitchToGenerator( false );
+				break;
+			case eProcessMethodBasedOnDuration :
+				if( _streamTranscoders.at( i )->getDuration() > _outputDuration )
+					_streamTranscoders.at( i )->canSwitchToGenerator( false );
+				else
+					_streamTranscoders.at( i )->canSwitchToGenerator( true );
 				break;
 			case eProcessMethodInfinity :
 				_streamTranscoders.at( i )->canSwitchToGenerator( true );
