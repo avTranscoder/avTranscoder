@@ -342,6 +342,11 @@ void Transcoder::addTranscodeStream( const std::string& filename, const size_t s
 	InputFile* referenceFile = addInputFile( filename, streamIndex );
 	ProfileLoader::Profile profile = getProfileFromFile( *referenceFile, streamIndex );
 
+	// override channels parameter to manage demultiplexing
+	ProfileLoader::Profile::iterator it = profile.find( constants::avProfileChannel ); 
+	if( it != profile.end() )
+		it->second = "1";
+
 	addTranscodeStream( filename, streamIndex, subStreamIndex, profile, offset );
 }
 
@@ -465,7 +470,9 @@ ProfileLoader::Profile Transcoder::getProfileFromFile( InputFile& inputFile, con
 		std::stringstream ss;
 		ss << audioProperties->getSampleRate();
 		profile[ constants::avProfileSampleRate ] = ss.str();
-		profile[ constants::avProfileChannel ] = "1";
+		ss.clear();
+		ss << audioProperties->getChannels();
+		profile[ constants::avProfileChannel ] = ss.str();
 	}
 
 	return profile;
