@@ -49,6 +49,7 @@ public:
 	 * @return if next packet was read succefully
 	 **/
 	void seekAtFrame( const size_t frame );
+	void seekAtTime( const double time );
 
 	/** 
 	 * @brief Activate the indicated stream

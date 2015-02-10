@@ -147,6 +147,12 @@ void InputFile::seekAtFrame( const size_t frame )
 	seek( position );
 }
 
+void InputFile::seekAtTime( const double time )
+{
+	uint64_t position = time * AV_TIME_BASE;
+	seek( position );
+}
+
 void InputFile::seek( uint64_t position )
 {
 	if( (int)_formatContext.getStartTime() != AV_NOPTS_VALUE )
