@@ -140,9 +140,9 @@ int main( int argc, char** argv )
 		return( -1 );
 	}
 
-	av_log_set_level( AV_LOG_FATAL );
+	avtranscoder::setLogLevel( AV_LOG_QUIET );
 	if( verbose )
-		av_log_set_level( AV_LOG_DEBUG );
+		avtranscoder::setLogLevel( AV_LOG_DEBUG );
 
 	try
 	{
