@@ -340,7 +340,7 @@ void Transcoder::addTranscodeStream( const std::string& filename, const size_t s
 {
 	// Get profile from input file
 	InputFile* referenceFile = addInputFile( filename, streamIndex );
-	ProfileLoader::Profile profile = getAudioProfileFromFile( *referenceFile, streamIndex );
+	ProfileLoader::Profile profile = getProfileFromFile( *referenceFile, streamIndex );
 
 	addTranscodeStream( filename, streamIndex, subStreamIndex, profile, offset );
 }
@@ -416,35 +416,59 @@ InputFile* Transcoder::addInputFile( const std::string& filename, const size_t s
 	return referenceFile;
 }
 
-ProfileLoader::Profile Transcoder::getAudioProfileFromFile( InputFile& inputFile, const size_t streamIndex )
+ProfileLoader::Profile Transcoder::getProfileFromFile( InputFile& inputFile, const size_t streamIndex )
 {
 	NoDisplayProgress progress;
 	inputFile.analyse( progress, eAnalyseLevelHeader );
 
+	const VideoProperties* videoProperties = NULL;
 	const AudioProperties* audioProperties = NULL;
- 	for( size_t i = 0; i < inputFile.getProperties().getAudioProperties().size(); i++ )
- 	{
-		if( inputFile.getProperties().getAudioProperties().at( i ).getStreamIndex() == streamIndex )
- 		{
-			audioProperties = &inputFile.getProperties().getAudioProperties().at( i );
+	switch( inputFile.getStream( streamIndex ).getStreamType() )
+	{
+		case AVMEDIA_TYPE_VIDEO:
+		{
+			videoProperties = &inputFile.getProperties().getVideoPropertiesWithStreamIndex( streamIndex );
 			break;
- 		}
- 	}
-	if( audioProperties == NULL )
- 		throw std::runtime_error( "cannot set audio stream properties" );
+		}
+		case AVMEDIA_TYPE_AUDIO:
+		{
+			audioProperties = &inputFile.getProperties().getAudioPropertiesWithStreamIndex( streamIndex );
+			break;
+		}
+		default:
+			break;
+	}
 
-	ProfileLoader::Profile audioProfile;
-	audioProfile[ constants::avProfileIdentificator ] = "presetRewrap";
-	audioProfile[ constants::avProfileIdentificatorHuman ] = "Preset rewrap";
-	audioProfile[ constants::avProfileType ] = avtranscoder::constants::avProfileTypeAudio;
-	audioProfile[ constants::avProfileCodec ] = audioProperties->getCodecName();
-	audioProfile[ constants::avProfileSampleFormat ] = audioProperties->getSampleFormatName();
-	std::stringstream ss;
-	ss << audioProperties->getSampleRate();
-	audioProfile[ constants::avProfileSampleRate ] = ss.str();
-	audioProfile[ constants::avProfileChannel ] = "1";
+	// common fileds in profile types
+	ProfileLoader::Profile profile;
+	profile[ constants::avProfileIdentificator ] = "profileFromInput";
+	profile[ constants::avProfileIdentificatorHuman ] = "profile from input";
 
-	return audioProfile;
+	// video
+	if( videoProperties != NULL )
+	{
+		profile[ constants::avProfileType ] = avtranscoder::constants::avProfileTypeVideo;
+		profile[ constants::avProfileCodec ] = videoProperties->getCodecName();
+		profile[ constants::avProfilePixelFormat ] = videoProperties->getPixelProperties().getPixelFormatName();
+		std::stringstream ss;
+		ss << videoProperties->getFps();
+		profile[ constants::avProfileFrameRate ] = ss.str();
+		profile[ constants::avProfileWidth ] = videoProperties->getWidth();
+		profile[ constants::avProfileHeight ] = videoProperties->getHeight();
+	}
+	// audio
+	else if( audioProperties != NULL )
+	{
+		profile[ constants::avProfileType ] = avtranscoder::constants::avProfileTypeAudio;
+		profile[ constants::avProfileCodec ] = audioProperties->getCodecName();
+		profile[ constants::avProfileSampleFormat ] = audioProperties->getSampleFormatName();
+		std::stringstream ss;
+		ss << audioProperties->getSampleRate();
+		profile[ constants::avProfileSampleRate ] = ss.str();
+		profile[ constants::avProfileChannel ] = "1";
+	}
+
+	return profile;
 }
 
 double Transcoder::getStreamDuration( size_t indexStream ) const
