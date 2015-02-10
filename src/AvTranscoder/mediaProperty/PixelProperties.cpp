@@ -35,6 +35,15 @@ std::string PixelProperties::getPixelName() const
 	return "unknown pixel name";
 }
 
+std::string PixelProperties::getPixelFormatName() const
+{
+	if( ! _pixelFormat )
+		throw std::runtime_error( "unable to find pixel format." ); 
+
+	const char* formatName = av_get_pix_fmt_name( _pixelFormat );
+	return formatName ? std::string( formatName ) : "unknown pixel format";
+}
+
 size_t PixelProperties::getBitsPerPixel() const
 {
 	if( ! _pixelDesc )
@@ -214,6 +223,7 @@ PropertiesMap PixelProperties::getPropertiesAsMap() const
 	PropertiesMap dataMap;
 
 	detail::add( dataMap, "pixelName", getPixelName() );
+	detail::add( dataMap, "pixelFormatName", getPixelFormatName() );
 	detail::add( dataMap, "bitDepth", getBitsPerPixel() );
 	detail::add( dataMap, "nbComponents", getNbComponents() );
 	detail::add( dataMap, "chromaWidth", getChromaWidth() );

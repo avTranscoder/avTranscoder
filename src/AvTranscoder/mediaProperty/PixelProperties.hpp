@@ -53,6 +53,7 @@ public:
 	PixelProperties( const AVPixelFormat avPixelFormat );
 
 	std::string getPixelName() const;
+	std::string getPixelFormatName() const;
 
 	size_t getBitsPerPixel() const;
 	size_t getNbComponents() const;
