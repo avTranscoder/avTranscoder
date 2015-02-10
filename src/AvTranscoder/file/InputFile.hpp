@@ -97,6 +97,20 @@ public:
 	 **/
 	static FileProperties analyseFile( const std::string& filename, IProgress& progress, const EAnalyseLevel level = eAnalyseLevelFirstGop );
 
+private:
+	/**
+	 * @brief Get Fps from first video stream
+	 * @note if there is no video stream, return 1.
+	 */
+	double getFps();
+
+	/**
+	 * @brief Seek at a specific position (in AV_TIME_BASE units)
+	 * @note before seek, add offset of start time
+	 * @note after seek, clear buffering of streams
+	 */
+	void seek( uint64_t position );
+
 protected:
 	FormatContext _formatContext;
 	FileProperties _properties;
