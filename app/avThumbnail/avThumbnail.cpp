@@ -2,14 +2,16 @@
 #include <AvTranscoder/file/OutputFile.hpp>
 
 static std::string outputFileName = "thumbnail.jpg";
+static bool seekInFrame = false;
 
 int main( int argc, char** argv )
 {
 	std::string help;
 	help += "Usage\n";
-	help += "\tavthumbnail INPUT_FILE_NAME FRAME [OUTPUT_FILE_NAME] [--help]\n";
+	help += "\tavthumbnail INPUT_FILE_NAME TIME [OUTPUT_FILE_NAME] [--frame] [--help]\n";
 	help += "Command line options\n";
 	help += "\tOUTPUT_FILE_NAME: name of the output file (thumbnail.jpg by default)\n";
+	help += "\t--frame: express TIME of where to seek in frame (in seconds by default)\n";
 	help += "\t--help: display this help\n";
 
 	// List command line arguments
@@ -24,6 +26,10 @@ int main( int argc, char** argv )
 		{
 			std::cout << help << std::endl;
 			return 0;
+		}
+		if( arguments.at( argument ) == "--frame" )
+		{
+			seekInFrame = true;
 		}
 	}
 	if( argc > 3 )
@@ -45,7 +51,10 @@ int main( int argc, char** argv )
 	// input file
 	std::string inputFileName( argv[1] );
 	avtranscoder::InputFile intputFile( inputFileName );
-	intputFile.seekAtFrame( atoi( argv[2] ) );
+	if( seekInFrame )
+		intputFile.seekAtFrame( atoi( argv[2] ) );
+	else
+		intputFile.seekAtTime( atof( argv[2] ) );
 
 	// output file
 	avtranscoder::ProfileLoader::Profile formatProfile;
