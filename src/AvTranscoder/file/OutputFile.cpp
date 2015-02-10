@@ -15,7 +15,10 @@ OutputFile::OutputFile( const std::string& filename )
 	, _filename( filename )
 	, _previousProcessedStreamDuration( 0.0 )
 	, _verbose( false )
-{}
+{
+	_formatContext.setOutputFormat( _filename );
+	_formatContext.openRessource( _filename, AVIO_FLAG_WRITE );
+}
 
 OutputFile::~OutputFile()
 {
@@ -23,13 +26,6 @@ OutputFile::~OutputFile()
 	{
 		delete (*it);
 	}
-}
-
-bool OutputFile::setup()
-{
-	_formatContext.setOutputFormat( _filename );
-	_formatContext.openRessource( _filename, AVIO_FLAG_WRITE );
-	return true;
 }
 
 IOutputStream& OutputFile::addVideoStream( const VideoCodec& videoDesc )
@@ -157,32 +153,16 @@ void OutputFile::addMetadata( const std::string& key, const std::string& value )
 
 void OutputFile::setProfile( const ProfileLoader::Profile& profile )
 {
+	// check if output format indicated is valid with the filename extension
 	if( ! matchFormat( profile.find( constants::avProfileFormat )->second, _filename ) )
 	{
 		throw std::runtime_error( "Invalid format according to the file extension." );
 	}
-	
+
+	// set output format
 	_formatContext.setOutputFormat( _filename, profile.find( constants::avProfileFormat )->second );
-	
-	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
-	{
-		if( (*it).first == constants::avProfileIdentificator ||
-			(*it).first == constants::avProfileIdentificatorHuman ||
-			(*it).first == constants::avProfileType ||
-			(*it).first == constants::avProfileFormat )
-			continue;
-		
-		try
-		{
-			Option& formatOption = _formatContext.getOption( (*it).first );
-			formatOption.setString( (*it).second );
-		}
-		catch( std::exception& e )
-		{}
-	}
-	
-	setup();
-	
+
+	// set format options
 	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
 	{
 		if( (*it).first == constants::avProfileIdentificator ||
@@ -198,8 +178,7 @@ void OutputFile::setProfile( const ProfileLoader::Profile& profile )
 		}
 		catch( std::exception& e )
 		{
-			if( _verbose )
-				std::cout << "[OutputFile] warning - can't set option " << (*it).first << " to " << (*it).second << ": " << e.what() << std::endl;
+			std::cout << "[OutputFile] warning - can't set option " << (*it).first << " to " << (*it).second << ": " << e.what() << std::endl;
 		}
 	}
 }

@@ -26,11 +26,6 @@ public:
 	virtual ~IOutputFile() {};
 
 	/**
-	 * @brief Initialize the wrapper
-	**/
-	virtual bool setup() = 0;
-
-	/**
 	 * @brief Add a video output stream
 	 * @note call setup() before adding any stream
 	 * @param videoCodec description of output stream
