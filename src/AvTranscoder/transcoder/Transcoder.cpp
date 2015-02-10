@@ -338,53 +338,11 @@ void Transcoder::addRewrapStream( const std::string& filename, const size_t stre
 
 void Transcoder::addTranscodeStream( const std::string& filename, const size_t streamIndex, const size_t subStreamIndex, const double offset )
 {
+	// Get profile from input file
 	InputFile* referenceFile = addInputFile( filename, streamIndex );
+	ProfileLoader::Profile profile = getAudioProfileFromFile( *referenceFile, streamIndex );
 
-	// Create profile as input configuration
-	NoDisplayProgress progress;
-	referenceFile->analyse( progress, eAnalyseLevelHeader );
-
-	const AudioProperties* audioProperties = NULL;
- 	for( size_t i = 0; i < referenceFile->getProperties().getAudioProperties().size(); i++ )
- 	{
-		if( referenceFile->getProperties().getAudioProperties().at( i ).getStreamId() == streamIndex )
- 		{
-			audioProperties = &referenceFile->getProperties().getAudioProperties().at( i );
- 		}
- 	}
-	if( audioProperties == NULL )
- 		throw std::runtime_error( "cannot set audio stream properties" );
-
-	ProfileLoader::Profile profile;
-	profile[ constants::avProfileIdentificator ] = "presetRewrap";
-	profile[ constants::avProfileIdentificatorHuman ] = "Preset rewrap";
-	profile[ constants::avProfileType ] = avtranscoder::constants::avProfileTypeAudio;
-	profile[ constants::avProfileCodec ] = audioProperties->getCodecName();
-	profile[ constants::avProfileSampleFormat ] = audioProperties->getSampleFormatName();
-	std::stringstream ss;
-	ss << audioProperties->getSampleRate();
-	profile[ constants::avProfileSampleRate ] = ss.str();
-	profile[ constants::avProfileChannel ] = "1";
-
-	// Add profile
-	_profileLoader.loadProfile( profile );
-
-	switch( referenceFile->getStream( streamIndex ).getStreamType() )
-	{
-		case AVMEDIA_TYPE_VIDEO:
-		case AVMEDIA_TYPE_AUDIO:
-		{
-			_streamTranscoders.push_back( new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile, profile, subStreamIndex , offset ) );
-			break;
-		}
-		case AVMEDIA_TYPE_DATA:
-		case AVMEDIA_TYPE_SUBTITLE:
-		case AVMEDIA_TYPE_ATTACHMENT:
-		default:
-		{
-			throw std::runtime_error( "unsupported media type in transcode setup" );
-		}
-	}
+	addTranscodeStream( filename, streamIndex, subStreamIndex, profile, offset );
 }
 
 void Transcoder::addTranscodeStream( const std::string& filename, const size_t streamIndex, const size_t subStreamIndex, ProfileLoader::Profile& profile, const double offset )
@@ -456,6 +414,37 @@ InputFile* Transcoder::addInputFile( const std::string& filename, const size_t s
 	referenceFile->activateStream( streamIndex );
 
 	return referenceFile;
+}
+
+ProfileLoader::Profile Transcoder::getAudioProfileFromFile( InputFile& inputFile, const size_t streamIndex )
+{
+	NoDisplayProgress progress;
+	inputFile.analyse( progress, eAnalyseLevelHeader );
+
+	const AudioProperties* audioProperties = NULL;
+ 	for( size_t i = 0; i < inputFile.getProperties().getAudioProperties().size(); i++ )
+ 	{
+		if( inputFile.getProperties().getAudioProperties().at( i ).getStreamIndex() == streamIndex )
+ 		{
+			audioProperties = &inputFile.getProperties().getAudioProperties().at( i );
+			break;
+ 		}
+ 	}
+	if( audioProperties == NULL )
+ 		throw std::runtime_error( "cannot set audio stream properties" );
+
+	ProfileLoader::Profile audioProfile;
+	audioProfile[ constants::avProfileIdentificator ] = "presetRewrap";
+	audioProfile[ constants::avProfileIdentificatorHuman ] = "Preset rewrap";
+	audioProfile[ constants::avProfileType ] = avtranscoder::constants::avProfileTypeAudio;
+	audioProfile[ constants::avProfileCodec ] = audioProperties->getCodecName();
+	audioProfile[ constants::avProfileSampleFormat ] = audioProperties->getSampleFormatName();
+	std::stringstream ss;
+	ss << audioProperties->getSampleRate();
+	audioProfile[ constants::avProfileSampleRate ] = ss.str();
+	audioProfile[ constants::avProfileChannel ] = "1";
+
+	return audioProfile;
 }
 
 double Transcoder::getStreamDuration( size_t indexStream ) const

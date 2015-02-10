@@ -148,6 +148,8 @@ private:
 
 	InputFile* addInputFile( const std::string& filename, const size_t streamIndex );
 
+	ProfileLoader::Profile getAudioProfileFromFile( InputFile& inputFile, const size_t streamIndex );  ///< The function analyses the inputFile
+
 	/**
 	 * @brief Get the duration of the stream, in seconds
 	 * @note If the stream is a generator, return limit of double.
