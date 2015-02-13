@@ -160,7 +160,7 @@ void InputFile::seek( uint64_t position )
 
 	if( av_seek_frame( &_formatContext.getAVFormatContext(), -1, position, AVSEEK_FLAG_BACKWARD ) < 0 )
 	{
-		std::cerr << "Error during seek at " << position << " seconds in file" << std::endl;
+		std::cerr << "Error during seek at " << position << " (in AV_TIME_BASE units) in file" << std::endl;
 	}
 
 	for( std::vector<InputStream*>::iterator it = _inputStreams.begin(); it != _inputStreams.end(); ++it )
