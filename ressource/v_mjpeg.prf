@@ -1,0 +1,5 @@
+avProfileName=mjpeg
+avProfileLongName=Motion JPEG
+avProfileType=avProfileTypeVideo
+codec=mjpeg
+pix_fmt=yuvj420p

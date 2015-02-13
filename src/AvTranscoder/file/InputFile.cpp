@@ -143,20 +143,24 @@ bool InputFile::readNextPacket( CodedData& data, const size_t streamIndex )
 
 void InputFile::seekAtFrame( const size_t frame )
 {
-	double fps = 1;
-	// Get Fps from first video stream
-	if( _properties.getNbVideoStreams() )
-		fps = _properties.getVideoProperties().at( 0 ).getFps();
+	uint64_t position = frame / getFps() * AV_TIME_BASE;
+	seek( position );
+}
 
-	uint64_t pos = frame / fps * AV_TIME_BASE;
+void InputFile::seekAtTime( const double time )
+{
+	uint64_t position = time * AV_TIME_BASE;
+	seek( position );
+}
 
-	// Offset of start time
+void InputFile::seek( uint64_t position )
+{
 	if( (int)_formatContext.getStartTime() != AV_NOPTS_VALUE )
-		pos += _formatContext.getStartTime();
+		position += _formatContext.getStartTime();
 
-	if( av_seek_frame( &_formatContext.getAVFormatContext(), -1, pos, AVSEEK_FLAG_BACKWARD ) < 0 )
+	if( av_seek_frame( &_formatContext.getAVFormatContext(), -1, position, AVSEEK_FLAG_BACKWARD ) < 0 )
 	{
-		std::cerr << "Error during seek at " << frame << " (" << pos << ") in file" << std::endl;
+		std::cerr << "Error during seek at " << position << " (in AV_TIME_BASE units) in file" << std::endl;
 	}
 
 	for( std::vector<InputStream*>::iterator it = _inputStreams.begin(); it != _inputStreams.end(); ++it )
@@ -184,6 +188,14 @@ InputStream& InputFile::getStream( size_t index )
 		msg << index;
 		throw std::runtime_error( msg.str() );
 	}
+}
+
+double InputFile::getFps()
+{
+	double fps = 1;
+	if( _properties.getNbVideoStreams() )
+		fps = _properties.getVideoProperties().at( 0 ).getFps();
+	return fps;
 }
 
 void InputFile::setProfile( const ProfileLoader::Profile& profile )

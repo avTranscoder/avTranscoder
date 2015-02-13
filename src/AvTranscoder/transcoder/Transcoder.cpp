@@ -21,13 +21,7 @@ Transcoder::Transcoder( IOutputFile& outputFile )
 	, _mainStreamIndex( 0 )
 	, _outputDuration( 0 )
 	, _verbose( false )
-{
-	// Initialize the OutputFile
-	_outputFile.setup();
-
-	// Print no output from ffmpeg
-	av_log_set_level( AV_LOG_QUIET );
-}
+{}
 
 Transcoder::~Transcoder()
 {
