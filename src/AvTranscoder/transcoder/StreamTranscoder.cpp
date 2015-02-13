@@ -43,16 +43,61 @@ StreamTranscoder::StreamTranscoder(
 	{
 		case AVMEDIA_TYPE_VIDEO :
 		{
+			VideoFrameDesc inputFrameDesc( _inputStream->getVideoCodec().getVideoFrameDesc() );
+
+			// generator decoder
+			VideoGenerator* generatorVideo = new VideoGenerator();
+			generatorVideo->setVideoFrameDesc( inputFrameDesc );
+			_generator = generatorVideo;
+
+			// buffers to process
+			_sourceBuffer = new VideoFrame( inputFrameDesc );
+			_frameBuffer = new VideoFrame( inputFrameDesc );
+
+			// transform
+			_transform = new VideoTransform();
+
+			// output encoder
+			VideoEncoder* outputVideo = new VideoEncoder( _inputStream->getVideoCodec().getCodecName() );
+			outputVideo->getVideoCodec().setImageParameters( inputFrameDesc );
+			outputVideo->setup();
+			_outputEncoder = outputVideo;
+
+			// output stream
 			_outputStream = &outputFile.addVideoStream( _inputStream->getVideoCodec() );
+
 			break;
 		}
 		case AVMEDIA_TYPE_AUDIO :
 		{
+			AudioFrameDesc inputFrameDesc( _inputStream->getAudioCodec().getAudioFrameDesc() );
+
+			// generator decoder
+			AudioGenerator* generatorAudio = new AudioGenerator();
+			generatorAudio->setAudioFrameDesc( inputFrameDesc );
+			_generator = generatorAudio;
+
+			// buffers to process
+			_sourceBuffer = new AudioFrame( inputFrameDesc );
+			_frameBuffer  = new AudioFrame( inputFrameDesc );
+
+			// transform
+			_transform = new AudioTransform();
+
+			// output encoder
+			AudioEncoder* outputAudio = new AudioEncoder( _inputStream->getAudioCodec().getCodecName()  );
+			outputAudio->getAudioCodec().setAudioParameters( inputFrameDesc );
+			outputAudio->setup();
+			_outputEncoder = outputAudio;
+
+			// output stream
 			_outputStream = &outputFile.addAudioStream( _inputStream->getAudioCodec() );
+
 			break;
 		}
 		case AVMEDIA_TYPE_DATA :
 		{
+			// @warning: rewrap a data stream can't be lengthen by a generator (end of rewrapping will end the all process)
 			_outputStream = &outputFile.addDataStream( _inputStream->getDataCodec() );
 			break;
 		}
@@ -247,8 +292,8 @@ StreamTranscoder::StreamTranscoder(
 
 StreamTranscoder::~StreamTranscoder()
 {
-	delete _frameBuffer;
 	delete _sourceBuffer;
+	delete _frameBuffer;
 	delete _generator;
 	delete _outputEncoder;
 	delete _transform;
@@ -258,7 +303,7 @@ StreamTranscoder::~StreamTranscoder()
 void StreamTranscoder::preProcessCodecLatency()
 {
 	// rewrap case: no need to take care of the latency of codec
-	if( ! _inputDecoder )
+	if( ! _currentDecoder )
 		return;
 
 	int latency = _outputEncoder->getCodec().getLatency();
@@ -277,7 +322,7 @@ void StreamTranscoder::preProcessCodecLatency()
 
 bool StreamTranscoder::processFrame()
 {
-	if( ! _inputDecoder )
+	if( ! _currentDecoder )
 	{
 		return processRewrap();
 	}
@@ -297,7 +342,14 @@ bool StreamTranscoder::processRewrap()
 	CodedData data;
 
 	if( ! _inputStream->readNextPacket( data ) )
+	{
+		if( _canSwitchToGenerator )
+		{
+			switchToGeneratorDecoder();
+			return processTranscode();
+		}
 		return false;
+	}
 
 	IOutputStream::EWrappingStatus wrappingStatus = _outputStream->wrap( data );
 
@@ -317,7 +369,7 @@ bool StreamTranscoder::processRewrap()
 
 bool StreamTranscoder::processTranscode( const int subStreamIndex )
 {
-	assert( _inputDecoder   != NULL );
+	assert( _outputStream   != NULL );
 	assert( _currentDecoder != NULL );
 	assert( _outputEncoder  != NULL );
 	assert( _sourceBuffer   != NULL );
