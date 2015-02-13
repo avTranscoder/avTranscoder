@@ -65,7 +65,7 @@ int main( int argc, char** argv )
 	else
 		intputFile.seekAtTime( atof( arguments.at( 1 ).c_str() ) );
 
-	// output file
+	// output file (need to set format profile of encoding to force output format to mjpeg)
 	avtranscoder::ProfileLoader::Profile formatProfile;
 	formatProfile[ avtranscoder::constants::avProfileIdentificator ] = "thumbnailFormatPreset";
 	formatProfile[ avtranscoder::constants::avProfileIdentificatorHuman ] = "Thumbnail format preset";
