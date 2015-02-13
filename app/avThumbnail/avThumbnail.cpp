@@ -8,9 +8,9 @@ int main( int argc, char** argv )
 {
 	std::string help;
 	help += "Usage\n";
-	help += "\tavthumbnail INPUT_FILE_NAME TIME [OUTPUT_FILE_NAME] [--frame] [--help]\n";
+	help += "\tavthumbnail INPUT_FILE_NAME TIME [--output OUTPUT_FILE_NAME] [--frame] [--help]\n";
 	help += "Command line options\n";
-	help += "\tOUTPUT_FILE_NAME: name of the output file (thumbnail.jpg by default)\n";
+	help += "\t--output OUTPUT_FILE_NAME: name of the output file (thumbnail.jpg by default)\n";
 	help += "\t--frame: express TIME of where to seek in frame (in seconds by default)\n";
 	help += "\t--help: display this help\n";
 
@@ -31,10 +31,19 @@ int main( int argc, char** argv )
 		{
 			seekInFrame = true;
 		}
-	}
-	if( argc > 3 )
-	{
-		outputFileName = arguments.at( 2 );
+		if( arguments.at( argument ) == "--output" )
+		{
+			try
+			{
+				outputFileName = arguments.at( argument + 1 );
+			}
+			catch( const std::exception& e )
+			{
+				std::cout << "Error: need to indicate an output filename if you use option --output" << std::endl << std::endl;
+				std::cout << help << std::endl;
+				return 0;
+			}
+		}
 	}
 
 	// Check required arguments
@@ -49,12 +58,12 @@ int main( int argc, char** argv )
 	avtranscoder::preloadCodecsAndFormats();
 
 	// input file
-	std::string inputFileName( argv[1] );
+	std::string inputFileName( arguments.at( 0 ) );
 	avtranscoder::InputFile intputFile( inputFileName );
 	if( seekInFrame )
-		intputFile.seekAtFrame( atoi( argv[2] ) );
+		intputFile.seekAtFrame( atoi( arguments.at( 1 ).c_str() ) );
 	else
-		intputFile.seekAtTime( atof( argv[2] ) );
+		intputFile.seekAtTime( atof( arguments.at( 1 ).c_str() ) );
 
 	// output file
 	avtranscoder::ProfileLoader::Profile formatProfile;
