@@ -13,6 +13,9 @@ add_definitions(-DAVTRANSCODER_VERSION_MAJOR=${AVTRANSCODER_VERSION_MAJOR})
 add_definitions(-DAVTRANSCODER_VERSION_MINOR=${AVTRANSCODER_VERSION_MINOR})
 add_definitions(-DAVTRANSCODER_VERSION_MICRO=${AVTRANSCODER_VERSION_MICRO})
 
+# Define AvTranscoder default path to profiles
+add_definitions(-DAVTRANSCODER_DEFAULT_AVPROFILES="${CMAKE_INSTALL_PREFIX}/share/ressource")
+
 # Diplay commands being ran by CMake
 set(CMAKE_VERBOSE_MAKEFILE OFF)
 

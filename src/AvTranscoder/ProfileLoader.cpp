@@ -40,10 +40,12 @@ void ProfileLoader::loadProfiles( const std::string& avProfilesPath )
 	std::string realAvProfilesPath = avProfilesPath;
 	if( realAvProfilesPath.empty() )
 	{
+		// get custom profiles location from AVPROFILES environment variable
 		if( std::getenv( "AVPROFILES" ) )
 			realAvProfilesPath = std::getenv( "AVPROFILES" );
+		// else get default profiles location
 		else
-			return;
+			realAvProfilesPath = AVTRANSCODER_DEFAULT_AVPROFILES;
 	}
 	
 	std::vector< std::string > paths;
