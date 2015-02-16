@@ -19,7 +19,7 @@ public:
 	/// Create a frame with a the given buffer size
 	Frame( const size_t dataSize );
 
-	/// Create a frame from the given AVPAcket (copy data)
+	/// Create a frame from the given AVPAcket (copy data of given packet)
 	Frame( AVPacket& avPacket );
 
 	/// Free buffer of data
