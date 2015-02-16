@@ -1,0 +1,6 @@
+avProfileName=proresproxy
+avProfileLongName=ProRes 422 Proxy
+avProfileType=avProfileTypeVideo
+codec=prores
+pix_fmt=yuv422p10le
+profile=0

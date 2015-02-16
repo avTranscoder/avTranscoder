@@ -1,0 +1,6 @@
+avProfileName=proreshq
+avProfileLongName=ProRes 422 HQ
+avProfileType=avProfileTypeVideo
+codec=prores
+pix_fmt=yuv422p10le
+profile=3
