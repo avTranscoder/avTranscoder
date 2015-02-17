@@ -15,7 +15,13 @@ Frame::Frame( const size_t dataSize )
 
 Frame::Frame(AVPacket& avPacket)
 {
+#if LIBAVCODEC_VERSION_MAJOR > 54 || ( LIBAVCODEC_VERSION_MAJOR == 54 && LIBAVCODEC_VERSION_MINOR > 56 )
 	av_copy_packet( &_packet, &avPacket );
+#else
+	// we just care about data, not side properties of AVPacket
+	initAVPacket();
+	copyData( avPacket.data, avPacket.size );
+#endif
 }
 
 Frame::~Frame()
