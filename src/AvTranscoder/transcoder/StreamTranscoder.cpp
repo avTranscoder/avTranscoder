@@ -314,7 +314,7 @@ void StreamTranscoder::preProcessCodecLatency()
 		latency < _outputEncoder->getCodec().getAVCodecContext().frame_number )
 		return;
 
-	while( ( --latency ) > 0 )
+	while( ( latency-- ) > 0 )
 	{
 		processFrame();
 	}
