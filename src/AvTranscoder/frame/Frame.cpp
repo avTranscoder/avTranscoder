@@ -35,7 +35,6 @@ void Frame::resize( const size_t newSize )
 		av_shrink_packet( &_packet, newSize );
 	 else if( (int) newSize > _packet.size )
 		av_grow_packet( &_packet, newSize - _packet.size );
-	memset( _packet.data, 0, _packet.size );
 }
 
 void Frame::refData( unsigned char* buffer, const size_t size )
