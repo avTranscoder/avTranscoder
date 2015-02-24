@@ -76,7 +76,7 @@ void AudioTransform::initFrames( const Frame& srcFrame, Frame& dstFrame )
 
 	// resize buffer of output frame
 	int dstSampleSize = av_get_bytes_per_sample( dst.desc().getSampleFormat() );
-	dstFrame.resize( src.getNbSamples() * src.desc().getChannels() * dstSampleSize );
+	dstFrame.resize( src.getNbSamples() * dst.desc().getChannels() * dstSampleSize );
 
 	// set nbSamples of output frame
 	dst.setNbSamples( src.getNbSamples() );
