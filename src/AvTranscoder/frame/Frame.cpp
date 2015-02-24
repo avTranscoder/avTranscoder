@@ -34,7 +34,7 @@ void Frame::resize( const size_t newSize )
 	if( (int) newSize < _packet.size )
 		av_shrink_packet( &_packet, newSize );
 	 else if( (int) newSize > _packet.size )
-		av_grow_packet( &_packet, newSize );
+		av_grow_packet( &_packet, newSize - _packet.size );
 	memset( _packet.data, 0, _packet.size );
 }
 
