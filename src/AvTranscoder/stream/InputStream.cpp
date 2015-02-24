@@ -68,7 +68,7 @@ bool InputStream::readNextPacket( CodedData& data )
 	// if packet is already cached
 	if( ! _streamCache.empty() )
 	{
-		data.refData( _streamCache.front().getData(), _streamCache.front().getSize() );
+		data.copyData( _streamCache.front().getData(), _streamCache.front().getSize() );
 		_streamCache.pop();
 	}
 	// else read next packet
@@ -132,8 +132,8 @@ void InputStream::addPacket( AVPacket& packet )
 	if( ! _isActivated )
 		return;
 
-	CodedData data( packet );
-	_streamCache.push( data );
+	_streamCache.push( CodedData() );
+	_streamCache.back().copyData( packet.data, packet.size );
 }
 
 void InputStream::clearBuffering()
