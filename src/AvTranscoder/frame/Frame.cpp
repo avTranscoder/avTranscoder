@@ -13,7 +13,7 @@ Frame::Frame( const size_t dataSize )
 	av_new_packet( &_packet, dataSize );
 }
 
-Frame::Frame(AVPacket& avPacket)
+Frame::Frame( const AVPacket& avPacket )
 {
 	copyAVPacket( avPacket );
 }

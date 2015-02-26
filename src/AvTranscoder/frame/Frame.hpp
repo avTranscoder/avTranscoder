@@ -20,7 +20,7 @@ public:
 	Frame( const size_t dataSize );
 
 	/// Create a frame from the given AVPAcket (copy data of given packet)
-	Frame( AVPacket& avPacket );
+	Frame( const AVPacket& avPacket );
 
 	/// Override copy constructor in order to copy AVPacket data
 	Frame( const Frame& other );
