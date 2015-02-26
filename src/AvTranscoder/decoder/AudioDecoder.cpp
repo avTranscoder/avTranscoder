@@ -133,10 +133,10 @@ bool AudioDecoder::decodeNextFrame()
 
 		bool nextPacketRead = _inputStream->readNextPacket( data );
 		if( ! nextPacketRead ) // error or end of file
-			return false;
+			data.clear();
 
 		int ret = avcodec_decode_audio4( &_inputStream->getAudioCodec().getAVCodecContext(), _frame, &got_frame, &data.getAVPacket() );
-		if( ret == 0 && got_frame == 0 ) // no frame could be decompressed
+		if( ! nextPacketRead && ret == 0 && got_frame == 0 ) // no frame could be decompressed
 			return false;
 		
 		if( ret < 0 )
