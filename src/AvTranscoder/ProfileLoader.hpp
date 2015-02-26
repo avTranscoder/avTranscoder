@@ -28,6 +28,7 @@ namespace constants
 	const std::string avProfileHeight = "height";
 	const std::string avProfileSampleRate = "ar";
 	const std::string avProfileChannel = "ac";
+	const std::string avProfileThreads = "threads";
 }
 
 class AvExport ProfileLoader
