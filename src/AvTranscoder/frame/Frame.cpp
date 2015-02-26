@@ -15,13 +15,12 @@ Frame::Frame( const size_t dataSize )
 
 Frame::Frame(AVPacket& avPacket)
 {
-#if LIBAVCODEC_VERSION_INT > AV_VERSION_INT(54, 56, 0)
-	av_copy_packet( &_packet, &avPacket );
-#else
-	// we just care about data, not side properties of AVPacket
-	initAVPacket();
-	copyData( avPacket.data, avPacket.size );
-#endif
+	copyAVPacket( avPacket );
+}
+
+Frame::Frame( const Frame& other )
+{
+	copyAVPacket( other.getAVPacket() );
 }
 
 Frame::~Frame()
@@ -73,6 +72,19 @@ void Frame::initAVPacket()
 	av_init_packet( &_packet );
 	_packet.data = NULL;
 	_packet.size = 0;
+}
+
+void Frame::copyAVPacket( const AVPacket& avPacket )
+{
+#if LIBAVCODEC_VERSION_INT > AV_VERSION_INT(55, 56, 108)
+	av_copy_packet( &_packet, &avPacket );
+#elif LIBAVCODEC_VERSION_INT > AV_VERSION_INT(54, 56, 0)
+	av_copy_packet( &_packet, const_cast<AVPacket*>( &avPacket ) );
+#else
+	// we just care about data, not side properties of AVPacket
+	initAVPacket();
+	copyData( avPacket.data, avPacket.size );
+#endif
 }
 
 }
