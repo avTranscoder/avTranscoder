@@ -12,6 +12,7 @@ class AvExport VideoEncoder : public IEncoder
 {
 public:
 	VideoEncoder( const std::string& videoCodecName );
+	~VideoEncoder();
 
 	void setup();
 
@@ -25,6 +26,7 @@ public:
 
 private:
 	VideoCodec _codec;
+	AVFrame* _frame;  ///< Contains the encoded data to pass to the Frame when encodeFrame
 };
 
 }
