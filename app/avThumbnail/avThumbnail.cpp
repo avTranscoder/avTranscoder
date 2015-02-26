@@ -54,7 +54,7 @@ int main( int argc, char** argv )
 		return( -1 );
 	}
 
-	avtranscoder::setLogLevel( AV_LOG_QUIET );
+	avtranscoder::Logger::setLogLevel( AV_LOG_QUIET );
 	avtranscoder::preloadCodecsAndFormats();
 
 	// input file

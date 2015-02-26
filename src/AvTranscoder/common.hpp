@@ -12,7 +12,6 @@ extern "C" {
 #include <libavcodec/version.h>
 #include <libavutil/error.h>
 #include <libavutil/rational.h>
-#include <libavutil/log.h>
 }
 
 #include <string>
@@ -58,12 +57,31 @@ typedef AVRational Rational;
 /// Register all the codecs and formats which are enabled at configuration time.
 void AvExport preloadCodecsAndFormats();
 
-/**
- * @brief Set the log level of ffmpeg/libav.
- * @param level: refer to define AV_LOG_xxx (from AV_LOG_QUIET to AV_LOG_DEBUG)
- * @see SWIG interface avLogLevel.i
- */
-void AvExport setLogLevel( const int level );
+/// Logger class which contains static functions to use ffmpeg/libav log system
+class AvExport Logger
+{
+public:
+	/**
+	 * @brief Set the log level of ffmpeg/libav.
+	 * @param level: refer to define AV_LOG_xxx (from AV_LOG_QUIET to AV_LOG_DEBUG)
+	 * @see SWIG interface avLogLevel.i
+	 */
+	static void setLogLevel( const int level );
+
+	///@{
+	/// @brief Log with the ffmpeg/libav log system
+	/// @note use shortcuts to log at debug/info/warning/error level
+	/// @param msg: the message will be prefix by '[avTranscoder - <level>]'
+	///
+	static void debug( const std::string msg );
+	static void info( const std::string msg );
+	static void warn( const std::string msg );
+	static void error( const std::string msg );
+	///@}
+
+private:
+	static void log( int level, const std::string& levelStr, const std::string& msg );
+};
 
 }
 
