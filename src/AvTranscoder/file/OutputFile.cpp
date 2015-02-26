@@ -112,6 +112,7 @@ IOutputStream::EWrappingStatus OutputFile::wrap( const CodedData& data, const si
 
 	_formatContext.writeFrame( packet );
 
+	// free packet.side_data, set packet.data to NULL and packet.size to 0
 	av_free_packet( &packet );
 
 	double currentStreamDuration = _outputStreams.at( streamId )->getStreamDuration();
