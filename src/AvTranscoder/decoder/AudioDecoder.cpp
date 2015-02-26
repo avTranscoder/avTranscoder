@@ -151,20 +151,26 @@ bool AudioDecoder::decodeNextFrame()
 
 void AudioDecoder::setProfile( const ProfileLoader::Profile& profile )
 {
-	// set threads if not in profile
-	if( ! profile.count( "threads" ) )
-		_inputStream->getAudioCodec().getOption( "threads" ).setString( "auto" );
+	AudioCodec& codec = _inputStream->getAudioCodec();
 
+	// set threads before any other options
+	if( profile.count( constants::avProfileThreads ) )
+		codec.getOption( constants::avProfileThreads ).setString( profile.at( constants::avProfileThreads ) );
+	else
+		codec.getOption( constants::avProfileThreads ).setString( "auto" );
+
+	// set decoder options
 	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
 	{
 		if( (*it).first == constants::avProfileIdentificator ||
 			(*it).first == constants::avProfileIdentificatorHuman ||
-			(*it).first == constants::avProfileType )
+			(*it).first == constants::avProfileType ||
+			(*it).first == constants::avProfileThreads )
 			continue;
 
 		try
 		{
-			Option& decodeOption = _inputStream->getAudioCodec().getOption( (*it).first );
+			Option& decodeOption = codec.getOption( (*it).first );
 			decodeOption.setString( (*it).second );
 		}
 		catch( std::exception& e )
