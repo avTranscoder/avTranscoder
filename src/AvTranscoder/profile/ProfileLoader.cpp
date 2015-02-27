@@ -1,7 +1,5 @@
 #include "ProfileLoader.hpp"
 
-#include "common.hpp"
-
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
@@ -21,7 +19,7 @@ void ProfileLoader::loadProfile( const std::string& avProfileFileName )
 {
 	std::ifstream infile;
 	infile.open( avProfileFileName.c_str(), std::ifstream::in );
-	
+
 	ProfileLoader::Profile customProfile;
 
 	std::string line;
@@ -36,7 +34,7 @@ void ProfileLoader::loadProfile( const std::string& avProfileFileName )
 }
 
 void ProfileLoader::loadProfiles( const std::string& avProfilesPath )
-{	
+{
 	std::string realAvProfilesPath = avProfilesPath;
 	if( realAvProfilesPath.empty() )
 	{
@@ -47,7 +45,7 @@ void ProfileLoader::loadProfiles( const std::string& avProfilesPath )
 		else
 			realAvProfilesPath = AVTRANSCODER_DEFAULT_AVPROFILES;
 	}
-	
+
 	std::vector< std::string > paths;
 	split( paths, realAvProfilesPath, ":" );
 	for( std::vector< std::string >::iterator dirIt = paths.begin(); dirIt != paths.end(); ++dirIt )

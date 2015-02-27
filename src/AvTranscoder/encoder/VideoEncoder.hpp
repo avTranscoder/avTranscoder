@@ -3,7 +3,7 @@
 
 #include "IEncoder.hpp"
 #include <AvTranscoder/codec/VideoCodec.hpp>
-#include <AvTranscoder/ProfileLoader.hpp>
+#include <AvTranscoder/profile/ProfileLoader.hpp>
 
 namespace avtranscoder
 {

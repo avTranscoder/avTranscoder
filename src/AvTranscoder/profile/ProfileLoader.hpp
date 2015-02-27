@@ -1,7 +1,7 @@
 #ifndef _AV_TRANSCODER_PROFILE_HPP_
 #define _AV_TRANSCODER_PROFILE_HPP_
 
-#include "common.hpp"
+#include <AvTranscoder/common.hpp>
 
 #include <string>
 #include <cstring>

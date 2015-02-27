@@ -15,21 +15,18 @@
 %include "AvTranscoder/swig/avLogLevel.i"
 
 %{
-#include <AvTranscoder/ProfileLoader.hpp>
 #include <AvTranscoder/Option.hpp>
 %}
 
 namespace std {
 %template(IntPair)         pair< size_t, size_t >;
-%template(ProfileMap)      map< string, string >;
-%template(ProfilesVector)  vector< map< string, string > >;
 }
 
 %include "AvTranscoder/progress/progress.i"
 %include "AvTranscoder/mediaProperty/mediaProperty.i"
 %include "AvTranscoder/frame/frame.i"
+%include "AvTranscoder/profile/profile.i"
 
-%include <AvTranscoder/ProfileLoader.hpp>
 %include <AvTranscoder/Option.hpp>
 
 %include "AvTranscoder/codec/codec.i"

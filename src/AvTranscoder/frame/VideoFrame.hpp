@@ -2,7 +2,7 @@
 #define _AV_TRANSCODER_FRAME_VIDEO_FRAME_HPP_
 
 #include "Frame.hpp"
-#include <AvTranscoder/ProfileLoader.hpp>
+#include <AvTranscoder/profile/ProfileLoader.hpp>
 
 extern "C" {
 #include <libavutil/pixfmt.h>
