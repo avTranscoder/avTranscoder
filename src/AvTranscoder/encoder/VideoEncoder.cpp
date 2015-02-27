@@ -6,7 +6,6 @@ extern "C" {
 #include <libavutil/avutil.h>
 }
 
-#include <iostream>
 #include <stdexcept>
 #include <cstdlib>
 
@@ -184,7 +183,13 @@ void VideoEncoder::setProfile( const ProfileLoader::Profile& profile, const avtr
 		}
 		catch( std::exception& e )
 		{
-			std::cout << "[VideoEncoder] warning - can't set option " << (*it).first << " to " << (*it).second << ": " << e.what() << std::endl;
+			std::string msg( "VideoEncoder - can't set option " );
+			msg += (*it).first;
+			msg += " to ";
+			msg += (*it).second;
+			msg += ": ";
+			msg += e.what();
+			Logger::warn( msg );
 		}
 	}
 }

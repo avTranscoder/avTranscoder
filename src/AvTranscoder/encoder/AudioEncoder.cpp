@@ -6,7 +6,6 @@ extern "C" {
 #include <libavutil/avutil.h>
 }
 
-#include <iostream>
 #include <stdexcept>
 
 namespace avtranscoder
@@ -187,7 +186,13 @@ void AudioEncoder::setProfile( const ProfileLoader::Profile& profile, const Audi
 		}
 		catch( std::exception& e )
 		{
-			std::cout << "[AudioEncoder] warning - can't set option " << (*it).first << " to " << (*it).second << ": " << e.what() << std::endl;
+			std::string msg( "AudioEncoder - can't set option " );
+			msg += (*it).first;
+			msg += " to ";
+			msg += (*it).second;
+			msg += ": ";
+			msg += e.what();
+			Logger::warn( msg );
 		}
 	}
 }

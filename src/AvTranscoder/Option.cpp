@@ -5,7 +5,6 @@ extern "C" {
 #include <libavutil/mem.h>
 }
 
-#include <iostream>
 #include <sstream>
 #include <stdexcept>
 
@@ -292,7 +291,9 @@ void loadOptions( OptionMap& outOptions, void* av_class, int req_flags )
 
 		if( ! parentFound )
 		{
-			std::cout << "Warning: Can't find a choice option for " << itOption->getName() << std::endl;
+			std::string msg( "Can't find a choice option for ");
+			msg += itOption->getName();
+			Logger::warn( msg );
 		}
 	}
 }

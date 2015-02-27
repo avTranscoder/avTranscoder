@@ -16,6 +16,7 @@ extern "C" {
 }
 
 #include <stdexcept>
+#include <sstream>
 
 namespace avtranscoder
 {
@@ -25,7 +26,6 @@ InputFile::InputFile( const std::string& filename )
 	, _properties( _formatContext )
 	, _filename( filename )
 	, _inputStreams()
-	, _verbose( false )
 {
 	_formatContext.findStreamInfo();
 
@@ -160,7 +160,11 @@ void InputFile::seek( uint64_t position )
 
 	if( av_seek_frame( &_formatContext.getAVFormatContext(), -1, position, AVSEEK_FLAG_BACKWARD ) < 0 )
 	{
-		std::cerr << "Error during seek at " << position << " (in AV_TIME_BASE units) in file" << std::endl;
+		std::stringstream os;
+		os << "Error when seek at ";
+		os << position;
+		os << " (in AV_TIME_BASE units) in file";
+		Logger::error( os.str() );;
 	}
 
 	for( std::vector<InputStream*>::iterator it = _inputStreams.begin(); it != _inputStreams.end(); ++it )
@@ -214,8 +218,13 @@ void InputFile::setProfile( const ProfileLoader::Profile& profile )
 		}
 		catch( std::exception& e )
 		{
-			if( _verbose )
-				std::cout << "[InputFile] warning: " << e.what() << std::endl;
+			std::string msg( "InputFile - can't set option " );
+			msg += (*it).first;
+			msg += " to ";
+			msg += (*it).second;
+			msg += ": ";
+			msg += e.what();
+			Logger::warn( msg );
 		}
 	}
 }

@@ -12,7 +12,6 @@ extern "C" {
 #include <libavutil/channel_layout.h>
 }
 
-#include <iostream>
 #include <stdexcept>
 
 namespace avtranscoder
@@ -169,7 +168,13 @@ void AudioDecoder::setProfile( const ProfileLoader::Profile& profile )
 		}
 		catch( std::exception& e )
 		{
-			std::cout << "[AudioDecoder] warning - can't set option " << (*it).first << " to " << (*it).second << ": " << e.what() << std::endl;
+			std::string msg( "AudioDecoder - can't set option " );
+			msg += (*it).first;
+			msg += " to ";
+			msg += (*it).second;
+			msg += ": ";
+			msg += e.what();
+			Logger::warn( msg );
 		}
 	}
 }

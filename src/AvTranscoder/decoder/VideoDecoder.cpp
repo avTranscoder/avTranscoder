@@ -12,7 +12,6 @@ extern "C" {
 }
 
 #include <stdexcept>
-#include <iostream>
 
 namespace avtranscoder
 {
@@ -128,7 +127,13 @@ void VideoDecoder::setProfile( const ProfileLoader::Profile& profile )
 		}
 		catch( std::exception& e )
 		{
-			std::cout << "[VideoDecoder] warning - can't set option " << (*it).first << " to " << (*it).second << ": " << e.what() << std::endl;
+			std::string msg( "VideoDecoder - can't set option " );
+			msg += (*it).first;
+			msg += " to ";
+			msg += (*it).second;
+			msg += ": ";
+			msg += e.what();
+			Logger::warn( msg );
 		}
 	}
 }

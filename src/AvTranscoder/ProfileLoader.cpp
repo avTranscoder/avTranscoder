@@ -2,7 +2,6 @@
 
 #include "common.hpp"
 
-#include <iostream>
 #include <fstream>
 #include <cstdlib>
 #include <stdexcept>
@@ -65,7 +64,7 @@ void ProfileLoader::loadProfiles( const std::string& avProfilesPath )
 			}
 			catch( const std::exception& e )
 			{
-				std::cout << e.what() << std::endl;
+				Logger::warn( e.what() );
 			}
 		}
 	}
@@ -219,7 +218,12 @@ int getFilesInDir( const std::string& dir, std::vector< std::string >& files )
 	struct dirent *dirp;
 	if( ( dp  = opendir( dir.c_str() ) ) == NULL )
 	{
-		std::cerr << "Error(" << errno << ") opening " << dir << std::endl;
+		std::string msg( "Can't get files in directory  " );
+		msg += dir;
+		msg += " (";
+		msg += errno;
+		msg += ")";
+		Logger::error(  msg );
 		return errno;
 	}
 

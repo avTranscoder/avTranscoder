@@ -12,7 +12,7 @@ extern "C" {
 #endif
 }
 
-#include <iostream>
+#include <sstream>
 #include <iomanip>
 #include <cassert>
 #include <stdexcept>
@@ -27,7 +27,6 @@ VideoTransform::VideoTransform()
 	, _srcLineSize ( MAX_SWS_PLANE, 0 )
 	, _dstLineSize ( MAX_SWS_PLANE, 0 )
 	, _isInit      ( false )
-	, _verbose( false )
 {
 }
 
@@ -57,33 +56,29 @@ bool VideoTransform::init( const Frame& srcFrame, const Frame& dstFrame )
 	av_image_fill_linesizes( &_srcLineSize[0], srcPixelFormat, src.desc().getWidth() );
 	av_image_fill_linesizes( &_dstLineSize[0], dstPixelFormat, dst.desc().getWidth() );
 
-	if( _verbose )
-	{
-		std::clog << "video conversion from ";
-		const char* pixFmt;
-		pixFmt = av_get_pix_fmt_name( srcPixelFormat );
-		std::clog << ( pixFmt != NULL ? pixFmt : "None" ) << " to ";
-		pixFmt = av_get_pix_fmt_name( dstPixelFormat );
-		std::clog << ( pixFmt != NULL ? pixFmt : "None" ) << std::endl;
+	std::stringstream os;
+	os << "Video conversion from ";
+	const char* pixFmt;
+	pixFmt = av_get_pix_fmt_name( srcPixelFormat );
+	os << ( pixFmt != NULL ? pixFmt : "None" ) << " to ";
+	pixFmt = av_get_pix_fmt_name( dstPixelFormat );
+	os << ( pixFmt != NULL ? pixFmt : "None" );
+	Logger::debug( os.str() );
+	os.str( "" );
 
-		std::clog << "source, width = " << src.desc().getWidth() << std::endl;
-		std::clog << "source, height = " << src.desc().getHeight() << std::endl;
-		
-		std::clog << "source, lineSize:" << std::endl;
-		std::clog << "[0] = " << _srcLineSize[0] << std::endl;
-		std::clog << "[1] = " << _srcLineSize[1] << std::endl;
-		std::clog << "[2] = " << _srcLineSize[2] << std::endl;
-		std::clog << "[3] = " << _srcLineSize[3] << std::endl;
-		
-		std::clog << "destination, width = " << dst.desc().getWidth() << std::endl;
-		std::clog << "destination, height = " << dst.desc().getHeight() << std::endl;
-		
-		std::clog << "destination, lineSize:" << std::endl;
-		std::clog << "[0] = " << _dstLineSize[0] << std::endl;
-		std::clog << "[1] = " << _dstLineSize[1] << std::endl;
-		std::clog << "[2] = " << _dstLineSize[2] << std::endl;
-		std::clog << "[3] = " << _dstLineSize[3] << std::endl;
-	}
+	os << "Source, width = " << src.desc().getWidth();
+	Logger::debug( os.str() );
+	os.str( "" );
+	os << "Source, height = " << src.desc().getHeight();
+	Logger::debug( os.str() );
+	os.str( "" );
+
+	os << "Destination, width = " << dst.desc().getWidth();
+	Logger::debug( os.str() );
+	os.clear();
+	os << "Destination, height = " << dst.desc().getHeight();
+	Logger::debug( os.str() );
+	os.clear();
 
 	return true;
 }
@@ -110,21 +105,6 @@ void VideoTransform::convert( const Frame& srcFrame, Frame& dstFrame )
 	if( ! _imageConvertContext )
 	{
 		throw std::runtime_error( "unknown color convert context" );
-	}
-
-	if( _verbose )
-	{
-		std::clog << "source, slice:" << std::endl;
-		std::clog << "[0] = " << &_srcData[0] << std::endl;
-		std::clog << "[1] = " << &_srcData[1] << std::endl;
-		std::clog << "[2] = " << &_srcData[2] << std::endl;
-		std::clog << "[3] = " << &_srcData[3] << std::endl;
-		
-		std::clog << "destination, slice:" << std::endl;
-		std::clog << "[0] = " << &_dstData[0] << std::endl;
-		std::clog << "[1] = " << &_dstData[1] << std::endl;
-		std::clog << "[2] = " << &_dstData[2] << std::endl;
-		std::clog << "[3] = " << &_dstData[3] << std::endl;
 	}
 
 	int ret = sws_scale( _imageConvertContext,

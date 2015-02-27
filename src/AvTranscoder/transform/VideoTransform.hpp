@@ -20,8 +20,6 @@ public:
 
 	void convert( const Frame& srcFrame, Frame& dstFrame );
 
-	void setVerbose( bool verbose = false ){ _verbose = verbose; }
-
 private:
 	bool init( const Frame& srcFrame, const Frame& dstFrame );
 
@@ -33,8 +31,6 @@ private:
 	std::vector<int>       _dstLineSize;
 
 	bool _isInit;
-
-	bool _verbose;
 };
 
 }

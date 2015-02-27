@@ -2,7 +2,6 @@
 
 #include <stdexcept>
 #include <sstream>
-#include <iostream>
 
 namespace avtranscoder
 {
@@ -127,7 +126,7 @@ void FormatContext::addMetaData( const std::string& key, const std::string& valu
 	{
 		char err[AV_ERROR_MAX_STRING_SIZE];
 		av_strerror( ret, err, sizeof(err) );
-		std::cout << err << std::endl;
+		Logger::error( err );
 	}
 }
 

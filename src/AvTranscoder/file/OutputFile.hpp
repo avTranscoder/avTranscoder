@@ -49,8 +49,6 @@ public:
 	 */
 	void setProfile( const ProfileLoader::Profile& profile );
 
-	void setVerbose( bool verbose = false ){ _verbose = verbose; }
-
 private:
 	FormatContext _formatContext;
 	std::vector<OutputStream*> _outputStreams;  ///< Has ownership
@@ -58,7 +56,6 @@ private:
 
 	std::string _filename;  ///< Output filename
 	double _previousProcessedStreamDuration;  ///< To manage process streams order
-	bool _verbose;
 };
 
 }

@@ -1,6 +1,8 @@
 #include <AvTranscoder/transcoder/Transcoder.hpp>
 #include <AvTranscoder/file/OutputFile.hpp>
 
+#include <iostream>
+
 static std::string outputFileName = "thumbnail.jpg";
 static bool seekInFrame = false;
 
