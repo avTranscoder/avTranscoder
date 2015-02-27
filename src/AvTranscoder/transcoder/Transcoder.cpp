@@ -290,7 +290,7 @@ void Transcoder::addRewrapStream( const std::string& filename, const size_t stre
 	_streamTranscoders.push_back( _streamTranscodersAllocated.back() );
 }
 
-void Transcoder::addTranscodeStream( const std::string& filename, const size_t streamIndex, const size_t subStreamIndex, const double offset )
+void Transcoder::addTranscodeStream( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const double offset )
 {
 	// Get profile from input file
 	InputFile* referenceFile = addInputFile( filename, streamIndex );
@@ -304,13 +304,17 @@ void Transcoder::addTranscodeStream( const std::string& filename, const size_t s
 	addTranscodeStream( filename, streamIndex, subStreamIndex, profile, offset );
 }
 
-void Transcoder::addTranscodeStream( const std::string& filename, const size_t streamIndex, const size_t subStreamIndex, ProfileLoader::Profile& profile, const double offset )
+void Transcoder::addTranscodeStream( const std::string& filename, const size_t streamIndex, const int subStreamIndex, ProfileLoader::Profile& profile, const double offset )
 {
 	// Add profile
 	_profileLoader.loadProfile( profile );
 
 	std::stringstream os;
-	os << "Add transcode stream from file '" << filename << "' / index=" << streamIndex << " / channel=" << subStreamIndex;
+	os << "Add transcode stream from file '" << filename << "' / index=" << streamIndex << " / channel=";
+	if( subStreamIndex < 0 )
+		os << "all";
+	else
+		os << subStreamIndex;
 	os << " / encodingProfile=" << profile.at( constants::avProfileIdentificatorHuman ) << " / offset=" << offset << "s";
 	Logger::info( os.str() );
 

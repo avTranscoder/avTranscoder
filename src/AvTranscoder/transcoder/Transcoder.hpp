@@ -134,8 +134,8 @@ public:
 private:
 	void addRewrapStream( const std::string& filename, const size_t streamIndex );
 
-	void addTranscodeStream( const std::string& filename, const size_t streamIndex, const size_t subStreamIndex, const double offset );
-	void addTranscodeStream( const std::string& filename, const size_t streamIndex, const size_t subStreamIndex, ProfileLoader::Profile& profile, const double offset = 0 );
+	void addTranscodeStream( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const double offset );
+	void addTranscodeStream( const std::string& filename, const size_t streamIndex, const int subStreamIndex, ProfileLoader::Profile& profile, const double offset = 0 );
 
 	void addDummyStream( const ProfileLoader::Profile& profile, const ICodec& codec );
 
