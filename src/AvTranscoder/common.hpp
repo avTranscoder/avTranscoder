@@ -1,6 +1,8 @@
 #ifndef _AV_TRANSCODER_COMMON_HPP_
 #define _AV_TRANSCODER_COMMON_HPP_
 
+#include <AvTranscoder/system.hpp>
+
 extern "C" {
 #ifndef __STDC_CONSTANT_MACROS
     #define __STDC_CONSTANT_MACROS
