@@ -51,7 +51,7 @@ void FormatContext::findStreamInfo( AVDictionary** options )
 	int err = avformat_find_stream_info( _avFormatContext, options );
 	if( err < 0 )
 	{
-		throw std::ios_base::failure( "unable to find stream informations" );
+		throw std::ios_base::failure( "unable to find stream informations: " + getDescriptionFromErrorCode( err ) );
 	}
 }
 
@@ -63,7 +63,7 @@ void FormatContext::openRessource( const std::string& url, int flags )
 	int err = avio_open2( &_avFormatContext->pb, url.c_str(), flags, NULL, NULL );
 	if( err < 0 )
 	{
-		throw std::ios_base::failure( "error when opening output format" );
+		throw std::ios_base::failure( "error when opening output format: " + getDescriptionFromErrorCode( err ) );
 	}
 }
 
@@ -75,7 +75,7 @@ void FormatContext::closeRessource()
 	int err = avio_close( _avFormatContext->pb );
 	if( err < 0 )
 	{
-		throw std::ios_base::failure( "error when close output format" );
+		throw std::ios_base::failure( "error when close output format: " + getDescriptionFromErrorCode( err ) );
 	}
 }
 
@@ -84,9 +84,7 @@ void FormatContext::writeHeader( AVDictionary** options )
 	int ret = avformat_write_header( _avFormatContext, options );
 	if( ret != 0 )
 	{
-		std::string msg = "could not write header: ";
-		msg += getDescriptionFromErrorCode( ret );
-		throw std::runtime_error( msg );
+		throw std::runtime_error( "could not write header: " + getDescriptionFromErrorCode( ret ) );
 	}
 }
 
@@ -96,21 +94,23 @@ void FormatContext::writeFrame( AVPacket& packet, bool interleaved )
 	if( interleaved )
 		ret = av_interleaved_write_frame( _avFormatContext, &packet );
 	else
-		ret = av_write_frame( _avFormatContext, &packet );
-	
-	if( ret != 0 )
 	{
-		std::string msg = "error when writting packet in stream: ";
-		msg += getDescriptionFromErrorCode( ret );
-		throw std::runtime_error( msg );
+		// returns 1 if flushed and there is no more data to flush
+		ret = av_write_frame( _avFormatContext, &packet );
+	}
+	
+	if( ret < 0 )
+	{
+		throw std::runtime_error( "error when writting packet in stream: " + getDescriptionFromErrorCode( ret ) );
 	}
 }
 
 void FormatContext::writeTrailer()
 {
-	if( av_write_trailer( _avFormatContext ) != 0)
+	int ret = av_write_trailer( _avFormatContext );
+	if( ret != 0 )
 	{
-		throw std::runtime_error( "could not write trailer" );
+		throw std::runtime_error( "could not write trailer: " + getDescriptionFromErrorCode( ret ) );
 	}
 }
 
