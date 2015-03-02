@@ -49,17 +49,13 @@ bool AudioEncoder::encodeFrame( const Frame& sourceFrame, Frame& codedFrame )
 	int bufferSize = av_samples_get_buffer_size( NULL, avCodecContext.channels, frame->nb_samples, avCodecContext.sample_fmt, 0 );
 	if( bufferSize < 0 )
 	{
-		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( bufferSize, err, sizeof(err) );
-		throw std::runtime_error( "Encode audio frame error: buffer size < 0 - " + std::string(err) );
+		throw std::runtime_error( "Encode audio frame error: buffer size < 0 - " + getDescriptionFromErrorCode( bufferSize ) );
 	}
 
 	int retvalue = avcodec_fill_audio_frame( frame, avCodecContext.channels, avCodecContext.sample_fmt, sourceAudioFrame.getData(), bufferSize, 0 );
 	if( retvalue < 0 )
 	{
-		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( retvalue, err, sizeof(err) );
-		throw std::runtime_error( "Encode audio frame error: avcodec fill audio frame - " + std::string( err ) );
+		throw std::runtime_error( "Encode audio frame error: avcodec fill audio frame - " + getDescriptionFromErrorCode( retvalue ) );
 	}
 	
 	AVPacket& packet = codedFrame.getAVPacket();
@@ -82,17 +78,13 @@ bool AudioEncoder::encodeFrame( const Frame& sourceFrame, Frame& codedFrame )
 	int ret = avcodec_encode_audio2( &avCodecContext, &packet, frame, &gotPacket );
 	if( ret != 0 && gotPacket == 0 )
 	{
-		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( ret, err, sizeof(err) );
-		throw std::runtime_error( "Encode audio frame error: avcodec encode audio frame - " + std::string( err ) );
+		throw std::runtime_error( "Encode audio frame error: avcodec encode audio frame - " + getDescriptionFromErrorCode( ret ) );
 	}
 #else
 	int ret = avcodec_encode_audio( &avCodecContext, packet.data, packet.size, frame );
 	if( ret < 0 )
 	{
-		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( ret, err, sizeof(err) );
-		throw std::runtime_error( "Encode audio frame error: avcodec encode audio frame - " + std::string( err ) );
+		throw std::runtime_error( "Encode audio frame error: avcodec encode audio frame - " + getDescriptionFromErrorCode( ret ) );
 	}
 #endif
 	
@@ -122,9 +114,7 @@ bool AudioEncoder::encodeFrame( Frame& codedFrame )
 	int ret = avcodec_encode_audio2( &avCodecContext, &packet, NULL, &gotPacket );
 	if( ret != 0 && gotPacket == 0 )
 	{
-		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( ret, err, sizeof(err) );
-		throw std::runtime_error( "Encode audio frame error: avcodec encode last audio frame - " + std::string( err ) );
+		throw std::runtime_error( "Encode audio frame error: avcodec encode last audio frame - " + getDescriptionFromErrorCode( ret ) );
 	}
 	return ret == 0 && gotPacket == 1;
 
@@ -132,9 +122,7 @@ bool AudioEncoder::encodeFrame( Frame& codedFrame )
 	int ret = avcodec_encode_audio( &avCodecContext, packet.data, packet.size, NULL );
 	if( ret < 0 )
 	{
-		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( ret, err, sizeof(err) );
-		throw std::runtime_error( "Encode audio frame error: avcodec encode last audio frame - " + std::string( err ) );
+		throw std::runtime_error( "Encode audio frame error: avcodec encode last audio frame - " + getDescriptionFromErrorCode( ret ) );
 	}
 	return ret == 0;
 

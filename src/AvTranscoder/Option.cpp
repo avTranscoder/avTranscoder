@@ -212,9 +212,7 @@ void Option::checkFFmpegGetOption( const int ffmpegReturnCode ) const
 {
 	if( ffmpegReturnCode )
 	{
-		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( ffmpegReturnCode, err, sizeof(err) );
-		throw std::runtime_error( "unknown key " + getName() + ": " + err );
+		throw std::runtime_error( "unknown key " + getName() + ": " + getDescriptionFromErrorCode( ffmpegReturnCode ) );
 	}
 }
 
@@ -222,9 +220,7 @@ void Option::checkFFmpegSetOption( const int ffmpegReturnCode, const std::string
 {
 	if( ffmpegReturnCode )
 	{
-		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( ffmpegReturnCode, err, sizeof(err) );
-		throw std::runtime_error( "setting " + getName() + " parameter to " + optionValue + ": " + err );
+		throw std::runtime_error( "setting " + getName() + " parameter to " + optionValue + ": " + getDescriptionFromErrorCode( ffmpegReturnCode ) );
 	}
 }
 

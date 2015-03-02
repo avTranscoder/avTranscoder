@@ -50,9 +50,7 @@ bool VideoEncoder::encodeFrame( const Frame& sourceFrame, Frame& codedFrame )
 	int bufferSize = avpicture_fill( (AVPicture*)frame, const_cast< unsigned char * >( sourceImageFrame.getData() ), avCodecContext.pix_fmt, avCodecContext.width, avCodecContext.height );
 	if( bufferSize < 0 )
 	{
-		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( bufferSize, err, sizeof(err) );
-		throw std::runtime_error( "Encode video frame error: buffer size < 0 - " + std::string(err) );
+		throw std::runtime_error( "Encode video frame error: buffer size < 0 - " + getDescriptionFromErrorCode( bufferSize ) );
 	}
 
 	AVPacket& packet = codedFrame.getAVPacket();
@@ -75,17 +73,13 @@ bool VideoEncoder::encodeFrame( const Frame& sourceFrame, Frame& codedFrame )
 	int ret = avcodec_encode_video2( &avCodecContext, &packet, frame, &gotPacket );
 	if( ret != 0 && gotPacket == 0 )
 	{
-		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( ret, err, sizeof(err) );
-		throw std::runtime_error( "Encode video frame error: avcodec encode video frame - " + std::string( err ) );
+		throw std::runtime_error( "Encode video frame error: avcodec encode video frame - " + getDescriptionFromErrorCode( ret ) );
 	}
 #else
 	int ret = avcodec_encode_video( &avCodecContext, packet.data, packet.size, frame );
 	if( ret < 0 )
 	{
-		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( ret, err, sizeof(err) );
-		throw std::runtime_error( "Encode video frame error: avcodec encode video frame - " + std::string( err ) );
+		throw std::runtime_error( "Encode video frame error: avcodec encode video frame - " + getDescriptionFromErrorCode( ret ) );
 	}
 #endif
 
@@ -115,18 +109,14 @@ bool VideoEncoder::encodeFrame( Frame& codedFrame )
 	int ret = avcodec_encode_video2( &avCodecContext, &packet, NULL, &gotPacket );
 	if( ret != 0 && gotPacket == 0 )
 	{
-		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( ret, err, sizeof(err) );
-		throw std::runtime_error( "Encode video frame error: avcodec encode last video frame - " + std::string( err ) );
+		throw std::runtime_error( "Encode video frame error: avcodec encode last video frame - " + getDescriptionFromErrorCode( ret ) );
 	}
 	return ret == 0 && gotPacket == 1;
 #else
 	int ret = avcodec_encode_video( &avCodecContext, packet.data, packet.size, NULL );
 	if( ret < 0 )
 	{
-		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( ret, err, sizeof(err) );
-		throw std::runtime_error( "Encode video frame error: avcodec encode last video frame - " + std::string( err ) );
+		throw std::runtime_error( "Encode video frame error: avcodec encode last video frame - " + getDescriptionFromErrorCode( ret ) );
 	}
 	return ret == 0;
 #endif

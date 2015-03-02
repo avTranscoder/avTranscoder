@@ -67,9 +67,7 @@ void ICodec::open()
 		msg += ") ";
 		avcodec_close( _avCodecContext );
 
-		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( ret, err, sizeof(err) );
-		msg += err;
+		msg += getDescriptionFromErrorCode( ret );
 
 		throw std::runtime_error( msg );
 	}

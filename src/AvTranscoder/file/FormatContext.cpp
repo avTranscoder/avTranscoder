@@ -15,12 +15,10 @@ FormatContext::FormatContext( const std::string& filename, int req_flags )
 	int ret = avformat_open_input( &_avFormatContext, filename.c_str(), NULL, NULL );
 	if( ret < 0 )
 	{
-		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( ret, err, sizeof(err) );
 		std::string msg = "unable to open file ";
 		msg += filename;
 		msg += ": ";
-		msg += err;
+		msg += getDescriptionFromErrorCode( ret );
 		throw std::ios_base::failure( msg );
 	}
 	_isOpen = true;
@@ -86,10 +84,8 @@ void FormatContext::writeHeader( AVDictionary** options )
 	int ret = avformat_write_header( _avFormatContext, options );
 	if( ret != 0 )
 	{
-		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( ret, err, sizeof(err) );
 		std::string msg = "could not write header: ";
-		msg += err;
+		msg += getDescriptionFromErrorCode( ret );
 		throw std::runtime_error( msg );
 	}
 }
@@ -104,10 +100,8 @@ void FormatContext::writeFrame( AVPacket& packet, bool interleaved )
 	
 	if( ret != 0 )
 	{
-		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( ret, err, sizeof(err) );
 		std::string msg = "error when writting packet in stream: ";
-		msg += err;
+		msg += getDescriptionFromErrorCode( ret );
 		throw std::runtime_error( msg );
 	}
 }
@@ -125,9 +119,7 @@ void FormatContext::addMetaData( const std::string& key, const std::string& valu
 	int ret = av_dict_set( &_avFormatContext->metadata, key.c_str(), value.c_str(), 0 );
 	if( ret < 0 )
 	{
-		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( ret, err, sizeof(err) );
-		std::cout << err << std::endl;
+		std::cout << getDescriptionFromErrorCode( ret ) << std::endl;
 	}
 }
 
