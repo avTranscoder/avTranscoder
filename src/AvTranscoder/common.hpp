@@ -67,6 +67,10 @@ void AvExport preloadCodecsAndFormats();
  */
 void AvExport setLogLevel( const int level );
 
+
+/// Get the string description corresponding to the error code provided by ffmpeg/libav
+std::string AvExport getDescriptionFromErrorCode( const int code );
+
 }
 
 #endif

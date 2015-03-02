@@ -87,17 +87,17 @@ bool VideoDecoder::decodeNextFrame()
 
 		bool nextPacketRead = _inputStream->readNextPacket( data );
 		if( ! nextPacketRead ) // error or end of file
-			return false;
+			data.clear();
 
 		int ret = avcodec_decode_video2( &_inputStream->getVideoCodec().getAVCodecContext(), _frame, &got_frame, &data.getAVPacket() );
-		if( ret == 0 && got_frame == 0 ) // no frame could be decompressed
+		if( ! nextPacketRead && ret == 0 && got_frame == 0 ) // no frame could be decompressed
 			return false;
 
 		if( ret < 0 )
 		{
 			char err[AV_ERROR_MAX_STRING_SIZE];
 			av_strerror( ret, err, sizeof(err) );
-			throw std::runtime_error( "an error occured during video decoding - " + std::string(err) );
+			throw std::runtime_error( "an error occured during video decoding - " + getDescriptionFromErrorCode( ret ) );
 		}
 	}
 	return true;
@@ -110,20 +110,26 @@ void VideoDecoder::flushDecoder()
 
 void VideoDecoder::setProfile( const ProfileLoader::Profile& profile )
 {
-	// set threads if not in profile
-	if( ! profile.count( "threads" ) )
-		_inputStream->getVideoCodec().getOption( "threads" ).setString( "auto" );
+	VideoCodec& codec = _inputStream->getVideoCodec();
 
+	// set threads before any other options
+	if( profile.count( constants::avProfileThreads ) )
+		codec.getOption( constants::avProfileThreads ).setString( profile.at( constants::avProfileThreads ) );
+	else
+		codec.getOption( constants::avProfileThreads ).setString( "auto" );
+
+	// set decoder options
 	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
 	{
 		if( (*it).first == constants::avProfileIdentificator ||
 			(*it).first == constants::avProfileIdentificatorHuman ||
-			(*it).first == constants::avProfileType )
+			(*it).first == constants::avProfileType ||
+			(*it).first == constants::avProfileThreads )
 			continue;
 
 		try
 		{
-			Option& decodeOption = _inputStream->getVideoCodec().getOption( (*it).first );
+			Option& decodeOption = codec.getOption( (*it).first );
 			decodeOption.setString( (*it).second );
 		}
 		catch( std::exception& e )

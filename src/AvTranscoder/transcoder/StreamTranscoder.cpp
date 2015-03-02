@@ -133,8 +133,11 @@ StreamTranscoder::StreamTranscoder(
 		case AVMEDIA_TYPE_VIDEO :
 		{
 			// input decoder
-			_inputDecoder = new VideoDecoder( *static_cast<InputStream*>( _inputStream ) );
-			_inputDecoder->setup();
+			VideoDecoder* inputVideo = new VideoDecoder( *static_cast<InputStream*>( _inputStream ) );
+			// set decoder options with empty profile to set some key options to specific values (example: threads to auto)
+			inputVideo->setProfile( ProfileLoader::Profile() );
+			inputVideo->setup();
+			_inputDecoder = inputVideo;
 			_currentDecoder = _inputDecoder;
 
 			// output encoder
@@ -165,8 +168,11 @@ StreamTranscoder::StreamTranscoder(
 		case AVMEDIA_TYPE_AUDIO :
 		{
 			// input decoder
-			_inputDecoder = new AudioDecoder( *static_cast<InputStream*>( _inputStream ) );
-			_inputDecoder->setup();
+			AudioDecoder* inputAudio = new AudioDecoder( *static_cast<InputStream*>( _inputStream ) );
+			// set decoder options with empty profile to set some key options to specific values (example: threads to auto)
+			inputAudio->setProfile( ProfileLoader::Profile() );
+			inputAudio->setup();
+			_inputDecoder = inputAudio;
 			_currentDecoder = _inputDecoder;
 
 			// output encoder
@@ -314,7 +320,7 @@ void StreamTranscoder::preProcessCodecLatency()
 		latency < _outputEncoder->getCodec().getAVCodecContext().frame_number )
 		return;
 
-	while( ( --latency ) > 0 )
+	while( ( latency-- ) > 0 )
 	{
 		processFrame();
 	}
