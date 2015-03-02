@@ -15,7 +15,26 @@ namespace avtranscoder
 
 VideoEncoder::VideoEncoder( const std::string& videoCodecName )
 	: _codec( eCodecTypeEncoder, videoCodecName )
+	, _frame( NULL )
 {
+#if LIBAVCODEC_VERSION_MAJOR > 54
+	_frame = av_frame_alloc();
+#else
+	_frame = avcodec_alloc_frame();
+#endif
+}
+
+VideoEncoder::~VideoEncoder()
+{
+#if LIBAVCODEC_VERSION_MAJOR > 54
+	av_frame_free( &_frame );
+#else
+	#if LIBAVCODEC_VERSION_MAJOR > 53
+		avcodec_free_frame( &_frame );
+	#else
+		av_free( _frame );
+	#endif
+#endif
 }
 
 void VideoEncoder::setup()
@@ -26,28 +45,22 @@ void VideoEncoder::setup()
 
 bool VideoEncoder::encodeFrame( const Frame& sourceFrame, Frame& codedFrame )
 {
-#if LIBAVCODEC_VERSION_MAJOR > 54
-	AVFrame* frame = av_frame_alloc();
-#else
-	AVFrame* frame = avcodec_alloc_frame();
-#endif
-
 	AVCodecContext& avCodecContext = _codec.getAVCodecContext();
 
 	// Set default frame parameters
 #if LIBAVCODEC_VERSION_MAJOR > 54
-	av_frame_unref( frame );
+	av_frame_unref( _frame );
 #else
-	avcodec_get_frame_defaults( frame );
+	avcodec_get_frame_defaults( _frame );
 #endif
 
 	const VideoFrame& sourceImageFrame = static_cast<const VideoFrame&>( sourceFrame );
 
-	frame->width  = avCodecContext.width;
-	frame->height = avCodecContext.height;
-	frame->format = avCodecContext.pix_fmt;
+	_frame->width  = avCodecContext.width;
+	_frame->height = avCodecContext.height;
+	_frame->format = avCodecContext.pix_fmt;
 
-	int bufferSize = avpicture_fill( (AVPicture*)frame, const_cast< unsigned char * >( sourceImageFrame.getData() ), avCodecContext.pix_fmt, avCodecContext.width, avCodecContext.height );
+	int bufferSize = avpicture_fill( (AVPicture*)_frame, const_cast< unsigned char * >( sourceImageFrame.getData() ), avCodecContext.pix_fmt, avCodecContext.width, avCodecContext.height );
 	if( bufferSize < 0 )
 	{
 		char err[AV_ERROR_MAX_STRING_SIZE];
@@ -72,7 +85,7 @@ bool VideoEncoder::encodeFrame( const Frame& sourceFrame, Frame& codedFrame )
 
 #if LIBAVCODEC_VERSION_MAJOR > 53
 	int gotPacket = 0;
-	int ret = avcodec_encode_video2( &avCodecContext, &packet, frame, &gotPacket );
+	int ret = avcodec_encode_video2( &avCodecContext, &packet, _frame, &gotPacket );
 	if( ret != 0 && gotPacket == 0 )
 	{
 		char err[AV_ERROR_MAX_STRING_SIZE];
@@ -80,7 +93,7 @@ bool VideoEncoder::encodeFrame( const Frame& sourceFrame, Frame& codedFrame )
 		throw std::runtime_error( "Encode video frame error: avcodec encode video frame - " + std::string( err ) );
 	}
 #else
-	int ret = avcodec_encode_video( &avCodecContext, packet.data, packet.size, frame );
+	int ret = avcodec_encode_video( &avCodecContext, packet.data, packet.size, _frame );
 	if( ret < 0 )
 	{
 		char err[AV_ERROR_MAX_STRING_SIZE];
@@ -89,16 +102,8 @@ bool VideoEncoder::encodeFrame( const Frame& sourceFrame, Frame& codedFrame )
 	}
 #endif
 
-#if LIBAVCODEC_VERSION_MAJOR > 54
-	av_frame_free( &frame );
+#if LIBAVCODEC_VERSION_MAJOR > 53
 	return ret == 0 && gotPacket == 1;
-#else
- #if LIBAVCODEC_VERSION_MAJOR > 53
-	avcodec_free_frame( &frame );
-	return ret == 0 && gotPacket == 1;
- #else
-	av_free( frame );
- #endif
 #endif
 	return ret == 0;
 }
