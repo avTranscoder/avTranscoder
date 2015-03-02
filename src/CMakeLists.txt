@@ -113,45 +113,49 @@ if(SWIG_FOUND)
         endif()
 
 	### JAVA BINDING
-	find_package(Java)
-	find_package(JNI)
-	if(JAVA_FOUND AND JNI_FOUND)
-		include(UseJava)
-		include_directories(${JAVA_INCLUDE_PATH})
-		include_directories(${JNI_INCLUDE_DIRS})
+        if(DISABLE_JAVA_BINDING)
+		message("JAVA binding disabled, will not build java binding.")
+        else()
+		find_package(Java)
+		find_package(JNI)
+		if(JAVA_FOUND AND JNI_FOUND)
+			include(UseJava)
+			include_directories(${JAVA_INCLUDE_PATH})
+			include_directories(${JNI_INCLUDE_DIRS})
 
-		# Swig flags
-		set(CMAKE_SWIG_FLAGS -c++ -fcompact -package org.avtranscoder)
+			# Swig flags
+			set(CMAKE_SWIG_FLAGS -c++ -fcompact -package org.avtranscoder)
 
-		# Create 'avtranscoder-java' shared lib
-		swig_add_module(avtranscoder-java java ${AVTRANSCODER_BINDING_FILE})
-		if(WIN32)
-			set_target_properties(avtranscoder-java PROPERTIES OUTPUT_NAME "avtranscoder-java-${AVTRANSCODER_VERSION}")
-		endif()
-		if(NOT APPLE AND NOT WIN32)
-			set_target_properties(${SWIG_MODULE_avtranscoder-java_REAL_NAME} PROPERTIES SOVERSION ${AVTRANSCODER_VERSION_MAJOR})
-			set_target_properties(${SWIG_MODULE_avtranscoder-java_REAL_NAME} PROPERTIES VERSION ${AVTRANSCODER_VERSION})
-		endif()
-		swig_link_libraries(avtranscoder-java avtranscoder-shared)
+			# Create 'avtranscoder-java' shared lib
+			swig_add_module(avtranscoder-java java ${AVTRANSCODER_BINDING_FILE})
+			if(WIN32)
+				set_target_properties(avtranscoder-java PROPERTIES OUTPUT_NAME "avtranscoder-java-${AVTRANSCODER_VERSION}")
+			endif()
+			if(NOT APPLE AND NOT WIN32)
+				set_target_properties(${SWIG_MODULE_avtranscoder-java_REAL_NAME} PROPERTIES SOVERSION ${AVTRANSCODER_VERSION_MAJOR})
+				set_target_properties(${SWIG_MODULE_avtranscoder-java_REAL_NAME} PROPERTIES VERSION ${AVTRANSCODER_VERSION})
+			endif()
+			swig_link_libraries(avtranscoder-java avtranscoder-shared)
 
-		# Post build of java binding : compile java files (generate class files) and create jar
-		set(AVTRANSCODER_JAVA_OUTPUT_PATH "${PROJECT_BINARY_DIR}/src/AvTranscoder")
-		set(AVTRANSCODER_JAVA_CLASS_OUTPUT_PATH "${AVTRANSCODER_JAVA_OUTPUT_PATH}/target")
-		set(AVTRANSCODER_JAR_PATH "${PROJECT_BINARY_DIR}/src")
-		set(AVTRANSCODER_JAR_NAME "avtranscoder-${AVTRANSCODER_VERSION}.jar")
-		execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory ${AVTRANSCODER_JAVA_CLASS_OUTPUT_PATH})
+			# Post build of java binding : compile java files (generate class files) and create jar
+			set(AVTRANSCODER_JAVA_OUTPUT_PATH "${PROJECT_BINARY_DIR}/src/AvTranscoder")
+			set(AVTRANSCODER_JAVA_CLASS_OUTPUT_PATH "${AVTRANSCODER_JAVA_OUTPUT_PATH}/target")
+			set(AVTRANSCODER_JAR_PATH "${PROJECT_BINARY_DIR}/src")
+			set(AVTRANSCODER_JAR_NAME "avtranscoder-${AVTRANSCODER_VERSION}.jar")
+			execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory ${AVTRANSCODER_JAVA_CLASS_OUTPUT_PATH})
 		
-		ADD_CUSTOM_COMMAND(
-			TARGET avtranscoder-java
-			POST_BUILD
-			COMMAND ${Java_JAVAC_EXECUTABLE} "-d" ${AVTRANSCODER_JAVA_CLASS_OUTPUT_PATH} "\"${AVTRANSCODER_JAVA_OUTPUT_PATH}\"/*.java"
-			COMMAND ${Java_JAR_EXECUTABLE} cf ${AVTRANSCODER_JAR_NAME} "-C" ${AVTRANSCODER_JAVA_CLASS_OUTPUT_PATH} "."
-		)
+			ADD_CUSTOM_COMMAND(
+				TARGET avtranscoder-java
+				POST_BUILD
+				COMMAND ${Java_JAVAC_EXECUTABLE} "-d" ${AVTRANSCODER_JAVA_CLASS_OUTPUT_PATH} "\"${AVTRANSCODER_JAVA_OUTPUT_PATH}\"/*.java"
+				COMMAND ${Java_JAR_EXECUTABLE} cf ${AVTRANSCODER_JAR_NAME} "-C" ${AVTRANSCODER_JAVA_CLASS_OUTPUT_PATH} "."
+			)
 
-		# Install jar file
-		install(FILES ${AVTRANSCODER_JAR_PATH}/${AVTRANSCODER_JAR_NAME} DESTINATION "share/java/")
-	else()
-		message("JAVA not found, will not build java binding.")
+			# Install jar file
+			install(FILES ${AVTRANSCODER_JAR_PATH}/${AVTRANSCODER_JAR_NAME} DESTINATION "share/java/")
+		else()
+			message("JAVA not found, will not build java binding.")
+		endif()
 	endif()
 
 else(SWIG_FOUND)
