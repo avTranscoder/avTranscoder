@@ -61,7 +61,12 @@ install(
 	PATTERN "*.prf"
 )
 
-### SWIG
+### Bindings with SWIG
+if(DISABLE_BINDINGS)
+	message("Bindings disabled, will not build bindings.")
+	return()
+endif()
+
 find_package(SWIG)
 if(SWIG_FOUND)
 	# Load Modules/UseSWIG.cmake
