@@ -49,17 +49,6 @@ int getFilesInDir( const std::string& dir, std::vector< std::string >& files )
 	WIN32_FIND_DATA findData;
 	HANDLE findHandle;
 
-#else
-	DIR *dp;
-	struct dirent *dirp;
-	if( ( dp = opendir( dir.c_str() ) ) == NULL )
-	{
-		std::cerr << "Error(" << errno << ") opening " << dir << std::endl;
-		return errno;
-	}
-#endif
-
-#if defined ( __WINDOWS__ )
 	findHandle = FindFirstFile( ( dir + "\\*" ).c_str(), &findData );
 	if( findHandle == INVALID_HANDLE_VALUE )
 	{
@@ -78,6 +67,14 @@ int getFilesInDir( const std::string& dir, std::vector< std::string >& files )
 	}
 
 #else
+	DIR *dp;
+	struct dirent *dirp;
+	if( ( dp = opendir( dir.c_str() ) ) == NULL )
+	{
+		std::cerr << "Error(" << errno << ") opening " << dir << std::endl;
+		return errno;
+	}
+
 	while( ( dirp = readdir( dp ) ) != NULL )
 	{
 		const std::string filename( dirp->d_name );
