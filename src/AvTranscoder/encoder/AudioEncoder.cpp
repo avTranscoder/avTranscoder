@@ -146,9 +146,12 @@ void AudioEncoder::setProfile( const ProfileLoader::Profile& profile, const Audi
 	// set sampleRate, number of channels, sample format
 	_codec.setAudioParameters( frameDesc );
 
-	// set threads if not in profile
-	if( ! profile.count( "threads" ) )
-		_codec.getOption( "threads" ).setString( "auto" );
+	// set threads before any other options
+	if( profile.count( constants::avProfileThreads ) )
+		_codec.getOption( constants::avProfileThreads ).setString( profile.at( constants::avProfileThreads ) );
+	else
+		_codec.getOption( constants::avProfileThreads ).setString( "auto" );
+
 
 	// set encoder options
 	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
@@ -157,7 +160,8 @@ void AudioEncoder::setProfile( const ProfileLoader::Profile& profile, const Audi
 			(*it).first == constants::avProfileIdentificatorHuman ||
 			(*it).first == constants::avProfileType ||
 			(*it).first == constants::avProfileCodec ||
-			(*it).first == constants::avProfileSampleFormat )
+			(*it).first == constants::avProfileSampleFormat ||
+			(*it).first == constants::avProfileThreads )
 			continue;
 
 		try
@@ -177,7 +181,8 @@ void AudioEncoder::setProfile( const ProfileLoader::Profile& profile, const Audi
 			(*it).first == constants::avProfileIdentificatorHuman ||
 			(*it).first == constants::avProfileType ||
 			(*it).first == constants::avProfileCodec ||
-			(*it).first == constants::avProfileSampleFormat )
+			(*it).first == constants::avProfileSampleFormat ||
+			(*it).first == constants::avProfileThreads )
 			continue;
 
 		try

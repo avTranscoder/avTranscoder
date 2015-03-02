@@ -137,9 +137,11 @@ void VideoEncoder::setProfile( const ProfileLoader::Profile& profile, const avtr
 	// set width, height, pixel format, fps
 	_codec.setImageParameters( frameDesc );
 
-	// set threads if not in profile
-	if( ! profile.count( "threads" ) )
-		_codec.getOption( "threads" ).setString( "auto" );
+	// set threads before any other options
+	if( profile.count( constants::avProfileThreads ) )
+		_codec.getOption( constants::avProfileThreads ).setString( profile.at( constants::avProfileThreads ) );
+	else
+		_codec.getOption( constants::avProfileThreads ).setString( "auto" );
 
 	// set encoder options
 	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
@@ -151,7 +153,8 @@ void VideoEncoder::setProfile( const ProfileLoader::Profile& profile, const avtr
 			(*it).first == constants::avProfileWidth ||
 			(*it).first == constants::avProfileHeight ||
 			(*it).first == constants::avProfilePixelFormat ||
-			(*it).first == constants::avProfileFrameRate )
+			(*it).first == constants::avProfileFrameRate ||
+			(*it).first == constants::avProfileThreads )
 			continue;
 
 		try
@@ -174,7 +177,8 @@ void VideoEncoder::setProfile( const ProfileLoader::Profile& profile, const avtr
 			(*it).first == constants::avProfileWidth ||
 			(*it).first == constants::avProfileHeight ||
 			(*it).first == constants::avProfilePixelFormat ||
-			(*it).first == constants::avProfileFrameRate )
+			(*it).first == constants::avProfileFrameRate ||
+			(*it).first == constants::avProfileThreads  )
 			continue;
 
 		try
