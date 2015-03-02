@@ -97,7 +97,7 @@ bool VideoDecoder::decodeNextFrame()
 		{
 			char err[AV_ERROR_MAX_STRING_SIZE];
 			av_strerror( ret, err, sizeof(err) );
-			throw std::runtime_error( "an error occured during video decoding - " + std::string(err) );
+			throw std::runtime_error( "an error occured during video decoding - " + getDescriptionFromErrorCode( ret ) );
 		}
 	}
 	return true;
