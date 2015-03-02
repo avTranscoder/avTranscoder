@@ -100,22 +100,19 @@ IOutputStream::EWrappingStatus OutputFile::wrap( const CodedData& data, const si
 {
 	if( ! data.getSize() )
 		return IOutputStream::eWrappingSuccess;
+
 	if( _verbose )
 		std::cout << "wrap on stream " << streamId << " (" << data.getSize() << " bytes for frame " << _frameCount.at( streamId ) << ")" << std::endl;
+
 	AVPacket packet;
 	av_init_packet( &packet );
-
-	//av_packet_from_data( &packet, (uint8_t*)data.getData(), data.getSize() );
-
 	packet.stream_index = streamId;
-
 	packet.data = (uint8_t*)data.getData();
 	packet.size = data.getSize();
-	// packet.dts = _frameCount.at( streamId );
-	// packet.pts = ;
 
 	_formatContext.writeFrame( packet );
 
+	// free packet.side_data, set packet.data to NULL and packet.size to 0
 	av_free_packet( &packet );
 
 	double currentStreamDuration = _outputStreams.at( streamId )->getStreamDuration();
