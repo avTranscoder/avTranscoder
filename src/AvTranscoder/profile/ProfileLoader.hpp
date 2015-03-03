@@ -1,10 +1,9 @@
 #ifndef _AV_TRANSCODER_PROFILE_HPP_
 #define _AV_TRANSCODER_PROFILE_HPP_
 
-#include "common.hpp"
+#include <AvTranscoder/common.hpp>
 
 #include <string>
-#include <cstring>
 #include <vector>
 #include <map>
 
@@ -73,11 +72,6 @@ private:
 private:
 	Profiles _profiles;
 };
-
-#ifndef SWIG
-void split( std::vector< std::string >& splitString, const std::string& inputString, const std::string& splitChars = ";" );
-int getFilesInDir( const std::string& dir, std::vector< std::string >& files );
-#endif
 
 }
 #endif

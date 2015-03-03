@@ -1,12 +1,11 @@
 #include "ProfileLoader.hpp"
 
-#include "common.hpp"
+#include "util.hpp"
 
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
 #include <stdexcept>
-#include <dirent.h>
 
 namespace avtranscoder
 {
@@ -21,7 +20,7 @@ void ProfileLoader::loadProfile( const std::string& avProfileFileName )
 {
 	std::ifstream infile;
 	infile.open( avProfileFileName.c_str(), std::ifstream::in );
-	
+
 	ProfileLoader::Profile customProfile;
 
 	std::string line;
@@ -36,7 +35,7 @@ void ProfileLoader::loadProfile( const std::string& avProfileFileName )
 }
 
 void ProfileLoader::loadProfiles( const std::string& avProfilesPath )
-{	
+{
 	std::string realAvProfilesPath = avProfilesPath;
 	if( realAvProfilesPath.empty() )
 	{
@@ -47,7 +46,7 @@ void ProfileLoader::loadProfiles( const std::string& avProfilesPath )
 		else
 			realAvProfilesPath = AVTRANSCODER_DEFAULT_AVPROFILES;
 	}
-	
+
 	std::vector< std::string > paths;
 	split( paths, realAvProfilesPath, ":" );
 	for( std::vector< std::string >::iterator dirIt = paths.begin(); dirIt != paths.end(); ++dirIt )
@@ -201,37 +200,6 @@ bool ProfileLoader::checkAudioProfile( const Profile& profileToCheck )
 	}
 
 	return isValid;
-}
-
-void split( std::vector< std::string >& splitString, const std::string& inputString, const std::string& splitChars )
-{
-	char* part = strtok( const_cast<char*>( inputString.c_str() ), splitChars.c_str() );
-	while( part != NULL )
-	{
-		splitString.push_back( std::string( part ) );
-		part = strtok( NULL, splitChars.c_str() );
-	}
-}
-
-int getFilesInDir( const std::string& dir, std::vector< std::string >& files )
-{
-	DIR *dp;
-	struct dirent *dirp;
-	if( ( dp  = opendir( dir.c_str() ) ) == NULL )
-	{
-		std::cerr << "Error(" << errno << ") opening " << dir << std::endl;
-		return errno;
-	}
-
-	while( ( dirp = readdir( dp ) ) != NULL )
-	{
-		std::string filename( dirp->d_name );
-		if( filename == "." || filename == ".." )
-			continue;
-		files.push_back( filename );
-	}
-	closedir( dp );
-	return 0;
 }
 
 }

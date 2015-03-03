@@ -2,7 +2,7 @@
 #define _AV_TRANSCODER_DECODER_VIDEO_DECODER_HPP_
 
 #include "IDecoder.hpp"
-#include <AvTranscoder/ProfileLoader.hpp>
+#include <AvTranscoder/profile/ProfileLoader.hpp>
 
 struct AVFrame;
 
