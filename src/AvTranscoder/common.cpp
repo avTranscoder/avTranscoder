@@ -24,7 +24,7 @@ void Logger::setLogLevel( const int level )
 	av_log_set_level( level );
 }
 
-void Logger::log( int level, const std::string& msg )
+void Logger::log( const int level, const std::string& msg )
 {
 	std::string avTranscoderMsg( "[avTranscoder - " );
 

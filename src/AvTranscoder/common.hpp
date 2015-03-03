@@ -85,7 +85,7 @@ public:
 	 * @param msg: the message will be prefixed by '[avTranscoder - <level>]'
 	 * @param msg: the message will be suffixed by '\n'
 	 */
-	static void log( int level, const std::string& msg );
+	static void log( const int level, const std::string& msg );
 
 	/**
 	 * @brief Log ffmpeg/libav and avtranscoder informations in a text file.
