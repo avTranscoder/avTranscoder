@@ -305,9 +305,7 @@ void StreamTranscoder::preProcessCodecLatency()
 
 	int latency = _outputEncoder->getCodec().getLatency();
 
-	std::stringstream os;
-	os << "Latency of stream: " << latency;
-	Logger::debug( os.str() );
+	LOG_DEBUG( "Latency of stream: " << latency )
 
 	if( ! latency ||
 		latency < _outputEncoder->getCodec().getAVCodecContext().frame_number )
@@ -338,7 +336,7 @@ bool StreamTranscoder::processRewrap()
 	assert( _inputStream  != NULL );
 	assert( _outputStream != NULL );
 	
-	Logger::info( "Rewrap a frame" );
+	LOG_INFO( "Rewrap a frame" )
 
 	CodedData data;
 	if( ! _inputStream->readNextPacket( data ) )
@@ -376,7 +374,7 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 	assert( _frameBuffer    != NULL );
 	assert( _transform      != NULL );
 
-	Logger::info( "Transcode a frame" );
+	LOG_INFO( "Transcode a frame" )
 
 	// check offset
 	if( _offset )
@@ -397,29 +395,18 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 	else
 		decodingStatus = _currentDecoder->decodeNextFrame( *_sourceBuffer, subStreamIndex );
 
-	std::stringstream os;
-
 	CodedData data;
 	if( decodingStatus )
 	{
-		os << "convert (" << _sourceBuffer->getSize() << " bytes)";
-		Logger::debug( os.str() );
-		os.str( "" );
-
+		LOG_DEBUG( "convert (" << _sourceBuffer->getSize() << " bytes)" )
 		_transform->convert( *_sourceBuffer, *_frameBuffer );
 
-		os << "encode (" << _frameBuffer->getSize() << " bytes)";
-		Logger::debug( os.str() );
-		os.str( "" );
-
+		LOG_DEBUG( "encode (" << _frameBuffer->getSize() << " bytes)" )
 		_outputEncoder->encodeFrame( *_frameBuffer, data );
 	}
 	else
 	{
-		os << "encode last frame(s)";
-		Logger::debug( os.str() );
-		os.str( "" );
-
+		LOG_DEBUG( "encode last frame(s)" )
 		if( ! _outputEncoder->encodeFrame( data ) )
 		{
 			if( _canSwitchToGenerator )
@@ -431,8 +418,7 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 		}
 	}
 
-	os << "wrap (" << data.getSize() << " bytes)";
-	Logger::debug( os.str() );
+	LOG_DEBUG( "wrap (" << data.getSize() << " bytes)" )
 
 	IOutputStream::EWrappingStatus wrappingStatus = _outputStream->wrap( data );
 	switch( wrappingStatus )

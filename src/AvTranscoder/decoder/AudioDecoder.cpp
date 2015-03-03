@@ -168,13 +168,7 @@ void AudioDecoder::setProfile( const ProfileLoader::Profile& profile )
 		}
 		catch( std::exception& e )
 		{
-			std::string msg( "AudioDecoder - can't set option " );
-			msg += (*it).first;
-			msg += " to ";
-			msg += (*it).second;
-			msg += ": ";
-			msg += e.what();
-			Logger::warn( msg );
+			LOG_WARN( "AudioDecoder - can't set option " << (*it).first <<  " to " << (*it).second << ": " << e.what() )
 		}
 	}
 }

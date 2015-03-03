@@ -200,8 +200,7 @@ void Transcoder::preProcessCodecLatency()
 	for( size_t streamIndex = 0; streamIndex < _streamTranscoders.size(); ++streamIndex )
 	{
 		std::stringstream os;
-		os << "Init stream " << streamIndex;
-		Logger::debug( os.str() );
+		LOG_DEBUG( "Init stream " << streamIndex )
 		_streamTranscoders.at( streamIndex )->preProcessCodecLatency();
 	}
 }
@@ -213,9 +212,7 @@ bool Transcoder::processFrame()
 
 	for( size_t streamIndex = 0; streamIndex < _streamTranscoders.size(); ++streamIndex )
 	{
-		std::stringstream os;
-		os << "Process stream " << streamIndex << "/" << ( _streamTranscoders.size() - 1 );
-		Logger::debug( os.str() );
+		LOG_DEBUG( "Process stream " << streamIndex << "/" << ( _streamTranscoders.size() - 1 ) )
 
 		bool streamProcessStatus = _streamTranscoders.at( streamIndex )->processFrame();
 		if( ! streamProcessStatus )
@@ -234,7 +231,7 @@ void Transcoder::process( IProgress& progress )
 
 	manageSwitchToGenerator();
 
-	Logger::info( "Start process" );
+	LOG_INFO( "Start process" )
 
 	_outputFile.beginWrap();
 
@@ -247,9 +244,7 @@ void Transcoder::process( IProgress& progress )
 	bool frameProcessed = true;
 	while( frameProcessed )
 	{
-		os << "Process frame " << frame;
-		Logger::info( os.str() );
-		os.str( "" );
+		LOG_INFO( "Process frame " << frame )
 
 		frameProcessed =  processFrame();
 
@@ -268,7 +263,7 @@ void Transcoder::process( IProgress& progress )
 
 	_outputFile.endWrap();
 
-	Logger::info( "End of process" );
+	LOG_INFO( "End of process" )
 }
 
 void Transcoder::setProcessMethod( const EProcessMethod eProcessMethod, const size_t indexBasedStream, const double outputDuration )
@@ -280,9 +275,7 @@ void Transcoder::setProcessMethod( const EProcessMethod eProcessMethod, const si
 
 void Transcoder::addRewrapStream( const std::string& filename, const size_t streamIndex )
 {
-	std::stringstream os;
-	os << "Add rewrap stream from file '" << filename << "' / index=" << streamIndex;
-	Logger::info( os.str() );
+	LOG_INFO( "Add rewrap stream from file '" << filename << "' / index=" << streamIndex )
 
 	InputFile* referenceFile = addInputFile( filename, streamIndex );
 
@@ -309,14 +302,7 @@ void Transcoder::addTranscodeStream( const std::string& filename, const size_t s
 	// Add profile
 	_profileLoader.loadProfile( profile );
 
-	std::stringstream os;
-	os << "Add transcode stream from file '" << filename << "' / index=" << streamIndex << " / channel=";
-	if( subStreamIndex < 0 )
-		os << "all";
-	else
-		os << subStreamIndex;
-	os << " / encodingProfile=" << profile.at( constants::avProfileIdentificatorHuman ) << " / offset=" << offset << "s";
-	Logger::info( os.str() );
+	LOG_INFO( "Add transcode stream from file '" << filename << "' / index=" << streamIndex << " / channel=" << subStreamIndex << " / encodingProfile=" << profile.at( constants::avProfileIdentificatorHuman ) << " / offset=" << offset << "s" )
 
 	// Add input file
 	InputFile* referenceFile = addInputFile( filename, streamIndex );
@@ -345,9 +331,7 @@ void Transcoder::addDummyStream( const ProfileLoader::Profile& profile, const IC
 	// Add profile
 	_profileLoader.loadProfile( profile );
 
-	std::stringstream os;
-	os << "Add generated stream with codec '" << codec.getCodecName() << "' / encodingProfile=" << profile.at( constants::avProfileIdentificatorHuman );
-	Logger::info( os.str() );
+	LOG_INFO( "Add generated stream with codec '" << codec.getCodecName() << "' / encodingProfile=" << profile.at( constants::avProfileIdentificatorHuman ) )
 
 	_streamTranscodersAllocated.push_back( new StreamTranscoder( codec, _outputFile, profile ) );
 	_streamTranscoders.push_back( _streamTranscodersAllocated.back() );
@@ -369,10 +353,7 @@ InputFile* Transcoder::addInputFile( const std::string& filename, const size_t s
 
 	if( ! referenceFile )
 	{
-		std::string msg( "New instance of InputFile from '");
-		msg += filename;
-		msg += "'";
-		Logger::debug( msg );
+		LOG_DEBUG( "New instance of InputFile from '" << filename << "'" )
 
 		_inputFiles.push_back( new InputFile( filename ) );
 		referenceFile = _inputFiles.back();

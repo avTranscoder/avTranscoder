@@ -119,7 +119,7 @@ void ICodec::setCodec( const ECodecType type, const AVCodecID codecId )
 {
 	if( codecId == 0 )
 	{
-		Logger::warn( "Unsupported codec with id 0");
+		LOG_WARN( "Unsupported codec with id 0")
 		return;
 	}
 

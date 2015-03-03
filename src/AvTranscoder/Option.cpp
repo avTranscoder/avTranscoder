@@ -291,9 +291,7 @@ void loadOptions( OptionMap& outOptions, void* av_class, int req_flags )
 
 		if( ! parentFound )
 		{
-			std::string msg( "Can't find a choice option for ");
-			msg += itOption->getName();
-			Logger::warn( msg );
+			LOG_WARN( "Can't find a choice option for " << itOption->getName() )
 		}
 	}
 }

@@ -56,29 +56,18 @@ bool VideoTransform::init( const Frame& srcFrame, const Frame& dstFrame )
 	av_image_fill_linesizes( &_srcLineSize[0], srcPixelFormat, src.desc().getWidth() );
 	av_image_fill_linesizes( &_dstLineSize[0], dstPixelFormat, dst.desc().getWidth() );
 
-	std::stringstream os;
-	os << "Video conversion from ";
-	const char* pixFmt;
-	pixFmt = av_get_pix_fmt_name( srcPixelFormat );
-	os << ( pixFmt != NULL ? pixFmt : "None" ) << " to ";
-	pixFmt = av_get_pix_fmt_name( dstPixelFormat );
-	os << ( pixFmt != NULL ? pixFmt : "None" );
-	Logger::debug( os.str() );
-	os.str( "" );
+	const char* srcPixFmt;
+	srcPixFmt = av_get_pix_fmt_name( srcPixelFormat );
+	const char* dstPixFmt;
+	dstPixFmt = av_get_pix_fmt_name( dstPixelFormat );
 
-	os << "Source, width = " << src.desc().getWidth();
-	Logger::debug( os.str() );
-	os.str( "" );
-	os << "Source, height = " << src.desc().getHeight();
-	Logger::debug( os.str() );
-	os.str( "" );
+	LOG_DEBUG( "Video conversion from " << ( srcPixFmt != NULL ? srcPixFmt : "None" ) << " to " << ( dstPixFmt != NULL ? dstPixFmt : "None" ) )
 
-	os << "Destination, width = " << dst.desc().getWidth();
-	Logger::debug( os.str() );
-	os.clear();
-	os << "Destination, height = " << dst.desc().getHeight();
-	Logger::debug( os.str() );
-	os.clear();
+	LOG_DEBUG( "Source, width = " << src.desc().getWidth() )
+	LOG_DEBUG( "Source, height = " << src.desc().getHeight() )
+
+	LOG_DEBUG( "Destination, width = " << dst.desc().getWidth() )
+	LOG_DEBUG( "Destination, height = " << dst.desc().getHeight() )
 
 	return true;
 }

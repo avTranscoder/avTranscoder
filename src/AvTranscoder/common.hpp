@@ -12,10 +12,12 @@ extern "C" {
 #include <libavcodec/version.h>
 #include <libavutil/error.h>
 #include <libavutil/rational.h>
+#include <libavutil/log.h>
 }
 
 #include <string>
 #include <cstring>
+#include <sstream>
 
 #ifdef SWIG
  #define AvExport
@@ -57,6 +59,11 @@ typedef AVRational Rational;
 /// Register all the codecs and formats which are enabled at configuration time.
 void AvExport preloadCodecsAndFormats();
 
+#define LOG_DEBUG( ... ) { std::stringstream os; os << __VA_ARGS__; Logger::log( AV_LOG_DEBUG, "debug", os.str() ); }
+#define LOG_INFO( ... ) { std::stringstream os; os << __VA_ARGS__; Logger::log( AV_LOG_INFO, "info", os.str() ); }
+#define LOG_WARN( ... ) { std::stringstream os; os << __VA_ARGS__; Logger::log( AV_LOG_WARNING, "warning", os.str() ); }
+#define LOG_ERROR( ... ) { std::stringstream os; os << __VA_ARGS__; Logger::log( AV_LOG_ERROR, "error", os.str() ); }
+
 /// Logger class which contains static functions to use ffmpeg/libav log system
 class AvExport Logger
 {
@@ -68,18 +75,12 @@ public:
 	 */
 	static void setLogLevel( const int level );
 
-	///@{
-	/// @brief Log with the ffmpeg/libav log system
-	/// @note use shortcuts to log at debug/info/warning/error level
-	/// @param msg: the message will be prefix by '[avTranscoder - <level>]'
-	///
-	static void debug( const std::string msg );
-	static void info( const std::string msg );
-	static void warn( const std::string msg );
-	static void error( const std::string msg );
-	///@}
-
-private:
+	/**
+	 * @brief Log with the ffmpeg/libav log system
+	 * @note use define LOG_* to log at DEBUG/INFO/WARN/ERROR level
+	 * @param msg: the message will be prefixed by '[avTranscoder - <level>]'
+	 * @param msg: the message will be suffixed by '\n'
+	 */
 	static void log( int level, const std::string& levelStr, const std::string& msg );
 };
 

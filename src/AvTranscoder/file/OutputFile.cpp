@@ -99,9 +99,7 @@ IOutputStream::EWrappingStatus OutputFile::wrap( const CodedData& data, const si
 	if( ! data.getSize() )
 		return IOutputStream::eWrappingSuccess;
 
-	std::stringstream os;
-	os << "Wrap on stream " << streamId << " (" << data.getSize() << " bytes for frame " << _frameCount.at( streamId ) << ")";
-	Logger::debug( os.str() );
+	LOG_DEBUG( "Wrap on stream " << streamId << " (" << data.getSize() << " bytes for frame " << _frameCount.at( streamId ) << ")" )
 
 	AVPacket packet;
 	av_init_packet( &packet );
@@ -179,13 +177,7 @@ void OutputFile::setProfile( const ProfileLoader::Profile& profile )
 		}
 		catch( std::exception& e )
 		{
-			std::string msg( "OutputFile - can't set option " );
-			msg += (*it).first;
-			msg += " to ";
-			msg += (*it).second;
-			msg += ": ";
-			msg += e.what();
-			Logger::warn( msg );
+			LOG_WARN( "OutputFile - can't set option " << (*it).first <<  " to " << (*it).second << ": " << e.what() )
 		}
 	}
 }

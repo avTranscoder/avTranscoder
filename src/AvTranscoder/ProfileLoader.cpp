@@ -64,7 +64,7 @@ void ProfileLoader::loadProfiles( const std::string& avProfilesPath )
 			}
 			catch( const std::exception& e )
 			{
-				Logger::warn( e.what() );
+				LOG_WARN( e.what() )
 			}
 		}
 	}
@@ -218,12 +218,7 @@ int getFilesInDir( const std::string& dir, std::vector< std::string >& files )
 	struct dirent *dirp;
 	if( ( dp  = opendir( dir.c_str() ) ) == NULL )
 	{
-		std::string msg( "Can't get files in directory  " );
-		msg += dir;
-		msg += " (";
-		msg += errno;
-		msg += ")";
-		Logger::error(  msg );
+		LOG_ERROR( "Can't get files in directory  " << dir << " (" << errno << ")" )
 		return errno;
 	}
 

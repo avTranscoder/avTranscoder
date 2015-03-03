@@ -183,13 +183,7 @@ void VideoEncoder::setProfile( const ProfileLoader::Profile& profile, const avtr
 		}
 		catch( std::exception& e )
 		{
-			std::string msg( "VideoEncoder - can't set option " );
-			msg += (*it).first;
-			msg += " to ";
-			msg += (*it).second;
-			msg += ": ";
-			msg += e.what();
-			Logger::warn( msg );
+			LOG_WARN( "VideoEncoder - can't set option " << (*it).first <<  " to " << (*it).second << ": " << e.what() )
 		}
 	}
 }

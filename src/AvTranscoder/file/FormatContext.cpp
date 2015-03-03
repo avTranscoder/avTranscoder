@@ -126,7 +126,7 @@ void FormatContext::addMetaData( const std::string& key, const std::string& valu
 	{
 		char err[AV_ERROR_MAX_STRING_SIZE];
 		av_strerror( ret, err, sizeof(err) );
-		Logger::error( err );
+		LOG_ERROR( err )
 	}
 }
 

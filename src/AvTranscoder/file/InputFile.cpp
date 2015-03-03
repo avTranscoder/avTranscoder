@@ -160,11 +160,7 @@ void InputFile::seek( uint64_t position )
 
 	if( av_seek_frame( &_formatContext.getAVFormatContext(), -1, position, AVSEEK_FLAG_BACKWARD ) < 0 )
 	{
-		std::stringstream os;
-		os << "Error when seek at ";
-		os << position;
-		os << " (in AV_TIME_BASE units) in file";
-		Logger::error( os.str() );;
+		LOG_ERROR( "Error when seek at " << position << " (in AV_TIME_BASE units) in file" )
 	}
 
 	for( std::vector<InputStream*>::iterator it = _inputStreams.begin(); it != _inputStreams.end(); ++it )
@@ -218,13 +214,7 @@ void InputFile::setProfile( const ProfileLoader::Profile& profile )
 		}
 		catch( std::exception& e )
 		{
-			std::string msg( "InputFile - can't set option " );
-			msg += (*it).first;
-			msg += " to ";
-			msg += (*it).second;
-			msg += ": ";
-			msg += e.what();
-			Logger::warn( msg );
+			LOG_WARN( "InputFile - can't set option " << (*it).first <<  " to " << (*it).second << ": " << e.what() )
 		}
 	}
 }
