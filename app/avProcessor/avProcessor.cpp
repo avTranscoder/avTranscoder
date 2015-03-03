@@ -84,7 +84,7 @@ int main( int argc, char** argv )
 {
 	std::string help;
 	help += "Usage\n";
-	help += "\tavprocessor CONFIG.TXT OUTPUT_FILE_NAME [--generate-black] [--verbose] [--help]\n";
+	help += "\tavprocessor CONFIG.TXT OUTPUT_FILE_NAME [--generate-black] [--verbose] [--logFile] [--help]\n";
 	help += "CONFIG.TXT\n";
 	help += "\tEach line will be one stream in the output.\n";
 	help += "\tPattern of each line is:\n";
@@ -94,6 +94,8 @@ int main( int argc, char** argv )
 	help += "\tNo profileName: will rewrap the stream\n";
 	help += "Command line options\n";
 	help += "\t--generate-black: stream which not referred to an input, will generate an output video stream with black images (by default generate audio stream with silence)\n";
+	help += "\t--verbose: set log level to AV_LOG_DEBUG\n";
+	help += "\t--logFile: put log in 'avtranscoder.log' file\n";
 	help += "\t--help: display this help\n";
 
 	// Preload FFmpeg context
@@ -113,13 +115,17 @@ int main( int argc, char** argv )
 			std::cout << help << std::endl;
 			return 0;
 		}
-		if( arguments.at( argument ) == "--generate-black" )
+		else if( arguments.at( argument ) == "--generate-black" )
 		{
 			useVideoGenerator = true;
 		}
-		if( arguments.at( argument ) == "--verbose" )
+		else if( arguments.at( argument ) == "--verbose" )
 		{
 			avtranscoder::Logger::setLogLevel( AV_LOG_DEBUG );
+		}
+		else if( arguments.at( argument ) == "--logFile" )
+		{
+			avtranscoder::Logger::logInFile();
 		}
 	}
 
