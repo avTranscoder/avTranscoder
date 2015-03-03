@@ -12,6 +12,13 @@ void preloadCodecsAndFormats()
 	av_register_all();
 }
 
+std::string getDescriptionFromErrorCode( const int code )
+{
+    char err[AV_ERROR_MAX_STRING_SIZE];
+    av_strerror( code, err, sizeof(err) );
+    return std::string( err );
+}
+
 void Logger::setLogLevel( const int level )
 {
 	av_log_set_level( level );

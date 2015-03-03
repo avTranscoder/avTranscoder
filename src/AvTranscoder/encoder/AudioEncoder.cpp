@@ -13,7 +13,26 @@ namespace avtranscoder
 
 AudioEncoder::AudioEncoder( const std::string& audioCodecName )
 	: _codec( eCodecTypeEncoder, audioCodecName )
+	, _frame( NULL )
 {
+#if LIBAVCODEC_VERSION_MAJOR > 54
+	_frame = av_frame_alloc();
+#else
+	_frame = avcodec_alloc_frame();
+#endif
+}
+
+AudioEncoder::~AudioEncoder()
+{
+#if LIBAVCODEC_VERSION_MAJOR > 54
+	av_frame_free( &_frame );
+#else
+	#if LIBAVCODEC_VERSION_MAJOR > 53
+		avcodec_free_frame( &_frame );
+	#else
+		av_free( _frame );
+	#endif
+#endif
 }
 
 void AudioEncoder::setup()
@@ -23,42 +42,32 @@ void AudioEncoder::setup()
 
 bool AudioEncoder::encodeFrame( const Frame& sourceFrame, Frame& codedFrame )
 {
-#if LIBAVCODEC_VERSION_MAJOR > 54
-	AVFrame* frame = av_frame_alloc();
-#else
-	AVFrame* frame = avcodec_alloc_frame();
-#endif
-
 	AVCodecContext& avCodecContext = _codec.getAVCodecContext();
 
 	// Set default frame parameters
 #if LIBAVCODEC_VERSION_MAJOR > 54
-	av_frame_unref( frame );
+	av_frame_unref( _frame );
 #else
-	avcodec_get_frame_defaults( frame );
+	avcodec_get_frame_defaults( _frame );
 #endif
 
 	const AudioFrame& sourceAudioFrame = static_cast<const AudioFrame&>( sourceFrame );
 	
-	frame->nb_samples     = sourceAudioFrame.getNbSamples();
-	frame->format         = avCodecContext.sample_fmt;
-	frame->channel_layout = avCodecContext.channel_layout;
+	_frame->nb_samples     = sourceAudioFrame.getNbSamples();
+	_frame->format         = avCodecContext.sample_fmt;
+	_frame->channel_layout = avCodecContext.channel_layout;
 	
 	// we calculate the size of the samples buffer in bytes
-	int bufferSize = av_samples_get_buffer_size( NULL, avCodecContext.channels, frame->nb_samples, avCodecContext.sample_fmt, 0 );
+	int bufferSize = av_samples_get_buffer_size( NULL, avCodecContext.channels, _frame->nb_samples, avCodecContext.sample_fmt, 0 );
 	if( bufferSize < 0 )
 	{
-		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( bufferSize, err, sizeof(err) );
-		throw std::runtime_error( "Encode audio frame error: buffer size < 0 - " + std::string(err) );
+		throw std::runtime_error( "Encode audio frame error: buffer size < 0 - " + getDescriptionFromErrorCode( bufferSize ) );
 	}
 
-	int retvalue = avcodec_fill_audio_frame( frame, avCodecContext.channels, avCodecContext.sample_fmt, sourceAudioFrame.getData(), bufferSize, 0 );
+	int retvalue = avcodec_fill_audio_frame( _frame, avCodecContext.channels, avCodecContext.sample_fmt, sourceAudioFrame.getData(), bufferSize, 0 );
 	if( retvalue < 0 )
 	{
-		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( retvalue, err, sizeof(err) );
-		throw std::runtime_error( "Encode audio frame error: avcodec fill audio frame - " + std::string( err ) );
+		throw std::runtime_error( "Encode audio frame error: avcodec fill audio frame - " + getDescriptionFromErrorCode( retvalue ) );
 	}
 	
 	AVPacket& packet = codedFrame.getAVPacket();
@@ -78,33 +87,21 @@ bool AudioEncoder::encodeFrame( const Frame& sourceFrame, Frame& codedFrame )
 	
 #if LIBAVCODEC_VERSION_MAJOR > 53
 	int gotPacket = 0;
-	int ret = avcodec_encode_audio2( &avCodecContext, &packet, frame, &gotPacket );
+	int ret = avcodec_encode_audio2( &avCodecContext, &packet, _frame, &gotPacket );
 	if( ret != 0 && gotPacket == 0 )
 	{
-		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( ret, err, sizeof(err) );
-		throw std::runtime_error( "Encode audio frame error: avcodec encode audio frame - " + std::string( err ) );
+		throw std::runtime_error( "Encode audio frame error: avcodec encode audio frame - " + getDescriptionFromErrorCode( ret ) );
 	}
 #else
-	int ret = avcodec_encode_audio( &avCodecContext, packet.data, packet.size, frame );
+	int ret = avcodec_encode_audio( &avCodecContext, packet.data, packet.size, _frame );
 	if( ret < 0 )
 	{
-		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( ret, err, sizeof(err) );
-		throw std::runtime_error( "Encode audio frame error: avcodec encode audio frame - " + std::string( err ) );
+		throw std::runtime_error( "Encode audio frame error: avcodec encode audio frame - " + getDescriptionFromErrorCode( ret ) );
 	}
 #endif
 	
-#if LIBAVCODEC_VERSION_MAJOR > 54
-	av_frame_free( &frame );
+#if LIBAVCODEC_VERSION_MAJOR > 53
 	return ret == 0 && gotPacket == 1;
-#else
-	#if LIBAVCODEC_VERSION_MAJOR > 53
-		avcodec_free_frame( &frame );
-		return ret == 0 && gotPacket == 1;
-	#else
-		av_free( frame );
-	#endif
 #endif
 	return ret == 0;
 }
@@ -121,9 +118,7 @@ bool AudioEncoder::encodeFrame( Frame& codedFrame )
 	int ret = avcodec_encode_audio2( &avCodecContext, &packet, NULL, &gotPacket );
 	if( ret != 0 && gotPacket == 0 )
 	{
-		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( ret, err, sizeof(err) );
-		throw std::runtime_error( "Encode audio frame error: avcodec encode last audio frame - " + std::string( err ) );
+		throw std::runtime_error( "Encode audio frame error: avcodec encode last audio frame - " + getDescriptionFromErrorCode( ret ) );
 	}
 	return ret == 0 && gotPacket == 1;
 
@@ -131,9 +126,7 @@ bool AudioEncoder::encodeFrame( Frame& codedFrame )
 	int ret = avcodec_encode_audio( &avCodecContext, packet.data, packet.size, NULL );
 	if( ret < 0 )
 	{
-		char err[AV_ERROR_MAX_STRING_SIZE];
-		av_strerror( ret, err, sizeof(err) );
-		throw std::runtime_error( "Encode audio frame error: avcodec encode last audio frame - " + std::string( err ) );
+		throw std::runtime_error( "Encode audio frame error: avcodec encode last audio frame - " + getDescriptionFromErrorCode( ret ) );
 	}
 	return ret == 0;
 
@@ -145,9 +138,12 @@ void AudioEncoder::setProfile( const ProfileLoader::Profile& profile, const Audi
 	// set sampleRate, number of channels, sample format
 	_codec.setAudioParameters( frameDesc );
 
-	// set threads if not in profile
-	if( ! profile.count( "threads" ) )
-		_codec.getOption( "threads" ).setString( "auto" );
+	// set threads before any other options
+	if( profile.count( constants::avProfileThreads ) )
+		_codec.getOption( constants::avProfileThreads ).setString( profile.at( constants::avProfileThreads ) );
+	else
+		_codec.getOption( constants::avProfileThreads ).setString( "auto" );
+
 
 	// set encoder options
 	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
@@ -156,7 +152,8 @@ void AudioEncoder::setProfile( const ProfileLoader::Profile& profile, const Audi
 			(*it).first == constants::avProfileIdentificatorHuman ||
 			(*it).first == constants::avProfileType ||
 			(*it).first == constants::avProfileCodec ||
-			(*it).first == constants::avProfileSampleFormat )
+			(*it).first == constants::avProfileSampleFormat ||
+			(*it).first == constants::avProfileThreads )
 			continue;
 
 		try
@@ -176,7 +173,8 @@ void AudioEncoder::setProfile( const ProfileLoader::Profile& profile, const Audi
 			(*it).first == constants::avProfileIdentificatorHuman ||
 			(*it).first == constants::avProfileType ||
 			(*it).first == constants::avProfileCodec ||
-			(*it).first == constants::avProfileSampleFormat )
+			(*it).first == constants::avProfileSampleFormat ||
+			(*it).first == constants::avProfileThreads )
 			continue;
 
 		try

@@ -68,7 +68,7 @@ bool InputStream::readNextPacket( CodedData& data )
 	// if packet is already cached
 	if( ! _streamCache.empty() )
 	{
-		data.refData( _streamCache.front().getData(), _streamCache.front().getSize() );
+		data.copyData( _streamCache.front().getData(), _streamCache.front().getSize() );
 		_streamCache.pop();
 	}
 	// else read next packet
@@ -123,7 +123,8 @@ AVMediaType InputStream::getStreamType() const
 
 double InputStream::getDuration() const
 {
-	return 1.0 * _inputFile->getFormatContext().getDuration() / AV_TIME_BASE;
+	// @todo: return stream duration, depending on its type (instead of format duration)
+	return _inputFile->getProperties().getDuration();
 }
 
 void InputStream::addPacket( AVPacket& packet )
@@ -132,8 +133,8 @@ void InputStream::addPacket( AVPacket& packet )
 	if( ! _isActivated )
 		return;
 
-	CodedData data( packet );
-	_streamCache.push( data );
+	_streamCache.push( CodedData() );
+	_streamCache.back().copyData( packet.data, packet.size );
 }
 
 void InputStream::clearBuffering()

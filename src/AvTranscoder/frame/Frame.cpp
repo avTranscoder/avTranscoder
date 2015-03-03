@@ -13,15 +13,14 @@ Frame::Frame( const size_t dataSize )
 	av_new_packet( &_packet, dataSize );
 }
 
-Frame::Frame(AVPacket& avPacket)
+Frame::Frame( const AVPacket& avPacket )
 {
-#if LIBAVCODEC_VERSION_MAJOR > 54 || ( LIBAVCODEC_VERSION_MAJOR == 54 && LIBAVCODEC_VERSION_MINOR > 56 )
-	av_copy_packet( &_packet, &avPacket );
-#else
-	// we just care about data, not side properties of AVPacket
-	initAVPacket();
-	copyData( avPacket.data, avPacket.size );
-#endif
+	copyAVPacket( avPacket );
+}
+
+Frame::Frame( const Frame& other )
+{
+	copyAVPacket( other.getAVPacket() );
 }
 
 Frame::~Frame()
@@ -34,8 +33,7 @@ void Frame::resize( const size_t newSize )
 	if( (int) newSize < _packet.size )
 		av_shrink_packet( &_packet, newSize );
 	 else if( (int) newSize > _packet.size )
-		av_grow_packet( &_packet, newSize );
-	memset( _packet.data, 0, _packet.size );
+		av_grow_packet( &_packet, newSize - _packet.size );
 }
 
 void Frame::refData( unsigned char* buffer, const size_t size )
@@ -74,6 +72,19 @@ void Frame::initAVPacket()
 	av_init_packet( &_packet );
 	_packet.data = NULL;
 	_packet.size = 0;
+}
+
+void Frame::copyAVPacket( const AVPacket& avPacket )
+{
+#if LIBAVCODEC_VERSION_INT > AV_VERSION_INT(55, 56, 108)
+	av_copy_packet( &_packet, &avPacket );
+#elif LIBAVCODEC_VERSION_INT > AV_VERSION_INT(54, 56, 0)
+	av_copy_packet( &_packet, const_cast<AVPacket*>( &avPacket ) );
+#else
+	// we just care about data, not side properties of AVPacket
+	initAVPacket();
+	copyData( avPacket.data, avPacket.size );
+#endif
 }
 
 }

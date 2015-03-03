@@ -9,12 +9,8 @@ extern "C" {
 #include <stdexcept>
 #include <iomanip>
 #include <sstream>
-
-#ifdef _MSC_VER
-#include <float.h>
-#define isnan _isnan
-#define isinf(x) (!_finite(x))
-#endif
+#include <limits>
+#include <cmath>
 
 namespace avtranscoder
 {
@@ -478,7 +474,27 @@ int VideoProperties::getLevel() const
 
 double VideoProperties::getFps() const
 {
-	return getNbFrames() / getDuration();
+	size_t nbFrames = getNbFrames();
+	if( nbFrames )
+	{
+		double duration = getDuration();
+		double epsilon = std::numeric_limits<double>::epsilon();
+		if( duration > epsilon )
+			return nbFrames / duration;
+	}
+
+	// if nbFrames of stream is unknwon
+	Rational timeBase = getTimeBase();
+	double fps = timeBase.den / (double) timeBase.num;
+	if( std::isinf( fps ) )
+	{
+		std::ostringstream os;
+		os << "unable to retrieve a correct fps (found value: ";
+		os << fps;
+		os << ")";
+		throw std::runtime_error( os.str() );
+	}
+	return fps;
 }
 
 double VideoProperties::getDuration() const

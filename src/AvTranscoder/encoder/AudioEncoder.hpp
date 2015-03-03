@@ -12,6 +12,7 @@ class AvExport AudioEncoder : public IEncoder
 {
 public:
 	AudioEncoder( const std::string& audioCodecName );
+	~AudioEncoder();
 	
 	void setup();
 
@@ -25,6 +26,7 @@ public:
 
 private:
 	AudioCodec _codec;
+	AVFrame* _frame;  ///< Contains the encoded data to pass to the Frame when encodeFrame
 };
 
 }

@@ -59,6 +59,9 @@ typedef AVRational Rational;
 /// Register all the codecs and formats which are enabled at configuration time.
 void AvExport preloadCodecsAndFormats();
 
+/// Get the string description corresponding to the error code provided by ffmpeg/libav
+std::string AvExport getDescriptionFromErrorCode( const int code );
+
 #define LOG_DEBUG( ... ) { std::stringstream os; os << __VA_ARGS__; Logger::log( AV_LOG_DEBUG, os.str() ); }
 #define LOG_INFO( ... ) { std::stringstream os; os << __VA_ARGS__; Logger::log( AV_LOG_INFO, os.str() ); }
 #define LOG_WARN( ... ) { std::stringstream os; os << __VA_ARGS__; Logger::log( AV_LOG_WARNING, os.str() ); }
