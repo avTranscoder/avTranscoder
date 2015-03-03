@@ -14,8 +14,8 @@
 #include <AvTranscoder/transform/VideoTransform.hpp>
 
 #include <cassert>
-#include <iostream>
 #include <limits>
+#include <sstream>
 
 namespace avtranscoder
 {
@@ -36,7 +36,6 @@ StreamTranscoder::StreamTranscoder(
 	, _subStreamIndex( -1 )
 	, _offset( 0 )
 	, _canSwitchToGenerator( false )
-	, _verbose( false )
 {
 	// create a re-wrapping case
 	switch( _inputStream->getStreamType() )
@@ -125,7 +124,6 @@ StreamTranscoder::StreamTranscoder(
 	, _subStreamIndex( subStreamIndex )
 	, _offset( offset )
 	, _canSwitchToGenerator( false )
-	, _verbose( false )
 {
 	// create a transcode case
 	switch( _inputStream->getStreamType() )
@@ -236,7 +234,6 @@ StreamTranscoder::StreamTranscoder(
 	, _subStreamIndex( -1 )
 	, _offset( 0 )
 	, _canSwitchToGenerator( false )
-	, _verbose( false )
 {
 	if( profile.find( constants::avProfileType )->second == constants::avProfileTypeVideo )
 	{
@@ -313,8 +310,8 @@ void StreamTranscoder::preProcessCodecLatency()
 		return;
 
 	int latency = _outputEncoder->getCodec().getLatency();
-	if( _verbose )
-		std::cout << "latency of stream: " << latency << std::endl;
+
+	LOG_DEBUG( "Latency of stream: " << latency )
 
 	if( ! latency ||
 		latency < _outputEncoder->getCodec().getAVCodecContext().frame_number )
@@ -345,8 +342,9 @@ bool StreamTranscoder::processRewrap()
 	assert( _inputStream  != NULL );
 	assert( _outputStream != NULL );
 	
-	CodedData data;
+	LOG_INFO( "Rewrap a frame" )
 
+	CodedData data;
 	if( ! _inputStream->readNextPacket( data ) )
 	{
 		if( _canSwitchToGenerator )
@@ -382,8 +380,7 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 	assert( _frameBuffer    != NULL );
 	assert( _transform      != NULL );
 
-	if( _verbose )
-		std::cout << "transcode a frame " << std::endl;
+	LOG_INFO( "Transcode a frame" )
 
 	// check offset
 	if( _offset )
@@ -407,17 +404,15 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 	CodedData data;
 	if( decodingStatus )
 	{
-		if( _verbose )
-			std::cout << "convert (" << _sourceBuffer->getSize() << " bytes)" << std::endl;
+		LOG_DEBUG( "convert (" << _sourceBuffer->getSize() << " bytes)" )
 		_transform->convert( *_sourceBuffer, *_frameBuffer );
-		if( _verbose )
-			std::cout << "encode (" << _frameBuffer->getSize() << " bytes)" << std::endl;
+
+		LOG_DEBUG( "encode (" << _frameBuffer->getSize() << " bytes)" )
 		_outputEncoder->encodeFrame( *_frameBuffer, data );
 	}
 	else
 	{
-		if( _verbose )
-			std::cout << "encode last frame(s)" << std::endl;
+		LOG_DEBUG( "encode last frame(s)" )
 		if( ! _outputEncoder->encodeFrame( data ) )
 		{
 			if( _canSwitchToGenerator )
@@ -428,8 +423,8 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 			return false;
 		}
 	}
-	if( _verbose )
-		std::cout << "wrap (" << data.getSize() << " bytes)" << std::endl;
+
+	LOG_DEBUG( "wrap (" << data.getSize() << " bytes)" )
 
 	IOutputStream::EWrappingStatus wrappingStatus = _outputStream->wrap( data );
 	switch( wrappingStatus )

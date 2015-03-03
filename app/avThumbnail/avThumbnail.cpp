@@ -1,6 +1,8 @@
 #include <AvTranscoder/transcoder/Transcoder.hpp>
 #include <AvTranscoder/file/OutputFile.hpp>
 
+#include <iostream>
+
 static std::string outputFileName = "thumbnail.jpg";
 static bool seekInFrame = false;
 
@@ -54,7 +56,7 @@ int main( int argc, char** argv )
 		return( -1 );
 	}
 
-	avtranscoder::setLogLevel( AV_LOG_QUIET );
+	avtranscoder::Logger::setLogLevel( AV_LOG_QUIET );
 	avtranscoder::preloadCodecsAndFormats();
 
 	// input file

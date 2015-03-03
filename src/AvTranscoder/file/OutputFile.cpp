@@ -2,7 +2,6 @@
 
 #include <AvTranscoder/util.hpp>
 
-#include <iostream>
 #include <stdexcept>
 
 namespace avtranscoder
@@ -14,7 +13,6 @@ OutputFile::OutputFile( const std::string& filename )
 	, _frameCount()
 	, _filename( filename )
 	, _previousProcessedStreamDuration( 0.0 )
-	, _verbose( false )
 {
 	_formatContext.setOutputFormat( _filename );
 	_formatContext.openRessource( _filename, AVIO_FLAG_WRITE );
@@ -101,8 +99,7 @@ IOutputStream::EWrappingStatus OutputFile::wrap( const CodedData& data, const si
 	if( ! data.getSize() )
 		return IOutputStream::eWrappingSuccess;
 
-	if( _verbose )
-		std::cout << "wrap on stream " << streamId << " (" << data.getSize() << " bytes for frame " << _frameCount.at( streamId ) << ")" << std::endl;
+	LOG_DEBUG( "Wrap on stream " << streamId << " (" << data.getSize() << " bytes for frame " << _frameCount.at( streamId ) << ")" )
 
 	AVPacket packet;
 	av_init_packet( &packet );
@@ -175,7 +172,7 @@ void OutputFile::setProfile( const ProfileLoader::Profile& profile )
 		}
 		catch( std::exception& e )
 		{
-			std::cout << "[OutputFile] warning - can't set option " << (*it).first << " to " << (*it).second << ": " << e.what() << std::endl;
+			LOG_WARN( "OutputFile - can't set option " << (*it).first <<  " to " << (*it).second << ": " << e.what() )
 		}
 	}
 }

@@ -6,7 +6,6 @@ extern "C" {
 
 #include <stdexcept>
 #include <cassert>
-#include <iostream>
 
 namespace avtranscoder {
 
@@ -118,7 +117,7 @@ void ICodec::setCodec( const ECodecType type, const AVCodecID codecId )
 {
 	if( codecId == 0 )
 	{
-		std::cout << "Warning: Unsupported codec with id 0" << std::endl;
+		LOG_WARN( "Unsupported codec with id 0")
 		return;
 	}
 

@@ -21,8 +21,6 @@ static const std::string dummyAudioCodec = "pcm_s16le";
 
 static bool useVideoGenerator = false;
 
-static bool verbose = false;
-
 void parseConfigFile( const std::string& configFilename, avtranscoder::Transcoder& transcoder )
 {
 	std::ifstream configFile( configFilename.c_str(), std::ifstream::in );
@@ -49,17 +47,6 @@ void parseConfigFile( const std::string& configFilename, avtranscoder::Transcode
 				if( separator == '.' )
 					ss >> subStreamIndex;
 
-				if( verbose )
-				{
-					std::cout << ( filename.length() ? filename : "dummy stream" );
-					std::cout << " ( " << streamIndex;
-					if( subStreamIndex > -1 )
-						std::cout << " | " << subStreamIndex << " ";
-					std::cout << " ) : ";
-					std::cout << ( transcodeProfile.length() ? transcodeProfile : "rewrap" );
-					std::cout << std::endl;
-				}
-				
 				// dummy stream, need a ICodec (audio or video)
 				if( ! filename.length() )
 				{
@@ -97,7 +84,7 @@ int main( int argc, char** argv )
 {
 	std::string help;
 	help += "Usage\n";
-	help += "\tavprocessor CONFIG.TXT OUTPUT_FILE_NAME [--generate-black] [--verbose] [--help]\n";
+	help += "\tavprocessor CONFIG.TXT OUTPUT_FILE_NAME [--generate-black] [--verbose] [--logFile] [--help]\n";
 	help += "CONFIG.TXT\n";
 	help += "\tEach line will be one stream in the output.\n";
 	help += "\tPattern of each line is:\n";
@@ -107,7 +94,13 @@ int main( int argc, char** argv )
 	help += "\tNo profileName: will rewrap the stream\n";
 	help += "Command line options\n";
 	help += "\t--generate-black: stream which not referred to an input, will generate an output video stream with black images (by default generate audio stream with silence)\n";
+	help += "\t--verbose: set log level to AV_LOG_DEBUG\n";
+	help += "\t--logFile: put log in 'avtranscoder.log' file\n";
 	help += "\t--help: display this help\n";
+
+	// Preload FFmpeg context
+	avtranscoder::preloadCodecsAndFormats();
+	avtranscoder::Logger::setLogLevel( AV_LOG_QUIET );
 
 	// List command line arguments
 	std::vector< std::string > arguments;
@@ -122,13 +115,17 @@ int main( int argc, char** argv )
 			std::cout << help << std::endl;
 			return 0;
 		}
-		if( arguments.at( argument ) == "--generate-black" )
+		else if( arguments.at( argument ) == "--generate-black" )
 		{
 			useVideoGenerator = true;
 		}
-		if( arguments.at( argument ) == "--verbose" )
+		else if( arguments.at( argument ) == "--verbose" )
 		{
-			verbose = true;
+			avtranscoder::Logger::setLogLevel( AV_LOG_DEBUG );
+		}
+		else if( arguments.at( argument ) == "--logFile" )
+		{
+			avtranscoder::Logger::logInFile();
 		}
 	}
 
@@ -140,40 +137,17 @@ int main( int argc, char** argv )
 		return( -1 );
 	}
 
-	avtranscoder::setLogLevel( AV_LOG_QUIET );
-	if( verbose )
-		avtranscoder::setLogLevel( AV_LOG_DEBUG );
-
 	try
 	{
-		if( verbose )
-			std::cout << "start ..." << std::endl;
-		avtranscoder::preloadCodecsAndFormats();
-
-		if( verbose )
-			std::cout << "output file: " << argv[2] << std::endl;
-
 		std::string inputConfigFile( argv[1] );
 		avtranscoder::OutputFile outputFile( argv[2] );
 
 		avtranscoder::Transcoder transcoder( outputFile );
 
-		if( verbose )
-			std::cout << "parse config file" << std::endl;
 		parseConfigFile( inputConfigFile, transcoder );
-
-		// set verbose of all stream
-		transcoder.setVerbose( verbose );
-		
-		if( verbose )
-			std::cout << "start Transcode" << std::endl;
 
 		avtranscoder::ConsoleProgress progress;
 		transcoder.process( progress );
-
-		std::cout << std::endl;
-		if( verbose )
-				std::cout << "end ..." << std::endl;
 	}
 	catch( std::exception& e )
 	{

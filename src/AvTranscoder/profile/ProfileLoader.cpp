@@ -2,7 +2,6 @@
 
 #include "util.hpp"
 
-#include <iostream>
 #include <fstream>
 #include <cstdlib>
 #include <stdexcept>
@@ -64,7 +63,7 @@ void ProfileLoader::loadProfiles( const std::string& avProfilesPath )
 			}
 			catch( const std::exception& e )
 			{
-				std::cout << e.what() << std::endl;
+				LOG_WARN( e.what() )
 			}
 		}
 	}

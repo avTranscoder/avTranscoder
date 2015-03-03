@@ -68,8 +68,6 @@ public:
 	/// Returns a reference to the current decoder used by the streamTranscoder (from input file or from generator)
 	IDecoder& getCurrentDecoder() const { return *_currentDecoder; }
 
-	void setVerbose( bool verbose = true ){ _verbose = verbose; }
-
 	/**
 	 * @brief Returns if the stream can switch to a generator when ended
 	 * @note Not applicable for rewrap and generator cases
@@ -101,7 +99,6 @@ private:
 	double _offset;  ///< Offset, in seconds, at the beginning of the StreamTranscoder.
 
 	bool _canSwitchToGenerator;  ///< Automatically switch to a generator at the end of the stream
-	bool _verbose;
 };
 
 }

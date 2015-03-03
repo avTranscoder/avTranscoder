@@ -84,11 +84,6 @@ public:
 	 */
 	virtual void setProfile( const ProfileLoader::Profile& profile );
 
-	/**
-	 * @brief Set to verbose mode.
-	 */
-	void setVerbose( bool verbose = true ) { _verbose = verbose; }
-
 public:
 	/**
 	 * @brief Get media file properties using static method.
@@ -117,8 +112,6 @@ protected:
 	FileProperties _properties;
 	std::string _filename;
 	std::vector<InputStream*> _inputStreams;  ///< Has ownership
-
-	bool _verbose;
 };
 
 }

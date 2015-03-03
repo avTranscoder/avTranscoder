@@ -131,18 +131,11 @@ public:
 	 */
 	void setProcessMethod( const EProcessMethod eProcessMethod, const size_t indexBasedStream = 0, const double outputDuration = 0 );
 
-	/**
-	 * @brief Set verbose mode for the Transcoder, its streams, and its output file.
-	 * @note If you call it before adding the streams, no verbose mode will be set for the new streams.
-	 * @note set av log level to AV_LOG_DEBUG
-	 */
-	void setVerbose( bool verbose = true );
-
 private:
 	void addRewrapStream( const std::string& filename, const size_t streamIndex );
 
-	void addTranscodeStream( const std::string& filename, const size_t streamIndex, const size_t subStreamIndex, const double offset );
-	void addTranscodeStream( const std::string& filename, const size_t streamIndex, const size_t subStreamIndex, ProfileLoader::Profile& profile, const double offset = 0 );
+	void addTranscodeStream( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const double offset );
+	void addTranscodeStream( const std::string& filename, const size_t streamIndex, const int subStreamIndex, ProfileLoader::Profile& profile, const double offset = 0 );
 
 	void addDummyStream( const ProfileLoader::Profile& profile, const ICodec& codec );
 
@@ -189,8 +182,6 @@ private:
 	EProcessMethod _eProcessMethod;  ///< Transcoding policy
 	size_t _mainStreamIndex;  ///< Index of stream used to stop the process of transcode in case of eProcessMethodBasedOnStream.
 	double _outputDuration;  ///< Duration of output media used to stop the process of transcode in case of eProcessMethodBasedOnDuration.
-
-	bool    _verbose;
 };
 
 }

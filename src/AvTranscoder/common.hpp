@@ -12,13 +12,10 @@ extern "C" {
 	#define UINT64_C(c) (c ## ULL)
 #endif
 #include <libavcodec/version.h>
-#include <libavutil/error.h>
 #include <libavutil/rational.h>
-#include <libavutil/log.h>
 }
 
 #include <string>
-#include <cstring>
 
 #ifdef SWIG
  #define AvExport
@@ -50,6 +47,8 @@ extern "C" {
 #endif
 #endif
 
+#include <AvTranscoder/log.hpp>
+
 namespace avtranscoder
 {
 
@@ -59,14 +58,6 @@ typedef AVRational Rational;
 
 /// Register all the codecs and formats which are enabled at configuration time.
 void AvExport preloadCodecsAndFormats();
-
-/**
- * @brief Set the log level of ffmpeg/libav.
- * @param level: refer to define AV_LOG_xxx (from AV_LOG_QUIET to AV_LOG_DEBUG)
- * @see SWIG interface avLogLevel.i
- */
-void AvExport setLogLevel( const int level );
-
 
 /// Get the string description corresponding to the error code provided by ffmpeg/libav
 std::string AvExport getDescriptionFromErrorCode( const int code );

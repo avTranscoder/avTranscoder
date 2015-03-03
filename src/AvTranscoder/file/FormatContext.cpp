@@ -2,7 +2,6 @@
 
 #include <stdexcept>
 #include <sstream>
-#include <iostream>
 
 namespace avtranscoder
 {
@@ -119,7 +118,7 @@ void FormatContext::addMetaData( const std::string& key, const std::string& valu
 	int ret = av_dict_set( &_avFormatContext->metadata, key.c_str(), value.c_str(), 0 );
 	if( ret < 0 )
 	{
-		std::cout << getDescriptionFromErrorCode( ret ) << std::endl;
+		LOG_ERROR( getDescriptionFromErrorCode( ret ) )
 	}
 }
 
