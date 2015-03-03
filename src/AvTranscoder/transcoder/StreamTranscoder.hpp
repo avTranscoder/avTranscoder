@@ -11,7 +11,7 @@
 
 #include <AvTranscoder/file/IOutputFile.hpp>
 
-#include <AvTranscoder/ProfileLoader.hpp>
+#include <AvTranscoder/profile/ProfileLoader.hpp>
 
 namespace avtranscoder
 {

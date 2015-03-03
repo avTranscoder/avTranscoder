@@ -7,7 +7,7 @@
 #include <AvTranscoder/stream/InputStream.hpp>
 #include <AvTranscoder/mediaProperty/FileProperties.hpp>
 #include <AvTranscoder/progress/IProgress.hpp>
-#include <AvTranscoder/ProfileLoader.hpp>
+#include <AvTranscoder/profile/ProfileLoader.hpp>
 
 #include <string>
 #include <vector>

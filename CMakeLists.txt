@@ -30,4 +30,9 @@ endif()
 
 
 add_subdirectory(src)
-add_subdirectory(app)
+
+if(DISABLE_APPS)
+	message("Apps disabled, will not build applications.")
+else()
+	add_subdirectory(app)
+endif()

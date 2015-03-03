@@ -8,7 +8,6 @@
 #include <AvTranscoder/codec/DataCodec.hpp>
 
 #include <AvTranscoder/stream/OutputStream.hpp>
-#include <AvTranscoder/ProfileLoader.hpp>
 
 #include <string>
 #include <stdexcept>
