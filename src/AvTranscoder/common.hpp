@@ -18,6 +18,7 @@ extern "C" {
 #include <string>
 #include <cstring>
 #include <sstream>
+#include <fstream>
 
 #ifdef SWIG
  #define AvExport
@@ -85,6 +86,23 @@ public:
 	 * @param msg: the message will be suffixed by '\n'
 	 */
 	static void log( int level, const std::string& msg );
+
+	/**
+	 * @brief Log ffmpeg/libav and avtranscoder informations in a text file.
+	 * @note Default log filename is avtranscoder.log
+	 * @see getLogFileName
+	 * @see setLogFileName
+	 */
+	static void logInFile();
+
+	///@{
+	/// @warning Need to set the expected log filename before calling logInFile
+	static std::string& getLogFileName() { return _logFileName; }
+	static void setLogFileName( const std::string& newLogFileName ) { _logFileName = newLogFileName; }
+	///@}
+
+private:
+	static std::string _logFileName;  ///< Name of the log file
 };
 
 }

@@ -54,4 +54,30 @@ void Logger::log( int level, const std::string& msg )
 	av_log( NULL, level, avTranscoderMsg.c_str() );
 }
 
+void callbackToWriteInFile( void *ptr, int level, const char *fmt, va_list vl )
+{
+	// Format a line of log the same way as the default callback
+	char line[1024];
+	static int print_prefix = 1;
+	av_log_format_line(ptr, level, fmt, vl, line, sizeof(line), &print_prefix);
+
+	// Print line in log file
+	std::ofstream outputFile;
+	outputFile.open( Logger::getLogFileName().c_str(), std::ios::out | std::ios::app );
+	outputFile << line;
+	outputFile.close();
+}
+
+void Logger::logInFile()
+{
+	av_log_set_callback( callbackToWriteInFile );
+
+	// clean log file
+	std::ofstream outputFile;
+	outputFile.open( Logger::getLogFileName().c_str() );
+	outputFile.close();
+}
+
+std::string Logger::_logFileName( "avtranscoder.log" );
+
 }
