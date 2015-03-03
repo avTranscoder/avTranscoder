@@ -59,10 +59,10 @@ typedef AVRational Rational;
 /// Register all the codecs and formats which are enabled at configuration time.
 void AvExport preloadCodecsAndFormats();
 
-#define LOG_DEBUG( ... ) { std::stringstream os; os << __VA_ARGS__; Logger::log( AV_LOG_DEBUG, "debug", os.str() ); }
-#define LOG_INFO( ... ) { std::stringstream os; os << __VA_ARGS__; Logger::log( AV_LOG_INFO, "info", os.str() ); }
-#define LOG_WARN( ... ) { std::stringstream os; os << __VA_ARGS__; Logger::log( AV_LOG_WARNING, "warning", os.str() ); }
-#define LOG_ERROR( ... ) { std::stringstream os; os << __VA_ARGS__; Logger::log( AV_LOG_ERROR, "error", os.str() ); }
+#define LOG_DEBUG( ... ) { std::stringstream os; os << __VA_ARGS__; Logger::log( AV_LOG_DEBUG, os.str() ); }
+#define LOG_INFO( ... ) { std::stringstream os; os << __VA_ARGS__; Logger::log( AV_LOG_INFO, os.str() ); }
+#define LOG_WARN( ... ) { std::stringstream os; os << __VA_ARGS__; Logger::log( AV_LOG_WARNING, os.str() ); }
+#define LOG_ERROR( ... ) { std::stringstream os; os << __VA_ARGS__; Logger::log( AV_LOG_ERROR, os.str() ); }
 
 /// Logger class which contains static functions to use ffmpeg/libav log system
 class AvExport Logger
@@ -81,7 +81,7 @@ public:
 	 * @param msg: the message will be prefixed by '[avTranscoder - <level>]'
 	 * @param msg: the message will be suffixed by '\n'
 	 */
-	static void log( int level, const std::string& levelStr, const std::string& msg );
+	static void log( int level, const std::string& msg );
 };
 
 }
