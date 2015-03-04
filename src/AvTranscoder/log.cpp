@@ -12,12 +12,10 @@ void callbackToWriteInFile( void *ptr, int level, const char *fmt, va_list vl )
 
 	// Print line in log file
 	std::ofstream outputFile;
-	outputFile.open( Logger::getLogFileName().c_str(), std::ios::out | std::ios::app );
+	outputFile.open( LOG_FILE, std::ios::out | std::ios::app );
 	outputFile << line;
 	outputFile.close();
 }
-
-std::string Logger::_logFileName( "avtranscoder.log" );
 
 void Logger::setLogLevel( const int level )
 {
@@ -60,7 +58,7 @@ void Logger::logInFile()
 
 	// clean log file
 	std::ofstream outputFile;
-	outputFile.open( Logger::getLogFileName().c_str() );
+	outputFile.open( LOG_FILE );
 	outputFile.close();
 }
 
