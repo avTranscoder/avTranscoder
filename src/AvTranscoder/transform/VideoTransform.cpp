@@ -12,6 +12,8 @@ extern "C" {
 #endif
 }
 
+#define MAX_SWS_PLANE 4
+
 #include <sstream>
 #include <iomanip>
 #include <cassert>

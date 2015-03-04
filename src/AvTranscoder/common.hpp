@@ -48,8 +48,6 @@ extern "C" {
 namespace avtranscoder
 {
 
-#define MAX_SWS_PLANE 4
-
 typedef AVRational Rational;
 
 /// Register all the codecs and formats which are enabled at configuration time.
