@@ -94,7 +94,10 @@ void ProfileLoader::loadProfile( const Profile& profile )
 		isValid = checkAudioProfile( profile );
 
 	if( isValid )
+	{
+		LOG_INFO( "Profile '" << profile.find( constants::avProfileIdentificatorHuman )->second << "' loaded" )
 		_profiles.push_back( profile );
+	}
 	else
 		throw std::runtime_error( "Warning: The profile " + profile.find( constants::avProfileIdentificator )->second + " is invalid. It will not be loaded." );
 }
