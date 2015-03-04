@@ -34,10 +34,6 @@ extern "C" {
 #endif
 #endif
 
-#ifndef AV_ERROR_MAX_STRING_SIZE
- #define AV_ERROR_MAX_STRING_SIZE 64
-#endif
-
 #ifndef SWIG
 #if LIBAVCODEC_VERSION_MAJOR < 54
  #define AVPixelFormat PixelFormat
