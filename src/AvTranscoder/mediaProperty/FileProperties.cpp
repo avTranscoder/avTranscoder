@@ -20,21 +20,21 @@ FileProperties::FileProperties( const FormatContext& formatContext )
 
 std::string FileProperties::getFilename() const
 {
-	if( ! _formatContext )
+	if( ! _formatContext || ! _formatContext->filename )
 		throw std::runtime_error( "unknown format context" );
 	return _formatContext->filename;
 }
 
 std::string FileProperties::getFormatName() const
 {
-	if( ! _formatContext || ! _formatContext->iformat )
+	if( ! _formatContext || ! _formatContext->iformat || ! _formatContext->iformat->name )
 		throw std::runtime_error( "unknown format context" );
 	return _formatContext->iformat->name;
 }
 
 std::string FileProperties::getFormatLongName() const
 {
-	if( ! _formatContext || ! _formatContext->iformat )
+	if( ! _formatContext || ! _formatContext->iformat || ! _formatContext->iformat->long_name )
 		throw std::runtime_error( "unknown format context" );
 	return _formatContext->iformat->long_name;
 }
