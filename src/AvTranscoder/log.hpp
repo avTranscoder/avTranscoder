@@ -13,6 +13,7 @@ extern "C" {
 namespace avtranscoder
 {
 
+#define LOG_FILE "avtranscoder.log"
 #define LOG_DEBUG( ... ) { std::stringstream os; os << __VA_ARGS__; Logger::log( AV_LOG_DEBUG, os.str() ); }
 #define LOG_INFO( ... ) { std::stringstream os; os << __VA_ARGS__; Logger::log( AV_LOG_INFO, os.str() ); }
 #define LOG_WARN( ... ) { std::stringstream os; os << __VA_ARGS__; Logger::log( AV_LOG_WARNING, os.str() ); }
@@ -31,7 +32,7 @@ public:
 
 	/**
 	 * @brief Log with the ffmpeg/libav log system
-	 * @note use define LOG_* to log at DEBUG/INFO/WARN/ERROR level
+	 * @note you can use macro LOG_* to log at DEBUG/INFO/WARN/ERROR level
 	 * @param msg: the message will be prefixed by '[avTranscoder - <level>]'
 	 * @param msg: the message will be suffixed by '\n'
 	 */
@@ -39,20 +40,9 @@ public:
 
 	/**
 	 * @brief Log ffmpeg/libav and avtranscoder informations in a text file.
-	 * @note Default log filename is avtranscoder.log
-	 * @see getLogFileName
-	 * @see setLogFileName
+	 * @note log filename is avtranscoder.log
 	 */
 	static void logInFile();
-
-	///@{
-	/// @warning Need to set the expected log filename before calling logInFile
-	static std::string& getLogFileName() { return _logFileName; }
-	static void setLogFileName( const std::string& newLogFileName ) { _logFileName = newLogFileName; }
-	///@}
-
-private:
-	static std::string _logFileName;  ///< Name of the log file
 };
 
 }
