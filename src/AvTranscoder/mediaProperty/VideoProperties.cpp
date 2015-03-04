@@ -84,7 +84,7 @@ std::string VideoProperties::getProfileName() const
 
 		if( _codecContext->profile != -99 )
 		{
-			const char* profile;
+			const char* profile = NULL;
 			if( ( profile = av_get_profile_name( _codec, _codecContext->profile ) ) != NULL )
 				return std::string( profile );
 		}

@@ -40,8 +40,7 @@ std::string AudioProperties::getCodecName() const
 {
 	if( _codec && _codec->name )
 		return std::string( _codec->name );
-	else
-		return "unknown codec";
+	return "unknown codec";
 }
 
 std::string AudioProperties::getCodecLongName() const
