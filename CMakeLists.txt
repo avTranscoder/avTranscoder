@@ -31,7 +31,7 @@ endif()
 
 add_subdirectory(src)
 
-if(DISABLE_APPS)
+if(AVTRANSCODER_DISABLE_APPS)
 	message("Apps disabled, will not build applications.")
 else()
 	add_subdirectory(app)
