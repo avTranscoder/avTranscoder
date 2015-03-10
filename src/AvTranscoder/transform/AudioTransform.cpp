@@ -101,9 +101,9 @@ void AudioTransform::convert( const Frame& srcFrame, Frame& dstFrame )
 
 	int nbOutputSamplesPerChannel;
 #ifdef AV_RESAMPLE_LIBRARY
-	nbOutputSamplesPerChannel = avresample_convert( _audioConvertContext, (uint8_t**)&dstData, 0, dstFrame.getSize(), (uint8_t**)&srcData, 0, srcFrame.getSize() );
+	nbOutputSamplesPerChannel = avresample_convert( _audioConvertContext, (uint8_t**)&dstData, 0, _nbSamplesOfPreviousFrame, (uint8_t**)&srcData, 0, _nbSamplesOfPreviousFrame );
 #else
-	nbOutputSamplesPerChannel = swr_convert( _audioConvertContext, &dstData, dstFrame.getSize(), &srcData, srcFrame.getSize() );
+	nbOutputSamplesPerChannel = swr_convert( _audioConvertContext, &dstData, _nbSamplesOfPreviousFrame, &srcData, _nbSamplesOfPreviousFrame );
 #endif
 
 	if( nbOutputSamplesPerChannel < 0 )
