@@ -28,8 +28,8 @@ public:
 private:
 	bool init( const Frame& srcFrame, const Frame& dstFrame );
 
-	/// Resize output buffer if source has a different size from the last process
-	void initFrames( const Frame& srcFrame, Frame& dstFrame );
+	/// Update output buffer if source has a different size from the last process
+	void updateOutputFrame( const size_t nbInputSamples, Frame& dstFrame ) const;
 
 private:
 	ResampleContext* _audioConvertContext;

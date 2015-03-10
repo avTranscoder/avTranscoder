@@ -69,21 +69,18 @@ bool AudioTransform::init( const Frame& srcFrame, const Frame& dstFrame )
 	return true;
 }
 
-void AudioTransform::initFrames( const Frame& srcFrame, Frame& dstFrame )
+void AudioTransform::updateOutputFrame( const size_t nbInputSamples, Frame& dstFrame ) const
 {
-	const AudioFrame& src = static_cast<const AudioFrame&>( srcFrame );
 	AudioFrame& dst = static_cast<AudioFrame&>( dstFrame );
 
 	// resize buffer of output frame
 	const int dstSampleSize = av_get_bytes_per_sample( dst.desc().getSampleFormat() );
-	const size_t bufferSizeNeeded = src.getNbSamples() * dst.desc().getChannels() * dstSampleSize;
+	const size_t bufferSizeNeeded = nbInputSamples * dst.desc().getChannels() * dstSampleSize;
 	if( bufferSizeNeeded > dstFrame.getSize() )
 		dstFrame.resize( bufferSizeNeeded );
 
 	// set nbSamples of output frame
-	dst.setNbSamples( src.getNbSamples() );
-
-	_nbSamplesOfPreviousFrame = src.getNbSamples();
+	dst.setNbSamples( nbInputSamples );
 }
 
 void AudioTransform::convert( const Frame& srcFrame, Frame& dstFrame )
@@ -91,9 +88,13 @@ void AudioTransform::convert( const Frame& srcFrame, Frame& dstFrame )
 	if( ! _isInit )
 		_isInit = init( srcFrame, dstFrame );
 
+	// if number of samples change from previous frame
 	const AudioFrame& srcAudioFrame = static_cast<const AudioFrame&>( srcFrame );
 	if( srcAudioFrame.getNbSamples() != _nbSamplesOfPreviousFrame )
-		initFrames( srcFrame, dstFrame );
+	{
+		updateOutputFrame( srcAudioFrame.getNbSamples(), dstFrame );
+		_nbSamplesOfPreviousFrame = srcAudioFrame.getNbSamples();
+	}
 
 	const unsigned char* srcData = srcFrame.getData();
 	unsigned char* dstData = dstFrame.getData();
