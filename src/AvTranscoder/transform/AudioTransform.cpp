@@ -32,7 +32,7 @@ namespace avtranscoder
 
 AudioTransform::AudioTransform()
 	: _audioConvertContext( NULL )
-	, _previousProcessedAudioFrameSize( 0 )
+	, _nbSamplesOfPreviousFrame( 0 )
 	, _isInit    ( false )
 {
 }
@@ -83,7 +83,7 @@ void AudioTransform::initFrames( const Frame& srcFrame, Frame& dstFrame )
 	// set nbSamples of output frame
 	dst.setNbSamples( src.getNbSamples() );
 
-	_previousProcessedAudioFrameSize = srcFrame.getSize();
+	_nbSamplesOfPreviousFrame = src.getNbSamples();
 }
 
 void AudioTransform::convert( const Frame& srcFrame, Frame& dstFrame )
@@ -91,7 +91,8 @@ void AudioTransform::convert( const Frame& srcFrame, Frame& dstFrame )
 	if( ! _isInit )
 		_isInit = init( srcFrame, dstFrame );
 
-	if( srcFrame.getSize() != _previousProcessedAudioFrameSize )
+	const AudioFrame& srcAudioFrame = static_cast<const AudioFrame&>( srcFrame );
+	if( srcAudioFrame.getNbSamples() != _nbSamplesOfPreviousFrame )
 		initFrames( srcFrame, dstFrame );
 
 	const unsigned char* srcData = srcFrame.getData();

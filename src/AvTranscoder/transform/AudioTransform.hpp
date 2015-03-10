@@ -30,10 +30,11 @@ private:
 
 	/// Resize output buffer if source has a different size from the last process
 	void initFrames( const Frame& srcFrame, Frame& dstFrame );
-	
+
+private:
 	ResampleContext* _audioConvertContext;
-	
-	size_t _previousProcessedAudioFrameSize;
+
+	size_t _nbSamplesOfPreviousFrame;  ///< To check if the number of samples change between frames
 
 	bool _isInit;
 };
