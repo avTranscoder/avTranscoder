@@ -88,11 +88,11 @@ void AudioTransform::convert( const Frame& srcFrame, Frame& dstFrame )
 		_isInit = init( srcFrame, dstFrame );
 
 	// if number of samples change from previous frame
-	const AudioFrame& srcAudioFrame = static_cast<const AudioFrame&>( srcFrame );
-	if( srcAudioFrame.getNbSamples() != _nbSamplesOfPreviousFrame )
+	const size_t nbSamplesOfCurrentFrame = static_cast<const AudioFrame&>( srcFrame ).getNbSamples();
+	if( nbSamplesOfCurrentFrame != _nbSamplesOfPreviousFrame )
 	{
-		updateOutputFrame( srcAudioFrame.getNbSamples(), dstFrame );
-		_nbSamplesOfPreviousFrame = srcAudioFrame.getNbSamples();
+		updateOutputFrame( nbSamplesOfCurrentFrame, dstFrame );
+		_nbSamplesOfPreviousFrame = nbSamplesOfCurrentFrame;
 	}
 
 	const unsigned char* srcData = srcFrame.getData();
@@ -100,9 +100,9 @@ void AudioTransform::convert( const Frame& srcFrame, Frame& dstFrame )
 
 	int nbOutputSamplesPerChannel;
 #ifdef AV_RESAMPLE_LIBRARY
-	nbOutputSamplesPerChannel = avresample_convert( _audioConvertContext, (uint8_t**)&dstData, 0, _nbSamplesOfPreviousFrame, (uint8_t**)&srcData, 0, _nbSamplesOfPreviousFrame );
+	nbOutputSamplesPerChannel = avresample_convert( _audioConvertContext, (uint8_t**)&dstData, 0, nbSamplesOfCurrentFrame, (uint8_t**)&srcData, 0, nbSamplesOfCurrentFrame );
 #else
-	nbOutputSamplesPerChannel = swr_convert( _audioConvertContext, &dstData, _nbSamplesOfPreviousFrame, &srcData, _nbSamplesOfPreviousFrame );
+	nbOutputSamplesPerChannel = swr_convert( _audioConvertContext, &dstData, nbSamplesOfCurrentFrame, &srcData, nbSamplesOfCurrentFrame );
 #endif
 
 	if( nbOutputSamplesPerChannel < 0 )
