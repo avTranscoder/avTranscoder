@@ -1,5 +1,7 @@
 #include "Frame.hpp"
 
+#include <cstring>
+
 namespace avtranscoder
 {
 
