@@ -26,6 +26,7 @@ public:
 	/**
 	 * @brief Set the log level of ffmpeg/libav.
 	 * @param level: refer to define AV_LOG_xxx (from AV_LOG_QUIET to AV_LOG_DEBUG)
+	 * @note By default AV_LOG_INFO
 	 * @see SWIG interface avLogLevel.i
 	 */
 	static void setLogLevel( const int level );
