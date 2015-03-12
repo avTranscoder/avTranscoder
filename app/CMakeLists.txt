@@ -5,4 +5,5 @@ add_subdirectory(avPlay)
 add_subdirectory(avProcessor)
 
 # Python apps
+add_subdirectory(pyProcessor)
 add_subdirectory(pyThumbnail)
