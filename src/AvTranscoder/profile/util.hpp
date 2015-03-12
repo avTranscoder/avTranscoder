@@ -28,6 +28,7 @@
 #endif
 
 #include <string>
+#include <cstring>
 #include <iostream>
 
 namespace avtranscoder

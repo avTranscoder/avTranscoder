@@ -1,6 +1,7 @@
 #include "PixelProperties.hpp"
 
 #include <stdexcept>
+#include <cstring>
 
 namespace avtranscoder
 {
