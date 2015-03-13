@@ -13,7 +13,7 @@ elseif(swresample_FOUND)
 	add_definitions(-DAVTRANSCODER_FFMPEG_DEPENDENCY)
         message("Build avTranscoder with dependency to ffmpeg.")
 else()
-        message(SEND_ERROR, "Need 'swresample' or 'avresample'.")
+        message(SEND_ERROR "Can't define if you depend on ffmpeg or libav.")
 endif()
 
 # Include AvTranscoder and FFmpeg
