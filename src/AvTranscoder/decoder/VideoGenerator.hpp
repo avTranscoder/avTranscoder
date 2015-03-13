@@ -11,17 +11,19 @@ class AvExport VideoGenerator : public IDecoder
 {
 public:
 	VideoGenerator();
+	VideoGenerator( const VideoGenerator& videoGenerator );
+	VideoGenerator& operator=( const VideoGenerator& videoGenerator );
+
 	~VideoGenerator();
 
-	VideoFrameDesc& getVideoFrameDesc() { return _frameDesc; }
-	void setVideoFrameDesc( const VideoFrameDesc& frameDesc );
-	
 	void setup() {}
 
-	void setNextFrame( Frame& inputFrame );
-	
 	bool decodeNextFrame( Frame& frameBuffer );
 	bool decodeNextFrame( Frame& frameBuffer, const size_t subStreamIndex );
+
+	const VideoFrameDesc& getVideoFrameDesc() const { return _frameDesc; }
+	void setVideoFrameDesc( const VideoFrameDesc& frameDesc );
+	void setNextFrame( Frame& inputFrame );
 
 private:
 	Frame* _inputFrame;  ///< A frame given from outside (has link, no ownership)

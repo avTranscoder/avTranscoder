@@ -11,17 +11,19 @@ class AvExport AudioGenerator : public IDecoder
 {
 public:
 	AudioGenerator();
+	AudioGenerator( const AudioGenerator& audioGenerator );
+	AudioGenerator& operator=( const AudioGenerator& audioGenerator );
+
 	~AudioGenerator();
 
-	AudioFrameDesc& getAudioFrameDesc() { return _frameDesc; }
-	void setAudioFrameDesc( const AudioFrameDesc& frameDesc );
-	
 	void setup() {}
-	
-	void setFrame( Frame& inputFrame );
 
 	bool decodeNextFrame( Frame& frameBuffer );
 	bool decodeNextFrame( Frame& frameBuffer, const size_t subStreamIndex );
+
+	const AudioFrameDesc& getAudioFrameDesc() const { return _frameDesc; }
+	void setAudioFrameDesc( const AudioFrameDesc& frameDesc );
+	void setFrame( Frame& inputFrame );
 
 private:
 	Frame* _inputFrame;  ///< Has link (no ownership)

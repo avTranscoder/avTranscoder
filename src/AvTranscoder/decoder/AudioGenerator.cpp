@@ -10,6 +10,20 @@ AudioGenerator::AudioGenerator()
 {
 }
 
+AudioGenerator::AudioGenerator( const AudioGenerator& audioGenerator )
+	: _inputFrame( NULL)
+	, _silent( NULL )
+	, _frameDesc( audioGenerator.getAudioFrameDesc() )
+{
+}
+
+AudioGenerator& AudioGenerator::operator=( const AudioGenerator& audioGenerator )
+{
+	_inputFrame = NULL;
+	_silent = NULL;
+	_frameDesc = audioGenerator.getAudioFrameDesc();
+}
+
 AudioGenerator::~AudioGenerator()
 {
 	delete _silent;

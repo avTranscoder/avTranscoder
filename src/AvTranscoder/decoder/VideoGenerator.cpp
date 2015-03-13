@@ -12,6 +12,20 @@ VideoGenerator::VideoGenerator()
 {
 }
 
+VideoGenerator::VideoGenerator( const VideoGenerator& videoGenerator )
+	: _inputFrame( NULL)
+	, _blackImage( NULL )
+	, _frameDesc( videoGenerator.getVideoFrameDesc() )
+{
+}
+
+VideoGenerator& VideoGenerator::operator=( const VideoGenerator& videoGenerator )
+{
+	_inputFrame = NULL;
+	_blackImage = NULL;
+	_frameDesc = videoGenerator.getVideoFrameDesc();
+}
+
 VideoGenerator::~VideoGenerator()
 {
 	delete _blackImage;
