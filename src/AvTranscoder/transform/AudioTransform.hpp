@@ -19,6 +19,10 @@ namespace avtranscoder
 
 class AvExport AudioTransform : public ITransform
 {
+private:
+	AudioTransform( const AudioTransform& audioTransform );
+	AudioTransform& operator=( const AudioTransform& audioTransform );
+
 public:
 	AudioTransform();
 	~AudioTransform();

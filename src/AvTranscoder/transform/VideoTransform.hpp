@@ -14,6 +14,10 @@ namespace avtranscoder
 
 class AvExport VideoTransform : public ITransform
 {
+private:
+	VideoTransform( const VideoTransform& videoTransform );
+	VideoTransform& operator=( const VideoTransform& videoTransform );
+
 public:
 	VideoTransform();
 	~VideoTransform();
