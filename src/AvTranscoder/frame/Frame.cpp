@@ -78,18 +78,15 @@ void Frame::initAVPacket()
 
 void Frame::copyAVPacket( const AVPacket& avPacket )
 {
-#if AVTRANSCODER_FFMPEG_DEPENDENCY
-	#if LIBAVCODEC_VERSION_INT > AV_VERSION_INT(55, 56, 108)
-		av_copy_packet( &_packet, &avPacket );
-		return;
-	#elif LIBAVCODEC_VERSION_INT > AV_VERSION_INT(54, 56, 0)
-		av_copy_packet( &_packet, const_cast<AVPacket*>( &avPacket ) );
-		return;
-	#endif
-#endif
+#if AVTRANSCODER_FFMPEG_DEPENDENCY && LIBAVCODEC_VERSION_INT > AV_VERSION_INT(55, 56, 108)
+	av_copy_packet( &_packet, &avPacket );
+#elif AVTRANSCODER_FFMPEG_DEPENDENCY && LIBAVCODEC_VERSION_INT > AV_VERSION_INT(54, 56, 0)
+	av_copy_packet( &_packet, const_cast<AVPacket*>( &avPacket ) );
+#else
 	// we just care about data, not side properties of AVPacket
 	initAVPacket();
 	copyData( avPacket.data, avPacket.size );
+#endif
 }
 
 }
