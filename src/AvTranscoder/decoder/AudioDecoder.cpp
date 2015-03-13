@@ -21,6 +21,15 @@ AudioDecoder::AudioDecoder( InputStream& inputStream )
 	: _inputStream   ( &inputStream )
 	, _frame         ( NULL )
 {
+#if LIBAVCODEC_VERSION_MAJOR > 54
+	_frame = av_frame_alloc();
+#else
+	_frame = avcodec_alloc_frame();
+#endif
+	if( _frame == NULL )
+	{
+		throw std::runtime_error( "unable to setup frame buffer" );
+	}
 }
 
 AudioDecoder::~AudioDecoder()
@@ -44,16 +53,6 @@ AudioDecoder::~AudioDecoder()
 void AudioDecoder::setup()
 {
 	_inputStream->getAudioCodec().open();
-
-#if LIBAVCODEC_VERSION_MAJOR > 54
-	_frame = av_frame_alloc();
-#else
-	_frame = avcodec_alloc_frame();
-#endif
-	if( _frame == NULL )
-	{
-		throw std::runtime_error( "unable to setup frame buffer" );
-	}
 }
 
 bool AudioDecoder::decodeNextFrame( Frame& frameBuffer )
