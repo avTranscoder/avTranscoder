@@ -20,6 +20,10 @@ class ITransform;
 
 class AvExport StreamTranscoder
 {
+private:
+	StreamTranscoder( const StreamTranscoder& streamTranscoder );
+	StreamTranscoder& operator=( const StreamTranscoder& streamTranscoder );
+
 public:
 	/**
 	 * @brief rewrap stream
