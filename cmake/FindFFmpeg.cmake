@@ -76,25 +76,12 @@ macro(find_component COMPONENT PKGCONFIG LIBRARY HEADER)
 	)
 endmacro()
 
-# Get FFmpeg from custom install
-if(FFMPEG_LIBRARY_DIR AND FFMPEG_INCLUDE_DIR)
-	set(FFMPEG_FOUND TRUE)
-	if(WIN32)
-		file(GLOB FFMPEG_LIBRARIES "${FFMPEG_LIBRARY_DIR}/*.lib")
-	else()
-		file(GLOB FFMPEG_LIBRARIES "${FFMPEG_LIBRARY_DIR}/*.so")
-	endif()
-# Get FFmpeg from system install
-else()
-	# Check FFmpeg version
-	if(DEFINED FFmpeg_FIND_VERSION)
-		check_ffmpeg_version()
-	endif()
-
-	if(NOT FFmpeg_FIND_COMPONENTS)
-		set(FFmpeg_FIND_COMPONENTS avcodec avformat avutil)
-	endif()
-
+### Macro: manage_components
+# Define CMake variables for each component defined in FFmpeg_FIND_COMPONENTS
+# Send error if a required component is missing (warning if not required)
+# Set if FFMPEG is found
+#
+macro(manage_components)
 	# Check components and add their stuff to the FFMPEG_* vars.
 	foreach(COMPONENT ${FFmpeg_FIND_COMPONENTS})
 		# Get component name is lower cases.
@@ -120,4 +107,17 @@ else()
 		list(REMOVE_DUPLICATES FFMPEG_INCLUDE_DIR)
 		set(FFMPEG_FOUND TRUE)
 	endif()
+endmacro()
+
+# Check FFmpeg version
+if(DEFINED FFmpeg_FIND_VERSION)
+        check_ffmpeg_version()
 endif()
+
+# Get basic components if no one is indicated
+if(NOT FFmpeg_FIND_COMPONENTS)
+        set(FFmpeg_FIND_COMPONENTS avcodec avformat avutil)
+endif()
+
+# Check each component
+manage_components()
