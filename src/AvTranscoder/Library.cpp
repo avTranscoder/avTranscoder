@@ -5,7 +5,7 @@ extern "C" {
 #include <libavcodec/version.h>
 #include <libswscale/version.h>
 #include <libswscale/swscale.h>
-#ifdef AV_RESAMPLE_LIBRARY
+#ifdef AVTRANSCODER_LIBAV_DEPENDENCY
 	#include <libavresample/version.h>
 #else
 	#include <libswresample/version.h>
@@ -80,7 +80,7 @@ Libraries getLibraries()
 	libs.push_back( Library( "avutil",       avutil_license(),     LIBAVUTIL_VERSION_MAJOR,     LIBAVUTIL_VERSION_MINOR,     LIBAVUTIL_VERSION_MICRO     ) );
 	libs.push_back( Library( "avformat",     avformat_license(),   LIBAVFORMAT_VERSION_MAJOR,   LIBAVFORMAT_VERSION_MINOR,   LIBAVFORMAT_VERSION_MICRO   ) );
 	libs.push_back( Library( "avcodec",      avcodec_license(),    LIBAVCODEC_VERSION_MAJOR,    LIBAVCODEC_VERSION_MINOR,    LIBAVCODEC_VERSION_MICRO    ) );
-#ifdef AV_RESAMPLE_LIBRARY
+#ifdef AVTRANSCODER_LIBAV_DEPENDENCY
 	libs.push_back( Library( "avresample",   avutil_license(),     LIBAVRESAMPLE_VERSION_MAJOR, LIBAVRESAMPLE_VERSION_MINOR, LIBAVRESAMPLE_VERSION_MICRO ) );
 #else
 	libs.push_back( Library( "swresample",   avutil_license(),     LIBSWRESAMPLE_VERSION_MAJOR, LIBSWRESAMPLE_VERSION_MINOR, LIBSWRESAMPLE_VERSION_MICRO ) );

@@ -6,7 +6,7 @@ extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavutil/opt.h>
 
-#ifdef AV_RESAMPLE_LIBRARY
+#ifdef AVTRANSCODER_LIBAV_DEPENDENCY
  #include <libavresample/avresample.h>
  #define AllocResampleContext avresample_alloc_context
  #define FreeResampleContext avresample_free
@@ -98,7 +98,7 @@ void AudioTransform::convert( const Frame& srcFrame, Frame& dstFrame )
 	unsigned char* dstData = dstFrame.getData();
 
 	int nbOutputSamplesPerChannel;
-#ifdef AV_RESAMPLE_LIBRARY
+#ifdef AVTRANSCODER_LIBAV_DEPENDENCY
 	nbOutputSamplesPerChannel = avresample_convert( _audioConvertContext, (uint8_t**)&dstData, 0, dstFrame.getSize(), (uint8_t**)&srcData, 0, srcFrame.getSize() );
 #else
 	nbOutputSamplesPerChannel = swr_convert( _audioConvertContext, &dstData, dstFrame.getSize(), &srcData, srcFrame.getSize() );

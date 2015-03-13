@@ -2,15 +2,16 @@
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 include(AvTranscoderMacros)
 
-##find_package(FFmpeg)
-find_package(FFmpeg
-	COMPONENTS avcodec avformat avutil swscale swresample avresample)
+# find package ffmpeg/libav
+find_package(FFmpeg COMPONENTS avcodec avformat avutil swscale swresample avresample)
 
 # Check if FFmpeg or libav dependency
-if(avresample_VERSION)
-	add_definitions(-DAV_RESAMPLE_LIBRARY)
-elseif(swresample_VERSION)
-	add_definitions(-DFF_RESAMPLE_LIBRARY)
+if(avresample_FOUND)
+	add_definitions(-DAVTRANSCODER_LIBAV_DEPENDENCY)
+	message("Build avTranscoder with dependency to libav.")
+elseif(swresample_FOUND)
+	add_definitions(-DAVTRANSCODER_FFMPEG_DEPENDENCY)
+        message("Build avTranscoder with dependency to ffmpeg.")
 else()
         message(SEND_ERROR, "Need 'swresample' or 'avresample'.")
 endif()

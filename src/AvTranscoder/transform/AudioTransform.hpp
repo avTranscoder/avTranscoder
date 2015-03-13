@@ -6,7 +6,7 @@
 #include <AvTranscoder/common.hpp>
 #include <AvTranscoder/frame/Frame.hpp>
 
-#ifdef AV_RESAMPLE_LIBRARY
+#ifdef AVTRANSCODER_LIBAV_DEPENDENCY
  #define ResampleContext AVAudioResampleContext
 #else
  #define ResampleContext SwrContext
