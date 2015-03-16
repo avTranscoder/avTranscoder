@@ -23,8 +23,18 @@ def testTranscodeAudioOffset():
 	progress = av.ConsoleProgress()
 	transcoder.process( progress )
 
-        # TODO: check output duration
+	# get src file of transcode
+	src_inputFile = av.InputFile( inputFileName )
+	src_properties = src_inputFile.getProperties()
+	src_audioStream = src_properties.getAudioProperties()[0]
 
+	# get dst file of transcode
+	dst_inputFile = av.InputFile( outputFileName )
+	dst_properties = dst_inputFile.getProperties()
+	dst_audioStream = dst_properties.getAudioProperties()[0]
+
+        # check output duration
+	assert_almost_equals( src_audioStream.getDuration() + 10, dst_audioStream.getDuration(), delta=0.1 )
 
 def testTranscodeVideoOffset():
 	"""
@@ -41,4 +51,15 @@ def testTranscodeVideoOffset():
 	progress = av.ConsoleProgress()
 	transcoder.process( progress )
 
-	# TODO: check output duration
+	# get src file of transcode
+	src_inputFile = av.InputFile( inputFileName )
+	src_properties = src_inputFile.getProperties()
+	src_videoStream = src_properties.getVideoProperties()[0]
+
+	# get dst file of transcode
+	dst_inputFile = av.InputFile( outputFileName )
+	dst_properties = dst_inputFile.getProperties()
+	dst_videoStream = dst_properties.getVideoProperties()[0]
+
+        # check output duration
+	assert_almost_equals( src_videoStream.getDuration() + 10, dst_videoStream.getDuration(), delta=0.1 )
