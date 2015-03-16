@@ -133,15 +133,16 @@ PropertiesMap FileProperties::getPropertiesAsMap() const
 {
 	PropertiesMap dataMap;
 
-	detail::add( dataMap, "filename", getFilename() );
-	detail::add( dataMap, "formatName", getFormatName() );
-	detail::add( dataMap, "formatLongName", getFormatLongName() );
+	addProperty( dataMap, "filename", &FileProperties::getFilename );
+	addProperty( dataMap, "formatName", &FileProperties::getFormatName );
+	addProperty( dataMap, "formatLongName", &FileProperties::getFormatLongName );
 
-	detail::add( dataMap, "startTime", getStartTime() );
-	detail::add( dataMap, "duration", getDuration() );
-	detail::add( dataMap, "bitrate", getBitRate() );
-	detail::add( dataMap, "numberOfStreams", getNbStreams() );
-	detail::add( dataMap, "numberOfPrograms", getProgramsCount() );
+	addProperty( dataMap, "startTime", &FileProperties::getStartTime );
+	addProperty( dataMap, "duration", &FileProperties::getDuration );
+	addProperty( dataMap, "bitrate", &FileProperties::getBitRate );
+	addProperty( dataMap, "numberOfStreams", &FileProperties::getNbStreams );
+	addProperty( dataMap, "numberOfPrograms", &FileProperties::getProgramsCount );
+
 	detail::add( dataMap, "numberOfVideoStreams", getNbVideoStreams() );
 	detail::add( dataMap, "numberOfAudioStreams", getNbAudioStreams() );
 	detail::add( dataMap, "numberOfDataStreams", getNbDataStreams() );
