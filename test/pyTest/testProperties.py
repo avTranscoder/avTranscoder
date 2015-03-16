@@ -1,5 +1,10 @@
 import os
 
+# Check if environment is setup to run the tests
+if os.environ.get('AVTRANSCODER_TEST_AUDIO_FILE') is None:
+	from nose.plugins.skip import SkipTest
+	raise SkipTest("Need to define environment variable AVTRANSCODER_TEST_AUDIO_FILE")
+
 from nose.tools import *
 
 from pyAvTranscoder import avtranscoder as av
