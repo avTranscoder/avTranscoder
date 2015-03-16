@@ -63,7 +63,7 @@ install(
 )
 
 ### Bindings with SWIG
-if(DISABLE_BINDINGS)
+if(AVTRANSCODER_DISABLE_BINDINGS)
 	message("Bindings disabled, will not build bindings.")
 	return()
 endif()
@@ -79,7 +79,7 @@ if(SWIG_FOUND)
 	set_source_files_properties(${AVTRANSCODER_BINDING_FILE} PROPERTIES CPLUSPLUS ON)
 
 	### PYTHON BINDING
-	if(DISABLE_PYTHON_BINDING)
+	if(AVTRANSCODER_DISABLE_PYTHON_BINDING)
 		message("PYTHON binding disabled, will not build python binding.")
 	else()
 		find_package(PythonLibs)
@@ -114,7 +114,7 @@ if(SWIG_FOUND)
         endif()
 
 	### JAVA BINDING
-        if(DISABLE_JAVA_BINDING)
+        if(AVTRANSCODER_DISABLE_JAVA_BINDING)
 		message("JAVA binding disabled, will not build java binding.")
         else()
 		find_package(Java)

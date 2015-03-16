@@ -1,5 +1,9 @@
+# C++ apps
 add_subdirectory(avInfo)
 add_subdirectory(avMeta)
 add_subdirectory(avPlay)
 add_subdirectory(avProcessor)
-add_subdirectory(avThumbnail)
+
+# Python apps
+add_subdirectory(pyProcessor)
+add_subdirectory(pyThumbnail)

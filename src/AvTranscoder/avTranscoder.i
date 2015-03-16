@@ -15,7 +15,9 @@
 %include "AvTranscoder/swig/avLogLevel.i"
 
 %{
+#include <AvTranscoder/Library.hpp>
 #include <AvTranscoder/Option.hpp>
+#include <AvTranscoder/log.hpp>
 %}
 
 namespace std {
@@ -27,7 +29,9 @@ namespace std {
 %include "AvTranscoder/frame/frame.i"
 %include "AvTranscoder/profile/profile.i"
 
+%include <AvTranscoder/Library.hpp>
 %include <AvTranscoder/Option.hpp>
+%include <AvTranscoder/log.hpp>
 
 %include "AvTranscoder/codec/codec.i"
 %include "AvTranscoder/stream/stream.i"

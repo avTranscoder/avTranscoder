@@ -22,18 +22,18 @@ cmake .. -DCMAKE_PREFIX_PATH=/path/to/your/install
 
 #### To not build apps
 ```
-cmake .. -DDISABLE_APPS=True
+cmake .. -DAVTRANSCODER_DISABLE_APPS=True
 ```
 
 #### To not build bindings
 ```
-cmake .. -DDISABLE_BINDINGS=True
+cmake .. -DAVTRANSCODER_DISABLE_BINDINGS=True
 ```
 ```
-cmake .. -DDISABLE_PYTHON_BINDING=True
+cmake .. -DAVTRANSCODER_DISABLE_PYTHON_BINDING=True
 ```
 ```
-cmake .. -DDISABLE_JAVA_BINDING=True
+cmake .. -DAVTRANSCODER_DISABLE_JAVA_BINDING=True
 ```
 
 #### Other useful flags
