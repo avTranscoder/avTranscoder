@@ -45,16 +45,6 @@ InputStream::InputStream( InputFile& inputFile, const size_t streamIndex )
 	}
 }
 
-InputStream::InputStream( const InputStream& inputStream )
-	: IInputStream( )
-	, _inputFile( inputStream._inputFile )
-	, _codec( inputStream._codec )
-	, _streamCache()
-	, _streamIndex( inputStream._streamIndex )
-	, _isActivated( inputStream._isActivated )
-{
-}
-
 InputStream::~InputStream( )
 {
 	delete _codec;

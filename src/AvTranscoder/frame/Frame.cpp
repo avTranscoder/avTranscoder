@@ -25,6 +25,11 @@ Frame::Frame( const Frame& other )
 	copyAVPacket( other.getAVPacket() );
 }
 
+Frame& Frame::operator=( const Frame& other )
+{
+	copyAVPacket( other.getAVPacket() );
+}
+
 Frame::~Frame()
 {
 	av_free_packet( &_packet );

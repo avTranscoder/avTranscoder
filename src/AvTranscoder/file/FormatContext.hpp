@@ -16,6 +16,10 @@ namespace avtranscoder
  */
 class AvExport FormatContext
 {
+private:
+	FormatContext( const FormatContext& formatContext );
+	FormatContext& operator=( const FormatContext& formatContext );
+
 public:
 	FormatContext( const std::string& filename, int req_flags = 0 );  ///< Allocate an AVFormatContext by opening an input file
 	FormatContext( int req_flags = 0 );  ///< Allocate an AVFormatContext with default values

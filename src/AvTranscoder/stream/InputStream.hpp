@@ -14,9 +14,12 @@ class InputFile;
 
 class AvExport InputStream : public IInputStream
 {
+private:
+	InputStream( const InputStream& inputStream );
+	InputStream& operator=( const InputStream& inputStream );
+
 public:
 	InputStream( InputFile& inputFile, const size_t streamIndex );
-	InputStream( const InputStream& inputStream );  ///< Does not copy _streamCache
 	~InputStream( );
 
 	bool readNextPacket( CodedData& data );

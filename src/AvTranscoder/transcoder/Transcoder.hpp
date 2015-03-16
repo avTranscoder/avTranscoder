@@ -38,6 +38,10 @@ enum EProcessMethod
  */
 class AvExport Transcoder
 {
+private:
+	Transcoder( const Transcoder& transcoder );
+	Transcoder& operator=( const Transcoder& transcoder );
+
 public:
 	/**
 	 * @note Set FFmpeg log level to quite.

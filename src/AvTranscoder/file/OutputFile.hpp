@@ -16,6 +16,10 @@ namespace avtranscoder
  **/
 class AvExport OutputFile : public IOutputFile
 {
+private:
+	OutputFile( const OutputFile& outputFile );
+	OutputFile& operator=( const OutputFile& outputFile );
+
 public:
 	/**
 	 * @brief Open an output media file

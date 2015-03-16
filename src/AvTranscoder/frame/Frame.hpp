@@ -25,6 +25,9 @@ public:
 	/// Override copy constructor in order to copy AVPacket data
 	Frame( const Frame& other );
 
+	/// Override operator = in order to copy AVPacket data
+	Frame& operator=( const Frame& other );
+
 	/// Free buffer of data
 	~Frame();
 

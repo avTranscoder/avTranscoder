@@ -7,8 +7,6 @@
 
 #include <string>
 
-class AVFormatContext;
-
 namespace avtranscoder
 {
 
