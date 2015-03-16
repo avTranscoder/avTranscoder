@@ -162,3 +162,17 @@ else(SWIG_FOUND)
 	message("SWIG not found, will not build python and java bindings.")
 
 endif(SWIG_FOUND)
+
+# generate API documentation with Doxygen
+find_package(Doxygen)
+if(DOXYGEN_FOUND)
+	set(doxyfile_in ${PROJECT_SOURCE_DIR}/doc/code/doxyfile.in)
+	set(doxyfile ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
+	
+	configure_file(${doxyfile_in} ${doxyfile} @ONLY)
+	add_custom_target(doc
+		COMMAND ${DOXYGEN_EXECUTABLE} ${doxyfile}
+		WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+		COMMENT "Generating API documentation with Doxygen" VERBATIM
+	)
+endif(DOXYGEN_FOUND)
