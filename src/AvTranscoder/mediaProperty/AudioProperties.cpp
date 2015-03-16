@@ -199,22 +199,22 @@ PropertiesMap AudioProperties::getPropertiesAsMap() const
 {
 	PropertiesMap dataMap;
 
-	detail::add( dataMap, "streamId", getStreamId() );
-	detail::add( dataMap, "codecId", getCodecId() );
-	detail::add( dataMap, "codecName", getCodecName() );
-	detail::add( dataMap, "codecLongName", getCodecLongName() );
-	detail::add( dataMap, "sampleFormatName", getSampleFormatName() );
-	detail::add( dataMap, "sampleFormatLongName", getSampleFormatLongName() );
-	detail::add( dataMap, "sampleRate", getSampleRate() );
-	detail::add( dataMap, "bitRate", getBitRate() );
-	detail::add( dataMap, "nbSamples", getNbSamples() );
-	detail::add( dataMap, "channels", getChannels() );
-	detail::add( dataMap, "channelLayout", getChannelLayout() );
-	detail::add( dataMap, "channelName", getChannelName() );
-	detail::add( dataMap, "channelDescription", getChannelDescription() );
-	detail::add( dataMap, "ticksPerFrame", getTicksPerFrame() );
-	detail::add( dataMap, "timeBase", getTimeBase() );
-	detail::add( dataMap, "duration", getDuration() );
+	addProperty( dataMap, "streamId", &AudioProperties::getStreamId );
+	addProperty( dataMap, "codecId", &AudioProperties::getCodecId );
+	addProperty( dataMap, "codecName", &AudioProperties::getCodecName );
+	addProperty( dataMap, "codecLongName", &AudioProperties::getCodecLongName );
+	addProperty( dataMap, "sampleFormatName", &AudioProperties::getSampleFormatName );
+	addProperty( dataMap, "sampleFormatLongName", &AudioProperties::getSampleFormatLongName );
+	addProperty( dataMap, "sampleRate", &AudioProperties::getSampleRate );
+	addProperty( dataMap, "bitRate", &AudioProperties::getBitRate );
+	addProperty( dataMap, "nbSamples", &AudioProperties::getNbSamples );
+	addProperty( dataMap, "channels", &AudioProperties::getChannels );
+	addProperty( dataMap, "channelLayout", &AudioProperties::getChannelLayout );
+	addProperty( dataMap, "channelName", &AudioProperties::getChannelName );
+	addProperty( dataMap, "channelDescription", &AudioProperties::getChannelDescription );
+	addProperty( dataMap, "ticksPerFrame", &AudioProperties::getTicksPerFrame );
+	addProperty( dataMap, "timeBase", &AudioProperties::getTimeBase );
+	addProperty( dataMap, "duration", &AudioProperties::getDuration );
 
 	for( size_t metadataIndex = 0; metadataIndex < _metadatas.size(); ++metadataIndex )
 	{
