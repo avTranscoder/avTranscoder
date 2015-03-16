@@ -45,3 +45,20 @@ cmake .. -DCMAKE_INSTALL_PREFIX=/path/to/install
 ```
 cmake .. -DCMAKE_BUILD_TYPE=Release/Debug
 ```
+
+#### Mac OSX using homebrew
+
+###### Install homebrew
+http://brew.sh/
+
+###### Install avTranscoder
+```
+brew tap cbenhagen/video
+brew install avtranscoder
+```
+
+###### Use homebrew to install only dependencies
+```
+brew deps avtranscoder
+brew install avtranscoder --only-dependencies
+```
