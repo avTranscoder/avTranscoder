@@ -5,15 +5,19 @@ namespace avtranscoder
 
 void callbackToWriteInFile( void *ptr, int level, const char *fmt, va_list vl )
 {
+	std::ofstream outputFile;
+	outputFile.open( LOG_FILE, std::ios::out | std::ios::app );
+
+#ifdef AVTRANSCODER_FFMPEG_DEPENDENCY
 	// Format a line of log the same way as the default callback
 	char line[1024];
 	static int print_prefix = 1;
-	av_log_format_line(ptr, level, fmt, vl, line, sizeof(line), &print_prefix);
-
-	// Print line in log file
-	std::ofstream outputFile;
-	outputFile.open( LOG_FILE, std::ios::out | std::ios::app );
+	av_log_format_line(ptr, level, fmt, vl, line, sizeof(line), &print_prefix); //only available with ffmpeg
 	outputFile << line;
+#else
+	outputFile << "Warning: currently can't log in file with avtranscoder when depending on libav" << std::endl;
+#endif
+
 	outputFile.close();
 }
 
