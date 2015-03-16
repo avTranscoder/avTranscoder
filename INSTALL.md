@@ -4,8 +4,8 @@ AvTranscoder uses CMake as build system.
 
 #### Dependencies
 AvTranscoder can depend on ffmpeg, libav, or any fork of these projects that follow the same API.
-###### Recommended ffmpeg versions: 2.2.2 or upper
-###### Recommended libav versions: not tested
+* Recommended ffmpeg versions: 2.2.2 or upper
+* Recommended libav versions: not tested
 
 #### To build
 ```
