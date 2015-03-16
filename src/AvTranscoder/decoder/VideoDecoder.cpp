@@ -20,6 +20,15 @@ VideoDecoder::VideoDecoder( InputStream& inputStream )
 	: _inputStream   ( &inputStream )
 	, _frame         ( NULL )
 {
+#if LIBAVCODEC_VERSION_MAJOR > 54
+	_frame = av_frame_alloc();
+#else
+	_frame = avcodec_alloc_frame();
+#endif
+	if( _frame == NULL )
+	{
+		throw std::runtime_error( "unable to setup frame buffer" );
+	}
 }
 
 VideoDecoder::~VideoDecoder()
@@ -42,16 +51,6 @@ VideoDecoder::~VideoDecoder()
 void VideoDecoder::setup()
 {
 	_inputStream->getVideoCodec().open();
-
-#if LIBAVCODEC_VERSION_MAJOR > 54
-	_frame = av_frame_alloc();
-#else
-	_frame = avcodec_alloc_frame();
-#endif
-	if( _frame == NULL )
-	{
-		throw std::runtime_error( "unable to setup frame buffer" );
-	}
 }
 
 bool VideoDecoder::decodeNextFrame( Frame& frameBuffer )
