@@ -65,18 +65,18 @@ codec=codecName
 
 ###### nosetests
 Python tests using nosetests.
-
-Create environment variables to use your files in tests.
-* ```AVTRANSCODER_TEST_AUDIO_FILE```
-* ```AVTRANSCODER_TEST_VIDEO_FILE```
-
-Note: for continuous integration, we launch tests with media files contained in ```avTranscoder-data``` repository.
-
-Launch the tests:
 ```
 cd test/pyTest
 nosetests
 ```
+
+Some tests need environment variables to be executed (otherwise they will be skipped):
+* ```AVTRANSCODER_TEST_VIDEO_FILE```
+* ```AVTRANSCODER_TEST_AUDIO_WAVE_FILE```
+* ```AVTRANSCODER_TEST_AUDIO_MOV_FILE```
+
+Note: for continuous integration, we launch tests with media files contained in ```avTranscoder-data``` repository.
+
 
 #### Packaging
 
