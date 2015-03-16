@@ -223,79 +223,100 @@ PropertiesMap PixelProperties::getPropertiesAsMap() const
 {
 	PropertiesMap dataMap;
 
-	detail::add( dataMap, "pixelName", getPixelName() );
-	detail::add( dataMap, "pixelFormatName", getPixelFormatName() );
-	detail::add( dataMap, "bitDepth", getBitsPerPixel() );
-	detail::add( dataMap, "nbComponents", getNbComponents() );
-	detail::add( dataMap, "chromaWidth", getChromaWidth() );
-	detail::add( dataMap, "chromaHeight", getChromaHeight() );
+	addProperty( dataMap, "pixelName", &PixelProperties::getPixelName );
+	addProperty( dataMap, "pixelFormatName", &PixelProperties::getPixelFormatName );
+	addProperty( dataMap, "bitDepth", &PixelProperties::getBitsPerPixel );
+	addProperty( dataMap, "nbComponents", &PixelProperties::getNbComponents );
+	addProperty( dataMap, "chromaWidth", &PixelProperties::getChromaWidth );
+	addProperty( dataMap, "chromaHeight", &PixelProperties::getChromaHeight );
 
-	std::string colorComponents;
-	switch( getColorComponents() )
+	try
 	{
-		case eComponentGray:
-			colorComponents = "gray";
-			break;
-		case eComponentRgb:
-			colorComponents = "RGB";
-			break;
-		case eComponentYuvJPEG:
-			colorComponents = "YUVJPEG";
-			break;
-		case eComponentYuvA:
-			colorComponents = "YUVA";
-			break;
-		case eComponentYuv:
-			colorComponents = "YUV";
-			break;
+		std::string colorComponents;
+		switch( getColorComponents() )
+		{
+			case eComponentGray:
+				colorComponents = "gray";
+				break;
+			case eComponentRgb:
+				colorComponents = "RGB";
+				break;
+			case eComponentYuvJPEG:
+				colorComponents = "YUVJPEG";
+				break;
+			case eComponentYuvA:
+				colorComponents = "YUVA";
+				break;
+			case eComponentYuv:
+				colorComponents = "YUV";
+				break;
+		}
+		detail::add( dataMap, "colorComponents", colorComponents );
 	}
-	detail::add( dataMap, "colorComponents", colorComponents );
-
-	std::string subsampling;
-	switch( getSubsampling() )
+	catch( const std::exception& e )
 	{
-		case eSubsampling440:
-			subsampling = "440";
-			break;
-		case eSubsampling422:
-			subsampling = "422";
-			break;
-		case eSubsampling420:
-			subsampling = "420";
-			break;
-		case eSubsampling411:
-			subsampling = "411";
-			break;
-		case eSubsampling410:
-			subsampling = "410";
-			break;
-		case eSubsamplingNone:
-			subsampling = "None";
-			break;
+		detail::add( dataMap, "colorComponents", e.what() );
 	}
-	detail::add( dataMap, "subsampling", subsampling );
 
-	detail::add( dataMap, "isBigEndian", isBigEndian() );
-	detail::add( dataMap, "hasAlpha", hasAlpha() );
-	detail::add( dataMap, "isPlanar", isPlanar() );
-	detail::add( dataMap, "isIndexedColors", isIndexedColors() );
-	detail::add( dataMap, "bitWiseAcked", isBitWisePacked() );
-	detail::add( dataMap, "isHardwareAccelerated", isHardwareAccelerated() );
-	detail::add( dataMap, "rgbPixel", isRgbPixelData() );
-	detail::add( dataMap, "isPseudoPaletted", isPseudoPaletted() );
-
-	std::vector<Channel> channels = getChannels();
-	for( size_t channelIndex = 0; channelIndex < channels.size(); ++channelIndex )
+	try
 	{
-		std::stringstream channelName;
-		channelName << "channel_" << channels.at( channelIndex ).id;
-	
-		std::stringstream channelValue;
-		channelValue << "chromaHeight " << channels.at( channelIndex ).chromaHeight;
-		channelValue << " - ";
-		channelValue << "bitStep " << channels.at( channelIndex ).bitStep;
+		std::string subsampling;
+		switch( getSubsampling() )
+		{
+			case eSubsampling440:
+				subsampling = "440";
+				break;
+			case eSubsampling422:
+				subsampling = "422";
+				break;
+			case eSubsampling420:
+				subsampling = "420";
+				break;
+			case eSubsampling411:
+				subsampling = "411";
+				break;
+			case eSubsampling410:
+				subsampling = "410";
+				break;
+			case eSubsamplingNone:
+				subsampling = "None";
+				break;
+		}
+		detail::add( dataMap, "subsampling", subsampling );
+	}
+	catch( const std::exception& e )
+	{
+		detail::add( dataMap, "subsampling", e.what() );
+	}
 
-		detail::add( dataMap, channelName.str(), channelValue.str() );
+	addProperty( dataMap, "isBigEndian", &PixelProperties::isBigEndian );
+	addProperty( dataMap, "hasAlpha", &PixelProperties::hasAlpha );
+	addProperty( dataMap, "isPlanar", &PixelProperties::isPlanar );
+	addProperty( dataMap, "isIndexedColors", &PixelProperties::isIndexedColors );
+	addProperty( dataMap, "bitWiseAcked", &PixelProperties::isBitWisePacked );
+	addProperty( dataMap, "isHardwareAccelerated", &PixelProperties::isHardwareAccelerated );
+	addProperty( dataMap, "rgbPixel", &PixelProperties::isRgbPixelData );
+	addProperty( dataMap, "isPseudoPaletted", &PixelProperties::isPseudoPaletted );
+
+	try
+	{
+		std::vector<Channel> channels = getChannels();
+		for( size_t channelIndex = 0; channelIndex < channels.size(); ++channelIndex )
+		{
+			std::stringstream channelName;
+			channelName << "channel_" << channels.at( channelIndex ).id;
+
+			std::stringstream channelValue;
+			channelValue << "chromaHeight " << channels.at( channelIndex ).chromaHeight;
+			channelValue << " - ";
+			channelValue << "bitStep " << channels.at( channelIndex ).bitStep;
+
+			detail::add( dataMap, channelName.str(), channelValue.str() );
+		}
+	}
+	catch( const std::exception& e )
+	{
+		detail::add( dataMap, "channels", e.what() );
 	}
 
 	return dataMap;
