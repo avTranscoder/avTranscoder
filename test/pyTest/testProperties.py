@@ -1,9 +1,9 @@
 import os
 
 # Check if environment is setup to run the tests
-if os.environ.get('AVTRANSCODER_TEST_AUDIO_FILE') is None:
+if os.environ.get('AVTRANSCODER_TEST_AUDIO_WAVE_FILE') is None:
 	from nose.plugins.skip import SkipTest
-	raise SkipTest("Need to define environment variable AVTRANSCODER_TEST_AUDIO_FILE")
+	raise SkipTest("Need to define environment variable AVTRANSCODER_TEST_AUDIO_WAVE_FILE")
 
 from nose.tools import *
 
@@ -23,7 +23,7 @@ def testAddMetadataDate():
 	transcoder = av.Transcoder( ouputFile )
 
 	# rewrap a stream
-	transcoder.add( os.environ['AVTRANSCODER_TEST_AUDIO_FILE'], 0, "")
+	transcoder.add( os.environ['AVTRANSCODER_TEST_AUDIO_WAVE_FILE'], 0, "")
 
 	# add one metadata
 	metadata_to_check = ("date", "value")
@@ -48,7 +48,7 @@ def testAddImpossibleMetadata():
 	transcoder = av.Transcoder( ouputFile )
 
 	# rewrap a stream
-	transcoder.add( os.environ['AVTRANSCODER_TEST_AUDIO_FILE'], 0, "")
+	transcoder.add( os.environ['AVTRANSCODER_TEST_AUDIO_WAVE_FILE'], 0, "")
 
 	# add one metadata
 	metadata_to_check = ("undefinedMetadataKey", "undefinedMetadataValue")

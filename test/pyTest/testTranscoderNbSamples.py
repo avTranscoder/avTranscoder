@@ -1,9 +1,9 @@
 import os
 
 # Check if environment is setup to run the tests
-if os.environ.get('AVTRANSCODER_TEST_AUDIO_FILE') is None:
+if os.environ.get('AVTRANSCODER_TEST_AUDIO_WAVE_FILE') is None:
 	from nose.plugins.skip import SkipTest
-	raise SkipTest("Need to define environment variable AVTRANSCODER_TEST_AUDIO_FILE")
+	raise SkipTest("Need to define environment variable AVTRANSCODER_TEST_AUDIO_WAVE_FILE")
 
 from nose.tools import *
 
@@ -17,7 +17,7 @@ def testNbSamplesAudioRewrap():
 	"""
 	Rewrap one audio stream, check nb samples.
 	"""
-	inputFileName = os.environ['AVTRANSCODER_TEST_AUDIO_FILE']
+	inputFileName = os.environ['AVTRANSCODER_TEST_AUDIO_WAVE_FILE']
 	outputFileName = "testNbSamplesAudioRewrap.wav"
 
 	ouputFile = av.OutputFile( outputFileName )
@@ -44,7 +44,7 @@ def testNbSamplesAudioTranscode():
 	"""
 	Transcode one audio stream (to wave24b48kmono), check nb samples.
 	"""
-	inputFileName = os.environ['AVTRANSCODER_TEST_AUDIO_FILE']
+	inputFileName = os.environ['AVTRANSCODER_TEST_AUDIO_WAVE_FILE']
 	outputFileName = "testNbSamplesAudioTranscode.wav"
 
 	ouputFile = av.OutputFile( outputFileName )

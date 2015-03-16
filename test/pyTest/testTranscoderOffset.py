@@ -1,9 +1,9 @@
 import os
 
 # Check if environment is setup to run the tests
-if os.environ.get('AVTRANSCODER_TEST_AUDIO_FILE') is None or os.environ.get('AVTRANSCODER_TEST_VIDEO_FILE') is None:
+if os.environ.get('AVTRANSCODER_TEST_AUDIO_WAVE_FILE') is None or os.environ.get('AVTRANSCODER_TEST_VIDEO_FILE') is None:
 	from nose.plugins.skip import SkipTest
-	raise SkipTest("Need to define environment variables AVTRANSCODER_TEST_VIDEO_FILE and AVTRANSCODER_TEST_AUDIO_FILE")
+	raise SkipTest("Need to define environment variables AVTRANSCODER_TEST_VIDEO_FILE and AVTRANSCODER_TEST_AUDIO_WAVE_FILE")
 
 from nose.tools import *
 
@@ -17,7 +17,7 @@ def testTranscodeAudioOffset():
 	"""
 	Transcode one audio stream (profile wave24b48kmono) with offset at the beginning of the transcode.
 	"""
-	inputFileName = os.environ['AVTRANSCODER_TEST_AUDIO_FILE']
+	inputFileName = os.environ['AVTRANSCODER_TEST_AUDIO_WAVE_FILE']
 	outputFileName = "testTranscodeAudioOffset.wav"
 
 	ouputFile = av.OutputFile( outputFileName )
