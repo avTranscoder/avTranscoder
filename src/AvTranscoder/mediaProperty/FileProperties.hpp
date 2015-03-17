@@ -29,7 +29,7 @@ public:
 	size_t getProgramsCount() const;
 	double getStartTime() const;
 	double getDuration() const;  ///< in seconds
-	size_t getBitRate() const;
+	size_t getBitRate() const;  ///< total stream bitrate in bit/s, 0 if not available (result of a computation by ffmpeg)
 	size_t getPacketSize() const;
 
 	PropertiesMap& getMetadatas() { return _metadatas; }
