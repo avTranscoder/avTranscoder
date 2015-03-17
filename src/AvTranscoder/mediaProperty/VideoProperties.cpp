@@ -51,51 +51,54 @@ VideoProperties::VideoProperties( const FormatContext& formatContext, const size
 
 std::string VideoProperties::getCodecName() const
 {
-	if( _codecContext && _codec )
-	{
-		if( _codec->capabilities & CODEC_CAP_TRUNCATED )
-			_codecContext->flags|= CODEC_FLAG_TRUNCATED;
+	if( ! _codecContext || ! _codec )
+		throw std::runtime_error( "unknown codec" );
 
-		if( _codec->name )
-			return std::string( _codec->name );
-	}
-	return "unknown codec";
+	if( _codec->capabilities & CODEC_CAP_TRUNCATED )
+		_codecContext->flags|= CODEC_FLAG_TRUNCATED;
+
+	if( ! _codec->name )
+		throw std::runtime_error( "unknown codec name" );
+
+	return std::string( _codec->name );
 }
 
 std::string VideoProperties::getCodecLongName() const
 {
-	if( _codecContext && _codec )
-	{
-		if( _codec->capabilities & CODEC_CAP_TRUNCATED )
-			_codecContext->flags|= CODEC_FLAG_TRUNCATED;
+	if( ! _codecContext || ! _codec )
+		throw std::runtime_error( "unknown codec" );
 
-		if( _codec->long_name )
-			return std::string( _codec->long_name );
-	}
-	return "unknown codec";
+	if( _codec->capabilities & CODEC_CAP_TRUNCATED )
+		_codecContext->flags|= CODEC_FLAG_TRUNCATED;
+
+	if( ! _codec->long_name )
+		throw std::runtime_error( "unknown codec long name" );
+
+	return std::string( _codec->long_name );
 }
 
 std::string VideoProperties::getProfileName() const
 {
-	if( _codecContext && _codec )
-	{
-		if( _codec->capabilities & CODEC_CAP_TRUNCATED )
-			_codecContext->flags|= CODEC_FLAG_TRUNCATED;
+	if( ! _codecContext || ! _codec )
+		throw std::runtime_error( "unknown codec" );
 
-		if( _codecContext->profile != -99 )
-		{
-			const char* profile = NULL;
-			if( ( profile = av_get_profile_name( _codec, _codecContext->profile ) ) != NULL )
-				return std::string( profile );
-		}
+	if( _codec->capabilities & CODEC_CAP_TRUNCATED )
+		_codecContext->flags|= CODEC_FLAG_TRUNCATED;
+
+	if( _codecContext->profile != -99 )
+	{
+		const char* profile = NULL;
+		if( ( profile = av_get_profile_name( _codec, _codecContext->profile ) ) == NULL )
+			throw std::runtime_error( "unknown codec profile" );
+
+		return std::string( profile );
 	}
-	return "unknown profile";
 }
 
 std::string VideoProperties::getColorTransfert() const
 {
 	if( ! _codecContext )
-		return "unknown codec context";
+		throw std::runtime_error( "unknown codec context" );
 
 	switch( _codecContext->color_trc )
 	{
@@ -159,7 +162,7 @@ std::string VideoProperties::getColorTransfert() const
 std::string VideoProperties::getColorspace() const
 {
 	if( ! _codecContext )
-		return "unknown codec context";
+		throw std::runtime_error( "unknown codec context" );
 
 	switch( _codecContext->colorspace )
 	{
@@ -204,7 +207,7 @@ std::string VideoProperties::getColorspace() const
 std::string VideoProperties::getColorRange() const
 {
 	if( ! _codecContext )
-		return "unknown codec context";
+		throw std::runtime_error( "unknown codec context" );
 
 	switch( _codecContext->color_range )
 	{
@@ -224,7 +227,7 @@ std::string VideoProperties::getColorRange() const
 std::string VideoProperties::getColorPrimaries() const
 {
 	if( ! _codecContext )
-		return "unknown codec context";
+		throw std::runtime_error( "unknown codec context" );
 
 	switch( _codecContext->color_primaries )
 	{
@@ -258,7 +261,7 @@ std::string VideoProperties::getColorPrimaries() const
 std::string VideoProperties::getChromaSampleLocation() const
 {
 	if( ! _codecContext )
-		return "unknown codec context";
+		throw std::runtime_error( "unknown codec context" );
 
 	switch( _codecContext->chroma_sample_location )
 	{
@@ -286,7 +289,7 @@ std::string VideoProperties::getChromaSampleLocation() const
 std::string VideoProperties::getFieldOrder() const
 {
 	if( ! _codecContext )
-		return "unknown codec context";
+		throw std::runtime_error( "unknown codec context" );
 
 	switch( _codecContext->field_order )
 	{
