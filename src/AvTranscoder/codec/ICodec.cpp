@@ -60,10 +60,17 @@ void ICodec::open()
 	if( ret < 0 )
 	{
 		std::string msg = "unable open codec: ";
-		msg +=  _avCodec->long_name;
-		msg += " (";
-		msg += _avCodec->name;
-		msg += ") ";
+
+		if( _avCodec && _avCodec->long_name )
+			msg +=  _avCodec->long_name;
+
+		if( _avCodec && _avCodec->name )
+		{
+			msg += " (";
+			msg += _avCodec->name;
+			msg += ") ";
+		}
+
 		avcodec_close( _avCodecContext );
 
 		msg += getDescriptionFromErrorCode( ret );
