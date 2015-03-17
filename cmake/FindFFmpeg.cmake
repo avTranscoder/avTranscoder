@@ -32,35 +32,39 @@ endmacro()
 
 
 ### Macro: find_component
-#	
-# Check the given component by invoking pkgconfig and 
+#
+# Check the given component by invoking pkgconfig and
 # then looking up the libraries and include directories.
-# @todo: WIN and MAC OSX.
 #
 macro(find_component COMPONENT PKGCONFIG LIBRARY HEADER)
 	if(NOT WIN32)
-		# use pkg-config to get the directories and then use these values
-		# in the FIND_PATH() and FIND_LIBRARY() calls
+		# use pkg-config to get the directories
 		find_package(PkgConfig)
 		if(PKG_CONFIG_FOUND)
 			pkg_check_modules(PC_${COMPONENT} ${PKGCONFIG})
 		endif()
+		# find include
+		find_path(${COMPONENT}_INCLUDE_DIR
+			${HEADER}
+			HINTS ${PC_${COMPONENT}_INCLUDEDIR} ${PC_${COMPONENT}_INCLUDE_DIR}
+		)
+		# find lib
+		find_library(${COMPONENT}_LIBRARIES
+			NAMES ${LIBRARY}
+			HINTS ${PC_${COMPONENT}_LIBDIR} ${PC_${COMPONENT}_LIBRARY_DIRS}
+		)
+		# set definition and version
+		set(${COMPONENT}_DEFINITIONS ${PC_${COMPONENT}_CFLAGS_OTHER} CACHE STRING "The ${COMPONENT} CFLAGS.")
+		set(${COMPONENT}_VERSION ${PC_${COMPONENT}_VERSION} CACHE STRING "The ${COMPONENT} version number.")
+	else()
+		# find include
+		find_path(${COMPONENT}_INCLUDE_DIR ${HEADER})
+		# find lib
+		file(GLOB_RECURSE ${COMPONENT}_LIBRARIES "${CMAKE_PREFIX_PATH}/*${COMPONENT}.lib") 
+		# @todo: define definition and version
 	endif()
 
-	find_path(${COMPONENT}_INCLUDE_DIR
-		${HEADER}
-		HINTS ${PC_${COMPONENT}_INCLUDEDIR} ${PC_${COMPONENT}_INCLUDE_DIR}
-	)
-
-	find_library(${COMPONENT}_LIBRARIES 
-		NAMES ${LIBRARY}
-		HINTS ${PC_${COMPONENT}_LIBDIR} ${PC_${COMPONENT}_LIBRARY_DIRS}
-	)
-
-	set(${COMPONENT}_DEFINITIONS ${PC_${COMPONENT}_CFLAGS_OTHER} CACHE STRING "The ${COMPONENT} CFLAGS.")	
-	set(${COMPONENT}_VERSION ${PC_${COMPONENT}_VERSION} CACHE STRING "The ${COMPONENT} version number.")
-
-	# Marks the given component as found if both *_LIBRARIES AND *_INCLUDE_DIR is present.	
+	# Marks the given component as found if both *_LIBRARIES AND *_INCLUDE_DIR is present.
 	if(${COMPONENT}_LIBRARIES AND ${COMPONENT}_INCLUDE_DIR)
 		set(${COMPONENT}_FOUND TRUE)
 	else()
