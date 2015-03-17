@@ -22,6 +22,7 @@ AudioGenerator& AudioGenerator::operator=( const AudioGenerator& audioGenerator 
 	_inputFrame = NULL;
 	_silent = NULL;
 	_frameDesc = audioGenerator.getAudioFrameDesc();
+	return *this;
 }
 
 AudioGenerator::~AudioGenerator()
