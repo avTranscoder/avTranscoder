@@ -397,10 +397,10 @@ size_t VideoProperties::getBitRate() const
 		return _codecContext->bit_rate;
 	
 	// else compute bit rate from the first GOP
-	if( !_formatContext || !_codec )
+	if( ! _formatContext || ! _codec )
 		throw std::runtime_error( "cannot compute bit rate: unknown format or codec context" );
 	
-	if( _codecContext->width && _codecContext->height )
+	if( ! _codecContext->width || ! _codecContext->height )
 		throw std::runtime_error( "cannot compute bit rate: invalid frame size" );
 	
 	// discard no frame type when decode
