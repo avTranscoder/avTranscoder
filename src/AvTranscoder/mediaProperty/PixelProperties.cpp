@@ -31,9 +31,10 @@ std::string PixelProperties::getPixelName() const
 	if( ! _pixelDesc )
 		throw std::runtime_error( "unable to find pixel description." ); 
 
-	if( _pixelDesc && _pixelDesc->name )
-		return std::string( _pixelDesc->name );
-	return "unknown pixel name";
+	if( ! _pixelDesc || ! _pixelDesc->name )
+		throw std::runtime_error( "unknown pixel name" );
+
+	return std::string( _pixelDesc->name );
 }
 
 std::string PixelProperties::getPixelFormatName() const
@@ -42,7 +43,10 @@ std::string PixelProperties::getPixelFormatName() const
 		throw std::runtime_error( "unable to find pixel format." ); 
 
 	const char* formatName = av_get_pix_fmt_name( _pixelFormat );
-	return formatName ? std::string( formatName ) : "unknown pixel format";
+	if( ! formatName )
+		throw std::runtime_error( "unknown pixel format" );
+
+	return std::string( formatName );
 }
 
 size_t PixelProperties::getBitsPerPixel() const
