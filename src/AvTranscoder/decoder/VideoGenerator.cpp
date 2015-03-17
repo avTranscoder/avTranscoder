@@ -24,6 +24,7 @@ VideoGenerator& VideoGenerator::operator=( const VideoGenerator& videoGenerator 
 	_inputFrame = NULL;
 	_blackImage = NULL;
 	_frameDesc = videoGenerator.getVideoFrameDesc();
+	return *this;
 }
 
 VideoGenerator::~VideoGenerator()

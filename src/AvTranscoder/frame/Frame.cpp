@@ -28,6 +28,7 @@ Frame::Frame( const Frame& other )
 Frame& Frame::operator=( const Frame& other )
 {
 	copyAVPacket( other.getAVPacket() );
+	return *this;
 }
 
 Frame::~Frame()
