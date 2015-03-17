@@ -1,10 +1,16 @@
 import os
 
+# Check if environment is setup to run the tests
+if os.environ.get('AVTRANSCODER_TEST_AUDIO_WAVE_FILE') is None or os.environ.get('AVTRANSCODER_TEST_VIDEO_FILE') is None:
+	from nose.plugins.skip import SkipTest
+	raise SkipTest("Need to define environment variables AVTRANSCODER_TEST_VIDEO_FILE and AVTRANSCODER_TEST_AUDIO_WAVE_FILE")
+
 from nose.tools import *
 
 from pyAvTranscoder import avtranscoder as av
 
 av.preloadCodecsAndFormats()
+av.Logger.setLogLevel(av.AV_LOG_QUIET)
 
 
 def testRewrapAudioStream():
@@ -12,7 +18,7 @@ def testRewrapAudioStream():
 	Rewrap one audio stream.
 	"""
         # get src file of wrap
-	inputFileName = os.environ['AVTRANSCODER_TEST_AUDIO_FILE']
+	inputFileName = os.environ['AVTRANSCODER_TEST_AUDIO_WAVE_FILE']
 	src_inputFile = av.InputFile( inputFileName )
 	progress = av.NoDisplayProgress()
 	src_inputFile.analyse( progress )
