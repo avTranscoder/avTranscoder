@@ -57,18 +57,18 @@ public:
 	 */
 	void loadProfile( const Profile& profile );
 
-	const Profiles& getProfiles();
+	const Profiles& getProfiles() const;
 
-	Profiles getFormatProfiles();
-	Profiles getVideoProfiles();
-	Profiles getAudioProfiles();
+	Profiles getFormatProfiles() const;
+	Profiles getVideoProfiles() const;
+	Profiles getAudioProfiles() const;
 
 	Profile& getProfile( const std::string& avProfileIdentificator );
 
 private:
-	bool checkFormatProfile( const Profile& profileToCheck );
-	bool checkVideoProfile( const Profile& profileToCheck );
-	bool checkAudioProfile( const Profile& profileToCheck );
+	bool checkFormatProfile( const Profile& profileToCheck ) const;
+	bool checkVideoProfile( const Profile& profileToCheck ) const;
+	bool checkAudioProfile( const Profile& profileToCheck ) const;
 
 private:
 	Profiles _profiles;
