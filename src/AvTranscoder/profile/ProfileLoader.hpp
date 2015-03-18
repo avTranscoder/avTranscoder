@@ -57,6 +57,8 @@ public:
 	 */
 	void loadProfile( const Profile& profile );
 
+	bool hasProfile( const Profile& profile ) const;
+
 	const Profiles& getProfiles() const;
 
 	Profiles getFormatProfiles() const;

@@ -102,6 +102,22 @@ void ProfileLoader::loadProfile( const Profile& profile )
 		throw std::runtime_error( "Warning: The profile " + profile.find( constants::avProfileIdentificator )->second + " is invalid. It will not be loaded." );
 }
 
+bool ProfileLoader::hasProfile( const Profile& profile ) const
+{
+	// check profile identificator
+	if( ! profile.count( constants::avProfileIdentificator ) )
+	{
+		throw std::runtime_error( "Warning: A profile has no name. It will not be loaded." );
+	}
+
+	for( Profiles::const_iterator it = _profiles.begin(); it != _profiles.end(); ++it )
+	{
+		if( (*it).at( constants::avProfileIdentificator ) == profile.at( constants::avProfileIdentificator ) )
+			return true;
+	}
+	return false;
+}
+
 const ProfileLoader::Profiles& ProfileLoader::getProfiles() const
 {
 	return _profiles;
