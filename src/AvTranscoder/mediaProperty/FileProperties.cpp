@@ -21,21 +21,21 @@ FileProperties::FileProperties( const FormatContext& formatContext )
 std::string FileProperties::getFilename() const
 {
 	if( ! _formatContext || ! _formatContext->filename )
-		return "unknown file name";
+		throw std::runtime_error( "unknown file name" );
 	return _formatContext->filename;
 }
 
 std::string FileProperties::getFormatName() const
 {
 	if( ! _formatContext || ! _formatContext->iformat || ! _formatContext->iformat->name )
-		return "unknown format name";
+		throw std::runtime_error( "unknown format name");
 	return _formatContext->iformat->name;
 }
 
 std::string FileProperties::getFormatLongName() const
 {
 	if( ! _formatContext || ! _formatContext->iformat || ! _formatContext->iformat->long_name )
-		return "unknown format long name";
+		throw std::runtime_error( "unknown format long name");
 	return _formatContext->iformat->long_name;
 }
 
@@ -133,15 +133,16 @@ PropertiesMap FileProperties::getPropertiesAsMap() const
 {
 	PropertiesMap dataMap;
 
-	detail::add( dataMap, "filename", getFilename() );
-	detail::add( dataMap, "formatName", getFormatName() );
-	detail::add( dataMap, "formatLongName", getFormatLongName() );
+	addProperty( dataMap, "filename", &FileProperties::getFilename );
+	addProperty( dataMap, "formatName", &FileProperties::getFormatName );
+	addProperty( dataMap, "formatLongName", &FileProperties::getFormatLongName );
 
-	detail::add( dataMap, "startTime", getStartTime() );
-	detail::add( dataMap, "duration", getDuration() );
-	detail::add( dataMap, "bitrate", getBitRate() );
-	detail::add( dataMap, "numberOfStreams", getNbStreams() );
-	detail::add( dataMap, "numberOfPrograms", getProgramsCount() );
+	addProperty( dataMap, "startTime", &FileProperties::getStartTime );
+	addProperty( dataMap, "duration", &FileProperties::getDuration );
+	addProperty( dataMap, "bitrate", &FileProperties::getBitRate );
+	addProperty( dataMap, "numberOfStreams", &FileProperties::getNbStreams );
+	addProperty( dataMap, "numberOfPrograms", &FileProperties::getProgramsCount );
+
 	detail::add( dataMap, "numberOfVideoStreams", getNbVideoStreams() );
 	detail::add( dataMap, "numberOfAudioStreams", getNbAudioStreams() );
 	detail::add( dataMap, "numberOfDataStreams", getNbDataStreams() );

@@ -24,7 +24,14 @@ PropertiesMap UnknownProperties::getPropertiesAsMap() const
 {
 	PropertiesMap dataMap;
 
-	detail::add( dataMap, "streamId", getStreamId() );
+	try
+	{
+		detail::add( dataMap, "streamId", getStreamId() );
+	}
+	catch( const std::exception& e )
+	{
+		detail::add( dataMap, "streamId", e.what() );
+	}
 
 	for( size_t metadataIndex = 0; metadataIndex < _metadatas.size(); ++metadataIndex )
 	{

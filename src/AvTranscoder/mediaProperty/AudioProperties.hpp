@@ -45,6 +45,22 @@ public:
 	PropertiesMap getPropertiesAsMap() const;  ///< Return all audio properties as a map (name of property: value)
 
 private:
+#ifndef SWIG
+	template<typename T>
+	void addProperty( PropertiesMap& dataMap, const std::string& key, T (AudioProperties::*getter)(void) const ) const
+	{
+		try
+		{
+		    detail::add( dataMap, key, (this->*getter)() );
+		}
+		catch( const std::exception& e )
+		{
+		    detail::add( dataMap, key, e.what() );
+		}
+	}
+#endif
+
+private:
 	const AVFormatContext* _formatContext;  ///< Has link (no ownership)
 	AVCodecContext* _codecContext;  ///< Has link (no ownership)
 	AVCodec* _codec; ///< Has link (no ownership)

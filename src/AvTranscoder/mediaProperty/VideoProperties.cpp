@@ -51,51 +51,54 @@ VideoProperties::VideoProperties( const FormatContext& formatContext, const size
 
 std::string VideoProperties::getCodecName() const
 {
-	if( _codecContext && _codec )
-	{
-		if( _codec->capabilities & CODEC_CAP_TRUNCATED )
-			_codecContext->flags|= CODEC_FLAG_TRUNCATED;
+	if( ! _codecContext || ! _codec )
+		throw std::runtime_error( "unknown codec" );
 
-		if( _codec->name )
-			return std::string( _codec->name );
-	}
-	return "unknown codec";
+	if( _codec->capabilities & CODEC_CAP_TRUNCATED )
+		_codecContext->flags|= CODEC_FLAG_TRUNCATED;
+
+	if( ! _codec->name )
+		throw std::runtime_error( "unknown codec name" );
+
+	return std::string( _codec->name );
 }
 
 std::string VideoProperties::getCodecLongName() const
 {
-	if( _codecContext && _codec )
-	{
-		if( _codec->capabilities & CODEC_CAP_TRUNCATED )
-			_codecContext->flags|= CODEC_FLAG_TRUNCATED;
+	if( ! _codecContext || ! _codec )
+		throw std::runtime_error( "unknown codec" );
 
-		if( _codec->long_name )
-			return std::string( _codec->long_name );
-	}
-	return "unknown codec";
+	if( _codec->capabilities & CODEC_CAP_TRUNCATED )
+		_codecContext->flags|= CODEC_FLAG_TRUNCATED;
+
+	if( ! _codec->long_name )
+		throw std::runtime_error( "unknown codec long name" );
+
+	return std::string( _codec->long_name );
 }
 
 std::string VideoProperties::getProfileName() const
 {
-	if( _codecContext && _codec )
-	{
-		if( _codec->capabilities & CODEC_CAP_TRUNCATED )
-			_codecContext->flags|= CODEC_FLAG_TRUNCATED;
+	if( ! _codecContext || ! _codec )
+		throw std::runtime_error( "unknown codec" );
 
-		if( _codecContext->profile != -99 )
-		{
-			const char* profile = NULL;
-			if( ( profile = av_get_profile_name( _codec, _codecContext->profile ) ) != NULL )
-				return std::string( profile );
-		}
-	}
-	return "unknown profile";
+	if( _codec->capabilities & CODEC_CAP_TRUNCATED )
+		_codecContext->flags|= CODEC_FLAG_TRUNCATED;
+
+	if( _codecContext->profile == -99 )
+		throw std::runtime_error( "unknown codec profile" );
+
+	const char* profile = NULL;
+	if( ( profile = av_get_profile_name( _codec, _codecContext->profile ) ) == NULL )
+		throw std::runtime_error( "unknown codec profile" );
+
+	return std::string( profile );
 }
 
 std::string VideoProperties::getColorTransfert() const
 {
 	if( ! _codecContext )
-		return "unknown codec context";
+		throw std::runtime_error( "unknown codec context" );
 
 	switch( _codecContext->color_trc )
 	{
@@ -159,7 +162,7 @@ std::string VideoProperties::getColorTransfert() const
 std::string VideoProperties::getColorspace() const
 {
 	if( ! _codecContext )
-		return "unknown codec context";
+		throw std::runtime_error( "unknown codec context" );
 
 	switch( _codecContext->colorspace )
 	{
@@ -204,7 +207,7 @@ std::string VideoProperties::getColorspace() const
 std::string VideoProperties::getColorRange() const
 {
 	if( ! _codecContext )
-		return "unknown codec context";
+		throw std::runtime_error( "unknown codec context" );
 
 	switch( _codecContext->color_range )
 	{
@@ -224,7 +227,7 @@ std::string VideoProperties::getColorRange() const
 std::string VideoProperties::getColorPrimaries() const
 {
 	if( ! _codecContext )
-		return "unknown codec context";
+		throw std::runtime_error( "unknown codec context" );
 
 	switch( _codecContext->color_primaries )
 	{
@@ -258,7 +261,7 @@ std::string VideoProperties::getColorPrimaries() const
 std::string VideoProperties::getChromaSampleLocation() const
 {
 	if( ! _codecContext )
-		return "unknown codec context";
+		throw std::runtime_error( "unknown codec context" );
 
 	switch( _codecContext->chroma_sample_location )
 	{
@@ -286,7 +289,7 @@ std::string VideoProperties::getChromaSampleLocation() const
 std::string VideoProperties::getFieldOrder() const
 {
 	if( ! _codecContext )
-		return "unknown codec context";
+		throw std::runtime_error( "unknown codec context" );
 
 	switch( _codecContext->field_order )
 	{
@@ -638,36 +641,36 @@ PropertiesMap VideoProperties::getPropertiesAsMap() const
 {
 	PropertiesMap dataMap;
 
-	detail::add( dataMap, "streamId", getStreamId() );
-	detail::add( dataMap, "codecId", getCodecId() );
-	detail::add( dataMap, "codecName", getCodecName() );
-	detail::add( dataMap, "codecLongName", getCodecLongName() );
-	detail::add( dataMap, "profile", getProfile() );
-	detail::add( dataMap, "profileName", getProfileName() );
-	detail::add( dataMap, "level", getLevel() );
-	detail::add( dataMap, "startTimecode", getStartTimecodeString() );
-	detail::add( dataMap, "width", getWidth() );
-	detail::add( dataMap, "height", getHeight() );
-	detail::add( dataMap, "pixelAspectRatio", getSar().num / getSar().den );
-	detail::add( dataMap, "displayAspectRatio", getDar().num / getDar().den );
-	detail::add( dataMap, "dtgActiveFormat", getDtgActiveFormat() );
-	detail::add( dataMap, "colorTransfert", getColorTransfert() );
-	detail::add( dataMap, "colorspace", getColorspace() );
-	detail::add( dataMap, "colorRange", getColorRange() );
-	detail::add( dataMap, "colorPrimaries", getColorPrimaries() );
-	detail::add( dataMap, "chromaSampleLocation", getChromaSampleLocation() );
-	detail::add( dataMap, "interlaced ", isInterlaced() );
-	detail::add( dataMap, "topFieldFirst", isTopFieldFirst() );
-	detail::add( dataMap, "fieldOrder", getFieldOrder() );
-	detail::add( dataMap, "timeBase", getTimeBase() );
-	detail::add( dataMap, "duration", getDuration() );
-	detail::add( dataMap, "fps", getFps() );
-	detail::add( dataMap, "nbFrame", getNbFrames() );
-	detail::add( dataMap, "ticksPerFrame", getTicksPerFrame() );
-	detail::add( dataMap, "bitRate", getBitRate() );
-	detail::add( dataMap, "maxBitRate", getMaxBitRate() );
-	detail::add( dataMap, "minBitRate", getMinBitRate() );
-	detail::add( dataMap, "gopSize", getGopSize() );
+	addProperty( dataMap, "streamId", &VideoProperties::getStreamId );
+	addProperty( dataMap, "codecId", &VideoProperties::getCodecId );
+	addProperty( dataMap, "codecName", &VideoProperties::getCodecName );
+	addProperty( dataMap, "codecLongName", &VideoProperties::getCodecLongName );
+	addProperty( dataMap, "profile", &VideoProperties::getProfile );
+	addProperty( dataMap, "profileName", &VideoProperties::getProfileName );
+	addProperty( dataMap, "level", &VideoProperties::getLevel );
+	addProperty( dataMap, "startTimecode", &VideoProperties::getStartTimecodeString );
+	addProperty( dataMap, "width", &VideoProperties::getWidth );
+	addProperty( dataMap, "height", &VideoProperties::getHeight );
+	addProperty( dataMap, "pixelAspectRatio", &VideoProperties::getSar );
+	addProperty( dataMap, "displayAspectRatio", &VideoProperties::getDar );
+	addProperty( dataMap, "dtgActiveFormat", &VideoProperties::getDtgActiveFormat );
+	addProperty( dataMap, "colorTransfert", &VideoProperties::getColorTransfert );
+	addProperty( dataMap, "colorspace", &VideoProperties::getColorspace );
+	addProperty( dataMap, "colorRange", &VideoProperties::getColorRange );
+	addProperty( dataMap, "colorPrimaries", &VideoProperties::getColorPrimaries );
+	addProperty( dataMap, "chromaSampleLocation", &VideoProperties::getChromaSampleLocation );
+	addProperty( dataMap, "interlaced ", &VideoProperties::isInterlaced );
+	addProperty( dataMap, "topFieldFirst", &VideoProperties::isTopFieldFirst );
+	addProperty( dataMap, "fieldOrder", &VideoProperties::getFieldOrder );
+	addProperty( dataMap, "timeBase", &VideoProperties::getTimeBase );
+	addProperty( dataMap, "duration", &VideoProperties::getDuration );
+	addProperty( dataMap, "fps", &VideoProperties::getFps );
+	addProperty( dataMap, "nbFrame", &VideoProperties::getNbFrames );
+	addProperty( dataMap, "ticksPerFrame", &VideoProperties::getTicksPerFrame );
+	addProperty( dataMap, "bitRate", &VideoProperties::getBitRate );
+	addProperty( dataMap, "maxBitRate", &VideoProperties::getMaxBitRate );
+	addProperty( dataMap, "minBitRate", &VideoProperties::getMinBitRate );
+	addProperty( dataMap, "gopSize", &VideoProperties::getGopSize );
 
 	std::string gop;
 	for( size_t frameIndex = 0; frameIndex < _gopStructure.size(); ++frameIndex )
@@ -678,8 +681,8 @@ PropertiesMap VideoProperties::getPropertiesAsMap() const
 	detail::add( dataMap, "gop", gop );
 	//detail::add( dataMap, "isClosedGop", isClosedGop() );
 
-	detail::add( dataMap, "hasBFrames", hasBFrames() );
-	detail::add( dataMap, "referencesFrames", getReferencesFrames() );
+	addProperty( dataMap, "hasBFrames", &VideoProperties::hasBFrames );
+	addProperty( dataMap, "referencesFrames", &VideoProperties::getReferencesFrames );
 
 	for( size_t metadataIndex = 0; metadataIndex < _metadatas.size(); ++metadataIndex )
 	{
