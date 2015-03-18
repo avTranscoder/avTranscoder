@@ -71,7 +71,7 @@ void ProfileLoader::loadProfiles( const std::string& avProfilesPath )
 
 void ProfileLoader::loadProfile( const Profile& profile )
 {
-	// check profile long name
+	// check profile identificator
 	if( ! profile.count( constants::avProfileIdentificator ) )
 	{
 		throw std::runtime_error( "Warning: A profile has no name. It will not be loaded." );
@@ -162,9 +162,9 @@ ProfileLoader::Profiles ProfileLoader::getAudioProfiles() const
 	return profiles;
 }
 
-ProfileLoader::Profile& ProfileLoader::getProfile( const std::string& avProfileIdentificator )
+const ProfileLoader::Profile& ProfileLoader::getProfile( const std::string& avProfileIdentificator ) const
 {
-	for( Profiles::iterator it = _profiles.begin(); it != _profiles.end(); ++it )
+	for( Profiles::const_iterator it = _profiles.begin(); it != _profiles.end(); ++it )
 	{
 		if( (*it).find( constants::avProfileIdentificator )->second == avProfileIdentificator )
 		{

@@ -66,11 +66,11 @@ public:
 	 * @brief Add a stream and set a custom profile
 	 * @note Profile will be updated, be sure to pass unique profile name.
 	 */
-	void add( const std::string& filename, const size_t streamIndex, ProfileLoader::Profile& profile, const double offset = 0 );
+	void add( const std::string& filename, const size_t streamIndex, const ProfileLoader::Profile& profile, const double offset = 0 );
 	/*
 	 * @note If filename is empty, add a generated stream.
 	 */
-	void add( const std::string& filename, const size_t streamIndex, ProfileLoader::Profile& profile, ICodec& codec, const double offset = 0  );
+	void add( const std::string& filename, const size_t streamIndex, const ProfileLoader::Profile& profile, ICodec& codec, const double offset = 0  );
 	
 	/**
 	 * @brief Add a stream and set a profile
@@ -89,11 +89,11 @@ public:
 	 * @note Profile will be updated, be sure to pass unique profile name.
 	 * @note If subStreamIndex is negative, no substream is selected it's the stream.
 	 */
-	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, ProfileLoader::Profile& profile, const double offset = 0 );
+	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const ProfileLoader::Profile& profile, const double offset = 0 );
 	/**
 	 * @note If filename is empty, add a generated stream.
 	 */
-	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, ProfileLoader::Profile& profile, ICodec& codec, const double offset = 0  );
+	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const ProfileLoader::Profile& profile, ICodec& codec, const double offset = 0  );
 
 	/**
 	 * @brief Add the stream
@@ -139,7 +139,7 @@ private:
 	void addRewrapStream( const std::string& filename, const size_t streamIndex );
 
 	void addTranscodeStream( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const double offset );
-	void addTranscodeStream( const std::string& filename, const size_t streamIndex, const int subStreamIndex, ProfileLoader::Profile& profile, const double offset = 0 );
+	void addTranscodeStream( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const ProfileLoader::Profile& profile, const double offset = 0 );
 
 	void addDummyStream( const ProfileLoader::Profile& profile, const ICodec& codec );
 

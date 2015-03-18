@@ -52,7 +52,7 @@ public:
 	void loadProfile( const std::string& avProfileFileName );
 
 	/**
-	 * @brief  Load the given profile
+	 * @brief Load the given profile
 	 * @exception throw std::runtime_error if the profile is invalid
 	 */
 	void loadProfile( const Profile& profile );
@@ -65,7 +65,7 @@ public:
 	Profiles getVideoProfiles() const;
 	Profiles getAudioProfiles() const;
 
-	Profile& getProfile( const std::string& avProfileIdentificator );
+	const Profile& getProfile( const std::string& avProfileIdentificator ) const;
 
 private:
 	bool checkFormatProfile( const Profile& profileToCheck ) const;
