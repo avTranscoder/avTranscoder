@@ -395,7 +395,58 @@ size_t VideoProperties::getBitRate() const
 {
 	if( ! _codecContext )
 		throw std::runtime_error( "unknown codec context" );
-	return _codecContext->bit_rate;
+	// return bit rate of stream if present or VBR mode
+	if( _codecContext->bit_rate || _codecContext->rc_max_rate )
+		return _codecContext->bit_rate;
+	
+	// else compute bit rate from the first GOP
+	if( ! _formatContext || ! _codec )
+		throw std::runtime_error( "cannot compute bit rate: unknown format or codec context" );
+	
+	if( ! _codecContext->width || ! _codecContext->height )
+		throw std::runtime_error( "cannot compute bit rate: invalid frame size" );
+	
+	// discard no frame type when decode
+	_codecContext->skip_frame = AVDISCARD_NONE;
+
+#if LIBAVCODEC_VERSION_MAJOR > 54
+	AVFrame* frame = av_frame_alloc();
+#else
+	AVFrame* frame = avcodec_alloc_frame();
+#endif
+	AVPacket pkt;
+	av_init_packet( &pkt );
+	avcodec_open2( _codecContext, _codec, NULL );
+	
+	int gotFrame = 0;
+	int count = 0;
+	int gopFramesSize = 0;
+
+	while( ! av_read_frame( const_cast<AVFormatContext*>( _formatContext ), &pkt ) )
+	{
+		if( pkt.stream_index == (int)_streamIndex )
+		{
+			avcodec_decode_video2( _codecContext, frame, &gotFrame, &pkt );
+			if( gotFrame )
+			{
+				gopFramesSize += frame->pkt_size;
+				++count;
+			}
+		}
+		av_free_packet( &pkt );
+		if( _codecContext->gop_size == count )
+			break;
+	}
+#if LIBAVCODEC_VERSION_MAJOR > 54
+	av_frame_free( &frame );
+#elif LIBAVCODEC_VERSION_MAJOR > 53
+	avcodec_free_frame( &frame );
+#else
+	av_free( frame );
+#endif
+	
+	int bitsPerByte = 8;
+	return (gopFramesSize / _codecContext->gop_size) * bitsPerByte * getFps();
 }
 
 size_t VideoProperties::getMaxBitRate() const

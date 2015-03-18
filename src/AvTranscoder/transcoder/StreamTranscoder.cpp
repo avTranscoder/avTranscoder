@@ -342,7 +342,7 @@ bool StreamTranscoder::processRewrap()
 	assert( _inputStream  != NULL );
 	assert( _outputStream != NULL );
 	
-	LOG_INFO( "Rewrap a frame" )
+	LOG_DEBUG( "Rewrap a frame" )
 
 	CodedData data;
 	if( ! _inputStream->readNextPacket( data ) )
@@ -380,7 +380,7 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 	assert( _frameBuffer    != NULL );
 	assert( _transform      != NULL );
 
-	LOG_INFO( "Transcode a frame" )
+	LOG_DEBUG( "Transcode a frame" )
 
 	// check offset
 	if( _offset )

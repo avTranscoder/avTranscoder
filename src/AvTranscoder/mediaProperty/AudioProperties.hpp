@@ -28,8 +28,8 @@ public:
 	size_t getCodecId() const;
 	size_t getSampleRate() const;
 	size_t getChannels() const;
-	size_t getBitRate() const;
-	size_t getNbSamples() const;
+	size_t getBitRate() const;  ///< 0 if unknown
+	size_t getNbSamples() const;  ///< 0 if unknown
 
 	size_t getTicksPerFrame() const;
 	Rational getTimeBase() const;
