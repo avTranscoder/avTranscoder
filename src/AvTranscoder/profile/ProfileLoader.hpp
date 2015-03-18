@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <iostream>
 
 namespace avtranscoder
 {
@@ -72,6 +73,9 @@ private:
 private:
 	Profiles _profiles;
 };
+
+// To print a profile
+std::ostream &operator<<( std::ostream &os, const ProfileLoader::Profile &profile );
 
 }
 #endif

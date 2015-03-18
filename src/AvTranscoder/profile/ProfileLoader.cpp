@@ -204,4 +204,12 @@ bool ProfileLoader::checkAudioProfile( const Profile& profileToCheck )
 	return isValid;
 }
 
+// To print a profile
+std::ostream &operator<<( std::ostream &os, const ProfileLoader::Profile &profile )
+{
+	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
+		os << "(" << it->first << ", " << it->second << ")" << std::endl;
+	return os;
+}
+
 }
