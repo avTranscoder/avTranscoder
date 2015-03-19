@@ -345,10 +345,10 @@ InputFile* Transcoder::addInputFile( const std::string& filename, const size_t s
 
 	for( std::vector< InputFile* >::iterator it = _inputFiles.begin(); it != _inputFiles.end(); ++it )
 	{
-		if( ( (*it)->getFilename() == filename ) &&
-			( ! (*it)->getStream( streamIndex ).isActivated() ) )
+		if( ( (*it)->getFilename() == filename ) )
 		{
 			referenceFile = (*it);
+			LOG_DEBUG( "Get instance of InputFile from '" << filename << "'" )
 			break;
 		}
 	}
