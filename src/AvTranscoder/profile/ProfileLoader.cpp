@@ -71,7 +71,7 @@ void ProfileLoader::loadProfiles( const std::string& avProfilesPath )
 
 void ProfileLoader::loadProfile( const Profile& profile )
 {
-	// check profile long name
+	// check profile identificator
 	if( ! profile.count( constants::avProfileIdentificator ) )
 	{
 		throw std::runtime_error( "Warning: A profile has no name. It will not be loaded." );
@@ -102,16 +102,32 @@ void ProfileLoader::loadProfile( const Profile& profile )
 		throw std::runtime_error( "Warning: The profile " + profile.find( constants::avProfileIdentificator )->second + " is invalid. It will not be loaded." );
 }
 
-const ProfileLoader::Profiles& ProfileLoader::getProfiles()
+bool ProfileLoader::hasProfile( const Profile& profile ) const
+{
+	// check profile identificator
+	if( ! profile.count( constants::avProfileIdentificator ) )
+	{
+		throw std::runtime_error( "Warning: A profile has no name. It will not be loaded." );
+	}
+
+	for( Profiles::const_iterator it = _profiles.begin(); it != _profiles.end(); ++it )
+	{
+		if( (*it).at( constants::avProfileIdentificator ) == profile.at( constants::avProfileIdentificator ) )
+			return true;
+	}
+	return false;
+}
+
+const ProfileLoader::Profiles& ProfileLoader::getProfiles() const
 {
 	return _profiles;
 }
 
-ProfileLoader::Profiles ProfileLoader::getFormatProfiles()
+ProfileLoader::Profiles ProfileLoader::getFormatProfiles() const
 {
 	Profiles profiles;
 
-	for( Profiles::iterator it = _profiles.begin(); it != _profiles.end(); ++it )
+	for( Profiles::const_iterator it = _profiles.begin(); it != _profiles.end(); ++it )
 	{
 		if( (*it).find( constants::avProfileType )->second == constants::avProfileTypeFormat )
 			profiles.push_back( *it );
@@ -120,11 +136,11 @@ ProfileLoader::Profiles ProfileLoader::getFormatProfiles()
 	return profiles;
 }
 
-ProfileLoader::Profiles ProfileLoader::getVideoProfiles()
+ProfileLoader::Profiles ProfileLoader::getVideoProfiles() const
 {
 	Profiles profiles;
 
-	for( Profiles::iterator it = _profiles.begin(); it != _profiles.end(); ++it )
+	for( Profiles::const_iterator it = _profiles.begin(); it != _profiles.end(); ++it )
 	{
 		if( (*it).find( constants::avProfileType )->second == constants::avProfileTypeVideo )
 			profiles.push_back( *it );
@@ -133,11 +149,11 @@ ProfileLoader::Profiles ProfileLoader::getVideoProfiles()
 	return profiles;
 }
 
-ProfileLoader::Profiles ProfileLoader::getAudioProfiles()
+ProfileLoader::Profiles ProfileLoader::getAudioProfiles() const
 {
 	Profiles profiles;
 
-	for( Profiles::iterator it = _profiles.begin(); it != _profiles.end(); ++it )
+	for( Profiles::const_iterator it = _profiles.begin(); it != _profiles.end(); ++it )
 	{
 		if( (*it).find( constants::avProfileType )->second == constants::avProfileTypeAudio )
 			profiles.push_back( *it );
@@ -146,9 +162,9 @@ ProfileLoader::Profiles ProfileLoader::getAudioProfiles()
 	return profiles;
 }
 
-ProfileLoader::Profile& ProfileLoader::getProfile( const std::string& avProfileIdentificator )
+const ProfileLoader::Profile& ProfileLoader::getProfile( const std::string& avProfileIdentificator ) const
 {
-	for( Profiles::iterator it = _profiles.begin(); it != _profiles.end(); ++it )
+	for( Profiles::const_iterator it = _profiles.begin(); it != _profiles.end(); ++it )
 	{
 		if( (*it).find( constants::avProfileIdentificator )->second == avProfileIdentificator )
 		{
@@ -159,7 +175,7 @@ ProfileLoader::Profile& ProfileLoader::getProfile( const std::string& avProfileI
 }
 
 
-bool ProfileLoader::checkFormatProfile( const Profile& profileToCheck )
+bool ProfileLoader::checkFormatProfile( const Profile& profileToCheck ) const
 {
 	bool isValid = true;
 
@@ -174,7 +190,7 @@ bool ProfileLoader::checkFormatProfile( const Profile& profileToCheck )
 	return isValid;
 }
 
-bool ProfileLoader::checkVideoProfile( const Profile& profileToCheck )
+bool ProfileLoader::checkVideoProfile( const Profile& profileToCheck ) const
 {
 	bool isValid = true;
 
@@ -189,7 +205,7 @@ bool ProfileLoader::checkVideoProfile( const Profile& profileToCheck )
 	return isValid;
 }
 
-bool ProfileLoader::checkAudioProfile( const Profile& profileToCheck )
+bool ProfileLoader::checkAudioProfile( const Profile& profileToCheck ) const
 {
 	bool isValid = true;
 
@@ -202,6 +218,14 @@ bool ProfileLoader::checkAudioProfile( const Profile& profileToCheck )
 	}
 
 	return isValid;
+}
+
+// To print a profile
+std::ostream &operator<<( std::ostream &os, const ProfileLoader::Profile &profile )
+{
+	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
+		os << "(" << it->first << ", " << it->second << ")" << std::endl;
+	return os;
 }
 
 }

@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <iostream>
 
 namespace avtranscoder
 {
@@ -51,27 +52,32 @@ public:
 	void loadProfile( const std::string& avProfileFileName );
 
 	/**
-	 * @brief  Load the given profile
+	 * @brief Load the given profile
 	 * @exception throw std::runtime_error if the profile is invalid
 	 */
 	void loadProfile( const Profile& profile );
 
-	const Profiles& getProfiles();
+	bool hasProfile( const Profile& profile ) const;
 
-	Profiles getFormatProfiles();
-	Profiles getVideoProfiles();
-	Profiles getAudioProfiles();
+	const Profiles& getProfiles() const;
 
-	Profile& getProfile( const std::string& avProfileIdentificator );
+	Profiles getFormatProfiles() const;
+	Profiles getVideoProfiles() const;
+	Profiles getAudioProfiles() const;
+
+	const Profile& getProfile( const std::string& avProfileIdentificator ) const;
 
 private:
-	bool checkFormatProfile( const Profile& profileToCheck );
-	bool checkVideoProfile( const Profile& profileToCheck );
-	bool checkAudioProfile( const Profile& profileToCheck );
+	bool checkFormatProfile( const Profile& profileToCheck ) const;
+	bool checkVideoProfile( const Profile& profileToCheck ) const;
+	bool checkAudioProfile( const Profile& profileToCheck ) const;
 
 private:
 	Profiles _profiles;
 };
+
+// To print a profile
+std::ostream &operator<<( std::ostream &os, const ProfileLoader::Profile &profile );
 
 }
 #endif
