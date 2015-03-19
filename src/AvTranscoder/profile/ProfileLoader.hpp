@@ -76,8 +76,10 @@ private:
 	Profiles _profiles;
 };
 
+#ifndef SWIG
 // To print a profile
 std::ostream &operator<<( std::ostream &os, const ProfileLoader::Profile &profile );
+#endif
 
 }
 #endif
