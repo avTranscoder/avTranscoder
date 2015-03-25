@@ -19,10 +19,6 @@
 #include <AvTranscoder/log.hpp>
 %}
 
-namespace std {
-%template(IntPair)         pair< size_t, size_t >;
-}
-
 %include "AvTranscoder/progress/progress.i"
 %include "AvTranscoder/mediaProperty/mediaProperty.i"
 %include "AvTranscoder/frame/frame.i"
@@ -32,6 +28,7 @@ namespace std {
 %include <AvTranscoder/log.hpp>
 
 %include "AvTranscoder/option.i"
+%include "AvTranscoder/util.i"
 %include "AvTranscoder/codec/codec.i"
 %include "AvTranscoder/stream/stream.i"
 %include "AvTranscoder/decoder/decoder.i"
