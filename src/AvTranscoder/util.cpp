@@ -6,6 +6,8 @@ extern "C" {
 #include <libavutil/pixdesc.h>
 }
 
+#include <utility>
+
 namespace avtranscoder
 {
 
@@ -116,9 +118,9 @@ AVSampleFormat getAVSampleFormat( const std::string& sampleFormat )
 	return av_get_sample_fmt( sampleFormat.c_str() );
 }
 
-std::vector<std::string> getFormatsLongNames()
+NamesArray getFormatsNames()
 {
-	std::vector<std::string> formatsLongNames;
+	NamesArray formatsNames;
 
 	AVOutputFormat* fmt = NULL;
 	while( ( fmt = av_oformat_next( fmt ) ) )
@@ -127,35 +129,17 @@ std::vector<std::string> getFormatsLongNames()
 		if( fmt->video_codec == AV_CODEC_ID_NONE )
 			continue;
 
-		if( ! fmt->long_name )
+		if( ! fmt->name && ! fmt->long_name )
 			continue;
 
-		formatsLongNames.push_back( std::string( fmt->long_name ) );
+		formatsNames.push_back( std::make_pair( std::string( fmt->name ? fmt->name : "" ), std::string( fmt->long_name ? fmt->long_name : "" ) ) );
 	}
-	return formatsLongNames;
-}
-std::vector<std::string> getFormatsShortNames() 
-{
-	std::vector<std::string> formatsShortNames;
-
-	AVOutputFormat* fmt = NULL;
-	while( ( fmt = av_oformat_next( fmt ) ) )
-	{
-		// skip undefined codec
-		if( fmt->video_codec == AV_CODEC_ID_NONE )
-			continue;
-
-		if( ! fmt->name )
-			continue;
-
-		formatsShortNames.push_back( std::string( fmt->name ) );
-	}
-	return formatsShortNames;
+	return formatsNames;
 }
 
-std::vector<std::string> getVideoCodecsLongNames()
+NamesArray getVideoCodecsNames()
 {
-	std::vector<std::string> videoCodecsLongNames;
+	NamesArray videoCodecsNames;
 
 	AVCodec* c = NULL;
 	while( ( c = av_codec_next( c ) ) != NULL )
@@ -171,52 +155,22 @@ std::vector<std::string> getVideoCodecsLongNames()
 		{
 			case AVMEDIA_TYPE_VIDEO:
 			{
-				if( ! c->long_name )
+				if( ! c->name && ! c->long_name )
 					continue;
 
-				videoCodecsLongNames.push_back( std::string( c->long_name ) );
+				videoCodecsNames.push_back( std::make_pair( std::string( c->name ? c->name : "" ), std::string( c->long_name ? c->long_name : "" ) ) );
 				break;
 			}
 			default:
 				break;
 		}
 	}
-	return videoCodecsLongNames;
-}
-std::vector<std::string> getVideoCodecsShortNames()
-{
-	std::vector<std::string> videoCodecsShortNames;
-
-	AVCodec* c = NULL;
-	while( ( c = av_codec_next( c ) ) != NULL )
-	{
-#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT( 53, 34, 0 )
-		if( ! c->encode )
-			continue;
-#else
-		if( ! c->encode2 )
-			continue;
-#endif
-		switch( c->type )
-		{
-			case AVMEDIA_TYPE_VIDEO:
-			{
-				if( ! c->name )
-					continue;
-
-				videoCodecsShortNames.push_back( std::string( c->name ) );
-				break;
-			}
-			default:
-				break;
-		}
-	}
-	return videoCodecsShortNames;
+	return videoCodecsNames;
 }
 
-std::vector<std::string> getAudioCodecsLongNames()
+NamesArray getAudioCodecsNames()
 {
-	std::vector<std::string> audioCodecsLongNames;
+	NamesArray audioCodecsNames;
 
 	AVCodec* c = NULL;
 	while( ( c = av_codec_next( c ) ) != NULL )
@@ -232,47 +186,17 @@ std::vector<std::string> getAudioCodecsLongNames()
 		{
 			case AVMEDIA_TYPE_AUDIO:
 			{
-				if( ! c->long_name )
+				if( ! c->name && ! c->long_name )
 					continue;
 
-				audioCodecsLongNames.push_back( std::string( c->long_name ) );
+				audioCodecsNames.push_back( std::make_pair( std::string( c->name ? c->name : "" ), std::string( c->long_name ? c->long_name : "" ) ) );
 				break;
 			}
 			default:
 				break;
 		}
 	}
-	return audioCodecsLongNames;
-}
-std::vector<std::string> getAudioCodecsShortNames()
-{
-	std::vector<std::string> audioCodecsShortNames;
-
-	AVCodec* c = NULL;
-	while( ( c = av_codec_next( c ) ) != NULL )
-	{
-#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT( 53, 34, 0 )
-		if( ! c->encode )
-			continue;
-#else
-		if( ! c->encode2 )
-			continue;
-#endif
-		switch( c->type )
-		{
-			case AVMEDIA_TYPE_AUDIO:
-			{
-				if( ! c->name )
-					continue;
-
-				audioCodecsShortNames.push_back( std::string( c->name ) );
-				break;
-			}
-			default:
-				break;
-		}
-	}
-	return audioCodecsShortNames;
+	return audioCodecsNames;
 }
 
 OptionArrayMap getOutputFormatOptions()
