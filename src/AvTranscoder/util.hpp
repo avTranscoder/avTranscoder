@@ -17,6 +17,7 @@ namespace avtranscoder
 {
 
 typedef std::map<std::string, OptionArray> OptionArrayMap;
+typedef std::vector< std::pair<std::string, std::string> > NamesArray;  //< short/long names of format/video codec/audio codec
 
 /**
  * @brief Get format name from a given filename 
@@ -53,25 +54,19 @@ AVPixelFormat getAVPixelFormat( const std::string& pixelFormat );
 AVSampleFormat getAVSampleFormat( const std::string& sampleFormat );
 
 /**
- * @brief Get long name of all format supported by FFmpeg / libav.
- * @see getFormatsShortNames: to get short names
+ * @brief Get array of short/long names of all format supported by FFmpeg / libav.
  */
-std::vector<std::string> getFormatsLongNames();
-std::vector<std::string> getFormatsShortNames();
+NamesArray getFormatsNames();
 
 /**
- * @brief Get long name of all video codec supported by FFmpeg / libav.
- * @see getVideoCodecsShortNames: to get short names
+ * @brief Get array of short/long names of all video codec supported by FFmpeg / libav.
  */
-std::vector<std::string> getVideoCodecsLongNames();
-std::vector<std::string> getVideoCodecsShortNames();
+NamesArray getVideoCodecsNames();
 
 /**
- * @brief Get long name of all audio codec supported by FFmpeg / libav.
- * @see getAudioCodecsShortNames: to get short names
+ * @brief Get array of short/long names of all audio codec supported by FFmpeg / libav.
  */
-std::vector<std::string> getAudioCodecsLongNames();
-std::vector<std::string> getAudioCodecsShortNames();
+NamesArray getAudioCodecsNames();
 
 /**
  * @brief Get the list of options for each output format
