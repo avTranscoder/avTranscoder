@@ -16,7 +16,6 @@
 
 %{
 #include <AvTranscoder/Library.hpp>
-#include <AvTranscoder/Option.hpp>
 #include <AvTranscoder/log.hpp>
 %}
 
@@ -30,9 +29,9 @@ namespace std {
 %include "AvTranscoder/profile/profile.i"
 
 %include <AvTranscoder/Library.hpp>
-%include <AvTranscoder/Option.hpp>
 %include <AvTranscoder/log.hpp>
 
+%include "AvTranscoder/option.i"
 %include "AvTranscoder/codec/codec.i"
 %include "AvTranscoder/stream/stream.i"
 %include "AvTranscoder/decoder/decoder.i"
