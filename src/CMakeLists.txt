@@ -94,6 +94,13 @@ if(SWIG_FOUND)
 				set_target_properties(${SWIG_MODULE_avtranscoder-py_REAL_NAME} PROPERTIES SOVERSION ${AVTRANSCODER_VERSION_MAJOR})
 				set_target_properties(${SWIG_MODULE_avtranscoder-py_REAL_NAME} PROPERTIES VERSION ${AVTRANSCODER_VERSION})
 			endif()
+			# Force the library to look in the project lib folder relatively
+			set_target_properties(${SWIG_MODULE_avtranscoder-py_REAL_NAME} PROPERTIES INSTALL_RPATH_USE_LINK_PATH 1)
+			if(APPLE)
+				set_target_properties(${SWIG_MODULE_avtranscoder-py_REAL_NAME} PROPERTIES INSTALL_RPATH "@loader_path/../../..")
+			else()
+				set_target_properties(${SWIG_MODULE_avtranscoder-py_REAL_NAME} PROPERTIES INSTALL_RPATH "$ORIGIN/../../..:$ORIGIN")
+			endif()
 			swig_link_libraries(avtranscoder-py avtranscoder-shared ${PYTHON_LIBRARIES})
 
 			# Install python interface
