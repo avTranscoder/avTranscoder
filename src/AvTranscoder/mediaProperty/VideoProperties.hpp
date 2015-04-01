@@ -75,7 +75,7 @@ public:
 	std::vector< std::pair< char, bool > > getGopStructure() const { return _gopStructure; }
 	//@}
 
-	PropertiesMap& getMetadatas() { return _metadatas; }
+	PropertyVector& getMetadatas() { return _metadatas; }
 
 #ifndef SWIG
 	const AVFormatContext& getAVFormatContext() { return *_formatContext; }
@@ -83,7 +83,7 @@ public:
 	const PixelProperties& getPixelProperties() const { return _pixelProperties; }
 #endif
 
-	PropertiesMap getPropertiesAsMap() const;  ///< Return all video and pixel properties as a map (name of property: value)
+	PropertyVector getPropertiesAsVector() const;  ///< Return all video and pixel properties as a vector (name of property: value)
 
 private:
 	/**
@@ -94,15 +94,15 @@ private:
 
 #ifndef SWIG
 	template<typename T>
-	void addProperty( PropertiesMap& dataMap, const std::string& key, T (VideoProperties::*getter)(void) const ) const
+	void addProperty( PropertyVector& dataVector, const std::string& key, T (VideoProperties::*getter)(void) const ) const
 	{
 		try
 		{
-		    detail::add( dataMap, key, (this->*getter)() );
+		    detail::add( dataVector, key, (this->*getter)() );
 		}
 		catch( const std::exception& e )
 		{
-		    detail::add( dataMap, key, e.what() );
+		    detail::add( dataVector, key, e.what() );
 		}
 	}
 #endif
@@ -120,7 +120,7 @@ private:
 	bool _isTopFieldFirst;
 	std::vector< std::pair< char, bool > > _gopStructure;
 	//@}
-	PropertiesMap _metadatas;
+	PropertyVector _metadatas;
 };
 
 }

@@ -15,19 +15,19 @@ public:
 
 	size_t getStreamIndex() const { return _streamIndex; }
 	size_t getStreamId() const;
-	PropertiesMap& getMetadatas() { return _metadatas; }
+	PropertyVector& getMetadatas() { return _metadatas; }
 
 #ifndef SWIG
 	const AVFormatContext& getAVFormatContext() { return *_formatContext; }
 #endif
 
-	PropertiesMap getPropertiesAsMap() const;  ///< Return all subtitle properties as a map (name of property: value)
+	PropertyVector getPropertiesAsVector() const;  ///< Return all subtitle properties as a vector (name of property: value)
 
 private:
 	const AVFormatContext* _formatContext;  ///< Has link (no ownership)
 
 	size_t _streamIndex;
-	PropertiesMap _metadatas;
+	PropertyVector _metadatas;
 };
 
 }

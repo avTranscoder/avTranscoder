@@ -223,16 +223,16 @@ std::vector<Channel> PixelProperties::getChannels() const
 	return channels;
 }
 
-PropertiesMap PixelProperties::getPropertiesAsMap() const
+PropertyVector PixelProperties::getPropertiesAsVector() const
 {
-	PropertiesMap dataMap;
+	PropertyVector data;
 
-	addProperty( dataMap, "pixelName", &PixelProperties::getPixelName );
-	addProperty( dataMap, "pixelFormatName", &PixelProperties::getPixelFormatName );
-	addProperty( dataMap, "bitDepth", &PixelProperties::getBitsPerPixel );
-	addProperty( dataMap, "nbComponents", &PixelProperties::getNbComponents );
-	addProperty( dataMap, "chromaWidth", &PixelProperties::getChromaWidth );
-	addProperty( dataMap, "chromaHeight", &PixelProperties::getChromaHeight );
+	addProperty( data, "pixelName", &PixelProperties::getPixelName );
+	addProperty( data, "pixelFormatName", &PixelProperties::getPixelFormatName );
+	addProperty( data, "bitDepth", &PixelProperties::getBitsPerPixel );
+	addProperty( data, "nbComponents", &PixelProperties::getNbComponents );
+	addProperty( data, "chromaWidth", &PixelProperties::getChromaWidth );
+	addProperty( data, "chromaHeight", &PixelProperties::getChromaHeight );
 
 	try
 	{
@@ -255,11 +255,11 @@ PropertiesMap PixelProperties::getPropertiesAsMap() const
 				colorComponents = "YUV";
 				break;
 		}
-		detail::add( dataMap, "colorComponents", colorComponents );
+		detail::add( data, "colorComponents", colorComponents );
 	}
 	catch( const std::exception& e )
 	{
-		detail::add( dataMap, "colorComponents", e.what() );
+		detail::add( data, "colorComponents", e.what() );
 	}
 
 	try
@@ -286,21 +286,21 @@ PropertiesMap PixelProperties::getPropertiesAsMap() const
 				subsampling = "None";
 				break;
 		}
-		detail::add( dataMap, "subsampling", subsampling );
+		detail::add( data, "subsampling", subsampling );
 	}
 	catch( const std::exception& e )
 	{
-		detail::add( dataMap, "subsampling", e.what() );
+		detail::add( data, "subsampling", e.what() );
 	}
 
-	addProperty( dataMap, "isBigEndian", &PixelProperties::isBigEndian );
-	addProperty( dataMap, "hasAlpha", &PixelProperties::hasAlpha );
-	addProperty( dataMap, "isPlanar", &PixelProperties::isPlanar );
-	addProperty( dataMap, "isIndexedColors", &PixelProperties::isIndexedColors );
-	addProperty( dataMap, "bitWiseAcked", &PixelProperties::isBitWisePacked );
-	addProperty( dataMap, "isHardwareAccelerated", &PixelProperties::isHardwareAccelerated );
-	addProperty( dataMap, "rgbPixel", &PixelProperties::isRgbPixelData );
-	addProperty( dataMap, "isPseudoPaletted", &PixelProperties::isPseudoPaletted );
+	addProperty( data, "isBigEndian", &PixelProperties::isBigEndian );
+	addProperty( data, "hasAlpha", &PixelProperties::hasAlpha );
+	addProperty( data, "isPlanar", &PixelProperties::isPlanar );
+	addProperty( data, "isIndexedColors", &PixelProperties::isIndexedColors );
+	addProperty( data, "bitWiseAcked", &PixelProperties::isBitWisePacked );
+	addProperty( data, "isHardwareAccelerated", &PixelProperties::isHardwareAccelerated );
+	addProperty( data, "rgbPixel", &PixelProperties::isRgbPixelData );
+	addProperty( data, "isPseudoPaletted", &PixelProperties::isPseudoPaletted );
 
 	try
 	{
@@ -315,15 +315,15 @@ PropertiesMap PixelProperties::getPropertiesAsMap() const
 			channelValue << " - ";
 			channelValue << "bitStep " << channels.at( channelIndex ).bitStep;
 
-			detail::add( dataMap, channelName.str(), channelValue.str() );
+			detail::add( data, channelName.str(), channelValue.str() );
 		}
 	}
 	catch( const std::exception& e )
 	{
-		detail::add( dataMap, "channels", e.what() );
+		detail::add( data, "channels", e.what() );
 	}
 
-	return dataMap;
+	return data;
 }
 
 }

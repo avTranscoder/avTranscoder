@@ -202,33 +202,33 @@ double AudioProperties::getDuration() const
 	return duration;
 }
 
-PropertiesMap AudioProperties::getPropertiesAsMap() const
+PropertyVector AudioProperties::getPropertiesAsVector() const
 {
-	PropertiesMap dataMap;
+	PropertyVector data;
 
-	addProperty( dataMap, "streamId", &AudioProperties::getStreamId );
-	addProperty( dataMap, "codecId", &AudioProperties::getCodecId );
-	addProperty( dataMap, "codecName", &AudioProperties::getCodecName );
-	addProperty( dataMap, "codecLongName", &AudioProperties::getCodecLongName );
-	addProperty( dataMap, "sampleFormatName", &AudioProperties::getSampleFormatName );
-	addProperty( dataMap, "sampleFormatLongName", &AudioProperties::getSampleFormatLongName );
-	addProperty( dataMap, "sampleRate", &AudioProperties::getSampleRate );
-	addProperty( dataMap, "bitRate", &AudioProperties::getBitRate );
-	addProperty( dataMap, "nbSamples", &AudioProperties::getNbSamples );
-	addProperty( dataMap, "channels", &AudioProperties::getChannels );
-	addProperty( dataMap, "channelLayout", &AudioProperties::getChannelLayout );
-	addProperty( dataMap, "channelName", &AudioProperties::getChannelName );
-	addProperty( dataMap, "channelDescription", &AudioProperties::getChannelDescription );
-	addProperty( dataMap, "ticksPerFrame", &AudioProperties::getTicksPerFrame );
-	addProperty( dataMap, "timeBase", &AudioProperties::getTimeBase );
-	addProperty( dataMap, "duration", &AudioProperties::getDuration );
+	addProperty( data, "streamId", &AudioProperties::getStreamId );
+	addProperty( data, "codecId", &AudioProperties::getCodecId );
+	addProperty( data, "codecName", &AudioProperties::getCodecName );
+	addProperty( data, "codecLongName", &AudioProperties::getCodecLongName );
+	addProperty( data, "sampleFormatName", &AudioProperties::getSampleFormatName );
+	addProperty( data, "sampleFormatLongName", &AudioProperties::getSampleFormatLongName );
+	addProperty( data, "sampleRate", &AudioProperties::getSampleRate );
+	addProperty( data, "bitRate", &AudioProperties::getBitRate );
+	addProperty( data, "nbSamples", &AudioProperties::getNbSamples );
+	addProperty( data, "channels", &AudioProperties::getChannels );
+	addProperty( data, "channelLayout", &AudioProperties::getChannelLayout );
+	addProperty( data, "channelName", &AudioProperties::getChannelName );
+	addProperty( data, "channelDescription", &AudioProperties::getChannelDescription );
+	addProperty( data, "ticksPerFrame", &AudioProperties::getTicksPerFrame );
+	addProperty( data, "timeBase", &AudioProperties::getTimeBase );
+	addProperty( data, "duration", &AudioProperties::getDuration );
 
 	for( size_t metadataIndex = 0; metadataIndex < _metadatas.size(); ++metadataIndex )
 	{
-		detail::add( dataMap, _metadatas.at( metadataIndex ).first, _metadatas.at( metadataIndex ).second );
+		detail::add( data, _metadatas.at( metadataIndex ).first, _metadatas.at( metadataIndex ).second );
 	}
 
-	return dataMap;
+	return data;
 }
 
 }

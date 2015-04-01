@@ -79,22 +79,22 @@ public:
 	const AVPixFmtDescriptor* getAVPixFmtDescriptor() const { return _pixelDesc; }
 #endif
 
-	PropertiesMap getPropertiesAsMap() const;  ///< Return all pixel properties as a map (name of property: value)
+	PropertyVector getPropertiesAsVector() const;  ///< Return all pixel properties as a vector (name of property: value)
 
 private:
 	void init( const AVPixelFormat avPixelFormat );
 
 #ifndef SWIG
 	template<typename T>
-	void addProperty( PropertiesMap& dataMap, const std::string& key, T (PixelProperties::*getter)(void) const ) const
+	void addProperty( PropertyVector& data, const std::string& key, T (PixelProperties::*getter)(void) const ) const
 	{
 		try
 		{
-		    detail::add( dataMap, key, (this->*getter)() );
+		    detail::add( data, key, (this->*getter)() );
 		}
 		catch( const std::exception& e )
 		{
-		    detail::add( dataMap, key, e.what() );
+		    detail::add( data, key, e.what() );
 		}
 	}
 #endif

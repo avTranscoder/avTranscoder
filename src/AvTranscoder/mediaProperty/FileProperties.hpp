@@ -32,7 +32,7 @@ public:
 	size_t getBitRate() const;  ///< total stream bitrate in bit/s, 0 if not available (result of a computation by ffmpeg)
 	size_t getPacketSize() const;
 
-	PropertiesMap& getMetadatas() { return _metadatas; }
+	PropertyVector& getMetadatas() { return _metadatas; }
 
 	size_t getNbStreams() const;
 	size_t getNbVideoStreams() const { return _videoStreams.size(); }
@@ -72,22 +72,22 @@ public:
 	const std::vector< avtranscoder::UnknownProperties >& getUnknownPropertiesProperties() const  { return  _unknownStreams; }
 #endif
 
-	PropertiesMap getPropertiesAsMap() const;  ///< Return all file properties as a map (name of property: value)
+	PropertyVector getPropertiesAsVector() const;  ///< Return all file properties as a vector (name of property: value)
 
 	void clearStreamProperties();  ///< Clear all array of stream properties
 
 private:
 #ifndef SWIG
 	template<typename T>
-	void addProperty( PropertiesMap& dataMap, const std::string& key, T (FileProperties::*getter)(void) const ) const
+	void addProperty( PropertyVector& data, const std::string& key, T (FileProperties::*getter)(void) const ) const
 	{
 		try
 		{
-			detail::add( dataMap, key, (this->*getter)() );
+			detail::add( data, key, (this->*getter)() );
 		}
 		catch( const std::exception& e )
 		{
-			detail::add( dataMap, key, e.what() );
+			detail::add( data, key, e.what() );
 		}
 	}
 #endif
@@ -102,7 +102,7 @@ private:
 	std::vector< AttachementProperties > _attachementStreams;  ///< Array of properties per attachement stream
 	std::vector< UnknownProperties > _unknownStreams;  ///< Array of properties per unknown stream
 
-	PropertiesMap _metadatas;
+	PropertyVector _metadatas;
 };
 
 }

@@ -29,25 +29,25 @@ size_t DataProperties::getStreamId() const
 	return _formatContext->streams[_streamIndex]->id;
 }
 
-PropertiesMap DataProperties::getPropertiesAsMap() const
+PropertyVector DataProperties::getPropertiesAsVector() const
 {
-	PropertiesMap dataMap;
+	PropertyVector data;
 
 	try
 	{
-		detail::add( dataMap, "streamId", getStreamId() );
+		detail::add( data, "streamId", getStreamId() );
 	}
 	catch( const std::exception& e )
 	{
-		detail::add( dataMap, "streamId", e.what() );
+		detail::add( data, "streamId", e.what() );
 	}
 
 	for( size_t metadataIndex = 0; metadataIndex < _metadatas.size(); ++metadataIndex )
 	{
-		detail::add( dataMap, _metadatas.at( metadataIndex ).first, _metadatas.at( metadataIndex ).second );
+		detail::add( data, _metadatas.at( metadataIndex ).first, _metadatas.at( metadataIndex ).second );
 	}
 
-	return dataMap;
+	return data;
 }
 
 void DataProperties::detectAncillaryData()

@@ -35,27 +35,27 @@ public:
 	Rational getTimeBase() const;
 	double getDuration() const;
 
-	PropertiesMap& getMetadatas() { return _metadatas; }
+	PropertyVector& getMetadatas() { return _metadatas; }
 
 #ifndef SWIG
 	const AVFormatContext& getAVFormatContext() { return *_formatContext; }
 	AVCodecContext& getAVCodecContext() { return *_codecContext; }
 #endif
 
-	PropertiesMap getPropertiesAsMap() const;  ///< Return all audio properties as a map (name of property: value)
+	PropertyVector getPropertiesAsVector() const;  ///< Return all audio properties as a vector (name of property: value)
 
 private:
 #ifndef SWIG
 	template<typename T>
-	void addProperty( PropertiesMap& dataMap, const std::string& key, T (AudioProperties::*getter)(void) const ) const
+	void addProperty( PropertyVector& data, const std::string& key, T (AudioProperties::*getter)(void) const ) const
 	{
 		try
 		{
-		    detail::add( dataMap, key, (this->*getter)() );
+		    detail::add( data, key, (this->*getter)() );
 		}
 		catch( const std::exception& e )
 		{
-		    detail::add( dataMap, key, e.what() );
+		    detail::add( data, key, e.what() );
 		}
 	}
 #endif
@@ -66,7 +66,7 @@ private:
 	AVCodec* _codec; ///< Has link (no ownership)
 
 	size_t _streamIndex;
-	PropertiesMap _metadatas;
+	PropertyVector _metadatas;
 };
 
 }
