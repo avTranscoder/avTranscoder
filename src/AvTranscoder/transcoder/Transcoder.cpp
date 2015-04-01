@@ -224,6 +224,12 @@ bool Transcoder::processFrame()
 	return true;
 }
 
+void Transcoder::process()
+{
+	NoDisplayProgress progress;
+	process( progress );
+}
+
 void Transcoder::process( IProgress& progress )
 {
 	if( _streamTranscoders.size() == 0 )

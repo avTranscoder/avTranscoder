@@ -120,6 +120,7 @@ public:
 	 * @see IProgress
 	 */
 	void process( IProgress& progress );
+	void process();  ///< Call process with no display of progression
 
 	/**
 	 * @param streamIndex: careful about the order of stream insertion of the Transcoder.
