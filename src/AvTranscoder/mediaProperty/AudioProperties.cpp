@@ -231,4 +231,19 @@ PropertyVector AudioProperties::getPropertiesAsVector() const
 	return data;
 }
 
+PropertyMap AudioProperties::getPropertiesAsMap() const
+{
+	PropertyMap dataMap;
+
+	PropertyVector dataVector( getPropertiesAsVector() );
+	for( PropertyVector::const_iterator it = dataVector.begin();
+			it != dataVector.end();
+			++it )
+	{
+		dataMap.insert( std::make_pair( it->first, it->second ) );
+	}
+
+	return dataMap;
+}
+
 }

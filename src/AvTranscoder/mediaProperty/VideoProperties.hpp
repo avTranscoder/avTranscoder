@@ -83,7 +83,8 @@ public:
 	const PixelProperties& getPixelProperties() const { return _pixelProperties; }
 #endif
 
-	PropertyVector getPropertiesAsVector() const;  ///< Return all video and pixel properties as a vector (name of property: value)
+	PropertyMap getPropertiesAsMap() const;  ///< Return all video and pixel properties as a map (name of property, value)
+	PropertyVector getPropertiesAsVector() const;  ///< Same data with a specific order
 
 private:
 	/**

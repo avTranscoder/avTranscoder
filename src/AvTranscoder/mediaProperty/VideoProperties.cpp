@@ -696,4 +696,19 @@ PropertyVector VideoProperties::getPropertiesAsVector() const
 	return data;
 }
 
+PropertyMap VideoProperties::getPropertiesAsMap() const
+{
+	PropertyMap dataMap;
+
+	PropertyVector dataVector( getPropertiesAsVector() );
+	for( PropertyVector::const_iterator it = dataVector.begin();
+			it != dataVector.end();
+			++it )
+	{
+		dataMap.insert( std::make_pair( it->first, it->second ) );
+	}
+
+	return dataMap;
+}
+
 }

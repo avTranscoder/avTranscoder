@@ -9,6 +9,7 @@ extern "C" {
 
 #include <vector>
 #include <utility>
+#include <map>
 #include <string>
 #include <sstream>
 
@@ -19,6 +20,7 @@ namespace avtranscoder
  * @brief PropertyVector is a vector of pair, because the order of properties matters to us.
  */
 typedef std::vector< std::pair<std::string, std::string> > PropertyVector;
+typedef std::map< std::string, std::string > PropertyMap;
 
 namespace detail
 {

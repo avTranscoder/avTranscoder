@@ -42,7 +42,8 @@ public:
 	AVCodecContext& getAVCodecContext() { return *_codecContext; }
 #endif
 
-	PropertyVector getPropertiesAsVector() const;  ///< Return all audio properties as a vector (name of property: value)
+	PropertyMap getPropertiesAsMap() const;  ///< Return all audio properties as a map (name of property, value)
+	PropertyVector getPropertiesAsVector() const;  ///< Same data with a specific order
 
 private:
 #ifndef SWIG
