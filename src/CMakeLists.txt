@@ -141,6 +141,13 @@ if(SWIG_FOUND)
 				set_target_properties(${SWIG_MODULE_avtranscoder-java_REAL_NAME} PROPERTIES SOVERSION ${AVTRANSCODER_VERSION_MAJOR})
 				set_target_properties(${SWIG_MODULE_avtranscoder-java_REAL_NAME} PROPERTIES VERSION ${AVTRANSCODER_VERSION})
 			endif()
+			# Force the library to look in the project lib folder relatively
+			set_target_properties(${SWIG_MODULE_avtranscoder-java_REAL_NAME} PROPERTIES INSTALL_RPATH_USE_LINK_PATH 1)
+			if(APPLE)
+				set_target_properties(${SWIG_MODULE_avtranscoder-java_REAL_NAME} PROPERTIES INSTALL_RPATH "@loader_path/..")
+			else()
+				set_target_properties(${SWIG_MODULE_avtranscoder-java_REAL_NAME} PROPERTIES INSTALL_RPATH "$ORIGIN/..:$ORIGIN")
+			endif()
 			swig_link_libraries(avtranscoder-java avtranscoder-shared)
 
 			# Post build of java binding : compile java files (generate class files) and create jar
@@ -158,7 +165,7 @@ if(SWIG_FOUND)
 			)
 
 			# Install java lib and jar files
-			install(TARGETS ${SWIG_MODULE_avtranscoder-java_REAL_NAME} DESTINATION lib/)
+			install(TARGETS ${SWIG_MODULE_avtranscoder-java_REAL_NAME} DESTINATION "lib/java")
 			install(FILES ${AVTRANSCODER_JAR_PATH}/${AVTRANSCODER_JAR_NAME} DESTINATION "share/java/")
 		else()
 			message("JAVA not found, will not build java binding.")
