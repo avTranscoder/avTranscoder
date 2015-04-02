@@ -1,8 +1,13 @@
+env:
+  matrix:
+    - DEPENDENCY_MODE=libav
+    - DEPENDENCY_MODE=ffmpeg
+
+language: cpp
+
 os:
   - linux
   - osx
-
-language: cpp
 
 compiler:
   - gcc
