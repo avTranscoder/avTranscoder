@@ -204,6 +204,7 @@ PropertyVector AudioProperties::getPropertiesAsVector() const
 	PropertyVector data;
 
 	addProperty( data, "streamId", &AudioProperties::getStreamId );
+	detail::add( data, "streamIndex", getStreamIndex() );
 	addProperty( data, "codecId", &AudioProperties::getCodecId );
 	addProperty( data, "codecName", &AudioProperties::getCodecName );
 	addProperty( data, "codecLongName", &AudioProperties::getCodecLongName );

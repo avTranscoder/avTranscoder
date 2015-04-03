@@ -641,6 +641,7 @@ PropertyVector VideoProperties::getPropertiesAsVector() const
 	PropertyVector data;
 
 	addProperty( data, "streamId", &VideoProperties::getStreamId );
+	detail::add( data, "streamIndex", getStreamIndex() );
 	addProperty( data, "codecId", &VideoProperties::getCodecId );
 	addProperty( data, "codecName", &VideoProperties::getCodecName );
 	addProperty( data, "codecLongName", &VideoProperties::getCodecLongName );

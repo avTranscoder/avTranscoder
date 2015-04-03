@@ -37,6 +37,7 @@ PropertyVector StreamProperties::getPropertiesAsVector() const
 	{
 		detail::add( data, "streamId", e.what() );
 	}
+	detail::add( data, "streamIndex", getStreamIndex() );
 
 	for( size_t metadataIndex = 0; metadataIndex < _metadatas.size(); ++metadataIndex )
 	{
