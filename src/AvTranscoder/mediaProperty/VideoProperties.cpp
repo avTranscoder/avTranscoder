@@ -16,10 +16,9 @@ namespace avtranscoder
 {
 
 VideoProperties::VideoProperties( const FormatContext& formatContext, const size_t index, IProgress& progress, const EAnalyseLevel level )
-	: _formatContext( &formatContext.getAVFormatContext() )
+	: StreamProperties( formatContext, index )
 	, _codecContext( NULL )
 	, _codec( NULL )
-	, _streamIndex( index )
 	, _pixelProperties()
 	, _isInterlaced( false )
 	, _isTopFieldFirst( false )
@@ -694,21 +693,6 @@ PropertyVector VideoProperties::getPropertiesAsVector() const
 	data.insert( data.end(), pixelProperties.begin(), pixelProperties.end() );
 
 	return data;
-}
-
-PropertyMap VideoProperties::getPropertiesAsMap() const
-{
-	PropertyMap dataMap;
-
-	PropertyVector dataVector( getPropertiesAsVector() );
-	for( PropertyVector::const_iterator it = dataVector.begin();
-			it != dataVector.end();
-			++it )
-	{
-		dataMap.insert( std::make_pair( it->first, it->second ) );
-	}
-
-	return dataMap;
 }
 
 }

@@ -1,11 +1,11 @@
-#include "AttachementProperties.hpp"
+#include "StreamProperties.hpp"
 
 #include <stdexcept>
 
 namespace avtranscoder
 {
 
-AttachementProperties::AttachementProperties( const FormatContext& formatContext, const size_t index )
+StreamProperties::StreamProperties( const FormatContext& formatContext, const size_t index )
 	: _formatContext( &formatContext.getAVFormatContext() )
 	, _streamIndex( index )
 {
@@ -13,14 +13,19 @@ AttachementProperties::AttachementProperties( const FormatContext& formatContext
 		detail::fillMetadataDictionnary( _formatContext->streams[index]->metadata, _metadatas );
 }
 
-size_t AttachementProperties::getStreamId() const
+StreamProperties::~StreamProperties()
+{
+	
+}
+
+size_t StreamProperties::getStreamId() const
 {
 	if( ! _formatContext )
 		throw std::runtime_error( "unknown format context" );
 	return _formatContext->streams[_streamIndex]->id;
 }
 
-PropertyVector AttachementProperties::getPropertiesAsVector() const
+PropertyVector StreamProperties::getPropertiesAsVector() const
 {
 	PropertyVector data;
 
@@ -39,6 +44,21 @@ PropertyVector AttachementProperties::getPropertiesAsVector() const
 	}
 
 	return data;
+}
+
+PropertyMap StreamProperties::getPropertiesAsMap() const
+{
+	PropertyMap dataMap;
+
+	PropertyVector dataVector( getPropertiesAsVector() );
+	for( PropertyVector::const_iterator it = dataVector.begin();
+			it != dataVector.end();
+			++it )
+	{
+		dataMap.insert( std::make_pair( it->first, it->second ) );
+	}
+
+	return dataMap;
 }
 
 }
