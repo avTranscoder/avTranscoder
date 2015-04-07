@@ -1,0 +1,30 @@
+os:
+  - Windows Server 2012 R2
+
+platform:
+  - x86
+  - Any CPU
+
+matrix:
+  fast_finish: true
+
+init:
+  - call "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" %platform%
+
+before_build:
+  - choco install -y swig
+  - tools/appveyor.win.install.deps.bat
+
+build_script:
+  - MKDIR build
+  - cd build
+  - call cmake.exe .. -G "NMake Makefiles" -DCMAKE_INSTALL_PREFIX=%~dp0 -DCMAKE_PREFIX_PATH="%~dp0\ffmpeg-2.2.11-win32-dev"
+  - call nmake /F Makefile install
+
+before_test:
+  - pip install nosetests
+
+test_script:
+  - cd ..
+  - tools/appveyor.python.nosetests.bat
+
