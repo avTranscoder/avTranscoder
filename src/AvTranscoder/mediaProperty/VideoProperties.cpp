@@ -430,7 +430,7 @@ size_t VideoProperties::getBitRate() const
 			if( gotFrame )
 			{
 #if LIBAVUTIL_VERSION_INT >= AV_VERSION_INT( 54, 7, 100 )
-				gopFramesSize += frame->pkt_size;
+				gopFramesSize += av_frame_get_pkt_size( frame );
 #else
 				gopFramesSize += pkt.size;
 #endif
