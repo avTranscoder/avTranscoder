@@ -132,9 +132,9 @@ bool OutputFile::endWrap( )
 	return true;
 }
 
-void OutputFile::addMetadata( const PropertiesMap& dataMap )
+void OutputFile::addMetadata( const PropertyVector& data )
 {
-	for( PropertiesMap::const_iterator it = dataMap.begin(); it != dataMap.end(); ++it )
+	for( PropertyVector::const_iterator it = data.begin(); it != data.end(); ++it )
 	{
 		addMetadata( it->first, it->second );
 	}

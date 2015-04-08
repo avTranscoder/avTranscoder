@@ -129,33 +129,33 @@ size_t FileProperties::getNbStreams() const
 	return _formatContext->nb_streams;
 }
 
-PropertiesMap FileProperties::getPropertiesAsMap() const
+PropertyVector FileProperties::getPropertiesAsVector() const
 {
-	PropertiesMap dataMap;
+	PropertyVector data;
 
-	addProperty( dataMap, "filename", &FileProperties::getFilename );
-	addProperty( dataMap, "formatName", &FileProperties::getFormatName );
-	addProperty( dataMap, "formatLongName", &FileProperties::getFormatLongName );
+	addProperty( data, "filename", &FileProperties::getFilename );
+	addProperty( data, "formatName", &FileProperties::getFormatName );
+	addProperty( data, "formatLongName", &FileProperties::getFormatLongName );
 
-	addProperty( dataMap, "startTime", &FileProperties::getStartTime );
-	addProperty( dataMap, "duration", &FileProperties::getDuration );
-	addProperty( dataMap, "bitrate", &FileProperties::getBitRate );
-	addProperty( dataMap, "numberOfStreams", &FileProperties::getNbStreams );
-	addProperty( dataMap, "numberOfPrograms", &FileProperties::getProgramsCount );
+	addProperty( data, "startTime", &FileProperties::getStartTime );
+	addProperty( data, "duration", &FileProperties::getDuration );
+	addProperty( data, "bitrate", &FileProperties::getBitRate );
+	addProperty( data, "numberOfStreams", &FileProperties::getNbStreams );
+	addProperty( data, "numberOfPrograms", &FileProperties::getProgramsCount );
 
-	detail::add( dataMap, "numberOfVideoStreams", getNbVideoStreams() );
-	detail::add( dataMap, "numberOfAudioStreams", getNbAudioStreams() );
-	detail::add( dataMap, "numberOfDataStreams", getNbDataStreams() );
-	detail::add( dataMap, "numberOfSubtitleStreams", getNbSubtitleStreams() );
-	detail::add( dataMap, "numberOfAttachementStreams", getNbAttachementStreams() );
-	detail::add( dataMap, "numberOfUnknownStreams", getNbUnknownStreams() );
+	detail::add( data, "numberOfVideoStreams", getNbVideoStreams() );
+	detail::add( data, "numberOfAudioStreams", getNbAudioStreams() );
+	detail::add( data, "numberOfDataStreams", getNbDataStreams() );
+	detail::add( data, "numberOfSubtitleStreams", getNbSubtitleStreams() );
+	detail::add( data, "numberOfAttachementStreams", getNbAttachementStreams() );
+	detail::add( data, "numberOfUnknownStreams", getNbUnknownStreams() );
 
 	for( size_t metadataIndex = 0; metadataIndex < _metadatas.size(); ++metadataIndex )
 	{
-		detail::add( dataMap, _metadatas.at( metadataIndex ).first, _metadatas.at( metadataIndex ).second );
+		detail::add( data, _metadatas.at( metadataIndex ).first, _metadatas.at( metadataIndex ).second );
 	}
 
-	return dataMap;
+	return data;
 }
 
 void FileProperties::clearStreamProperties()

@@ -9,24 +9,24 @@ namespace detail
 {
 
 template<>
-void add( PropertiesMap& propertiesMap, const std::string& key, const std::string& value )
+void add( PropertyVector& propertyVector, const std::string& key, const std::string& value )
 {
-	propertiesMap.push_back( std::make_pair( key, value ) );
+	propertyVector.push_back( std::make_pair( key, value ) );
 }
 
 template<>
-void add( PropertiesMap& propertiesMap, const std::string& key, const bool& value )
+void add( PropertyVector& propertyVector, const std::string& key, const bool& value )
 {
-	add( propertiesMap, key, value ? "True" : "False" );
+	add( propertyVector, key, value ? "True" : "False" );
 }
 
 template<>
-void add( PropertiesMap& propertiesMap, const std::string& key, const Rational& value )
+void add( PropertyVector& propertyVector, const std::string& key, const Rational& value )
 {
-	add( propertiesMap, key, value.num / (double) value.den );
+	add( propertyVector, key, value.num / (double) value.den );
 }
 
-void fillMetadataDictionnary( AVDictionary* avdictionnary, PropertiesMap& metadata )
+void fillMetadataDictionnary( AVDictionary* avdictionnary, PropertyVector& metadata )
 {
 	AVDictionaryEntry* tag = NULL;
 	while( ( tag = av_dict_get( avdictionnary, "", tag, AV_DICT_IGNORE_SUFFIX ) ) )

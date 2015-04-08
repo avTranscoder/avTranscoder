@@ -16,10 +16,9 @@ namespace avtranscoder
 {
 
 VideoProperties::VideoProperties( const FormatContext& formatContext, const size_t index, IProgress& progress, const EAnalyseLevel level )
-	: _formatContext( &formatContext.getAVFormatContext() )
+	: StreamProperties( formatContext, index )
 	, _codecContext( NULL )
 	, _codec( NULL )
-	, _streamIndex( index )
 	, _pixelProperties()
 	, _isInterlaced( false )
 	, _isTopFieldFirst( false )
@@ -637,40 +636,41 @@ void VideoProperties::analyseGopStructure( IProgress& progress )
 	}
 }
 
-PropertiesMap VideoProperties::getPropertiesAsMap() const
+PropertyVector VideoProperties::getPropertiesAsVector() const
 {
-	PropertiesMap dataMap;
+	PropertyVector data;
 
-	addProperty( dataMap, "streamId", &VideoProperties::getStreamId );
-	addProperty( dataMap, "codecId", &VideoProperties::getCodecId );
-	addProperty( dataMap, "codecName", &VideoProperties::getCodecName );
-	addProperty( dataMap, "codecLongName", &VideoProperties::getCodecLongName );
-	addProperty( dataMap, "profile", &VideoProperties::getProfile );
-	addProperty( dataMap, "profileName", &VideoProperties::getProfileName );
-	addProperty( dataMap, "level", &VideoProperties::getLevel );
-	addProperty( dataMap, "startTimecode", &VideoProperties::getStartTimecodeString );
-	addProperty( dataMap, "width", &VideoProperties::getWidth );
-	addProperty( dataMap, "height", &VideoProperties::getHeight );
-	addProperty( dataMap, "pixelAspectRatio", &VideoProperties::getSar );
-	addProperty( dataMap, "displayAspectRatio", &VideoProperties::getDar );
-	addProperty( dataMap, "dtgActiveFormat", &VideoProperties::getDtgActiveFormat );
-	addProperty( dataMap, "colorTransfert", &VideoProperties::getColorTransfert );
-	addProperty( dataMap, "colorspace", &VideoProperties::getColorspace );
-	addProperty( dataMap, "colorRange", &VideoProperties::getColorRange );
-	addProperty( dataMap, "colorPrimaries", &VideoProperties::getColorPrimaries );
-	addProperty( dataMap, "chromaSampleLocation", &VideoProperties::getChromaSampleLocation );
-	addProperty( dataMap, "interlaced ", &VideoProperties::isInterlaced );
-	addProperty( dataMap, "topFieldFirst", &VideoProperties::isTopFieldFirst );
-	addProperty( dataMap, "fieldOrder", &VideoProperties::getFieldOrder );
-	addProperty( dataMap, "timeBase", &VideoProperties::getTimeBase );
-	addProperty( dataMap, "duration", &VideoProperties::getDuration );
-	addProperty( dataMap, "fps", &VideoProperties::getFps );
-	addProperty( dataMap, "nbFrame", &VideoProperties::getNbFrames );
-	addProperty( dataMap, "ticksPerFrame", &VideoProperties::getTicksPerFrame );
-	addProperty( dataMap, "bitRate", &VideoProperties::getBitRate );
-	addProperty( dataMap, "maxBitRate", &VideoProperties::getMaxBitRate );
-	addProperty( dataMap, "minBitRate", &VideoProperties::getMinBitRate );
-	addProperty( dataMap, "gopSize", &VideoProperties::getGopSize );
+	addProperty( data, "streamId", &VideoProperties::getStreamId );
+	detail::add( data, "streamIndex", getStreamIndex() );
+	addProperty( data, "codecId", &VideoProperties::getCodecId );
+	addProperty( data, "codecName", &VideoProperties::getCodecName );
+	addProperty( data, "codecLongName", &VideoProperties::getCodecLongName );
+	addProperty( data, "profile", &VideoProperties::getProfile );
+	addProperty( data, "profileName", &VideoProperties::getProfileName );
+	addProperty( data, "level", &VideoProperties::getLevel );
+	addProperty( data, "startTimecode", &VideoProperties::getStartTimecodeString );
+	addProperty( data, "width", &VideoProperties::getWidth );
+	addProperty( data, "height", &VideoProperties::getHeight );
+	addProperty( data, "pixelAspectRatio", &VideoProperties::getSar );
+	addProperty( data, "displayAspectRatio", &VideoProperties::getDar );
+	addProperty( data, "dtgActiveFormat", &VideoProperties::getDtgActiveFormat );
+	addProperty( data, "colorTransfert", &VideoProperties::getColorTransfert );
+	addProperty( data, "colorspace", &VideoProperties::getColorspace );
+	addProperty( data, "colorRange", &VideoProperties::getColorRange );
+	addProperty( data, "colorPrimaries", &VideoProperties::getColorPrimaries );
+	addProperty( data, "chromaSampleLocation", &VideoProperties::getChromaSampleLocation );
+	addProperty( data, "interlaced ", &VideoProperties::isInterlaced );
+	addProperty( data, "topFieldFirst", &VideoProperties::isTopFieldFirst );
+	addProperty( data, "fieldOrder", &VideoProperties::getFieldOrder );
+	addProperty( data, "timeBase", &VideoProperties::getTimeBase );
+	addProperty( data, "duration", &VideoProperties::getDuration );
+	addProperty( data, "fps", &VideoProperties::getFps );
+	addProperty( data, "nbFrame", &VideoProperties::getNbFrames );
+	addProperty( data, "ticksPerFrame", &VideoProperties::getTicksPerFrame );
+	addProperty( data, "bitRate", &VideoProperties::getBitRate );
+	addProperty( data, "maxBitRate", &VideoProperties::getMaxBitRate );
+	addProperty( data, "minBitRate", &VideoProperties::getMinBitRate );
+	addProperty( data, "gopSize", &VideoProperties::getGopSize );
 
 	std::string gop;
 	for( size_t frameIndex = 0; frameIndex < _gopStructure.size(); ++frameIndex )
@@ -678,22 +678,22 @@ PropertiesMap VideoProperties::getPropertiesAsMap() const
 		gop += _gopStructure.at( frameIndex ).first;
 		gop += " ";
 	}
-	detail::add( dataMap, "gop", gop );
-	//detail::add( dataMap, "isClosedGop", isClosedGop() );
+	detail::add( data, "gop", gop );
+	//detail::add( data, "isClosedGop", isClosedGop() );
 
-	addProperty( dataMap, "hasBFrames", &VideoProperties::hasBFrames );
-	addProperty( dataMap, "referencesFrames", &VideoProperties::getReferencesFrames );
+	addProperty( data, "hasBFrames", &VideoProperties::hasBFrames );
+	addProperty( data, "referencesFrames", &VideoProperties::getReferencesFrames );
 
 	for( size_t metadataIndex = 0; metadataIndex < _metadatas.size(); ++metadataIndex )
 	{
-		detail::add( dataMap, _metadatas.at( metadataIndex ).first, _metadatas.at( metadataIndex ).second );
+		detail::add( data, _metadatas.at( metadataIndex ).first, _metadatas.at( metadataIndex ).second );
 	}
 
 	// Add properties of the pixel
-	PropertiesMap pixelProperties = _pixelProperties.getPropertiesAsMap();
-	dataMap.insert( dataMap.end(), pixelProperties.begin(), pixelProperties.end() );
+	PropertyVector pixelProperties = _pixelProperties.getPropertiesAsVector();
+	data.insert( data.end(), pixelProperties.begin(), pixelProperties.end() );
 
-	return dataMap;
+	return data;
 }
 
 }

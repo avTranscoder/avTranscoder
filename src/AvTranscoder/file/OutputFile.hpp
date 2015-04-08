@@ -41,7 +41,7 @@ public:
 	 * @brief Add metadata to the output file.
 	 * @note Depending on the format, you are not sure to find your metadata after the transcode.
 	 */
-	void addMetadata( const PropertiesMap& dataMap );
+	void addMetadata( const PropertyVector& data );
 	void addMetadata( const std::string& key, const std::string& value );
 	
 	IOutputStream& getStream( const size_t streamId );

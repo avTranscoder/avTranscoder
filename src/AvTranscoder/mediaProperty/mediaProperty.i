@@ -2,6 +2,7 @@
 #include <AvTranscoder/mediaProperty/util.hpp>
 #include <AvTranscoder/mediaProperty/FileProperties.hpp>
 #include <AvTranscoder/mediaProperty/PixelProperties.hpp>
+#include <AvTranscoder/mediaProperty/StreamProperties.hpp>
 #include <AvTranscoder/mediaProperty/VideoProperties.hpp>
 #include <AvTranscoder/mediaProperty/AudioProperties.hpp>
 #include <AvTranscoder/mediaProperty/DataProperties.hpp>
@@ -47,6 +48,7 @@ namespace std {
 %include <AvTranscoder/mediaProperty/util.hpp>
 %include <AvTranscoder/mediaProperty/FileProperties.hpp>
 %include <AvTranscoder/mediaProperty/PixelProperties.hpp>
+%include <AvTranscoder/mediaProperty/StreamProperties.hpp>
 %include <AvTranscoder/mediaProperty/VideoProperties.hpp>
 %include <AvTranscoder/mediaProperty/AudioProperties.hpp>
 %include <AvTranscoder/mediaProperty/DataProperties.hpp>
