@@ -33,4 +33,4 @@ script:
   # Launch tests
   - cd ..
   - chmod +x tools/travis.python.nosetests.sh
-  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then ./tools/travis.python.nosetests.sh; fi
+  - if [ "${TRAVIS_OS_NAME}" = "linux" && "${DEPENDENCY_MODE}" = "ffmpeg" ]; then ./tools/travis.python.nosetests.sh; fi
