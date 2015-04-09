@@ -59,7 +59,7 @@ int getFilesInDir( const std::string& dir, std::vector< std::string >& files )
 	{
 		const std::string filename( findData.cFileName );
 		bool isdir = ( findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY ) != 0;
-		if( ! isdir )
+		if( ! isdir && filename.find(".prf") != std::string::npos )
 			files.push_back( filename );
 
 		int rval = FindNextFile( findHandle, &findData );
@@ -81,7 +81,8 @@ int getFilesInDir( const std::string& dir, std::vector< std::string >& files )
 		const std::string filename( dirp->d_name );
 		if( filename == "." || filename == ".." )
 			continue;
-		files.push_back( filename );
+		if( filename.find(".prf") != std::string::npos )
+		    files.push_back( filename );
 	}
 	closedir( dp );
 #endif
