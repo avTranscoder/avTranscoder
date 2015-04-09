@@ -10,9 +10,19 @@ sudo apt-get install -qq python-dev doxygen
 sudo apt-get install -qq freeglut3-dev libxmu-dev
 sudo apt-get install -qq python-nose
 
-# Build FFmpeg 2.2.9
-sudo wget https://www.ffmpeg.org/releases/ffmpeg-2.2.9.tar.bz2
-sudo bunzip2 ffmpeg-2.2.9.tar.bz2
-sudo tar -xvf ffmpeg-2.2.9.tar
-cd ffmpeg-2.2.9
-./configure --disable-yasm --enable-shared --disable-static && make && sudo make install
+if [[ ${DEPENDENCY_MODE} == "ffmpeg" ]]; then
+    export FFMPEG_VERSION=2.2.9
+    sudo wget https://www.ffmpeg.org/releases/ffmpeg-${FFMPEG_VERSION}.tar.bz2
+    sudo bunzip2 ffmpeg-${FFMPEG_VERSION}.tar.bz2
+    sudo tar -xvf ffmpeg-${FFMPEG_VERSION}.tar
+    cd ffmpeg-${FFMPEG_VERSION}
+    sudo ./configure --disable-yasm --enable-shared --disable-static && sudo make && sudo make install
+
+elif [[ ${DEPENDENCY_MODE} == "libav" ]]; then
+    export LIBAV_VERSION=11.3
+    sudo wget https://libav.org/releases/libav-${LIBAV_VERSION}.tar.gz
+    sudo tar -xvf libav-${LIBAV_VERSION}.tar.gz
+    cd libav-${LIBAV_VERSION}
+    sudo ./configure --disable-yasm --enable-shared --disable-static && sudo make && sudo make install
+
+fi

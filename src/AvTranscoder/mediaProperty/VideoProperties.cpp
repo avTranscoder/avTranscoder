@@ -404,7 +404,7 @@ size_t VideoProperties::getBitRate() const
 	
 	if( ! _codecContext->width || ! _codecContext->height )
 		throw std::runtime_error( "cannot compute bit rate: invalid frame size" );
-	
+
 	// discard no frame type when decode
 	_codecContext->skip_frame = AVDISCARD_NONE;
 
@@ -428,7 +428,11 @@ size_t VideoProperties::getBitRate() const
 			avcodec_decode_video2( _codecContext, frame, &gotFrame, &pkt );
 			if( gotFrame )
 			{
-				gopFramesSize += frame->pkt_size;
+#if LIBAVUTIL_VERSION_INT >= AV_VERSION_INT( 54, 7, 100 )
+				gopFramesSize += av_frame_get_pkt_size( frame );
+#else
+				gopFramesSize += pkt.size;
+#endif
 				++count;
 			}
 		}
