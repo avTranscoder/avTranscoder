@@ -134,6 +134,12 @@ public:
 	StreamTranscoder& getStreamTranscoder( size_t streamIndex ) const { return *_streamTranscoders.at( streamIndex ); }
 
 	/**
+	 * @brief Get current processMethod
+	 * @see EProcessMethod
+	 */
+	EProcessMethod getProcessMethod() const { return _eProcessMethod; }
+
+	/**
 	 * @brief Set the transcoding policy.
 	 * @note By default eProcessMethodBasedOnStream at index 0.
 	 * @param indexBasedStream: in case of process method eProcessMethodBasedOnStream, stop transcode at the end of the indicated stream.
