@@ -123,10 +123,21 @@ public:
 	void process();  ///< Call process with no display of progression
 
 	/**
+	 * @brief Return the list of streams added to the transcoder.
+	 */
+	std::vector< StreamTranscoder* >& getStreamTranscoders() { return _streamTranscoders; }
+
+	/**
 	 * @param streamIndex: careful about the order of stream insertion of the Transcoder.
 	 * @return a reference to a stream manage by the Transcoder.
 	 */
 	StreamTranscoder& getStreamTranscoder( size_t streamIndex ) const { return *_streamTranscoders.at( streamIndex ); }
+
+	/**
+	 * @brief Get current processMethod
+	 * @see EProcessMethod
+	 */
+	EProcessMethod getProcessMethod() const { return _eProcessMethod; }
 
 	/**
 	 * @brief Set the transcoding policy.
