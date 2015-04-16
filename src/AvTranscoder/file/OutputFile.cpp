@@ -147,6 +147,8 @@ void OutputFile::addMetadata( const std::string& key, const std::string& value )
 
 void OutputFile::setProfile( const ProfileLoader::Profile& profile )
 {
+	LOG_DEBUG( "Set profile of output file with:\n" << profile )
+
 	// check if output format indicated is valid with the filename extension
 	if( ! matchFormat( profile.find( constants::avProfileFormat )->second, _filename ) )
 	{
