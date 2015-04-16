@@ -7,6 +7,7 @@ extern "C" {
 }
 
 #include <utility>
+#include <algorithm>
 
 namespace avtranscoder
 {
@@ -150,6 +151,11 @@ NamesArray getVideoCodecsNames()
 				continue;
 
 			std::pair< std::string, std::string > codecNames( std::string( c->name ? c->name : "" ), std::string( c->long_name ? c->long_name : "" ) );
+
+			// skip duplicates
+			if( std::find( videoCodecsNames.begin(), videoCodecsNames.end(), codecNames ) != videoCodecsNames.end() )
+				continue;
+
 			videoCodecsNames.push_back( codecNames );
 		}
 	}
@@ -169,6 +175,11 @@ NamesArray getAudioCodecsNames()
 				continue;
 
 			std::pair< std::string, std::string > codecNames( std::string( c->name ? c->name : "" ), std::string( c->long_name ? c->long_name : "" ) );
+
+			// skip duplicates
+			if( std::find( audioCodecsNames.begin(), audioCodecsNames.end(), codecNames ) != audioCodecsNames.end() )
+				continue;
+
 			audioCodecsNames.push_back( codecNames );
 		}
 	}
