@@ -144,13 +144,6 @@ NamesArray getVideoCodecsNames()
 	AVCodec* c = NULL;
 	while( ( c = av_codec_next( c ) ) != NULL )
 	{
-#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT( 53, 34, 0 )
-		if( ! c->encode )
-			continue;
-#else
-		if( ! c->encode2 )
-			continue;
-#endif
 		switch( c->type )
 		{
 			case AVMEDIA_TYPE_VIDEO:
@@ -175,13 +168,6 @@ NamesArray getAudioCodecsNames()
 	AVCodec* c = NULL;
 	while( ( c = av_codec_next( c ) ) != NULL )
 	{
-#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT( 53, 34, 0 )
-		if( ! c->encode )
-			continue;
-#else
-		if( ! c->encode2 )
-			continue;
-#endif
 		switch( c->type )
 		{
 			case AVMEDIA_TYPE_AUDIO:
