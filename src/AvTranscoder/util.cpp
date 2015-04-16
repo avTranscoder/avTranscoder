@@ -229,29 +229,22 @@ OptionArrayMap getOutputFormatOptions()
 
 OptionArrayMap getVideoCodecOptions()
 {
-	std::map< std::string, std::vector<Option> > videoCodecOptions;
+	OptionArrayMap videoCodecOptions;
 	
 	AVCodec* codec = av_codec_next( NULL );
 	
 	// iterate on codecs
 	while( codec )
 	{
-#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT( 53, 34, 0 )
-		if( codec->encode )
-#else
-		if( codec->encode2 )
-#endif
+		// add only video codec
+		if( codec->type == AVMEDIA_TYPE_VIDEO )
 		{
-			// add only video codec
-			if( codec->type == AVMEDIA_TYPE_VIDEO )
+			if( codec->priv_class )
 			{
-				if( codec->priv_class )
-				{
-					std::string videoCodecName( codec->name );
-					OptionArray options;
-					loadOptions( options, (void*)&codec->priv_class, 0  );
-					videoCodecOptions.insert( std::make_pair( videoCodecName, options ) );
-				}
+				std::string videoCodecName( codec->name );
+				OptionArray options;
+				loadOptions( options, (void*)&codec->priv_class, 0  );
+				videoCodecOptions.insert( std::make_pair( videoCodecName, options ) );
 			}
 		}
 		codec = av_codec_next( codec );
@@ -261,29 +254,22 @@ OptionArrayMap getVideoCodecOptions()
 
 OptionArrayMap getAudioCodecOptions()
 {
-	std::map< std::string, std::vector<Option> > audioCodecOptions;
+	OptionArrayMap audioCodecOptions;
 	
 	AVCodec* codec = av_codec_next( NULL );
 	
 	// iterate on codecs
 	while( codec )
 	{
-#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT( 53, 34, 0 )
-		if( codec->encode )
-#else
-		if( codec->encode2 )
-#endif
+		// add only audio codec
+		if( codec->type == AVMEDIA_TYPE_AUDIO )
 		{
-			// add only audio codec
-			if( codec->type == AVMEDIA_TYPE_AUDIO )
+			if( codec->priv_class )
 			{
-				if( codec->priv_class )
-				{
-					std::string audioCodecName( codec->name );
-					OptionArray options;
-					loadOptions( options, (void*)&codec->priv_class, 0  );
-					audioCodecOptions.insert( std::make_pair( audioCodecName, options ) );
-				}
+				std::string audioCodecName( codec->name );
+				OptionArray options;
+				loadOptions( options, (void*)&codec->priv_class, 0  );
+				audioCodecOptions.insert( std::make_pair( audioCodecName, options ) );
 			}
 		}
 		codec = av_codec_next( codec );
