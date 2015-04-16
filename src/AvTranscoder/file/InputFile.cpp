@@ -199,7 +199,9 @@ double InputFile::getFps()
 }
 
 void InputFile::setProfile( const ProfileLoader::Profile& profile )
-{	
+{
+	LOG_DEBUG( "Set profile of input file with:\n" << profile )
+
 	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
 	{
 		if( (*it).first == constants::avProfileIdentificator ||
