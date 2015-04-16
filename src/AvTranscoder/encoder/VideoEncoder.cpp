@@ -128,6 +128,8 @@ bool VideoEncoder::encodeFrame( Frame& codedFrame )
 
 void VideoEncoder::setProfile( const ProfileLoader::Profile& profile, const avtranscoder::VideoFrameDesc& frameDesc )
 {
+	LOG_DEBUG( "Set profile of video encoder with:\n" << profile )
+
 	// set width, height, pixel format, fps
 	_codec.setImageParameters( frameDesc );
 
