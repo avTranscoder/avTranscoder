@@ -201,9 +201,7 @@ NamesArray getAudioCodecsNames()
 
 OptionArrayMap getOutputFormatOptions()
 {
-	av_register_all();
-
-	std::map< std::string, std::vector<Option> > optionsPerFormat;
+	OptionArrayMap optionsPerFormat;
 	
 	AVOutputFormat* outputFormat = av_oformat_next( NULL );
 	
@@ -216,7 +214,7 @@ OptionArrayMap getOutputFormatOptions()
 		{
 			if( outputFormat->priv_class )
 			{
-				std::string outputFormatName( outputFormat->name );
+				const std::string outputFormatName( outputFormat->name );
 				OptionArray options;
 				loadOptions( options, (void*)&outputFormat->priv_class, 0  );
 				optionsPerFormat.insert( std::make_pair( outputFormatName, options ) );
