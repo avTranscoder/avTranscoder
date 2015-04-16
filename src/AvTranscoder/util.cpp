@@ -144,18 +144,13 @@ NamesArray getVideoCodecsNames()
 	AVCodec* c = NULL;
 	while( ( c = av_codec_next( c ) ) != NULL )
 	{
-		switch( c->type )
+		if( c->type == AVMEDIA_TYPE_VIDEO)
 		{
-			case AVMEDIA_TYPE_VIDEO:
-			{
-				if( ! c->name && ! c->long_name )
-					continue;
+			if( ! c->name && ! c->long_name )
+				continue;
 
-				videoCodecsNames.push_back( std::make_pair( std::string( c->name ? c->name : "" ), std::string( c->long_name ? c->long_name : "" ) ) );
-				break;
-			}
-			default:
-				break;
+			std::pair< std::string, std::string > codecNames( std::string( c->name ? c->name : "" ), std::string( c->long_name ? c->long_name : "" ) );
+			videoCodecsNames.push_back( codecNames );
 		}
 	}
 	return videoCodecsNames;
@@ -168,18 +163,13 @@ NamesArray getAudioCodecsNames()
 	AVCodec* c = NULL;
 	while( ( c = av_codec_next( c ) ) != NULL )
 	{
-		switch( c->type )
+		if( c->type == AVMEDIA_TYPE_AUDIO )
 		{
-			case AVMEDIA_TYPE_AUDIO:
-			{
-				if( ! c->name && ! c->long_name )
-					continue;
+			if( ! c->name && ! c->long_name )
+				continue;
 
-				audioCodecsNames.push_back( std::make_pair( std::string( c->name ? c->name : "" ), std::string( c->long_name ? c->long_name : "" ) ) );
-				break;
-			}
-			default:
-				break;
+			std::pair< std::string, std::string > codecNames( std::string( c->name ? c->name : "" ), std::string( c->long_name ? c->long_name : "" ) );
+			audioCodecsNames.push_back( codecNames );
 		}
 	}
 	return audioCodecsNames;
