@@ -69,8 +69,18 @@ public:
 	 */
 	double getDuration() const;
 
-	/// Returns a reference to the current decoder used by the streamTranscoder (from input file or from generator)
+	/// Returns a reference to the current decoder (from input file or from generator)
 	IDecoder& getCurrentDecoder() const { return *_currentDecoder; }
+	/// Returns a reference to the encoder
+	IEncoder& getEncoder() const { return *_outputEncoder; }
+
+	/// Returns a reference to the object which transforms the decoded data
+	ITransform& getTransform() const { return *_transform; }
+
+	/// Returns a reference to the stream which unwraps data
+	IInputStream& getInputStream() const { return *_inputStream; }
+	/// Returns a reference to the stream which wraps data
+	IOutputStream& getOutputStream() const { return *_outputStream; }
 
 	/**
 	 * @brief Returns if the stream can switch to a generator when ended

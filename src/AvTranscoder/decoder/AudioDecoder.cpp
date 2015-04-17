@@ -147,6 +147,8 @@ bool AudioDecoder::decodeNextFrame()
 
 void AudioDecoder::setProfile( const ProfileLoader::Profile& profile )
 {
+	LOG_DEBUG( "Set profile of audio decoder with:\n" << profile )
+
 	AudioCodec& codec = _inputStream->getAudioCodec();
 
 	// set threads before any other options
