@@ -132,9 +132,9 @@ bool OutputFile::endWrap( )
 	return true;
 }
 
-void OutputFile::addMetadata( const PropertiesMap& dataMap )
+void OutputFile::addMetadata( const PropertyVector& data )
 {
-	for( PropertiesMap::const_iterator it = dataMap.begin(); it != dataMap.end(); ++it )
+	for( PropertyVector::const_iterator it = data.begin(); it != data.end(); ++it )
 	{
 		addMetadata( it->first, it->second );
 	}
@@ -147,6 +147,8 @@ void OutputFile::addMetadata( const std::string& key, const std::string& value )
 
 void OutputFile::setProfile( const ProfileLoader::Profile& profile )
 {
+	LOG_DEBUG( "Set profile of output file with:\n" << profile )
+
 	// check if output format indicated is valid with the filename extension
 	if( ! matchFormat( profile.find( constants::avProfileFormat )->second, _filename ) )
 	{

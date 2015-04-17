@@ -1,0 +1,9 @@
+avProfileName=h264-lq
+avProfileLongName=H.264 Low Quality
+avProfileType=avProfileTypeVideo
+codec=h264
+pix_fmt=yuv420p
+profile=baseline
+preset=ultrafast
+tune=fastdecode,zerolatency
+level=3

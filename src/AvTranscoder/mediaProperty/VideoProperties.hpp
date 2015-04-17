@@ -3,10 +3,8 @@
 
 #include "PixelProperties.hpp"
 
-#include <AvTranscoder/common.hpp>
-#include <AvTranscoder/mediaProperty/util.hpp>
+#include <AvTranscoder/mediaProperty/StreamProperties.hpp>
 #include <AvTranscoder/file/util.hpp>
-#include <AvTranscoder/file/FormatContext.hpp>
 #include <AvTranscoder/progress/IProgress.hpp>
 
 extern "C" {
@@ -20,7 +18,7 @@ extern "C" {
 namespace avtranscoder
 {
 
-class AvExport VideoProperties
+class AvExport VideoProperties : public StreamProperties
 {
 public:
 	VideoProperties( const FormatContext& formatContext, const size_t index, IProgress& progress, const EAnalyseLevel level = eAnalyseLevelFirstGop );
@@ -44,7 +42,6 @@ public:
 	Rational getSar() const; // sample/pixel aspect ratio
 	Rational getDar() const; // display aspect ratio
 
-	size_t getStreamIndex() const { return _streamIndex; }
 	size_t getStreamId() const;
 	size_t getCodecId() const;
 	size_t getBitRate() const;  ///< in bits/s
@@ -75,15 +72,12 @@ public:
 	std::vector< std::pair< char, bool > > getGopStructure() const { return _gopStructure; }
 	//@}
 
-	PropertiesMap& getMetadatas() { return _metadatas; }
-
 #ifndef SWIG
-	const AVFormatContext& getAVFormatContext() { return *_formatContext; }
 	AVCodecContext& getAVCodecContext() { return *_codecContext; }
 	const PixelProperties& getPixelProperties() const { return _pixelProperties; }
 #endif
 
-	PropertiesMap getPropertiesAsMap() const;  ///< Return all video and pixel properties as a map (name of property: value)
+	PropertyVector getPropertiesAsVector() const;
 
 private:
 	/**
@@ -94,25 +88,23 @@ private:
 
 #ifndef SWIG
 	template<typename T>
-	void addProperty( PropertiesMap& dataMap, const std::string& key, T (VideoProperties::*getter)(void) const ) const
+	void addProperty( PropertyVector& dataVector, const std::string& key, T (VideoProperties::*getter)(void) const ) const
 	{
 		try
 		{
-		    detail::add( dataMap, key, (this->*getter)() );
+		    detail::add( dataVector, key, (this->*getter)() );
 		}
 		catch( const std::exception& e )
 		{
-		    detail::add( dataMap, key, e.what() );
+		    detail::add( dataVector, key, e.what() );
 		}
 	}
 #endif
 
 private:
-	const AVFormatContext* _formatContext;  ///< Has link (no ownership)
 	AVCodecContext* _codecContext;  ///< Has link (no ownership)
 	AVCodec* _codec;  ///< Has link (no ownership)
 
-	size_t _streamIndex;
 	PixelProperties _pixelProperties;
 	//@{
 	// Can acces these data when analyse first gop
@@ -120,7 +112,6 @@ private:
 	bool _isTopFieldFirst;
 	std::vector< std::pair< char, bool > > _gopStructure;
 	//@}
-	PropertiesMap _metadatas;
 };
 
 }

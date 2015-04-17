@@ -105,7 +105,9 @@ void VideoDecoder::flushDecoder()
 }
 
 void VideoDecoder::setProfile( const ProfileLoader::Profile& profile )
-{
+{	
+	LOG_DEBUG( "Set profile of video decoder with:\n" << profile )
+
 	VideoCodec& codec = _inputStream->getVideoCodec();
 
 	// set threads before any other options

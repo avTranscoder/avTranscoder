@@ -224,6 +224,12 @@ bool Transcoder::processFrame()
 	return true;
 }
 
+void Transcoder::process()
+{
+	NoDisplayProgress progress;
+	process( progress );
+}
+
 void Transcoder::process( IProgress& progress )
 {
 	if( _streamTranscoders.size() == 0 )
@@ -345,7 +351,8 @@ InputFile* Transcoder::addInputFile( const std::string& filename, const size_t s
 
 	for( std::vector< InputFile* >::iterator it = _inputFiles.begin(); it != _inputFiles.end(); ++it )
 	{
-		if( ( (*it)->getFilename() == filename ) )
+		if( ( (*it)->getFilename() == filename ) &&
+			! (*it)->getStream( streamIndex ).isActivated() )
 		{
 			referenceFile = (*it);
 			LOG_DEBUG( "Get instance of InputFile from '" << filename << "'" )

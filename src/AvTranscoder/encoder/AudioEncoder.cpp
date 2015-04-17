@@ -135,6 +135,8 @@ bool AudioEncoder::encodeFrame( Frame& codedFrame )
 
 void AudioEncoder::setProfile( const ProfileLoader::Profile& profile, const AudioFrameDesc& frameDesc  )
 {
+	LOG_DEBUG( "Set profile of audio encoder with:\n" << profile )
+
 	// set sampleRate, number of channels, sample format
 	_codec.setAudioParameters( frameDesc );
 

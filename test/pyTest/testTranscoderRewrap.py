@@ -51,11 +51,11 @@ def testRewrapAudioStream():
 	# check audio properties
 	src_propertiesMap = src_audioStream.getPropertiesAsMap()
 	dst_propertiesMap = dst_audioStream.getPropertiesAsMap()
-	for i in range(0, len(src_propertiesMap)):
+	for key in src_propertiesMap:
 		# @todo: don't skip channel layout
-		if src_propertiesMap[i][0] == "channelLayout":
+		if key == "channelLayout":
 			continue
-		assert_equals( src_propertiesMap[i], dst_propertiesMap[i] )
+		assert_equals( src_propertiesMap[key], dst_propertiesMap[key] )
 
 def testRewrapVideoStream():
 	"""
@@ -95,5 +95,5 @@ def testRewrapVideoStream():
 	# check audio properties
 	src_propertiesMap = src_videoStream.getPropertiesAsMap()
 	dst_propertiesMap = dst_videoStream.getPropertiesAsMap()
-	for i in range(0, len(src_propertiesMap)):
-		assert_equals( src_propertiesMap[i], dst_propertiesMap[i] )
+	for key in src_propertiesMap:
+		assert_equals( src_propertiesMap[key], dst_propertiesMap[key] )
