@@ -29,7 +29,7 @@ public:
 	 * @brief rewrap stream
 	 * @note offset feature when rewrap a stream is not supported
 	 **/
-	StreamTranscoder( IInputStream& inputStream, IOutputFile& outputFile );
+	StreamTranscoder( IInputStream& inputStream, IOutputFile& outputFile, const double offset = 0 );
 
 	/**
 	 * @brief transcode stream

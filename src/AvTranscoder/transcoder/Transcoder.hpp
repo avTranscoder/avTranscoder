@@ -148,7 +148,7 @@ public:
 	void setProcessMethod( const EProcessMethod eProcessMethod, const size_t indexBasedStream = 0, const double outputDuration = 0 );
 
 private:
-	void addRewrapStream( const std::string& filename, const size_t streamIndex );
+	void addRewrapStream( const std::string& filename, const size_t streamIndex, const double offset );
 
 	void addTranscodeStream( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const double offset );
 	void addTranscodeStream( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const ProfileLoader::Profile& profile, const double offset = 0 );

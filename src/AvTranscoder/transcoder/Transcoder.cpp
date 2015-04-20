@@ -42,7 +42,7 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 		if( filename.length() == 0 )
 			throw std::runtime_error( "Can't re-wrap a stream without filename indicated" );
 
-		addRewrapStream( filename, streamIndex );
+		addRewrapStream( filename, streamIndex, offset );
 	}
 	// Transcode
 	else
@@ -61,7 +61,7 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 		if( filename.length() == 0 )
 			throw std::runtime_error( "Can't re-wrap a stream without filename indicated" );
 		
-		addRewrapStream( filename, streamIndex );
+		addRewrapStream( filename, streamIndex, offset );
 	}
 	// Transcode
 	else
@@ -108,7 +108,7 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 		// Re-wrap
 		if( subStreamIndex < 0 )
 		{
-			addRewrapStream( filename, streamIndex );
+			addRewrapStream( filename, streamIndex, offset );
 		}
 		// Transcode (transparent for the user)
 		else
@@ -139,7 +139,7 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 		// Re-wrap
 		if( subStreamIndex < 0 )
 		{
-			addRewrapStream( filename, streamIndex );
+			addRewrapStream( filename, streamIndex, offset );
 		}
 		// Transcode (transparent for the user)
 		else
@@ -279,13 +279,13 @@ void Transcoder::setProcessMethod( const EProcessMethod eProcessMethod, const si
 	_outputDuration = outputDuration;
 }
 
-void Transcoder::addRewrapStream( const std::string& filename, const size_t streamIndex )
+void Transcoder::addRewrapStream( const std::string& filename, const size_t streamIndex, const double offset )
 {
-	LOG_INFO( "Add rewrap stream from file '" << filename << "' / index=" << streamIndex )
+	LOG_INFO( "Add rewrap stream from file '" << filename << "' / index=" << streamIndex << " / offset=" << offset << "s"  )
 
 	InputFile* referenceFile = addInputFile( filename, streamIndex );
 
-	_streamTranscodersAllocated.push_back( new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile ) );
+	_streamTranscodersAllocated.push_back( new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile, offset ) );
 	_streamTranscoders.push_back( _streamTranscodersAllocated.back() );
 }
 
