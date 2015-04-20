@@ -199,7 +199,6 @@ void Transcoder::preProcessCodecLatency()
 {
 	for( size_t streamIndex = 0; streamIndex < _streamTranscoders.size(); ++streamIndex )
 	{
-		std::stringstream os;
 		LOG_DEBUG( "Init stream " << streamIndex )
 		_streamTranscoders.at( streamIndex )->preProcessCodecLatency();
 	}
@@ -244,8 +243,8 @@ void Transcoder::process( IProgress& progress )
 	preProcessCodecLatency();
 
 	double outputDuration = getOutputDuration();
+	LOG_DEBUG( "Output duration of the process will be " << outputDuration )
 
-	std::stringstream os;
 	size_t frame = 0;
 	bool frameProcessed = true;
 	while( frameProcessed )

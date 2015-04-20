@@ -464,12 +464,16 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 
 void StreamTranscoder::switchToGeneratorDecoder()
 {
+	LOG_INFO( "Switch to generator decoder" )
+
 	_currentDecoder = _generator;
 	assert( _currentDecoder != NULL );
 }
 
 void StreamTranscoder::switchToInputDecoder()
 {
+	LOG_INFO( "Switch to input decoder" )
+
 	_currentDecoder = _inputDecoder;
 	assert( _currentDecoder != NULL );
 }
