@@ -6,7 +6,8 @@ namespace avtranscoder
 {
 
 FileProperties::FileProperties( const FormatContext& formatContext )
-	: _formatContext( &formatContext.getAVFormatContext() )
+	: _formatContext( &formatContext )
+	, _avFormatContext( &formatContext.getAVFormatContext() )
 	, _videoStreams()
 	, _audioStreams()
 	, _dataStreams()
@@ -14,64 +15,64 @@ FileProperties::FileProperties( const FormatContext& formatContext )
 	, _attachementStreams()
 	, _unknownStreams()
 {
-	if( _formatContext )
-		detail::fillMetadataDictionnary( _formatContext->metadata, _metadatas );
+	if( _avFormatContext )
+		detail::fillMetadataDictionnary( _avFormatContext->metadata, _metadatas );
 }
 
 std::string FileProperties::getFilename() const
 {
-	if( ! _formatContext || ! _formatContext->filename )
+	if( ! _avFormatContext || ! _avFormatContext->filename )
 		throw std::runtime_error( "unknown file name" );
-	return _formatContext->filename;
+	return _avFormatContext->filename;
 }
 
 std::string FileProperties::getFormatName() const
 {
-	if( ! _formatContext || ! _formatContext->iformat || ! _formatContext->iformat->name )
+	if( ! _avFormatContext || ! _avFormatContext->iformat || ! _avFormatContext->iformat->name )
 		throw std::runtime_error( "unknown format name");
-	return _formatContext->iformat->name;
+	return _avFormatContext->iformat->name;
 }
 
 std::string FileProperties::getFormatLongName() const
 {
-	if( ! _formatContext || ! _formatContext->iformat || ! _formatContext->iformat->long_name )
+	if( ! _avFormatContext || ! _avFormatContext->iformat || ! _avFormatContext->iformat->long_name )
 		throw std::runtime_error( "unknown format long name");
-	return _formatContext->iformat->long_name;
+	return _avFormatContext->iformat->long_name;
 }
 
 size_t FileProperties::getProgramsCount() const
 {
-	if( ! _formatContext )
+	if( ! _avFormatContext )
 		throw std::runtime_error( "unknown format context" );
-	return _formatContext->nb_programs;
+	return _avFormatContext->nb_programs;
 }
 
 double FileProperties::getStartTime() const
 {
-	if( ! _formatContext )
+	if( ! _avFormatContext )
 		throw std::runtime_error( "unknown format context" );
-	return  1.0 * (unsigned int)_formatContext->start_time / AV_TIME_BASE;
+	return  1.0 * (unsigned int)_avFormatContext->start_time / AV_TIME_BASE;
 }
 
 double FileProperties::getDuration() const
 {
-	if( ! _formatContext )
+	if( ! _avFormatContext )
 		throw std::runtime_error( "unknown format context" );
-	return 1.0 * _formatContext->duration / AV_TIME_BASE;
+	return 1.0 * _avFormatContext->duration / AV_TIME_BASE;
 }
 
 size_t FileProperties::getBitRate() const
 {
-	if( ! _formatContext )
+	if( ! _avFormatContext )
 		throw std::runtime_error( "unknown format context" );
-	return _formatContext->bit_rate;
+	return _avFormatContext->bit_rate;
 }
 
 size_t FileProperties::getPacketSize() const
 {
-	if( ! _formatContext )
+	if( ! _avFormatContext )
 		throw std::runtime_error( "unknown format context" );
-	return _formatContext->packet_size;
+	return _avFormatContext->packet_size;
 }
 
 VideoProperties& FileProperties::getVideoPropertiesWithStreamIndex( const size_t streamIndex )
@@ -124,9 +125,9 @@ const avtranscoder::AudioProperties& FileProperties::getAudioPropertiesWithStrea
 
 size_t FileProperties::getNbStreams() const
 {
-	if( ! _formatContext )
+	if( ! _avFormatContext )
 		throw std::runtime_error( "unknown format context" );
-	return _formatContext->nb_streams;
+	return _avFormatContext->nb_streams;
 }
 
 PropertyVector FileProperties::getPropertiesAsVector() const

@@ -42,6 +42,8 @@ public:
 	size_t getNbAttachementStreams() const { return _attachementStreams.size(); }
 	size_t getNbUnknownStreams() const { return _unknownStreams.size(); }
 
+	const FormatContext& getFormatContext() { return *_formatContext; }
+
 	//@{
 	// @brief Get the properties with the indicated stream index
 	avtranscoder::VideoProperties& getVideoPropertiesWithStreamIndex( const size_t streamIndex );
@@ -59,7 +61,7 @@ public:
 	//@}
 
 #ifndef SWIG
-	const AVFormatContext& getAVFormatContext() { return *_formatContext; }
+	const AVFormatContext& getAVFormatContext() { return *_avFormatContext; }
 
 	const avtranscoder::VideoProperties& getVideoPropertiesWithStreamIndex( const size_t streamIndex ) const;
 	const avtranscoder::AudioProperties& getAudioPropertiesWithStreamIndex( const size_t streamIndex ) const;
@@ -93,7 +95,8 @@ private:
 #endif
 
 private:
-	const AVFormatContext* _formatContext;  ///< Has link (no ownership)
+	const FormatContext* _formatContext;  ///< Has link (no ownership)
+	const AVFormatContext* _avFormatContext;  ///< Has link (no ownership)
 
 	std::vector< VideoProperties > _videoStreams;  ///< Array of properties per video stream
 	std::vector< AudioProperties >  _audioStreams;  ///< Array of properties per audio stream
