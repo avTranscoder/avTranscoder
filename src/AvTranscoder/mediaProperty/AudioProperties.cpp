@@ -180,31 +180,14 @@ size_t AudioProperties::getTicksPerFrame() const
 	return _codecContext->ticks_per_frame;
 }
 
-Rational AudioProperties::getTimeBase() const
-{
-	if( ! _formatContext )
-		throw std::runtime_error( "unknown format context" );
-
-	Rational timeBase = {
-		_formatContext->streams[_streamIndex]->time_base.num,
-		_formatContext->streams[_streamIndex]->time_base.den,
-	};
-	return timeBase;
-}
-
-double AudioProperties::getDuration() const
-{
-	Rational timeBase = getTimeBase();
-	double duration = ( timeBase.num / (double) timeBase.den ) * _formatContext->streams[_streamIndex]->duration;
-	return duration;
-}
-
 PropertyVector AudioProperties::getPropertiesAsVector() const
 {
 	PropertyVector data;
 
-	addProperty( data, "streamId", &AudioProperties::getStreamId );
-	detail::add( data, "streamIndex", getStreamIndex() );
+	// Add properties of base class
+	PropertyVector basedProperty = StreamProperties::getPropertiesAsVector();
+	data.insert( data.begin(), basedProperty.begin(), basedProperty.end() );
+
 	addProperty( data, "codecId", &AudioProperties::getCodecId );
 	addProperty( data, "codecName", &AudioProperties::getCodecName );
 	addProperty( data, "codecLongName", &AudioProperties::getCodecLongName );
@@ -218,13 +201,6 @@ PropertyVector AudioProperties::getPropertiesAsVector() const
 	addProperty( data, "channelName", &AudioProperties::getChannelName );
 	addProperty( data, "channelDescription", &AudioProperties::getChannelDescription );
 	addProperty( data, "ticksPerFrame", &AudioProperties::getTicksPerFrame );
-	addProperty( data, "timeBase", &AudioProperties::getTimeBase );
-	addProperty( data, "duration", &AudioProperties::getDuration );
-
-	for( size_t metadataIndex = 0; metadataIndex < _metadatas.size(); ++metadataIndex )
-	{
-		detail::add( data, _metadatas.at( metadataIndex ).first, _metadatas.at( metadataIndex ).second );
-	}
 
 	return data;
 }

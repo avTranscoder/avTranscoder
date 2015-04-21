@@ -17,6 +17,8 @@ public:
 
 	size_t getStreamIndex() const { return _streamIndex; }
 	size_t getStreamId() const;
+	Rational getTimeBase() const;
+	double getDuration() const;  ///< in seconds
 	PropertyVector& getMetadatas() { return _metadatas; }
 
 #ifndef SWIG
@@ -25,6 +27,22 @@ public:
 
 	PropertyMap getPropertiesAsMap() const;  ///< Return all properties as a map (name of property, value)
 	PropertyVector getPropertiesAsVector() const;  ///< Same data with a specific order
+
+private:
+#ifndef SWIG
+	template<typename T>
+	void addProperty( PropertyVector& dataVector, const std::string& key, T (StreamProperties::*getter)(void) const ) const
+	{
+		try
+		{
+		    detail::add( dataVector, key, (this->*getter)() );
+		}
+		catch( const std::exception& e )
+		{
+		    detail::add( dataVector, key, e.what() );
+		}
+	}
+#endif
 
 protected:
 	const AVFormatContext* _formatContext;  ///< Has link (no ownership)

@@ -38,7 +38,6 @@ public:
 	int64_t getStartTimecode() const;
 	std::string getStartTimecodeString() const;
 
-	Rational getTimeBase() const;
 	Rational getSar() const; // sample/pixel aspect ratio
 	Rational getDar() const; // display aspect ratio
 
@@ -58,7 +57,6 @@ public:
 	int getLevel() const;
 
 	double getFps() const;
-	double getDuration() const;  ///< in seconds
 
 	bool hasBFrames() const;
 	//bool isClosedGop() const;
