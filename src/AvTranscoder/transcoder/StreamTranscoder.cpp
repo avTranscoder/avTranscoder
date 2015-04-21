@@ -464,4 +464,19 @@ double StreamTranscoder::getDuration() const
 		return std::numeric_limits<double>::max();
 }
 
+bool StreamTranscoder::isTranscodeCase() const
+{
+	return _inputStream && _inputDecoder;
+}
+
+bool StreamTranscoder::isRewrapCase() const
+{
+	return _inputStream && ! _inputDecoder;
+}
+
+bool StreamTranscoder::isGeneratorCase() const
+{
+	return ! _inputStream;
+}
+
 }
