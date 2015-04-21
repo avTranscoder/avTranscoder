@@ -61,6 +61,13 @@ public:
 	void addMetaData( const std::string& key, const std::string& value );
 	AVStream& addAVStream( const AVCodec& avCodec );
 
+	/**
+	 * @brief Seek at a specific position (in AV_TIME_BASE units)
+	 * @note before seek, add offset of start time
+	 * @note after seek, clear buffering of streams
+	 */
+	void seek( uint64_t position );
+
 	size_t getNbStreams() const { return _avFormatContext->nb_streams; }
 	/// Get duration of the program, in seconds
 	size_t getDuration() const { return _avFormatContext->duration; }

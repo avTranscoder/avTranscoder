@@ -144,29 +144,13 @@ bool InputFile::readNextPacket( CodedData& data, const size_t streamIndex )
 void InputFile::seekAtFrame( const size_t frame )
 {
 	uint64_t position = frame / getFps() * AV_TIME_BASE;
-	seek( position );
+	_formatContext.seek( position );
 }
 
 void InputFile::seekAtTime( const double time )
 {
 	uint64_t position = time * AV_TIME_BASE;
-	seek( position );
-}
-
-void InputFile::seek( uint64_t position )
-{
-	if( (int)_formatContext.getStartTime() != AV_NOPTS_VALUE )
-		position += _formatContext.getStartTime();
-
-	if( av_seek_frame( &_formatContext.getAVFormatContext(), -1, position, AVSEEK_FLAG_BACKWARD ) < 0 )
-	{
-		LOG_ERROR( "Error when seek at " << position << " (in AV_TIME_BASE units) in file" )
-	}
-
-	for( std::vector<InputStream*>::iterator it = _inputStreams.begin(); it != _inputStreams.end(); ++it )
-	{
-		(*it)->clearBuffering();
-	}
+	_formatContext.seek( position );
 }
 
 void InputFile::activateStream( const size_t streamIndex, bool activate )
