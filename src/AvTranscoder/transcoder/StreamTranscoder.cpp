@@ -241,7 +241,8 @@ StreamTranscoder::StreamTranscoder(
 		VideoGenerator* generatorVideo = new VideoGenerator();
 		const VideoCodec& inputVideoCodec = static_cast<const VideoCodec&>( inputCodec );
 		generatorVideo->setVideoFrameDesc( inputVideoCodec.getVideoFrameDesc() );
-		_currentDecoder = generatorVideo;
+		_generator = generatorVideo;
+		_currentDecoder = _generator;
 
 		// buffers to process
 		VideoFrameDesc inputFrameDesc = inputVideoCodec.getVideoFrameDesc();
@@ -267,7 +268,8 @@ StreamTranscoder::StreamTranscoder(
 		AudioGenerator* generatorAudio = new AudioGenerator();
 		const AudioCodec& inputAudioCodec = static_cast<const AudioCodec&>( inputCodec );
 		generatorAudio->setAudioFrameDesc( inputAudioCodec.getAudioFrameDesc() );
-		_currentDecoder = generatorAudio;
+		_generator = generatorAudio;
+		_currentDecoder = _generator;
 
 		// buffers to process
 		AudioFrameDesc inputFrameDesc = inputAudioCodec.getAudioFrameDesc();
