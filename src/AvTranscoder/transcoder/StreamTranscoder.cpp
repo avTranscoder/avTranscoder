@@ -305,10 +305,6 @@ StreamTranscoder::~StreamTranscoder()
 
 void StreamTranscoder::preProcessCodecLatency()
 {
-	// rewrap case: no need to take care of the latency of codec
-	if( ! _currentDecoder )
-		return;
-
 	int latency = _outputEncoder->getCodec().getLatency();
 
 	LOG_DEBUG( "Latency of stream: " << latency )
@@ -316,6 +312,10 @@ void StreamTranscoder::preProcessCodecLatency()
 	if( ! latency ||
 		latency < _outputEncoder->getCodec().getAVCodecContext().frame_number )
 		return;
+
+	// set a decoder to preload generated frames
+	if( isRewrapCase() )
+		switchToGeneratorDecoder();
 
 	while( ( latency-- ) > 0 )
 	{
@@ -325,7 +325,7 @@ void StreamTranscoder::preProcessCodecLatency()
 
 bool StreamTranscoder::processFrame()
 {
-	if( ! _currentDecoder )
+	if( isRewrapCase() )
 	{
 		return processRewrap();
 	}
