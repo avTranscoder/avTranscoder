@@ -90,8 +90,6 @@ public:
 
 	PropertyVector getPropertiesAsVector() const;  ///< Return all file properties as a vector (name of property: value)
 
-	void clearStreamProperties();  ///< Clear all array of stream properties
-
 private:
 #ifndef SWIG
 	template<typename T>
@@ -107,6 +105,8 @@ private:
 		}
 	}
 #endif
+
+	void clearStreamProperties();  ///< Clear all array of stream properties
 
 private:
 	const FormatContext* _formatContext;  ///< Has link (no ownership)
