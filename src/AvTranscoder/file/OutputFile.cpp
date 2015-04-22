@@ -88,6 +88,8 @@ IOutputStream& OutputFile::getStream( const size_t streamId )
 
 bool OutputFile::beginWrap( )
 {
+	LOG_DEBUG( "Begin wrap of OutputFile" )
+
 	_formatContext.writeHeader();
 	_frameCount.clear();
 	_frameCount.resize( _outputStreams.size(), 0 );
@@ -127,6 +129,8 @@ IOutputStream::EWrappingStatus OutputFile::wrap( const CodedData& data, const si
 
 bool OutputFile::endWrap( )
 {
+	LOG_DEBUG( "End wrap of OutputFile" )
+
 	_formatContext.writeTrailer();
 	_formatContext.closeRessource();
 	return true;
