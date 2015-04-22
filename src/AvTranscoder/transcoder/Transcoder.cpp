@@ -281,7 +281,7 @@ void Transcoder::addRewrapStream( const std::string& filename, const size_t stre
 {
 	LOG_INFO( "Add rewrap stream from file '" << filename << "' / index=" << streamIndex << " / offset=" << offset << "s"  )
 
-	InputFile* referenceFile = addInputFile( filename, streamIndex );
+	InputFile* referenceFile = addInputFile( filename, streamIndex, offset );
 
 	_streamTranscodersAllocated.push_back( new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile, offset ) );
 	_streamTranscoders.push_back( _streamTranscodersAllocated.back() );
@@ -310,7 +310,7 @@ void Transcoder::addTranscodeStream( const std::string& filename, const size_t s
 	LOG_INFO( "Add transcode stream from file '" << filename << "' / index=" << streamIndex << " / channel=" << subStreamIndex << " / encodingProfile=" << profile.at( constants::avProfileIdentificatorHuman ) << " / offset=" << offset << "s" )
 
 	// Add input file
-	InputFile* referenceFile = addInputFile( filename, streamIndex );
+	InputFile* referenceFile = addInputFile( filename, streamIndex, offset );
 
 	switch( referenceFile->getStream( streamIndex ).getStreamType() )
 	{
@@ -343,7 +343,7 @@ void Transcoder::addDummyStream( const ProfileLoader::Profile& profile, const IC
 	_streamTranscoders.push_back( _streamTranscodersAllocated.back() );
 }
 
-InputFile* Transcoder::addInputFile( const std::string& filename, const size_t streamIndex )
+InputFile* Transcoder::addInputFile( const std::string& filename, const size_t streamIndex, const double offset )
 {
 	InputFile* referenceFile = NULL;
 
@@ -367,6 +367,10 @@ InputFile* Transcoder::addInputFile( const std::string& filename, const size_t s
 	}
 
 	referenceFile->activateStream( streamIndex );
+
+	// If negative offset, move forward in the input stream
+	if( offset < 0 )
+		referenceFile->seekAtTime( -offset );
 
 	return referenceFile;
 }

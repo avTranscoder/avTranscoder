@@ -64,8 +64,9 @@ public:
 	//@}
 
 	/**
-	 * @brief Get the duration of the stream, in seconds
+	 * @brief Get the total duration (in seconds), ie. duration of the stream and the offset applies
 	 * @note if it's a generated stream, return limit of double.
+	 * @note if offset > duration of the stream, return 0
 	 */
 	double getDuration() const;
 

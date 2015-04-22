@@ -332,7 +332,7 @@ bool StreamTranscoder::processFrame()
 		bool endOfOffset = _outputStream->getStreamDuration() >= _offset;
 		if( endOfOffset )
 		{
-			LOG_INFO( "End of offset" )
+			LOG_INFO( "End of positive offset" )
 
 			if( _inputDecoder )
 				switchToInputDecoder();
@@ -350,6 +350,17 @@ bool StreamTranscoder::processFrame()
 			}
 		}
 	}
+	else if( _offset < 0 )
+	{
+		bool endOfStream = _outputStream->getStreamDuration() >= ( _inputStream->getDuration() + _offset );
+		if( endOfStream )
+		{
+			LOG_INFO( "End of negative offset" )
+
+			switchToGeneratorDecoder();
+			_offset = 0;
+		}
+ 	}
 
 	if( isRewrapCase() )
 		return processRewrap();
@@ -479,6 +490,11 @@ double StreamTranscoder::getDuration() const
 	if( _inputStream )
 	{
 		double totalDuration = _inputStream->getDuration() + _offset;
+		if( totalDuration < 0 )
+		{
+			LOG_WARN( "Offset of " << _offset << "s applied to a stream with a duration of " << _inputStream->getDuration() << "s. Set its duration to 0s." )
+			return 0.;
+		}
 		return totalDuration;
 	}
 	else
