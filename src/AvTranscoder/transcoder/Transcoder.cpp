@@ -248,10 +248,6 @@ void Transcoder::process( IProgress& progress )
 	bool frameProcessed = true;
 	while( frameProcessed )
 	{
-		LOG_INFO( "Process frame " << frame )
-
-		frameProcessed =  processFrame();
-
 		double progressDuration = _outputFile.getStream( 0 ).getStreamDuration();
 
 		// check if JobStatusCancel
@@ -261,6 +257,9 @@ void Transcoder::process( IProgress& progress )
 		// check progressDuration
 		if( progressDuration > outputDuration )
 			break;
+
+		LOG_INFO( "Process frame " << frame )
+		frameProcessed =  processFrame();
 
 		++frame;
 	}
