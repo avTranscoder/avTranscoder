@@ -3,6 +3,7 @@
 #include <AvTranscoder/progress/NoDisplayProgress.hpp>
 
 #include <stdexcept>
+#include <sstream>
 
 namespace avtranscoder
 {
@@ -40,36 +41,42 @@ void FileProperties::extractStreamProperties( IProgress& progress, const EAnalys
 			{
 				VideoProperties properties( *_formatContext, streamIndex, progress, level );
 				_videoStreams.push_back( properties );
+				_streams.push_back( &_videoStreams.back() );
 				break;
 			}
 			case AVMEDIA_TYPE_AUDIO:
 			{
 				AudioProperties properties( *_formatContext, streamIndex );
 				_audioStreams.push_back( properties );
+				_streams.push_back( &_audioStreams.back() );
 				break;
 			}
 			case AVMEDIA_TYPE_DATA:
 			{
 				DataProperties properties( *_formatContext, streamIndex );
 				_dataStreams.push_back( properties );
+				_streams.push_back( &_dataStreams.back() );
 				break;
 			}
 			case AVMEDIA_TYPE_SUBTITLE:
 			{
 				SubtitleProperties properties( *_formatContext, streamIndex );
 				_subtitleStreams.push_back( properties );
+				_streams.push_back( &_subtitleStreams.back() );
 				break;
 			}
 			case AVMEDIA_TYPE_ATTACHMENT:
 			{
 				AttachementProperties properties( *_formatContext, streamIndex );
 				_attachementStreams.push_back( properties );
+				_streams.push_back( &_attachementStreams.back() );
 				break;
 			}
 			case AVMEDIA_TYPE_UNKNOWN:
 			{
 				UnknownProperties properties( *_formatContext, streamIndex );
 				_unknownStreams.push_back( properties );
+				_streams.push_back( &_unknownStreams.back() );
 				break;
 			}
 			case AVMEDIA_TYPE_NB:
@@ -140,28 +147,17 @@ size_t FileProperties::getPacketSize() const
 	return _avFormatContext->packet_size;
 }
 
-const avtranscoder::VideoProperties& FileProperties::getVideoPropertiesWithStreamIndex( const size_t streamIndex ) const
+const avtranscoder::StreamProperties& FileProperties::getStreamPropertiesWithIndex( const size_t streamIndex ) const
 {
-	for( std::vector< VideoProperties >::const_iterator it = _videoStreams.begin(); it != _videoStreams.end(); ++it )
+	for( std::vector< StreamProperties* >::const_iterator it = _streams.begin(); it != _streams.end(); ++it )
 	{
-		if( it->getStreamIndex() == streamIndex )
-			return *it;
+		if( (*it)->getStreamIndex() == streamIndex )
+			return *(*it);
 	}
-	std::string msg( "no video properties correspond to stream at index " );
-	msg += streamIndex;
-	throw std::runtime_error( msg );
-}
-
-const avtranscoder::AudioProperties& FileProperties::getAudioPropertiesWithStreamIndex( const size_t streamIndex ) const
-{
-	for( std::vector< AudioProperties >::const_iterator it = _audioStreams.begin(); it != _audioStreams.end(); ++it )
-	{
-		if( it->getStreamIndex() == streamIndex )
-			return *it;
-	}
-	std::string msg( "no audio properties correspond to stream at index " );
-	msg += streamIndex;
-	throw std::runtime_error( msg );
+	std::stringstream os;
+	os << "No stream properties correspond to stream at index ";
+	os <<  streamIndex;
+	throw std::runtime_error( os.str() );
 }
 
 size_t FileProperties::getNbStreams() const
@@ -202,6 +198,8 @@ PropertyVector FileProperties::getPropertiesAsVector() const
 
 void FileProperties::clearStreamProperties()
 {
+	_streams.clear();
+
 	_videoStreams.clear();
 	_audioStreams.clear();
 	_dataStreams.clear();
