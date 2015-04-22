@@ -47,7 +47,7 @@ public:
 	size_t getBitRate() const;  ///< total stream bitrate in bit/s, 0 if not available (result of a computation by ffmpeg)
 	size_t getPacketSize() const;
 
-	PropertyVector& getMetadatas() { return _metadatas; }
+	const PropertyVector& getMetadatas() const { return _metadatas; }
 
 	size_t getNbStreams() const;
 	size_t getNbVideoStreams() const { return _videoStreams.size(); }
