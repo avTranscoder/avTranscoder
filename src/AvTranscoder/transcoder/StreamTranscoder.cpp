@@ -334,7 +334,7 @@ bool StreamTranscoder::processFrame()
 		{
 			LOG_INFO( "End of positive offset" )
 
-			if( _inputDecoder )
+			if( isTranscodeCase() )
 				switchToInputDecoder();
 			else
 				_currentDecoder = NULL;
