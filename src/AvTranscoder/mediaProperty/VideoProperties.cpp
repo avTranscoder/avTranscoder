@@ -334,18 +334,6 @@ std::string VideoProperties::getStartTimecodeString() const
 	return os.str();
 }
 
-Rational VideoProperties::getTimeBase() const
-{
-	if( ! _formatContext )
-		throw std::runtime_error( "unknown format context" );
-
-	Rational timeBase = {
-		_formatContext->streams[_streamIndex]->time_base.num,
-		_formatContext->streams[_streamIndex]->time_base.den,
-	};
-	return timeBase;
-}
-
 Rational VideoProperties::getSar() const
 {
 	if( ! _codecContext )
@@ -554,13 +542,6 @@ double VideoProperties::getFps() const
 	return fps;
 }
 
-double VideoProperties::getDuration() const
-{
-	Rational timeBase = getTimeBase();
-	double duration = ( timeBase.num / (double) timeBase.den ) * _formatContext->streams[_streamIndex]->duration;
-	return duration;
-}
-
 bool VideoProperties::hasBFrames() const
 {
 	if( ! _codecContext )
@@ -644,8 +625,10 @@ PropertyVector VideoProperties::getPropertiesAsVector() const
 {
 	PropertyVector data;
 
-	addProperty( data, "streamId", &VideoProperties::getStreamId );
-	detail::add( data, "streamIndex", getStreamIndex() );
+	// Add properties of base class
+	PropertyVector basedProperty = StreamProperties::getPropertiesAsVector();
+	data.insert( data.begin(), basedProperty.begin(), basedProperty.end() );
+
 	addProperty( data, "codecId", &VideoProperties::getCodecId );
 	addProperty( data, "codecName", &VideoProperties::getCodecName );
 	addProperty( data, "codecLongName", &VideoProperties::getCodecLongName );
@@ -666,8 +649,6 @@ PropertyVector VideoProperties::getPropertiesAsVector() const
 	addProperty( data, "interlaced ", &VideoProperties::isInterlaced );
 	addProperty( data, "topFieldFirst", &VideoProperties::isTopFieldFirst );
 	addProperty( data, "fieldOrder", &VideoProperties::getFieldOrder );
-	addProperty( data, "timeBase", &VideoProperties::getTimeBase );
-	addProperty( data, "duration", &VideoProperties::getDuration );
 	addProperty( data, "fps", &VideoProperties::getFps );
 	addProperty( data, "nbFrame", &VideoProperties::getNbFrames );
 	addProperty( data, "ticksPerFrame", &VideoProperties::getTicksPerFrame );
@@ -687,11 +668,6 @@ PropertyVector VideoProperties::getPropertiesAsVector() const
 
 	addProperty( data, "hasBFrames", &VideoProperties::hasBFrames );
 	addProperty( data, "referencesFrames", &VideoProperties::getReferencesFrames );
-
-	for( size_t metadataIndex = 0; metadataIndex < _metadatas.size(); ++metadataIndex )
-	{
-		detail::add( data, _metadatas.at( metadataIndex ).first, _metadatas.at( metadataIndex ).second );
-	}
 
 	// Add properties of the pixel
 	PropertyVector pixelProperties = _pixelProperties.getPropertiesAsVector();

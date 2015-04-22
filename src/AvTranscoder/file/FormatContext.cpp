@@ -133,6 +133,17 @@ AVStream& FormatContext::addAVStream( const AVCodec& avCodec )
 	return *stream;
 }
 
+void FormatContext::seek( uint64_t position )
+{
+	if( (int)getStartTime() != AV_NOPTS_VALUE )
+		position += getStartTime();
+
+	if( av_seek_frame( _avFormatContext, -1, position, AVSEEK_FLAG_BACKWARD ) < 0 )
+	{
+		LOG_ERROR( "Error when seek at " << position << " (in AV_TIME_BASE units) in file" )
+	}
+}
+
 std::vector<Option> FormatContext::getOptions()
 {
 	std::vector<Option> optionsArray;
