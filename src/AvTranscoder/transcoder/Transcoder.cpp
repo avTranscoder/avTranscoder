@@ -41,7 +41,7 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 		if( filename.length() == 0 )
 			throw std::runtime_error( "Can't re-wrap a stream without filename indicated" );
 
-		addRewrapStream( filename, streamIndex );
+		addRewrapStream( filename, streamIndex, offset );
 	}
 	// Transcode
 	else
@@ -60,7 +60,7 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 		if( filename.length() == 0 )
 			throw std::runtime_error( "Can't re-wrap a stream without filename indicated" );
 		
-		addRewrapStream( filename, streamIndex );
+		addRewrapStream( filename, streamIndex, offset );
 	}
 	// Transcode
 	else
@@ -107,7 +107,7 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 		// Re-wrap
 		if( subStreamIndex < 0 )
 		{
-			addRewrapStream( filename, streamIndex );
+			addRewrapStream( filename, streamIndex, offset );
 		}
 		// Transcode (transparent for the user)
 		else
@@ -138,7 +138,7 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 		// Re-wrap
 		if( subStreamIndex < 0 )
 		{
-			addRewrapStream( filename, streamIndex );
+			addRewrapStream( filename, streamIndex, offset );
 		}
 		// Transcode (transparent for the user)
 		else
@@ -198,7 +198,6 @@ void Transcoder::preProcessCodecLatency()
 {
 	for( size_t streamIndex = 0; streamIndex < _streamTranscoders.size(); ++streamIndex )
 	{
-		std::stringstream os;
 		LOG_DEBUG( "Init stream " << streamIndex )
 		_streamTranscoders.at( streamIndex )->preProcessCodecLatency();
 	}
@@ -243,8 +242,8 @@ void Transcoder::process( IProgress& progress )
 	preProcessCodecLatency();
 
 	double outputDuration = getOutputDuration();
+	LOG_DEBUG( "Output duration of the process will be " << outputDuration )
 
-	std::stringstream os;
 	size_t frame = 0;
 	bool frameProcessed = true;
 	while( frameProcessed )
@@ -278,13 +277,13 @@ void Transcoder::setProcessMethod( const EProcessMethod eProcessMethod, const si
 	_outputDuration = outputDuration;
 }
 
-void Transcoder::addRewrapStream( const std::string& filename, const size_t streamIndex )
+void Transcoder::addRewrapStream( const std::string& filename, const size_t streamIndex, const double offset )
 {
-	LOG_INFO( "Add rewrap stream from file '" << filename << "' / index=" << streamIndex )
+	LOG_INFO( "Add rewrap stream from file '" << filename << "' / index=" << streamIndex << " / offset=" << offset << "s"  )
 
 	InputFile* referenceFile = addInputFile( filename, streamIndex );
 
-	_streamTranscodersAllocated.push_back( new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile ) );
+	_streamTranscodersAllocated.push_back( new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile, offset ) );
 	_streamTranscoders.push_back( _streamTranscodersAllocated.back() );
 }
 
