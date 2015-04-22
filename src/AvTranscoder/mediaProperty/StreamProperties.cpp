@@ -25,19 +25,33 @@ size_t StreamProperties::getStreamId() const
 	return _formatContext->streams[_streamIndex]->id;
 }
 
+Rational StreamProperties::getTimeBase() const
+{
+	if( ! _formatContext )
+		throw std::runtime_error( "unknown format context" );
+
+	Rational timeBase = {
+		_formatContext->streams[_streamIndex]->time_base.num,
+		_formatContext->streams[_streamIndex]->time_base.den,
+	};
+	return timeBase;
+}
+
+double StreamProperties::getDuration() const
+{
+	Rational timeBase = getTimeBase();
+	double duration = ( timeBase.num / (double) timeBase.den ) * _formatContext->streams[_streamIndex]->duration;
+	return duration;
+}
+
 PropertyVector StreamProperties::getPropertiesAsVector() const
 {
 	PropertyVector data;
 
-	try
-	{
-		detail::add( data, "streamId", getStreamId() );
-	}
-	catch( const std::exception& e )
-	{
-		detail::add( data, "streamId", e.what() );
-	}
-	detail::add( data, "streamIndex", getStreamIndex() );
+	addProperty( data, "streamId", &StreamProperties::getStreamId );
+	addProperty( data, "streamIndex", &StreamProperties::getStreamIndex );
+	addProperty( data, "timeBase", &StreamProperties::getTimeBase );
+	addProperty( data, "duration", &StreamProperties::getDuration );
 
 	for( size_t metadataIndex = 0; metadataIndex < _metadatas.size(); ++metadataIndex )
 	{

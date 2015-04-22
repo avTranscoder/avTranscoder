@@ -5,7 +5,6 @@
 
 #include <limits>
 #include <algorithm>
-#include <sstream>
 
 namespace avtranscoder
 {
@@ -291,8 +290,8 @@ void Transcoder::addRewrapStream( const std::string& filename, const size_t stre
 void Transcoder::addTranscodeStream( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const double offset )
 {
 	// Get profile from input file
-	InputFile* referenceFile = addInputFile( filename, streamIndex );
-	ProfileLoader::Profile profile = getProfileFromFile( *referenceFile, streamIndex );
+	InputFile inputFile( filename );
+	ProfileLoader::Profile profile = getProfileFromFile( inputFile, streamIndex );
 
 	// override channels parameter to manage demultiplexing
 	ProfileLoader::Profile::iterator it = profile.find( constants::avProfileChannel );
@@ -374,21 +373,19 @@ InputFile* Transcoder::addInputFile( const std::string& filename, const size_t s
 
 ProfileLoader::Profile Transcoder::getProfileFromFile( InputFile& inputFile, const size_t streamIndex )
 {
-	NoDisplayProgress progress;
-	inputFile.analyse( progress, eAnalyseLevelHeader );
-
+	const StreamProperties* streamProperties = &inputFile.getProperties().getStreamPropertiesWithIndex( streamIndex );
 	const VideoProperties* videoProperties = NULL;
 	const AudioProperties* audioProperties = NULL;
 	switch( inputFile.getStream( streamIndex ).getStreamType() )
 	{
 		case AVMEDIA_TYPE_VIDEO:
 		{
-			videoProperties = &inputFile.getProperties().getVideoPropertiesWithStreamIndex( streamIndex );
+			videoProperties = dynamic_cast<const VideoProperties*>( streamProperties );
 			break;
 		}
 		case AVMEDIA_TYPE_AUDIO:
 		{
-			audioProperties = &inputFile.getProperties().getAudioPropertiesWithStreamIndex( streamIndex );
+			audioProperties = dynamic_cast<const AudioProperties*>( streamProperties );
 			break;
 		}
 		default:

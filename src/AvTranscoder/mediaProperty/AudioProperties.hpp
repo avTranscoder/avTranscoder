@@ -29,8 +29,6 @@ public:
 	size_t getNbSamples() const;  ///< 0 if unknown
 
 	size_t getTicksPerFrame() const;
-	Rational getTimeBase() const;
-	double getDuration() const;
 
 #ifndef SWIG
 	AVCodecContext& getAVCodecContext() { return *_codecContext; }

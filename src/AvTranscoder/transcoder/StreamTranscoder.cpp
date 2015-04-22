@@ -240,7 +240,8 @@ StreamTranscoder::StreamTranscoder(
 		VideoGenerator* generatorVideo = new VideoGenerator();
 		const VideoCodec& inputVideoCodec = static_cast<const VideoCodec&>( inputCodec );
 		generatorVideo->setVideoFrameDesc( inputVideoCodec.getVideoFrameDesc() );
-		_currentDecoder = generatorVideo;
+		_generator = generatorVideo;
+		_currentDecoder = _generator;
 
 		// buffers to process
 		VideoFrameDesc inputFrameDesc = inputVideoCodec.getVideoFrameDesc();
@@ -266,7 +267,8 @@ StreamTranscoder::StreamTranscoder(
 		AudioGenerator* generatorAudio = new AudioGenerator();
 		const AudioCodec& inputAudioCodec = static_cast<const AudioCodec&>( inputCodec );
 		generatorAudio->setAudioFrameDesc( inputAudioCodec.getAudioFrameDesc() );
-		_currentDecoder = generatorAudio;
+		_generator = generatorAudio;
+		_currentDecoder = _generator;
 
 		// buffers to process
 		AudioFrameDesc inputFrameDesc = inputAudioCodec.getAudioFrameDesc();
@@ -304,10 +306,6 @@ StreamTranscoder::~StreamTranscoder()
 
 void StreamTranscoder::preProcessCodecLatency()
 {
-	// rewrap case: no need to take care of the latency of codec
-	if( ! _currentDecoder )
-		return;
-
 	int latency = _outputEncoder->getCodec().getLatency();
 
 	LOG_DEBUG( "Latency of stream: " << latency )
@@ -315,6 +313,10 @@ void StreamTranscoder::preProcessCodecLatency()
 	if( ! latency ||
 		latency < _outputEncoder->getCodec().getAVCodecContext().frame_number )
 		return;
+
+	// set a decoder to preload generated frames
+	if( isRewrapCase() )
+		switchToGeneratorDecoder();
 
 	while( ( latency-- ) > 0 )
 	{
@@ -349,15 +351,9 @@ bool StreamTranscoder::processFrame()
 		}
 	}
 
-	if( ! _inputDecoder )
-	{
+	if( isRewrapCase() )
 		return processRewrap();
-	}
 
-	if( _subStreamIndex < 0 )
-	{
-		return processTranscode();
-	}
 	return processTranscode( _subStreamIndex );	
 }
 
@@ -417,7 +413,7 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 
 	LOG_DEBUG( "decode next frame" )
 	bool decodingStatus = false;
-	if( subStreamIndex == -1 )
+	if( subStreamIndex < 0 )
 		decodingStatus = _currentDecoder->decodeNextFrame( *_sourceBuffer );
 	else
 		decodingStatus = _currentDecoder->decodeNextFrame( *_sourceBuffer, subStreamIndex );
@@ -487,6 +483,21 @@ double StreamTranscoder::getDuration() const
 	}
 	else
 		return std::numeric_limits<double>::max();
+}
+
+bool StreamTranscoder::isTranscodeCase() const
+{
+	return _inputStream && _inputDecoder;
+}
+
+bool StreamTranscoder::isRewrapCase() const
+{
+	return _inputStream && ! _inputDecoder;
+}
+
+bool StreamTranscoder::isGeneratorCase() const
+{
+	return ! _inputStream;
 }
 
 }

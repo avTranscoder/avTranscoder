@@ -104,13 +104,6 @@ private:
 	 */
 	double getFps();
 
-	/**
-	 * @brief Seek at a specific position (in AV_TIME_BASE units)
-	 * @note before seek, add offset of start time
-	 * @note after seek, clear buffering of streams
-	 */
-	void seek( uint64_t position );
-
 protected:
 	FormatContext _formatContext;
 	FileProperties _properties;
