@@ -255,7 +255,7 @@ void Transcoder::process( IProgress& progress )
 			break;
 
 		// check progressDuration
-		if( progressDuration > outputDuration )
+		if( progressDuration >= outputDuration )
 			break;
 
 		LOG_INFO( "Process frame " << frame )
