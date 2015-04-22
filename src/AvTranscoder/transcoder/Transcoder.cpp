@@ -291,8 +291,8 @@ void Transcoder::addRewrapStream( const std::string& filename, const size_t stre
 void Transcoder::addTranscodeStream( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const double offset )
 {
 	// Get profile from input file
-	InputFile* referenceFile = addInputFile( filename, streamIndex );
-	ProfileLoader::Profile profile = getProfileFromFile( *referenceFile, streamIndex );
+	InputFile inputFile( filename );
+	ProfileLoader::Profile profile = getProfileFromFile( inputFile, streamIndex );
 
 	// override channels parameter to manage demultiplexing
 	ProfileLoader::Profile::iterator it = profile.find( constants::avProfileChannel );
