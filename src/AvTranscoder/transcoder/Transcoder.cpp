@@ -254,12 +254,12 @@ void Transcoder::process( IProgress& progress )
 
 		double progressDuration = _outputFile.getStream( 0 ).getStreamDuration();
 
-		// check progressDuration
-		if( progressDuration > outputDuration )
-			break;
-
 		// check if JobStatusCancel
 		if( progress.progress( ( progressDuration > outputDuration ) ? outputDuration : progressDuration, outputDuration ) == eJobStatusCancel )
+			break;
+
+		// check progressDuration
+		if( progressDuration > outputDuration )
 			break;
 
 		++frame;
