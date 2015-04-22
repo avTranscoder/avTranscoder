@@ -1,5 +1,7 @@
 #include "FileProperties.hpp"
 
+#include <AvTranscoder/progress/NoDisplayProgress.hpp>
+
 #include <stdexcept>
 
 namespace avtranscoder
@@ -17,6 +19,69 @@ FileProperties::FileProperties( const FormatContext& formatContext )
 {
 	if( _avFormatContext )
 		detail::fillMetadataDictionnary( _avFormatContext->metadata, _metadatas );
+
+	NoDisplayProgress progress;
+	extractStreamProperties( progress, eAnalyseLevelHeader );
+}
+
+void FileProperties::extractStreamProperties( IProgress& progress, const EAnalyseLevel level )
+{
+	clearStreamProperties();
+
+	// if the analysis level wiil decode some streams parts, seek at the beginning
+	if( level > eAnalyseLevelHeader )
+		const_cast<FormatContext*>( _formatContext )->seek( 0 );
+
+	for( size_t streamIndex = 0; streamIndex < _formatContext->getNbStreams(); ++streamIndex )
+	{
+		switch( _formatContext->getAVStream( streamIndex ).codec->codec_type )
+		{
+			case AVMEDIA_TYPE_VIDEO:
+			{
+				VideoProperties properties( *_formatContext, streamIndex, progress, level );
+				_videoStreams.push_back( properties );
+				break;
+			}
+			case AVMEDIA_TYPE_AUDIO:
+			{
+				AudioProperties properties( *_formatContext, streamIndex );
+				_audioStreams.push_back( properties );
+				break;
+			}
+			case AVMEDIA_TYPE_DATA:
+			{
+				DataProperties properties( *_formatContext, streamIndex );
+				_dataStreams.push_back( properties );
+				break;
+			}
+			case AVMEDIA_TYPE_SUBTITLE:
+			{
+				SubtitleProperties properties( *_formatContext, streamIndex );
+				_subtitleStreams.push_back( properties );
+				break;
+			}
+			case AVMEDIA_TYPE_ATTACHMENT:
+			{
+				AttachementProperties properties( *_formatContext, streamIndex );
+				_attachementStreams.push_back( properties );
+				break;
+			}
+			case AVMEDIA_TYPE_UNKNOWN:
+			{
+				UnknownProperties properties( *_formatContext, streamIndex );
+				_unknownStreams.push_back( properties );
+				break;
+			}
+			case AVMEDIA_TYPE_NB:
+			{
+				break;
+			}
+		}
+	}
+
+	// if the analysis level has decoded some streams parts, return at the beginning
+	if( level > eAnalyseLevelHeader )
+		const_cast<FormatContext*>( _formatContext )->seek( 0 );
 }
 
 std::string FileProperties::getFilename() const

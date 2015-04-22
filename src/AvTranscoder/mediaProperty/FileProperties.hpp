@@ -4,6 +4,8 @@
 #include <AvTranscoder/common.hpp>
 #include <AvTranscoder/mediaProperty/util.hpp>
 #include <AvTranscoder/file/FormatContext.hpp>
+#include <AvTranscoder/progress/IProgress.hpp>
+
 #include <AvTranscoder/mediaProperty/VideoProperties.hpp>
 #include <AvTranscoder/mediaProperty/AudioProperties.hpp>
 #include <AvTranscoder/mediaProperty/DataProperties.hpp>
@@ -20,7 +22,19 @@ namespace avtranscoder
 class AvExport FileProperties
 {
 public:
+	/**
+	 * @brief Analayse a file from its FormatContext
+	 * @note The default streams analyse level is eAnalyseLevelHeader
+	 * @see FormatContext
+	 */
 	FileProperties( const FormatContext& formatContext );
+
+	/**
+	 * @brief Relaunch streams analysis with a specific level.
+	 * @param progress callback to get analysis progression
+	 * @param level of analysis
+	 */
+	void extractStreamProperties( IProgress& progress, const EAnalyseLevel level );
 
 	std::string getFilename() const;
 	std::string getFormatName() const;  ///< A comma separated list of short names for the format

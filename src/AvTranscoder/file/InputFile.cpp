@@ -7,7 +7,6 @@
 #include <AvTranscoder/mediaProperty/SubtitleProperties.hpp>
 #include <AvTranscoder/mediaProperty/AttachementProperties.hpp>
 #include <AvTranscoder/mediaProperty/UnknownProperties.hpp>
-#include <AvTranscoder/progress/NoDisplayProgress.hpp>
 
 extern "C" {
 #include <libavcodec/avcodec.h>
@@ -29,10 +28,6 @@ InputFile::InputFile( const std::string& filename )
 {
 	_formatContext.findStreamInfo();
 
-	// Analyse header
-	NoDisplayProgress p;
-	analyse( p, eAnalyseLevelHeader );
-
 	// Create streams
 	for( size_t streamIndex = 0; streamIndex < _formatContext.getNbStreams(); ++streamIndex )
 	{
@@ -50,60 +45,7 @@ InputFile::~InputFile()
 
 void InputFile::analyse( IProgress& progress, const EAnalyseLevel level )
 {
-	_properties.clearStreamProperties();
-
-	if( level > eAnalyseLevelHeader )
-		seekAtFrame( 0 );
-
-	for( size_t streamIndex = 0; streamIndex < _formatContext.getNbStreams(); streamIndex++ )
-	{
-		switch( _formatContext.getAVStream( streamIndex ).codec->codec_type )
-		{
-			case AVMEDIA_TYPE_VIDEO:
-			{
-				VideoProperties properties( _formatContext, streamIndex, progress, level );
-				_properties.getVideoProperties().push_back( properties );
-				break;
-			}
-			case AVMEDIA_TYPE_AUDIO:
-			{
-				AudioProperties properties( _formatContext, streamIndex );
-				_properties.getAudioProperties().push_back( properties );
-				break;
-			}
-			case AVMEDIA_TYPE_DATA:
-			{
-				DataProperties properties( _formatContext, streamIndex );
-				_properties.getDataProperties().push_back( properties );
-				break;
-			}
-			case AVMEDIA_TYPE_SUBTITLE:
-			{
-				SubtitleProperties properties( _formatContext, streamIndex );
-				_properties.getSubtitleProperties().push_back( properties );
-				break;
-			}
-			case AVMEDIA_TYPE_ATTACHMENT:
-			{
-				AttachementProperties properties( _formatContext, streamIndex );
-				_properties.getAttachementProperties().push_back( properties );
-				break;
-			}
-			case AVMEDIA_TYPE_UNKNOWN:
-			{
-				UnknownProperties properties( _formatContext, streamIndex );
-				_properties.getUnknownPropertiesProperties().push_back( properties );
-				break;
-			}
-			case AVMEDIA_TYPE_NB:
-			{
-				break;
-			}
-		}
-	}
-
-	if( level > eAnalyseLevelHeader )
-		seekAtFrame( 0 );
+	_properties.extractStreamProperties( progress, level );
 }
 
 FileProperties InputFile::analyseFile( const std::string& filename, IProgress& progress, const EAnalyseLevel level )

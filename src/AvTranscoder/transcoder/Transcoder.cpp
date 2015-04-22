@@ -375,9 +375,6 @@ InputFile* Transcoder::addInputFile( const std::string& filename, const size_t s
 
 ProfileLoader::Profile Transcoder::getProfileFromFile( InputFile& inputFile, const size_t streamIndex )
 {
-	NoDisplayProgress progress;
-	inputFile.analyse( progress, eAnalyseLevelHeader );
-
 	const VideoProperties* videoProperties = NULL;
 	const AudioProperties* audioProperties = NULL;
 	switch( inputFile.getStream( streamIndex ).getStreamType() )
