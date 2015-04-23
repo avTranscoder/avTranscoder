@@ -12,7 +12,7 @@ parser = argparse.ArgumentParser(
 parser.add_argument('inputFileName', help='It could be any media file with at least one video stream (video, image...). Support file without extension.')
 # options
 parser.add_argument("-o", "--outputFile", dest="outputFileName", default="thumbnail.jpg", help="Set the output filename (thumbnail.jpg by default). Must be with jpg extension!")
-parser.add_argument("-t", "--time", dest="time", type=int, default=0, help="Set time (in seconds) of where to seek in the video stream to generate the thumbnail (0 by default).")
+parser.add_argument("-t", "--time", dest="time", type=float, default=0, help="Set time (in seconds) of where to seek in the video stream to generate the thumbnail (0 by default).")
 parser.add_argument("-f", "--frame", dest="frame", type=int, default=0, help="Set time (in frames) of where to seek in the video stream to generate the thumbnail (0 by default). Warning: priority to frame if user indicates both frame and time!")
 parser.add_argument("-w", "--width", dest="width", type=int, default=0, help="Override the width of the thumbnail (same as input by default).")
 parser.add_argument("-he", "--height", dest="height", type=int, default=0, help="Override the height of the thumbnail (same as input by default).")

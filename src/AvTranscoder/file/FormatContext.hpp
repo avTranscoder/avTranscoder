@@ -62,11 +62,12 @@ public:
 	AVStream& addAVStream( const AVCodec& avCodec );
 
 	/**
-	 * @brief Seek at a specific position (in AV_TIME_BASE units)
+	 * @brief Seek at a specific position
+	 * @param position: can be in AV_TIME_BASE units, in frames... depending on the flag value
+	 * @param flag: seeking mode (AVSEEK_FLAG_xxx)
 	 * @note before seek, add offset of start time
-	 * @note after seek, clear buffering of streams
 	 */
-	void seek( uint64_t position );
+	void seek( uint64_t position, const int flag );
 
 	size_t getNbStreams() const { return _avFormatContext->nb_streams; }
 	/// Get duration of the program, in seconds

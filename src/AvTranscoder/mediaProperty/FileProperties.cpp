@@ -31,7 +31,7 @@ void FileProperties::extractStreamProperties( IProgress& progress, const EAnalys
 
 	// if the analysis level wiil decode some streams parts, seek at the beginning
 	if( level > eAnalyseLevelHeader )
-		const_cast<FormatContext*>( _formatContext )->seek( 0 );
+		const_cast<FormatContext*>( _formatContext )->seek( 0, AVSEEK_FLAG_BACKWARD );
 
 	for( size_t streamIndex = 0; streamIndex < _formatContext->getNbStreams(); ++streamIndex )
 	{
@@ -88,7 +88,7 @@ void FileProperties::extractStreamProperties( IProgress& progress, const EAnalys
 
 	// if the analysis level has decoded some streams parts, return at the beginning
 	if( level > eAnalyseLevelHeader )
-		const_cast<FormatContext*>( _formatContext )->seek( 0 );
+		const_cast<FormatContext*>( _formatContext )->seek( 0, AVSEEK_FLAG_BACKWARD );
 }
 
 std::string FileProperties::getFilename() const
