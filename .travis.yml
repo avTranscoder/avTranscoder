@@ -25,7 +25,7 @@ script:
   # Build
   - mkdir build
   - cd build
-  - cmake .. -DCMAKE_INSTALL_PREFIX=`pwd`/dist
+  - cmake .. -DCMAKE_INSTALL_PREFIX=`pwd`/install
   - make install
   # Launch tests
   - if [ "${TRAVIS_OS_NAME}" = "linux" && "${DEPENDENCY_MODE}" = "ffmpeg" ]; then ./../tools/travis.python.nosetests.sh; fi
