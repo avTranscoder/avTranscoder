@@ -1,0 +1,10 @@
+avProfileName=dnxhd36
+avProfileLongName=DNxHD 36Mbps 8bits 1920x1080 25fps
+avProfileType=avProfileTypeVideo
+codec=dnxhd
+width=1920
+height=1080
+pix_fmt=yuv422p
+b=36M
+g=1
+r=25
