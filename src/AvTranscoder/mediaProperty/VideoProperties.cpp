@@ -37,9 +37,6 @@ VideoProperties::VideoProperties( const FormatContext& formatContext, const size
 
 	if( _formatContext && _codecContext )
 		_codec = avcodec_find_decoder( _codecContext->codec_id );
-	
-	if( _formatContext )
-		detail::fillMetadataDictionnary( _formatContext->streams[index]->metadata, _metadatas );
 
 	if( _codecContext )
 		_pixelProperties = PixelProperties( _codecContext->pix_fmt );
