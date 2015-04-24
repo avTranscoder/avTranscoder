@@ -44,7 +44,7 @@ script:
   - cmake .. -DCMAKE_INSTALL_PREFIX=${AVTRANSCODER_INSTALL} -DCMAKE_BUILD_TYPE=Release -DAVTRANSCODER_COVERAGE=True
   - make install
   # Launch tests
-  - if [ "${TRAVIS_OS_NAME}" = "linux" && "${DEPENDENCY_MODE}" = "ffmpeg" ]; then ./../tools/travis.python.nosetests.sh; fi
+  - if [ "${DEPENDENCY_MODE}" = "ffmpeg" ]; then ./../tools/travis.python.nosetests.sh; fi
 
 after_success:
   - cd ${TRAVIS_BUILD_DIR}
