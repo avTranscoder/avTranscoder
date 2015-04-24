@@ -2,6 +2,7 @@ env:
   global:
      - AVTRANSCODER_BUILD=${TRAVIS_BUILD_DIR}/build
      - AVTRANSCODER_INSTALL=${TRAVIS_BUILD_DIR}/install
+     - J='-j3'
   matrix:
     - DEPENDENCY_MODE=libav
     - DEPENDENCY_MODE=ffmpeg
@@ -42,7 +43,7 @@ script:
   - mkdir -p ${AVTRANSCODER_BUILD}
   - cd ${AVTRANSCODER_BUILD}
   - cmake .. -DCMAKE_INSTALL_PREFIX=${AVTRANSCODER_INSTALL} -DCMAKE_BUILD_TYPE=Release -DAVTRANSCODER_COVERAGE=True
-  - make install
+  - make $J install
   # Launch tests
   - if [ "${DEPENDENCY_MODE}" = "ffmpeg" ]; then ./../tools/travis.python.nosetests.sh; fi
 
