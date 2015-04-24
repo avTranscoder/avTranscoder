@@ -21,8 +21,16 @@ private:
 	FormatContext& operator=( const FormatContext& formatContext );
 
 public:
-	FormatContext( const std::string& filename, int req_flags = 0 );  ///< Allocate an AVFormatContext by opening an input file
-	FormatContext( int req_flags = 0 );  ///< Allocate an AVFormatContext with default values
+	/**
+	 * @brief Allocate an AVFormatContext by opening an input file
+         */
+	FormatContext( const std::string& filename, int req_flags = 0, AVDictionary** options = NULL );
+
+	/**
+	 * @brief Allocate an AVFormatContext with default values
+         */
+	FormatContext( int req_flags = 0 );
+
 	~FormatContext();
 
 	/**

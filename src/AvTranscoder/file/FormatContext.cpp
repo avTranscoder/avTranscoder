@@ -6,12 +6,12 @@
 namespace avtranscoder
 {
 
-FormatContext::FormatContext( const std::string& filename, int req_flags )
+FormatContext::FormatContext( const std::string& filename, int req_flags, AVDictionary** options )
 	: _avFormatContext( NULL )
 	, _options()
 	, _isOpen( false )
 {
-	int ret = avformat_open_input( &_avFormatContext, filename.c_str(), NULL, NULL );
+	int ret = avformat_open_input( &_avFormatContext, filename.c_str(), NULL, options );
 	if( ret < 0 )
 	{
 		std::string msg = "unable to open file ";
