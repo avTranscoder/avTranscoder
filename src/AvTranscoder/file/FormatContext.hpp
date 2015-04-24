@@ -51,7 +51,11 @@ public:
 	 */
 	void closeRessource();
 
-	void writeHeader( AVDictionary** options = NULL );  ///< Write the stream header to an output media file
+	/**
+	 * @brief Write the stream header to an output media file
+	 * @note Also load options specific to the output format
+	 */
+	void writeHeader( AVDictionary** options = NULL );
 
 	/**
 	 * @brief Write a packet to an output media file
@@ -106,6 +110,7 @@ public:
 
 private:
 	AVFormatContext* _avFormatContext;  ///< Has ownership
+	const int _flags;  ///< Flags with which the options are loaded (see AV_OPT_FLAG_xxx)
 	OptionMap _options;
 	bool _isOpen;  ///< Is the AVFormatContext open (in constructor with a filename)
 };

@@ -8,6 +8,7 @@ namespace avtranscoder
 
 FormatContext::FormatContext( const std::string& filename, int req_flags, AVDictionary** options )
 	: _avFormatContext( NULL )
+	, _flags( req_flags )
 	, _options()
 	, _isOpen( false )
 {
@@ -29,6 +30,7 @@ FormatContext::FormatContext( const std::string& filename, int req_flags, AVDict
 
 FormatContext::FormatContext( int req_flags )
 	: _avFormatContext( NULL )
+	, _flags( req_flags )
 	, _options()
 	, _isOpen( false )
 {
@@ -88,6 +90,8 @@ void FormatContext::writeHeader( AVDictionary** options )
 	{
 		throw std::runtime_error( "could not write header: " + getDescriptionFromErrorCode( ret ) );
 	}
+	// when muxing, priv_data of AVFormatContext is set by avformat_write_header()
+	loadOptions( _options, _avFormatContext->priv_data, _flags );
 }
 
 void FormatContext::writeFrame( AVPacket& packet, bool interleaved )
