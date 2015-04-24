@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Get avtranscoder library
-export PYTHONPATH=`pwd`/build/install/lib/python2.7.6/site-packages/:$PYTHONPATH
+export PYTHONPATH=${AVTRANSCODER_INSTALL}/lib/python2.7.6/site-packages/:$PYTHONPATH
 
 # Get avtranscoder profiles
-export AVPROFILES=`pwd`/build/install/share/ressource
+export AVPROFILES=${AVTRANSCODER_INSTALL}/share/ressource
 
 # Get assets
 git clone https://github.com/avTranscoder/avTranscoder-data.git
@@ -13,5 +13,4 @@ export AVTRANSCODER_TEST_AUDIO_WAVE_FILE=`pwd`/avTranscoder-data/audio/frequenci
 export AVTRANSCODER_TEST_AUDIO_MOV_FILE=`pwd`/avTranscoder-data/video/BigBuckBunny/BigBuckBunny_1080p_5_1.mov
 
 # Launch tests
-cd test/pyTest
-nosetests
+nosetests ${TRAVIS_BUILD_DIR}/test/pyTest --with-coverage
