@@ -21,7 +21,10 @@ FormatContext::FormatContext( const std::string& filename, int req_flags, AVDict
 		throw std::ios_base::failure( msg );
 	}
 	_isOpen = true;
+
 	loadOptions( _options, _avFormatContext, req_flags );
+	// when demuxing, priv_data of AVFormatContext is set by avformat_open_input()
+	loadOptions( _options, _avFormatContext->priv_data, req_flags );
 }
 
 FormatContext::FormatContext( int req_flags )
