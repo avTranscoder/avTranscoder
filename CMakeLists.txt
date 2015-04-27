@@ -28,6 +28,10 @@ else()
 	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fPIC -O3")
 endif()
 
+# CPP flag to create code coverage report
+if(AVTRANSCODER_COVERAGE)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage")
+endif()
 
 add_subdirectory(src)
 
