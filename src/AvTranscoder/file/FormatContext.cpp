@@ -25,7 +25,8 @@ FormatContext::FormatContext( const std::string& filename, int req_flags, AVDict
 
 	loadOptions( _options, _avFormatContext, req_flags );
 	// when demuxing, priv_data of AVFormatContext is set by avformat_open_input()
-	loadOptions( _options, _avFormatContext->priv_data, req_flags );
+	if( _avFormatContext->iformat->priv_class )
+		loadOptions( _options, _avFormatContext->priv_data, req_flags );
 }
 
 FormatContext::FormatContext( int req_flags )
@@ -91,7 +92,8 @@ void FormatContext::writeHeader( AVDictionary** options )
 		throw std::runtime_error( "could not write header: " + getDescriptionFromErrorCode( ret ) );
 	}
 	// when muxing, priv_data of AVFormatContext is set by avformat_write_header()
-	loadOptions( _options, _avFormatContext->priv_data, _flags );
+	if( _avFormatContext->oformat->priv_class )
+		loadOptions( _options, _avFormatContext->priv_data, _flags );
 }
 
 void FormatContext::writeFrame( AVPacket& packet, bool interleaved )
