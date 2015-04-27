@@ -34,3 +34,16 @@ script:
   - cd ..
   - chmod +x tools/travis.python.nosetests.sh
   - if [ "${TRAVIS_OS_NAME}" = "linux" && "${DEPENDENCY_MODE}" = "ffmpeg" ]; then ./tools/travis.python.nosetests.sh; fi
+
+before_deploy:
+  - cd ${TRAVIS_BUILD_DIR}
+  - tar -cvzf avtranscoder_install.tgz build/dist/
+
+deploy:
+  provider: releases
+  api_key:
+    secure: "${GITHUB_RELEASE_API_KEY}"
+  file: avtranscoder_install.tgz
+  skip_cleanup: true
+  on:
+    tags: true
