@@ -23,16 +23,9 @@ before_script:
   - uname -a
 
   - cd ${TRAVIS_BUILD_DIR}
-  # install latest LCOV (1.9 was failing for me)
-  - wget http://ftp.de.debian.org/debian/pool/main/l/lcov/lcov_1.11.orig.tar.gz
-  - tar xf lcov_1.11.orig.tar.gz
-  - sudo make -C lcov-1.11/ install
-  # install lcov to coveralls conversion + upload tool
-  - gem install coveralls-lcov
-  # init coverage to 0 (optional)
-  - lcov --directory ${AVTRANSCODER_BUILD} --zerocounters
-  # install nosetests plugins
-  - sudo pip install coverage
+
+  # install coverage tools used by gcc compiler
+  - if [ "${CC}" = "gcc" ]; then ./tools/travis.gcc.install.coverage.sh; fi
 
   # install avtranscoder dependencies
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then ./tools/travis.linux.install.deps.sh; fi
@@ -44,16 +37,12 @@ script:
   - cd ${AVTRANSCODER_BUILD}
   - cmake .. -DCMAKE_INSTALL_PREFIX=${AVTRANSCODER_INSTALL} -DCMAKE_BUILD_TYPE=Release -DAVTRANSCODER_COVERAGE=True
   - make $J install
+
   # Launch tests
   - if [ "${DEPENDENCY_MODE}" = "ffmpeg" ]; then ./../tools/travis.python.nosetests.sh; fi
 
 after_success:
   - cd ${TRAVIS_BUILD_DIR}
-  # capture coverage info
-  - lcov --capture --directory ${AVTRANSCODER_BUILD} --output-file coverage.info
-  # filter out system and test code
-  - lcov --remove coverage.info '/usr/*' '*/*PYTHON_wrap.*' --output-file coverage.info
-  # debug before upload
-  - lcov --list coverage.info
-  # uploads to coveralls
-  - coveralls-lcov --repo-token e7jYJJrojzWYfmdUgkDvwVNGqJgh6yCH7 coverage.info
+
+  # generate coverage for coveralls
+  - if [ "${CC}" = "gcc" ]; then ./tools/travis.gcc.generate.coverage.sh; fi
