@@ -24,8 +24,8 @@ before_script:
 
   - cd ${TRAVIS_BUILD_DIR}
 
-  # install coverage tools used by gcc compiler
-  - if [ "${CC}" = "gcc" ]; then ./tools/travis.gcc.install.coverage.sh; fi
+  # install coverage tools
+  - ./tools/travis.gcc.install.coverage.sh
 
   # install avtranscoder dependencies
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then ./tools/travis.linux.install.deps.sh; fi
@@ -35,7 +35,7 @@ script:
   # Build
   - mkdir -p ${AVTRANSCODER_BUILD}
   - cd ${AVTRANSCODER_BUILD}
-  - cmake .. -DCMAKE_INSTALL_PREFIX=${AVTRANSCODER_INSTALL} -DCMAKE_BUILD_TYPE=Release -DAVTRANSCODER_COVERAGE=True
+  - cmake .. -DCMAKE_INSTALL_PREFIX=${AVTRANSCODER_INSTALL} -DCMAKE_BUILD_TYPE=Release -DAVTRANSCODER_PYTHON_VERSION_OF_BINDING=2.7 -DAVTRANSCODER_COVERAGE=True
   - make $J install
 
   # Launch tests

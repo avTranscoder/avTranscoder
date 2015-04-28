@@ -45,6 +45,10 @@ cmake .. -DCMAKE_INSTALL_PREFIX=/path/to/install
 ```
 cmake .. -DCMAKE_BUILD_TYPE=Release/Debug
 ```
+###### To build python binding with a specific python version
+```
+cmake .. -DAVTRANSCODER_PYTHON_VERSION_OF_BINDING=2.7
+```
 
 #### Mac OSX using homebrew
 
