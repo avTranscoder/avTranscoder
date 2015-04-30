@@ -51,14 +51,14 @@ after_success:
 before_deploy:
   # create archive
   - cd ${TRAVIS_BUILD_DIR}
-  - tar -cvzf avtranscoder-dev-${DEPENDENCY_MODE}.tgz ${DEPENDENCY_INSTALL} ${AVTRANSCODER_INSTALL}
+  - tar -cvzf avtranscoder-${TRAVIS_OS_NAME}-${CC}-${DEPENDENCY_MODE}.tgz ${DEPENDENCY_INSTALL} ${AVTRANSCODER_INSTALL}
 
 deploy:
   # if the commit is tagged, deploy using github release service
   provider: releases
   api_key:
     secure: ${GITHUB_RELEASE_API_KEY}
-  file: avtranscoder-dev-${DEPENDENCY_MODE}.tgz
+  file: avtranscoder-${TRAVIS_OS_NAME}-${CC}-${DEPENDENCY_MODE}.tgz
   skip_cleanup: true
   on:
     tags: true
