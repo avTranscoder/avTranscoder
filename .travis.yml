@@ -1,7 +1,8 @@
 env:
   global:
-     - AVTRANSCODER_BUILD=${TRAVIS_BUILD_DIR}/build
-     - AVTRANSCODER_INSTALL=${TRAVIS_BUILD_DIR}/install
+     - AVTRANSCODER_BUILD=${TRAVIS_BUILD_DIR}/build-avtranscoder
+     - AVTRANSCODER_INSTALL=${TRAVIS_BUILD_DIR}/install-avtranscoder
+     - DEPENDENCY_INSTALL=${TRAVIS_BUILD_DIR}/install-dependency
      - J='-j3'
   matrix:
     - DEPENDENCY_MODE=libav
@@ -35,7 +36,7 @@ script:
   # Build
   - mkdir -p ${AVTRANSCODER_BUILD}
   - cd ${AVTRANSCODER_BUILD}
-  - cmake .. -DCMAKE_INSTALL_PREFIX=${AVTRANSCODER_INSTALL} -DCMAKE_BUILD_TYPE=Release -DAVTRANSCODER_PYTHON_VERSION_OF_BINDING=2.7 -DAVTRANSCODER_COVERAGE=True
+  - cmake .. -DCMAKE_INSTALL_PREFIX=${AVTRANSCODER_INSTALL} -DCMAKE_PREFIX_PATH=${DEPENDENCY_INSTALL} -DCMAKE_BUILD_TYPE=Release -DAVTRANSCODER_PYTHON_VERSION_OF_BINDING=2.7 -DAVTRANSCODER_COVERAGE=True
   - make $J install
 
   # Launch tests
@@ -48,8 +49,8 @@ after_success:
   - if [ "${CC}" = "gcc" ]; then ./tools/travis.gcc.generate.coverage.sh; fi
 
 before_deploy:
-  - cd ${AVTRANSCODER_INSTALL}
-  - tar -cvzf avtranscoder_install.tgz .
+  - cd ${TRAVIS_BUILD_DIR}
+  - tar -cvzf avtranscoder_install.tgz ${DEPENDENCY_INSTALL} ${AVTRANSCODER_INSTALL}
 
 deploy:
   provider: releases
