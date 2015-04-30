@@ -6,5 +6,4 @@ width=1920
 height=1080
 pix_fmt=yuv422p
 b=185M
-g=1
 r=25
