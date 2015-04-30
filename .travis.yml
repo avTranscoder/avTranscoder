@@ -29,8 +29,8 @@ before_script:
   - ./tools/travis.gcc.install.coverage.sh
 
   # install avtranscoder dependencies
-  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then ./tools/travis.linux.install.deps.sh; fi
-  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then ./tools/travis.osx.install.deps.sh; fi
+  - if [ ${TRAVIS_OS_NAME} = "linux" ]; then ./tools/travis.linux.install.deps.sh; fi
+  - if [ ${TRAVIS_OS_NAME} = "osx" ]; then ./tools/travis.osx.install.deps.sh; fi
 
 script:
   # Build
@@ -40,13 +40,13 @@ script:
   - make $J install
 
   # Launch tests
-  - if [ "${DEPENDENCY_MODE}" = "ffmpeg" ]; then ./../tools/travis.python.nosetests.sh; fi
+  - if [ ${DEPENDENCY_MODE} = "ffmpeg" ]; then ./../tools/travis.python.nosetests.sh; fi
 
 after_success:
   - cd ${TRAVIS_BUILD_DIR}
 
   # generate coverage for coveralls
-  - if [ "${CC}" = "gcc" ]; then ./tools/travis.gcc.generate.coverage.sh; fi
+  - if [ ${CC} = "gcc" ]; then ./tools/travis.gcc.generate.coverage.sh; fi
 
 before_deploy:
   - cd ${TRAVIS_BUILD_DIR}
@@ -55,7 +55,7 @@ before_deploy:
 deploy:
   provider: releases
   api_key:
-    secure: "${GITHUB_RELEASE_API_KEY}"
+    secure: ${GITHUB_RELEASE_API_KEY}
   file: avtranscoder-dev-${DEPENDENCY_MODE}.tgz
   skip_cleanup: true
   on:
