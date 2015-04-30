@@ -41,42 +41,36 @@ void FileProperties::extractStreamProperties( IProgress& progress, const EAnalys
 			{
 				VideoProperties properties( *_formatContext, streamIndex, progress, level );
 				_videoStreams.push_back( properties );
-				_streams.push_back( &_videoStreams.back() );
 				break;
 			}
 			case AVMEDIA_TYPE_AUDIO:
 			{
 				AudioProperties properties( *_formatContext, streamIndex );
 				_audioStreams.push_back( properties );
-				_streams.push_back( &_audioStreams.back() );
 				break;
 			}
 			case AVMEDIA_TYPE_DATA:
 			{
 				DataProperties properties( *_formatContext, streamIndex );
 				_dataStreams.push_back( properties );
-				_streams.push_back( &_dataStreams.back() );
 				break;
 			}
 			case AVMEDIA_TYPE_SUBTITLE:
 			{
 				SubtitleProperties properties( *_formatContext, streamIndex );
 				_subtitleStreams.push_back( properties );
-				_streams.push_back( &_subtitleStreams.back() );
 				break;
 			}
 			case AVMEDIA_TYPE_ATTACHMENT:
 			{
 				AttachementProperties properties( *_formatContext, streamIndex );
 				_attachementStreams.push_back( properties );
-				_streams.push_back( &_attachementStreams.back() );
 				break;
 			}
 			case AVMEDIA_TYPE_UNKNOWN:
 			{
 				UnknownProperties properties( *_formatContext, streamIndex );
 				_unknownStreams.push_back( properties );
-				_streams.push_back( &_unknownStreams.back() );
 				break;
 			}
 			case AVMEDIA_TYPE_NB:
@@ -85,6 +79,25 @@ void FileProperties::extractStreamProperties( IProgress& progress, const EAnalys
 			}
 		}
 	}
+
+	// once the streams vectors are filled, add their references the base streams vector
+	for( size_t streamIndex = 0; streamIndex < _videoStreams.size(); ++streamIndex )
+		_streams.push_back( &_videoStreams.at( streamIndex ) );
+
+	for( size_t streamIndex = 0; streamIndex < _audioStreams.size(); ++ streamIndex )
+		_streams.push_back( &_audioStreams.at(streamIndex) );
+
+	for( size_t streamIndex = 0; streamIndex < _dataStreams.size(); ++ streamIndex )
+		_streams.push_back( &_dataStreams.at(streamIndex) );
+
+	for( size_t streamIndex = 0; streamIndex < _subtitleStreams.size(); ++ streamIndex )
+		_streams.push_back( &_subtitleStreams.at(streamIndex) );
+
+	for( size_t streamIndex = 0; streamIndex < _attachementStreams.size(); ++ streamIndex )
+		_streams.push_back( &_attachementStreams.at(streamIndex) );
+
+	for( size_t streamIndex = 0; streamIndex < _unknownStreams.size(); ++ streamIndex )
+		_streams.push_back( &_unknownStreams.at(streamIndex) );
 
 	// if the analysis level has decoded some streams parts, return at the beginning
 	if( level > eAnalyseLevelHeader )
