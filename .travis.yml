@@ -50,14 +50,15 @@ after_success:
 
 before_deploy:
   - cd ${TRAVIS_BUILD_DIR}
-  - tar -cvzf avtranscoder_install.tgz ${DEPENDENCY_INSTALL} ${AVTRANSCODER_INSTALL}
+  - tar -cvzf avtranscoder-dev-${DEPENDENCY_MODE}.tgz ${DEPENDENCY_INSTALL} ${AVTRANSCODER_INSTALL}
 
 deploy:
   provider: releases
   api_key:
     secure: "${GITHUB_RELEASE_API_KEY}"
-  file: avtranscoder_install.tgz
+  file: avtranscoder-dev-${DEPENDENCY_MODE}.tgz
   skip_cleanup: true
   on:
     tags: true
+    condition: ${TRAVIS_OS_NAME} = "linux"
 
