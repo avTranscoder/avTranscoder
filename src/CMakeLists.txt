@@ -80,7 +80,7 @@ if(SWIG_FOUND)
 	if(AVTRANSCODER_DISABLE_PYTHON_BINDING)
 		message("PYTHON binding disabled, will not build python binding.")
 	else()
-		find_package(PythonLibs)
+		find_package(PythonLibs ${AVTRANSCODER_PYTHON_VERSION_OF_BINDING})
 		if(PYTHONLIBS_FOUND)
 			include_directories(${PYTHON_INCLUDE_PATH})
 

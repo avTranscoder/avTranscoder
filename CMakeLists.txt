@@ -5,7 +5,7 @@ project(AvTranscoder)
 # Set AvTranscoder versions
 set(AVTRANSCODER_VERSION_MAJOR "0")
 set(AVTRANSCODER_VERSION_MINOR "5")
-set(AVTRANSCODER_VERSION_MICRO "5")
+set(AVTRANSCODER_VERSION_MICRO "6")
 set(AVTRANSCODER_VERSION ${AVTRANSCODER_VERSION_MAJOR}.${AVTRANSCODER_VERSION_MINOR}.${AVTRANSCODER_VERSION_MICRO})
 
 # Define AvTranscoder versions
@@ -28,6 +28,10 @@ else()
 	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fPIC -O3")
 endif()
 
+# CPP flag to create code coverage report
+if(AVTRANSCODER_COVERAGE)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage")
+endif()
 
 add_subdirectory(src)
 
