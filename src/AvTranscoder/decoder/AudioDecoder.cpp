@@ -52,7 +52,7 @@ AudioDecoder::~AudioDecoder()
 
 void AudioDecoder::setup()
 {
-	_inputStream->getAudioCodec().open();
+	_inputStream->getAudioCodec().openCodec();
 }
 
 bool AudioDecoder::decodeNextFrame( Frame& frameBuffer )
