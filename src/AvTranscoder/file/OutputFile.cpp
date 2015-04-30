@@ -15,7 +15,6 @@ OutputFile::OutputFile( const std::string& filename )
 	, _previousProcessedStreamDuration( 0.0 )
 {
 	_formatContext.setOutputFormat( _filename );
-	_formatContext.openRessource( _filename, AVIO_FLAG_WRITE );
 }
 
 OutputFile::~OutputFile()
@@ -88,9 +87,14 @@ IOutputStream& OutputFile::getStream( const size_t streamId )
 
 bool OutputFile::beginWrap( )
 {
+	LOG_DEBUG( "Begin wrap of OutputFile" )
+
+	_formatContext.openRessource( _filename, AVIO_FLAG_WRITE );
 	_formatContext.writeHeader();
+
 	_frameCount.clear();
 	_frameCount.resize( _outputStreams.size(), 0 );
+
 	return true;
 }
 
@@ -127,6 +131,8 @@ IOutputStream::EWrappingStatus OutputFile::wrap( const CodedData& data, const si
 
 bool OutputFile::endWrap( )
 {
+	LOG_DEBUG( "End wrap of OutputFile" )
+
 	_formatContext.writeTrailer();
 	_formatContext.closeRessource();
 	return true;

@@ -33,8 +33,16 @@ public:
 	IOutputStream& addAudioStream( const AudioCodec& audioDesc );
 	IOutputStream& addDataStream( const DataCodec& dataDesc );
 
+	/**
+	 * @brief Open ressource and write header.
+         */
 	bool beginWrap();
+
 	IOutputStream::EWrappingStatus wrap( const CodedData& data, const size_t streamId );
+
+	/**
+	 * @brief Close ressource and write trailer.
+         */
 	bool endWrap();
 
 	/**

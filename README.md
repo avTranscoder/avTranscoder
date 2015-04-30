@@ -4,6 +4,10 @@ C++ API for Libav / FFmpeg
 
 Based on Libav/FFmpeg libraries to support various video and audio formats, avTranscoder provides the high level API to re-wrap or transcode media easily.
 
+[![Build Status](https://travis-ci.org/avTranscoder/avTranscoder.svg?branch=master)](https://travis-ci.org/avTranscoder/avTranscoder)
+[![Coverage Status](https://coveralls.io/repos/avTranscoder/avTranscoder/badge.svg)](https://coveralls.io/r/avTranscoder/avTranscoder)
+<a href="https://scan.coverity.com/projects/2626"><img alt="Coverity Scan Build Status" src="https://scan.coverity.com/projects/2626/badge.svg"/></a>
+
 #### What you need to know
 * C++ library
 * Java and Python bindings generated with SWIG
@@ -46,20 +50,6 @@ avProfileLongName=profileLongName
 avProfileType=avProfileTypeAudio
 codec=codecName
 ```
-
-#### Continuous Integration
-
-###### Drone.io  
-[![Build Status](https://drone.io/github.com/avTranscoder/avTranscoder/status.png)](https://drone.io/github.com/avTranscoder/avTranscoder/latest)
-
-###### Travis
-[![Build Status](https://travis-ci.org/avTranscoder/avTranscoder.svg?branch=master)](https://travis-ci.org/avTranscoder/avTranscoder)
-
-###### Coverity Scan  
-<a href="https://scan.coverity.com/projects/2626">
-  <img alt="Coverity Scan Build Status"
-       src="https://scan.coverity.com/projects/2626/badge.svg"/>
-</a>
 
 #### Tests
 

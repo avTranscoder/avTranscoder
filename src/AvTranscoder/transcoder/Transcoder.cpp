@@ -5,7 +5,6 @@
 
 #include <limits>
 #include <algorithm>
-#include <sstream>
 
 namespace avtranscoder
 {
@@ -42,7 +41,7 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 		if( filename.length() == 0 )
 			throw std::runtime_error( "Can't re-wrap a stream without filename indicated" );
 
-		addRewrapStream( filename, streamIndex );
+		addRewrapStream( filename, streamIndex, offset );
 	}
 	// Transcode
 	else
@@ -61,7 +60,7 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 		if( filename.length() == 0 )
 			throw std::runtime_error( "Can't re-wrap a stream without filename indicated" );
 		
-		addRewrapStream( filename, streamIndex );
+		addRewrapStream( filename, streamIndex, offset );
 	}
 	// Transcode
 	else
@@ -108,7 +107,7 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 		// Re-wrap
 		if( subStreamIndex < 0 )
 		{
-			addRewrapStream( filename, streamIndex );
+			addRewrapStream( filename, streamIndex, offset );
 		}
 		// Transcode (transparent for the user)
 		else
@@ -139,7 +138,7 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 		// Re-wrap
 		if( subStreamIndex < 0 )
 		{
-			addRewrapStream( filename, streamIndex );
+			addRewrapStream( filename, streamIndex, offset );
 		}
 		// Transcode (transparent for the user)
 		else
@@ -199,7 +198,6 @@ void Transcoder::preProcessCodecLatency()
 {
 	for( size_t streamIndex = 0; streamIndex < _streamTranscoders.size(); ++streamIndex )
 	{
-		std::stringstream os;
 		LOG_DEBUG( "Init stream " << streamIndex )
 		_streamTranscoders.at( streamIndex )->preProcessCodecLatency();
 	}
@@ -244,25 +242,24 @@ void Transcoder::process( IProgress& progress )
 	preProcessCodecLatency();
 
 	double outputDuration = getOutputDuration();
+	LOG_DEBUG( "Output duration of the process will be " << outputDuration )
 
-	std::stringstream os;
 	size_t frame = 0;
 	bool frameProcessed = true;
 	while( frameProcessed )
 	{
-		LOG_INFO( "Process frame " << frame )
-
-		frameProcessed =  processFrame();
-
 		double progressDuration = _outputFile.getStream( 0 ).getStreamDuration();
-
-		// check progressDuration
-		if( progressDuration > outputDuration )
-			break;
 
 		// check if JobStatusCancel
 		if( progress.progress( ( progressDuration > outputDuration ) ? outputDuration : progressDuration, outputDuration ) == eJobStatusCancel )
 			break;
+
+		// check progressDuration
+		if( progressDuration >= outputDuration )
+			break;
+
+		LOG_INFO( "Process frame " << frame )
+		frameProcessed =  processFrame();
 
 		++frame;
 	}
@@ -279,21 +276,21 @@ void Transcoder::setProcessMethod( const EProcessMethod eProcessMethod, const si
 	_outputDuration = outputDuration;
 }
 
-void Transcoder::addRewrapStream( const std::string& filename, const size_t streamIndex )
+void Transcoder::addRewrapStream( const std::string& filename, const size_t streamIndex, const double offset )
 {
-	LOG_INFO( "Add rewrap stream from file '" << filename << "' / index=" << streamIndex )
+	LOG_INFO( "Add rewrap stream from file '" << filename << "' / index=" << streamIndex << " / offset=" << offset << "s"  )
 
-	InputFile* referenceFile = addInputFile( filename, streamIndex );
+	InputFile* referenceFile = addInputFile( filename, streamIndex, offset );
 
-	_streamTranscodersAllocated.push_back( new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile ) );
+	_streamTranscodersAllocated.push_back( new StreamTranscoder( referenceFile->getStream( streamIndex ), _outputFile, offset ) );
 	_streamTranscoders.push_back( _streamTranscodersAllocated.back() );
 }
 
 void Transcoder::addTranscodeStream( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const double offset )
 {
 	// Get profile from input file
-	InputFile* referenceFile = addInputFile( filename, streamIndex );
-	ProfileLoader::Profile profile = getProfileFromFile( *referenceFile, streamIndex );
+	InputFile inputFile( filename );
+	ProfileLoader::Profile profile = getProfileFromFile( inputFile, streamIndex );
 
 	// override channels parameter to manage demultiplexing
 	ProfileLoader::Profile::iterator it = profile.find( constants::avProfileChannel );
@@ -312,7 +309,7 @@ void Transcoder::addTranscodeStream( const std::string& filename, const size_t s
 	LOG_INFO( "Add transcode stream from file '" << filename << "' / index=" << streamIndex << " / channel=" << subStreamIndex << " / encodingProfile=" << profile.at( constants::avProfileIdentificatorHuman ) << " / offset=" << offset << "s" )
 
 	// Add input file
-	InputFile* referenceFile = addInputFile( filename, streamIndex );
+	InputFile* referenceFile = addInputFile( filename, streamIndex, offset );
 
 	switch( referenceFile->getStream( streamIndex ).getStreamType() )
 	{
@@ -345,7 +342,7 @@ void Transcoder::addDummyStream( const ProfileLoader::Profile& profile, const IC
 	_streamTranscoders.push_back( _streamTranscodersAllocated.back() );
 }
 
-InputFile* Transcoder::addInputFile( const std::string& filename, const size_t streamIndex )
+InputFile* Transcoder::addInputFile( const std::string& filename, const size_t streamIndex, const double offset )
 {
 	InputFile* referenceFile = NULL;
 
@@ -370,26 +367,28 @@ InputFile* Transcoder::addInputFile( const std::string& filename, const size_t s
 
 	referenceFile->activateStream( streamIndex );
 
+	// If negative offset, move forward in the input stream
+	if( offset < 0 )
+		referenceFile->seekAtTime( -offset );
+
 	return referenceFile;
 }
 
 ProfileLoader::Profile Transcoder::getProfileFromFile( InputFile& inputFile, const size_t streamIndex )
 {
-	NoDisplayProgress progress;
-	inputFile.analyse( progress, eAnalyseLevelHeader );
-
+	const StreamProperties* streamProperties = &inputFile.getProperties().getStreamPropertiesWithIndex( streamIndex );
 	const VideoProperties* videoProperties = NULL;
 	const AudioProperties* audioProperties = NULL;
 	switch( inputFile.getStream( streamIndex ).getStreamType() )
 	{
 		case AVMEDIA_TYPE_VIDEO:
 		{
-			videoProperties = &inputFile.getProperties().getVideoPropertiesWithStreamIndex( streamIndex );
+			videoProperties = dynamic_cast<const VideoProperties*>( streamProperties );
 			break;
 		}
 		case AVMEDIA_TYPE_AUDIO:
 		{
-			audioProperties = &inputFile.getProperties().getAudioPropertiesWithStreamIndex( streamIndex );
+			audioProperties = dynamic_cast<const AudioProperties*>( streamProperties );
 			break;
 		}
 		default:

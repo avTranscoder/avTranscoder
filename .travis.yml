@@ -1,4 +1,8 @@
 env:
+  global:
+     - AVTRANSCODER_BUILD=${TRAVIS_BUILD_DIR}/build
+     - AVTRANSCODER_INSTALL=${TRAVIS_BUILD_DIR}/install
+     - J='-j3'
   matrix:
     - DEPENDENCY_MODE=libav
     - DEPENDENCY_MODE=ffmpeg
@@ -18,19 +22,27 @@ before_script:
   - date -u
   - uname -a
 
-  - chmod +x tools/travis.linux.install.deps.sh
-  - chmod +x tools/travis.osx.install.deps.sh
-  
+  - cd ${TRAVIS_BUILD_DIR}
+
+  # install coverage tools
+  - ./tools/travis.gcc.install.coverage.sh
+
+  # install avtranscoder dependencies
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then ./tools/travis.linux.install.deps.sh; fi
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then ./tools/travis.osx.install.deps.sh; fi
 
 script:
   # Build
-  - mkdir build
-  - cd build
-  - cmake .. -DCMAKE_INSTALL_PREFIX=`pwd`/dist
-  - make install
+  - mkdir -p ${AVTRANSCODER_BUILD}
+  - cd ${AVTRANSCODER_BUILD}
+  - cmake .. -DCMAKE_INSTALL_PREFIX=${AVTRANSCODER_INSTALL} -DCMAKE_BUILD_TYPE=Release -DAVTRANSCODER_PYTHON_VERSION_OF_BINDING=2.7 -DAVTRANSCODER_COVERAGE=True
+  - make $J install
+
   # Launch tests
-  - cd ..
-  - chmod +x tools/travis.python.nosetests.sh
-  - if [ "${TRAVIS_OS_NAME}" = "linux" && "${DEPENDENCY_MODE}" = "ffmpeg" ]; then ./tools/travis.python.nosetests.sh; fi
+  - if [ "${DEPENDENCY_MODE}" = "ffmpeg" ]; then ./../tools/travis.python.nosetests.sh; fi
+
+after_success:
+  - cd ${TRAVIS_BUILD_DIR}
+
+  # generate coverage for coveralls
+  - if [ "${CC}" = "gcc" ]; then ./tools/travis.gcc.generate.coverage.sh; fi

@@ -6,12 +6,13 @@
 namespace avtranscoder
 {
 
-FormatContext::FormatContext( const std::string& filename, int req_flags )
+FormatContext::FormatContext( const std::string& filename, int req_flags, AVDictionary** options )
 	: _avFormatContext( NULL )
+	, _flags( req_flags )
 	, _options()
 	, _isOpen( false )
 {
-	int ret = avformat_open_input( &_avFormatContext, filename.c_str(), NULL, NULL );
+	int ret = avformat_open_input( &_avFormatContext, filename.c_str(), NULL, options );
 	if( ret < 0 )
 	{
 		std::string msg = "unable to open file ";
@@ -21,11 +22,16 @@ FormatContext::FormatContext( const std::string& filename, int req_flags )
 		throw std::ios_base::failure( msg );
 	}
 	_isOpen = true;
+
 	loadOptions( _options, _avFormatContext, req_flags );
+	// when demuxing, priv_data of AVFormatContext is set by avformat_open_input()
+	if( _avFormatContext->iformat->priv_class )
+		loadOptions( _options, _avFormatContext->priv_data, req_flags );
 }
 
 FormatContext::FormatContext( int req_flags )
 	: _avFormatContext( NULL )
+	, _flags( req_flags )
 	, _options()
 	, _isOpen( false )
 {
@@ -85,6 +91,9 @@ void FormatContext::writeHeader( AVDictionary** options )
 	{
 		throw std::runtime_error( "could not write header: " + getDescriptionFromErrorCode( ret ) );
 	}
+	// when muxing, priv_data of AVFormatContext is set by avformat_write_header()
+	if( _avFormatContext->oformat->priv_class )
+		loadOptions( _options, _avFormatContext->priv_data, _flags );
 }
 
 void FormatContext::writeFrame( AVPacket& packet, bool interleaved )
@@ -131,6 +140,17 @@ AVStream& FormatContext::addAVStream( const AVCodec& avCodec )
 		throw std::runtime_error( "unable to add new video stream" );
 	}
 	return *stream;
+}
+
+void FormatContext::seek( uint64_t position, const int flag )
+{
+	if( (int)getStartTime() != AV_NOPTS_VALUE )
+		position += getStartTime();
+
+	if( av_seek_frame( _avFormatContext, -1, position, flag ) < 0 )
+	{
+		LOG_ERROR( "Error when seek at " << position << " (in AV_TIME_BASE units) in file" )
+	}
 }
 
 std::vector<Option> FormatContext::getOptions()

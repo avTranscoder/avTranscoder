@@ -70,7 +70,7 @@ bool AudioGenerator::decodeNextFrame( Frame& frameBuffer )
 
 bool AudioGenerator::decodeNextFrame( Frame& frameBuffer, const size_t subStreamIndex )
 {
-	return false;
+	return decodeNextFrame( frameBuffer );
 }
 
 }

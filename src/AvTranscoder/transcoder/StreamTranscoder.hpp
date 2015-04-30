@@ -29,7 +29,7 @@ public:
 	 * @brief rewrap stream
 	 * @note offset feature when rewrap a stream is not supported
 	 **/
-	StreamTranscoder( IInputStream& inputStream, IOutputFile& outputFile );
+	StreamTranscoder( IInputStream& inputStream, IOutputFile& outputFile, const double offset = 0 );
 
 	/**
 	 * @brief transcode stream
@@ -64,8 +64,9 @@ public:
 	//@}
 
 	/**
-	 * @brief Get the duration of the stream, in seconds
+	 * @brief Get the total duration (in seconds), ie. duration of the stream and the offset applies
 	 * @note if it's a generated stream, return limit of double.
+	 * @note if offset > duration of the stream, return 0
 	 */
 	double getDuration() const;
 
@@ -94,6 +95,10 @@ private:
 	bool processRewrap();
 	bool processTranscode( const int subStreamIndex = -1 );  ///< By default transcode all channels
 
+	bool isTranscodeCase() const;
+	bool isRewrapCase() const;
+	bool isGeneratorCase() const;
+
 private:
 	IInputStream* _inputStream;  ///< Input stream to read next packet (has link, no ownership)
 	IOutputStream* _outputStream;  ///< Output stream to wrap next packet (has link, no ownership)
@@ -108,7 +113,7 @@ private:
 
 	ITransform* _transform;  ///< Video or audio transform (has ownership)
 
-	int  _subStreamIndex;  ///< Index of channel that is processed from the input stream (-1 if no demultiplexing).
+	int  _subStreamIndex;  ///< Index of channel that is processed from the input stream (<0 if no demultiplexing).
 
 	double _offset;  ///< Offset, in seconds, at the beginning of the StreamTranscoder.
 

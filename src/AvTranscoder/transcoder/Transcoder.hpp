@@ -54,6 +54,8 @@ public:
 	 * @brief Add a stream and set a profile
 	 * @note If profileName is empty, rewrap.
 	 * @note offset in seconds
+	 * If offset is positive, the transcoder will generate black images or silence (depending on the type of stream) before the stream to process.
+	 * If offset is negative, the transcoder will seek in the stream and start process at this specific time.
 	 */
 	void add( const std::string& filename, const size_t streamIndex, const std::string& profileName = "", const double offset = 0 );
 	/*
@@ -148,14 +150,14 @@ public:
 	void setProcessMethod( const EProcessMethod eProcessMethod, const size_t indexBasedStream = 0, const double outputDuration = 0 );
 
 private:
-	void addRewrapStream( const std::string& filename, const size_t streamIndex );
+	void addRewrapStream( const std::string& filename, const size_t streamIndex, const double offset );
 
 	void addTranscodeStream( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const double offset );
 	void addTranscodeStream( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const ProfileLoader::Profile& profile, const double offset = 0 );
 
 	void addDummyStream( const ProfileLoader::Profile& profile, const ICodec& codec );
 
-	InputFile* addInputFile( const std::string& filename, const size_t streamIndex );
+	InputFile* addInputFile( const std::string& filename, const size_t streamIndex, const double offset );
 
 	ProfileLoader::Profile getProfileFromFile( InputFile& inputFile, const size_t streamIndex );  ///< The function analyses the inputFile
 
