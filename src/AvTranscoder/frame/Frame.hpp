@@ -19,8 +19,10 @@ public:
 	/// Create a frame with a the given buffer size
 	Frame( const size_t dataSize );
 
+#ifndef SWIG
 	/// Create a frame from the given AVPAcket (copy data of given packet)
 	Frame( const AVPacket& avPacket );
+#endif
 
 	/// Override copy constructor in order to copy AVPacket data
 	Frame( const Frame& other );
@@ -52,11 +54,11 @@ public:
 	/// Clear existing data and set size to 0
 	void clear();
 
-	AVPacket& getAVPacket() { return _packet; }
 	unsigned char* getData() { return _packet.data; }
 	size_t getSize() const { return _packet.size; }
 
 #ifndef SWIG
+	AVPacket& getAVPacket() { return _packet; }
 	const AVPacket& getAVPacket() const { return _packet; }
 	const unsigned char* getData() const { return _packet.data; }
 #endif
