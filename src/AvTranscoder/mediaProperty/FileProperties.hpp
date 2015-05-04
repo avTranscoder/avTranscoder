@@ -62,6 +62,7 @@ public:
 
 	//@{
 	// @brief Get the properties at the indicated stream index
+	// @throws A runtime error if the streamIndex does not match any stream
 	const avtranscoder::StreamProperties& getStreamPropertiesWithIndex( const size_t streamIndex ) const;
 	//@}
 
