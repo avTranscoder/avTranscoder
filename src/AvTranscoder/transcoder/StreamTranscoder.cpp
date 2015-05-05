@@ -133,7 +133,7 @@ StreamTranscoder::StreamTranscoder(
 		{
 			// input decoder
 			VideoDecoder* inputVideo = new VideoDecoder( *static_cast<InputStream*>( _inputStream ) );
-			// set decoder options with empty profile to set some key options to specific values (example: threads to auto)
+			// set decoder options with empty profile to set some key options to specific values
 			inputVideo->setProfile( ProfileLoader::Profile() );
 			inputVideo->setup();
 			_inputDecoder = inputVideo;
@@ -168,7 +168,7 @@ StreamTranscoder::StreamTranscoder(
 		{
 			// input decoder
 			AudioDecoder* inputAudio = new AudioDecoder( *static_cast<InputStream*>( _inputStream ) );
-			// set decoder options with empty profile to set some key options to specific values (example: threads to auto)
+			// set decoder options with empty profile to set some key options to specific values
 			inputAudio->setProfile( ProfileLoader::Profile() );
 			inputAudio->setup();
 			_inputDecoder = inputAudio;
