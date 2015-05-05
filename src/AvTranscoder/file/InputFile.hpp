@@ -48,9 +48,9 @@ public:
 	bool readNextPacket( CodedData& data, const size_t streamIndex );
 
 	/**
-	 * @brief Seek input stream at specified frame
-	 * @note clean also buffers in each InputStream
-	 * @return if next packet was read succefully
+	 * @brief Seek at a specific frame / time (in seconds)
+	 * @note Seek in file by using the default stream (according to ffmpeg)
+	 * @warning If the seek is done to a non key-frame, the decoding will start from the next key-frame
 	 **/
 	void seekAtFrame( const size_t frame );
 	void seekAtTime( const double time );
