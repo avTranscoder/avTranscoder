@@ -82,22 +82,22 @@ void FileProperties::extractStreamProperties( IProgress& progress, const EAnalys
 
 	// once the streams vectors are filled, add their references the base streams vector
 	for( size_t streamIndex = 0; streamIndex < _videoStreams.size(); ++streamIndex )
-		_streams.push_back( &_videoStreams.at( streamIndex ) );
+		_streams[ _videoStreams.at( streamIndex ).getStreamIndex() ] = &_videoStreams.at( streamIndex );
 
 	for( size_t streamIndex = 0; streamIndex < _audioStreams.size(); ++ streamIndex )
-		_streams.push_back( &_audioStreams.at(streamIndex) );
+		_streams[ _audioStreams.at(streamIndex).getStreamIndex() ] = &_audioStreams.at(streamIndex);
 
 	for( size_t streamIndex = 0; streamIndex < _dataStreams.size(); ++ streamIndex )
-		_streams.push_back( &_dataStreams.at(streamIndex) );
+		_streams[ _dataStreams.at(streamIndex).getStreamIndex() ] = &_dataStreams.at(streamIndex);
 
 	for( size_t streamIndex = 0; streamIndex < _subtitleStreams.size(); ++ streamIndex )
-		_streams.push_back( &_subtitleStreams.at(streamIndex) );
+		_streams[ _subtitleStreams.at(streamIndex).getStreamIndex() ] = &_subtitleStreams.at(streamIndex);
 
 	for( size_t streamIndex = 0; streamIndex < _attachementStreams.size(); ++ streamIndex )
-		_streams.push_back( &_attachementStreams.at(streamIndex) );
+		_streams[ _attachementStreams.at(streamIndex).getStreamIndex() ] = &_attachementStreams.at(streamIndex);
 
 	for( size_t streamIndex = 0; streamIndex < _unknownStreams.size(); ++ streamIndex )
-		_streams.push_back( &_unknownStreams.at(streamIndex) );
+		_streams[ _unknownStreams.at(streamIndex).getStreamIndex() ] = &_unknownStreams.at(streamIndex);
 
 	// if the analysis level has decoded some streams parts, return at the beginning
 	if( level > eAnalyseLevelHeader )
@@ -162,11 +162,9 @@ size_t FileProperties::getPacketSize() const
 
 const avtranscoder::StreamProperties& FileProperties::getStreamPropertiesWithIndex( const size_t streamIndex ) const
 {
-	for( std::vector< StreamProperties* >::const_iterator it = _streams.begin(); it != _streams.end(); ++it )
-	{
-		if( (*it)->getStreamIndex() == streamIndex )
-			return *(*it);
-	}
+	avtranscoder::StreamProperties* properties = _streams.find( streamIndex )->second;
+	if( properties )
+		return *properties;
 	std::stringstream os;
 	os << "No stream properties correspond to stream at index ";
 	os <<  streamIndex;
