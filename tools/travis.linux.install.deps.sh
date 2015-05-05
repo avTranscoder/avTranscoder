@@ -16,13 +16,13 @@ if [[ ${DEPENDENCY_MODE} == "ffmpeg" ]]; then
     sudo bunzip2 ffmpeg-${FFMPEG_VERSION}.tar.bz2
     sudo tar -xvf ffmpeg-${FFMPEG_VERSION}.tar
     cd ffmpeg-${FFMPEG_VERSION}
-    sudo ./configure --disable-yasm --enable-shared --disable-static && sudo make && sudo make install
+    sudo ./configure --prefix=${DEPENDENCY_INSTALL} --disable-yasm --enable-shared --disable-static && sudo make && sudo make install
 
 elif [[ ${DEPENDENCY_MODE} == "libav" ]]; then
     export LIBAV_VERSION=11.3
     sudo wget https://libav.org/releases/libav-${LIBAV_VERSION}.tar.gz
     sudo tar -xvf libav-${LIBAV_VERSION}.tar.gz
     cd libav-${LIBAV_VERSION}
-    sudo ./configure --disable-yasm --enable-shared --disable-static && sudo make && sudo make install
+    sudo ./configure --prefix=${DEPENDENCY_INSTALL} --disable-yasm --enable-shared --disable-static && sudo make && sudo make install
 
 fi
