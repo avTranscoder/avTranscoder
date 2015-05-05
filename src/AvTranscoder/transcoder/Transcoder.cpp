@@ -500,7 +500,7 @@ void Transcoder::manageSwitchToGenerator()
 					_streamTranscoders.at( i )->canSwitchToGenerator( false );
 				break;
 			case eProcessMethodBasedOnDuration :
-				if( _streamTranscoders.at( i )->getDuration() > _outputDuration )
+				if( _streamTranscoders.at( i )->getDuration() >= _outputDuration )
 					_streamTranscoders.at( i )->canSwitchToGenerator( false );
 				else
 					_streamTranscoders.at( i )->canSwitchToGenerator( true );
