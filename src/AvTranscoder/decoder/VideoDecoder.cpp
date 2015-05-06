@@ -50,7 +50,7 @@ VideoDecoder::~VideoDecoder()
 
 void VideoDecoder::setup()
 {
-	_inputStream->getVideoCodec().open();
+	_inputStream->getVideoCodec().openCodec();
 }
 
 bool VideoDecoder::decodeNextFrame( Frame& frameBuffer )

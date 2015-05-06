@@ -38,7 +38,7 @@ VideoEncoder::~VideoEncoder()
 
 void VideoEncoder::setup()
 {
-	_codec.open();
+	_codec.openCodec();
 }
 
 

@@ -76,6 +76,9 @@ if(SWIG_FOUND)
 	set(AVTRANSCODER_BINDING_FILE "AvTranscoder/avTranscoder.i")
 	set_source_files_properties(${AVTRANSCODER_BINDING_FILE} PROPERTIES CPLUSPLUS ON)
 
+	# Swig flags
+        set(CMAKE_SWIG_FLAGS -c++ -fcompact -small -O -Werror)
+
 	### PYTHON BINDING
 	if(AVTRANSCODER_DISABLE_PYTHON_BINDING)
 		message("PYTHON binding disabled, will not build python binding.")
@@ -83,9 +86,6 @@ if(SWIG_FOUND)
 		find_package(PythonLibs ${AVTRANSCODER_PYTHON_VERSION_OF_BINDING})
 		if(PYTHONLIBS_FOUND)
 			include_directories(${PYTHON_INCLUDE_PATH})
-
-			# Swig flags
-			set(CMAKE_SWIG_FLAGS -c++ -fcompact)
 
 			# Create '_avtranscoder' shared lib (python)
 			swig_add_module(avtranscoder-py python ${AVTRANSCODER_BINDING_FILE})
@@ -131,7 +131,7 @@ if(SWIG_FOUND)
 			include_directories(${JNI_INCLUDE_DIRS})
 
 			# Swig flags
-			set(CMAKE_SWIG_FLAGS -c++ -fcompact -package org.avtranscoder)
+			set(CMAKE_SWIG_FLAGS ${CMAKE_SWIG_FLAGS} -package org.avtranscoder)
 
 			# Create 'avtranscoder-java' shared lib
 			swig_add_module(avtranscoder-java java ${AVTRANSCODER_BINDING_FILE})

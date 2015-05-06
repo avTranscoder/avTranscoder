@@ -37,7 +37,7 @@ AudioEncoder::~AudioEncoder()
 
 void AudioEncoder::setup()
 {
-	_codec.open();
+	_codec.openCodec();
 }
 
 bool AudioEncoder::encodeFrame( const Frame& sourceFrame, Frame& codedFrame )

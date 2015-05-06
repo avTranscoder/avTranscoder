@@ -36,7 +36,7 @@ public:
 	virtual ~ICodec() = 0;
 
 	/// Initialize the codec context.
-	void open();
+	void openCodec();
 
 	std::string getCodecName() const;
 	AVCodecID getCodecId() const;

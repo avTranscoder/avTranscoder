@@ -51,7 +51,7 @@ ICodec::~ICodec()
 	_avCodecContext = NULL;
 }
 
-void ICodec::open()
+void ICodec::openCodec()
 {
 	if( ! _avCodecContext )
 		throw std::runtime_error( "unable to open a codec with no codec context" );
