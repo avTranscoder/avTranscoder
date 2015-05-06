@@ -49,8 +49,8 @@ install(
 	PATTERN "*.hpp"
 	PATTERN "*.i"
 )
-install(TARGETS avtranscoder-static DESTINATION lib/)
-install(TARGETS avtranscoder-shared DESTINATION lib/)
+install(TARGETS avtranscoder-static DESTINATION lib/ OPTIONAL)
+install(TARGETS avtranscoder-shared DESTINATION lib/ OPTIONAL)
 
 ### Install AvTranscoder ressource
 install(
@@ -110,9 +110,10 @@ if(SWIG_FOUND)
 			install(
 				FILES ${AVTRANSCODER_PYTHON_BINDING_FILE} ${AVTRANSCODER_PYTHON_INIT_FILE}
 				DESTINATION ${AVTRANSCODER_PYTHON_MODULE_OUTPUT_DIR}
+				OPTIONAL
 			)
 			# Install python lib and __init__.py files
-			install(TARGETS ${SWIG_MODULE_avtranscoder-py_REAL_NAME} DESTINATION "lib/python${PYTHONLIBS_VERSION_STRING}/site-packages/pyAvTranscoder/")
+			install(TARGETS ${SWIG_MODULE_avtranscoder-py_REAL_NAME} DESTINATION "lib/python${PYTHONLIBS_VERSION_STRING}/site-packages/pyAvTranscoder/" OPTIONAL)
 			install(CODE "file(WRITE ${CMAKE_INSTALL_PREFIX}/${AVTRANSCODER_PYTHON_MODULE_OUTPUT_DIR}/__init__.py)")
 		else()
 			message("PYTHON not found, will not build python binding.")
@@ -166,8 +167,8 @@ if(SWIG_FOUND)
 			)
 
 			# Install java lib and jar files
-			install(TARGETS ${SWIG_MODULE_avtranscoder-java_REAL_NAME} DESTINATION "lib/java")
-			install(FILES ${AVTRANSCODER_JAR_PATH}/${AVTRANSCODER_JAR_NAME} DESTINATION "share/java/")
+			install(TARGETS ${SWIG_MODULE_avtranscoder-java_REAL_NAME} DESTINATION "lib/java" OPTIONAL)
+			install(FILES ${AVTRANSCODER_JAR_PATH}/${AVTRANSCODER_JAR_NAME} DESTINATION "share/java/" OPTIONAL)
 		else()
 			message("JAVA not found, will not build java binding.")
 		endif()
