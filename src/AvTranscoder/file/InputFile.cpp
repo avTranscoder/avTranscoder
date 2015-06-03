@@ -116,6 +116,28 @@ InputStream& InputFile::getStream( size_t index )
 	}
 }
 
+
+std::string InputFile::getFormatName() const
+{
+	if( _formatContext.getAVInputFormat().name == NULL )
+		return "unknown";
+	return std::string(_formatContext.getAVInputFormat().name);
+}
+
+std::string InputFile::getFormatLongName() const
+{
+	if( _formatContext.getAVInputFormat().long_name == NULL )
+		return "unknown";
+	return std::string(_formatContext.getAVInputFormat().long_name);
+}
+
+std::string InputFile::getFormatMimeType() const
+{
+	if( _formatContext.getAVInputFormat().mime_type == NULL )
+		return "unknown";
+	return std::string(_formatContext.getAVInputFormat().mime_type);
+}
+
 double InputFile::getFps()
 {
 	double fps = 1;

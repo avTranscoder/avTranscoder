@@ -85,6 +85,27 @@ IOutputStream& OutputFile::getStream( const size_t streamId )
 	return *_outputStreams.at( streamId );
 }
 
+std::string OutputFile::getFormatName() const
+{
+	if( _formatContext.getAVOutputFormat().name == NULL )
+		return "unknown";
+	return std::string(_formatContext.getAVOutputFormat().name);
+}
+
+std::string OutputFile::getFormatLongName() const
+{
+	if( _formatContext.getAVOutputFormat().long_name == NULL )
+		return "unknown";
+	return std::string(_formatContext.getAVOutputFormat().long_name);
+}
+
+std::string OutputFile::getFormatMimeType() const
+{
+	if( _formatContext.getAVOutputFormat().mime_type == NULL )
+		return "unknown";
+	return std::string(_formatContext.getAVOutputFormat().mime_type);
+}
+
 bool OutputFile::beginWrap( )
 {
 	LOG_DEBUG( "Begin wrap of OutputFile" )

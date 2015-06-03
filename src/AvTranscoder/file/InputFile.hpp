@@ -80,6 +80,10 @@ public:
 	 **/
 	InputStream& getStream( size_t index );
 
+	std::string getFormatName() const;
+	std::string getFormatLongName() const;
+	std::string getFormatMimeType() const;
+
 	FormatContext& getFormatContext() { return _formatContext; }
 
 	/**

@@ -53,6 +53,11 @@ public:
 	void addMetadata( const std::string& key, const std::string& value );
 	
 	IOutputStream& getStream( const size_t streamId );
+
+	std::string getFormatName() const;
+	std::string getFormatLongName() const;
+	std::string getFormatMimeType() const;
+
 	FormatContext& getFormatContext() { return _formatContext; }
 
 	/**
