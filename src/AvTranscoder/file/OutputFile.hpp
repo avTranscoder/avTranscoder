@@ -54,6 +54,7 @@ public:
 	
 	IOutputStream& getStream( const size_t streamId );
 
+	std::string getFilename() const { return _filename; }
 	std::string getFormatName() const;
 	std::string getFormatLongName() const;
 	std::string getFormatMimeType() const;
