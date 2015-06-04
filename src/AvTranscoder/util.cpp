@@ -12,20 +12,6 @@ extern "C" {
 namespace avtranscoder
 {
 
-std::string getFormat( const std::string& filename )
-{
-	std::string format( "" );
-	
-	AVOutputFormat* avOutputFormat = av_guess_format( NULL, filename.c_str(), NULL);
-	if( avOutputFormat )
-	{
-		if( avOutputFormat->name )
-			format = std::string( avOutputFormat->name );
-	}
-	
-	return format;
-}
-
 bool matchFormat( const std::string& format, const std::string& filename )
 {
 	AVOutputFormat* avOutputFormat = av_guess_format( format.c_str(), filename.c_str(), NULL);
