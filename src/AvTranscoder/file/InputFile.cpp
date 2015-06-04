@@ -133,9 +133,14 @@ std::string InputFile::getFormatLongName() const
 
 std::string InputFile::getFormatMimeType() const
 {
+#if LIBAVFORMAT_VERSION_MAJOR <= 55
+	LOG_WARN("Cannot get mime type format of '" << _filename << "' because your libavformat library has a major version <= 55.")
+	return "not available";
+#else
 	if( _formatContext.getAVInputFormat().mime_type == NULL )
 		return "unknown";
 	return std::string(_formatContext.getAVInputFormat().mime_type);
+#endif
 }
 
 double InputFile::getFps()
