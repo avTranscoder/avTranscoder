@@ -60,11 +60,6 @@ public:
          * @note Activate a stream results in buffered its data when processing
 	 **/
 	void activateStream( const size_t streamIndex, const bool activate = true );
-	
-	/**
-	 * @return Return the resource to access
-	**/
-	std::string getFilename() const { return _filename; }
 
 	/**
 	 * @brief Return media properties on the current InputFile.
@@ -80,8 +75,21 @@ public:
 	 **/
 	InputStream& getStream( size_t index );
 
+	std::string getFilename() const { return _filename; }
+
+	/**
+	 * @brief A comma separated list of short names for the format, or unknown.
+	 */
 	std::string getFormatName() const;
+
+	/**
+	 * @brief Descriptive name for the format, meant to be more human-readable than name, or unknown.
+	 */
 	std::string getFormatLongName() const;
+
+	/**
+	 * @brief Comma-separated list of mime types, or unknown.
+	 */
 	std::string getFormatMimeType() const;
 
 	FormatContext& getFormatContext() { return _formatContext; }
