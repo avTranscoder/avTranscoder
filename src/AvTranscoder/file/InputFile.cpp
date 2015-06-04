@@ -120,14 +120,20 @@ InputStream& InputFile::getStream( size_t index )
 std::string InputFile::getFormatName() const
 {
 	if( _formatContext.getAVInputFormat().name == NULL )
-		return "unknown";
+	{
+		LOG_WARN("Unknown demuxer format name of '" << _filename << "'.")
+		return "";
+	}
 	return std::string(_formatContext.getAVInputFormat().name);
 }
 
 std::string InputFile::getFormatLongName() const
 {
 	if( _formatContext.getAVInputFormat().long_name == NULL )
-		return "unknown";
+	{
+		LOG_WARN("Unknown demuxer format long name of '" << _filename << "'.")
+		return "";
+	}
 	return std::string(_formatContext.getAVInputFormat().long_name);
 }
 
@@ -138,7 +144,10 @@ std::string InputFile::getFormatMimeType() const
 	return "not available";
 #else
 	if( _formatContext.getAVInputFormat().mime_type == NULL )
-		return "unknown";
+	{
+		LOG_WARN("Unknown demuxer format mime type of '" << _filename << "'.")
+		return "";
+	}
 	return std::string(_formatContext.getAVInputFormat().mime_type);
 #endif
 }

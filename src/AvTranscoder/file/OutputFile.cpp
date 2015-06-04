@@ -88,21 +88,30 @@ IOutputStream& OutputFile::getStream( const size_t streamId )
 std::string OutputFile::getFormatName() const
 {
 	if( _formatContext.getAVOutputFormat().name == NULL )
-		return "unknown";
+	{
+		LOG_WARN("Unknown muxer format name of '" << _filename << "'.")
+		return "";
+	}
 	return std::string(_formatContext.getAVOutputFormat().name);
 }
 
 std::string OutputFile::getFormatLongName() const
 {
 	if( _formatContext.getAVOutputFormat().long_name == NULL )
-		return "unknown";
+	{
+		LOG_WARN("Unknown muxer format long name of '" << _filename << "'.")
+		return "";
+	}
 	return std::string(_formatContext.getAVOutputFormat().long_name);
 }
 
 std::string OutputFile::getFormatMimeType() const
 {
 	if( _formatContext.getAVOutputFormat().mime_type == NULL )
-		return "unknown";
+	{
+		LOG_WARN("Unknown muxer format mime type of '" << _filename << "'.")
+		return "";
+	}
 	return std::string(_formatContext.getAVOutputFormat().mime_type);
 }
 
