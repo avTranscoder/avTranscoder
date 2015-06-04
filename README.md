@@ -21,35 +21,7 @@ See [**COPYING.md**](COPYING.md)
 See [**INSTALL.md**](INSTALL.md)
 
 #### How to use
-Check out applications contained in the project to see examples of how to use the library in C++, Java or Python.
-
-To encode, avTranscoder manipulates profiles.
-A profile is a text file which discribes, with a set of key-value, what we want as output for the format, the video, or the audio.
-You can create your own profiles and export a variable called ```AVPROFILES``` to indicate the path to them.
-
-The minimum format profile is:
-```
-avProfileName=profileName
-avProfileLongName=profileLongName
-avProfileType=avProfileTypeFormat
-format=formatName 
-```
-
-The minimum video profile is:
-```
-avProfileName=profileName
-avProfileLongName=profileLongName
-avProfileType=avProfileTypeVideo
-codec=codecName
-```
-
-The minimum audio profile is:
-```
-avProfileName=profileName
-avProfileLongName=profileLongName
-avProfileType=avProfileTypeAudio
-codec=codecName
-```
+See [**USAGE.md**](USAGE.md)
 
 #### Tests
 
