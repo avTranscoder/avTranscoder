@@ -95,9 +95,15 @@ private:
 	bool processRewrap();
 	bool processTranscode( const int subStreamIndex = -1 );  ///< By default transcode all channels
 
-	bool isTranscodeCase() const;
-	bool isRewrapCase() const;
-	bool isGeneratorCase() const;
+	//@{
+	// Get the current process case.
+	enum EProcessCase {
+	    eProcessCaseTranscode,
+	    eProcessCaseRewrap,
+	    eProcessCaseGenerator
+	};
+	EProcessCase getProcessCase() const;
+	//@}
 
 private:
 	IInputStream* _inputStream;  ///< Input stream to read next packet (has link, no ownership)
