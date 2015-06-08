@@ -10,4 +10,9 @@ void ProcessStat::addVideoStat( const size_t streamIndex, const VideoStat& video
 	_videoStats.insert( std::make_pair( streamIndex, videoStat ) );
 }
 
+void ProcessStat::addAudioStat( const size_t streamIndex, const AudioStat& audioStat )
+{
+	_audioStats.insert( std::make_pair( streamIndex, audioStat ) );
+}
+
 }

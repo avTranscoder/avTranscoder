@@ -537,6 +537,12 @@ void Transcoder::fillProcessStat( ProcessStat& processStat )
 				processStat.addVideoStat( streamIndex, videoStat );
 				break;
 			}
+			case AVMEDIA_TYPE_AUDIO:
+			{
+				AudioStat audioStat( stream.getStreamDuration(), stream.getNbFrames() );
+				processStat.addAudioStat( streamIndex, audioStat );
+				break;
+			}
 			default:
 				break;
 		}
