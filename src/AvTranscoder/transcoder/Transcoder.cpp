@@ -2,6 +2,7 @@
 
 #include <AvTranscoder/file/util.hpp>
 #include <AvTranscoder/progress/NoDisplayProgress.hpp>
+#include <AvTranscoder/stat/VideoStat.hpp>
 
 #include <limits>
 #include <algorithm>
