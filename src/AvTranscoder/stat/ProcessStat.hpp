@@ -13,7 +13,7 @@ namespace avtranscoder
  * @brief ProcessStat contains statistics given after the process.
  * @see Transcoder::process methods
  */
-class ProcessStat
+class AvExport ProcessStat
 {
 public:
 	ProcessStat()

@@ -9,7 +9,7 @@ namespace avtranscoder
 /**
  * @brief Statistics related to a video stream.
  */
-class VideoStat
+class AvExport VideoStat
 {
 public:
 	VideoStat( const double duration, const size_t nbFrames )
