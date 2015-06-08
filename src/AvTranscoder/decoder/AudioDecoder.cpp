@@ -50,8 +50,39 @@ AudioDecoder::~AudioDecoder()
 }
 
 
-void AudioDecoder::setup()
+void AudioDecoder::setupDecoder( const ProfileLoader::Profile& profile )
 {
+	LOG_DEBUG( "Set profile of audio decoder with:\n" << profile )
+
+	AudioCodec& codec = _inputStream->getAudioCodec();
+
+	// set threads before any other options
+	if( profile.count( constants::avProfileThreads ) )
+		codec.getOption( constants::avProfileThreads ).setString( profile.at( constants::avProfileThreads ) );
+	else
+		codec.getOption( constants::avProfileThreads ).setString( "auto" );
+
+	// set decoder options
+	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
+	{
+		if( (*it).first == constants::avProfileIdentificator ||
+			(*it).first == constants::avProfileIdentificatorHuman ||
+			(*it).first == constants::avProfileType ||
+			(*it).first == constants::avProfileThreads )
+			continue;
+
+		try
+		{
+			Option& decodeOption = codec.getOption( (*it).first );
+			decodeOption.setString( (*it).second );
+		}
+		catch( std::exception& e )
+		{
+			LOG_WARN( "AudioDecoder - can't set option " << (*it).first <<  " to " << (*it).second << ": " << e.what() )
+		}
+	}
+
+	// open decoder
 	_inputStream->getAudioCodec().openCodec();
 }
 
@@ -143,39 +174,6 @@ bool AudioDecoder::decodeNextFrame()
 		}
 	}
 	return true;
-}
-
-void AudioDecoder::setProfile( const ProfileLoader::Profile& profile )
-{
-	LOG_DEBUG( "Set profile of audio decoder with:\n" << profile )
-
-	AudioCodec& codec = _inputStream->getAudioCodec();
-
-	// set threads before any other options
-	if( profile.count( constants::avProfileThreads ) )
-		codec.getOption( constants::avProfileThreads ).setString( profile.at( constants::avProfileThreads ) );
-	else
-		codec.getOption( constants::avProfileThreads ).setString( "auto" );
-
-	// set decoder options
-	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
-	{
-		if( (*it).first == constants::avProfileIdentificator ||
-			(*it).first == constants::avProfileIdentificatorHuman ||
-			(*it).first == constants::avProfileType ||
-			(*it).first == constants::avProfileThreads )
-			continue;
-
-		try
-		{
-			Option& decodeOption = codec.getOption( (*it).first );
-			decodeOption.setString( (*it).second );
-		}
-		catch( std::exception& e )
-		{
-			LOG_WARN( "AudioDecoder - can't set option " << (*it).first <<  " to " << (*it).second << ": " << e.what() )
-		}
-	}
 }
 
 }

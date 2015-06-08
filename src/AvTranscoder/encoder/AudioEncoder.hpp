@@ -13,16 +13,15 @@ class AvExport AudioEncoder : public IEncoder
 public:
 	AudioEncoder( const std::string& audioCodecName );
 	~AudioEncoder();
-	
-	void setup();
+
+	void setupAudioEncoder( const AudioFrameDesc& frameDesc, const ProfileLoader::Profile& profile = ProfileLoader::Profile() );
+	void setupEncoder( const ProfileLoader::Profile& profile = ProfileLoader::Profile() );
 
 	bool encodeFrame( const Frame& sourceFrame, Frame& codedFrame );
 	bool encodeFrame( Frame& codedFrame );
 
 	ICodec& getCodec() { return _codec; }
 	AudioCodec& getAudioCodec() { return _codec; }
-
-	void setProfile( const ProfileLoader::Profile& profile, const AudioFrameDesc& frameDesc );
 
 private:
 	AudioCodec _codec;

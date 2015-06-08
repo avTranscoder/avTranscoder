@@ -14,15 +14,14 @@ public:
 	VideoEncoder( const std::string& videoCodecName );
 	~VideoEncoder();
 
-	void setup();
+	void setupVideoEncoder( const VideoFrameDesc& frameDesc, const ProfileLoader::Profile& profile = ProfileLoader::Profile() );
+	void setupEncoder( const ProfileLoader::Profile& profile = ProfileLoader::Profile() );
 
 	bool encodeFrame( const Frame& sourceFrame, Frame& codedFrame );
 	bool encodeFrame( Frame& codedFrame );
 	
 	ICodec& getCodec() { return _codec; }
 	VideoCodec& getVideoCodec() { return _codec; }
-
-	void setProfile( const ProfileLoader::Profile& profile, const avtranscoder::VideoFrameDesc& frameDesc );
 
 private:
 	VideoCodec _codec;
