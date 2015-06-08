@@ -15,6 +15,7 @@ public:
 
 	size_t getStreamIndex() const { return _streamIndex; }
 	double getStreamDuration() const;
+	size_t getNbFrames() const;
 
 	IOutputStream::EWrappingStatus wrap( const CodedData& data );
 

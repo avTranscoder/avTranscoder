@@ -25,6 +25,12 @@ double OutputStream::getStreamDuration() const
 #endif
 }
 
+size_t OutputStream::getNbFrames() const
+{
+	AVStream& outputStream = _outputFile->getFormatContext().getAVStream( _streamIndex );
+	return outputStream.nb_frames;
+}
+
 IOutputStream::EWrappingStatus OutputStream::wrap( const CodedData& data )
 {
 	assert( _outputFile != NULL );

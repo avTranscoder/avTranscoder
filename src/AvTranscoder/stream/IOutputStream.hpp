@@ -26,6 +26,7 @@ public:
 
 	virtual size_t getStreamIndex() const = 0;
 	virtual double getStreamDuration() const = 0;
+	virtual size_t getNbFrames() const = 0;
 
 	virtual EWrappingStatus wrap( const CodedData& data ) = 0;
 };
