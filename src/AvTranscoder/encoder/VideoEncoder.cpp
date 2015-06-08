@@ -79,8 +79,16 @@ void VideoEncoder::setupEncoder( const ProfileLoader::Profile& profile )
 	}
 
 	// open encoder
+	int encoderFlags = 0;
+	if( profile.count( constants::avProfileProcessStat ) )
+	{
+		LOG_INFO( "SetUp video encoder to compute statistics during process" )
+		encoderFlags |= CODEC_FLAG_PSNR;
+	}
+	_codec.getAVCodecContext().flags |= encoderFlags;
 	_codec.openCodec();
 
+	// after open encoder, set specific encoder options
 	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
 	{
 		if( (*it).first == constants::avProfileIdentificator ||
