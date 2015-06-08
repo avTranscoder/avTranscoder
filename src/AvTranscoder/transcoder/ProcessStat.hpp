@@ -22,10 +22,7 @@ public:
 	{}
 
 public:
-	static double psnr( double d )
-	{
-		return -10.0 * log(d) / log(10.0);
-	}
+	static double psnr( const double d );
 
 public:
 	double _duration;
