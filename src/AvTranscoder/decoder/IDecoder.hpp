@@ -3,6 +3,7 @@
 
 #include <AvTranscoder/common.hpp>
 #include <AvTranscoder/frame/Frame.hpp>
+#include <AvTranscoder/profile/ProfileLoader.hpp>
 
 namespace avtranscoder
 {
@@ -13,9 +14,11 @@ public:
 	virtual ~IDecoder() {};
 
 	/**
-	 * @brief Open the decoder
+	 * @brief Setup the decoder
+	 * @param profile: set decoder parameters from the given profile
+	 * @note Open the decoder.
 	 */
-	virtual void setup() = 0;
+	virtual void setupDecoder( const ProfileLoader::Profile& profile = ProfileLoader::Profile() ) = 0;
 
 	/**
 	 * @brief Decode next frame

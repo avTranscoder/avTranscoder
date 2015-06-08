@@ -59,8 +59,7 @@ StreamTranscoder::StreamTranscoder(
 
 			// output encoder
 			VideoEncoder* outputVideo = new VideoEncoder( _inputStream->getVideoCodec().getCodecName() );
-			outputVideo->getVideoCodec().setImageParameters( inputFrameDesc );
-			outputVideo->setup();
+			outputVideo->setupVideoEncoder( inputFrameDesc );
 			_outputEncoder = outputVideo;
 
 			// output stream
@@ -86,8 +85,7 @@ StreamTranscoder::StreamTranscoder(
 
 			// output encoder
 			AudioEncoder* outputAudio = new AudioEncoder( _inputStream->getAudioCodec().getCodecName()  );
-			outputAudio->getAudioCodec().setAudioParameters( inputFrameDesc );
-			outputAudio->setup();
+			outputAudio->setupAudioEncoder( inputFrameDesc );
 			_outputEncoder = outputAudio;
 
 			// output stream
@@ -133,9 +131,7 @@ StreamTranscoder::StreamTranscoder(
 		{
 			// input decoder
 			VideoDecoder* inputVideo = new VideoDecoder( *static_cast<InputStream*>( _inputStream ) );
-			// set decoder options with empty profile to set some key options to specific values (example: threads to auto)
-			inputVideo->setProfile( ProfileLoader::Profile() );
-			inputVideo->setup();
+			inputVideo->setupDecoder();
 			_inputDecoder = inputVideo;
 			_currentDecoder = _inputDecoder;
 
@@ -145,7 +141,7 @@ StreamTranscoder::StreamTranscoder(
 
 			VideoFrameDesc outputFrameDesc = _inputStream->getVideoCodec().getVideoFrameDesc();
 			outputFrameDesc.setParameters( profile );
-			outputVideo->setProfile( profile, outputFrameDesc );
+			outputVideo->setupVideoEncoder( outputFrameDesc, profile );
 
 			// output stream
 			_outputStream = &outputFile.addVideoStream( outputVideo->getVideoCodec() );
@@ -168,9 +164,7 @@ StreamTranscoder::StreamTranscoder(
 		{
 			// input decoder
 			AudioDecoder* inputAudio = new AudioDecoder( *static_cast<InputStream*>( _inputStream ) );
-			// set decoder options with empty profile to set some key options to specific values (example: threads to auto)
-			inputAudio->setProfile( ProfileLoader::Profile() );
-			inputAudio->setup();
+			inputAudio->setupDecoder();
 			_inputDecoder = inputAudio;
 			_currentDecoder = _inputDecoder;
 
@@ -185,7 +179,7 @@ StreamTranscoder::StreamTranscoder(
 				// @todo manage downmix ?
 				outputFrameDesc.setChannels( 1 );
 			}
-			outputAudio->setProfile( profile, outputFrameDesc );
+			outputAudio->setupAudioEncoder( outputFrameDesc, profile );
 
 			// output stream
 			_outputStream = &outputFile.addAudioStream( outputAudio->getAudioCodec() );
@@ -255,7 +249,7 @@ StreamTranscoder::StreamTranscoder(
 
 		// output encoder
 		VideoEncoder* outputVideo = new VideoEncoder( profile.at( constants::avProfileCodec ) );
-		outputVideo->setProfile( profile, outputFrameDesc );
+		outputVideo->setupVideoEncoder( outputFrameDesc, profile );
 		_outputEncoder = outputVideo;
 
 		// output stream
@@ -282,7 +276,7 @@ StreamTranscoder::StreamTranscoder(
 
 		// output encoder
 		AudioEncoder* outputAudio = new AudioEncoder( profile.at( constants::avProfileCodec ) );
-		outputAudio->setProfile( profile, outputFrameDesc );
+		outputAudio->setupAudioEncoder( outputFrameDesc, profile );
 		_outputEncoder = outputAudio;
 
 		// output stream

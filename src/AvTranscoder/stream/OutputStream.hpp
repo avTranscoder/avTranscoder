@@ -15,6 +15,7 @@ public:
 
 	size_t getStreamIndex() const { return _streamIndex; }
 	double getStreamDuration() const;
+	size_t getNbFrames() const;  ///< If audio stream, returns number of packets
 
 	IOutputStream::EWrappingStatus wrap( const CodedData& data );
 

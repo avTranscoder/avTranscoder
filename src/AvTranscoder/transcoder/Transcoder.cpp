@@ -2,6 +2,7 @@
 
 #include <AvTranscoder/file/util.hpp>
 #include <AvTranscoder/progress/NoDisplayProgress.hpp>
+#include <AvTranscoder/stat/VideoStat.hpp>
 
 #include <limits>
 #include <algorithm>
@@ -215,20 +216,19 @@ bool Transcoder::processFrame()
 		bool streamProcessStatus = _streamTranscoders.at( streamIndex )->processFrame();
 		if( ! streamProcessStatus )
 		{
-			_streamTranscoders.clear();
 			return false;
 		}
 	}
 	return true;
 }
 
-void Transcoder::process()
+ProcessStat Transcoder::process()
 {
 	NoDisplayProgress progress;
-	process( progress );
+	return process( progress );
 }
 
-void Transcoder::process( IProgress& progress )
+ProcessStat Transcoder::process( IProgress& progress )
 {
 	if( _streamTranscoders.size() == 0 )
 		throw std::runtime_error( "missing input streams in transcoder" );
@@ -267,6 +267,12 @@ void Transcoder::process( IProgress& progress )
 	_outputFile.endWrap();
 
 	LOG_INFO( "End of process" )
+
+	LOG_INFO( "Get process statistics" )
+	ProcessStat processStat;
+	fillProcessStat( processStat );
+
+	return processStat;
 }
 
 void Transcoder::setProcessMethod( const EProcessMethod eProcessMethod, const size_t indexBasedStream, const double outputDuration )
@@ -507,6 +513,37 @@ void Transcoder::manageSwitchToGenerator()
 				break;
 			case eProcessMethodInfinity :
 				_streamTranscoders.at( i )->canSwitchToGenerator( true );
+				break;
+		}
+	}
+}
+
+void Transcoder::fillProcessStat( ProcessStat& processStat )
+{
+	for( size_t streamIndex = 0; streamIndex < _streamTranscoders.size(); ++streamIndex )
+	{
+		IOutputStream& stream = _streamTranscoders.at( streamIndex )->getOutputStream();
+		AVCodecContext& encoderContext = _streamTranscoders.at( streamIndex )->getEncoder().getCodec().getAVCodecContext();
+		switch( encoderContext.codec_type )
+		{
+			case AVMEDIA_TYPE_VIDEO:
+			{
+				VideoStat videoStat( stream.getStreamDuration(), stream.getNbFrames() );
+				if( encoderContext.coded_frame && ( encoderContext.flags & CODEC_FLAG_PSNR) )
+				{
+					videoStat._quality = encoderContext.coded_frame->quality;
+					videoStat._psnr = VideoStat::psnr(encoderContext.coded_frame->error[0] / (encoderContext.width * encoderContext.height * 255.0 * 255.0));
+				}
+				processStat.addVideoStat( streamIndex, videoStat );
+				break;
+			}
+			case AVMEDIA_TYPE_AUDIO:
+			{
+				AudioStat audioStat( stream.getStreamDuration(), stream.getNbFrames() );
+				processStat.addAudioStat( streamIndex, audioStat );
+				break;
+			}
+			default:
 				break;
 		}
 	}

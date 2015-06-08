@@ -17,7 +17,7 @@ AvReader::AvReader( const std::string& filename )
 	_inputFile.activateStream( _videoStream );
 
 	_inputVideo = new avtranscoder::VideoDecoder( _inputFile.getStream( _videoStream ) );
-	_inputVideo->setup();
+	_inputVideo->setupDecoder();
 
 	_sourceImage = new avtranscoder::VideoFrame( _inputFile.getStream( _videoStream ).getVideoCodec().getVideoFrameDesc() );
 

@@ -29,6 +29,7 @@ namespace constants
 	const std::string avProfileSampleRate = "ar";
 	const std::string avProfileChannel = "ac";
 	const std::string avProfileThreads = "threads";
+	const std::string avProfileProcessStat = "processStat";  ///< Do statistics during the process.
 }
 
 class AvExport ProfileLoader
