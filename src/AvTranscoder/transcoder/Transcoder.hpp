@@ -6,6 +6,7 @@
 #include <AvTranscoder/file/IOutputFile.hpp>
 #include <AvTranscoder/stream/IInputStream.hpp>
 #include <AvTranscoder/profile/ProfileLoader.hpp>
+#include <AvTranscoder/transcoder/ProcessStat.hpp>
 
 #include "StreamTranscoder.hpp"
 
@@ -119,10 +120,11 @@ public:
 	 * @brief Process all the streams, and ended the process depending on the transcode politic.
 	 * @note The function manages all process: init(), beginWrap(), processFrame()s, and endWrap().
 	 * @param progress: choose a progress, or create your own in C++ or in bindings by inherit IProgress class.
+	 * @return ProcessStat: object with statistics of the process for each stream.
 	 * @see IProgress
 	 */
-	void process( IProgress& progress );
-	void process();  ///< Call process with no display of progression
+	ProcessStat process( IProgress& progress );
+	ProcessStat process();  ///< Call process with no display of progression
 
 	/**
 	 * @brief Return the list of streams added to the transcoder.
@@ -187,6 +189,11 @@ private:
 	 * @brief Set for each StreamTranscoder if it can switch to generator at the end.
          */
 	void manageSwitchToGenerator();
+
+	/**
+	 * @brief Fill the given ProcessStat to summarize the process.
+	 */
+	void fillProcessStat( ProcessStat& processStat );
 
 private:
 	IOutputFile& _outputFile;  ///< The output media file after process (has link)
