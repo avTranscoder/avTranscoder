@@ -315,7 +315,7 @@ void StreamTranscoder::preProcessCodecLatency()
 		return;
 
 	// set a decoder to preload generated frames
-	if( isRewrapCase() )
+	if( getProcessCase() == eProcessCaseRewrap )
 		switchToGeneratorDecoder();
 
 	while( ( latency-- ) > 0 )
@@ -334,7 +334,7 @@ bool StreamTranscoder::processFrame()
 		{
 			LOG_INFO( "End of positive offset" )
 
-			if( isTranscodeCase() )
+			if( getProcessCase() == eProcessCaseTranscode )
 				switchToInputDecoder();
 			else
 				_currentDecoder = NULL;
@@ -362,7 +362,7 @@ bool StreamTranscoder::processFrame()
 		}
  	}
 
-	if( isRewrapCase() )
+	if( getProcessCase() == eProcessCaseRewrap )
 		return processRewrap();
 
 	return processTranscode( _subStreamIndex );	
@@ -501,19 +501,14 @@ double StreamTranscoder::getDuration() const
 		return std::numeric_limits<double>::max();
 }
 
-bool StreamTranscoder::isTranscodeCase() const
+StreamTranscoder::EProcessCase StreamTranscoder::getProcessCase() const
 {
-	return _inputStream && _inputDecoder;
-}
-
-bool StreamTranscoder::isRewrapCase() const
-{
-	return _inputStream && ! _inputDecoder;
-}
-
-bool StreamTranscoder::isGeneratorCase() const
-{
-	return ! _inputStream;
+	if( _inputStream && _inputDecoder )
+		return eProcessCaseTranscode;
+	else if( _inputStream && ! _inputDecoder )
+		return eProcessCaseRewrap;
+	else
+		return eProcessCaseGenerator;
 }
 
 }
