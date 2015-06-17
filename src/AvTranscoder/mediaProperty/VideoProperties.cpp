@@ -22,8 +22,8 @@ VideoProperties::VideoProperties( const FormatContext& formatContext, const size
 	, _pixelProperties()
 	, _isInterlaced( false )
 	, _isTopFieldFirst( false )
-	, _firstGopTimeCode( -1 )
 	, _gopStructure()
+	, _firstGopTimeCode( -1 )
 {
 	if( _formatContext )
 	{
