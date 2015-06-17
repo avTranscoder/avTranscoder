@@ -22,6 +22,7 @@ VideoProperties::VideoProperties( const FormatContext& formatContext, const size
 	, _pixelProperties()
 	, _isInterlaced( false )
 	, _isTopFieldFirst( false )
+	, _firstGopTimeCode( -1 )
 	, _gopStructure()
 {
 	if( _formatContext )
@@ -39,7 +40,10 @@ VideoProperties::VideoProperties( const FormatContext& formatContext, const size
 		_codec = avcodec_find_decoder( _codecContext->codec_id );
 
 	if( _codecContext )
+	{
 		_pixelProperties = PixelProperties( _codecContext->pix_fmt );
+		_firstGopTimeCode = _codecContext->timecode_frame_start;
+	}
 
 	if( level == eAnalyseLevelFirstGop )
 		analyseGopStructure( progress );
@@ -310,7 +314,7 @@ int64_t VideoProperties::getStartTimecode() const
 {
 	if( ! _codecContext )
 		throw std::runtime_error( "unknown codec context" );
-	return _codecContext->timecode_frame_start;
+	return _firstGopTimeCode;
 }
 
 std::string VideoProperties::getStartTimecodeString() const

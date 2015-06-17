@@ -60,7 +60,7 @@ void AudioDecoder::setupDecoder( const ProfileLoader::Profile& profile )
 	if( profile.count( constants::avProfileThreads ) )
 		codec.getOption( constants::avProfileThreads ).setString( profile.at( constants::avProfileThreads ) );
 	else
-		codec.getOption( constants::avProfileThreads ).setString( "auto" );
+		codec.getOption( constants::avProfileThreads ).setInt( codec.getAVCodecContext().thread_count );
 
 	// set decoder options
 	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )

@@ -316,6 +316,9 @@ void StreamTranscoder::preProcessCodecLatency()
 	{
 		processFrame();
 	}
+
+	if( getProcessCase() == eProcessCaseRewrap )
+		_currentDecoder = NULL;
 }
 
 bool StreamTranscoder::processFrame()

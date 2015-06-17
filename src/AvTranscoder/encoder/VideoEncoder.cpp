@@ -53,7 +53,7 @@ void VideoEncoder::setupEncoder( const ProfileLoader::Profile& profile )
 	if( profile.count( constants::avProfileThreads ) )
 		_codec.getOption( constants::avProfileThreads ).setString( profile.at( constants::avProfileThreads ) );
 	else
-		_codec.getOption( constants::avProfileThreads ).setString( "auto" );
+		_codec.getOption( constants::avProfileThreads ).setInt( _codec.getAVCodecContext().thread_count );
 
 	// set encoder options
 	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )

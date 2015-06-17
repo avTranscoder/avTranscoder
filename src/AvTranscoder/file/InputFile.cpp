@@ -86,13 +86,13 @@ bool InputFile::readNextPacket( CodedData& data, const size_t streamIndex )
 void InputFile::seekAtFrame( const size_t frame )
 {
 	uint64_t position = frame / getFps() * AV_TIME_BASE;
-	_formatContext.seek( position, AVSEEK_FLAG_BACKWARD );
+	_formatContext.seek( position, AVSEEK_FLAG_ANY );
 }
 
 void InputFile::seekAtTime( const double time )
 {
 	uint64_t position = time * AV_TIME_BASE;
-	_formatContext.seek( position, AVSEEK_FLAG_BACKWARD );
+	_formatContext.seek( position, AVSEEK_FLAG_ANY );
 }
 
 void InputFile::activateStream( const size_t streamIndex, bool activate )
