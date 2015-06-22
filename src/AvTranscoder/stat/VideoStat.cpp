@@ -7,7 +7,7 @@ namespace avtranscoder
 
 double VideoStat::psnr( const double d )
 {
-	return -10.0 * log(d) / log(10.0);
+	return -10.0 * log10(d);
 }
 
 }
