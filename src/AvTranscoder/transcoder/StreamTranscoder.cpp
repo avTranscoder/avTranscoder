@@ -400,7 +400,7 @@ bool StreamTranscoder::processRewrap()
 			return true;
 		case IOutputStream::eWrappingWaitingForData:
 			// the wrapper needs more data to write the current packet
-			return processRewrap();
+			return processFrame();
 		case IOutputStream::eWrappingError:
 			return false;
 	}
@@ -458,7 +458,7 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 			return true;
 		case IOutputStream::eWrappingWaitingForData:
 			// the wrapper needs more data to write the current packet
-			return processTranscode( subStreamIndex );
+			return processFrame();
 		case IOutputStream::eWrappingError:
 			return false;
 	}
