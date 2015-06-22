@@ -518,9 +518,9 @@ int VideoProperties::getLevel() const
 	return _codecContext->level;
 }
 
-double VideoProperties::getFps() const
+float VideoProperties::getFps() const
 {
-	size_t nbFrames = getNbFrames();
+	const size_t nbFrames = getNbFrames();
 	if( nbFrames )
 	{
 		double duration = getDuration();
@@ -531,7 +531,7 @@ double VideoProperties::getFps() const
 
 	// if nbFrames of stream is unknwon
 	Rational timeBase = getTimeBase();
-	double fps = timeBase.den / (double) timeBase.num;
+	float fps = timeBase.den / (double) timeBase.num;
 	if( std::isinf( fps ) )
 	{
 		std::ostringstream os;

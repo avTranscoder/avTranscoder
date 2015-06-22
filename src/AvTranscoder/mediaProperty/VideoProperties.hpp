@@ -56,7 +56,7 @@ public:
 	int getProfile() const;
 	int getLevel() const;
 
-	double getFps() const;
+	float getFps() const;
 
 	bool hasBFrames() const;
 	//bool isClosedGop() const;
