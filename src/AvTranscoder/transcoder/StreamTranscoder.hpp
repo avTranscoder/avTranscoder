@@ -29,12 +29,12 @@ public:
 	 * @brief rewrap stream
 	 * @note offset feature when rewrap a stream is not supported
 	 **/
-	StreamTranscoder( IInputStream& inputStream, IOutputFile& outputFile, const double offset = 0 );
+	StreamTranscoder( IInputStream& inputStream, IOutputFile& outputFile, const float offset = 0 );
 
 	/**
 	 * @brief transcode stream
 	 **/
-	StreamTranscoder( IInputStream& inputStream, IOutputFile& outputFile, const ProfileLoader::Profile& profile, const int subStreamIndex = -1, const double offset = 0 );
+	StreamTranscoder( IInputStream& inputStream, IOutputFile& outputFile, const ProfileLoader::Profile& profile, const int subStreamIndex = -1, const float offset = 0 );
 
 	/**
 	 * @brief encode from a generated stream
@@ -121,7 +121,7 @@ private:
 
 	int  _subStreamIndex;  ///< Index of channel that is processed from the input stream (<0 if no demultiplexing).
 
-	double _offset;  ///< Offset, in seconds, at the beginning of the StreamTranscoder.
+	float _offset;  ///< Offset, in seconds, at the beginning of the StreamTranscoder.
 
 	bool _canSwitchToGenerator;  ///< Automatically switch to a generator at the end of the stream
 };

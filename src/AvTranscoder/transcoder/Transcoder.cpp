@@ -33,7 +33,7 @@ Transcoder::~Transcoder()
 	}
 }
 
-void Transcoder::add( const std::string& filename, const size_t streamIndex, const std::string& profileName, const double offset )
+void Transcoder::add( const std::string& filename, const size_t streamIndex, const std::string& profileName, const float offset )
 {
 	// Re-wrap
 	if( profileName.length() == 0 )
@@ -52,7 +52,7 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 	}
 }
 
-void Transcoder::add( const std::string& filename, const size_t streamIndex, const std::string& profileName, ICodec& codec, const double offset )
+void Transcoder::add( const std::string& filename, const size_t streamIndex, const std::string& profileName, ICodec& codec, const float offset )
 {
 	// Re-wrap
 	if( profileName.length() == 0 )
@@ -71,7 +71,7 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 	}
 }
 
-void Transcoder::add( const std::string& filename, const size_t streamIndex, const ProfileLoader::Profile& profile, const double offset )
+void Transcoder::add( const std::string& filename, const size_t streamIndex, const ProfileLoader::Profile& profile, const float offset )
 {
 	// Check filename
 	if( ! filename.length() )
@@ -80,7 +80,7 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 	addTranscodeStream( filename, streamIndex, -1, profile, offset );
 }
 
-void Transcoder::add( const std::string& filename, const size_t streamIndex, const ProfileLoader::Profile& profile, ICodec& codec, const double offset )
+void Transcoder::add( const std::string& filename, const size_t streamIndex, const ProfileLoader::Profile& profile, ICodec& codec, const float offset )
 {
 	// Generator
 	if( ! filename.length() )
@@ -94,7 +94,7 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 	}
 }
 
-void Transcoder::add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const std::string& profileName, const double offset )
+void Transcoder::add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const std::string& profileName, const float offset )
 {
 	// No subStream selected
 	if( subStreamIndex < 0 )
@@ -124,7 +124,7 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 	}
 }
 
-void Transcoder::add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const std::string& profileName, ICodec& codec, const double offset )
+void Transcoder::add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const std::string& profileName, ICodec& codec, const float offset )
 {
 	// No subStream selected
 	if( subStreamIndex < 0 )
@@ -155,7 +155,7 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 	}
 }
 
-void Transcoder::add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const ProfileLoader::Profile& profile, const double offset )
+void Transcoder::add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const ProfileLoader::Profile& profile, const float offset )
 {
 	// No subStream selected
 	if( subStreamIndex < 0 )
@@ -171,7 +171,7 @@ void Transcoder::add( const std::string& filename, const size_t streamIndex, con
 	addTranscodeStream( filename, streamIndex, subStreamIndex, profile, offset );
 }
 
-void Transcoder::add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const ProfileLoader::Profile& profile, ICodec& codec, const double offset )
+void Transcoder::add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const ProfileLoader::Profile& profile, ICodec& codec, const float offset )
 {
 	// No subStream selected
 	if( subStreamIndex < 0 )
@@ -282,7 +282,7 @@ void Transcoder::setProcessMethod( const EProcessMethod eProcessMethod, const si
 	_outputDuration = outputDuration;
 }
 
-void Transcoder::addRewrapStream( const std::string& filename, const size_t streamIndex, const double offset )
+void Transcoder::addRewrapStream( const std::string& filename, const size_t streamIndex, const float offset )
 {
 	LOG_INFO( "Add rewrap stream from file '" << filename << "' / index=" << streamIndex << " / offset=" << offset << "s"  )
 
@@ -292,7 +292,7 @@ void Transcoder::addRewrapStream( const std::string& filename, const size_t stre
 	_streamTranscoders.push_back( _streamTranscodersAllocated.back() );
 }
 
-void Transcoder::addTranscodeStream( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const double offset )
+void Transcoder::addTranscodeStream( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const float offset )
 {
 	// Get profile from input file
 	InputFile inputFile( filename );
@@ -306,7 +306,7 @@ void Transcoder::addTranscodeStream( const std::string& filename, const size_t s
 	addTranscodeStream( filename, streamIndex, subStreamIndex, profile, offset );
 }
 
-void Transcoder::addTranscodeStream( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const ProfileLoader::Profile& profile, const double offset )
+void Transcoder::addTranscodeStream( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const ProfileLoader::Profile& profile, const float offset )
 {
 	// Add profile
 	if( ! _profileLoader.hasProfile( profile ) )
@@ -348,7 +348,7 @@ void Transcoder::addDummyStream( const ProfileLoader::Profile& profile, const IC
 	_streamTranscoders.push_back( _streamTranscodersAllocated.back() );
 }
 
-InputFile* Transcoder::addInputFile( const std::string& filename, const size_t streamIndex, const double offset )
+InputFile* Transcoder::addInputFile( const std::string& filename, const size_t streamIndex, const float offset )
 {
 	InputFile* referenceFile = NULL;
 
@@ -532,7 +532,7 @@ void Transcoder::fillProcessStat( ProcessStat& processStat )
 				if( encoderContext.coded_frame && ( encoderContext.flags & CODEC_FLAG_PSNR) )
 				{
 					videoStat._quality = encoderContext.coded_frame->quality;
-					videoStat._psnr = VideoStat::psnr(encoderContext.coded_frame->error[0] / (encoderContext.width * encoderContext.height * 255.0 * 255.0));
+					videoStat._psnr = VideoStat::psnr( encoderContext.coded_frame->error[0] / ( encoderContext.width * encoderContext.height * 255.0 * 255.0 ) );
 				}
 				processStat.addVideoStat( streamIndex, videoStat );
 				break;
