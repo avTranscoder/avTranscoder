@@ -167,23 +167,23 @@ private:
 	 * @brief Get the duration of the stream, in seconds
 	 * @note If the stream is a generator, return limit of double.
 	 */
-	double getStreamDuration( size_t indexStream ) const;
+	float getStreamDuration( size_t indexStream ) const;
 
 	/**
 	* @brief Get the duration of the shortest stream, in seconds
 	*/
-	double getMinTotalDuration() const;
+	float getMinTotalDuration() const;
 
 	/**
 	 * @brief Get the duration of the longest stream, in seconds
 	 */
-	double getMaxTotalDuration() const;
+	float getMaxTotalDuration() const;
 
 	/**
 	 * @brief Get the duration of the output program
 	 * @note Depends on the streams, the process method, and the main stream index.
          */
-	double getOutputDuration() const;
+	float getOutputDuration() const;
 
 	/**
 	 * @brief Set for each StreamTranscoder if it can switch to generator at the end.
@@ -206,7 +206,7 @@ private:
 
 	EProcessMethod _eProcessMethod;  ///< Transcoding policy
 	size_t _mainStreamIndex;  ///< Index of stream used to stop the process of transcode in case of eProcessMethodBasedOnStream.
-	double _outputDuration;  ///< Duration of output media used to stop the process of transcode in case of eProcessMethodBasedOnDuration.
+	float _outputDuration;  ///< Duration of output media used to stop the process of transcode in case of eProcessMethodBasedOnDuration.
 };
 
 }

@@ -523,8 +523,8 @@ float VideoProperties::getFps() const
 	const size_t nbFrames = getNbFrames();
 	if( nbFrames )
 	{
-		double duration = getDuration();
-		double epsilon = std::numeric_limits<double>::epsilon();
+		const float duration = getDuration();
+		const float epsilon = std::numeric_limits<float>::epsilon();
 		if( duration > epsilon )
 			return nbFrames / duration;
 	}

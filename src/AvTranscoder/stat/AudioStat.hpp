@@ -12,13 +12,13 @@ namespace avtranscoder
 class AvExport AudioStat
 {
 public:
-	AudioStat( const double duration, const size_t nbPackets )
+	AudioStat( const float duration, const size_t nbPackets )
 	: _duration( duration )
 	, _nbPackets( nbPackets )
 	{}
 
 public:
-	double _duration;
+	float _duration;
 	size_t _nbPackets;
 };
 

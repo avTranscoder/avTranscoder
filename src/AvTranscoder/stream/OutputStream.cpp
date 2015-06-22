@@ -14,7 +14,7 @@ OutputStream::OutputStream( OutputFile& outputFile, const size_t streamIndex )
 {
 }
 
-double OutputStream::getStreamDuration() const
+float OutputStream::getStreamDuration() const
 {
 	AVStream& outputStream = _outputFile->getFormatContext().getAVStream( _streamIndex );
 #if AVTRANSCODER_FFMPEG_DEPENDENCY && LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(55, 40, 100)

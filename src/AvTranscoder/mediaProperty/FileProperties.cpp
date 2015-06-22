@@ -157,7 +157,7 @@ double FileProperties::getStartTime() const
 	return  1.0 * (unsigned int)_avFormatContext->start_time / AV_TIME_BASE;
 }
 
-double FileProperties::getDuration() const
+float FileProperties::getDuration() const
 {
 	if( ! _avFormatContext )
 		throw std::runtime_error( "unknown format context" );

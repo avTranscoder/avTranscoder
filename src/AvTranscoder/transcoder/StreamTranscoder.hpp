@@ -68,7 +68,7 @@ public:
 	 * @note if it's a generated stream, return limit of double.
 	 * @note if offset > duration of the stream, return 0
 	 */
-	double getDuration() const;
+	float getDuration() const;
 
 	/// Returns a reference to the current decoder (from input file or from generator)
 	IDecoder& getCurrentDecoder() const { return *_currentDecoder; }

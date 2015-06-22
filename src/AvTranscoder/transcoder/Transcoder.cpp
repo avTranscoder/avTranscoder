@@ -435,15 +435,14 @@ ProfileLoader::Profile Transcoder::getProfileFromFile( InputFile& inputFile, con
 	return profile;
 }
 
-double Transcoder::getStreamDuration( size_t indexStream ) const
+float Transcoder::getStreamDuration( size_t indexStream ) const
 {
 	return _streamTranscoders.at( indexStream )->getDuration();
 }
 
-double Transcoder::getMinTotalDuration() const
+float Transcoder::getMinTotalDuration() const
 {
-	double minTotalDuration = std::numeric_limits<double>::max();
-	
+	float minTotalDuration = std::numeric_limits<float>::max();
 	for( size_t i = 0; i < _streamTranscoders.size(); ++i )
 	{
 		minTotalDuration = std::min( getStreamDuration( i ), minTotalDuration );
@@ -451,10 +450,9 @@ double Transcoder::getMinTotalDuration() const
 	return minTotalDuration;
 }
 
-double Transcoder::getMaxTotalDuration() const
+float Transcoder::getMaxTotalDuration() const
 {
-	double maxTotalDuration = 0;
-	
+	float maxTotalDuration = 0;
 	for( size_t i = 0; i < _streamTranscoders.size(); ++i )
 	{
 		maxTotalDuration = std::max( getStreamDuration( i ), maxTotalDuration );
@@ -462,7 +460,7 @@ double Transcoder::getMaxTotalDuration() const
 	return maxTotalDuration;
 }
 
-double Transcoder::getOutputDuration() const
+float Transcoder::getOutputDuration() const
 {
 	switch( _eProcessMethod )
 	{
@@ -475,7 +473,7 @@ double Transcoder::getOutputDuration() const
 		case eProcessMethodBasedOnDuration :
 			return _outputDuration;
 		case eProcessMethodInfinity :
-			return std::numeric_limits<double>::max();
+			return std::numeric_limits<float>::max();
 		default:
 			return getMaxTotalDuration();
 	}	

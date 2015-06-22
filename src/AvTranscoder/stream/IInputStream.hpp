@@ -22,7 +22,7 @@ public:
 	virtual bool readNextPacket( CodedData& data ) = 0;
 
 	virtual size_t getStreamIndex() const = 0;
-	virtual double getDuration() const = 0;
+	virtual float getDuration() const = 0;
 	virtual AVMediaType getStreamType() const = 0;
 
 	//@{

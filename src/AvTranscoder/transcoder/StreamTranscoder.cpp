@@ -482,11 +482,11 @@ void StreamTranscoder::switchToInputDecoder()
 	assert( _currentDecoder != NULL );
 }
 
-double StreamTranscoder::getDuration() const
+float StreamTranscoder::getDuration() const
 {	
 	if( _inputStream )
 	{
-		double totalDuration = _inputStream->getDuration() + _offset;
+		const float totalDuration = _inputStream->getDuration() + _offset;
 		if( totalDuration < 0 )
 		{
 			LOG_WARN( "Offset of " << _offset << "s applied to a stream with a duration of " << _inputStream->getDuration() << "s. Set its duration to 0s." )
@@ -495,7 +495,7 @@ double StreamTranscoder::getDuration() const
 		return totalDuration;
 	}
 	else
-		return std::numeric_limits<double>::max();
+		return std::numeric_limits<float>::max();
 }
 
 StreamTranscoder::EProcessCase StreamTranscoder::getProcessCase() const
