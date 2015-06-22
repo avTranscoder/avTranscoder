@@ -82,22 +82,40 @@ void FileProperties::extractStreamProperties( IProgress& progress, const EAnalys
 
 	// once the streams vectors are filled, add their references the base streams vector
 	for( size_t streamIndex = 0; streamIndex < _videoStreams.size(); ++streamIndex )
-		_streams[ _videoStreams.at( streamIndex ).getStreamIndex() ] = &_videoStreams.at( streamIndex );
+	{
+		const size_t videoStreamIndex = _videoStreams.at( streamIndex ).getStreamIndex();
+		_streams[ videoStreamIndex ] = &_videoStreams.at( streamIndex );
+	}
 
 	for( size_t streamIndex = 0; streamIndex < _audioStreams.size(); ++ streamIndex )
-		_streams[ _audioStreams.at(streamIndex).getStreamIndex() ] = &_audioStreams.at(streamIndex);
+	{
+		const size_t audioStreamIndex = _audioStreams.at( streamIndex ).getStreamIndex();
+		_streams[ audioStreamIndex ] = &_audioStreams.at(streamIndex);
+	}
 
 	for( size_t streamIndex = 0; streamIndex < _dataStreams.size(); ++ streamIndex )
-		_streams[ _dataStreams.at(streamIndex).getStreamIndex() ] = &_dataStreams.at(streamIndex);
+	{
+		const size_t dataStreamIndex = _dataStreams.at( streamIndex ).getStreamIndex();
+		_streams[ dataStreamIndex ] = &_dataStreams.at(streamIndex);
+	}
 
 	for( size_t streamIndex = 0; streamIndex < _subtitleStreams.size(); ++ streamIndex )
-		_streams[ _subtitleStreams.at(streamIndex).getStreamIndex() ] = &_subtitleStreams.at(streamIndex);
+	{
+		const size_t subtitleStreamIndex = _subtitleStreams.at( streamIndex ).getStreamIndex();
+		_streams[ subtitleStreamIndex ] = &_subtitleStreams.at(streamIndex);
+	}
 
 	for( size_t streamIndex = 0; streamIndex < _attachementStreams.size(); ++ streamIndex )
-		_streams[ _attachementStreams.at(streamIndex).getStreamIndex() ] = &_attachementStreams.at(streamIndex);
+	{
+		const size_t attachementStreamIndex = _attachementStreams.at( streamIndex ).getStreamIndex();
+		_streams[ attachementStreamIndex ] = &_attachementStreams.at(streamIndex);
+	}
 
 	for( size_t streamIndex = 0; streamIndex < _unknownStreams.size(); ++ streamIndex )
-		_streams[ _unknownStreams.at(streamIndex).getStreamIndex() ] = &_unknownStreams.at(streamIndex);
+	{
+		const size_t unknownStreamIndex = _unknownStreams.at( streamIndex ).getStreamIndex();
+		_streams[ unknownStreamIndex ] = &_unknownStreams.at(streamIndex);
+	}
 
 	// if the analysis level has decoded some streams parts, return at the beginning
 	if( level > eAnalyseLevelHeader )
