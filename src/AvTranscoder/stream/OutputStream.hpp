@@ -14,7 +14,7 @@ public:
 	OutputStream( OutputFile& outputFile, const size_t streamIndex );
 
 	size_t getStreamIndex() const { return _streamIndex; }
-	double getStreamDuration() const;
+	float getStreamDuration() const;
 	size_t getNbFrames() const;  ///< If audio stream, returns number of packets
 
 	IOutputStream::EWrappingStatus wrap( const CodedData& data );

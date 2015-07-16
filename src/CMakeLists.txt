@@ -77,7 +77,7 @@ if(SWIG_FOUND)
 	set_source_files_properties(${AVTRANSCODER_BINDING_FILE} PROPERTIES CPLUSPLUS ON)
 
 	# Swig flags
-        set(CMAKE_SWIG_FLAGS -c++ -fcompact -small -O -Werror)
+	set(CMAKE_SWIG_FLAGS -c++ -fcompact -small -O -Werror)
 
 	### PYTHON BINDING
 	if(AVTRANSCODER_DISABLE_PYTHON_BINDING)

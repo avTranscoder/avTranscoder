@@ -111,7 +111,7 @@ AVMediaType InputStream::getStreamType() const
 	return _inputFile->getFormatContext().getAVStream( _streamIndex ).codec->codec_type;
 }
 
-double InputStream::getDuration() const
+float InputStream::getDuration() const
 {
 	return _inputFile->getProperties().getStreamPropertiesWithIndex( _streamIndex ).getDuration();
 }

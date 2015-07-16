@@ -37,11 +37,10 @@ Rational StreamProperties::getTimeBase() const
 	return timeBase;
 }
 
-double StreamProperties::getDuration() const
+float StreamProperties::getDuration() const
 {
 	Rational timeBase = getTimeBase();
-	double duration = ( timeBase.num / (double) timeBase.den ) * _formatContext->streams[_streamIndex]->duration;
-	return duration;
+	return ( timeBase.num / (float) timeBase.den ) * _formatContext->streams[_streamIndex]->duration;
 }
 
 PropertyVector StreamProperties::getPropertiesAsVector() const

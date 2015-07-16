@@ -23,7 +23,7 @@ namespace avtranscoder
 StreamTranscoder::StreamTranscoder(
 		IInputStream& inputStream,
 		IOutputFile& outputFile,
-		const double offset
+		const float offset
 	)
 	: _inputStream( &inputStream )
 	, _outputStream( NULL )
@@ -109,7 +109,7 @@ StreamTranscoder::StreamTranscoder(
 		IOutputFile& outputFile,
 		const ProfileLoader::Profile& profile,
 		const int subStreamIndex,
-		const double offset
+		const float offset
 	)
 	: _inputStream( &inputStream )
 	, _outputStream( NULL )
@@ -400,7 +400,7 @@ bool StreamTranscoder::processRewrap()
 			return true;
 		case IOutputStream::eWrappingWaitingForData:
 			// the wrapper needs more data to write the current packet
-			return processRewrap();
+			return processFrame();
 		case IOutputStream::eWrappingError:
 			return false;
 	}
@@ -458,7 +458,7 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 			return true;
 		case IOutputStream::eWrappingWaitingForData:
 			// the wrapper needs more data to write the current packet
-			return processTranscode( subStreamIndex );
+			return processFrame();
 		case IOutputStream::eWrappingError:
 			return false;
 	}
@@ -482,11 +482,11 @@ void StreamTranscoder::switchToInputDecoder()
 	assert( _currentDecoder != NULL );
 }
 
-double StreamTranscoder::getDuration() const
+float StreamTranscoder::getDuration() const
 {	
 	if( _inputStream )
 	{
-		double totalDuration = _inputStream->getDuration() + _offset;
+		const float totalDuration = _inputStream->getDuration() + _offset;
 		if( totalDuration < 0 )
 		{
 			LOG_WARN( "Offset of " << _offset << "s applied to a stream with a duration of " << _inputStream->getDuration() << "s. Set its duration to 0s." )
@@ -495,7 +495,7 @@ double StreamTranscoder::getDuration() const
 		return totalDuration;
 	}
 	else
-		return std::numeric_limits<double>::max();
+		return std::numeric_limits<float>::max();
 }
 
 StreamTranscoder::EProcessCase StreamTranscoder::getProcessCase() const

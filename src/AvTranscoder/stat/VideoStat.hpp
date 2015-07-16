@@ -12,7 +12,7 @@ namespace avtranscoder
 class AvExport VideoStat
 {
 public:
-	VideoStat( const double duration, const size_t nbFrames )
+	VideoStat( const float duration, const size_t nbFrames )
 	: _duration( duration )
 	, _nbFrames( nbFrames )
 	, _quality( 0 )
@@ -23,7 +23,7 @@ public:
 	static double psnr( const double d );
 
 public:
-	double _duration;
+	float _duration;
 	size_t _nbFrames;
 	size_t _quality;  ///< Between 1 (good) and FF_LAMBDA_MAX (bad). 0 if unknown.
 	double _psnr;  ///< 0 if unknown.
