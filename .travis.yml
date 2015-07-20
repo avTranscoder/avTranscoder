@@ -5,8 +5,10 @@ env:
      - DEPENDENCY_INSTALL=${TRAVIS_BUILD_DIR}/install-dependency
      - CI_NODE_TOTAL=2
   matrix:
-    - DEPENDENCY_MODE=libav
-    - DEPENDENCY_MODE=ffmpeg
+    - DEPENDENCY_MODE=libav  ENABLE_COVERAGE=true
+    - DEPENDENCY_MODE=libav  ENABLE_COVERAGE=false
+    - DEPENDENCY_MODE=ffmpeg ENABLE_COVERAGE=true
+    - DEPENDENCY_MODE=ffmpeg ENABLE_COVERAGE=false
 
 language: cpp
 
@@ -26,7 +28,7 @@ before_script:
   - cd ${TRAVIS_BUILD_DIR}
 
   # install coverage tools
-  - ./tools/travis.gcc.install.coverage.sh
+  - if [ ${ENABLE_COVERAGE} ]; then ./tools/travis.gcc.install.coverage.sh; fi
 
   # install avtranscoder dependencies
   - if [ ${TRAVIS_OS_NAME} = "linux" ]; then ./tools/travis.linux.install.deps.sh; fi
@@ -36,7 +38,7 @@ script:
   # build
   - mkdir -p ${AVTRANSCODER_BUILD}
   - cd ${AVTRANSCODER_BUILD}
-  - cmake .. -DCMAKE_INSTALL_PREFIX=${AVTRANSCODER_INSTALL} -DCMAKE_PREFIX_PATH=${DEPENDENCY_INSTALL} -DCMAKE_BUILD_TYPE=Release -DAVTRANSCODER_PYTHON_VERSION_OF_BINDING=2.7 -DAVTRANSCODER_COVERAGE=True
+  - cmake .. -DCMAKE_INSTALL_PREFIX=${AVTRANSCODER_INSTALL} -DCMAKE_PREFIX_PATH=${DEPENDENCY_INSTALL} -DCMAKE_BUILD_TYPE=Release -DAVTRANSCODER_PYTHON_VERSION_OF_BINDING=2.7 -DAVTRANSCODER_COVERAGE=${ENABLE_COVERAGE}
   - make -j${CI_NODE_TOTAL}
   - make install
 
@@ -47,7 +49,7 @@ after_success:
   - cd ${TRAVIS_BUILD_DIR}
 
   # generate coverage for coveralls
-  - if [ ${CC} = "gcc" ]; then ./tools/travis.gcc.generate.coverage.sh; fi
+  - if [ ${ENABLE_COVERAGE} ]; then ./tools/travis.gcc.generate.coverage.sh; fi
 
 before_deploy:
   # create archive
@@ -55,13 +57,11 @@ before_deploy:
   - tar -cvzf avtranscoder-${TRAVIS_OS_NAME}-${CC}-${DEPENDENCY_MODE}.tgz ${DEPENDENCY_INSTALL} ${AVTRANSCODER_INSTALL}
 
 deploy:
-  # if the commit is tagged, deploy using github release service
   provider: releases
   api_key:
     secure: ${GITHUB_RELEASE_API_KEY}
   file: avtranscoder-${TRAVIS_OS_NAME}-${CC}-${DEPENDENCY_MODE}.tgz
   skip_cleanup: true
   on:
-    tags: true
-    condition: ${TRAVIS_OS_NAME} = "linux"
-
+    branch: master
+    condition: ${ENABLE_COVERAGE} = false
