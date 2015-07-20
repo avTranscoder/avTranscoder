@@ -33,6 +33,7 @@ endif()
 
 # CPP flag to create code coverage report
 if(AVTRANSCODER_COVERAGE)
+	message("Add coverage build option.")
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage")
 endif()
 
