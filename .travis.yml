@@ -1,3 +1,13 @@
+language: cpp
+
+os:
+  - linux
+  - osx
+
+compiler:
+  - gcc
+  - clang
+
 env:
   global:
      - AVTRANSCODER_BUILD=${TRAVIS_BUILD_DIR}/build-avtranscoder
@@ -10,15 +20,8 @@ env:
     - DEPENDENCY_MODE=ffmpeg ENABLE_COVERAGE=true
     - DEPENDENCY_MODE=ffmpeg ENABLE_COVERAGE=false
 
-language: cpp
-
-os:
-  - linux
-  - osx
-
-compiler:
-  - gcc
-  - clang
+# This results in a 2×2×2x2 build matrix.
+# Where the variables are: os / compiler / DEPENDENCY_MODE / ENABLE_COVERAGE
 
 before_script:
   - env | sort  
