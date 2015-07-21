@@ -52,9 +52,9 @@ install(
 install(TARGETS avtranscoder-static DESTINATION lib/ OPTIONAL)
 install(TARGETS avtranscoder-shared DESTINATION lib/ OPTIONAL)
 
-### Install AvTranscoder ressource
+### Install AvTranscoder avprofiles
 install(
-	DIRECTORY "${PROJECT_SOURCE_DIR}/ressource"
+	DIRECTORY "${PROJECT_SOURCE_DIR}/avprofiles"
 	DESTINATION "share"
 	FILES_MATCHING
 	PATTERN "*.prf"

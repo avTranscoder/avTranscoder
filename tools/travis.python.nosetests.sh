@@ -4,9 +4,6 @@
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${DEPENDENCY_INSTALL}/lib
 export PYTHONPATH=${AVTRANSCODER_INSTALL}/lib/python2.7.6/site-packages/:$PYTHONPATH
 
-# Get avtranscoder profiles
-export AVPROFILES=${AVTRANSCODER_INSTALL}/share/ressource
-
 # Get assets
 git clone https://github.com/avTranscoder/avTranscoder-data.git
 export AVTRANSCODER_TEST_VIDEO_FILE=`pwd`/avTranscoder-data/video/BigBuckBunny/BigBuckBunny_480p_stereo.avi
