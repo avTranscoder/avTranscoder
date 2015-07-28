@@ -64,9 +64,9 @@ if len(inputFile.getProperties().getVideoProperties()) == 0:
 
 # seek in file
 if args.frame:
-    inputFile.seekAtFrame(args.frame)
+    inputFile.seekAtFrame(args.frame, av.AVSEEK_FLAG_BACKWARD)
 elif args.time:
-    inputFile.seekAtTime(args.time)
+    inputFile.seekAtTime(args.time, av.AVSEEK_FLAG_BACKWARD)
 
 # create output file (need to set format profile of encoding to force output format to mjpeg)
 formatProfile = av.ProfileMap()
