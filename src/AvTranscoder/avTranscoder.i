@@ -13,6 +13,7 @@
 %include "AvTranscoder/swig/avMediaType.i"
 %include "AvTranscoder/swig/avRational.i"
 %include "AvTranscoder/swig/avLogLevel.i"
+%include "AvTranscoder/swig/avSeek.i"
 %include "AvTranscoder/swig/avOperator.i"
 
 %{
