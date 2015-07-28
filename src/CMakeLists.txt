@@ -49,8 +49,8 @@ install(
 	PATTERN "*.hpp"
 	PATTERN "*.i"
 )
-install(TARGETS avtranscoder-static DESTINATION lib/)
-install(TARGETS avtranscoder-shared DESTINATION lib/)
+install(TARGETS avtranscoder-static DESTINATION lib/ OPTIONAL)
+install(TARGETS avtranscoder-shared DESTINATION lib/ OPTIONAL)
 
 ### Install AvTranscoder ressource
 install(
@@ -76,6 +76,9 @@ if(SWIG_FOUND)
 	set(AVTRANSCODER_BINDING_FILE "AvTranscoder/avTranscoder.i")
 	set_source_files_properties(${AVTRANSCODER_BINDING_FILE} PROPERTIES CPLUSPLUS ON)
 
+	# Swig flags
+	set(CMAKE_SWIG_FLAGS -c++ -fcompact -small -O -Werror)
+
 	### PYTHON BINDING
 	if(AVTRANSCODER_DISABLE_PYTHON_BINDING)
 		message("PYTHON binding disabled, will not build python binding.")
@@ -83,9 +86,6 @@ if(SWIG_FOUND)
 		find_package(PythonLibs ${AVTRANSCODER_PYTHON_VERSION_OF_BINDING})
 		if(PYTHONLIBS_FOUND)
 			include_directories(${PYTHON_INCLUDE_PATH})
-
-			# Swig flags
-			set(CMAKE_SWIG_FLAGS -c++ -fcompact)
 
 			# Create '_avtranscoder' shared lib (python)
 			swig_add_module(avtranscoder-py python ${AVTRANSCODER_BINDING_FILE})
@@ -110,9 +110,10 @@ if(SWIG_FOUND)
 			install(
 				FILES ${AVTRANSCODER_PYTHON_BINDING_FILE} ${AVTRANSCODER_PYTHON_INIT_FILE}
 				DESTINATION ${AVTRANSCODER_PYTHON_MODULE_OUTPUT_DIR}
+				OPTIONAL
 			)
 			# Install python lib and __init__.py files
-			install(TARGETS ${SWIG_MODULE_avtranscoder-py_REAL_NAME} DESTINATION "lib/python${PYTHONLIBS_VERSION_STRING}/site-packages/pyAvTranscoder/")
+			install(TARGETS ${SWIG_MODULE_avtranscoder-py_REAL_NAME} DESTINATION "lib/python${PYTHONLIBS_VERSION_STRING}/site-packages/pyAvTranscoder/" OPTIONAL)
 			install(CODE "file(WRITE ${CMAKE_INSTALL_PREFIX}/${AVTRANSCODER_PYTHON_MODULE_OUTPUT_DIR}/__init__.py)")
 		else()
 			message("PYTHON not found, will not build python binding.")
@@ -131,7 +132,7 @@ if(SWIG_FOUND)
 			include_directories(${JNI_INCLUDE_DIRS})
 
 			# Swig flags
-			set(CMAKE_SWIG_FLAGS -c++ -fcompact -package org.avtranscoder)
+			set(CMAKE_SWIG_FLAGS ${CMAKE_SWIG_FLAGS} -package org.avtranscoder)
 
 			# Create 'avtranscoder-java' shared lib
 			swig_add_module(avtranscoder-java java ${AVTRANSCODER_BINDING_FILE})
@@ -166,8 +167,8 @@ if(SWIG_FOUND)
 			)
 
 			# Install java lib and jar files
-			install(TARGETS ${SWIG_MODULE_avtranscoder-java_REAL_NAME} DESTINATION "lib/java")
-			install(FILES ${AVTRANSCODER_JAR_PATH}/${AVTRANSCODER_JAR_NAME} DESTINATION "share/java/")
+			install(TARGETS ${SWIG_MODULE_avtranscoder-java_REAL_NAME} DESTINATION "lib/java" OPTIONAL)
+			install(FILES ${AVTRANSCODER_JAR_PATH}/${AVTRANSCODER_JAR_NAME} DESTINATION "share/java/" OPTIONAL)
 		else()
 			message("JAVA not found, will not build java binding.")
 		endif()

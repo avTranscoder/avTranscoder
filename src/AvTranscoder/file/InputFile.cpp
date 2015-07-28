@@ -83,16 +83,16 @@ bool InputFile::readNextPacket( CodedData& data, const size_t streamIndex )
 	return true;
 }
 
-void InputFile::seekAtFrame( const size_t frame )
+void InputFile::seekAtFrame( const size_t frame, const int flag )
 {
 	uint64_t position = frame / getFps() * AV_TIME_BASE;
-	_formatContext.seek( position, AVSEEK_FLAG_BACKWARD );
+	_formatContext.seek( position, flag );
 }
 
-void InputFile::seekAtTime( const double time )
+void InputFile::seekAtTime( const double time, const int flag )
 {
 	uint64_t position = time * AV_TIME_BASE;
-	_formatContext.seek( position, AVSEEK_FLAG_BACKWARD );
+	_formatContext.seek( position, flag );
 }
 
 void InputFile::activateStream( const size_t streamIndex, bool activate )
@@ -114,6 +114,42 @@ InputStream& InputFile::getStream( size_t index )
 		msg << index;
 		throw std::runtime_error( msg.str() );
 	}
+}
+
+
+std::string InputFile::getFormatName() const
+{
+	if( _formatContext.getAVInputFormat().name == NULL )
+	{
+		LOG_WARN("Unknown demuxer format name of '" << _filename << "'.")
+		return "";
+	}
+	return std::string(_formatContext.getAVInputFormat().name);
+}
+
+std::string InputFile::getFormatLongName() const
+{
+	if( _formatContext.getAVInputFormat().long_name == NULL )
+	{
+		LOG_WARN("Unknown demuxer format long name of '" << _filename << "'.")
+		return "";
+	}
+	return std::string(_formatContext.getAVInputFormat().long_name);
+}
+
+std::string InputFile::getFormatMimeType() const
+{
+#if LIBAVFORMAT_VERSION_MAJOR <= 55
+	LOG_WARN("Cannot get mime type format of '" << _filename << "' because your libavformat library has a major version <= 55.")
+	return "not available";
+#else
+	if( _formatContext.getAVInputFormat().mime_type == NULL )
+	{
+		LOG_WARN("Unknown demuxer format mime type of '" << _filename << "'.")
+		return "";
+	}
+	return std::string(_formatContext.getAVInputFormat().mime_type);
+#endif
 }
 
 double InputFile::getFps()

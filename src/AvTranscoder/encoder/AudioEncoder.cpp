@@ -35,9 +35,69 @@ AudioEncoder::~AudioEncoder()
 #endif
 }
 
-void AudioEncoder::setup()
+void AudioEncoder::setupAudioEncoder( const AudioFrameDesc& frameDesc, const ProfileLoader::Profile& profile )
 {
-	_codec.open();
+	LOG_DEBUG( "Set profile of audio encoder with:\n" << profile )
+
+	// set sampleRate, number of channels, sample format
+	_codec.setAudioParameters( frameDesc );
+
+	// setup encoder
+	setupEncoder( profile );
+}
+
+void AudioEncoder::setupEncoder( const ProfileLoader::Profile& profile )
+{
+	// set threads before any other options
+	if( profile.count( constants::avProfileThreads ) )
+		_codec.getOption( constants::avProfileThreads ).setString( profile.at( constants::avProfileThreads ) );
+	else
+		_codec.getOption( constants::avProfileThreads ).setInt( _codec.getAVCodecContext().thread_count );
+
+
+	// set encoder options
+	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
+	{
+		if( (*it).first == constants::avProfileIdentificator ||
+			(*it).first == constants::avProfileIdentificatorHuman ||
+			(*it).first == constants::avProfileType ||
+			(*it).first == constants::avProfileCodec ||
+			(*it).first == constants::avProfileSampleFormat ||
+			(*it).first == constants::avProfileThreads )
+			continue;
+
+		try
+		{
+			Option& encodeOption = _codec.getOption( (*it).first );
+			encodeOption.setString( (*it).second );
+		}
+		catch( std::exception& e )
+		{}
+	}
+
+	// open encoder
+	_codec.openCodec();
+
+	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
+	{
+		if( (*it).first == constants::avProfileIdentificator ||
+			(*it).first == constants::avProfileIdentificatorHuman ||
+			(*it).first == constants::avProfileType ||
+			(*it).first == constants::avProfileCodec ||
+			(*it).first == constants::avProfileSampleFormat ||
+			(*it).first == constants::avProfileThreads )
+			continue;
+
+		try
+		{
+			Option& encodeOption = _codec.getOption( (*it).first );
+			encodeOption.setString( (*it).second );
+		}
+		catch( std::exception& e )
+		{
+			LOG_WARN( "AudioEncoder - can't set option " << (*it).first <<  " to " << (*it).second << ": " << e.what() )
+		}
+	}
 }
 
 bool AudioEncoder::encodeFrame( const Frame& sourceFrame, Frame& codedFrame )
@@ -131,64 +191,6 @@ bool AudioEncoder::encodeFrame( Frame& codedFrame )
 	return ret == 0;
 
 #endif
-}
-
-void AudioEncoder::setProfile( const ProfileLoader::Profile& profile, const AudioFrameDesc& frameDesc  )
-{
-	LOG_DEBUG( "Set profile of audio encoder with:\n" << profile )
-
-	// set sampleRate, number of channels, sample format
-	_codec.setAudioParameters( frameDesc );
-
-	// set threads before any other options
-	if( profile.count( constants::avProfileThreads ) )
-		_codec.getOption( constants::avProfileThreads ).setString( profile.at( constants::avProfileThreads ) );
-	else
-		_codec.getOption( constants::avProfileThreads ).setString( "auto" );
-
-
-	// set encoder options
-	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
-	{
-		if( (*it).first == constants::avProfileIdentificator ||
-			(*it).first == constants::avProfileIdentificatorHuman ||
-			(*it).first == constants::avProfileType ||
-			(*it).first == constants::avProfileCodec ||
-			(*it).first == constants::avProfileSampleFormat ||
-			(*it).first == constants::avProfileThreads )
-			continue;
-
-		try
-		{
-			Option& encodeOption = _codec.getOption( (*it).first );
-			encodeOption.setString( (*it).second );
-		}
-		catch( std::exception& e )
-		{}
-	}
-
-	setup();
-
-	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
-	{
-		if( (*it).first == constants::avProfileIdentificator ||
-			(*it).first == constants::avProfileIdentificatorHuman ||
-			(*it).first == constants::avProfileType ||
-			(*it).first == constants::avProfileCodec ||
-			(*it).first == constants::avProfileSampleFormat ||
-			(*it).first == constants::avProfileThreads )
-			continue;
-
-		try
-		{
-			Option& encodeOption = _codec.getOption( (*it).first );
-			encodeOption.setString( (*it).second );
-		}
-		catch( std::exception& e )
-		{
-			LOG_WARN( "AudioEncoder - can't set option " << (*it).first <<  " to " << (*it).second << ": " << e.what() )
-		}
-	}
 }
 
 }

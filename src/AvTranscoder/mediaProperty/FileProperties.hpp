@@ -16,6 +16,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 namespace avtranscoder
 {
@@ -43,7 +44,7 @@ public:
 
 	size_t getProgramsCount() const;
 	double getStartTime() const;
-	double getDuration() const;  ///< in seconds
+	float getDuration() const;  ///< in seconds
 	size_t getBitRate() const;  ///< total stream bitrate in bit/s, 0 if not available (result of a computation by ffmpeg)
 	size_t getPacketSize() const;
 
@@ -61,6 +62,7 @@ public:
 
 	//@{
 	// @brief Get the properties at the indicated stream index
+	// @throws A runtime error if the streamIndex does not match any stream
 	const avtranscoder::StreamProperties& getStreamPropertiesWithIndex( const size_t streamIndex ) const;
 	//@}
 
@@ -102,7 +104,8 @@ private:
 	const FormatContext* _formatContext;  ///< Has link (no ownership)
 	const AVFormatContext* _avFormatContext;  ///< Has link (no ownership)
 
-	std::vector< StreamProperties* > _streams;  ///< Array of properties per stream (of all types) - only references to the following properties
+	std::map< size_t, StreamProperties* > _streams;  ///< Map of properties per stream index (of all types) - only references to the following properties
+
 	std::vector< VideoProperties > _videoStreams;  ///< Array of properties per video stream
 	std::vector< AudioProperties >  _audioStreams;  ///< Array of properties per audio stream
 	std::vector< DataProperties > _dataStreams;  ///< Array of properties per data stream

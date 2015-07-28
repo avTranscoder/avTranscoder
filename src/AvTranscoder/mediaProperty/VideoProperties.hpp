@@ -56,7 +56,7 @@ public:
 	int getProfile() const;
 	int getLevel() const;
 
-	double getFps() const;
+	float getFps() const;
 
 	bool hasBFrames() const;
 	//bool isClosedGop() const;
@@ -110,6 +110,12 @@ private:
 	bool _isTopFieldFirst;
 	std::vector< std::pair< char, bool > > _gopStructure;
 	//@}
+
+	/**
+	 * @brief GOP timecode of the first frame
+	 * @note  AVCodecContext stores the GOP timecode of the last decoded frame
+	 */
+	int64_t _firstGopTimeCode;
 };
 
 }

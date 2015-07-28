@@ -29,12 +29,12 @@ public:
 	 * @brief rewrap stream
 	 * @note offset feature when rewrap a stream is not supported
 	 **/
-	StreamTranscoder( IInputStream& inputStream, IOutputFile& outputFile, const double offset = 0 );
+	StreamTranscoder( IInputStream& inputStream, IOutputFile& outputFile, const float offset = 0 );
 
 	/**
 	 * @brief transcode stream
 	 **/
-	StreamTranscoder( IInputStream& inputStream, IOutputFile& outputFile, const ProfileLoader::Profile& profile, const int subStreamIndex = -1, const double offset = 0 );
+	StreamTranscoder( IInputStream& inputStream, IOutputFile& outputFile, const ProfileLoader::Profile& profile, const int subStreamIndex = -1, const float offset = 0 );
 
 	/**
 	 * @brief encode from a generated stream
@@ -68,7 +68,7 @@ public:
 	 * @note if it's a generated stream, return limit of double.
 	 * @note if offset > duration of the stream, return 0
 	 */
-	double getDuration() const;
+	float getDuration() const;
 
 	/// Returns a reference to the current decoder (from input file or from generator)
 	IDecoder& getCurrentDecoder() const { return *_currentDecoder; }
@@ -95,9 +95,15 @@ private:
 	bool processRewrap();
 	bool processTranscode( const int subStreamIndex = -1 );  ///< By default transcode all channels
 
-	bool isTranscodeCase() const;
-	bool isRewrapCase() const;
-	bool isGeneratorCase() const;
+	//@{
+	// Get the current process case.
+	enum EProcessCase {
+	    eProcessCaseTranscode,
+	    eProcessCaseRewrap,
+	    eProcessCaseGenerator
+	};
+	EProcessCase getProcessCase() const;
+	//@}
 
 private:
 	IInputStream* _inputStream;  ///< Input stream to read next packet (has link, no ownership)
@@ -115,7 +121,7 @@ private:
 
 	int  _subStreamIndex;  ///< Index of channel that is processed from the input stream (<0 if no demultiplexing).
 
-	double _offset;  ///< Offset, in seconds, at the beginning of the StreamTranscoder.
+	float _offset;  ///< Offset, in seconds, at the beginning of the StreamTranscoder.
 
 	bool _canSwitchToGenerator;  ///< Automatically switch to a generator at the end of the stream
 };

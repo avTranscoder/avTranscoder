@@ -1,8 +1,9 @@
 env:
   global:
-     - AVTRANSCODER_BUILD=${TRAVIS_BUILD_DIR}/build
-     - AVTRANSCODER_INSTALL=${TRAVIS_BUILD_DIR}/install
-     - J='-j3'
+     - AVTRANSCODER_BUILD=${TRAVIS_BUILD_DIR}/build-avtranscoder
+     - AVTRANSCODER_INSTALL=${TRAVIS_BUILD_DIR}/install-avtranscoder
+     - DEPENDENCY_INSTALL=${TRAVIS_BUILD_DIR}/install-dependency
+     - CI_NODE_TOTAL=2
   matrix:
     - DEPENDENCY_MODE=libav
     - DEPENDENCY_MODE=ffmpeg
@@ -28,21 +29,39 @@ before_script:
   - ./tools/travis.gcc.install.coverage.sh
 
   # install avtranscoder dependencies
-  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then ./tools/travis.linux.install.deps.sh; fi
-  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then ./tools/travis.osx.install.deps.sh; fi
+  - if [ ${TRAVIS_OS_NAME} = "linux" ]; then ./tools/travis.linux.install.deps.sh; fi
+  - if [ ${TRAVIS_OS_NAME} = "osx" ]; then ./tools/travis.osx.install.deps.sh; fi
 
 script:
-  # Build
+  # build
   - mkdir -p ${AVTRANSCODER_BUILD}
   - cd ${AVTRANSCODER_BUILD}
-  - cmake .. -DCMAKE_INSTALL_PREFIX=${AVTRANSCODER_INSTALL} -DCMAKE_BUILD_TYPE=Release -DAVTRANSCODER_PYTHON_VERSION_OF_BINDING=2.7 -DAVTRANSCODER_COVERAGE=True
-  - make $J install
+  - cmake .. -DCMAKE_INSTALL_PREFIX=${AVTRANSCODER_INSTALL} -DCMAKE_PREFIX_PATH=${DEPENDENCY_INSTALL} -DCMAKE_BUILD_TYPE=Release -DAVTRANSCODER_PYTHON_VERSION_OF_BINDING=2.7 -DAVTRANSCODER_COVERAGE=True
+  - make -j${CI_NODE_TOTAL}
+  - make install
 
-  # Launch tests
-  - if [ "${DEPENDENCY_MODE}" = "ffmpeg" ]; then ./../tools/travis.python.nosetests.sh; fi
+  # launch tests
+  - if [ ${DEPENDENCY_MODE} = "ffmpeg" ]; then ./../tools/travis.python.nosetests.sh; fi
 
 after_success:
   - cd ${TRAVIS_BUILD_DIR}
 
   # generate coverage for coveralls
-  - if [ "${CC}" = "gcc" ]; then ./tools/travis.gcc.generate.coverage.sh; fi
+  - if [ ${CC} = "gcc" ]; then ./tools/travis.gcc.generate.coverage.sh; fi
+
+before_deploy:
+  # create archive
+  - cd ${TRAVIS_BUILD_DIR}
+  - tar -cvzf avtranscoder-${TRAVIS_OS_NAME}-${CC}-${DEPENDENCY_MODE}.tgz ${DEPENDENCY_INSTALL} ${AVTRANSCODER_INSTALL}
+
+deploy:
+  # if the commit is tagged, deploy using github release service
+  provider: releases
+  api_key:
+    secure: ${GITHUB_RELEASE_API_KEY}
+  file: avtranscoder-${TRAVIS_OS_NAME}-${CC}-${DEPENDENCY_MODE}.tgz
+  skip_cleanup: true
+  on:
+    tags: true
+    condition: ${TRAVIS_OS_NAME} = "linux"
+

@@ -14,7 +14,7 @@ OutputStream::OutputStream( OutputFile& outputFile, const size_t streamIndex )
 {
 }
 
-double OutputStream::getStreamDuration() const
+float OutputStream::getStreamDuration() const
 {
 	AVStream& outputStream = _outputFile->getFormatContext().getAVStream( _streamIndex );
 #if AVTRANSCODER_FFMPEG_DEPENDENCY && LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(55, 40, 100)
@@ -23,6 +23,12 @@ double OutputStream::getStreamDuration() const
 #else
 	return av_q2d( outputStream.time_base ) * ( outputStream.pts.val + ( outputStream.pts.num / outputStream.pts.den ) );
 #endif
+}
+
+size_t OutputStream::getNbFrames() const
+{
+	AVStream& outputStream = _outputFile->getFormatContext().getAVStream( _streamIndex );
+	return outputStream.nb_frames;
 }
 
 IOutputStream::EWrappingStatus OutputStream::wrap( const CodedData& data )

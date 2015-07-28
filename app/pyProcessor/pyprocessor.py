@@ -1,4 +1,5 @@
-import sys
+#!/usr/bin/env python
+
 import argparse # python2.7+
 
 from pyAvTranscoder import avtranscoder as av

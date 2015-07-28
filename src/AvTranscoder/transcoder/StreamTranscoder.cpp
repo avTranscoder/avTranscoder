@@ -23,7 +23,7 @@ namespace avtranscoder
 StreamTranscoder::StreamTranscoder(
 		IInputStream& inputStream,
 		IOutputFile& outputFile,
-		const double offset
+		const float offset
 	)
 	: _inputStream( &inputStream )
 	, _outputStream( NULL )
@@ -59,8 +59,7 @@ StreamTranscoder::StreamTranscoder(
 
 			// output encoder
 			VideoEncoder* outputVideo = new VideoEncoder( _inputStream->getVideoCodec().getCodecName() );
-			outputVideo->getVideoCodec().setImageParameters( inputFrameDesc );
-			outputVideo->setup();
+			outputVideo->setupVideoEncoder( inputFrameDesc );
 			_outputEncoder = outputVideo;
 
 			// output stream
@@ -86,8 +85,7 @@ StreamTranscoder::StreamTranscoder(
 
 			// output encoder
 			AudioEncoder* outputAudio = new AudioEncoder( _inputStream->getAudioCodec().getCodecName()  );
-			outputAudio->getAudioCodec().setAudioParameters( inputFrameDesc );
-			outputAudio->setup();
+			outputAudio->setupAudioEncoder( inputFrameDesc );
 			_outputEncoder = outputAudio;
 
 			// output stream
@@ -111,7 +109,7 @@ StreamTranscoder::StreamTranscoder(
 		IOutputFile& outputFile,
 		const ProfileLoader::Profile& profile,
 		const int subStreamIndex,
-		const double offset
+		const float offset
 	)
 	: _inputStream( &inputStream )
 	, _outputStream( NULL )
@@ -133,9 +131,7 @@ StreamTranscoder::StreamTranscoder(
 		{
 			// input decoder
 			VideoDecoder* inputVideo = new VideoDecoder( *static_cast<InputStream*>( _inputStream ) );
-			// set decoder options with empty profile to set some key options to specific values (example: threads to auto)
-			inputVideo->setProfile( ProfileLoader::Profile() );
-			inputVideo->setup();
+			inputVideo->setupDecoder();
 			_inputDecoder = inputVideo;
 			_currentDecoder = _inputDecoder;
 
@@ -145,7 +141,7 @@ StreamTranscoder::StreamTranscoder(
 
 			VideoFrameDesc outputFrameDesc = _inputStream->getVideoCodec().getVideoFrameDesc();
 			outputFrameDesc.setParameters( profile );
-			outputVideo->setProfile( profile, outputFrameDesc );
+			outputVideo->setupVideoEncoder( outputFrameDesc, profile );
 
 			// output stream
 			_outputStream = &outputFile.addVideoStream( outputVideo->getVideoCodec() );
@@ -168,9 +164,7 @@ StreamTranscoder::StreamTranscoder(
 		{
 			// input decoder
 			AudioDecoder* inputAudio = new AudioDecoder( *static_cast<InputStream*>( _inputStream ) );
-			// set decoder options with empty profile to set some key options to specific values (example: threads to auto)
-			inputAudio->setProfile( ProfileLoader::Profile() );
-			inputAudio->setup();
+			inputAudio->setupDecoder();
 			_inputDecoder = inputAudio;
 			_currentDecoder = _inputDecoder;
 
@@ -185,7 +179,7 @@ StreamTranscoder::StreamTranscoder(
 				// @todo manage downmix ?
 				outputFrameDesc.setChannels( 1 );
 			}
-			outputAudio->setProfile( profile, outputFrameDesc );
+			outputAudio->setupAudioEncoder( outputFrameDesc, profile );
 
 			// output stream
 			_outputStream = &outputFile.addAudioStream( outputAudio->getAudioCodec() );
@@ -255,7 +249,7 @@ StreamTranscoder::StreamTranscoder(
 
 		// output encoder
 		VideoEncoder* outputVideo = new VideoEncoder( profile.at( constants::avProfileCodec ) );
-		outputVideo->setProfile( profile, outputFrameDesc );
+		outputVideo->setupVideoEncoder( outputFrameDesc, profile );
 		_outputEncoder = outputVideo;
 
 		// output stream
@@ -282,7 +276,7 @@ StreamTranscoder::StreamTranscoder(
 
 		// output encoder
 		AudioEncoder* outputAudio = new AudioEncoder( profile.at( constants::avProfileCodec ) );
-		outputAudio->setProfile( profile, outputFrameDesc );
+		outputAudio->setupAudioEncoder( outputFrameDesc, profile );
 		_outputEncoder = outputAudio;
 
 		// output stream
@@ -315,13 +309,16 @@ void StreamTranscoder::preProcessCodecLatency()
 		return;
 
 	// set a decoder to preload generated frames
-	if( isRewrapCase() )
+	if( getProcessCase() == eProcessCaseRewrap )
 		switchToGeneratorDecoder();
 
 	while( ( latency-- ) > 0 )
 	{
 		processFrame();
 	}
+
+	if( getProcessCase() == eProcessCaseRewrap )
+		_currentDecoder = NULL;
 }
 
 bool StreamTranscoder::processFrame()
@@ -334,7 +331,7 @@ bool StreamTranscoder::processFrame()
 		{
 			LOG_INFO( "End of positive offset" )
 
-			if( isTranscodeCase() )
+			if( getProcessCase() == eProcessCaseTranscode )
 				switchToInputDecoder();
 			else
 				_currentDecoder = NULL;
@@ -362,7 +359,7 @@ bool StreamTranscoder::processFrame()
 		}
  	}
 
-	if( isRewrapCase() )
+	if( getProcessCase() == eProcessCaseRewrap )
 		return processRewrap();
 
 	return processTranscode( _subStreamIndex );	
@@ -403,7 +400,7 @@ bool StreamTranscoder::processRewrap()
 			return true;
 		case IOutputStream::eWrappingWaitingForData:
 			// the wrapper needs more data to write the current packet
-			return processRewrap();
+			return processFrame();
 		case IOutputStream::eWrappingError:
 			return false;
 	}
@@ -461,7 +458,7 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 			return true;
 		case IOutputStream::eWrappingWaitingForData:
 			// the wrapper needs more data to write the current packet
-			return processTranscode( subStreamIndex );
+			return processFrame();
 		case IOutputStream::eWrappingError:
 			return false;
 	}
@@ -485,11 +482,11 @@ void StreamTranscoder::switchToInputDecoder()
 	assert( _currentDecoder != NULL );
 }
 
-double StreamTranscoder::getDuration() const
+float StreamTranscoder::getDuration() const
 {	
 	if( _inputStream )
 	{
-		double totalDuration = _inputStream->getDuration() + _offset;
+		const float totalDuration = _inputStream->getDuration() + _offset;
 		if( totalDuration < 0 )
 		{
 			LOG_WARN( "Offset of " << _offset << "s applied to a stream with a duration of " << _inputStream->getDuration() << "s. Set its duration to 0s." )
@@ -498,22 +495,17 @@ double StreamTranscoder::getDuration() const
 		return totalDuration;
 	}
 	else
-		return std::numeric_limits<double>::max();
+		return std::numeric_limits<float>::max();
 }
 
-bool StreamTranscoder::isTranscodeCase() const
+StreamTranscoder::EProcessCase StreamTranscoder::getProcessCase() const
 {
-	return _inputStream && _inputDecoder;
-}
-
-bool StreamTranscoder::isRewrapCase() const
-{
-	return _inputStream && ! _inputDecoder;
-}
-
-bool StreamTranscoder::isGeneratorCase() const
-{
-	return ! _inputStream;
+	if( _inputStream && _inputDecoder )
+		return eProcessCaseTranscode;
+	else if( _inputStream && ! _inputDecoder )
+		return eProcessCaseRewrap;
+	else
+		return eProcessCaseGenerator;
 }
 
 }

@@ -53,6 +53,24 @@ public:
 	void addMetadata( const std::string& key, const std::string& value );
 	
 	IOutputStream& getStream( const size_t streamId );
+
+	std::string getFilename() const { return _filename; }
+
+	/**
+	 * @brief A comma separated list of short names for the format, or empty if unknown.
+	 */
+	std::string getFormatName() const;
+
+	/**
+	 * @brief Descriptive name for the format, meant to be more human-readable than name, or empty if unknown.
+	 */
+	std::string getFormatLongName() const;
+
+	/**
+	 * @brief Comma-separated list of mime types, or empty if unknown.
+	 */
+	std::string getFormatMimeType() const;
+
 	FormatContext& getFormatContext() { return _formatContext; }
 
 	/**

@@ -18,7 +18,7 @@ public:
 	size_t getStreamIndex() const { return _streamIndex; }
 	size_t getStreamId() const;
 	Rational getTimeBase() const;
-	double getDuration() const;  ///< in seconds
+	float getDuration() const;  ///< in seconds
 	const PropertyVector& getMetadatas() const { return _metadatas; }
 
 #ifndef SWIG

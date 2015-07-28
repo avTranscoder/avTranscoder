@@ -13,6 +13,8 @@
 %include "AvTranscoder/swig/avMediaType.i"
 %include "AvTranscoder/swig/avRational.i"
 %include "AvTranscoder/swig/avLogLevel.i"
+%include "AvTranscoder/swig/avSeek.i"
+%include "AvTranscoder/swig/avOperator.i"
 
 %{
 #include <AvTranscoder/Library.hpp>
@@ -35,4 +37,5 @@
 %include "AvTranscoder/encoder/encoder.i"
 %include "AvTranscoder/transform/transform.i"
 %include "AvTranscoder/file/file.i"
+%include "AvTranscoder/stat/stat.i"
 %include "AvTranscoder/transcoder/transcoder.i"
