@@ -1,0 +1,8 @@
+#!/usr/bin/make -f
+
+%:
+	dh $@
+
+override_dh_auto_configure:
+	cmake . -DCMAKE_INSTALL_PREFIX=/usr
+

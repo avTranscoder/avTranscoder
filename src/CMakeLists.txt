@@ -115,7 +115,7 @@ if(SWIG_FOUND)
 			)
 			# Install python lib and __init__.py files
 			install(TARGETS ${SWIG_MODULE_avtranscoder-py_REAL_NAME} DESTINATION ${AVTRANSCODER_PYTHON_MODULE_OUTPUT_DIR} OPTIONAL)
-			install(CODE "file(WRITE ${CMAKE_INSTALL_PREFIX}/${AVTRANSCODER_PYTHON_MODULE_OUTPUT_DIR}/__init__.py)")
+			install(CODE "file(WRITE ${AVTRANSCODER_PYTHON_MODULE_OUTPUT_DIR}/__init__.py)")
 		else()
 			message("PYTHON not found, will not build python binding.")
 		endif()
