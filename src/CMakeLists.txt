@@ -52,9 +52,9 @@ install(
 install(TARGETS avtranscoder-static DESTINATION lib/ OPTIONAL)
 install(TARGETS avtranscoder-shared DESTINATION lib/ OPTIONAL)
 
-### Install AvTranscoder ressource
+### Install AvTranscoder avprofiles
 install(
-	DIRECTORY "${PROJECT_SOURCE_DIR}/ressource"
+	DIRECTORY "${PROJECT_SOURCE_DIR}/avprofiles"
 	DESTINATION "share"
 	FILES_MATCHING
 	PATTERN "*.prf"
@@ -106,14 +106,15 @@ if(SWIG_FOUND)
 
 			# Install python interface
 			set(AVTRANSCODER_PYTHON_BINDING_FILE "${CMAKE_SWIG_OUTDIR}/avtranscoder.py")
-			set(AVTRANSCODER_PYTHON_MODULE_OUTPUT_DIR "lib/python${PYTHONLIBS_VERSION_STRING}/site-packages/pyAvTranscoder/")
+			string(SUBSTRING ${PYTHONLIBS_VERSION_STRING} 0 3 PYTHON_VERSION)
+			set(AVTRANSCODER_PYTHON_MODULE_OUTPUT_DIR "lib/python${PYTHON_VERSION}/site-packages/pyAvTranscoder/")
 			install(
 				FILES ${AVTRANSCODER_PYTHON_BINDING_FILE} ${AVTRANSCODER_PYTHON_INIT_FILE}
 				DESTINATION ${AVTRANSCODER_PYTHON_MODULE_OUTPUT_DIR}
 				OPTIONAL
 			)
 			# Install python lib and __init__.py files
-			install(TARGETS ${SWIG_MODULE_avtranscoder-py_REAL_NAME} DESTINATION "lib/python${PYTHONLIBS_VERSION_STRING}/site-packages/pyAvTranscoder/" OPTIONAL)
+			install(TARGETS ${SWIG_MODULE_avtranscoder-py_REAL_NAME} DESTINATION ${AVTRANSCODER_PYTHON_MODULE_OUTPUT_DIR} OPTIONAL)
 			install(CODE "file(WRITE ${CMAKE_INSTALL_PREFIX}/${AVTRANSCODER_PYTHON_MODULE_OUTPUT_DIR}/__init__.py)")
 		else()
 			message("PYTHON not found, will not build python binding.")
