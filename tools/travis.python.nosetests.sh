@@ -2,7 +2,7 @@
 
 # Get avtranscoder library
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${DEPENDENCY_INSTALL}/lib
-export PYTHONPATH=${AVTRANSCODER_INSTALL}/lib/python2.7.6/site-packages/:$PYTHONPATH
+export PYTHONPATH=${AVTRANSCODER_INSTALL}/lib/python2.7/site-packages/:$PYTHONPATH
 
 # Get assets
 git clone https://github.com/avTranscoder/avTranscoder-data.git
