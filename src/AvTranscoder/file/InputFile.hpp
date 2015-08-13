@@ -99,7 +99,7 @@ public:
 	 * @brief Set the format of the input file
 	 * @param profile: the profile of the input format
 	 */
-	virtual void setProfile( const ProfileLoader::Profile& profile );
+	virtual void setupUnwrapping( const ProfileLoader::Profile& profile );
 
 public:
 	/**
