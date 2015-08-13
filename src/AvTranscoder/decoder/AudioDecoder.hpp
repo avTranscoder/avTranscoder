@@ -27,6 +27,8 @@ private:
 private:
 	InputStream* _inputStream;  ///< Stream from which we read next frames (no ownership, has link)
 	AVFrame* _frame;  ///< Libav object to store decoded data (has ownership)
+
+	bool _isSetup;
 };
 
 }
