@@ -45,3 +45,7 @@ Note: for continuous integration, we launch tests with media files contained in 
 ###### Build openSUSE  
 comming soon
 
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/avTranscoder/avtranscoder/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
