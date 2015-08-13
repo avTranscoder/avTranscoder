@@ -77,7 +77,7 @@ public:
 	 * @brief Set the format of the output file
 	 * @param profile: the profile of the output format
 	 */
-	void setProfile( const ProfileLoader::Profile& profile );
+	void setupWrapping( const ProfileLoader::Profile& profile );
 
 private:
 	FormatContext _formatContext;

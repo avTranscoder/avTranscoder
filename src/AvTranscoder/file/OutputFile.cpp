@@ -181,7 +181,7 @@ void OutputFile::addMetadata( const std::string& key, const std::string& value )
 	_formatContext.addMetaData( key, value );
 }
 
-void OutputFile::setProfile( const ProfileLoader::Profile& profile )
+void OutputFile::setupWrapping( const ProfileLoader::Profile& profile )
 {
 	LOG_DEBUG( "Set profile of output file with:\n" << profile )
 
