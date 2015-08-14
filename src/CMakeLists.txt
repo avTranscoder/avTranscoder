@@ -132,6 +132,11 @@ if(SWIG_FOUND)
 			include_directories(${JAVA_INCLUDE_PATH})
 			include_directories(${JNI_INCLUDE_DIRS})
 
+			# Update compilation flags
+			if(NOT MSVC)
+				set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fno-strict-aliasing")
+			endif()
+
 			# Swig flags
 			set(CMAKE_SWIG_FLAGS ${CMAKE_SWIG_FLAGS} -package org.avtranscoder)
 
