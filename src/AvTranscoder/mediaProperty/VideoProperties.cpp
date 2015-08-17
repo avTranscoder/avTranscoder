@@ -459,7 +459,10 @@ size_t VideoProperties::getNbFrames() const
 {
 	if( ! _formatContext )
 		throw std::runtime_error( "unknown format context" );
-	return _formatContext->streams[_streamIndex]->nb_frames;
+	size_t nbFrames = _formatContext->streams[_streamIndex]->nb_frames;
+	if( nbFrames == 0 )
+		nbFrames = getFps() * getDuration();
+	return nbFrames;
 }
 
 size_t VideoProperties::getTicksPerFrame() const
@@ -520,16 +523,6 @@ int VideoProperties::getLevel() const
 
 float VideoProperties::getFps() const
 {
-	const size_t nbFrames = getNbFrames();
-	if( nbFrames )
-	{
-		const float duration = getDuration();
-		const float epsilon = std::numeric_limits<float>::epsilon();
-		if( duration > epsilon )
-			return nbFrames / duration;
-	}
-
-	// if nbFrames of stream is unknwon
 	Rational timeBase = getTimeBase();
 	float fps = timeBase.den / (double) timeBase.num;
 	if( std::isinf( fps ) )
