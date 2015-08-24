@@ -14,7 +14,7 @@
 #include <iomanip>
 #include <cstring>
 
-Reader* Window::_reader = NULL;
+avtranscoder::VideoReader* Window::_reader = NULL;
 
 size_t Window::_width = 0;
 size_t Window::_height = 0;
@@ -94,7 +94,7 @@ void loadNewTexture( const char* data, GLint internalFormat, size_t width, size_
 	loadNewTexture( _imageProperties );
 }
 
-Window::Window( Reader& reader )
+Window::Window( avtranscoder::VideoReader& reader )
 {
 	_reader = &reader;
 	_width  = _reader->getWidth();
@@ -220,11 +220,6 @@ void Window::keyboard( unsigned char k, int x, int y )
 		case 'a':
 			showAlphaChannelTexture();
 			break;
-
-		case 'm':
-			_reader->printMetadatas();
-			break;
-
 		case 'H':
 			if( shift )
 			{
@@ -398,8 +393,7 @@ void Window::displayHelp()
 {
 	static const std::string kViewerHelp =
 	"Av Player Viewer Help\n" \
-	"i                  : information about image (dimensions, bit depth, channels)\n"\
-	"m                  : full metadatas of media\n"\
+	"i                  : information about image (dimensions, bit depth, channels) + video stream\n"\
 	"z                  : zoom view to 1:1\n"\
 	"h, F1              : print help\n" \
 	"SHIFT + V          : flip\n" \
@@ -425,6 +419,9 @@ void Window::displayInformations()
 		case GL_FLOAT          : textureType += "32 float"; break;
 	}
 	std::cout << textureType << " " << _width << "x" << _height << std::endl;
+
+	// stream info
+	_reader->printInfo();
 }
 
 void Window::move( float x, float y )
