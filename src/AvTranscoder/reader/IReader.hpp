@@ -49,7 +49,7 @@ public:
 	/**
 	 * @brief Print info of the stream read.
 	 */
-	virtual void printInfo() = 0;
+	virtual void printInfo();
 
 protected:
 	InputFile* _inputFile;

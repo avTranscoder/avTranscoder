@@ -10,6 +10,8 @@ namespace avtranscoder
 
 std::ostream& operator<<( std::ostream& flux, const FileProperties& fileProperties );
 
+std::ostream& operator<<( std::ostream& flux, const StreamProperties& streamProperties );
+
 std::ostream& operator<<( std::ostream& flux, const VideoProperties& videoProperties );
 
 std::ostream& operator<<( std::ostream& flux, const AudioProperties& audioProperties );

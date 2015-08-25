@@ -24,6 +24,20 @@ std::ostream& operator<<( std::ostream& flux, const FileProperties& fileProperti
 	return flux;
 }
 
+std::ostream& operator<<( std::ostream& flux, const StreamProperties& streamProperties )
+{
+	flux << std::left;
+	flux << separator << " Stream " << separator << std::endl;
+
+	PropertyVector properties = streamProperties.getPropertiesAsVector();
+	for( PropertyVector::iterator it = properties.begin(); it != properties.end(); ++it )
+	{
+		flux << std::setw( keyWidth ) << it->first << ": " << it->second << std::endl;
+	}
+
+	return flux;
+}
+
 std::ostream& operator<<( std::ostream& flux, const VideoProperties& videoProperties )
 {
 	flux << std::left;

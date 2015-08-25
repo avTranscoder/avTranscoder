@@ -1,5 +1,7 @@
 #include "IReader.hpp"
 
+#include <AvTranscoder/mediaProperty/print.hpp>
+
 namespace avtranscoder
 {
 
@@ -57,4 +59,10 @@ const char* IReader::readFrameAt( const size_t frame )
 	// return buffer
 	return (const char*)_dstFrame->getData();
 }
+
+void IReader::printInfo()
+{
+	std::cout << *_streamProperties << std::endl;
+}
+
 }
