@@ -1,5 +1,5 @@
 #ifndef _AV_TRANSCODER_IREADER_HPP
-#define	_AV_TRANSCODER_IREADER_HPP
+#define _AV_TRANSCODER_IREADER_HPP
 
 #include <AvTranscoder/common.hpp>
 
