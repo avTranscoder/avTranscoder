@@ -22,6 +22,7 @@ public:
 	size_t getComponents();
 	size_t getBitDepth();
 	AVPixelFormat getPixelFormat();
+	const VideoProperties* getVideoProperties() const {return _videoStreamProperties;}
 
 	void printInfo();
 

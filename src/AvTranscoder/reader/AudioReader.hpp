@@ -19,6 +19,7 @@ public:
 
 	size_t getSampleRate();
 	size_t getChannels();
+	const AudioProperties* getAudioProperties() const {return _audioStreamProperties;}
 
 	void printInfo();
 
