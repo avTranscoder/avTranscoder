@@ -39,3 +39,4 @@
 %include "AvTranscoder/file/file.i"
 %include "AvTranscoder/stat/stat.i"
 %include "AvTranscoder/transcoder/transcoder.i"
+%include "AvTranscoder/reader/reader.i"
