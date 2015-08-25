@@ -64,28 +64,6 @@ size_t AudioReader::getChannels()
 	return _audioStreamProperties->getChannels();
 }
 
-const char* AudioReader::readNextFrame()
-{
-	return readFrameAt( _currentFrame + 1 );
-}
-
-const char* AudioReader::readPrevFrame()
-{
-	return readFrameAt( _currentFrame - 1 );
-}
-
-const char* AudioReader::readFrameAt( const size_t frame )
-{
-	_currentFrame = frame;
-	// seek
-	_inputFile->seekAtFrame( frame );
-	// decode
-	_decoder->decodeNextFrame( *_srcFrame );
-	_transform->convert( *_srcFrame, *_dstFrame );
-	// return buffer
-	return (const char*)_dstFrame->getData();
-}
-
 void AudioReader::printInfo()
 {
 	std::cout << *_audioStreamProperties << std::endl;

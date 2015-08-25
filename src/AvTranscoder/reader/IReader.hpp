@@ -34,17 +34,17 @@ public:
 	/**
 	 * @return Get next frame after decoding
 	 */
-	virtual const char* readNextFrame() = 0;
+	const char* readNextFrame();
 
 	/**
 	 * @return Get previous frame after decoding
 	 */
-	virtual const char* readPrevFrame() = 0;
+	const char* readPrevFrame();
 
 	/**
 	 * @return Get indicated frame after decoding
 	 */
-	virtual const char* readFrameAt( const size_t frame ) = 0;
+	const char* readFrameAt( const size_t frame );
 
 	/**
 	 * @brief Print info of the stream read.

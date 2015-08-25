@@ -20,10 +20,6 @@ public:
 	size_t getSampleRate();
 	size_t getChannels();
 
-	const char* readNextFrame();
-	const char* readPrevFrame();
-	const char* readFrameAt( const size_t frame );
-
 	void printInfo();
 
 private:

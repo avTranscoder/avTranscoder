@@ -79,29 +79,6 @@ AVPixelFormat VideoReader::getPixelFormat()
 	return _videoStreamProperties->getPixelProperties().getAVPixelFormat();
 }
 
-const char* VideoReader::readNextFrame()
-{
-	return readFrameAt( _currentFrame + 1 );
-}
-
-const char* VideoReader::readPrevFrame()
-{
-	return readFrameAt( _currentFrame - 1 );
-}
-
-const char* VideoReader::readFrameAt( const size_t frame )
-{
-	_currentFrame = frame;
-	// seek
-	_inputFile->seekAtFrame( frame );
-	static_cast<VideoDecoder*>(_decoder)->flushDecoder();
-	// decode
-	_decoder->decodeNextFrame( *_srcFrame );
-	_transform->convert( *_srcFrame, *_dstFrame );
-	// return buffer
-	return (const char*)_dstFrame->getData();
-}
-
 void VideoReader::printInfo()
 {
 	std::cout << *_videoStreamProperties << std::endl;
