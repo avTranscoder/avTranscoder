@@ -78,8 +78,9 @@ public:
 	 * @param position: can be in AV_TIME_BASE units, in frames... depending on the flag value
 	 * @param flag: seeking mode (AVSEEK_FLAG_xxx)
 	 * @note before seek, add offset of start time
+	 * @return seek status
 	 */
-	void seek( uint64_t position, const int flag );
+	bool seek( uint64_t position, const int flag );
 
 	size_t getNbStreams() const { return _avFormatContext->nb_streams; }
 	/// Get duration of the program, in seconds

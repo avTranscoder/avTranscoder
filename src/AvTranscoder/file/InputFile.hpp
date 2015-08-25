@@ -52,13 +52,14 @@ public:
 	 * @note Seek in file by using the default stream (according to ffmpeg)
 	 * @param flag: ffmpeg seek flag (by default seek to any frame, even non-keyframes)
 	 * @warning If the seek is done to a non key-frame, the decoding will start from the next key-frame
+	 * @return seek status
 	 **/
-	void seekAtFrame( const size_t frame, const int flag = AVSEEK_FLAG_ANY );
-	void seekAtTime( const double time, const int flag = AVSEEK_FLAG_ANY );
+	bool seekAtFrame( const size_t frame, const int flag = AVSEEK_FLAG_ANY );
+	bool seekAtTime( const double time, const int flag = AVSEEK_FLAG_ANY );
 
 	/** 
 	 * @brief Activate the indicated stream
-         * @note Activate a stream results in buffered its data when processing
+	 * @note Activate a stream results in buffered its data when processing
 	 **/
 	void activateStream( const size_t streamIndex, const bool activate = true );
 
