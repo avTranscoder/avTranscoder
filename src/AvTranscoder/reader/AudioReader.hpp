@@ -15,7 +15,17 @@ namespace avtranscoder
 class AvExport AudioReader : public IReader
 {
 public:
+	/**
+	 * @brief Create a new InputFile and prepare to read the audio stream at the given index
+	 */
 	AudioReader( const std::string& filename, const size_t audioStreamIndex );
+
+	/**
+	 * @brief Get the existing InputFile and prepare to read the audio stream at the given index
+	 * @note This constructor can improve performances when you create several AudioReader from one InputFile.
+	 */
+	AudioReader( InputFile& inputFile, const size_t audioStreamIndex );
+
 	~AudioReader();
 
 	size_t getSampleRate();
@@ -28,7 +38,10 @@ public:
 	void printInfo();
 
 private:
-	InputFile _inputFile;
+	void init();
+
+private:
+	InputFile* _inputFile;
 	const AudioProperties* _audioProperties;
 	AudioDecoder* _audioDecoder;
 
@@ -38,6 +51,8 @@ private:
 	AudioTransform _audioTransform;
 
 	size_t _audioStreamIndex;
+
+	bool _inputFileAllocated;
 };
 
 }
