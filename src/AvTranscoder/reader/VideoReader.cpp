@@ -63,24 +63,25 @@ AVPixelFormat VideoReader::getPixelFormat()
 
 const char* VideoReader::readNextFrame()
 {
-	++_currentFrame;
-	_videoDecoder->decodeNextFrame( *_sourceImage );
-	_videoTransform.convert( *_sourceImage, *_imageToDisplay );
-	return (const char*)_imageToDisplay->getData();
+	return readFrameAt( _currentFrame + 1 );
 }
 
 const char* VideoReader::readPrevFrame()
 {
-	--_currentFrame;
-	return readFrameAt( _currentFrame );
+	return readFrameAt( _currentFrame - 1 );
 }
 
 const char* VideoReader::readFrameAt( const size_t frame )
 {
-	// /std::cout << "seek at " << frame << std::endl;
+	_currentFrame = frame;
+	// seek
 	_inputFile.seekAtFrame( frame );
 	_videoDecoder->flushDecoder();
-	return readNextFrame();
+	// decode
+	_videoDecoder->decodeNextFrame( *_sourceImage );
+	_videoTransform.convert( *_sourceImage, *_imageToDisplay );
+	// return buffer
+	return (const char*)_imageToDisplay->getData();
 }
 
 void VideoReader::printInfo()
