@@ -124,7 +124,7 @@ Window::Window( avtranscoder::VideoReader& reader )
 
 void Window::launch()
 {
-	displayNextFrame();
+	displayFirstFrame();
 	glutMainLoop();
 }
 
