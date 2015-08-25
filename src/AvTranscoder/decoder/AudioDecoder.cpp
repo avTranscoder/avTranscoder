@@ -176,4 +176,9 @@ bool AudioDecoder::decodeNextFrame()
 	return true;
 }
 
+void AudioDecoder::flushDecoder()
+{
+	avcodec_flush_buffers( &_inputStream->getAudioCodec().getAVCodecContext() );
+}
+
 }
