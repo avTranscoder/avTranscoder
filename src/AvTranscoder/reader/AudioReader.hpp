@@ -18,6 +18,9 @@ public:
 	AudioReader( const std::string& filename, const size_t audioStreamIndex );
 	~AudioReader();
 
+	size_t getSampleRate();
+	size_t getChannels();
+
 	const char* readNextFrame();
 	const char* readPrevFrame();
 	const char* readFrameAt( const size_t frame );

@@ -36,6 +36,16 @@ AudioReader::~AudioReader()
 	delete _dstFrame;
 }
 
+size_t AudioReader::getSampleRate()
+{
+	return _audioProperties->getSampleRate();
+}
+
+size_t AudioReader::getChannels()
+{
+	return _audioProperties->getChannels();
+}
+
 const char* AudioReader::readNextFrame()
 {
 	return readFrameAt( _currentFrame + 1 );
