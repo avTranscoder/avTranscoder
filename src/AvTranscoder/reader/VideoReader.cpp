@@ -1,5 +1,8 @@
 #include "VideoReader.hpp"
 
+#include <AvTranscoder/decoder/VideoDecoder.hpp>
+#include <AvTranscoder/frame/VideoFrame.hpp>
+#include <AvTranscoder/transform/VideoTransform.hpp>
 #include <AvTranscoder/progress/NoDisplayProgress.hpp>
 #include <AvTranscoder/mediaProperty/print.hpp>
 
@@ -7,58 +10,73 @@ namespace avtranscoder
 {
 
 VideoReader::VideoReader( const std::string& filename, const size_t videoStreamIndex )
-	: _inputFile( filename )
-	, _videoProperties( NULL )
-	, _videoDecoder( NULL )
-	, _sourceImage( NULL )
-	, _imageToDisplay( NULL )
-	, _videoTransform()
-	, _videoStreamIndex( videoStreamIndex )
+	: IReader( filename, videoStreamIndex )
+	, _videoStreamProperties(NULL)
 {
+	init();
+}
+
+VideoReader::VideoReader( InputFile& inputFile, const size_t videoStreamIndex )
+	: IReader( inputFile, videoStreamIndex )
+	, _videoStreamProperties(NULL)
+{
+	init();
+}
+
+void VideoReader::init()
+{
+	// analyse InputFile
 	avtranscoder::NoDisplayProgress p;
-	_inputFile.analyse( p );
-	_videoProperties = &static_cast<const VideoProperties&>(_inputFile.getProperties().getStreamPropertiesWithIndex(_videoStreamIndex));
-	_inputFile.activateStream( _videoStreamIndex );
+	_inputFile->analyse( p );
+	_streamProperties = &_inputFile->getProperties().getStreamPropertiesWithIndex(_streamIndex);
+	_videoStreamProperties = static_cast<const VideoProperties*>(_streamProperties);
+	_inputFile->activateStream( _streamIndex );
 
-	_videoDecoder = new avtranscoder::VideoDecoder( _inputFile.getStream( _videoStreamIndex ) );
-	_videoDecoder->setupDecoder();
+	// setup decoder
+	_decoder = new VideoDecoder( _inputFile->getStream( _streamIndex ) );
+	_decoder->setupDecoder();
 
-	_sourceImage = new avtranscoder::VideoFrame( _inputFile.getStream( _videoStreamIndex ).getVideoCodec().getVideoFrameDesc() );
+	// create src and dst frames
+	_srcFrame = new VideoFrame( _inputFile->getStream( _streamIndex ).getVideoCodec().getVideoFrameDesc() );
+	VideoFrame* srcFrame = static_cast<VideoFrame*>(_srcFrame);
+	VideoFrameDesc videoFrameDescToDisplay( srcFrame->desc().getWidth(), srcFrame->desc().getHeight(), "rgb24" );
+	_dstFrame = new VideoFrame( videoFrameDescToDisplay );
 
-	avtranscoder::VideoFrameDesc videoFrameDescToDisplay( _sourceImage->desc().getWidth(), _sourceImage->desc().getHeight(), "rgb24" );
-	_imageToDisplay = new avtranscoder::VideoFrame( videoFrameDescToDisplay );
+	// create transform
+	_transform = new VideoTransform();
 }
 
 VideoReader::~VideoReader()
 {
-	delete _videoDecoder;
-	delete _sourceImage;
-	delete _imageToDisplay;
+	delete _decoder;
+	delete _srcFrame;
+	delete _dstFrame;
+	delete _transform;
 }
 
 size_t VideoReader::getWidth()
 {
-	return _videoProperties->getWidth();
+	return _videoStreamProperties->getWidth();
 };
 
 size_t VideoReader::getHeight()
 {
-	return _videoProperties->getHeight();
+	return _videoStreamProperties->getHeight();
 }
 
 size_t VideoReader::getComponents()
 {
-	return _videoProperties->getPixelProperties().getNbComponents();
+	return _videoStreamProperties->getPixelProperties().getNbComponents();
 }
 
 size_t VideoReader::getBitDepth()
 {
-	return _videoProperties->getPixelProperties().getBitsPerPixel();
+	return _videoStreamProperties->getPixelProperties().getBitsPerPixel();
 }
 
 AVPixelFormat VideoReader::getPixelFormat()
 {
-	return _videoProperties->getPixelProperties().getAVPixelFormat();
+	return _videoStreamProperties->getPixelProperties().getAVPixelFormat();
 }
 
 const char* VideoReader::readNextFrame()
@@ -75,18 +93,18 @@ const char* VideoReader::readFrameAt( const size_t frame )
 {
 	_currentFrame = frame;
 	// seek
-	_inputFile.seekAtFrame( frame );
-	_videoDecoder->flushDecoder();
+	_inputFile->seekAtFrame( frame );
+	static_cast<VideoDecoder*>(_decoder)->flushDecoder();
 	// decode
-	_videoDecoder->decodeNextFrame( *_sourceImage );
-	_videoTransform.convert( *_sourceImage, *_imageToDisplay );
+	_decoder->decodeNextFrame( *_srcFrame );
+	_transform->convert( *_srcFrame, *_dstFrame );
 	// return buffer
-	return (const char*)_imageToDisplay->getData();
+	return (const char*)_dstFrame->getData();
 }
 
 void VideoReader::printInfo()
 {
-	std::cout << *_videoProperties << std::endl;
+	std::cout << *_videoStreamProperties << std::endl;
 }
 
 }

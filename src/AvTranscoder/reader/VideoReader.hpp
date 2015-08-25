@@ -5,9 +5,6 @@
 
 #include <AvTranscoder/file/InputFile.hpp>
 #include <AvTranscoder/mediaProperty/VideoProperties.hpp>
-#include <AvTranscoder/decoder/VideoDecoder.hpp>
-#include <AvTranscoder/frame/VideoFrame.hpp>
-#include <AvTranscoder/transform/VideoTransform.hpp>
 
 namespace avtranscoder
 {
@@ -16,6 +13,8 @@ class AvExport VideoReader : public IReader
 {
 public:
 	VideoReader( const std::string& filename, const size_t videoStreamIndex );
+	VideoReader( InputFile& inputFile, const size_t videoStreamIndex );
+
 	~VideoReader();
 
 	size_t getWidth();
@@ -31,16 +30,10 @@ public:
 	void printInfo();
 
 private:
-	InputFile _inputFile;
-	const VideoProperties* _videoProperties;
-	VideoDecoder* _videoDecoder;
+	void init();
 
-	VideoFrame* _sourceImage;
-	VideoFrame* _imageToDisplay;
-
-	VideoTransform _videoTransform;
-
-	size_t _videoStreamIndex;
+private:
+	const VideoProperties* _videoStreamProperties;  ///< Properties of the video stream read (no ownership, has link)
 };
 
 }

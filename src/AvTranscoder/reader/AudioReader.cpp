@@ -1,5 +1,8 @@
 #include "AudioReader.hpp"
 
+#include <AvTranscoder/decoder/AudioDecoder.hpp>
+#include <AvTranscoder/frame/AudioFrame.hpp>
+#include <AvTranscoder/transform/AudioTransform.hpp>
 #include <AvTranscoder/progress/NoDisplayProgress.hpp>
 #include <AvTranscoder/mediaProperty/print.hpp>
 
@@ -7,67 +10,58 @@ namespace avtranscoder
 {
 
 AudioReader::AudioReader( const std::string& filename, const size_t audioStreamIndex )
-	: _inputFile( NULL )
-	, _audioProperties( NULL )
-	, _audioDecoder( NULL )
-	, _sourceFrame( NULL )
-	, _dstFrame( NULL )
-	, _audioTransform()
-	, _audioStreamIndex( audioStreamIndex )
-	, _inputFileAllocated( true )
+	: IReader( filename, audioStreamIndex )
+	, _audioStreamProperties(NULL)
 {
-	_inputFile = new InputFile( filename );
-
 	init();
 }
 
 AudioReader::AudioReader( InputFile& inputFile, const size_t audioStreamIndex )
-	: _inputFile( inputFile )
-	, _audioProperties( NULL )
-	, _audioDecoder( NULL )
-	, _sourceFrame( NULL )
-	, _dstFrame( NULL )
-	, _audioTransform()
-	, _audioStreamIndex( audioStreamIndex )
-	, _inputFileAllocated( false )
+	: IReader( inputFile, audioStreamIndex )
+	, _audioStreamProperties(NULL)
 {
 	init();
 }
 
 void AudioReader::init()
 {
+	// analyse InputFile
 	avtranscoder::NoDisplayProgress p;
 	_inputFile->analyse( p );
-	_audioProperties = &static_cast<const AudioProperties&>(_inputFile->getProperties().getStreamPropertiesWithIndex(_audioStreamIndex));
-	_inputFile->activateStream( _audioStreamIndex );
+	_streamProperties = &_inputFile->getProperties().getStreamPropertiesWithIndex(_streamIndex);
+	_audioStreamProperties = static_cast<const AudioProperties*>(_streamProperties);
+	_inputFile->activateStream( _streamIndex );
 
-	_audioDecoder = new avtranscoder::AudioDecoder( _inputFile->getStream( _audioStreamIndex ) );
-	_audioDecoder->setupDecoder();
+	// setup decoder
+	_decoder = new AudioDecoder( _inputFile->getStream( _streamIndex ) );
+	_decoder->setupDecoder();
 
-	_sourceFrame = new avtranscoder::AudioFrame( _inputFile->getStream( _audioStreamIndex ).getAudioCodec().getAudioFrameDesc() );
+	// create src and dst frames
+	_srcFrame = new AudioFrame( _inputFile->getStream( _streamIndex ).getAudioCodec().getAudioFrameDesc() );
+	AudioFrame* srcFrame = static_cast<AudioFrame*>(_srcFrame);
+	AudioFrameDesc dstAudioFrame( srcFrame->desc().getSampleRate(), srcFrame->desc().getChannels(), srcFrame->desc().getSampleFormat() );
+	_dstFrame = new AudioFrame( dstAudioFrame );
 
-	avtranscoder::AudioFrameDesc dstAudioFrame( _sourceFrame->desc().getSampleRate(), _sourceFrame->desc().getChannels(), _sourceFrame->desc().getSampleFormat() );
-	_dstFrame = new avtranscoder::AudioFrame( dstAudioFrame );
+	// create transform
+	_transform = new AudioTransform();
 }
 
 AudioReader::~AudioReader()
 {
-	if( _inputFileAllocated )
-		delete _inputFile;
-
-	delete _audioDecoder;
-	delete _sourceFrame;
+	delete _decoder;
+	delete _srcFrame;
 	delete _dstFrame;
+	delete _transform;
 }
 
 size_t AudioReader::getSampleRate()
 {
-	return _audioProperties->getSampleRate();
+	return _audioStreamProperties->getSampleRate();
 }
 
 size_t AudioReader::getChannels()
 {
-	return _audioProperties->getChannels();
+	return _audioStreamProperties->getChannels();
 }
 
 const char* AudioReader::readNextFrame()
@@ -85,17 +79,16 @@ const char* AudioReader::readFrameAt( const size_t frame )
 	_currentFrame = frame;
 	// seek
 	_inputFile->seekAtFrame( frame );
-	_audioDecoder->flushDecoder();
 	// decode
-	_audioDecoder->decodeNextFrame( *_sourceFrame );
-	_audioTransform.convert( *_sourceFrame, *_dstFrame );
+	_decoder->decodeNextFrame( *_srcFrame );
+	_transform->convert( *_srcFrame, *_dstFrame );
 	// return buffer
 	return (const char*)_dstFrame->getData();
 }
 
 void AudioReader::printInfo()
 {
-	std::cout << *_audioProperties << std::endl;
+	std::cout << *_audioStreamProperties << std::endl;
 }
 
 }
