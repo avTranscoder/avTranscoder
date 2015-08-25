@@ -531,12 +531,14 @@ void Window::displayNextFrame()
 {
 	const char* buffer = _reader->readNextFrame();
 	loadNewTexture( buffer, _reader->getComponents(), _reader->getWidth(), _reader->getHeight(), GL_RGB, GL_UNSIGNED_BYTE );
+	display();
 }
 
 void Window::displayPrevFrame()
 {
 	const char* buffer = _reader->readPrevFrame();
 	loadNewTexture( buffer, _reader->getComponents(), _reader->getWidth(), _reader->getHeight(), GL_RGB, GL_UNSIGNED_BYTE );
+	display();
 }
 
 void Window::displayFirstFrame()
@@ -548,6 +550,7 @@ void Window::displayAtFrame( const size_t frame )
 {
 	const char* buffer = _reader->readFrameAt( frame );
 	loadNewTexture( buffer, _reader->getComponents(), _reader->getWidth(), _reader->getHeight(), GL_RGB, GL_UNSIGNED_BYTE );
+	display();
 }
 
 void Window::loopPlaying( int value )
