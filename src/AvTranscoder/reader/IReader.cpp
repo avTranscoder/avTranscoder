@@ -37,17 +37,17 @@ IReader::~IReader()
 		delete _inputFile;
 }
 
-const char* IReader::readNextFrame()
+Frame* IReader::readNextFrame()
 {
 	return readFrameAt( _currentFrame + 1 );
 }
 
-const char* IReader::readPrevFrame()
+Frame* IReader::readPrevFrame()
 {
 	return readFrameAt( _currentFrame - 1 );
 }
 
-const char* IReader::readFrameAt( const size_t frame )
+Frame* IReader::readFrameAt( const size_t frame )
 {
 	_currentFrame = frame;
 	// seek
@@ -57,7 +57,7 @@ const char* IReader::readFrameAt( const size_t frame )
 	_decoder->decodeNextFrame( *_srcFrame );
 	_transform->convert( *_srcFrame, *_dstFrame );
 	// return buffer
-	return (const char*)_dstFrame->getData();
+	return _dstFrame;
 }
 
 void IReader::printInfo()
