@@ -62,6 +62,8 @@ protected:
 	ITransform* _transform;
 
 	size_t _streamIndex;
+
+private:
 	size_t _currentFrame;  ///< The current decoded frame.
 
 	bool _inputFileAllocated;  ///< Is the InputFile hold by the class or not (depends on the constructor called)
