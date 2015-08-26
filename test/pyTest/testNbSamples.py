@@ -50,7 +50,14 @@ def testNbSamplesAudioTranscode():
 	ouputFile = av.OutputFile( outputFileName )
 	transcoder = av.Transcoder( ouputFile )
 
-	transcoder.add( inputFileName, 0, "wave24b48kmono" )
+	# create custom profile
+	customProfile = av.ProfileMap()
+	customProfile[av.avProfileIdentificator] = "customProfile"
+	customProfile[av.avProfileIdentificatorHuman] = "custom profile"
+	customProfile[av.avProfileType] = av.avProfileTypeAudio
+	customProfile[av.avProfileCodec] = "pcm_s16le"
+
+	transcoder.add( inputFileName, 0, customProfile )
 
 	progress = av.ConsoleProgress()
 	transcoder.process( progress )
