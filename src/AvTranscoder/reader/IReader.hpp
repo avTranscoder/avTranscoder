@@ -64,7 +64,7 @@ protected:
 	size_t _streamIndex;
 
 private:
-	size_t _currentFrame;  ///< The current decoded frame.
+	int _currentFrame;  ///< The current decoded frame.
 	bool _inputFileAllocated;  ///< Does the InputFile is held by the class or not (depends on the constructor called)
 };
 
