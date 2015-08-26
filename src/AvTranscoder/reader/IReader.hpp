@@ -47,7 +47,7 @@ public:
 	Frame* readFrameAt( const size_t frame );
 
 	/**
-	 * @brief Print info of the stream read.
+	 * @brief Print info of the source stream read.
 	 */
 	virtual void printInfo();
 
