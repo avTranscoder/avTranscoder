@@ -9,16 +9,22 @@
 namespace avtranscoder
 {
 
-AudioReader::AudioReader( const std::string& filename, const size_t audioStreamIndex )
+AudioReader::AudioReader( const std::string& filename, const size_t audioStreamIndex, const size_t sampleRate, const size_t nbChannels, const std::string& sampleFormat )
 	: IReader( filename, audioStreamIndex )
 	, _audioStreamProperties(NULL)
+	, _sampleRate( sampleRate )
+	, _nbChannels( nbChannels )
+	, _sampleFormat( av_get_sample_fmt( sampleFormat.c_str() ) )
 {
 	init();
 }
 
-AudioReader::AudioReader( InputFile& inputFile, const size_t audioStreamIndex )
+AudioReader::AudioReader( InputFile& inputFile, const size_t audioStreamIndex, const size_t sampleRate, const size_t nbChannels, const std::string& sampleFormat  )
 	: IReader( inputFile, audioStreamIndex )
 	, _audioStreamProperties(NULL)
+	, _sampleRate( sampleRate )
+	, _nbChannels( nbChannels )
+	, _sampleFormat( av_get_sample_fmt( sampleFormat.c_str() ) )
 {
 	init();
 }
@@ -36,10 +42,15 @@ void AudioReader::init()
 	_decoder = new AudioDecoder( _inputFile->getStream( _streamIndex ) );
 	_decoder->setupDecoder();
 
-	// create src and dst frames
+	// create src frame
 	_srcFrame = new AudioFrame( _inputFile->getStream( _streamIndex ).getAudioCodec().getAudioFrameDesc() );
 	AudioFrame* srcFrame = static_cast<AudioFrame*>(_srcFrame);
-	AudioFrameDesc dstAudioFrame( srcFrame->desc().getSampleRate(), srcFrame->desc().getChannels(), srcFrame->desc().getSampleFormat() );
+	// create dst frame
+	if( _sampleRate == 0 )
+		_sampleRate = srcFrame->desc().getSampleRate();
+	if( _nbChannels == 0 )
+		_nbChannels = srcFrame->desc().getChannels();
+	AudioFrameDesc dstAudioFrame( _sampleRate, _nbChannels, _sampleFormat );
 	_dstFrame = new AudioFrame( dstAudioFrame );
 
 	// create transform
@@ -56,12 +67,17 @@ AudioReader::~AudioReader()
 
 size_t AudioReader::getSampleRate()
 {
-	return _audioStreamProperties->getSampleRate();
+	return _sampleRate;
 }
 
 size_t AudioReader::getChannels()
 {
-	return _audioStreamProperties->getChannels();
+	return _nbChannels;
+}
+
+AVSampleFormat AudioReader::getSampleFormat()
+{
+	return _sampleFormat;
 }
 
 void AudioReader::printInfo()
