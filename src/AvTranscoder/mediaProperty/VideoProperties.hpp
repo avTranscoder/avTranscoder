@@ -89,11 +89,11 @@ private:
 	{
 		try
 		{
-		    detail::add( dataVector, key, (this->*getter)() );
+			detail::add( dataVector, key, (this->*getter)() );
 		}
 		catch( const std::exception& e )
 		{
-		    detail::add( dataVector, key, e.what() );
+			detail::add( dataVector, key, e.what() );
 		}
 	}
 #endif
