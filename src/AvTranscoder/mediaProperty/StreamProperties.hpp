@@ -26,7 +26,7 @@ public:
 #endif
 
 	PropertyMap getPropertiesAsMap() const;  ///< Return all properties as a map (name of property, value)
-	PropertyVector getPropertiesAsVector() const;  ///< Same data with a specific order
+	virtual PropertyVector getPropertiesAsVector() const;  ///< Same data with a specific order
 
 private:
 #ifndef SWIG
