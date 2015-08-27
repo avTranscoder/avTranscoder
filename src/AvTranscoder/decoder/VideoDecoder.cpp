@@ -17,8 +17,9 @@ namespace avtranscoder
 {
 
 VideoDecoder::VideoDecoder( InputStream& inputStream )
-	: _inputStream   ( &inputStream )
-	, _frame         ( NULL )
+	: _inputStream( &inputStream )
+	, _frame( NULL )
+	, _isSetup(false)
 {
 #if LIBAVCODEC_VERSION_MAJOR > 54
 	_frame = av_frame_alloc();
@@ -82,6 +83,7 @@ void VideoDecoder::setupDecoder( const ProfileLoader::Profile& profile )
 
 	// open decoder
 	_inputStream->getVideoCodec().openCodec();
+	_isSetup = true;
 }
 
 bool VideoDecoder::decodeNextFrame( Frame& frameBuffer )
@@ -109,6 +111,9 @@ bool VideoDecoder::decodeNextFrame( Frame& frameBuffer, const size_t subStreamIn
 
 bool VideoDecoder::decodeNextFrame()
 {
+	if(!_isSetup)
+		setupDecoder();
+
 	int got_frame = 0;
 	while( ! got_frame )
 	{
