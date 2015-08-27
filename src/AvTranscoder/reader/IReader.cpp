@@ -49,10 +49,13 @@ Frame* IReader::readPrevFrame()
 
 Frame* IReader::readFrameAt( const size_t frame )
 {
+	if( frame != _currentFrame + 1 )
+	{
+		// seek
+		_inputFile->seekAtFrame( frame );
+		_decoder->flushDecoder();
+	}
 	_currentFrame = frame;
-	// seek
-	_inputFile->seekAtFrame( frame );
-	_decoder->flushDecoder();
 	// decode
 	_decoder->decodeNextFrame( *_srcFrame );
 	_transform->convert( *_srcFrame, *_dstFrame );
