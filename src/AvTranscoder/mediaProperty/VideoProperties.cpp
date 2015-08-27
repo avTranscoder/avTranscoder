@@ -365,13 +365,6 @@ Rational VideoProperties::getDar() const
 	return dar;
 }
 
-size_t VideoProperties::getStreamId() const
-{
-	if( ! _formatContext )
-		throw std::runtime_error( "unknown format context" );
-	return _formatContext->streams[_streamIndex]->id;
-}
-
 size_t VideoProperties::getCodecId() const
 {
 	if( ! _codecContext )

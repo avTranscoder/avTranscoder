@@ -41,7 +41,6 @@ public:
 	Rational getSar() const; // sample/pixel aspect ratio
 	Rational getDar() const; // display aspect ratio
 
-	size_t getStreamId() const;
 	size_t getCodecId() const;
 	size_t getBitRate() const;  ///< in bits/s
 	size_t getMaxBitRate() const;
