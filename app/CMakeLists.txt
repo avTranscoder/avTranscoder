@@ -7,3 +7,4 @@ add_subdirectory(avProcessor)
 # Python apps
 add_subdirectory(pyProcessor)
 add_subdirectory(pyThumbnail)
+add_subdirectory(pyRewrap)
