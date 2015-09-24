@@ -68,6 +68,7 @@ public:
 
 	//@{
 	// @brief Get the list of properties for a given type (video, audio...)
+	const std::vector< avtranscoder::StreamProperties* > getStreamProperties() const;
 	const std::vector< avtranscoder::VideoProperties >& getVideoProperties() const  { return  _videoStreams; }
 	const std::vector< avtranscoder::AudioProperties >& getAudioProperties() const  { return  _audioStreams; }
 	const std::vector< avtranscoder::DataProperties >& getDataProperties() const  { return  _dataStreams; }
