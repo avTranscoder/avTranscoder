@@ -73,7 +73,7 @@ public:
 	const std::vector< avtranscoder::DataProperties >& getDataProperties() const  { return  _dataStreams; }
 	const std::vector< avtranscoder::SubtitleProperties >& getSubtitleProperties() const  { return  _subtitleStreams; }
 	const std::vector< avtranscoder::AttachementProperties >& getAttachementProperties() const  { return  _attachementStreams; }
-	const std::vector< avtranscoder::UnknownProperties >& getUnknownPropertiesProperties() const  { return  _unknownStreams; }
+	const std::vector< avtranscoder::UnknownProperties >& getUnknownProperties() const  { return  _unknownStreams; }
 	//@}
 
 #ifndef SWIG
