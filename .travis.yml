@@ -39,11 +39,7 @@ before_script:
 
 script:
   # build
-  - mkdir -p ${AVTRANSCODER_BUILD}
-  - cd ${AVTRANSCODER_BUILD}
-  - cmake .. -DCMAKE_INSTALL_PREFIX=${AVTRANSCODER_INSTALL} -DCMAKE_PREFIX_PATH=${DEPENDENCY_INSTALL} -DCMAKE_BUILD_TYPE=Release -DAVTRANSCODER_PYTHON_VERSION_OF_BINDING=2.7 -DAVTRANSCODER_COVERAGE=${ENABLE_COVERAGE}
-  - make -j${CI_NODE_TOTAL}
-  - make install
+  - ./tools/travis.build.sh
 
   # launch tests
   - if [ ${DEPENDENCY_MODE} = "ffmpeg" ]; then ./../tools/travis.python.nosetests.sh; fi
