@@ -155,7 +155,7 @@ IOutputStream::EWrappingStatus OutputFile::wrap( const CodedData& data, const si
 	// free packet.side_data, set packet.data to NULL and packet.size to 0
 	av_free_packet( &packet );
 
-	double currentStreamDuration = _outputStreams.at( streamId )->getStreamDuration();
+	const double currentStreamDuration = _outputStreams.at( streamId )->getStreamDuration();
 	if( currentStreamDuration < _previousProcessedStreamDuration )
 	{
 		// if the current stream is strictly shorter than the previous, wait for more data
@@ -163,8 +163,8 @@ IOutputStream::EWrappingStatus OutputFile::wrap( const CodedData& data, const si
 	}
 
 	_previousProcessedStreamDuration = currentStreamDuration;
-	
 	_frameCount.at( streamId )++;
+
 	return IOutputStream::eWrappingSuccess;
 }
 
