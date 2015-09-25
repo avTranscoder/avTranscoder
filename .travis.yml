@@ -19,6 +19,7 @@ env:
     - DEPENDENCY_MODE=libav  ENABLE_COVERAGE=false
     - DEPENDENCY_MODE=ffmpeg ENABLE_COVERAGE=true
     - DEPENDENCY_MODE=ffmpeg ENABLE_COVERAGE=false
+  fast_finish: true
 
 # This results in a 2×2×2x2 build matrix.
 # Where the variables are: os / compiler / DEPENDENCY_MODE / ENABLE_COVERAGE
