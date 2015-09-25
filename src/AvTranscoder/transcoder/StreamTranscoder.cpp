@@ -326,7 +326,7 @@ bool StreamTranscoder::processFrame()
 	// Manage offset
 	if( _offset > 0 )
 	{
-		bool endOfOffset = _outputStream->getStreamDuration() >= _offset;
+		const bool endOfOffset = _outputStream->getStreamDuration() >= _offset;
 		if( endOfOffset )
 		{
 			LOG_INFO( "End of positive offset" )
@@ -349,7 +349,7 @@ bool StreamTranscoder::processFrame()
 	}
 	else if( _offset < 0 )
 	{
-		bool endOfStream = _outputStream->getStreamDuration() >= ( _inputStream->getDuration() + _offset );
+		const bool endOfStream = _outputStream->getStreamDuration() >= ( _inputStream->getDuration() + _offset );
 		if( endOfStream )
 		{
 			LOG_INFO( "End of negative offset" )
@@ -392,8 +392,7 @@ bool StreamTranscoder::processRewrap()
 	}
 
 	LOG_DEBUG( "wrap (" << data.getSize() << " bytes)" )
-	IOutputStream::EWrappingStatus wrappingStatus = _outputStream->wrap( data );
-
+	const IOutputStream::EWrappingStatus wrappingStatus = _outputStream->wrap( data );
 	switch( wrappingStatus )
 	{
 		case IOutputStream::eWrappingSuccess:
@@ -450,8 +449,7 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 	}
 
 	LOG_DEBUG( "wrap (" << data.getSize() << " bytes)" )
-	IOutputStream::EWrappingStatus wrappingStatus = _outputStream->wrap( data );
-
+	const IOutputStream::EWrappingStatus wrappingStatus = _outputStream->wrap( data );
 	switch( wrappingStatus )
 	{
 		case IOutputStream::eWrappingSuccess:

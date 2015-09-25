@@ -248,7 +248,7 @@ ProcessStat Transcoder::process( IProgress& progress )
 	bool frameProcessed = true;
 	while( frameProcessed )
 	{
-		double progressDuration = _outputFile.getStream( 0 ).getStreamDuration();
+		const double progressDuration = _outputFile.getStream( 0 ).getStreamDuration();
 
 		// check if JobStatusCancel
 		if( progress.progress( ( progressDuration > outputDuration ) ? outputDuration : progressDuration, outputDuration ) == eJobStatusCancel )

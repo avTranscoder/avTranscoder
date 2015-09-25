@@ -56,7 +56,7 @@ void ICodec::openCodec()
 	if( ! _avCodecContext )
 		throw std::runtime_error( "unable to open a codec with no codec context" );
 
-	int ret = avcodec_open2( _avCodecContext, _avCodec, NULL );
+	const int ret = avcodec_open2( _avCodecContext, _avCodec, NULL );
 	if( ret < 0 )
 	{
 		std::string msg = "unable open codec: ";
