@@ -49,7 +49,7 @@ Frame* IReader::readPrevFrame()
 
 Frame* IReader::readFrameAt( const size_t frame )
 {
-	if( frame != _currentFrame + 1 )
+	if( (int)frame != _currentFrame + 1 )
 	{
 		// seek
 		_inputFile->seekAtFrame( frame );
