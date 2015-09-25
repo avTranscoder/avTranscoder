@@ -521,12 +521,13 @@ void Transcoder::fillProcessStat( ProcessStat& processStat )
 	for( size_t streamIndex = 0; streamIndex < _streamTranscoders.size(); ++streamIndex )
 	{
 		IOutputStream& stream = _streamTranscoders.at( streamIndex )->getOutputStream();
-		AVCodecContext& encoderContext = _streamTranscoders.at( streamIndex )->getEncoder().getCodec().getAVCodecContext();
-		switch( encoderContext.codec_type )
+		const AVMediaType mediaType = _streamTranscoders.at( streamIndex )->getInputStream().getStreamType();
+		switch( mediaType )
 		{
 			case AVMEDIA_TYPE_VIDEO:
 			{
 				VideoStat videoStat( stream.getStreamDuration(), stream.getNbFrames() );
+				const AVCodecContext& encoderContext = _streamTranscoders.at( streamIndex )->getEncoder().getCodec().getAVCodecContext();
 				if( encoderContext.coded_frame && ( encoderContext.flags & CODEC_FLAG_PSNR) )
 				{
 					videoStat._quality = encoderContext.coded_frame->quality;
@@ -542,7 +543,7 @@ void Transcoder::fillProcessStat( ProcessStat& processStat )
 				break;
 			}
 			default:
-				LOG_WARN( "No process statistics for stream at index: " << streamIndex )
+				LOG_WARN( "No process statistics for stream at index: " << streamIndex << " (AVMediaType = " << mediaType << ")" )
 				break;
 		}
 	}
