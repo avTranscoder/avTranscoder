@@ -59,7 +59,7 @@ void ICodec::openCodec()
 	const int ret = avcodec_open2( _avCodecContext, _avCodec, NULL );
 	if( ret < 0 )
 	{
-		std::string msg = "unable open codec: ";
+		std::string msg = "Unable open codec: ";
 
 		if( _avCodec && _avCodec->long_name )
 			msg +=  _avCodec->long_name;
@@ -116,7 +116,7 @@ void ICodec::setCodec( const ECodecType type, const std::string& codecName )
 	const AVCodecDescriptor* avCodecDescriptor = avcodec_descriptor_get_by_name( codecName.c_str() );
 	if( ! avCodecDescriptor )
 	{
-		std::string msg( "unable to find codec " );
+		std::string msg( "Unable to find codec " );
 		msg += codecName;
 		throw std::runtime_error( msg );
 	}
@@ -146,7 +146,7 @@ void ICodec::allocateContext()
 	_avCodecContext = avcodec_alloc_context3( _avCodec );
 	if( ! _avCodecContext )
 	{
-		throw std::runtime_error( "unable to allocate the codecContext and set its fields to default values" );
+		throw std::runtime_error( "Unable to allocate the codecContext and set its fields to default values" );
 	}
 	_avCodecContext->codec = _avCodec;
 }
