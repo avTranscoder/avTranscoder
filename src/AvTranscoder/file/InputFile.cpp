@@ -63,6 +63,7 @@ bool InputFile::readNextPacket( CodedData& data, const size_t streamIndex )
 		const int ret = av_read_frame( &_formatContext.getAVFormatContext(), &data.getAVPacket() );
 		if( ret < 0 ) // error or end of file
 		{
+			LOG_INFO( "No more data to read on file '" << _filename << "'" )
 			return false;
 		}
 
@@ -71,6 +72,7 @@ bool InputFile::readNextPacket( CodedData& data, const size_t streamIndex )
 		const int packetStreamIndex = data.getAVPacket().stream_index;
 		if( packetStreamIndex == (int)streamIndex )
 		{
+			LOG_DEBUG( "Get a packet data of the stream " << streamIndex )
 			nextPacketFound = true;
 		}
 		// else add the packet data to the stream cache

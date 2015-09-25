@@ -58,12 +58,14 @@ bool InputStream::readNextPacket( CodedData& data )
 	// if packet is already cached
 	if( ! _streamCache.empty() )
 	{
+		LOG_DEBUG( "Get packet data of stream " << _streamIndex << " from the cache" )
 		data.copyData( _streamCache.front().getData(), _streamCache.front().getSize() );
 		_streamCache.pop();
 	}
 	// else read next packet
 	else
 	{
+		LOG_DEBUG( "Read next packet" )
 		return _inputFile->readNextPacket( data, _streamIndex ) && _streamCache.empty();
 	}
 
@@ -120,8 +122,12 @@ void InputStream::addPacket( AVPacket& packet )
 {
 	// Do not cache data if the stream is declared as unused in process
 	if( ! _isActivated )
+	{
+		LOG_DEBUG( "Do not add a packet data for the stream " << _streamIndex << " to the cache: stream not activated" )
 		return;
+	}
 
+	LOG_DEBUG( "Add a packet data for the stream " << _streamIndex << " to the cache" )
 	_streamCache.push( CodedData() );
 	_streamCache.back().copyData( packet.data, packet.size );
 }
