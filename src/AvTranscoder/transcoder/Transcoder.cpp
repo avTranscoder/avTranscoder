@@ -542,6 +542,7 @@ void Transcoder::fillProcessStat( ProcessStat& processStat )
 				break;
 			}
 			default:
+				LOG_WARN( "No process statistics for stream at index: " << streamIndex )
 				break;
 		}
 	}
