@@ -89,7 +89,7 @@ public:
 	 */
 	void canSwitchToGenerator( bool canSwitch ) { _canSwitchToGenerator = canSwitch; }
 
-	void setOffset( bool offset = true ){ _offset = offset; }
+	void setOffset( const float offset ){ _offset = offset; }
 
 private:
 	bool processRewrap();
