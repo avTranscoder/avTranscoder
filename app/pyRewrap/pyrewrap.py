@@ -43,7 +43,7 @@ except ImportError:
     # Parse command-line
     args, other = parser.parse_args()
 
-    if args.inputFileName is None or args.outputFileName is None or args.format is None:
+    if args.inputFileName is None:
         parser.print_help()
         exit(1)
 
