@@ -3,12 +3,12 @@
 
 #include <string>
 
-#include "Reader.hpp"
+#include <AvTranscoder/reader/VideoReader.hpp>
 
 class Window
 {
 public:
-	Window( Reader& reader );
+	Window( avtranscoder::VideoReader& reader );
 
 	void launch();
 
@@ -43,7 +43,7 @@ private:
 
 	static void loopPlaying( int value );
 
-	static Reader* _reader;
+	static avtranscoder::VideoReader* _reader;
 
 	static size_t _width;
 	static size_t _height;

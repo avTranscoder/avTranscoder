@@ -26,7 +26,7 @@ public:
 #endif
 
 	PropertyMap getPropertiesAsMap() const;  ///< Return all properties as a map (name of property, value)
-	PropertyVector getPropertiesAsVector() const;  ///< Same data with a specific order
+	virtual PropertyVector getPropertiesAsVector() const;  ///< Same data with a specific order
 
 private:
 #ifndef SWIG
@@ -35,11 +35,11 @@ private:
 	{
 		try
 		{
-		    detail::add( dataVector, key, (this->*getter)() );
+			detail::add( dataVector, key, (this->*getter)() );
 		}
 		catch( const std::exception& e )
 		{
-		    detail::add( dataVector, key, e.what() );
+			detail::add( dataVector, key, e.what() );
 		}
 	}
 #endif

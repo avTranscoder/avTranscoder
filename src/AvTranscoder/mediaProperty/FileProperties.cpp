@@ -189,6 +189,16 @@ const avtranscoder::StreamProperties& FileProperties::getStreamPropertiesWithInd
 	throw std::runtime_error( os.str() );
 }
 
+const std::vector< avtranscoder::StreamProperties* > FileProperties::getStreamProperties() const
+{
+	std::vector< avtranscoder::StreamProperties* > streams;
+	for( std::map< size_t, StreamProperties* >::const_iterator it = _streams.begin(); it != _streams.end(); ++it )
+	{
+		streams.push_back( it->second );
+	}
+	return streams;
+}
+
 size_t FileProperties::getNbStreams() const
 {
 	if( ! _avFormatContext )

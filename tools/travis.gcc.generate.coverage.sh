@@ -1,3 +1,8 @@
+#!/bin/bash
+
+# Print commands and their arguments as they are executed.
+set -x
+
 # capture coverage info
 lcov --capture --directory ${AVTRANSCODER_BUILD} --output-file coverage.info
 
