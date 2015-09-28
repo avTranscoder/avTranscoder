@@ -175,6 +175,11 @@ AVStream& FormatContext::getAVStream( size_t index ) const
 	return *_avFormatContext->streams[index];
 }
 
+void FormatContext::setFilename( const std::string& filename )
+{
+	strcpy( &_avFormatContext->filename[0], filename.c_str() );
+}
+
 void FormatContext::setOutputFormat( const std::string& filename, const std::string& shortName, const std::string& mimeType )
 {
 	AVOutputFormat* oformat = av_guess_format( shortName.c_str(), filename.c_str(), mimeType.c_str() );

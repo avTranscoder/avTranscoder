@@ -99,6 +99,11 @@ public:
 	 */
 	void setOutputFormat( const std::string& filename, const std::string& shortName = "", const std::string& mimeType = "" );
 
+	/**
+	 * Set filename of AVFormatContext.
+	 */
+	void setFilename( const std::string& filename );
+
 #ifndef SWIG
 	AVFormatContext& getAVFormatContext() const { return *_avFormatContext; }
 	AVOutputFormat& getAVOutputFormat() const { return *_avFormatContext->oformat; }
