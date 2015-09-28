@@ -68,7 +68,7 @@ if args.faststart is not None:
     # formatProfile[ "movflags" ] = "faststart"
     pass
 outputFile = av.OutputFile( args.outputFileName )
-outputFile.setProfile( formatProfile )
+outputFile.setupWrapping( formatProfile )
 
 # create transcoder
 transcoder = av.Transcoder( outputFile )
