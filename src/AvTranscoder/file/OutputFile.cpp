@@ -14,6 +14,7 @@ OutputFile::OutputFile( const std::string& filename )
 	, _filename( filename )
 	, _previousProcessedStreamDuration( 0.0 )
 {
+	_formatContext.setFilename( _filename );
 	_formatContext.setOutputFormat( _filename );
 }
 
