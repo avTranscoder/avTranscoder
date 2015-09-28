@@ -76,12 +76,20 @@ public:
 	FormatContext& getFormatContext() { return _formatContext; }
 
 	/**
-	 * @brief Set the format of the output file
+	 * @brief Set the format and the generic options of the output file.
 	 * @param profile: the profile of the output format
 	 * @note options specific to the output format will be set in beginWrap.
 	 * @see beginWrap
 	 */
 	void setupWrapping( const ProfileLoader::Profile& profile );
+
+private:
+	/**
+	 * @brief Set options of output format.
+	 * @param commonOptions: if the profile contains common options or options specific to the output format.
+	 * @see _profile
+	 */
+	void setupWrapping( const ProfileLoader::Profile& profile, const bool commonOptions );
 
 private:
 	FormatContext _formatContext;

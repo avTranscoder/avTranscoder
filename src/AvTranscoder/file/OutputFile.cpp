@@ -128,7 +128,8 @@ bool OutputFile::beginWrap( )
 	_formatContext.openRessource( getFilename(), AVIO_FLAG_WRITE );
 	_formatContext.writeHeader();
 
-	setupWrapping( _profile );
+	// set specific wrapping options
+	setupWrapping( _profile, false );
 
 	_frameCount.clear();
 	_frameCount.resize( _outputStreams.size(), 0 );
@@ -191,19 +192,31 @@ void OutputFile::addMetadata( const std::string& key, const std::string& value )
 
 void OutputFile::setupWrapping( const ProfileLoader::Profile& profile )
 {
-	LOG_DEBUG( "Set profile of output file with:\n" << profile )
-
-	// check if output format indicated is valid with the filename extension
-	if( profile.count( constants::avProfileFormat ) )
+	// check the given profile
+	const bool isValid = ProfileLoader::checkFormatProfile( profile );
+	if( ! isValid )
 	{
-		if( ! matchFormat( profile.find( constants::avProfileFormat )->second, getFilename() ) )
-		{
-			throw std::runtime_error( "Invalid format according to the file extension." );
-		}
-		// set output format
-		_formatContext.setOutputFormat( getFilename(), profile.find( constants::avProfileFormat )->second );
+		const std::string msg( "Invalid format profile to setup wrapping." );
+		LOG_ERROR( msg )
+		throw std::runtime_error( msg );
 	}
 
+	LOG_DEBUG( "Setup wrapping with:\n" << profile )
+
+	// check if output format indicated is valid with the filename extension
+	if( ! matchFormat( profile.find( constants::avProfileFormat )->second, getFilename() ) )
+	{
+		throw std::runtime_error( "Invalid format according to the file extension." );
+	}
+	// set output format
+	_formatContext.setOutputFormat( getFilename(), profile.find( constants::avProfileFormat )->second );
+
+	// set common wrapping options
+	setupWrapping( profile, true );
+}
+
+void OutputFile::setupWrapping( const ProfileLoader::Profile& profile, const bool commonOptions )
+{
 	// set format options
 	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
 	{
@@ -221,8 +234,11 @@ void OutputFile::setupWrapping( const ProfileLoader::Profile& profile )
 		catch( std::exception& e )
 		{
 			LOG_WARN( "OutputFile - can't set option " << (*it).first <<  " to " << (*it).second << ": " << e.what() )
-			LOG_INFO( "OutputFile - option " << (*it).first <<  " will be saved to be called when beginWrap" )
-			_profile[ (*it).first ] = (*it).second;
+			if( commonOptions )
+			{
+				LOG_INFO( "OutputFile - option " << (*it).first <<  " will be saved to be called when beginWrap" )
+				_profile[ (*it).first ] = (*it).second;
+			}
 		}
 	}
 }
