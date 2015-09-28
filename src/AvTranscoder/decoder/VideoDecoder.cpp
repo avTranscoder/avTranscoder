@@ -53,7 +53,7 @@ void VideoDecoder::setupDecoder( const ProfileLoader::Profile& profile )
 {
 	// check the given profile
 	const bool isValid = ProfileLoader::checkVideoProfile( profile );
-	if( ! isValid && profile.size() )
+	if( ! isValid && ! profile.empty() )
 	{
 		const std::string msg( "Invalid video profile to setup decoder." );
 		LOG_ERROR( msg )

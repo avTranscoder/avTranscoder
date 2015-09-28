@@ -50,7 +50,7 @@ void AudioEncoder::setupEncoder( const ProfileLoader::Profile& profile )
 {
 	// check the given profile
 	const bool isValid = ProfileLoader::checkAudioProfile( profile );
-	if( ! isValid && profile.size() )
+	if( ! isValid && ! profile.empty() )
 	{
 		const std::string msg( "Invalid audio profile to setup encoder." );
 		LOG_ERROR( msg )
