@@ -156,7 +156,7 @@ std::ostream& operator<<( std::ostream& flux, const InputFile& input )
 	// unknown streams
 	for( size_t unknownStreamIndex = 0; unknownStreamIndex < input.getProperties().getNbUnknownStreams(); ++unknownStreamIndex )
 	{
-		flux << input.getProperties().getUnknownPropertiesProperties().at( unknownStreamIndex );
+		flux << input.getProperties().getUnknownProperties().at( unknownStreamIndex );
 	}
 
 	return flux;

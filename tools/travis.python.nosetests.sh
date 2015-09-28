@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Print commands and their arguments as they are executed.
+set -x
+
 # Get avtranscoder library
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${DEPENDENCY_INSTALL}/lib
 export PYTHONPATH=${AVTRANSCODER_INSTALL}/lib/python2.7/site-packages/:$PYTHONPATH

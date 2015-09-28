@@ -18,8 +18,9 @@ namespace avtranscoder
 {
 
 AudioDecoder::AudioDecoder( InputStream& inputStream ) 
-	: _inputStream   ( &inputStream )
-	, _frame         ( NULL )
+	: _inputStream( &inputStream )
+	, _frame( NULL )
+	, _isSetup(false)
 {
 #if LIBAVCODEC_VERSION_MAJOR > 54
 	_frame = av_frame_alloc();
@@ -84,6 +85,7 @@ void AudioDecoder::setupDecoder( const ProfileLoader::Profile& profile )
 
 	// open decoder
 	_inputStream->getAudioCodec().openCodec();
+	_isSetup = true;
 }
 
 bool AudioDecoder::decodeNextFrame( Frame& frameBuffer )
@@ -155,6 +157,9 @@ bool AudioDecoder::decodeNextFrame( Frame& frameBuffer, const size_t subStreamIn
 
 bool AudioDecoder::decodeNextFrame()
 {
+	if(!_isSetup)
+		setupDecoder();
+
 	int got_frame = 0;
 	while( ! got_frame )
 	{

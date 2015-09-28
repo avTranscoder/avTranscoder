@@ -18,7 +18,7 @@ public:
 	 * @param profile: set decoder parameters from the given profile
 	 * @note Open the decoder.
 	 */
-	virtual void setupDecoder( const ProfileLoader::Profile& profile = ProfileLoader::Profile() ) = 0;
+	virtual void setupDecoder( const ProfileLoader::Profile& profile = ProfileLoader::Profile() ) {}
 
 	/**
 	 * @brief Decode next frame

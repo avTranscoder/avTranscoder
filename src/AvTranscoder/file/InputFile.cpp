@@ -160,7 +160,7 @@ double InputFile::getFps()
 	return fps;
 }
 
-void InputFile::setProfile( const ProfileLoader::Profile& profile )
+void InputFile::setupUnwrapping( const ProfileLoader::Profile& profile )
 {
 	LOG_DEBUG( "Set profile of input file with:\n" << profile )
 

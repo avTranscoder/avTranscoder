@@ -16,8 +16,6 @@ public:
 
 	~VideoGenerator();
 
-	void setupDecoder( const ProfileLoader::Profile& profile = ProfileLoader::Profile() ) {}
-
 	bool decodeNextFrame( Frame& frameBuffer );
 	bool decodeNextFrame( Frame& frameBuffer, const size_t subStreamIndex );
 

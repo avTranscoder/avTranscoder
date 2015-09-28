@@ -1,4 +1,8 @@
 #!/bin/bash
+
+# Print commands and their arguments as they are executed.
+set -x
+
 lsb_release -a
 
 sudo apt-add-repository "deb http://archive.ubuntu.com/ubuntu trusty main restricted universe multiverse"
