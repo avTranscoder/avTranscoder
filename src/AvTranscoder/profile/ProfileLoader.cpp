@@ -15,24 +15,6 @@ ProfileLoader::ProfileLoader( bool autoload )
 		loadProfiles();
 }
 
-void ProfileLoader::loadProfile( const std::string& avProfileFileName )
-{
-	std::ifstream infile;
-	infile.open( avProfileFileName.c_str(), std::ifstream::in );
-
-	ProfileLoader::Profile customProfile;
-
-	std::string line;
-	while( std::getline( infile, line ) )
-	{
-		std::vector< std::string > keyValue;
-		split( keyValue, line, "=" );
-		if( keyValue.size() == 2 )
-			customProfile[ keyValue.at( 0 ) ] = keyValue.at( 1 );
-	}
-	loadProfile( customProfile );
-}
-
 void ProfileLoader::loadProfiles( const std::string& avProfilesPath )
 {
 	std::string realAvProfilesPath = avProfilesPath;
@@ -67,6 +49,24 @@ void ProfileLoader::loadProfiles( const std::string& avProfilesPath )
 			}
 		}
 	}
+}
+
+void ProfileLoader::loadProfile( const std::string& avProfileFileName )
+{
+	std::ifstream infile;
+	infile.open( avProfileFileName.c_str(), std::ifstream::in );
+
+	ProfileLoader::Profile customProfile;
+
+	std::string line;
+	while( std::getline( infile, line ) )
+	{
+		std::vector< std::string > keyValue;
+		split( keyValue, line, "=" );
+		if( keyValue.size() == 2 )
+			customProfile[ keyValue.at( 0 ) ] = keyValue.at( 1 );
+	}
+	loadProfile( customProfile );
 }
 
 void ProfileLoader::loadProfile( const Profile& profile )
