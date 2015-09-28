@@ -37,7 +37,7 @@ AudioEncoder::~AudioEncoder()
 
 void AudioEncoder::setupAudioEncoder( const AudioFrameDesc& frameDesc, const ProfileLoader::Profile& profile )
 {
-	LOG_DEBUG( "Set profile of audio encoder with:\n" << profile )
+	LOG_DEBUG( "Setup audio encoder with:\n" << profile )
 
 	// set sampleRate, number of channels, sample format
 	_codec.setAudioParameters( frameDesc );
@@ -48,6 +48,15 @@ void AudioEncoder::setupAudioEncoder( const AudioFrameDesc& frameDesc, const Pro
 
 void AudioEncoder::setupEncoder( const ProfileLoader::Profile& profile )
 {
+	// check the given profile
+	const bool isValid = ProfileLoader::checkAudioProfile( profile );
+	if( ! isValid && profile.size() )
+	{
+		const std::string msg( "Invalid audio profile to setup encoder." );
+		LOG_ERROR( msg )
+		throw std::runtime_error( msg );
+	}
+
 	// set threads before any other options
 	if( profile.count( constants::avProfileThreads ) )
 		_codec.getOption( constants::avProfileThreads ).setString( profile.at( constants::avProfileThreads ) );
