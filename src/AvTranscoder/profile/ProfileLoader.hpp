@@ -39,6 +39,10 @@ public:
 	typedef std::vector< Profile > Profiles;
 
 public:
+	static const std::string profileExt;
+	static const std::string profileFFmpegExt;
+
+public:
 	ProfileLoader( bool autoload = false );
 
 	/**

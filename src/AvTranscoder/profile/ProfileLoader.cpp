@@ -9,6 +9,9 @@
 namespace avtranscoder
 {
 
+const std::string ProfileLoader::profileExt = ".prf";
+const std::string ProfileLoader::profileFFmpegExt = ".ffpreset";
+
 ProfileLoader::ProfileLoader( bool autoload )
 {
 	if( autoload )
