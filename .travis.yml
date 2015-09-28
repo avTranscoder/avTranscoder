@@ -21,6 +21,7 @@ env:
     - DEPENDENCY_MODE=ffmpeg ENABLE_COVERAGE=false
 
 matrix:
+  # generate coverage only with gcc
   exclude:
     - compiler: clang
       env: DEPENDENCY_MODE=ffmpeg ENABLE_COVERAGE=true
@@ -50,11 +51,9 @@ script:
   - ./tools/travis.build.sh
 
   # launch tests
-  - if [ ${DEPENDENCY_MODE} = "ffmpeg" ]; then ./../tools/travis.python.nosetests.sh; fi
+  - if [ ${DEPENDENCY_MODE} = "ffmpeg" ]; then ./tools/travis.python.nosetests.sh; fi
 
 after_success:
-  - cd ${TRAVIS_BUILD_DIR}
-
   # generate coverage for coveralls
   - if [ ${ENABLE_COVERAGE} ]; then ./tools/travis.gcc.generate.coverage.sh; fi
 

@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Print commands and their arguments as they are executed.
+set -x
+
 # Create directory of build
 mkdir -p ${AVTRANSCODER_BUILD}
 cd ${AVTRANSCODER_BUILD}
