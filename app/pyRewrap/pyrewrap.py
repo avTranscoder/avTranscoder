@@ -82,4 +82,5 @@ addStreamsToTranscoder(transcoder, inputFile.getProperties().getVideoProperties(
 # addStreamsToTranscoder(transcoder, inputFile.getProperties().getDataProperties())
 
 # launch process
-transcoder.process()
+progress = av.ConsoleProgress()
+transcoder.process(progress)
