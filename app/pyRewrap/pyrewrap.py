@@ -12,42 +12,38 @@ try:
     # Create command-line interface
     parser = argparse.ArgumentParser(
         prog='pyrewrap',
-        description='''Rewrap a video file in the same codec and can mov header at the begining of file''',
+        description='''Rewrap a video file and can move the index (moov atom) to the beginning of the file.''',
     )
 
     # requirements
-    parser.add_argument('inputFileName', help='It could be any video file. Support file without extension.')
+    parser.add_argument('inputFileName', type=str, help='It could be any video file. Support file without extension.')
     # options
-    parser.add_argument("-o", "--outputFile", dest="outputFileName", help="Set the output filename (thumbnail.jpg by default). Must be with jpg extension!")
-    parser.add_argument("-c", "--codec", dest="codec", type=str, help="Specify the video input/output codec.")
-    parser.add_argument("-f", "--faststart", dest="faststart", action="store_true", help="Specify if the faststart option must be apply during rewrapping process.")
+    parser.add_argument("-o", "--outputFile", dest="outputFileName", type=str, default="output.mov", help="Set the output filename (thumbnail.jpg by default). Must be with jpg extension!")
+    parser.add_argument("-c", "--format", dest="format", type=str, default="mov", help="Specify the output format.")
+    parser.add_argument("-f", "--faststart", dest="faststart", action="store_true", default=False, help="Specify if the faststart option must be apply during rewrapping process.")
     # Parse command-line
     args = parser.parse_args()
-    
-    if args.inputFileName is None:
-        parser.print_help()
-        exit(1)
 
 except ImportError:
     import optparse
 
     # Create command-line interface
     parser = optparse.OptionParser(
-        usage='usage: %prog -o <outputfile> -c <codec> [-f] -i <inputfile>',
-        prog='pythumbnail',
-        description='''Generate jpeg thumbnail from video/image.''',
+        usage='usage: %prog -o <outputfile> -c <format> [-f] -i <inputfile>',
+        prog='pyrewrap',
+        description='''Rewrap a video file and can move the index (moov atom) to the beginning of the file.''',
     )
 
     # requirements
-    parser.add_option("-i", "--inputFile", dest='inputFileName', help='It could be any video file. Support file without extension.')
+    parser.add_option("-i", "--inputFile", dest='inputFileName', type="string", help='It could be any video file. Support file without extension.')
     # options
-    parser.add_option("-o", "--outputFile", dest="outputFileName", help="Set the output filename (thumbnail.jpg by default). Must be with jpg extension!")
-    parser.add_option("-c", "--codec", dest="codec", type=str, help="Specify the video input/output codec.")
-    parser.add_option("-f", "--faststart", dest="faststart", help="Specify if the faststart option must be apply during rewrapping process.")
+    parser.add_option("-o", "--outputFile", dest="outputFileName", type="string", default="output.mov", help="Set the output filename (thumbnail.jpg by default). Must be with jpg extension!")
+    parser.add_option("-c", "--format", dest="format", type="string", default="mov", help="Specify the output format.")
+    parser.add_option("-f", "--faststart", dest="faststart", action="store_true", default=False, help="Specify if the faststart option must be apply during rewrapping process.")
     # Parse command-line
     args, other = parser.parse_args()
 
-    if args.inputFileName is None or args.outputFileName is None or args.codec is None:
+    if args.inputFileName is None or args.outputFileName is None or args.format is None:
         parser.print_help()
         exit(1)
 
@@ -67,7 +63,7 @@ formatProfile = av.ProfileMap()
 formatProfile[ av.avProfileIdentificator ] = "mp4WrapFormatPreset"
 formatProfile[ av.avProfileIdentificatorHuman ] = "MP4 rewraping format preset"
 formatProfile[ av.avProfileType ] = av.avProfileTypeFormat
-formatProfile[ av.avProfileFormat ] = args.codec
+formatProfile[ av.avProfileFormat ] = args.format
 if args.faststart is not None:
     # formatProfile[ "movflags" ] = "faststart"
     pass
