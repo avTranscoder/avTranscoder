@@ -38,7 +38,7 @@ VideoEncoder::~VideoEncoder()
 
 void VideoEncoder::setupVideoEncoder( const VideoFrameDesc& frameDesc, const ProfileLoader::Profile& profile )
 {
-	LOG_DEBUG( "Setup video encoder with:\n" << profile )
+	LOG_INFO( "Setup video encoder with:\n" << profile )
 
 	// set width, height, pixel format, fps
 	_codec.setImageParameters( frameDesc );

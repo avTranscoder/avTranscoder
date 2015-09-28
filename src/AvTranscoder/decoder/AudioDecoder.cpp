@@ -62,7 +62,7 @@ void AudioDecoder::setupDecoder( const ProfileLoader::Profile& profile )
 		throw std::runtime_error( msg );
 	}
 
-	LOG_DEBUG( "Setup audio decoder with:\n" << profile )
+	LOG_INFO( "Setup audio decoder with:\n" << profile )
 
 	AudioCodec& codec = _inputStream->getAudioCodec();
 

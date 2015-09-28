@@ -172,7 +172,7 @@ void InputFile::setupUnwrapping( const ProfileLoader::Profile& profile )
 	}
 
 	// set profile
-	LOG_DEBUG( "Setup unwrapping with:\n" << profile )
+	LOG_INFO( "Setup unwrapping with:\n" << profile )
 
 	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
 	{

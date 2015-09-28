@@ -201,7 +201,7 @@ void OutputFile::setupWrapping( const ProfileLoader::Profile& profile )
 		throw std::runtime_error( msg );
 	}
 
-	LOG_DEBUG( "Setup wrapping with:\n" << profile )
+	LOG_INFO( "Setup wrapping with:\n" << profile )
 
 	// check if output format indicated is valid with the filename extension
 	if( ! matchFormat( profile.find( constants::avProfileFormat )->second, getFilename() ) )
