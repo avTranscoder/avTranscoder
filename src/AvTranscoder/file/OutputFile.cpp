@@ -12,6 +12,7 @@ OutputFile::OutputFile( const std::string& filename )
 	, _outputStreams()
 	, _frameCount()
 	, _previousProcessedStreamDuration( 0.0 )
+	, _profile()
 {
 	_formatContext.setFilename( filename );
 	_formatContext.setOutputFormat( filename );
@@ -127,6 +128,8 @@ bool OutputFile::beginWrap( )
 	_formatContext.openRessource( getFilename(), AVIO_FLAG_WRITE );
 	_formatContext.writeHeader();
 
+	setupWrapping( _profile );
+
 	_frameCount.clear();
 	_frameCount.resize( _outputStreams.size(), 0 );
 
@@ -191,13 +194,15 @@ void OutputFile::setupWrapping( const ProfileLoader::Profile& profile )
 	LOG_DEBUG( "Set profile of output file with:\n" << profile )
 
 	// check if output format indicated is valid with the filename extension
-	if( ! matchFormat( profile.find( constants::avProfileFormat )->second, getFilename() ) )
+	if( profile.count( constants::avProfileFormat ) )
 	{
-		throw std::runtime_error( "Invalid format according to the file extension." );
+		if( ! matchFormat( profile.find( constants::avProfileFormat )->second, getFilename() ) )
+		{
+			throw std::runtime_error( "Invalid format according to the file extension." );
+		}
+		// set output format
+		_formatContext.setOutputFormat( getFilename(), profile.find( constants::avProfileFormat )->second );
 	}
-
-	// set output format
-	_formatContext.setOutputFormat( getFilename(), profile.find( constants::avProfileFormat )->second );
 
 	// set format options
 	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
@@ -216,6 +221,8 @@ void OutputFile::setupWrapping( const ProfileLoader::Profile& profile )
 		catch( std::exception& e )
 		{
 			LOG_WARN( "OutputFile - can't set option " << (*it).first <<  " to " << (*it).second << ": " << e.what() )
+			LOG_INFO( "OutputFile - option " << (*it).first <<  " will be saved to be called when beginWrap" )
+			_profile[ (*it).first ] = (*it).second;
 		}
 	}
 }

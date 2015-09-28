@@ -34,7 +34,7 @@ public:
 	IOutputStream& addDataStream( const DataCodec& dataDesc );
 
 	/**
-	 * @brief Open ressource and write header.
+	 * @brief Open ressource, write header, and setup specific wrapping options given when call setupWrapping.
 	 * @note Need to add the streams to mux before calling this method.
 	 * @note After this call, a new list of AVOption, relative to the format choosen, will be available for the OutputFile.
          */
@@ -78,6 +78,8 @@ public:
 	/**
 	 * @brief Set the format of the output file
 	 * @param profile: the profile of the output format
+	 * @note options specific to the output format will be set in beginWrap.
+	 * @see beginWrap
 	 */
 	void setupWrapping( const ProfileLoader::Profile& profile );
 
@@ -87,6 +89,13 @@ private:
 	std::vector<size_t> _frameCount;  ///< Number of wrapped frames
 
 	double _previousProcessedStreamDuration;  ///< To manage process streams order
+
+	/**
+	 * @brief To setup specific wrapping options.
+	 * @see setupWrapping
+	 * @see beginWrap
+	 */
+	ProfileLoader::Profile _profile;
 };
 
 }
