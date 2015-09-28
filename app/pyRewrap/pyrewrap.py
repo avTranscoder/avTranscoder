@@ -64,9 +64,8 @@ formatProfile[ av.avProfileIdentificator ] = "mp4WrapFormatPreset"
 formatProfile[ av.avProfileIdentificatorHuman ] = "MP4 rewraping format preset"
 formatProfile[ av.avProfileType ] = av.avProfileTypeFormat
 formatProfile[ av.avProfileFormat ] = args.format
-if args.faststart is not None:
-    # formatProfile[ "movflags" ] = "faststart"
-    pass
+if args.faststart:
+    formatProfile[ "movflags" ] = "+faststart"
 outputFile = av.OutputFile( args.outputFileName )
 outputFile.setupWrapping( formatProfile )
 
