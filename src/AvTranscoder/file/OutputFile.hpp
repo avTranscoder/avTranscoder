@@ -54,7 +54,7 @@ public:
 	
 	IOutputStream& getStream( const size_t streamId );
 
-	std::string getFilename() const { return _filename; }
+	std::string getFilename() const;
 
 	/**
 	 * @brief A comma separated list of short names for the format, or empty if unknown.
@@ -84,7 +84,6 @@ private:
 	std::vector<OutputStream*> _outputStreams;  ///< Has ownership
 	std::vector<size_t> _frameCount;  ///< Number of wrapped frames
 
-	std::string _filename;  ///< Output filename
 	double _previousProcessedStreamDuration;  ///< To manage process streams order
 };
 
