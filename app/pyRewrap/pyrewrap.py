@@ -54,9 +54,8 @@ av.preloadCodecsAndFormats()
 # create input file
 inputFile = av.InputFile(args.inputFileName)
 if len(inputFile.getProperties().getVideoProperties()) == 0:
-    print "No video stream found in file ", args.inputFileName
+    print("No video stream found in file ", args.inputFileName)
     exit(1)
-
 
 # create output file (need to set format profile of encoding to force output format to mp4)
 formatProfile = av.ProfileMap()
