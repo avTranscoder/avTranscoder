@@ -84,12 +84,14 @@ public:
 	void setupWrapping( const ProfileLoader::Profile& profile );
 
 private:
-	/**
-	 * @brief Set options of output format.
-	 * @param commonOptions: if the profile contains common options or options specific to the output format.
-	 * @see _profile
-	 */
-	void setupWrapping( const ProfileLoader::Profile& profile, const bool commonOptions );
+	//@{
+	// @brief Set options of output format.
+	// @note setupWrappingOptions: called when setupWrapping, to set common options.
+	// @note setupRemainingWrappingOptions: called when beginWrap, to set specific options.
+	// @see setupWrapping
+	void setupWrappingOptions( const ProfileLoader::Profile& profile );
+	void setupRemainingWrappingOptions();
+	//@}
 
 private:
 	FormatContext _formatContext;

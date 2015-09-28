@@ -129,7 +129,7 @@ bool OutputFile::beginWrap( )
 	_formatContext.writeHeader();
 
 	// set specific wrapping options
-	setupWrapping( _profile, false );
+	setupRemainingWrappingOptions();
 
 	_frameCount.clear();
 	_frameCount.resize( _outputStreams.size(), 0 );
@@ -212,10 +212,10 @@ void OutputFile::setupWrapping( const ProfileLoader::Profile& profile )
 	_formatContext.setOutputFormat( getFilename(), profile.find( constants::avProfileFormat )->second );
 
 	// set common wrapping options
-	setupWrapping( profile, true );
+	setupWrappingOptions( profile );
 }
 
-void OutputFile::setupWrapping( const ProfileLoader::Profile& profile, const bool commonOptions )
+void OutputFile::setupWrappingOptions( const ProfileLoader::Profile& profile )
 {
 	// set format options
 	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
@@ -233,12 +233,31 @@ void OutputFile::setupWrapping( const ProfileLoader::Profile& profile, const boo
 		}
 		catch( std::exception& e )
 		{
+			LOG_INFO( "OutputFile - option " << (*it).first <<  " will be saved to be called when beginWrap" )
+			_profile[ (*it).first ] = (*it).second;
+		}
+	}
+}
+
+void OutputFile::setupRemainingWrappingOptions()
+{
+	// set format options
+	for( ProfileLoader::Profile::const_iterator it = _profile.begin(); it != _profile.end(); ++it )
+	{
+		if( (*it).first == constants::avProfileIdentificator ||
+			(*it).first == constants::avProfileIdentificatorHuman ||
+			(*it).first == constants::avProfileType ||
+			(*it).first == constants::avProfileFormat )
+			continue;
+
+		try
+		{
+			Option& formatOption = _formatContext.getOption( (*it).first );
+			formatOption.setString( (*it).second );
+		}
+		catch( std::exception& e )
+		{
 			LOG_WARN( "OutputFile - can't set option " << (*it).first <<  " to " << (*it).second << ": " << e.what() )
-			if( commonOptions )
-			{
-				LOG_INFO( "OutputFile - option " << (*it).first <<  " will be saved to be called when beginWrap" )
-				_profile[ (*it).first ] = (*it).second;
-			}
 		}
 	}
 }
