@@ -41,6 +41,9 @@ void ProfileLoader::loadProfiles( const std::string& avProfilesPath )
 
 		for( std::vector< std::string >::iterator fileIt = files.begin(); fileIt != files.end(); ++fileIt )
 		{
+			if( fileIt->find( ProfileLoader::profileExt ) == std::string::npos )
+				continue;
+
 			const std::string absPath = ( *dirIt ) + "/" + ( *fileIt );
 			try
 			{

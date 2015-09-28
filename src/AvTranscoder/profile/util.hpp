@@ -81,8 +81,7 @@ int getFilesInDir( const std::string& dir, std::vector< std::string >& files )
 		const std::string filename( dirp->d_name );
 		if( filename == "." || filename == ".." )
 			continue;
-		if( filename.find(".prf") != std::string::npos )
-		    files.push_back( filename );
+		files.push_back( filename );
 	}
 	closedir( dp );
 #endif
