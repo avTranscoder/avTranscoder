@@ -35,6 +35,8 @@ public:
 
 	/**
 	 * @brief Open ressource and write header.
+	 * @note Need to add the streams to mux before calling this method.
+	 * @note After this call, a new list of AVOption, relative to the format choosen, will be available for the OutputFile.
          */
 	bool beginWrap();
 
