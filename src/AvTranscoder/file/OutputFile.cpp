@@ -11,10 +11,11 @@ OutputFile::OutputFile( const std::string& filename )
 	: _formatContext( AV_OPT_FLAG_ENCODING_PARAM )
 	, _outputStreams()
 	, _frameCount()
-	, _filename( filename )
 	, _previousProcessedStreamDuration( 0.0 )
+	, _profile()
 {
-	_formatContext.setOutputFormat( _filename );
+	_formatContext.setFilename( filename );
+	_formatContext.setOutputFormat( filename );
 }
 
 OutputFile::~OutputFile()
@@ -85,11 +86,16 @@ IOutputStream& OutputFile::getStream( const size_t streamId )
 	return *_outputStreams.at( streamId );
 }
 
+std::string OutputFile::getFilename() const
+{
+	return std::string( _formatContext.getAVFormatContext().filename );
+}
+
 std::string OutputFile::getFormatName() const
 {
 	if( _formatContext.getAVOutputFormat().name == NULL )
 	{
-		LOG_WARN("Unknown muxer format name of '" << _filename << "'.")
+		LOG_WARN("Unknown muxer format name of '" << getFilename() << "'.")
 		return "";
 	}
 	return std::string(_formatContext.getAVOutputFormat().name);
@@ -99,7 +105,7 @@ std::string OutputFile::getFormatLongName() const
 {
 	if( _formatContext.getAVOutputFormat().long_name == NULL )
 	{
-		LOG_WARN("Unknown muxer format long name of '" << _filename << "'.")
+		LOG_WARN("Unknown muxer format long name of '" << getFilename() << "'.")
 		return "";
 	}
 	return std::string(_formatContext.getAVOutputFormat().long_name);
@@ -109,7 +115,7 @@ std::string OutputFile::getFormatMimeType() const
 {
 	if( _formatContext.getAVOutputFormat().mime_type == NULL )
 	{
-		LOG_WARN("Unknown muxer format mime type of '" << _filename << "'.")
+		LOG_WARN("Unknown muxer format mime type of '" << getFilename() << "'.")
 		return "";
 	}
 	return std::string(_formatContext.getAVOutputFormat().mime_type);
@@ -119,8 +125,11 @@ bool OutputFile::beginWrap( )
 {
 	LOG_DEBUG( "Begin wrap of OutputFile" )
 
-	_formatContext.openRessource( _filename, AVIO_FLAG_WRITE );
+	_formatContext.openRessource( getFilename(), AVIO_FLAG_WRITE );
 	_formatContext.writeHeader();
+
+	// set specific wrapping options
+	setupRemainingWrappingOptions();
 
 	_frameCount.clear();
 	_frameCount.resize( _outputStreams.size(), 0 );
@@ -183,19 +192,57 @@ void OutputFile::addMetadata( const std::string& key, const std::string& value )
 
 void OutputFile::setupWrapping( const ProfileLoader::Profile& profile )
 {
-	LOG_DEBUG( "Set profile of output file with:\n" << profile )
+	// check the given profile
+	const bool isValid = ProfileLoader::checkFormatProfile( profile );
+	if( ! isValid )
+	{
+		const std::string msg( "Invalid format profile to setup wrapping." );
+		LOG_ERROR( msg )
+		throw std::runtime_error( msg );
+	}
+
+	LOG_INFO( "Setup wrapping with:\n" << profile )
 
 	// check if output format indicated is valid with the filename extension
-	if( ! matchFormat( profile.find( constants::avProfileFormat )->second, _filename ) )
+	if( ! matchFormat( profile.find( constants::avProfileFormat )->second, getFilename() ) )
 	{
 		throw std::runtime_error( "Invalid format according to the file extension." );
 	}
-
 	// set output format
-	_formatContext.setOutputFormat( _filename, profile.find( constants::avProfileFormat )->second );
+	_formatContext.setOutputFormat( getFilename(), profile.find( constants::avProfileFormat )->second );
 
+	// set common wrapping options
+	setupWrappingOptions( profile );
+}
+
+void OutputFile::setupWrappingOptions( const ProfileLoader::Profile& profile )
+{
 	// set format options
 	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
+	{
+		if( (*it).first == constants::avProfileIdentificator ||
+			(*it).first == constants::avProfileIdentificatorHuman ||
+			(*it).first == constants::avProfileType ||
+			(*it).first == constants::avProfileFormat )
+			continue;
+
+		try
+		{
+			Option& formatOption = _formatContext.getOption( (*it).first );
+			formatOption.setString( (*it).second );
+		}
+		catch( std::exception& e )
+		{
+			LOG_INFO( "OutputFile - option " << (*it).first <<  " will be saved to be called when beginWrap" )
+			_profile[ (*it).first ] = (*it).second;
+		}
+	}
+}
+
+void OutputFile::setupRemainingWrappingOptions()
+{
+	// set format options
+	for( ProfileLoader::Profile::const_iterator it = _profile.begin(); it != _profile.end(); ++it )
 	{
 		if( (*it).first == constants::avProfileIdentificator ||
 			(*it).first == constants::avProfileIdentificatorHuman ||

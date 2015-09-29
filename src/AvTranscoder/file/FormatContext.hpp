@@ -94,11 +94,17 @@ public:
 
 	/**
 	 * Guess format from arguments.
+	 * Set the AVOutputFormat of AVFormatContext.
 	 * @param filename: checks if it terminates with the extensions of the registered formats
 	 * @param shortName: checks if it matches with the names of the registered formats
 	 * @param mimeType: checks if it matches with the MIME type of the registered formats
 	 */
 	void setOutputFormat( const std::string& filename, const std::string& shortName = "", const std::string& mimeType = "" );
+
+	/**
+	 * Set filename of AVFormatContext.
+	 */
+	void setFilename( const std::string& filename );
 
 #ifndef SWIG
 	AVFormatContext& getAVFormatContext() const { return *_avFormatContext; }

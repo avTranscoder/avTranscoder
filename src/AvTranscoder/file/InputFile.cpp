@@ -162,7 +162,17 @@ double InputFile::getFps()
 
 void InputFile::setupUnwrapping( const ProfileLoader::Profile& profile )
 {
-	LOG_DEBUG( "Set profile of input file with:\n" << profile )
+	// check the given profile
+	const bool isValid = ProfileLoader::checkFormatProfile( profile );
+	if( ! isValid )
+	{
+		std::string msg( "Invalid format profile to setup unwrapping." );
+		LOG_ERROR( msg )
+		throw std::runtime_error( msg );
+	}
+
+	// set profile
+	LOG_INFO( "Setup unwrapping with:\n" << profile )
 
 	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
 	{

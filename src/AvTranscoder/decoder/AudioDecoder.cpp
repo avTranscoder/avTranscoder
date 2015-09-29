@@ -53,7 +53,16 @@ AudioDecoder::~AudioDecoder()
 
 void AudioDecoder::setupDecoder( const ProfileLoader::Profile& profile )
 {
-	LOG_DEBUG( "Set profile of audio decoder with:\n" << profile )
+	// check the given profile
+	const bool isValid = ProfileLoader::checkAudioProfile( profile );
+	if( ! isValid && ! profile.empty() )
+	{
+		const std::string msg( "Invalid audio profile to setup decoder." );
+		LOG_ERROR( msg )
+		throw std::runtime_error( msg );
+	}
+
+	LOG_INFO( "Setup audio decoder with:\n" << profile )
 
 	AudioCodec& codec = _inputStream->getAudioCodec();
 

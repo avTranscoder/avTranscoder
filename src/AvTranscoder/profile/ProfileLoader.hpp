@@ -68,10 +68,10 @@ public:
 
 	const Profile& getProfile( const std::string& avProfileIdentificator ) const;
 
-private:
-	bool checkFormatProfile( const Profile& profileToCheck ) const;
-	bool checkVideoProfile( const Profile& profileToCheck ) const;
-	bool checkAudioProfile( const Profile& profileToCheck ) const;
+public:
+	static bool checkFormatProfile( const Profile& profileToCheck );
+	static bool checkVideoProfile( const Profile& profileToCheck );
+	static bool checkAudioProfile( const Profile& profileToCheck );
 
 private:
 	Profiles _profiles;
