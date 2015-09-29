@@ -231,7 +231,7 @@ ProcessStat Transcoder::process()
 ProcessStat Transcoder::process( IProgress& progress )
 {
 	if( _streamTranscoders.size() == 0 )
-		throw std::runtime_error( "missing input streams in transcoder" );
+		throw std::runtime_error( "Missing input streams in transcoder" );
 
 	manageSwitchToGenerator();
 
@@ -241,8 +241,8 @@ ProcessStat Transcoder::process( IProgress& progress )
 
 	preProcessCodecLatency();
 
-	double outputDuration = getOutputDuration();
-	LOG_DEBUG( "Output duration of the process will be " << outputDuration )
+	const double outputDuration = getOutputDuration();
+	LOG_INFO( "Output duration of the process will be " << outputDuration << "s." )
 
 	size_t frame = 0;
 	bool frameProcessed = true;
