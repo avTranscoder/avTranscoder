@@ -77,7 +77,7 @@ def addStreamsToTranscoder(transcoder, streams):
         transcoder.add( args.inputFileName, stIndex )
 
 addStreamsToTranscoder(transcoder, inputFile.getProperties().getVideoProperties())
-# addStreamsToTranscoder(transcoder, inputFile.getProperties().getAudioProperties())
+addStreamsToTranscoder(transcoder, inputFile.getProperties().getAudioProperties())
 # addStreamsToTranscoder(transcoder, inputFile.getProperties().getDataProperties())
 
 # launch process
