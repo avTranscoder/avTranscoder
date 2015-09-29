@@ -29,6 +29,7 @@ namespace std {
 %ignore vector< avtranscoder::UnknownProperties >::resize;
 
 // Create instantiations of a template classes
+%template(StreamVector)       vector< avtranscoder::StreamProperties* >;
 %template(VideoVector)        vector< avtranscoder::VideoProperties >;
 %template(AudioVector)        vector< avtranscoder::AudioProperties >;
 %template(DataVector)         vector< avtranscoder::DataProperties >;
