@@ -75,6 +75,27 @@ void ProfileLoader::loadProfile( const std::string& avProfileDir, const std::str
 		if( keyValue.size() == 2 )
 			customProfile[ keyValue.at( 0 ) ] = keyValue.at( 1 );
 	}
+
+	// complete ffpreset
+	if( avProfileFileName.find( ProfileLoader::profileFFmpegExt ) != std::string::npos )
+	{
+		customProfile[ constants::avProfileIdentificator ] = avProfileFileName;
+		customProfile[ constants::avProfileIdentificatorHuman ] = avProfileFileName;
+
+		if( customProfile.count( "vcodec" ) )
+		{
+			customProfile[ constants::avProfileType ] = constants::avProfileTypeVideo;
+			customProfile[ constants::avProfileCodec ] = customProfile.at( "vcodec" );
+		}
+		else if( customProfile.count( "acodec" ) )
+		{
+			customProfile[ constants::avProfileType ] = constants::avProfileTypeVideo;
+			customProfile[ constants::avProfileCodec ] = customProfile.at( "vcodec" );
+		}
+		else
+			LOG_WARN( "Cannot manage ffpreset which are not for video or audio." )
+	}
+
 	loadProfile( customProfile );
 }
 
