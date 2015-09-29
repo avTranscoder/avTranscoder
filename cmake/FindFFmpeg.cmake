@@ -94,9 +94,15 @@ macro(manage_components)
 		# If the component is found.
 		if(${COMPONENT}_FOUND)
 			message(STATUS "Component ${COMPONENT} present.")
-			set(FFMPEG_LIBRARIES ${FFMPEG_LIBRARIES} ${${COMPONENT}_LIBRARIES})
-			set(FFMPEG_DEFINITIONS ${FFMPEG_DEFINITIONS} ${${COMPONENT}_DEFINITIONS})
-			list(APPEND FFMPEG_INCLUDE_DIR ${${COMPONENT}_INCLUDE_DIR})
+			# Skip components which are in a different location
+			# This prevents us to depend on libav system libraries if we build with ffmpeg (and the reverse).
+			if(NOT FFMPEG_INCLUDE_DIR OR FFMPEG_INCLUDE_DIR STREQUAL ${${COMPONENT}_INCLUDE_DIR})
+				set(FFMPEG_INCLUDE_DIR ${${COMPONENT}_INCLUDE_DIR})
+				set(FFMPEG_LIBRARIES ${FFMPEG_LIBRARIES} ${${COMPONENT}_LIBRARIES})
+				set(FFMPEG_DEFINITIONS ${FFMPEG_DEFINITIONS} ${${COMPONENT}_DEFINITIONS})
+                        else()
+                                set(${COMPONENT}_FOUND FALSE)
+			endif()
 		else()
 			if(FFmpeg_FIND_REQUIRED)
 				message(SEND_ERROR "Error: required component ${COMPONENT} missing.")
