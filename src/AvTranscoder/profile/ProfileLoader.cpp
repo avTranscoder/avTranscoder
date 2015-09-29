@@ -41,13 +41,14 @@ void ProfileLoader::loadProfiles( const std::string& avProfilesPath )
 
 		for( std::vector< std::string >::iterator fileIt = files.begin(); fileIt != files.end(); ++fileIt )
 		{
-			if( fileIt->find( ProfileLoader::profileExt ) == std::string::npos )
+
+			if( fileIt->find( ProfileLoader::profileExt ) == std::string::npos &&
+			    fileIt->find( ProfileLoader::profileFFmpegExt ) == std::string::npos )
 				continue;
 
-			const std::string absPath = ( *dirIt ) + "/" + ( *fileIt );
 			try
 			{
-				loadProfile( absPath );
+				loadProfile( *dirIt, *fileIt );
 			}
 			catch( const std::exception& e )
 			{
@@ -57,10 +58,12 @@ void ProfileLoader::loadProfiles( const std::string& avProfilesPath )
 	}
 }
 
-void ProfileLoader::loadProfile( const std::string& avProfileFileName )
+void ProfileLoader::loadProfile( const std::string& avProfileDir, const std::string& avProfileFileName )
 {
+	const std::string absPath = avProfileDir + "/" + avProfileFileName;
+
 	std::ifstream infile;
-	infile.open( avProfileFileName.c_str(), std::ifstream::in );
+	infile.open( absPath.c_str(), std::ifstream::in );
 
 	ProfileLoader::Profile customProfile;
 

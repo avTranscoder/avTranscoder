@@ -54,7 +54,7 @@ public:
 	/**
 	 * @brief Load the profile defines in the given file
 	 */
-	void loadProfile( const std::string& avProfileFileName );
+	void loadProfile( const std::string& avProfileDir, const std::string& avProfileFileName );
 
 	/**
 	 * @brief Load the given profile
