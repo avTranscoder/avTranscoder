@@ -516,8 +516,8 @@ int VideoProperties::getLevel() const
 
 float VideoProperties::getFps() const
 {
-	Rational timeBase = getTimeBase();
-	float fps = timeBase.den / (double) timeBase.num;
+	const Rational timeBase = getTimeBase();
+	const float fps = timeBase.den / (double) timeBase.num;
 	if( std::isinf( fps ) )
 	{
 		std::ostringstream os;
