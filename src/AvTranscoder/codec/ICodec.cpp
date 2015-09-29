@@ -54,12 +54,12 @@ ICodec::~ICodec()
 void ICodec::openCodec()
 {
 	if( ! _avCodecContext )
-		throw std::runtime_error( "unable to open a codec with no codec context" );
+		throw std::runtime_error( "Unable to open a codec without codec context" );
 
 	const int ret = avcodec_open2( _avCodecContext, _avCodec, NULL );
 	if( ret < 0 )
 	{
-		std::string msg = "Unable open codec: ";
+		std::string msg = "Unable to open codec: ";
 
 		if( _avCodec && _avCodec->long_name )
 			msg +=  _avCodec->long_name;
@@ -84,7 +84,7 @@ std::string ICodec::getCodecName() const
 	assert( _avCodecContext != NULL );
 	const AVCodecDescriptor * desc = avcodec_descriptor_get( _avCodecContext->codec_id );
 	if( ! desc )
-                throw std::runtime_error( "Codec Descriptor is not available." );
+		throw std::runtime_error( "Codec Descriptor is not available." );
 
 	return desc->name;
 }
