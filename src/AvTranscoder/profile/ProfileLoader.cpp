@@ -104,13 +104,13 @@ void ProfileLoader::loadProfile( const Profile& profile )
 	// check profile identificator
 	if( ! profile.count( constants::avProfileIdentificator ) )
 	{
-		throw std::runtime_error( "Warning: A profile has no name. It will not be loaded." );
+		throw std::runtime_error( "A profile has no name. It will not be loaded." );
 	}
 
 	// check profile type
 	if( profile.count( constants::avProfileType ) == 0 )
 	{
-		throw std::runtime_error( "Warning: The profile " + profile.find( constants::avProfileIdentificator )->second + " has not type. It will not be loaded." );
+		throw std::runtime_error( "The profile " + profile.find( constants::avProfileIdentificator )->second + " has not type. It will not be loaded." );
 	}
 
 	// check complete profile
