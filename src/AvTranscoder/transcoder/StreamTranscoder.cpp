@@ -326,7 +326,7 @@ bool StreamTranscoder::processFrame()
 	// Manage offset
 	if( _offset > 0 )
 	{
-		bool endOfOffset = _outputStream->getStreamDuration() >= _offset;
+		const bool endOfOffset = _outputStream->getStreamDuration() >= _offset;
 		if( endOfOffset )
 		{
 			LOG_INFO( "End of positive offset" )
@@ -349,7 +349,7 @@ bool StreamTranscoder::processFrame()
 	}
 	else if( _offset < 0 )
 	{
-		bool endOfStream = _outputStream->getStreamDuration() >= ( _inputStream->getDuration() + _offset );
+		const bool endOfStream = _outputStream->getStreamDuration() >= ( _inputStream->getDuration() + _offset );
 		if( endOfStream )
 		{
 			LOG_INFO( "End of negative offset" )
@@ -371,7 +371,7 @@ bool StreamTranscoder::processRewrap()
 	assert( _outputStream != NULL );
 	assert( _inputDecoder == NULL );
 
-	LOG_DEBUG( "Rewrap a frame" )
+	LOG_DEBUG( "StreamTranscoder::processRewrap" )
 
 	// if switched to generator, process frame
 	if( _currentDecoder == _generator )
@@ -379,7 +379,6 @@ bool StreamTranscoder::processRewrap()
 		return processTranscode();
 	}
 
-	LOG_DEBUG( "read next packet" )
 	CodedData data;
 	if( ! _inputStream->readNextPacket( data ) )
 	{
@@ -391,9 +390,7 @@ bool StreamTranscoder::processRewrap()
 		return false;
 	}
 
-	LOG_DEBUG( "wrap (" << data.getSize() << " bytes)" )
-	IOutputStream::EWrappingStatus wrappingStatus = _outputStream->wrap( data );
-
+	const IOutputStream::EWrappingStatus wrappingStatus = _outputStream->wrap( data );
 	switch( wrappingStatus )
 	{
 		case IOutputStream::eWrappingSuccess:
@@ -417,9 +414,9 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 	assert( _frameBuffer    != NULL );
 	assert( _transform      != NULL );
 
-	LOG_DEBUG( "Transcode a frame" )
+	LOG_DEBUG( "StreamTranscoder::processTranscode" )
 
-	LOG_DEBUG( "decode next frame" )
+	LOG_DEBUG( "Decode next frame" )
 	bool decodingStatus = false;
 	if( subStreamIndex < 0 )
 		decodingStatus = _currentDecoder->decodeNextFrame( *_sourceBuffer );
@@ -429,15 +426,15 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 	CodedData data;
 	if( decodingStatus )
 	{
-		LOG_DEBUG( "convert (" << _sourceBuffer->getSize() << " bytes)" )
+		LOG_DEBUG( "Convert (" << _sourceBuffer->getSize() << " bytes)" )
 		_transform->convert( *_sourceBuffer, *_frameBuffer );
 
-		LOG_DEBUG( "encode (" << _frameBuffer->getSize() << " bytes)" )
+		LOG_DEBUG( "Encode (" << _frameBuffer->getSize() << " bytes)" )
 		_outputEncoder->encodeFrame( *_frameBuffer, data );
 	}
 	else
 	{
-		LOG_DEBUG( "encode last frame(s)" )
+		LOG_DEBUG( "Encode last frame(s)" )
 		if( ! _outputEncoder->encodeFrame( data ) )
 		{
 			if( _canSwitchToGenerator )
@@ -450,8 +447,7 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 	}
 
 	LOG_DEBUG( "wrap (" << data.getSize() << " bytes)" )
-	IOutputStream::EWrappingStatus wrappingStatus = _outputStream->wrap( data );
-
+	const IOutputStream::EWrappingStatus wrappingStatus = _outputStream->wrap( data );
 	switch( wrappingStatus )
 	{
 		case IOutputStream::eWrappingSuccess:

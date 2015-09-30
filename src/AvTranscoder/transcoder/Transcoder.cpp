@@ -231,7 +231,7 @@ ProcessStat Transcoder::process()
 ProcessStat Transcoder::process( IProgress& progress )
 {
 	if( _streamTranscoders.size() == 0 )
-		throw std::runtime_error( "missing input streams in transcoder" );
+		throw std::runtime_error( "Missing input streams in transcoder" );
 
 	manageSwitchToGenerator();
 
@@ -241,14 +241,14 @@ ProcessStat Transcoder::process( IProgress& progress )
 
 	preProcessCodecLatency();
 
-	double outputDuration = getOutputDuration();
-	LOG_DEBUG( "Output duration of the process will be " << outputDuration )
+	const double outputDuration = getOutputDuration();
+	LOG_INFO( "Output duration of the process will be " << outputDuration << "s." )
 
 	size_t frame = 0;
 	bool frameProcessed = true;
 	while( frameProcessed )
 	{
-		double progressDuration = _outputFile.getStream( 0 ).getStreamDuration();
+		const double progressDuration = _outputFile.getStream( 0 ).getStreamDuration();
 
 		// check if JobStatusCancel
 		if( progress.progress( ( progressDuration > outputDuration ) ? outputDuration : progressDuration, outputDuration ) == eJobStatusCancel )
@@ -521,12 +521,13 @@ void Transcoder::fillProcessStat( ProcessStat& processStat )
 	for( size_t streamIndex = 0; streamIndex < _streamTranscoders.size(); ++streamIndex )
 	{
 		IOutputStream& stream = _streamTranscoders.at( streamIndex )->getOutputStream();
-		AVCodecContext& encoderContext = _streamTranscoders.at( streamIndex )->getEncoder().getCodec().getAVCodecContext();
-		switch( encoderContext.codec_type )
+		const AVMediaType mediaType = _streamTranscoders.at( streamIndex )->getInputStream().getStreamType();
+		switch( mediaType )
 		{
 			case AVMEDIA_TYPE_VIDEO:
 			{
 				VideoStat videoStat( stream.getStreamDuration(), stream.getNbFrames() );
+				const AVCodecContext& encoderContext = _streamTranscoders.at( streamIndex )->getEncoder().getCodec().getAVCodecContext();
 				if( encoderContext.coded_frame && ( encoderContext.flags & CODEC_FLAG_PSNR) )
 				{
 					videoStat._quality = encoderContext.coded_frame->quality;
@@ -542,6 +543,7 @@ void Transcoder::fillProcessStat( ProcessStat& processStat )
 				break;
 			}
 			default:
+				LOG_WARN( "No process statistics for stream at index: " << streamIndex << " (AVMediaType = " << mediaType << ")" )
 				break;
 		}
 	}

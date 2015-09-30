@@ -35,7 +35,7 @@ float OutputStream::getStreamDuration() const
 
 size_t OutputStream::getNbFrames() const
 {
-	AVStream& outputStream = _outputFile->getFormatContext().getAVStream( _streamIndex );
+	const AVStream& outputStream = _outputFile->getFormatContext().getAVStream( _streamIndex );
 	return outputStream.nb_frames;
 }
 
