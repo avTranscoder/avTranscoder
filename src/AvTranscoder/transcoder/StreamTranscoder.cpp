@@ -36,7 +36,7 @@ StreamTranscoder::StreamTranscoder(
 	, _transform( NULL )
 	, _subStreamIndex( -1 )
 	, _offset( offset )
-	, _canSwitchToGenerator( false )
+	, _needToSwitchToGenerator( false )
 {
 	// create a re-wrapping case
 	switch( _inputStream->getStreamType() )
@@ -117,6 +117,7 @@ StreamTranscoder::StreamTranscoder(
 		default:
 			break;
 	}
+	setOffset( offset );
 }
 
 StreamTranscoder::StreamTranscoder(
@@ -137,7 +138,7 @@ StreamTranscoder::StreamTranscoder(
 	, _transform( NULL )
 	, _subStreamIndex( subStreamIndex )
 	, _offset( offset )
-	, _canSwitchToGenerator( false )
+	, _needToSwitchToGenerator( false )
 {
 	// create a transcode case
 	switch( _inputStream->getStreamType() )
@@ -223,6 +224,7 @@ StreamTranscoder::StreamTranscoder(
 			break;
 		}
 	}
+	setOffset( offset );
 }
 
 StreamTranscoder::StreamTranscoder(
@@ -241,7 +243,7 @@ StreamTranscoder::StreamTranscoder(
 	, _transform( NULL )
 	, _subStreamIndex( -1 )
 	, _offset( 0 )
-	, _canSwitchToGenerator( false )
+	, _needToSwitchToGenerator( false )
 {
 	if( profile.find( constants::avProfileType )->second == constants::avProfileTypeVideo )
 	{
@@ -414,7 +416,7 @@ bool StreamTranscoder::processRewrap()
 	CodedData data;
 	if( ! _inputStream->readNextPacket( data ) )
 	{
-		if( _canSwitchToGenerator )
+		if( _needToSwitchToGenerator && canSwitchToGenerator() )
 		{
 			switchToGeneratorDecoder();
 			return processTranscode();
@@ -469,7 +471,7 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 		LOG_DEBUG( "Encode last frame(s)" )
 		if( ! _outputEncoder->encodeFrame( data ) )
 		{
-			if( _canSwitchToGenerator )
+			if( _needToSwitchToGenerator && canSwitchToGenerator() )
 			{
 				switchToGeneratorDecoder();
 				return processTranscode();
@@ -511,7 +513,7 @@ void StreamTranscoder::switchToInputDecoder()
 }
 
 float StreamTranscoder::getDuration() const
-{	
+{
 	if( _inputStream )
 	{
 		const float totalDuration = _inputStream->getDuration() + _offset;
@@ -525,6 +527,31 @@ float StreamTranscoder::getDuration() const
 	// generator
 	else
 		return std::numeric_limits<float>::max();
+}
+
+bool StreamTranscoder::canSwitchToGenerator()
+{
+	if( _sourceBuffer && _frameBuffer && _generator && _outputEncoder && _transform )
+		return true;
+	return false;
+}
+
+void StreamTranscoder::needToSwitchToGenerator( const bool needToSwitch )
+{
+	if( needToSwitch && ! canSwitchToGenerator() )
+	{
+		std::stringstream os;
+		os << "The stream " << _inputStream->getStreamIndex() << " needs to switch to a generator during the process, but it cannot.";
+		throw std::runtime_error( os.str() );
+	}
+	_needToSwitchToGenerator = needToSwitch;
+}
+
+void StreamTranscoder::setOffset( const float offset )
+{
+	_offset = offset;
+	if( _offset > 0 )
+		needToSwitchToGenerator();
 }
 
 StreamTranscoder::EProcessCase StreamTranscoder::getProcessCase() const
