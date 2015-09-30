@@ -43,53 +43,68 @@ StreamTranscoder::StreamTranscoder(
 	{
 		case AVMEDIA_TYPE_VIDEO :
 		{
-			VideoFrameDesc inputFrameDesc( _inputStream->getVideoCodec().getVideoFrameDesc() );
-
-			// generator decoder
-			VideoGenerator* generatorVideo = new VideoGenerator();
-			generatorVideo->setVideoFrameDesc( inputFrameDesc );
-			_generator = generatorVideo;
-
-			// buffers to process
-			_sourceBuffer = new VideoFrame( inputFrameDesc );
-			_frameBuffer = new VideoFrame( inputFrameDesc );
-
-			// transform
-			_transform = new VideoTransform();
-
-			// output encoder
-			VideoEncoder* outputVideo = new VideoEncoder( _inputStream->getVideoCodec().getCodecName() );
-			outputVideo->setupVideoEncoder( inputFrameDesc );
-			_outputEncoder = outputVideo;
-
 			// output stream
 			_outputStream = &outputFile.addVideoStream( _inputStream->getVideoCodec() );
+
+			try
+			{
+				VideoFrameDesc inputFrameDesc( _inputStream->getVideoCodec().getVideoFrameDesc() );
+
+				// generator decoder
+				VideoGenerator* generatorVideo = new VideoGenerator();
+				generatorVideo->setVideoFrameDesc( inputFrameDesc );
+				_generator = generatorVideo;
+
+				// buffers to process
+				_sourceBuffer = new VideoFrame( inputFrameDesc );
+				_frameBuffer = new VideoFrame( inputFrameDesc );
+
+				// transform
+				_transform = new VideoTransform();
+
+				// output encoder
+				VideoEncoder* outputVideo = new VideoEncoder( _inputStream->getVideoCodec().getCodecName() );
+				outputVideo->setupVideoEncoder( inputFrameDesc );
+				_outputEncoder = outputVideo;
+			}
+			catch( std::runtime_error& e )
+			{
+				LOG_WARN( "Cannot create the video encoder for stream " << _inputStream->getStreamIndex() << " if needed. " << e.what() )
+			}
 
 			break;
 		}
 		case AVMEDIA_TYPE_AUDIO :
 		{
-			AudioFrameDesc inputFrameDesc( _inputStream->getAudioCodec().getAudioFrameDesc() );
-
-			// generator decoder
-			AudioGenerator* generatorAudio = new AudioGenerator();
-			generatorAudio->setAudioFrameDesc( inputFrameDesc );
-			_generator = generatorAudio;
-
-			// buffers to process
-			_sourceBuffer = new AudioFrame( inputFrameDesc );
-			_frameBuffer  = new AudioFrame( inputFrameDesc );
-
-			// transform
-			_transform = new AudioTransform();
-
-			// output encoder
-			AudioEncoder* outputAudio = new AudioEncoder( _inputStream->getAudioCodec().getCodecName()  );
-			outputAudio->setupAudioEncoder( inputFrameDesc );
-			_outputEncoder = outputAudio;
-
 			// output stream
 			_outputStream = &outputFile.addAudioStream( _inputStream->getAudioCodec() );
+
+			try
+			{
+				AudioFrameDesc inputFrameDesc( _inputStream->getAudioCodec().getAudioFrameDesc() );
+
+				// generator decoder
+				AudioGenerator* generatorAudio = new AudioGenerator();
+				generatorAudio->setAudioFrameDesc( inputFrameDesc );
+				_generator = generatorAudio;
+
+				// buffers to process
+				_sourceBuffer = new AudioFrame( inputFrameDesc );
+				_frameBuffer  = new AudioFrame( inputFrameDesc );
+
+				// transform
+				_transform = new AudioTransform();
+
+				// output encoder
+				AudioEncoder* outputAudio = new AudioEncoder( _inputStream->getAudioCodec().getCodecName()  );
+				outputAudio->setupAudioEncoder( inputFrameDesc );
+				_outputEncoder = outputAudio;
+			}
+			
+			catch( std::runtime_error& e )
+			{
+				LOG_WARN( "Cannot create the audio encoder for stream " << _inputStream->getStreamIndex() << " if needed. " << e.what() )
+			}
 
 			break;
 		}
@@ -300,6 +315,20 @@ StreamTranscoder::~StreamTranscoder()
 
 void StreamTranscoder::preProcessCodecLatency()
 {
+	if( ! _outputEncoder )
+	{
+		std::stringstream os;
+		os << "No output encoder found for stream ";		
+		if( getProcessCase() == eProcessCaseGenerator )
+			os << "generator";
+		else
+			os << _inputStream->getStreamIndex();
+		os << ": will not preProcessCodecLatency.";
+		LOG_INFO( os.str() )
+
+		return;
+	}
+
 	int latency = _outputEncoder->getCodec().getLatency();
 
 	LOG_DEBUG( "Latency of stream: " << latency )
