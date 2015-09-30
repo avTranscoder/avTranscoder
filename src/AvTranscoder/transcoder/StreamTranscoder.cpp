@@ -352,6 +352,9 @@ void StreamTranscoder::preProcessCodecLatency()
 
 bool StreamTranscoder::processFrame()
 {
+	if( getProcessCase() == eProcessCaseGenerator )
+		return processTranscode();
+
 	// Manage offset
 	if( _offset > 0 )
 	{
@@ -386,7 +389,7 @@ bool StreamTranscoder::processFrame()
 			switchToGeneratorDecoder();
 			_offset = 0;
 		}
- 	}
+	}
 
 	if( getProcessCase() == eProcessCaseRewrap )
 		return processRewrap();
@@ -519,6 +522,7 @@ float StreamTranscoder::getDuration() const
 		}
 		return totalDuration;
 	}
+	// generator
 	else
 		return std::numeric_limits<float>::max();
 }
