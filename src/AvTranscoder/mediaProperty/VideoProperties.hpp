@@ -55,6 +55,13 @@ public:
 	int getProfile() const;
 	int getLevel() const;
 
+	/**
+	 * @brief Corresponds to the compute of the 'tbn' by ffmpeg.
+	 * tbn = the time base in AVStream that has come from the container
+	 * tbc = the time base in AVCodecContext for the codec used for a particular stream
+	 * tbr = tbr is guessed from the video stream and is the value users want to see when they look for the video frame rate
+	 * @return 
+	 */
 	float getFps() const;
 
 	bool hasBFrames() const;
