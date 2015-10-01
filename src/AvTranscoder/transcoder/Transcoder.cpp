@@ -483,34 +483,35 @@ void Transcoder::manageSwitchToGenerator()
 {
 	for( size_t i = 0; i < _streamTranscoders.size(); ++i )
 	{
+		const float currentDuration = _streamTranscoders.at( i )->getDuration();
 		switch( _eProcessMethod )
 		{
 			case eProcessMethodShortest :
-				if( _streamTranscoders.at( i )->getDuration() == getMinTotalDuration() )
-					_streamTranscoders.at( i )->canSwitchToGenerator( false );
+				if( _streamTranscoders.at( i )->getDuration() >= getMinTotalDuration() )
+					_streamTranscoders.at( i )->needToSwitchToGenerator( false );
 				else
-					_streamTranscoders.at( i )->canSwitchToGenerator( true );
+					_streamTranscoders.at( i )->needToSwitchToGenerator();
 				break;
 			case eProcessMethodLongest :
 				if( _streamTranscoders.at( i )->getDuration() == getMaxTotalDuration() )
-					_streamTranscoders.at( i )->canSwitchToGenerator( false );
+					_streamTranscoders.at( i )->needToSwitchToGenerator( false );
 				else
-					_streamTranscoders.at( i )->canSwitchToGenerator( true );
+					_streamTranscoders.at( i )->needToSwitchToGenerator();
 				break;
 			case eProcessMethodBasedOnStream :
-				if( i != _mainStreamIndex )
-					_streamTranscoders.at( i )->canSwitchToGenerator( true );
+				if( i != _mainStreamIndex && currentDuration < _streamTranscoders.at( _mainStreamIndex )->getDuration() )
+					_streamTranscoders.at( i )->needToSwitchToGenerator();
 				else
-					_streamTranscoders.at( i )->canSwitchToGenerator( false );
+					_streamTranscoders.at( i )->needToSwitchToGenerator( false );
 				break;
 			case eProcessMethodBasedOnDuration :
 				if( _streamTranscoders.at( i )->getDuration() >= _outputDuration )
-					_streamTranscoders.at( i )->canSwitchToGenerator( false );
+					_streamTranscoders.at( i )->needToSwitchToGenerator( false );
 				else
-					_streamTranscoders.at( i )->canSwitchToGenerator( true );
+					_streamTranscoders.at( i )->needToSwitchToGenerator();
 				break;
 			case eProcessMethodInfinity :
-				_streamTranscoders.at( i )->canSwitchToGenerator( true );
+				_streamTranscoders.at( i )->needToSwitchToGenerator();
 				break;
 		}
 	}

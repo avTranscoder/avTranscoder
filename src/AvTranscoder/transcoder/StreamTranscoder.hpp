@@ -84,12 +84,22 @@ public:
 	IOutputStream& getOutputStream() const { return *_outputStream; }
 
 	/**
-	 * @brief Returns if the stream can switch to a generator when ended
-	 * @note Not applicable for rewrap and generator cases
+	 * @brief Returns if the stream has the ability to switch to a generator.
 	 */
-	void canSwitchToGenerator( bool canSwitch ) { _canSwitchToGenerator = canSwitch; }
+	bool canSwitchToGenerator();
 
-	void setOffset( const float offset ){ _offset = offset; }
+	/**
+	 * @brief Set if the stream needs to switch to a generator when ended
+	 * @note Throws a runtime_error exception if the stream cannot switch to a generator
+	 * @see canSwitchToGenerator
+	 */
+	void needToSwitchToGenerator( const bool needToSwitch = true );
+
+	/**
+	 * @note Throws a runtime_error exception if it's a positive offset and the stream cannot switch to a generator
+	 * @see needToSwitchToGenerator
+	 */
+	void setOffset( const float offset );
 
 private:
 	bool processRewrap();
@@ -123,7 +133,7 @@ private:
 
 	float _offset;  ///< Offset, in seconds, at the beginning of the StreamTranscoder.
 
-	bool _canSwitchToGenerator;  ///< Automatically switch to a generator at the end of the stream
+	bool _needToSwitchToGenerator;  ///< Set if need to switch to a generator during the process (because, of other streams duration, or an offset)
 };
 
 }

@@ -49,10 +49,10 @@ IOutputStream& OutputFile::addVideoStream( const VideoCodec& videoDesc )
 
 	stream.time_base = stream.codec->time_base;
 
-	OutputStream* avOutputStream = new OutputStream( *this, _formatContext.getNbStreams() - 1 );
-	_outputStreams.push_back( avOutputStream );
+	OutputStream* outputStream = new OutputStream( *this, _formatContext.getNbStreams() - 1 );
+	_outputStreams.push_back( outputStream );
 
-	return *_outputStreams.back();
+	return *outputStream;
 }
 
 IOutputStream& OutputFile::addAudioStream( const AudioCodec& audioDesc )
@@ -63,20 +63,21 @@ IOutputStream& OutputFile::addAudioStream( const AudioCodec& audioDesc )
 	stream.codec->channels = audioDesc.getAVCodecContext().channels;
 	stream.codec->sample_fmt = audioDesc.getAVCodecContext().sample_fmt;
 
-	OutputStream* avOutputStream = new OutputStream( *this, _formatContext.getNbStreams() - 1 );
-	_outputStreams.push_back( avOutputStream );
 
-	return *_outputStreams.back();
+	OutputStream* outputStream = new OutputStream( *this, _formatContext.getNbStreams() - 1 );
+	_outputStreams.push_back( outputStream );
+
+	return *outputStream;
 }
 
 IOutputStream& OutputFile::addDataStream( const DataCodec& dataDesc )
 {
 	_formatContext.addAVStream( dataDesc.getAVCodec() );
 
-	OutputStream* avOutputStream = new OutputStream( *this, _formatContext.getNbStreams() - 1 );
-	_outputStreams.push_back( avOutputStream );
+	OutputStream* outputStream = new OutputStream( *this, _formatContext.getNbStreams() - 1 );
+	_outputStreams.push_back( outputStream );
 
-	return *_outputStreams.back();
+	return *outputStream;
 }
 
 IOutputStream& OutputFile::getStream( const size_t streamId )
