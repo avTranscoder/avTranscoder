@@ -9,7 +9,7 @@ namespace avtranscoder
 
 OutputStream::OutputStream( OutputFile& outputFile, const size_t streamIndex )
 	: IOutputStream()
-	, _outputFile( &outputFile )
+	, _outputFile( outputFile )
 	, _streamIndex( streamIndex )
 {
 }
@@ -41,8 +41,8 @@ size_t OutputStream::getNbFrames() const
 
 IOutputStream::EWrappingStatus OutputStream::wrap( const CodedData& data )
 {
-	assert( _outputFile != NULL );
-	return _outputFile->wrap( data, _streamIndex );
+	// wrap packet
+	return _outputFile.wrap( data, _streamIndex );
 }
 
 }
