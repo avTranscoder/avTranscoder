@@ -10,16 +10,15 @@ namespace avtranscoder
 OutputStream::OutputStream( OutputFile& outputFile, const size_t streamIndex )
 	: IOutputStream()
 	, _outputFile( outputFile )
+	, _outputStream( outputFile.getFormatContext().getAVStream( streamIndex ) )
 	, _streamIndex( streamIndex )
 {
 }
 
 float OutputStream::getStreamDuration() const
 {
-	const AVStream& outputStream = _outputFile->getFormatContext().getAVStream( _streamIndex );
-
 	// check floating point exception
-	if( outputStream.time_base.den == 0 || outputStream.pts.den == 0 )
+	if( _outputStream.time_base.den == 0 || _outputStream.pts.den == 0 )
 	{
 		LOG_WARN( "Cannot compute stream duration of output stream at index " << _streamIndex )
 		return 0.f;
@@ -27,16 +26,15 @@ float OutputStream::getStreamDuration() const
 
 #if AVTRANSCODER_FFMPEG_DEPENDENCY && LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(55, 40, 100)
 	// returns the pts of the last muxed packet, converted from timebase to seconds
-	return av_q2d( outputStream.time_base ) * av_stream_get_end_pts( &outputStream );
+	return av_q2d( _outputStream.time_base ) * av_stream_get_end_pts( &_outputStream );
 #else
-	return av_q2d( outputStream.time_base ) * ( outputStream.pts.val + ( outputStream.pts.num / outputStream.pts.den ) );
+	return av_q2d( _outputStream.time_base ) * ( _outputStream.pts.val + ( _outputStream.pts.num / _outputStream.pts.den ) );
 #endif
 }
 
 size_t OutputStream::getNbFrames() const
 {
-	const AVStream& outputStream = _outputFile->getFormatContext().getAVStream( _streamIndex );
-	return outputStream.nb_frames;
+	return _outputStream.nb_frames;
 }
 
 IOutputStream::EWrappingStatus OutputStream::wrap( const CodedData& data )
