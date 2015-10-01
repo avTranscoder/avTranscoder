@@ -118,7 +118,7 @@ float InputStream::getDuration() const
 	return _inputFile->getProperties().getStreamPropertiesWithIndex( _streamIndex ).getDuration();
 }
 
-void InputStream::addPacket( AVPacket& packet )
+void InputStream::addPacket( const AVPacket& packet )
 {
 	// Do not cache data if the stream is declared as unused in process
 	if( ! _isActivated )
