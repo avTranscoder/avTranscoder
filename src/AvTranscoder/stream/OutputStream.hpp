@@ -26,6 +26,13 @@ private:
 	const AVStream& _outputStream;  ///< Has link (no ownership)
 
 	size_t _streamIndex;  ///<  Index of the stream in the output file
+
+	/**
+	 * @brief This will help us to getStreamDuration if PTS of outputStream is not properly set during wrapping.
+	 * It corresponds to the addition of the duration of all packets wrapped by this stream.
+	 * @see getStreamDuration
+	 */
+	size_t _duration;
 };
 
 }

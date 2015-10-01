@@ -63,6 +63,13 @@ IOutputStream& OutputFile::addAudioStream( const AudioCodec& audioDesc )
 	stream.codec->channels = audioDesc.getAVCodecContext().channels;
 	stream.codec->sample_fmt = audioDesc.getAVCodecContext().sample_fmt;
 
+	// need to set the time_base on the AVCodecContext of the AVStream
+	av_reduce(
+		&stream.codec->time_base.num,
+		&stream.codec->time_base.den,
+		audioDesc.getAVCodecContext().time_base.num,
+		audioDesc.getAVCodecContext().time_base.den,
+		INT_MAX );
 
 	OutputStream* outputStream = new OutputStream( *this, _formatContext.getNbStreams() - 1 );
 	_outputStreams.push_back( outputStream );
