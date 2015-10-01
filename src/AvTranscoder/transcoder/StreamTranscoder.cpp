@@ -416,7 +416,7 @@ bool StreamTranscoder::processRewrap()
 	CodedData data;
 	if( ! _inputStream->readNextPacket( data ) )
 	{
-		if( _needToSwitchToGenerator && canSwitchToGenerator() )
+		if( _needToSwitchToGenerator )
 		{
 			switchToGeneratorDecoder();
 			return processTranscode();
@@ -471,7 +471,7 @@ bool StreamTranscoder::processTranscode( const int subStreamIndex )
 		LOG_DEBUG( "Encode last frame(s)" )
 		if( ! _outputEncoder->encodeFrame( data ) )
 		{
-			if( _needToSwitchToGenerator && canSwitchToGenerator() )
+			if( _needToSwitchToGenerator )
 			{
 				switchToGeneratorDecoder();
 				return processTranscode();
