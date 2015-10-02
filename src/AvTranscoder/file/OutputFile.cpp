@@ -4,6 +4,10 @@
 
 #include <stdexcept>
 
+#ifndef FF_INPUT_BUFFER_PADDING_SIZE
+ #define FF_INPUT_BUFFER_PADDING_SIZE 16
+#endif
+
 namespace avtranscoder
 {
 
@@ -36,6 +40,14 @@ IOutputStream& OutputFile::addVideoStream( const VideoCodec& videoDesc )
 	stream.codec->pix_fmt = videoDesc.getAVCodecContext().pix_fmt;
 	stream.codec->profile = videoDesc.getAVCodecContext().profile;
 	stream.codec->level = videoDesc.getAVCodecContext().level;
+
+	// some codecs need/can use extradata to decode
+	uint8_t* srcExtradata = videoDesc.getAVCodecContext().extradata;
+	const int srcExtradataSize = videoDesc.getAVCodecContext().extradata_size;
+	stream.codec->extradata = (uint8_t*) av_malloc( srcExtradataSize + FF_INPUT_BUFFER_PADDING_SIZE );
+	memcpy( stream.codec->extradata, srcExtradata, srcExtradataSize );
+	memset( ((uint8_t *) stream.codec->extradata) + srcExtradataSize, 0, FF_INPUT_BUFFER_PADDING_SIZE );
+	stream.codec->extradata_size = videoDesc.getAVCodecContext().extradata_size;
 
 	// need to set the time_base on the AVCodecContext and the AVStream
 	// compensating the frame rate with the ticks_per_frame and keeping
