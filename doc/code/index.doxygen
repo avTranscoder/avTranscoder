@@ -1,6 +1,6 @@
 /** @mainpage AvTranscoder
  *
- * An High Level API for transform medias.<br/>
+ * An High Level API to transform medias.<br/>
  * Based on FFMpeg / libav projects.
  *
  * <h2>Links</h2>
