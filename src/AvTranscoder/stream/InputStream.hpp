@@ -40,7 +40,7 @@ public:
 	 */
 	void activate( const bool activate = true ){ _isActivated = activate; };
 	bool isActivated() const { return _isActivated; };
-	void addPacket( AVPacket& packet );
+	void addPacket( const AVPacket& packet );
 	void clearBuffering();
 	//@}
 
