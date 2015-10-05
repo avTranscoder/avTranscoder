@@ -12,7 +12,7 @@ OutputStream::OutputStream( OutputFile& outputFile, const size_t streamIndex )
 	, _outputFile( outputFile )
 	, _outputAVStream( outputFile.getFormatContext().getAVStream( streamIndex ) )
 	, _streamIndex( streamIndex )
-	, _duration( 0 )
+	, _wrappedPacketsDuration( 0 )
 {
 }
 
@@ -32,8 +32,8 @@ float OutputStream::getStreamDuration() const
 	if( ! outputPTS.val )
 	{
 		LOG_WARN( "PTS generation when outputting stream " << _streamIndex << " is not set." )
-		if( _duration )
-			return av_q2d( _outputAVStream.codec->time_base ) * _duration;
+		if( _wrappedPacketsDuration )
+			return av_q2d( _outputAVStream.codec->time_base ) * _wrappedPacketsDuration;
 	}
 
 #if AVTRANSCODER_FFMPEG_DEPENDENCY && LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(55, 40, 100)
@@ -55,7 +55,7 @@ IOutputStream::EWrappingStatus OutputStream::wrap( const CodedData& data )
 	IOutputStream::EWrappingStatus status = _outputFile.wrap( data, _streamIndex );
 
 	// append duration of the packet to the stream
-	_duration += data.getAVPacket().duration;
+	_wrappedPacketsDuration += data.getAVPacket().duration;
 
 	return status;
 }

@@ -32,7 +32,7 @@ private:
 	 * It corresponds to the addition of the duration of all packets wrapped by this stream.
 	 * @see getStreamDuration
 	 */
-	size_t _duration;
+	size_t _wrappedPacketsDuration;
 };
 
 }
