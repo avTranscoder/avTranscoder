@@ -17,11 +17,11 @@ Based on Libav/FFmpeg libraries to support various video and audio formats, avTr
 #### License
 See [**COPYING.md**](COPYING.md)
 
-#### Compilation
-See [**INSTALL.md**](INSTALL.md)
-
 #### How to use
 See [**USAGE.md**](USAGE.md)
+
+#### Compilation
+See [**INSTALL.md**](INSTALL.md)
 
 #### Tests
 
