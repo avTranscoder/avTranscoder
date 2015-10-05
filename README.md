@@ -20,6 +20,9 @@ See [**COPYING.md**](COPYING.md)
 #### How to use
 See [**USAGE.md**](USAGE.md)
 
+#### Documentation
+See [**Doxygen documentation**](http://avtranscoder.github.io/avTranscoder-doxygen/)
+
 #### Compilation
 See [**INSTALL.md**](INSTALL.md)
 
