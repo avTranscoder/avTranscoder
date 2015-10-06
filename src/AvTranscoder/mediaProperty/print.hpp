@@ -6,23 +6,23 @@
 namespace avtranscoder
 {
 
-std::ostream& operator<<( std::ostream& flux, const FileProperties& fileProperties );
+AvExport std::ostream& operator<<( std::ostream& flux, const FileProperties& fileProperties );
 
-std::ostream& operator<<( std::ostream& flux, const StreamProperties& streamProperties );
+AvExport std::ostream& operator<<( std::ostream& flux, const StreamProperties& streamProperties );
 
-std::ostream& operator<<( std::ostream& flux, const VideoProperties& videoProperties );
+AvExport std::ostream& operator<<( std::ostream& flux, const VideoProperties& videoProperties );
 
-std::ostream& operator<<( std::ostream& flux, const AudioProperties& audioProperties );
+AvExport std::ostream& operator<<( std::ostream& flux, const AudioProperties& audioProperties );
 
-std::ostream& operator<<( std::ostream& flux, const DataProperties& dataProperties );
+AvExport std::ostream& operator<<( std::ostream& flux, const DataProperties& dataProperties );
 
-std::ostream& operator<<( std::ostream& flux, const SubtitleProperties& subtitleProperties );
+AvExport std::ostream& operator<<( std::ostream& flux, const SubtitleProperties& subtitleProperties );
 
-std::ostream& operator<<( std::ostream& flux, const AttachementProperties& attachementProperties );
+AvExport std::ostream& operator<<( std::ostream& flux, const AttachementProperties& attachementProperties );
 
-std::ostream& operator<<( std::ostream& flux, const UnknownProperties& unknownProperties );
+AvExport std::ostream& operator<<( std::ostream& flux, const UnknownProperties& unknownProperties );
 
-std::ostream& operator<<( std::ostream& flux, const InputFile& input );
+AvExport std::ostream& operator<<( std::ostream& flux, const InputFile& input );
 
 }
 
