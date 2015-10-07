@@ -516,17 +516,7 @@ int VideoProperties::getLevel() const
 
 float VideoProperties::getFps() const
 {
-	const Rational timeBase = getTimeBase();
-	const float fps = timeBase.den / (double) timeBase.num;
-	if( std::isinf( fps ) )
-	{
-		std::ostringstream os;
-		os << "unable to retrieve a correct fps (found value: ";
-		os << fps;
-		os << ")";
-		throw std::runtime_error( os.str() );
-	}
-	return fps;
+	return av_q2d( _formatContext->streams[_streamIndex]->avg_frame_rate );
 }
 
 bool VideoProperties::hasBFrames() const
