@@ -1,9 +1,9 @@
 import os
 
 # Check if environment is setup to run the tests
-if os.environ.get('AVTRANSCODER_TEST_AUDIO_WAVE_FILE') is None or os.environ.get('AVTRANSCODER_TEST_AUDIO_MOV_FILE') is None or os.environ.get('AVTRANSCODER_TEST_VIDEO_FILE') is None:
+if os.environ.get('AVTRANSCODER_TEST_AUDIO_WAVE_FILE') is None or os.environ.get('AVTRANSCODER_TEST_AUDIO_MOV_FILE') is None or os.environ.get('AVTRANSCODER_TEST_VIDEO_AVI_FILE') is None:
 	from nose.plugins.skip import SkipTest
-	raise SkipTest("Need to define environment variables AVTRANSCODER_TEST_VIDEO_FILE / AVTRANSCODER_TEST_AUDIO_MOV_FILE / AVTRANSCODER_TEST_AUDIO_WAVE_FILE")
+	raise SkipTest("Need to define environment variables AVTRANSCODER_TEST_VIDEO_AVI_FILE / AVTRANSCODER_TEST_AUDIO_MOV_FILE / AVTRANSCODER_TEST_AUDIO_WAVE_FILE")
 
 from nose.tools import *
 
@@ -138,7 +138,7 @@ def testTranscodeVideoPositiveOffset():
 	"""
 	Transcode one video stream (profile mpeg2) with offset at the beginning of the process.
 	"""
-	inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_FILE']
+	inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_AVI_FILE']
 	outputFileName = "testTranscodeVideoPositiveOffset.mov"
         offset = 10
 
@@ -168,7 +168,7 @@ def testTranscodeVideoNegativeOffset():
 	"""
 	Transcode one video stream (profile mpeg2) with a negative offset at the beginning of the process.
 	"""
-	inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_FILE']
+	inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_AVI_FILE']
 	outputFileName = "testTranscodeVideoNegativeOffset.mov"
         offset = -5.5
 
@@ -198,7 +198,7 @@ def testRewrapVideoPositiveOffset():
 	"""
 	Rewrap one video stream with offset at the beginning of the process.
 	"""
-	inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_FILE']
+	inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_AVI_FILE']
 	outputFileName = "testRewrapVideoPositiveOffset.mov"
         offset = 10
 
@@ -228,7 +228,7 @@ def testRewrapVideoNegativeOffset():
 	"""
 	Rewrap one video stream with a negative offset at the beginning of the process.
 	"""
-	inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_FILE']
+	inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_AVI_FILE']
 	outputFileName = "testRewrapVideoNegativeOffset.mov"
         offset = -5.5
 

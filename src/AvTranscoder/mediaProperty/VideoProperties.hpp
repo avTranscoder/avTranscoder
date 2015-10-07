@@ -56,11 +56,11 @@ public:
 	int getLevel() const;
 
 	/**
-	 * @brief Corresponds to the compute of the 'tbn' by ffmpeg.
-	 * tbn = the time base in AVStream that has come from the container
+	 * @brief Corresponds to the 'fps' returned by ffprobe.
+	 * fps = the average framerate that has come from the AVStream
+	 * tbn = the time base in AVStream that has come from the AVStream
 	 * tbc = the time base in AVCodecContext for the codec used for a particular stream
 	 * tbr = tbr is guessed from the video stream and is the value users want to see when they look for the video frame rate
-	 * @return 
 	 */
 	float getFps() const;
 
