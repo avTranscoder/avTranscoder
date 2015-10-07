@@ -93,3 +93,33 @@ def testCheckVideoProperties():
 	assert_equals( videoStream.getNbFrames(), expectedNbFrames )
 	assert_equals( round(videoStream.getDuration(), 2), expectedDuration )
 	assert_equals( videoStream.getFps(), expectedFps )
+
+def testCheckAudioProperties():
+	"""
+	Check properties of an audio stream.
+	"""
+	# get src file
+	inputFileName = os.environ['AVTRANSCODER_TEST_AUDIO_WAVE_FILE']
+	inputFile = av.InputFile( inputFileName )
+	properties = inputFile.getProperties()
+	audioStream = properties.getAudioProperties()[0]
+
+	expectedTotalBitRate = 4608040
+	expectedAudioBitRate = 4608000
+
+	expectedCodecName = 'pcm_s16le'
+	expectedSamples = 5760000
+	expectedDuration = 20
+	expectedChannels = 6
+	expectedChannelLayout = '5.1'
+	expectedSampleRate = 48000
+
+	assert_equals( properties.getBitRate(), expectedTotalBitRate )
+	assert_equals( audioStream.getBitRate(), expectedAudioBitRate )
+
+	assert_equals( audioStream.getCodecName(), expectedCodecName )
+	assert_equals( audioStream.getNbSamples(), expectedSamples )
+	assert_equals( round(audioStream.getDuration(), 2), expectedDuration )
+	assert_equals( audioStream.getChannels(), expectedChannels )
+	assert_equals( audioStream.getChannelLayout(), expectedChannelLayout )
+	assert_equals( audioStream.getSampleRate(), expectedSampleRate )
