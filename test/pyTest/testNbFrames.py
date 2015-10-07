@@ -1,9 +1,9 @@
 import os
 
 # Check if environment is setup to run the tests
-if os.environ.get('AVTRANSCODER_TEST_VIDEO_FILE') is None:
+if os.environ.get('AVTRANSCODER_TEST_VIDEO_AVI_FILE') is None:
 	from nose.plugins.skip import SkipTest
-	raise SkipTest("Need to define environment variable AVTRANSCODER_TEST_VIDEO_FILE")
+	raise SkipTest("Need to define environment variable AVTRANSCODER_TEST_VIDEO_AVI_FILE")
 
 from nose.tools import *
 
@@ -17,7 +17,7 @@ def testNbFramesVideoRewrap():
 	"""
 	Rewrap one video stream, check nb frames.
 	"""
-	inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_FILE']
+	inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_AVI_FILE']
 	outputFileName = "testNbFramesVideoRewrap.mov"
 
 	ouputFile = av.OutputFile( outputFileName )
@@ -44,7 +44,7 @@ def testNbFramesVideoTranscode():
 	"""
 	Transcode one video stream (to h264), check nb frames.
 	"""
-	inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_FILE']
+	inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_AVI_FILE']
 	outputFileName = "testNbFramesVideoTranscode.mov"
 
 	ouputFile = av.OutputFile( outputFileName )
