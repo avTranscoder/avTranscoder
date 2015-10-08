@@ -78,8 +78,9 @@ public:
 	 * @param position: can be in AV_TIME_BASE units, in frames... depending on the flag value
 	 * @param flag: seeking mode (AVSEEK_FLAG_xxx)
 	 * @note before seek, add offset of start time
+	 * @return seek status
 	 */
-	void seek( uint64_t position, const int flag );
+	bool seek( uint64_t position, const int flag );
 
 	size_t getNbStreams() const { return _avFormatContext->nb_streams; }
 	/// Get duration of the program, in seconds
@@ -93,11 +94,17 @@ public:
 
 	/**
 	 * Guess format from arguments.
+	 * Set the AVOutputFormat of AVFormatContext.
 	 * @param filename: checks if it terminates with the extensions of the registered formats
 	 * @param shortName: checks if it matches with the names of the registered formats
 	 * @param mimeType: checks if it matches with the MIME type of the registered formats
 	 */
 	void setOutputFormat( const std::string& filename, const std::string& shortName = "", const std::string& mimeType = "" );
+
+	/**
+	 * Set filename of AVFormatContext.
+	 */
+	void setFilename( const std::string& filename );
 
 #ifndef SWIG
 	AVFormatContext& getAVFormatContext() const { return *_avFormatContext; }

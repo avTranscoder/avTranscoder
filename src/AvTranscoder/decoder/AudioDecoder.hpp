@@ -21,12 +21,16 @@ public:
 	bool decodeNextFrame( Frame& frameBuffer );
 	bool decodeNextFrame( Frame& frameBuffer, const size_t subStreamIndex );
 
+	void flushDecoder();
+
 private:
 	bool decodeNextFrame();
 
 private:
 	InputStream* _inputStream;  ///< Stream from which we read next frames (no ownership, has link)
 	AVFrame* _frame;  ///< Libav object to store decoded data (has ownership)
+
+	bool _isSetup;
 };
 
 }

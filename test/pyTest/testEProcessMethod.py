@@ -1,9 +1,9 @@
 import os
 
 # Check if environment is setup to run the tests
-if os.environ.get('AVTRANSCODER_TEST_VIDEO_FILE') is None or os.environ.get('AVTRANSCODER_TEST_AUDIO_MOV_FILE') is None or os.environ.get('AVTRANSCODER_TEST_AUDIO_WAVE_FILE') is None:
+if os.environ.get('AVTRANSCODER_TEST_VIDEO_AVI_FILE') is None or os.environ.get('AVTRANSCODER_TEST_AUDIO_MOV_FILE') is None or os.environ.get('AVTRANSCODER_TEST_AUDIO_WAVE_FILE') is None:
 	from nose.plugins.skip import SkipTest
-	raise SkipTest("Need to define environment variables AVTRANSCODER_TEST_VIDEO_FILE / AVTRANSCODER_TEST_AUDIO_MOV_FILE / AVTRANSCODER_TEST_AUDIO_WAVE_FILE")
+	raise SkipTest("Need to define environment variables AVTRANSCODER_TEST_VIDEO_AVI_FILE / AVTRANSCODER_TEST_AUDIO_MOV_FILE / AVTRANSCODER_TEST_AUDIO_WAVE_FILE")
 
 from nose.tools import *
 
@@ -17,7 +17,7 @@ def testEProcessMethodShortest():
 	"""
 	Process with method eProcessMethodShortest, check output duration.
 	"""
-	inputFileName_longest = os.environ['AVTRANSCODER_TEST_VIDEO_FILE']
+	inputFileName_longest = os.environ['AVTRANSCODER_TEST_VIDEO_AVI_FILE']
         inputFileName_shortest = os.environ['AVTRANSCODER_TEST_AUDIO_MOV_FILE']
 	outputFileName = "testEProcessMethodShortest.mov"
 
@@ -46,7 +46,7 @@ def testEProcessMethodLongest():
 	"""
 	Process with method eProcessMethodLongest, check output duration.
 	"""
-	inputFileName_longest = os.environ['AVTRANSCODER_TEST_VIDEO_FILE']
+	inputFileName_longest = os.environ['AVTRANSCODER_TEST_VIDEO_AVI_FILE']
         inputFileName_shortest = os.environ['AVTRANSCODER_TEST_AUDIO_MOV_FILE']
 	outputFileName = "testEProcessMethodLongest.mov"
 
@@ -75,7 +75,7 @@ def testEProcessMethodBasedOnStream():
 	"""
 	Process with method testEProcessMethodBasedOnStream, check output duration.
 	"""
-	inputFileName_first = os.environ['AVTRANSCODER_TEST_VIDEO_FILE']
+	inputFileName_first = os.environ['AVTRANSCODER_TEST_VIDEO_AVI_FILE']
         inputFileName_second = os.environ['AVTRANSCODER_TEST_AUDIO_WAVE_FILE']
         inputFileName_third = os.environ['AVTRANSCODER_TEST_AUDIO_MOV_FILE']
 	outputFileName = "testEProcessMethodShortest.mov"
@@ -106,7 +106,7 @@ def testEProcessMethodBasedOnDuration():
 	"""
 	Process with method eProcessMethodBasedOnDuration, check output duration.
 	"""
-	inputFileName_first = os.environ['AVTRANSCODER_TEST_VIDEO_FILE']
+	inputFileName_first = os.environ['AVTRANSCODER_TEST_VIDEO_AVI_FILE']
         inputFileName_second = os.environ['AVTRANSCODER_TEST_AUDIO_WAVE_FILE']
         inputFileName_third = os.environ['AVTRANSCODER_TEST_AUDIO_MOV_FILE']
 	outputFileName = "testEProcessMethodBasedOnDuration.mov"

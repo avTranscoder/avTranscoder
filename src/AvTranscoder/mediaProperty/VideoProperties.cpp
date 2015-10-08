@@ -365,13 +365,6 @@ Rational VideoProperties::getDar() const
 	return dar;
 }
 
-size_t VideoProperties::getStreamId() const
-{
-	if( ! _formatContext )
-		throw std::runtime_error( "unknown format context" );
-	return _formatContext->streams[_streamIndex]->id;
-}
-
 size_t VideoProperties::getCodecId() const
 {
 	if( ! _codecContext )
@@ -459,7 +452,10 @@ size_t VideoProperties::getNbFrames() const
 {
 	if( ! _formatContext )
 		throw std::runtime_error( "unknown format context" );
-	return _formatContext->streams[_streamIndex]->nb_frames;
+	size_t nbFrames = _formatContext->streams[_streamIndex]->nb_frames;
+	if( nbFrames == 0 )
+		nbFrames = getFps() * getDuration();
+	return nbFrames;
 }
 
 size_t VideoProperties::getTicksPerFrame() const
@@ -520,27 +516,7 @@ int VideoProperties::getLevel() const
 
 float VideoProperties::getFps() const
 {
-	const size_t nbFrames = getNbFrames();
-	if( nbFrames )
-	{
-		const float duration = getDuration();
-		const float epsilon = std::numeric_limits<float>::epsilon();
-		if( duration > epsilon )
-			return nbFrames / duration;
-	}
-
-	// if nbFrames of stream is unknwon
-	Rational timeBase = getTimeBase();
-	float fps = timeBase.den / (double) timeBase.num;
-	if( std::isinf( fps ) )
-	{
-		std::ostringstream os;
-		os << "unable to retrieve a correct fps (found value: ";
-		os << fps;
-		os << ")";
-		throw std::runtime_error( os.str() );
-	}
-	return fps;
+	return av_q2d( _formatContext->streams[_streamIndex]->avg_frame_rate );
 }
 
 bool VideoProperties::hasBFrames() const

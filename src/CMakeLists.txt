@@ -6,12 +6,12 @@ include(AvTranscoderMacros)
 find_package(FFmpeg COMPONENTS avcodec avformat avutil swscale swresample avresample)
 
 # Check if FFmpeg or libav dependency
-if(avresample_FOUND)
-	add_definitions(-DAVTRANSCODER_LIBAV_DEPENDENCY)
-	message("Build avTranscoder with dependency to libav.")
-elseif(swresample_FOUND)
+if(swresample_FOUND)
 	add_definitions(-DAVTRANSCODER_FFMPEG_DEPENDENCY)
         message("Build avTranscoder with dependency to ffmpeg.")
+elseif(avresample_FOUND)
+	add_definitions(-DAVTRANSCODER_LIBAV_DEPENDENCY)
+	message("Build avTranscoder with dependency to libav.")
 else()
         message(SEND_ERROR "Can't define if you depend on ffmpeg or libav.")
 endif()
@@ -131,6 +131,11 @@ if(SWIG_FOUND)
 			include(UseJava)
 			include_directories(${JAVA_INCLUDE_PATH})
 			include_directories(${JNI_INCLUDE_DIRS})
+
+			# Update compilation flags
+			if(NOT MSVC)
+				set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fno-strict-aliasing")
+			endif()
 
 			# Swig flags
 			set(CMAKE_SWIG_FLAGS ${CMAKE_SWIG_FLAGS} -package org.avtranscoder)

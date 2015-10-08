@@ -23,13 +23,6 @@ AudioProperties::AudioProperties( const FormatContext& formatContext, const size
 		_codec = avcodec_find_decoder( _codecContext->codec_id );
 }
 
-size_t AudioProperties::getStreamId() const
-{
-	if( ! _formatContext )
-		throw std::runtime_error( "unknown format context" );
-	return _formatContext->streams[_streamIndex]->id;
-}
-
 std::string AudioProperties::getCodecName() const
 {
 	if( ! _codec || ! _codec->name )
@@ -167,7 +160,10 @@ size_t AudioProperties::getNbSamples() const
 {
 	if( ! _formatContext )
 		throw std::runtime_error( "unknown format context" );
-	return _formatContext->streams[_streamIndex]->nb_frames;
+	size_t nbSamples = _formatContext->streams[_streamIndex]->nb_frames;
+	if(nbSamples == 0)
+		nbSamples = getSampleRate() * getChannels() * getDuration();
+	return nbSamples;
 }
 
 size_t AudioProperties::getTicksPerFrame() const

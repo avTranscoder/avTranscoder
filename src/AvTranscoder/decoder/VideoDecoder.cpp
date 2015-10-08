@@ -17,8 +17,9 @@ namespace avtranscoder
 {
 
 VideoDecoder::VideoDecoder( InputStream& inputStream )
-	: _inputStream   ( &inputStream )
-	, _frame         ( NULL )
+	: _inputStream( &inputStream )
+	, _frame( NULL )
+	, _isSetup(false)
 {
 #if LIBAVCODEC_VERSION_MAJOR > 54
 	_frame = av_frame_alloc();
@@ -50,7 +51,16 @@ VideoDecoder::~VideoDecoder()
 
 void VideoDecoder::setupDecoder( const ProfileLoader::Profile& profile )
 {
-	LOG_DEBUG( "Set profile of video decoder with:\n" << profile )
+	// check the given profile
+	const bool isValid = ProfileLoader::checkVideoProfile( profile );
+	if( ! isValid && ! profile.empty() )
+	{
+		const std::string msg( "Invalid video profile to setup decoder." );
+		LOG_ERROR( msg )
+		throw std::runtime_error( msg );
+	}
+
+	LOG_INFO( "Setup video decoder with:\n" << profile )
 
 	VideoCodec& codec = _inputStream->getVideoCodec();
 
@@ -82,6 +92,7 @@ void VideoDecoder::setupDecoder( const ProfileLoader::Profile& profile )
 
 	// open decoder
 	_inputStream->getVideoCodec().openCodec();
+	_isSetup = true;
 }
 
 bool VideoDecoder::decodeNextFrame( Frame& frameBuffer )
@@ -109,6 +120,9 @@ bool VideoDecoder::decodeNextFrame( Frame& frameBuffer, const size_t subStreamIn
 
 bool VideoDecoder::decodeNextFrame()
 {
+	if(!_isSetup)
+		setupDecoder();
+
 	int got_frame = 0;
 	while( ! got_frame )
 	{

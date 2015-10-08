@@ -41,7 +41,6 @@ public:
 	Rational getSar() const; // sample/pixel aspect ratio
 	Rational getDar() const; // display aspect ratio
 
-	size_t getStreamId() const;
 	size_t getCodecId() const;
 	size_t getBitRate() const;  ///< in bits/s
 	size_t getMaxBitRate() const;
@@ -56,6 +55,13 @@ public:
 	int getProfile() const;
 	int getLevel() const;
 
+	/**
+	 * @brief Corresponds to the 'fps' returned by ffprobe.
+	 * fps = the average framerate that has come from the AVStream
+	 * tbn = the time base in AVStream that has come from the AVStream
+	 * tbc = the time base in AVCodecContext for the codec used for a particular stream
+	 * tbr = tbr is guessed from the video stream and is the value users want to see when they look for the video frame rate
+	 */
 	float getFps() const;
 
 	bool hasBFrames() const;
@@ -90,11 +96,11 @@ private:
 	{
 		try
 		{
-		    detail::add( dataVector, key, (this->*getter)() );
+			detail::add( dataVector, key, (this->*getter)() );
 		}
 		catch( const std::exception& e )
 		{
-		    detail::add( dataVector, key, e.what() );
+			detail::add( dataVector, key, e.what() );
 		}
 	}
 #endif

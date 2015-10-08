@@ -75,7 +75,7 @@ formatProfile[ av.avProfileIdentificatorHuman ] = "Thumbnail format preset"
 formatProfile[ av.avProfileType ] = av.avProfileTypeFormat
 formatProfile[ av.avProfileFormat ] = "mjpeg"
 outputFile = av.OutputFile( args.outputFileName )
-outputFile.setProfile( formatProfile )
+outputFile.setupWrapping( formatProfile )
 
 # create input stream
 videoStreamIndex = inputFile.getProperties().getVideoProperties()[0].getStreamIndex()

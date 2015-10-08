@@ -1,9 +1,9 @@
 import os
 
 # Check if environment is setup to run the tests
-if os.environ.get('AVTRANSCODER_TEST_VIDEO_FILE') is None:
+if os.environ.get('AVTRANSCODER_TEST_VIDEO_AVI_FILE') is None:
 	from nose.plugins.skip import SkipTest
-	raise SkipTest("Need to define environment variable AVTRANSCODER_TEST_VIDEO_FILE")
+	raise SkipTest("Need to define environment variable AVTRANSCODER_TEST_VIDEO_AVI_FILE")
 
 from nose.tools import *
 
@@ -17,7 +17,7 @@ def testTranscodeDnxhd120():
 	"""
 	Transcode one video stream (profile dnxhd120).
 	"""
-	inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_FILE']
+	inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_AVI_FILE']
 	outputFileName = "testTranscodeDnxhd120.mxf"
 
 	ouputFile = av.OutputFile( outputFileName )
@@ -44,7 +44,7 @@ def testTranscodeDnxhd185():
 	"""
 	Transcode one video stream (profile dnxhd185).
 	"""
-	inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_FILE']
+	inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_AVI_FILE']
 	outputFileName = "testTranscodeDnxhd185.mxf"
 
 	ouputFile = av.OutputFile( outputFileName )
@@ -71,7 +71,7 @@ def testTranscodeDnxhd185x():
 	"""
 	Transcode one video stream (profile dnxhd185x).
 	"""
-	inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_FILE']
+	inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_AVI_FILE']
 	outputFileName = "testTranscodeDnxhd185x.mxf"
 
 	ouputFile = av.OutputFile( outputFileName )
@@ -98,7 +98,7 @@ def testTranscodeYUV420():
 	"""
 	Process one video stream (custom profile of encoding, with pixel format YUV420).
 	"""
-	inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_FILE']
+	inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_AVI_FILE']
 	outputFileName = "testTranscodeYUV420.avi"
 
 	ouputFile = av.OutputFile( outputFileName )
