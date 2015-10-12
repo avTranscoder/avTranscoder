@@ -74,6 +74,7 @@ IOutputStream& OutputFile::addAudioStream( const AudioCodec& audioDesc )
 	stream.codec->sample_rate = audioDesc.getAVCodecContext().sample_rate;
 	stream.codec->channels = audioDesc.getAVCodecContext().channels;
 	stream.codec->sample_fmt = audioDesc.getAVCodecContext().sample_fmt;
+	stream.codec->frame_size = audioDesc.getAVCodecContext().frame_size;
 
 	// need to set the time_base on the AVCodecContext of the AVStream
 	av_reduce(
