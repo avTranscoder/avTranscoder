@@ -26,8 +26,10 @@ if(AVTRANSCODER_COVERAGE)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage")
 endif()
 
+# Build library
 add_subdirectory(src)
 
+# Build apps
 if(AVTRANSCODER_DISABLE_APPS)
 	message("Apps disabled, will not build applications.")
 else()
