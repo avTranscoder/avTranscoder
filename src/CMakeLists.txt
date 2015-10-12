@@ -2,6 +2,9 @@
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 include(AvTranscoderMacros)
 
+# AvTranscoder versions
+message(STATUS "AvTranscoder version is ${AVTRANSCODER_VERSION}")
+
 # Find package ffmpeg/libav
 find_package(FFmpeg COMPONENTS avcodec avformat avutil swscale swresample avresample)
 if(swresample_FOUND)
