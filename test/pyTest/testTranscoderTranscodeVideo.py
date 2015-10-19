@@ -36,7 +36,9 @@ def testTranscodeDnxhd120():
 
 	assert_equals( "dnxhd", dst_videoStream.getCodecName() )
 	assert_equals( "VC3/DNxHD", dst_videoStream.getCodecLongName() )
-	# assert_equals( 120000000, dst_videoStream.getBitRate() )  # 120000000 != 0L
+	expectedBitRate = 120000000
+	deltaBitRate = expectedBitRate * 0.05
+	assert_almost_equals( expectedBitRate, dst_videoStream.getBitRate(), delta=deltaBitRate )
 	assert_equals( "yuv422p", dst_videoStream.getPixelProperties().getPixelName() )
 	# assert_equals( 1, dst_videoStream.getGopSize() )  # 1 != 12L
 
@@ -63,7 +65,9 @@ def testTranscodeDnxhd185():
 
 	assert_equals( "dnxhd", dst_videoStream.getCodecName() )
 	assert_equals( "VC3/DNxHD", dst_videoStream.getCodecLongName() )
-	# assert_equals( 185000000, dst_videoStream.getBitRate() )  # 185000000 != 0L
+	expectedBitRate = 185000000
+	deltaBitRate = expectedBitRate * 0.05
+	assert_almost_equals( expectedBitRate, dst_videoStream.getBitRate(), delta=deltaBitRate )
 	assert_equals( "yuv422p", dst_videoStream.getPixelProperties().getPixelName() )
 	# assert_equals( 1, dst_videoStream.getGopSize() )  # 1 != 12L
 
@@ -90,7 +94,9 @@ def testTranscodeDnxhd185x():
 
 	assert_equals( "dnxhd", dst_videoStream.getCodecName() )
 	assert_equals( "VC3/DNxHD", dst_videoStream.getCodecLongName() )
-	# assert_equals( 185000000, dst_videoStream.getBitRate() )  # 185000000 != 0L
+	expectedBitRate = 185000000
+	deltaBitRate = expectedBitRate * 0.05
+	assert_almost_equals( expectedBitRate, dst_videoStream.getBitRate(), delta=deltaBitRate )
 	assert_equals( "yuv422p10le", dst_videoStream.getPixelProperties().getPixelName() )
 	# assert_equals( 1, dst_videoStream.getGopSize() )  # 1 != 12L
 
@@ -125,4 +131,3 @@ def testTranscodeYUV420():
 
 	assert_equals( "mpeg2video", dst_videoStream.getCodecName() )
 	assert_equals( "yuv420p", dst_videoStream.getPixelProperties().getPixelName() )
-
