@@ -73,6 +73,7 @@ IOutputStream& OutputFile::addAudioStream( const AudioCodec& audioDesc )
 
 	stream.codec->sample_rate = audioDesc.getAVCodecContext().sample_rate;
 	stream.codec->channels = audioDesc.getAVCodecContext().channels;
+	stream.codec->channel_layout = audioDesc.getAVCodecContext().channel_layout;
 	stream.codec->sample_fmt = audioDesc.getAVCodecContext().sample_fmt;
 	stream.codec->frame_size = audioDesc.getAVCodecContext().frame_size;
 
