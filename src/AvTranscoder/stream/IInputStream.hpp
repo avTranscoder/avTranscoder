@@ -46,12 +46,16 @@ public:
 	virtual DataCodec& getDataCodec() = 0;
 	//@}
 
-	/** 
-	 * @brief Activate the stream will buffered its data when read packets.
-	 **/
+	//@{
+	/**
+	 * @brief Functions about buffering
+	 * Activate the stream will buffered its data when read packets.
+	 * @see IInputStream methods
+	 */
 	virtual void activate( const bool activate = true ) = 0;
 	virtual bool isActivated() const = 0;
 	virtual void clearBuffering() = 0;
+	//@}
 };
 
 }

@@ -31,16 +31,10 @@ public:
 	AudioCodec& getAudioCodec();
 	DataCodec& getDataCodec();
 
-	//@{
-	/**
-	 * @brief Functions about buffering
-	 * @see IInputStream methods
-	 */
 	void activate( const bool activate = true ){ _isActivated = activate; };
 	bool isActivated() const { return _isActivated; };
 	void addPacket( const AVPacket& packet );
 	void clearBuffering();
-	//@}
 
 private:
 	InputFile* _inputFile;  ///< Has link (no ownership)
