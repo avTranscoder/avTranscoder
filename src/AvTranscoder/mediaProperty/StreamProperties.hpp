@@ -19,6 +19,7 @@ public:
 	size_t getStreamId() const;
 	Rational getTimeBase() const;
 	float getDuration() const;  ///< in seconds
+	AVMediaType getStreamType() const;
 	const PropertyVector& getMetadatas() const { return _metadatas; }
 
 #ifndef SWIG
