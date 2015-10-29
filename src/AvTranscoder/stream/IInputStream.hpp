@@ -30,6 +30,10 @@ public:
 	 * @return the properties of the stream
 	 */
 	virtual const StreamProperties& getProperties() const = 0;
+
+	/**
+	 * @return the index of the stream
+	 */
 	virtual size_t getStreamIndex() const = 0;
 
 	//@{
