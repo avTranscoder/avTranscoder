@@ -26,7 +26,6 @@ public:
 
 	/**
 	 * @brief Add a video output stream
-	 * @note call setup() before adding any stream
 	 * @param videoCodec description of output stream
 	**/
 	virtual IOutputStream& addVideoStream( const VideoCodec& videoCodec )
@@ -36,7 +35,6 @@ public:
 
 	/**
 	 * @brief Add an audio output stream
-	 * @note call setup() before adding any stream
 	 * @param audioCodec description of output stream
 	**/
 	virtual IOutputStream& addAudioStream( const AudioCodec& audioCodec )
@@ -46,7 +44,6 @@ public:
 
 	/**
 	 * @brief Add a data output stream
-	 * @note call setup() before adding any stream
 	 * @param dataCodec description of output stream
 	**/
 	virtual IOutputStream& addDataStream( const DataCodec& dataCodec )
