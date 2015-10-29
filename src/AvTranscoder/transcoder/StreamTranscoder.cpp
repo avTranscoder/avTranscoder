@@ -39,7 +39,7 @@ StreamTranscoder::StreamTranscoder(
 	, _needToSwitchToGenerator( false )
 {
 	// create a re-wrapping case
-	switch( _inputStream->getStreamType() )
+	switch( _inputStream->getProperties().getStreamType() )
 	{
 		case AVMEDIA_TYPE_VIDEO :
 		{
@@ -141,7 +141,7 @@ StreamTranscoder::StreamTranscoder(
 	, _needToSwitchToGenerator( false )
 {
 	// create a transcode case
-	switch( _inputStream->getStreamType() )
+	switch( _inputStream->getProperties().getStreamType() )
 	{
 		case AVMEDIA_TYPE_VIDEO :
 		{

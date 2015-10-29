@@ -32,7 +32,6 @@ public:
 	virtual const StreamProperties& getProperties() const = 0;
 	virtual size_t getStreamIndex() const = 0;
 	virtual float getDuration() const = 0;  ///< Get duration of the stream, in seconds
-	virtual AVMediaType getStreamType() const = 0;
 
 	//@{
 	/**

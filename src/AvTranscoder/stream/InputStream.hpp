@@ -27,7 +27,6 @@ public:
 	const StreamProperties& getProperties() const;
 	size_t getStreamIndex() const { return _streamIndex; }
 	float getDuration() const;
-	AVMediaType getStreamType() const;
 
 	VideoCodec& getVideoCodec();
 	AudioCodec& getAudioCodec();
