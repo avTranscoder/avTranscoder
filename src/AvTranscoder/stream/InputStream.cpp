@@ -108,6 +108,11 @@ DataCodec& InputStream::getDataCodec()
 	return *static_cast<DataCodec*>( _codec );
 }
 
+const StreamProperties& InputStream::getProperties() const
+{
+	return _inputFile->getProperties().getStreamPropertiesWithIndex( _streamIndex );
+}
+
 AVMediaType InputStream::getStreamType() const
 {
 	return _inputFile->getFormatContext().getAVStream( _streamIndex ).codec->codec_type;

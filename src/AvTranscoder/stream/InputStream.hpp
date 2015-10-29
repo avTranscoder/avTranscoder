@@ -24,6 +24,7 @@ public:
 
 	bool readNextPacket( CodedData& data );
 
+	const StreamProperties& getProperties() const;
 	size_t getStreamIndex() const { return _streamIndex; }
 	float getDuration() const;
 	AVMediaType getStreamType() const;

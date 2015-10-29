@@ -1,9 +1,12 @@
 #ifndef _AV_TRANSCODER_CODED_STREAM_I_INPUT_STREAM_HPP_
 #define _AV_TRANSCODER_CODED_STREAM_I_INPUT_STREAM_HPP_
 
+#include <AvTranscoder/mediaProperty/StreamProperties.hpp>
+
 #include <AvTranscoder/codec/AudioCodec.hpp>
 #include <AvTranscoder/codec/VideoCodec.hpp>
 #include <AvTranscoder/codec/DataCodec.hpp>
+
 #include <AvTranscoder/frame/Frame.hpp>
 
 namespace avtranscoder
@@ -21,6 +24,12 @@ public:
 	 **/
 	virtual bool readNextPacket( CodedData& data ) = 0;
 
+	/**
+	 * @note The returned object could be cast depending on the type of the stream (video, audio...)
+	 * @see VideoProperties, AudioProperties...
+	 * @return the properties of the stream
+	 */
+	virtual const StreamProperties& getProperties() const = 0;
 	virtual size_t getStreamIndex() const = 0;
 	virtual float getDuration() const = 0;  ///< Get duration of the stream, in seconds
 	virtual AVMediaType getStreamType() const = 0;
