@@ -23,7 +23,7 @@ public:
 	const PropertyVector& getMetadatas() const { return _metadatas; }
 
 #ifndef SWIG
-	const AVFormatContext& getAVFormatContext() { return *_formatContext; }
+	const AVFormatContext& getAVFormatContext() const { return *_formatContext; }
 #endif
 
 	PropertyMap getPropertiesAsMap() const;  ///< Return all properties as a map (name of property, value)
