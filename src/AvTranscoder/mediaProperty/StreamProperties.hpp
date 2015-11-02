@@ -19,10 +19,11 @@ public:
 	size_t getStreamId() const;
 	Rational getTimeBase() const;
 	float getDuration() const;  ///< in seconds
+	AVMediaType getStreamType() const;
 	const PropertyVector& getMetadatas() const { return _metadatas; }
 
 #ifndef SWIG
-	const AVFormatContext& getAVFormatContext() { return *_formatContext; }
+	const AVFormatContext& getAVFormatContext() const { return *_formatContext; }
 #endif
 
 	PropertyMap getPropertiesAsMap() const;  ///< Return all properties as a map (name of property, value)

@@ -43,6 +43,13 @@ float StreamProperties::getDuration() const
 	return ( timeBase.num / (float) timeBase.den ) * _formatContext->streams[_streamIndex]->duration;
 }
 
+AVMediaType StreamProperties::getStreamType() const
+{
+	if( ! _formatContext )
+		throw std::runtime_error( "unknown format context" );
+	return _formatContext->streams[_streamIndex]->codec->codec_type;
+}
+
 PropertyVector StreamProperties::getPropertiesAsVector() const
 {
 	PropertyVector data;
