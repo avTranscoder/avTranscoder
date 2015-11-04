@@ -292,3 +292,39 @@ def testMultipleOffsetFromSameInputFile():
 	assert_equals( src_videoStream.getDuration() + offset_1, dst_videoStream.getDuration() )
 	assert_equals( src_audioStream.getDuration() + offset_1, dst_audioStream.getDuration() )
 
+
+def testMultipleOffsetFromSameStream():
+	"""
+	Process same stream several times with different offset at the beginning of the process.
+	"""
+	inputFileName = os.environ['AVTRANSCODER_TEST_AUDIO_MOV_FILE']
+	outputFileName = "testMultipleOffsetFromSameStream.mov"
+        offset_1 = 2
+        offset_2 = -2
+
+	ouputFile = av.OutputFile( outputFileName )
+	transcoder = av.Transcoder( ouputFile )
+
+	transcoder.add( inputFileName, 0, "", offset_1 )
+	transcoder.add( inputFileName, 0, "", offset_2 )
+
+	progress = av.ConsoleProgress()
+	transcoder.process( progress )
+
+	# get src file
+	src_inputFile = av.InputFile( inputFileName )
+	src_properties = src_inputFile.getProperties()
+	src_videoStream = src_properties.getVideoProperties()[0]
+
+	# get dst file
+	dst_inputFile = av.InputFile( outputFileName )
+	dst_properties = dst_inputFile.getProperties()
+	dst_videoStream_1 = dst_properties.getVideoProperties()[0]
+	dst_videoStream_2 = dst_properties.getVideoProperties()[1]
+
+        # check output duration
+	assert_equals( src_videoStream.getDuration() + offset_1, dst_videoStream_1.getDuration() )
+	assert_equals( src_videoStream.getDuration() + offset_1, dst_videoStream_2.getDuration() )
+	assert_almost_equals( src_videoStream.getNbFrames() + ( offset_1 * dst_videoStream_1.getFps() ), dst_videoStream_1.getNbFrames(), delta=0.01 )
+	assert_almost_equals( src_videoStream.getNbFrames() + ( offset_1 * dst_videoStream_2.getFps() ), dst_videoStream_2.getNbFrames(), delta=0.01 )
+
