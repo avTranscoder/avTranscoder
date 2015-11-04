@@ -147,6 +147,7 @@ bool FormatContext::seek( uint64_t position, const int flag )
 	if( (int)getStartTime() != AV_NOPTS_VALUE )
 		position += getStartTime();
 
+	LOG_INFO( "Seek in '" << _avFormatContext->filename << "' at " << position << " (in AV_TIME_BASE units)" )
 	int err = av_seek_frame( _avFormatContext, -1, position, flag );
 	if( err < 0 )
 	{
