@@ -37,7 +37,10 @@ AudioEncoder::~AudioEncoder()
 
 void AudioEncoder::setupAudioEncoder( const AudioFrameDesc& frameDesc, const ProfileLoader::Profile& profile )
 {
-	LOG_INFO( "Setup audio encoder with:\n" << profile )
+	if( ! profile.empty() )
+	{
+		LOG_INFO( "Setup audio encoder with:\n" << profile )
+	}
 
 	// set sampleRate, number of channels, sample format
 	_codec.setAudioParameters( frameDesc );
