@@ -280,12 +280,15 @@ def testMultipleOffsetFromSameInputFile():
 	src_inputFile = av.InputFile( inputFileName )
 	src_properties = src_inputFile.getProperties()
 	src_videoStream = src_properties.getVideoProperties()[0]
+	src_audioStream = src_properties.getAudioProperties()[0]
 
 	# get dst file
 	dst_inputFile = av.InputFile( outputFileName )
 	dst_properties = dst_inputFile.getProperties()
 	dst_videoStream = dst_properties.getVideoProperties()[0]
+	dst_audioStream = dst_properties.getAudioProperties()[0]
 
         # check output duration
 	assert_equals( src_videoStream.getDuration() + offset_1, dst_videoStream.getDuration() )
+	assert_equals( src_audioStream.getDuration() + offset_1, dst_audioStream.getDuration() )
 
