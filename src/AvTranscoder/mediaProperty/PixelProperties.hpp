@@ -56,6 +56,7 @@ public:
 	std::string getPixelFormatName() const;
 
 	size_t getBitsPerPixel() const;
+	size_t getMaxBitPerChannel() const;
 	size_t getNbComponents() const;
 	size_t getChromaWidth() const;
 	size_t getChromaHeight() const;
