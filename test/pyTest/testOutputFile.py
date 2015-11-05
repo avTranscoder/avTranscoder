@@ -34,7 +34,7 @@ def testCreateOutputFileWithoutExtension():
 def testCreateOutputFileWithoutExtensionWithFormat():
 	"""
 	Create an OutputFile with a filename without extension.
-        Indicate the format.
+	Indicate the format.
 	"""
         format = "mov"
 	outputFileName = "testCreateOutputFileWithoutExtensionWithFormat"
@@ -47,7 +47,7 @@ def testCreateOutputFileWithoutExtensionWithFormat():
 def testCreateOutputFileWithoutExtensionWithMimeType():
 	"""
 	Create an OutputFile with a filename without extension.
-        Indicate the Mime Type.
+	Indicate the Mime Type.
 	"""
         mimeType = "application/mp4"
 	outputFileName = "testCreateOutputFileWithoutExtensionWithMimeType"
@@ -55,4 +55,19 @@ def testCreateOutputFileWithoutExtensionWithMimeType():
 
 	assert_equals( ouputFile.getFilename(), outputFileName )
 	assert_equals( ouputFile.getFormatMimeType(), mimeType )
+
+
+def testCreateOutputFileWithoutExtensionWithInconsistentFormatAndMimeType():
+	"""
+	Create an OutputFile with a filename without extension.
+	Indicate inconsistent format and Mime Type.
+	The OutputFile should by-pass the Mime Type.
+	"""
+        format = "mov"
+        mimeType = "application/mp4"
+	outputFileName = "testCreateOutputFileWithoutExtensionWithInconsistentFormatAndMimeType"
+	ouputFile = av.OutputFile( outputFileName, format, mimeType )
+
+	assert_equals( ouputFile.getFilename(), outputFileName )
+	assert_equals( ouputFile.getFormatName(), format )
 
