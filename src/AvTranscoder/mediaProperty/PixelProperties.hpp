@@ -55,7 +55,7 @@ public:
 	std::string getPixelName() const;
 	std::string getPixelFormatName() const;
 
-	size_t getBitsPerPixel() const;
+	size_t getBitsPerPixel() const; ///< padding bits are not counted
 	size_t getMaxBitPerChannel() const;
 	size_t getNbComponents() const;
 	size_t getChromaWidth() const;
