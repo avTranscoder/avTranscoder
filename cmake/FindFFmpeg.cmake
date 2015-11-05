@@ -122,12 +122,12 @@ endmacro()
 
 # Check FFmpeg version
 if(DEFINED FFmpeg_FIND_VERSION)
-        check_ffmpeg_version()
+	check_ffmpeg_version()
 endif()
 
 # Get basic components if no one is indicated
 if(NOT FFmpeg_FIND_COMPONENTS)
-        set(FFmpeg_FIND_COMPONENTS avcodec avformat avutil)
+	set(FFmpeg_FIND_COMPONENTS avcodec avformat avutil)
 endif()
 
 # Check each component
