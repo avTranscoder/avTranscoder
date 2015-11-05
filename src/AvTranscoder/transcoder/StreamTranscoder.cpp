@@ -39,7 +39,7 @@ StreamTranscoder::StreamTranscoder(
 	, _needToSwitchToGenerator( false )
 {
 	// create a re-wrapping case
-	switch( _inputStream->getStreamType() )
+	switch( _inputStream->getProperties().getStreamType() )
 	{
 		case AVMEDIA_TYPE_VIDEO :
 		{
@@ -141,7 +141,7 @@ StreamTranscoder::StreamTranscoder(
 	, _needToSwitchToGenerator( false )
 {
 	// create a transcode case
-	switch( _inputStream->getStreamType() )
+	switch( _inputStream->getProperties().getStreamType() )
 	{
 		case AVMEDIA_TYPE_VIDEO :
 		{
@@ -383,7 +383,7 @@ bool StreamTranscoder::processFrame()
 	}
 	else if( _offset < 0 )
 	{
-		const bool endOfStream = _outputStream->getStreamDuration() >= ( _inputStream->getDuration() + _offset );
+		const bool endOfStream = _outputStream->getStreamDuration() >= ( _inputStream->getProperties().getDuration() + _offset );
 		if( endOfStream )
 		{
 			LOG_INFO( "End of negative offset" )
@@ -516,10 +516,11 @@ float StreamTranscoder::getDuration() const
 {
 	if( _inputStream )
 	{
-		const float totalDuration = _inputStream->getDuration() + _offset;
+		const StreamProperties& streamProperties = _inputStream->getProperties();
+		const float totalDuration = streamProperties.getDuration() + _offset;
 		if( totalDuration < 0 )
 		{
-			LOG_WARN( "Offset of " << _offset << "s applied to a stream with a duration of " << _inputStream->getDuration() << "s. Set its duration to 0s." )
+			LOG_WARN( "Offset of " << _offset << "s applied to a stream with a duration of " << streamProperties.getDuration() << "s. Set its duration to 0s." )
 			return 0.;
 		}
 		return totalDuration;

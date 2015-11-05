@@ -317,7 +317,7 @@ void Transcoder::addTranscodeStream( const std::string& filename, const size_t s
 	// Add input file
 	InputFile* referenceFile = addInputFile( filename, streamIndex, offset );
 
-	switch( referenceFile->getStream( streamIndex ).getStreamType() )
+	switch( referenceFile->getStream( streamIndex ).getProperties().getStreamType() )
 	{
 		case AVMEDIA_TYPE_VIDEO:
 		case AVMEDIA_TYPE_AUDIO:
@@ -385,7 +385,7 @@ ProfileLoader::Profile Transcoder::getProfileFromFile( InputFile& inputFile, con
 	const StreamProperties* streamProperties = &inputFile.getProperties().getStreamPropertiesWithIndex( streamIndex );
 	const VideoProperties* videoProperties = NULL;
 	const AudioProperties* audioProperties = NULL;
-	switch( inputFile.getStream( streamIndex ).getStreamType() )
+	switch( inputFile.getStream( streamIndex ).getProperties().getStreamType() )
 	{
 		case AVMEDIA_TYPE_VIDEO:
 		{
@@ -522,7 +522,7 @@ void Transcoder::fillProcessStat( ProcessStat& processStat )
 	for( size_t streamIndex = 0; streamIndex < _streamTranscoders.size(); ++streamIndex )
 	{
 		IOutputStream& stream = _streamTranscoders.at( streamIndex )->getOutputStream();
-		const AVMediaType mediaType = _streamTranscoders.at( streamIndex )->getInputStream().getStreamType();
+		const AVMediaType mediaType = _streamTranscoders.at( streamIndex )->getInputStream().getProperties().getStreamType();
 		switch( mediaType )
 		{
 			case AVMEDIA_TYPE_VIDEO:

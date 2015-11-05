@@ -30,7 +30,7 @@ def testRewrapAudioStream():
 	ouputFile = av.OutputFile( outputFileName )
 
 	transcoder = av.Transcoder( ouputFile )
-	transcoder.add( inputFileName, 0, "" )
+	transcoder.add( inputFileName, 0 )
 	transcoder.process( progress )
 
 	# get dst file of wrap
@@ -44,7 +44,7 @@ def testRewrapAudioStream():
 	assert_equals( src_properties.getFormatLongName(), dst_properties.getFormatLongName() )
 	assert_equals( src_properties.getStartTime(), dst_properties.getStartTime() )
 	assert_equals( src_properties.getDuration(), dst_properties.getDuration() )
-	deltaBitRateAudio = 10
+	deltaBitRateAudio = dst_properties.getBitRate() * 0.01
 	assert_almost_equals( src_properties.getBitRate(), dst_properties.getBitRate(), delta=deltaBitRateAudio )
 	assert_equals( src_properties.getPacketSize(), dst_properties.getPacketSize() )
 
@@ -52,9 +52,6 @@ def testRewrapAudioStream():
 	src_propertiesMap = src_audioStream.getPropertiesAsMap()
 	dst_propertiesMap = dst_audioStream.getPropertiesAsMap()
 	for key in src_propertiesMap:
-		# @todo: don't skip channel layout
-		if key == "channelLayout":
-			continue
 		assert_equals( src_propertiesMap[key], dst_propertiesMap[key] )
 
 def testRewrapVideoStream():
@@ -74,7 +71,7 @@ def testRewrapVideoStream():
 	ouputFile = av.OutputFile( outputFileName )
 
 	transcoder = av.Transcoder( ouputFile )
-	transcoder.add( inputFileName, 0, "" )
+	transcoder.add( inputFileName, 0 )
 	transcoder.process( progress )
 
 	# get dst file of wrap
@@ -88,7 +85,7 @@ def testRewrapVideoStream():
 	assert_equals( src_properties.getFormatLongName(), dst_properties.getFormatLongName() )
 	assert_equals( src_properties.getStartTime(), dst_properties.getStartTime() )
 	assert_equals( src_properties.getDuration(), dst_properties.getDuration() )
-	deltaBitRateVideo = 500000
+	deltaBitRateVideo = dst_properties.getBitRate() * 0.15
 	assert_almost_equals( src_properties.getBitRate(), dst_properties.getBitRate(), delta=deltaBitRateVideo )
 	assert_equals( src_properties.getPacketSize(), dst_properties.getPacketSize() )
 

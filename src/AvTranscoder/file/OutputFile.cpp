@@ -73,7 +73,9 @@ IOutputStream& OutputFile::addAudioStream( const AudioCodec& audioDesc )
 
 	stream.codec->sample_rate = audioDesc.getAVCodecContext().sample_rate;
 	stream.codec->channels = audioDesc.getAVCodecContext().channels;
+	stream.codec->channel_layout = audioDesc.getAVCodecContext().channel_layout;
 	stream.codec->sample_fmt = audioDesc.getAVCodecContext().sample_fmt;
+	stream.codec->frame_size = audioDesc.getAVCodecContext().frame_size;
 
 	// need to set the time_base on the AVCodecContext of the AVStream
 	av_reduce(
@@ -99,11 +101,11 @@ IOutputStream& OutputFile::addDataStream( const DataCodec& dataDesc )
 	return *outputStream;
 }
 
-IOutputStream& OutputFile::getStream( const size_t streamId )
+IOutputStream& OutputFile::getStream( const size_t streamIndex )
 {
-	if( streamId >= _outputStreams.size() )
+	if( streamIndex >= _outputStreams.size() )
 		throw std::runtime_error( "unable to get output stream (out of range)" );
-	return *_outputStreams.at( streamId );
+	return *_outputStreams.at( streamIndex );
 }
 
 std::string OutputFile::getFilename() const
@@ -157,16 +159,16 @@ bool OutputFile::beginWrap( )
 	return true;
 }
 
-IOutputStream::EWrappingStatus OutputFile::wrap( const CodedData& data, const size_t streamId )
+IOutputStream::EWrappingStatus OutputFile::wrap( const CodedData& data, const size_t streamIndex )
 {
 	if( ! data.getSize() )
 		return IOutputStream::eWrappingSuccess;
 
-	LOG_DEBUG( "Wrap on stream " << streamId << " (" << data.getSize() << " bytes for frame " << _frameCount.at( streamId ) << ")" )
+	LOG_DEBUG( "Wrap on stream " << streamIndex << " (" << data.getSize() << " bytes for frame " << _frameCount.at( streamIndex ) << ")" )
 
 	AVPacket packet;
 	av_init_packet( &packet );
-	packet.stream_index = streamId;
+	packet.stream_index = streamIndex;
 	packet.data = (uint8_t*)data.getData();
 	packet.size = data.getSize();
 
@@ -175,7 +177,7 @@ IOutputStream::EWrappingStatus OutputFile::wrap( const CodedData& data, const si
 	// free packet.side_data, set packet.data to NULL and packet.size to 0
 	av_free_packet( &packet );
 
-	const double currentStreamDuration = _outputStreams.at( streamId )->getStreamDuration();
+	const double currentStreamDuration = _outputStreams.at( streamIndex )->getStreamDuration();
 	if( currentStreamDuration < _previousProcessedStreamDuration )
 	{
 		// if the current stream is strictly shorter than the previous, wait for more data
@@ -183,7 +185,7 @@ IOutputStream::EWrappingStatus OutputFile::wrap( const CodedData& data, const si
 	}
 
 	_previousProcessedStreamDuration = currentStreamDuration;
-	_frameCount.at( streamId )++;
+	_frameCount.at( streamIndex )++;
 
 	return IOutputStream::eWrappingSuccess;
 }
@@ -221,7 +223,10 @@ void OutputFile::setupWrapping( const ProfileLoader::Profile& profile )
 		throw std::runtime_error( msg );
 	}
 
-	LOG_INFO( "Setup wrapping with:\n" << profile )
+	if( ! profile.empty() )
+	{
+		LOG_INFO( "Setup wrapping with:\n" << profile )
+	}
 
 	// check if output format indicated is valid with the filename extension
 	if( ! matchFormat( profile.find( constants::avProfileFormat )->second, getFilename() ) )

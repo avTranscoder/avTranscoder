@@ -37,10 +37,10 @@ public:
 	 * @brief Open ressource, write header, and setup specific wrapping options given when call setupWrapping.
 	 * @note Need to add the streams to mux before calling this method.
 	 * @note After this call, a new list of AVOption, relative to the format choosen, will be available for the OutputFile.
-         */
+	 */
 	bool beginWrap();
 
-	IOutputStream::EWrappingStatus wrap( const CodedData& data, const size_t streamId );
+	IOutputStream::EWrappingStatus wrap( const CodedData& data, const size_t streamIndex );
 
 	/**
 	 * @brief Close ressource and write trailer.
@@ -54,7 +54,7 @@ public:
 	void addMetadata( const PropertyVector& data );
 	void addMetadata( const std::string& key, const std::string& value );
 	
-	IOutputStream& getStream( const size_t streamId );
+	IOutputStream& getStream( const size_t streamIndex );
 
 	std::string getFilename() const;
 

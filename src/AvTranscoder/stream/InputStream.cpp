@@ -76,7 +76,7 @@ VideoCodec& InputStream::getVideoCodec()
 {
 	assert( _streamIndex <= _inputFile->getFormatContext().getNbStreams() );
 
-	if( getStreamType() != AVMEDIA_TYPE_VIDEO )
+	if( getProperties().getStreamType() != AVMEDIA_TYPE_VIDEO )
 	{
 		throw std::runtime_error( "unable to get video descriptor on non-video stream" );
 	}
@@ -88,7 +88,7 @@ AudioCodec& InputStream::getAudioCodec()
 {
 	assert( _streamIndex <= _inputFile->getFormatContext().getNbStreams() );
 
-	if( getStreamType() != AVMEDIA_TYPE_AUDIO )
+	if( getProperties().getStreamType() != AVMEDIA_TYPE_AUDIO )
 	{
 		throw std::runtime_error( "unable to get audio descriptor on non-audio stream" );
 	}
@@ -100,7 +100,7 @@ DataCodec& InputStream::getDataCodec()
 {
 	assert( _streamIndex <= _inputFile->getFormatContext().getNbStreams() );
 
-	if( getStreamType() != AVMEDIA_TYPE_DATA )
+	if( getProperties().getStreamType() != AVMEDIA_TYPE_DATA )
 	{
 		throw std::runtime_error( "unable to get data descriptor on non-data stream" );
 	}
@@ -108,14 +108,9 @@ DataCodec& InputStream::getDataCodec()
 	return *static_cast<DataCodec*>( _codec );
 }
 
-AVMediaType InputStream::getStreamType() const
+const StreamProperties& InputStream::getProperties() const
 {
-	return _inputFile->getFormatContext().getAVStream( _streamIndex ).codec->codec_type;
-}
-
-float InputStream::getDuration() const
-{
-	return _inputFile->getProperties().getStreamPropertiesWithIndex( _streamIndex ).getDuration();
+	return _inputFile->getProperties().getStreamPropertiesWithIndex( _streamIndex );
 }
 
 void InputStream::addPacket( const AVPacket& packet )

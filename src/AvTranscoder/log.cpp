@@ -3,6 +3,8 @@
 namespace avtranscoder
 {
 
+std::string Logger::logHeaderMessage = "";
+
 void callbackToWriteInFile( void *ptr, int level, const char *fmt, va_list vl )
 {
 	std::ofstream outputFile;
@@ -23,13 +25,10 @@ void callbackToWriteInFile( void *ptr, int level, const char *fmt, va_list vl )
 
 void Logger::setLogLevel( const int level )
 {
+	// set ffmpeg log level
 	av_log_set_level( level );
-}
 
-void Logger::log( const int level, const std::string& msg )
-{
-	std::string avTranscoderMsg( "[avTranscoder - " );
-
+	// set avtranscoder header message
 	std::string levelStr;
 	switch( level )
 	{
@@ -48,12 +47,15 @@ void Logger::log( const int level, const std::string& msg )
 		default:
 			break;
 	}
+	Logger::logHeaderMessage = "[avTranscoder - " + levelStr + "] ";
+}
 
-	avTranscoderMsg += levelStr;
-	avTranscoderMsg += "] ";
-	avTranscoderMsg += msg;
-	avTranscoderMsg += "\n";
-	av_log( NULL, level, avTranscoderMsg.c_str() );
+void Logger::log( const int level, const std::string& msg )
+{
+	std::string logMessage = Logger::logHeaderMessage;
+	logMessage += msg;
+	logMessage += "\n";
+	av_log( NULL, level, logMessage.c_str() );
 }
 
 void Logger::logInFile()
