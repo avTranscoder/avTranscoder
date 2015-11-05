@@ -25,7 +25,7 @@ public:
 	 * @brief Open an output media file
 	 * @param filename resource to access
 	**/
-	OutputFile( const std::string& filename = "" );
+	OutputFile( const std::string& filename );
 
 	~OutputFile();
 
