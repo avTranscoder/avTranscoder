@@ -245,6 +245,7 @@ PropertyVector PixelProperties::getPropertiesAsVector() const
 	addProperty( data, "pixelName", &PixelProperties::getPixelName );
 	addProperty( data, "pixelFormatName", &PixelProperties::getPixelFormatName );
 	addProperty( data, "bitDepth", &PixelProperties::getBitsPerPixel );
+	addProperty( data, "maxBitPerChannel", &PixelProperties::getMaxBitPerChannel );
 	addProperty( data, "nbComponents", &PixelProperties::getNbComponents );
 	addProperty( data, "chromaWidth", &PixelProperties::getChromaWidth );
 	addProperty( data, "chromaHeight", &PixelProperties::getChromaHeight );
