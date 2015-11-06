@@ -2,6 +2,10 @@
 
 #include "util.hpp"
 
+extern "C" {
+#include <libavcodec/avcodec.h>
+}
+
 #include <fstream>
 #include <cstdlib>
 #include <stdexcept>
@@ -92,8 +96,25 @@ void ProfileLoader::loadProfile( const std::string& avProfileDir, const std::str
 			customProfile[ constants::avProfileType ] = constants::avProfileTypeAudio;
 			customProfile[ constants::avProfileCodec ] = customProfile.at( "vcodec" );
 		}
+		// get codec info from preset filename
 		else
-			LOG_WARN( "Cannot manage ffpreset which are not for video or audio." )
+		{
+			const std::string codecName = avProfileFileName.substr( 0, avProfileFileName.find("-") );
+			const AVCodecDescriptor* codecDesc = avcodec_descriptor_get_by_name( codecName.c_str() );
+			if( codecDesc )
+			{
+				const AVMediaType codecType = codecDesc->type;
+				if( codecType == AVMEDIA_TYPE_VIDEO )
+					customProfile[ constants::avProfileType ] = constants::avProfileTypeVideo;
+				else if( codecType == AVMEDIA_TYPE_AUDIO )
+					customProfile[ constants::avProfileType ] = constants::avProfileTypeAudio;
+				else
+					LOG_WARN( "Cannot manage ffpreset which are not for video or audio ")
+				customProfile[ constants::avProfileCodec ] = std::string( codecDesc->name );
+			}
+			else
+				LOG_WARN( "Cannot manage ffpreset which has unknown codec name ( " + codecName + " )." )
+		}
 	}
 
 	loadProfile( customProfile );
