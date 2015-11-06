@@ -100,8 +100,9 @@ macro(manage_components)
 				set(FFMPEG_INCLUDE_DIR ${${COMPONENT}_INCLUDE_DIR})
 				set(FFMPEG_LIBRARIES ${FFMPEG_LIBRARIES} ${${COMPONENT}_LIBRARIES})
 				set(FFMPEG_DEFINITIONS ${FFMPEG_DEFINITIONS} ${${COMPONENT}_DEFINITIONS})
-                        else()
-                                set(${COMPONENT}_FOUND FALSE)
+			else()
+				message(STATUS "Skip ${COMPONENT} component because it was found elsewhere ('${${COMPONENT}_INCLUDE_DIR}' instead of '${FFMPEG_INCLUDE_DIR}').")
+				set(${COMPONENT}_FOUND FALSE)
 			endif()
 		else()
 			if(FFmpeg_FIND_REQUIRED)
@@ -121,12 +122,12 @@ endmacro()
 
 # Check FFmpeg version
 if(DEFINED FFmpeg_FIND_VERSION)
-        check_ffmpeg_version()
+	check_ffmpeg_version()
 endif()
 
 # Get basic components if no one is indicated
 if(NOT FFmpeg_FIND_COMPONENTS)
-        set(FFmpeg_FIND_COMPONENTS avcodec avformat avutil)
+	set(FFmpeg_FIND_COMPONENTS avcodec avformat avutil)
 endif()
 
 # Check each component
