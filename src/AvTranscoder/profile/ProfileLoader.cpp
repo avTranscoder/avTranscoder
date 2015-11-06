@@ -89,7 +89,7 @@ void ProfileLoader::loadProfile( const std::string& avProfileDir, const std::str
 		}
 		else if( customProfile.count( "acodec" ) )
 		{
-			customProfile[ constants::avProfileType ] = constants::avProfileTypeVideo;
+			customProfile[ constants::avProfileType ] = constants::avProfileTypeAudio;
 			customProfile[ constants::avProfileCodec ] = customProfile.at( "vcodec" );
 		}
 		else
