@@ -21,8 +21,16 @@ private:
 	FormatContext& operator=( const FormatContext& formatContext );
 
 public:
-	FormatContext( const std::string& filename, int req_flags = 0 );  ///< Allocate an AVFormatContext by opening an input file
-	FormatContext( int req_flags = 0 );  ///< Allocate an AVFormatContext with default values
+	/**
+	 * @brief Allocate an AVFormatContext by opening an input file
+         */
+	FormatContext( const std::string& filename, int req_flags = 0, AVDictionary** options = NULL );
+
+	/**
+	 * @brief Allocate an AVFormatContext with default values
+         */
+	FormatContext( int req_flags = 0 );
+
 	~FormatContext();
 
 	/**
@@ -43,7 +51,11 @@ public:
 	 */
 	void closeRessource();
 
-	void writeHeader( AVDictionary** options = NULL );  ///< Write the stream header to an output media file
+	/**
+	 * @brief Write the stream header to an output media file
+	 * @note Also load options specific to the output format
+	 */
+	void writeHeader( AVDictionary** options = NULL );
 
 	/**
 	 * @brief Write a packet to an output media file
@@ -61,6 +73,15 @@ public:
 	void addMetaData( const std::string& key, const std::string& value );
 	AVStream& addAVStream( const AVCodec& avCodec );
 
+	/**
+	 * @brief Seek at a specific position
+	 * @param position: can be in AV_TIME_BASE units, in frames... depending on the flag value
+	 * @param flag: seeking mode (AVSEEK_FLAG_xxx)
+	 * @return seek status
+	 * @see flushDecoder
+	 */
+	bool seek( const uint64_t position, const int flag );
+
 	size_t getNbStreams() const { return _avFormatContext->nb_streams; }
 	/// Get duration of the program, in seconds
 	size_t getDuration() const { return _avFormatContext->duration; }
@@ -73,11 +94,17 @@ public:
 
 	/**
 	 * Guess format from arguments.
+	 * Set the AVOutputFormat of AVFormatContext.
 	 * @param filename: checks if it terminates with the extensions of the registered formats
 	 * @param shortName: checks if it matches with the names of the registered formats
 	 * @param mimeType: checks if it matches with the MIME type of the registered formats
 	 */
 	void setOutputFormat( const std::string& filename, const std::string& shortName = "", const std::string& mimeType = "" );
+
+	/**
+	 * Set filename of AVFormatContext.
+	 */
+	void setFilename( const std::string& filename );
 
 #ifndef SWIG
 	AVFormatContext& getAVFormatContext() const { return *_avFormatContext; }
@@ -90,6 +117,7 @@ public:
 
 private:
 	AVFormatContext* _avFormatContext;  ///< Has ownership
+	const int _flags;  ///< Flags with which the options are loaded (see AV_OPT_FLAG_xxx)
 	OptionMap _options;
 	bool _isOpen;  ///< Is the AVFormatContext open (in constructor with a filename)
 };

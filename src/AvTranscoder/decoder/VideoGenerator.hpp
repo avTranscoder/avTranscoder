@@ -16,8 +16,6 @@ public:
 
 	~VideoGenerator();
 
-	void setup() {}
-
 	bool decodeNextFrame( Frame& frameBuffer );
 	bool decodeNextFrame( Frame& frameBuffer, const size_t subStreamIndex );
 

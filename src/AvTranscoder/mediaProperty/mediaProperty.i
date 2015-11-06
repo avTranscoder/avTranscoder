@@ -2,6 +2,7 @@
 #include <AvTranscoder/mediaProperty/util.hpp>
 #include <AvTranscoder/mediaProperty/FileProperties.hpp>
 #include <AvTranscoder/mediaProperty/PixelProperties.hpp>
+#include <AvTranscoder/mediaProperty/StreamProperties.hpp>
 #include <AvTranscoder/mediaProperty/VideoProperties.hpp>
 #include <AvTranscoder/mediaProperty/AudioProperties.hpp>
 #include <AvTranscoder/mediaProperty/DataProperties.hpp>
@@ -28,6 +29,7 @@ namespace std {
 %ignore vector< avtranscoder::UnknownProperties >::resize;
 
 // Create instantiations of a template classes
+%template(StreamVector)       vector< avtranscoder::StreamProperties* >;
 %template(VideoVector)        vector< avtranscoder::VideoProperties >;
 %template(AudioVector)        vector< avtranscoder::AudioProperties >;
 %template(DataVector)         vector< avtranscoder::DataProperties >;
@@ -47,6 +49,7 @@ namespace std {
 %include <AvTranscoder/mediaProperty/util.hpp>
 %include <AvTranscoder/mediaProperty/FileProperties.hpp>
 %include <AvTranscoder/mediaProperty/PixelProperties.hpp>
+%include <AvTranscoder/mediaProperty/StreamProperties.hpp>
 %include <AvTranscoder/mediaProperty/VideoProperties.hpp>
 %include <AvTranscoder/mediaProperty/AudioProperties.hpp>
 %include <AvTranscoder/mediaProperty/DataProperties.hpp>

@@ -48,23 +48,20 @@ public:
 	bool readNextPacket( CodedData& data, const size_t streamIndex );
 
 	/**
-	 * @brief Seek input stream at specified frame
-	 * @note clean also buffers in each InputStream
-	 * @return if next packet was read succefully
+	 * @brief Seek at a specific frame / time (in seconds)
+	 * @note Seek in file by using the default stream (according to ffmpeg)
+	 * @param flag: ffmpeg seek flag (by default seek to any frame, even non-keyframes)
+	 * @warning If the seek is done to a non key-frame, the decoding will start from the next key-frame
+	 * @return seek status
 	 **/
-	void seekAtFrame( const size_t frame );
-	void seekAtTime( const double time );
+	bool seekAtFrame( const size_t frame, const int flag = AVSEEK_FLAG_ANY );
+	bool seekAtTime( const double time, const int flag = AVSEEK_FLAG_ANY );
 
 	/** 
 	 * @brief Activate the indicated stream
-         * @note Activate a stream results in buffered its data when processing
+	 * @note Activate a stream results in buffered its data when processing
 	 **/
 	void activateStream( const size_t streamIndex, const bool activate = true );
-	
-	/**
-	 * @return Return the resource to access
-	**/
-	std::string getFilename() const { return _filename; }
 
 	/**
 	 * @brief Return media properties on the current InputFile.
@@ -80,13 +77,30 @@ public:
 	 **/
 	InputStream& getStream( size_t index );
 
+	std::string getFilename() const { return _filename; }
+
+	/**
+	 * @brief A comma separated list of short names for the format, or empty if unknown.
+	 */
+	std::string getFormatName() const;
+
+	/**
+	 * @brief Descriptive name for the format, meant to be more human-readable than name, or empty if unknown.
+	 */
+	std::string getFormatLongName() const;
+
+	/**
+	 * @brief Comma-separated list of mime types, or empty if unknown.
+	 */
+	std::string getFormatMimeType() const;
+
 	FormatContext& getFormatContext() { return _formatContext; }
 
 	/**
 	 * @brief Set the format of the input file
 	 * @param profile: the profile of the input format
 	 */
-	virtual void setProfile( const ProfileLoader::Profile& profile );
+	virtual void setupUnwrapping( const ProfileLoader::Profile& profile );
 
 public:
 	/**
@@ -103,13 +117,6 @@ private:
 	 * @note if there is no video stream, return 1.
 	 */
 	double getFps();
-
-	/**
-	 * @brief Seek at a specific position (in AV_TIME_BASE units)
-	 * @note before seek, add offset of start time
-	 * @note after seek, clear buffering of streams
-	 */
-	void seek( uint64_t position );
 
 protected:
 	FormatContext _formatContext;

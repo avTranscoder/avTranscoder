@@ -7,23 +7,10 @@ extern "C" {
 }
 
 #include <utility>
+#include <algorithm>
 
 namespace avtranscoder
 {
-
-std::string getFormat( const std::string& filename )
-{
-	std::string format( "" );
-	
-	AVOutputFormat* avOutputFormat = av_guess_format( NULL, filename.c_str(), NULL);
-	if( avOutputFormat )
-	{
-		if( avOutputFormat->name )
-			format = std::string( avOutputFormat->name );
-	}
-	
-	return format;
-}
 
 bool matchFormat( const std::string& format, const std::string& filename )
 {
@@ -144,25 +131,18 @@ NamesArray getVideoCodecsNames()
 	AVCodec* c = NULL;
 	while( ( c = av_codec_next( c ) ) != NULL )
 	{
-#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT( 53, 34, 0 )
-		if( ! c->encode )
-			continue;
-#else
-		if( ! c->encode2 )
-			continue;
-#endif
-		switch( c->type )
+		if( c->type == AVMEDIA_TYPE_VIDEO)
 		{
-			case AVMEDIA_TYPE_VIDEO:
-			{
-				if( ! c->name && ! c->long_name )
-					continue;
+			if( ! c->name && ! c->long_name )
+				continue;
 
-				videoCodecsNames.push_back( std::make_pair( std::string( c->name ? c->name : "" ), std::string( c->long_name ? c->long_name : "" ) ) );
-				break;
-			}
-			default:
-				break;
+			std::pair< std::string, std::string > codecNames( std::string( c->name ? c->name : "" ), std::string( c->long_name ? c->long_name : "" ) );
+
+			// skip duplicates
+			if( std::find( videoCodecsNames.begin(), videoCodecsNames.end(), codecNames ) != videoCodecsNames.end() )
+				continue;
+
+			videoCodecsNames.push_back( codecNames );
 		}
 	}
 	return videoCodecsNames;
@@ -175,25 +155,18 @@ NamesArray getAudioCodecsNames()
 	AVCodec* c = NULL;
 	while( ( c = av_codec_next( c ) ) != NULL )
 	{
-#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT( 53, 34, 0 )
-		if( ! c->encode )
-			continue;
-#else
-		if( ! c->encode2 )
-			continue;
-#endif
-		switch( c->type )
+		if( c->type == AVMEDIA_TYPE_AUDIO )
 		{
-			case AVMEDIA_TYPE_AUDIO:
-			{
-				if( ! c->name && ! c->long_name )
-					continue;
+			if( ! c->name && ! c->long_name )
+				continue;
 
-				audioCodecsNames.push_back( std::make_pair( std::string( c->name ? c->name : "" ), std::string( c->long_name ? c->long_name : "" ) ) );
-				break;
-			}
-			default:
-				break;
+			std::pair< std::string, std::string > codecNames( std::string( c->name ? c->name : "" ), std::string( c->long_name ? c->long_name : "" ) );
+
+			// skip duplicates
+			if( std::find( audioCodecsNames.begin(), audioCodecsNames.end(), codecNames ) != audioCodecsNames.end() )
+				continue;
+
+			audioCodecsNames.push_back( codecNames );
 		}
 	}
 	return audioCodecsNames;
@@ -201,9 +174,7 @@ NamesArray getAudioCodecsNames()
 
 OptionArrayMap getOutputFormatOptions()
 {
-	av_register_all();
-
-	std::map< std::string, std::vector<Option> > optionsPerFormat;
+	OptionArrayMap optionsPerFormat;
 	
 	AVOutputFormat* outputFormat = av_oformat_next( NULL );
 	
@@ -216,7 +187,7 @@ OptionArrayMap getOutputFormatOptions()
 		{
 			if( outputFormat->priv_class )
 			{
-				std::string outputFormatName( outputFormat->name );
+				const std::string outputFormatName( outputFormat->name );
 				OptionArray options;
 				loadOptions( options, (void*)&outputFormat->priv_class, 0  );
 				optionsPerFormat.insert( std::make_pair( outputFormatName, options ) );
@@ -229,29 +200,22 @@ OptionArrayMap getOutputFormatOptions()
 
 OptionArrayMap getVideoCodecOptions()
 {
-	std::map< std::string, std::vector<Option> > videoCodecOptions;
+	OptionArrayMap videoCodecOptions;
 	
 	AVCodec* codec = av_codec_next( NULL );
 	
 	// iterate on codecs
 	while( codec )
 	{
-#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT( 53, 34, 0 )
-		if( codec->encode )
-#else
-		if( codec->encode2 )
-#endif
+		// add only video codec
+		if( codec->type == AVMEDIA_TYPE_VIDEO )
 		{
-			// add only video codec
-			if( codec->type == AVMEDIA_TYPE_VIDEO )
+			if( codec->priv_class )
 			{
-				if( codec->priv_class )
-				{
-					std::string videoCodecName( codec->name );
-					OptionArray options;
-					loadOptions( options, (void*)&codec->priv_class, 0  );
-					videoCodecOptions.insert( std::make_pair( videoCodecName, options ) );
-				}
+				std::string videoCodecName( codec->name );
+				OptionArray options;
+				loadOptions( options, (void*)&codec->priv_class, 0  );
+				videoCodecOptions.insert( std::make_pair( videoCodecName, options ) );
 			}
 		}
 		codec = av_codec_next( codec );
@@ -261,29 +225,22 @@ OptionArrayMap getVideoCodecOptions()
 
 OptionArrayMap getAudioCodecOptions()
 {
-	std::map< std::string, std::vector<Option> > audioCodecOptions;
+	OptionArrayMap audioCodecOptions;
 	
 	AVCodec* codec = av_codec_next( NULL );
 	
 	// iterate on codecs
 	while( codec )
 	{
-#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT( 53, 34, 0 )
-		if( codec->encode )
-#else
-		if( codec->encode2 )
-#endif
+		// add only audio codec
+		if( codec->type == AVMEDIA_TYPE_AUDIO )
 		{
-			// add only audio codec
-			if( codec->type == AVMEDIA_TYPE_AUDIO )
+			if( codec->priv_class )
 			{
-				if( codec->priv_class )
-				{
-					std::string audioCodecName( codec->name );
-					OptionArray options;
-					loadOptions( options, (void*)&codec->priv_class, 0  );
-					audioCodecOptions.insert( std::make_pair( audioCodecName, options ) );
-				}
+				std::string audioCodecName( codec->name );
+				OptionArray options;
+				loadOptions( options, (void*)&codec->priv_class, 0  );
+				audioCodecOptions.insert( std::make_pair( audioCodecName, options ) );
 			}
 		}
 		codec = av_codec_next( codec );

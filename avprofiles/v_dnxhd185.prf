@@ -1,10 +1,9 @@
-avProfileName=dnxhd120
-avProfileLongName=DNxHD 120Mbps 1920x1080 25fps
+avProfileName=dnxhd185
+avProfileLongName=DNxHD 185Mbps 1920x1080 25fps
 avProfileType=avProfileTypeVideo
 codec=dnxhd
 width=1920
 height=1080
 pix_fmt=yuv422p
-b=120M
-g=1
+b=185M
 r=25

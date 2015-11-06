@@ -1,0 +1,9 @@
+avProfileName=dnxhd175x
+avProfileLongName=DNxHD 175Mbps 10bits 1920x1080 25fps
+avProfileType=avProfileTypeVideo
+codec=dnxhd
+width=1920
+height=1080
+pix_fmt=yuv422p10le
+b=175M
+r=25

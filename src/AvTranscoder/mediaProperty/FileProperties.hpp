@@ -4,6 +4,9 @@
 #include <AvTranscoder/common.hpp>
 #include <AvTranscoder/mediaProperty/util.hpp>
 #include <AvTranscoder/file/FormatContext.hpp>
+#include <AvTranscoder/progress/IProgress.hpp>
+
+#include <AvTranscoder/mediaProperty/StreamProperties.hpp>
 #include <AvTranscoder/mediaProperty/VideoProperties.hpp>
 #include <AvTranscoder/mediaProperty/AudioProperties.hpp>
 #include <AvTranscoder/mediaProperty/DataProperties.hpp>
@@ -13,6 +16,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 namespace avtranscoder
 {
@@ -20,7 +24,19 @@ namespace avtranscoder
 class AvExport FileProperties
 {
 public:
+	/**
+	 * @brief Analayse a file from its FormatContext
+	 * @note The default streams analyse level is eAnalyseLevelHeader
+	 * @see FormatContext
+	 */
 	FileProperties( const FormatContext& formatContext );
+
+	/**
+	 * @brief Relaunch streams analysis with a specific level.
+	 * @param progress callback to get analysis progression
+	 * @param level of analysis
+	 */
+	void extractStreamProperties( IProgress& progress, const EAnalyseLevel level );
 
 	std::string getFilename() const;
 	std::string getFormatName() const;  ///< A comma separated list of short names for the format
@@ -28,11 +44,11 @@ public:
 
 	size_t getProgramsCount() const;
 	double getStartTime() const;
-	double getDuration() const;  ///< in seconds
+	float getDuration() const;  ///< in seconds
 	size_t getBitRate() const;  ///< total stream bitrate in bit/s, 0 if not available (result of a computation by ffmpeg)
 	size_t getPacketSize() const;
 
-	PropertiesMap& getMetadatas() { return _metadatas; }
+	const PropertyVector& getMetadatas() const { return _metadatas; }
 
 	size_t getNbStreams() const;
 	size_t getNbVideoStreams() const { return _videoStreams.size(); }
@@ -42,58 +58,54 @@ public:
 	size_t getNbAttachementStreams() const { return _attachementStreams.size(); }
 	size_t getNbUnknownStreams() const { return _unknownStreams.size(); }
 
+	const FormatContext& getFormatContext() { return *_formatContext; }
+
 	//@{
-	// @brief Get the properties with the indicated stream index
-	avtranscoder::VideoProperties& getVideoPropertiesWithStreamIndex( const size_t streamIndex );
-	avtranscoder::AudioProperties& getAudioPropertiesWithStreamIndex( const size_t streamIndex );
+	// @brief Get the properties at the indicated stream index
+	// @throws A runtime error if the streamIndex does not match any stream
+	const avtranscoder::StreamProperties& getStreamPropertiesWithIndex( const size_t streamIndex ) const;
 	//@}
 
 	//@{
 	// @brief Get the list of properties for a given type (video, audio...)
-	std::vector< avtranscoder::VideoProperties >& getVideoProperties() { return  _videoStreams; }
-	std::vector< avtranscoder::AudioProperties >& getAudioProperties() { return  _audioStreams; }
-	std::vector< avtranscoder::DataProperties >& getDataProperties() { return  _dataStreams; }
-	std::vector< avtranscoder::SubtitleProperties >& getSubtitleProperties() { return  _subtitleStreams; }
-	std::vector< avtranscoder::AttachementProperties >& getAttachementProperties() { return  _attachementStreams; }
-	std::vector< avtranscoder::UnknownProperties >& getUnknownPropertiesProperties() { return  _unknownStreams; }
-	//@}
-
-#ifndef SWIG
-	const AVFormatContext& getAVFormatContext() { return *_formatContext; }
-
-	const avtranscoder::VideoProperties& getVideoPropertiesWithStreamIndex( const size_t streamIndex ) const;
-	const avtranscoder::AudioProperties& getAudioPropertiesWithStreamIndex( const size_t streamIndex ) const;
-
+	const std::vector< avtranscoder::StreamProperties* > getStreamProperties() const;
 	const std::vector< avtranscoder::VideoProperties >& getVideoProperties() const  { return  _videoStreams; }
 	const std::vector< avtranscoder::AudioProperties >& getAudioProperties() const  { return  _audioStreams; }
 	const std::vector< avtranscoder::DataProperties >& getDataProperties() const  { return  _dataStreams; }
 	const std::vector< avtranscoder::SubtitleProperties >& getSubtitleProperties() const  { return  _subtitleStreams; }
 	const std::vector< avtranscoder::AttachementProperties >& getAttachementProperties() const  { return  _attachementStreams; }
-	const std::vector< avtranscoder::UnknownProperties >& getUnknownPropertiesProperties() const  { return  _unknownStreams; }
+	const std::vector< avtranscoder::UnknownProperties >& getUnknownProperties() const  { return  _unknownStreams; }
+	//@}
+
+#ifndef SWIG
+	const AVFormatContext& getAVFormatContext() { return *_avFormatContext; }
 #endif
 
-	PropertiesMap getPropertiesAsMap() const;  ///< Return all file properties as a map (name of property: value)
-
-	void clearStreamProperties();  ///< Clear all array of stream properties
+	PropertyVector getPropertiesAsVector() const;  ///< Return all file properties as a vector (name of property: value)
 
 private:
 #ifndef SWIG
 	template<typename T>
-	void addProperty( PropertiesMap& dataMap, const std::string& key, T (FileProperties::*getter)(void) const ) const
+	void addProperty( PropertyVector& data, const std::string& key, T (FileProperties::*getter)(void) const ) const
 	{
 		try
 		{
-			detail::add( dataMap, key, (this->*getter)() );
+			detail::add( data, key, (this->*getter)() );
 		}
 		catch( const std::exception& e )
 		{
-			detail::add( dataMap, key, e.what() );
+			detail::add( data, key, e.what() );
 		}
 	}
 #endif
 
+	void clearStreamProperties();  ///< Clear all array of stream properties
+
 private:
-	const AVFormatContext* _formatContext;  ///< Has link (no ownership)
+	const FormatContext* _formatContext;  ///< Has link (no ownership)
+	const AVFormatContext* _avFormatContext;  ///< Has link (no ownership)
+
+	std::map< size_t, StreamProperties* > _streams;  ///< Map of properties per stream index (of all types) - only references to the following properties
 
 	std::vector< VideoProperties > _videoStreams;  ///< Array of properties per video stream
 	std::vector< AudioProperties >  _audioStreams;  ///< Array of properties per audio stream
@@ -102,7 +114,7 @@ private:
 	std::vector< AttachementProperties > _attachementStreams;  ///< Array of properties per attachement stream
 	std::vector< UnknownProperties > _unknownStreams;  ///< Array of properties per unknown stream
 
-	PropertiesMap _metadatas;
+	PropertyVector _metadatas;
 };
 
 }

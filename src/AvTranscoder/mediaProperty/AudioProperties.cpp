@@ -14,26 +14,13 @@ namespace avtranscoder
 {
 
 AudioProperties::AudioProperties( const FormatContext& formatContext, const size_t index )
-	: _formatContext( &formatContext.getAVFormatContext() )
-	, _codecContext( NULL )
-	, _codec( NULL )
-	, _streamIndex( index )
+	: StreamProperties( formatContext, index )
 {
 	if( _formatContext )
 		_codecContext = _formatContext->streams[index]->codec;
 
 	if( _formatContext && _codecContext )
 		_codec = avcodec_find_decoder( _codecContext->codec_id );
-
-	if( _formatContext )
-		detail::fillMetadataDictionnary( _formatContext->streams[index]->metadata, _metadatas );
-}
-
-size_t AudioProperties::getStreamId() const
-{
-	if( ! _formatContext )
-		throw std::runtime_error( "unknown format context" );
-	return _formatContext->streams[_streamIndex]->id;
 }
 
 std::string AudioProperties::getCodecName() const
@@ -173,7 +160,10 @@ size_t AudioProperties::getNbSamples() const
 {
 	if( ! _formatContext )
 		throw std::runtime_error( "unknown format context" );
-	return _formatContext->streams[_streamIndex]->nb_frames;
+	size_t nbSamples = _formatContext->streams[_streamIndex]->nb_frames;
+	if(nbSamples == 0)
+		nbSamples = getSampleRate() * getChannels() * getDuration();
+	return nbSamples;
 }
 
 size_t AudioProperties::getTicksPerFrame() const
@@ -183,52 +173,29 @@ size_t AudioProperties::getTicksPerFrame() const
 	return _codecContext->ticks_per_frame;
 }
 
-Rational AudioProperties::getTimeBase() const
+PropertyVector AudioProperties::getPropertiesAsVector() const
 {
-	if( ! _formatContext )
-		throw std::runtime_error( "unknown format context" );
+	PropertyVector data;
 
-	Rational timeBase = {
-		_formatContext->streams[_streamIndex]->time_base.num,
-		_formatContext->streams[_streamIndex]->time_base.den,
-	};
-	return timeBase;
-}
+	// Add properties of base class
+	PropertyVector basedProperty = StreamProperties::getPropertiesAsVector();
+	data.insert( data.begin(), basedProperty.begin(), basedProperty.end() );
 
-double AudioProperties::getDuration() const
-{
-	Rational timeBase = getTimeBase();
-	double duration = ( timeBase.num / (double) timeBase.den ) * _formatContext->streams[_streamIndex]->duration;
-	return duration;
-}
+	addProperty( data, "codecId", &AudioProperties::getCodecId );
+	addProperty( data, "codecName", &AudioProperties::getCodecName );
+	addProperty( data, "codecLongName", &AudioProperties::getCodecLongName );
+	addProperty( data, "sampleFormatName", &AudioProperties::getSampleFormatName );
+	addProperty( data, "sampleFormatLongName", &AudioProperties::getSampleFormatLongName );
+	addProperty( data, "sampleRate", &AudioProperties::getSampleRate );
+	addProperty( data, "bitRate", &AudioProperties::getBitRate );
+	addProperty( data, "nbSamples", &AudioProperties::getNbSamples );
+	addProperty( data, "channels", &AudioProperties::getChannels );
+	addProperty( data, "channelLayout", &AudioProperties::getChannelLayout );
+	addProperty( data, "channelName", &AudioProperties::getChannelName );
+	addProperty( data, "channelDescription", &AudioProperties::getChannelDescription );
+	addProperty( data, "ticksPerFrame", &AudioProperties::getTicksPerFrame );
 
-PropertiesMap AudioProperties::getPropertiesAsMap() const
-{
-	PropertiesMap dataMap;
-
-	addProperty( dataMap, "streamId", &AudioProperties::getStreamId );
-	addProperty( dataMap, "codecId", &AudioProperties::getCodecId );
-	addProperty( dataMap, "codecName", &AudioProperties::getCodecName );
-	addProperty( dataMap, "codecLongName", &AudioProperties::getCodecLongName );
-	addProperty( dataMap, "sampleFormatName", &AudioProperties::getSampleFormatName );
-	addProperty( dataMap, "sampleFormatLongName", &AudioProperties::getSampleFormatLongName );
-	addProperty( dataMap, "sampleRate", &AudioProperties::getSampleRate );
-	addProperty( dataMap, "bitRate", &AudioProperties::getBitRate );
-	addProperty( dataMap, "nbSamples", &AudioProperties::getNbSamples );
-	addProperty( dataMap, "channels", &AudioProperties::getChannels );
-	addProperty( dataMap, "channelLayout", &AudioProperties::getChannelLayout );
-	addProperty( dataMap, "channelName", &AudioProperties::getChannelName );
-	addProperty( dataMap, "channelDescription", &AudioProperties::getChannelDescription );
-	addProperty( dataMap, "ticksPerFrame", &AudioProperties::getTicksPerFrame );
-	addProperty( dataMap, "timeBase", &AudioProperties::getTimeBase );
-	addProperty( dataMap, "duration", &AudioProperties::getDuration );
-
-	for( size_t metadataIndex = 0; metadataIndex < _metadatas.size(); ++metadataIndex )
-	{
-		detail::add( dataMap, _metadatas.at( metadataIndex ).first, _metadatas.at( metadataIndex ).second );
-	}
-
-	return dataMap;
+	return data;
 }
 
 }

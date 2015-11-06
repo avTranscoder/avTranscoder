@@ -24,25 +24,17 @@ public:
 
 	bool readNextPacket( CodedData& data );
 
+	const StreamProperties& getProperties() const;
 	size_t getStreamIndex() const { return _streamIndex; }
-	/// Get duration of the stream, in seconds
-	double getDuration() const;
-	AVMediaType getStreamType() const;
 
 	VideoCodec& getVideoCodec();
 	AudioCodec& getAudioCodec();
 	DataCodec& getDataCodec();
 
-	//@{
-	/**
-	 * @brief Functions about buffering
-	 * @see IInputStream methods
-	 */
 	void activate( const bool activate = true ){ _isActivated = activate; };
 	bool isActivated() const { return _isActivated; };
-	void addPacket( AVPacket& packet );
+	void addPacket( const AVPacket& packet );
 	void clearBuffering();
-	//@}
 
 private:
 	InputFile* _inputFile;  ///< Has link (no ownership)

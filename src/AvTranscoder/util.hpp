@@ -20,11 +20,6 @@ typedef std::map<std::string, OptionArray> OptionArrayMap;
 typedef std::vector< std::pair<std::string, std::string> > NamesArray;  //< short/long names of format/video codec/audio codec
 
 /**
- * @brief Get format name from a given filename 
- */
-std::string AvExport getFormat( const std::string& filename );
-
-/**
  * @brief Check if a format name corresponds to the format of a given filename
  */
 bool AvExport matchFormat( const std::string& format, const std::string& filename );

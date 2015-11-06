@@ -2,7 +2,6 @@
 #define _AV_TRANSCODER_ESSENCE_STREAM_AV_INPUT_AUDIO_HPP_
 
 #include "IDecoder.hpp"
-#include <AvTranscoder/profile/ProfileLoader.hpp>
 
 struct AVFrame;
 
@@ -17,12 +16,12 @@ public:
 	AudioDecoder( InputStream& inputStream );
 	~AudioDecoder();
 
-	void setup();
+	void setupDecoder( const ProfileLoader::Profile& profile = ProfileLoader::Profile() );
 
 	bool decodeNextFrame( Frame& frameBuffer );
 	bool decodeNextFrame( Frame& frameBuffer, const size_t subStreamIndex );
 
-	void setProfile( const ProfileLoader::Profile& profile );
+	void flushDecoder();
 
 private:
 	bool decodeNextFrame();
@@ -30,6 +29,8 @@ private:
 private:
 	InputStream* _inputStream;  ///< Stream from which we read next frames (no ownership, has link)
 	AVFrame* _frame;  ///< Libav object to store decoded data (has ownership)
+
+	bool _isSetup;
 };
 
 }

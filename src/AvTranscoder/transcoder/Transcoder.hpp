@@ -6,6 +6,7 @@
 #include <AvTranscoder/file/IOutputFile.hpp>
 #include <AvTranscoder/stream/IInputStream.hpp>
 #include <AvTranscoder/profile/ProfileLoader.hpp>
+#include <AvTranscoder/stat/ProcessStat.hpp>
 
 #include "StreamTranscoder.hpp"
 
@@ -54,46 +55,48 @@ public:
 	 * @brief Add a stream and set a profile
 	 * @note If profileName is empty, rewrap.
 	 * @note offset in seconds
+	 * If offset is positive, the transcoder will generate black images or silence (depending on the type of stream) before the stream to process.
+	 * If offset is negative, the transcoder will seek in the stream and start process at this specific time.
 	 */
-	void add( const std::string& filename, const size_t streamIndex, const std::string& profileName = "", const double offset = 0 );
+	void add( const std::string& filename, const size_t streamIndex, const std::string& profileName = "", const float offset = 0 );
 	/*
 	 * @note If filename is empty, add a generated stream.
 	 * @note If filename is empty, profileName can't be empty (no sens to rewrap a generated stream).
 	 */
-	void add( const std::string& filename, const size_t streamIndex, const std::string& profileName, ICodec& codec, const double offset = 0 );
+	void add( const std::string& filename, const size_t streamIndex, const std::string& profileName, ICodec& codec, const float offset = 0 );
 
 	/**
 	 * @brief Add a stream and set a custom profile
 	 * @note Profile will be updated, be sure to pass unique profile name.
 	 */
-	void add( const std::string& filename, const size_t streamIndex, const ProfileLoader::Profile& profile, const double offset = 0 );
+	void add( const std::string& filename, const size_t streamIndex, const ProfileLoader::Profile& profile, const float offset = 0 );
 	/*
 	 * @note If filename is empty, add a generated stream.
 	 */
-	void add( const std::string& filename, const size_t streamIndex, const ProfileLoader::Profile& profile, ICodec& codec, const double offset = 0  );
+	void add( const std::string& filename, const size_t streamIndex, const ProfileLoader::Profile& profile, ICodec& codec, const float offset = 0  );
 	
 	/**
 	 * @brief Add a stream and set a profile
 	 * @note If profileName is empty, rewrap.
 	 * @note If subStreamIndex is negative, no substream is selected it's the stream.
 	 */
-	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const std::string& profileName = "", const double offset = 0 );
+	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const std::string& profileName = "", const float offset = 0 );
 	/**
 	 * @note If filename is empty, add a generated stream.
 	 * @note If filename is empty, profileName can't be empty (no sens to rewrap a generated stream).
 	 */
-	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const std::string& profileName, ICodec& codec, const double offset = 0  );
+	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const std::string& profileName, ICodec& codec, const float offset = 0  );
 
 	/**
 	 * @brief Add a stream and set a custom profile
 	 * @note Profile will be updated, be sure to pass unique profile name.
 	 * @note If subStreamIndex is negative, no substream is selected it's the stream.
 	 */
-	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const ProfileLoader::Profile& profile, const double offset = 0 );
+	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const ProfileLoader::Profile& profile, const float offset = 0 );
 	/**
 	 * @note If filename is empty, add a generated stream.
 	 */
-	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const ProfileLoader::Profile& profile, ICodec& codec, const double offset = 0  );
+	void add( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const ProfileLoader::Profile& profile, ICodec& codec, const float offset = 0  );
 
 	/**
 	 * @brief Add the stream
@@ -117,15 +120,28 @@ public:
 	 * @brief Process all the streams, and ended the process depending on the transcode politic.
 	 * @note The function manages all process: init(), beginWrap(), processFrame()s, and endWrap().
 	 * @param progress: choose a progress, or create your own in C++ or in bindings by inherit IProgress class.
+	 * @return ProcessStat: object with statistics of the process for each stream.
 	 * @see IProgress
 	 */
-	void process( IProgress& progress );
+	ProcessStat process( IProgress& progress );
+	ProcessStat process();  ///< Call process with no display of progression
+
+	/**
+	 * @brief Return the list of streams added to the transcoder.
+	 */
+	std::vector< StreamTranscoder* >& getStreamTranscoders() { return _streamTranscoders; }
 
 	/**
 	 * @param streamIndex: careful about the order of stream insertion of the Transcoder.
 	 * @return a reference to a stream manage by the Transcoder.
 	 */
 	StreamTranscoder& getStreamTranscoder( size_t streamIndex ) const { return *_streamTranscoders.at( streamIndex ); }
+
+	/**
+	 * @brief Get current processMethod
+	 * @see EProcessMethod
+	 */
+	EProcessMethod getProcessMethod() const { return _eProcessMethod; }
 
 	/**
 	 * @brief Set the transcoding policy.
@@ -136,14 +152,14 @@ public:
 	void setProcessMethod( const EProcessMethod eProcessMethod, const size_t indexBasedStream = 0, const double outputDuration = 0 );
 
 private:
-	void addRewrapStream( const std::string& filename, const size_t streamIndex );
+	void addRewrapStream( const std::string& filename, const size_t streamIndex, const float offset );
 
-	void addTranscodeStream( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const double offset );
-	void addTranscodeStream( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const ProfileLoader::Profile& profile, const double offset = 0 );
+	void addTranscodeStream( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const float offset );
+	void addTranscodeStream( const std::string& filename, const size_t streamIndex, const int subStreamIndex, const ProfileLoader::Profile& profile, const float offset = 0 );
 
 	void addDummyStream( const ProfileLoader::Profile& profile, const ICodec& codec );
 
-	InputFile* addInputFile( const std::string& filename, const size_t streamIndex );
+	InputFile* addInputFile( const std::string& filename, const size_t streamIndex, const float offset );
 
 	ProfileLoader::Profile getProfileFromFile( InputFile& inputFile, const size_t streamIndex );  ///< The function analyses the inputFile
 
@@ -151,28 +167,33 @@ private:
 	 * @brief Get the duration of the stream, in seconds
 	 * @note If the stream is a generator, return limit of double.
 	 */
-	double getStreamDuration( size_t indexStream ) const;
+	float getStreamDuration( size_t indexStream ) const;
 
 	/**
 	* @brief Get the duration of the shortest stream, in seconds
 	*/
-	double getMinTotalDuration() const;
+	float getMinTotalDuration() const;
 
 	/**
 	 * @brief Get the duration of the longest stream, in seconds
 	 */
-	double getMaxTotalDuration() const;
+	float getMaxTotalDuration() const;
 
 	/**
 	 * @brief Get the duration of the output program
 	 * @note Depends on the streams, the process method, and the main stream index.
          */
-	double getOutputDuration() const;
+	float getOutputDuration() const;
 
 	/**
 	 * @brief Set for each StreamTranscoder if it can switch to generator at the end.
          */
 	void manageSwitchToGenerator();
+
+	/**
+	 * @brief Fill the given ProcessStat to summarize the process.
+	 */
+	void fillProcessStat( ProcessStat& processStat );
 
 private:
 	IOutputFile& _outputFile;  ///< The output media file after process (has link)
@@ -185,7 +206,7 @@ private:
 
 	EProcessMethod _eProcessMethod;  ///< Transcoding policy
 	size_t _mainStreamIndex;  ///< Index of stream used to stop the process of transcode in case of eProcessMethodBasedOnStream.
-	double _outputDuration;  ///< Duration of output media used to stop the process of transcode in case of eProcessMethodBasedOnDuration.
+	float _outputDuration;  ///< Duration of output media used to stop the process of transcode in case of eProcessMethodBasedOnDuration.
 };
 
 }

@@ -1,0 +1,9 @@
+avProfileName=h264-hq
+avProfileLongName=H.264 High Quality
+avProfileType=avProfileTypeVideo
+codec=h264
+pix_fmt=yuv422p
+profile=high422
+preset=slow
+tune=fastdecode,zerolatency
+level=5

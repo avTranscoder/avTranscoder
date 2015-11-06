@@ -18,8 +18,9 @@ namespace avtranscoder
 {
 
 AudioDecoder::AudioDecoder( InputStream& inputStream ) 
-	: _inputStream   ( &inputStream )
-	, _frame         ( NULL )
+	: _inputStream( &inputStream )
+	, _frame( NULL )
+	, _isSetup(false)
 {
 #if LIBAVCODEC_VERSION_MAJOR > 54
 	_frame = av_frame_alloc();
@@ -50,9 +51,53 @@ AudioDecoder::~AudioDecoder()
 }
 
 
-void AudioDecoder::setup()
+void AudioDecoder::setupDecoder( const ProfileLoader::Profile& profile )
 {
-	_inputStream->getAudioCodec().open();
+	// check the given profile
+	const bool isValid = ProfileLoader::checkAudioProfile( profile );
+	if( ! isValid && ! profile.empty() )
+	{
+		const std::string msg( "Invalid audio profile to setup decoder." );
+		LOG_ERROR( msg )
+		throw std::runtime_error( msg );
+	}
+
+	if( ! profile.empty() )
+	{
+		LOG_INFO( "Setup audio decoder with:\n" << profile )
+	}
+
+	AudioCodec& codec = _inputStream->getAudioCodec();
+
+	// set threads before any other options
+	if( profile.count( constants::avProfileThreads ) )
+		codec.getOption( constants::avProfileThreads ).setString( profile.at( constants::avProfileThreads ) );
+	else
+		codec.getOption( constants::avProfileThreads ).setInt( codec.getAVCodecContext().thread_count );
+
+	// set decoder options
+	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
+	{
+		if( (*it).first == constants::avProfileIdentificator ||
+			(*it).first == constants::avProfileIdentificatorHuman ||
+			(*it).first == constants::avProfileType ||
+			(*it).first == constants::avProfileThreads )
+			continue;
+
+		try
+		{
+			Option& decodeOption = codec.getOption( (*it).first );
+			decodeOption.setString( (*it).second );
+		}
+		catch( std::exception& e )
+		{
+			LOG_WARN( "AudioDecoder - can't set option " << (*it).first <<  " to " << (*it).second << ": " << e.what() )
+		}
+	}
+
+	// open decoder
+	_inputStream->getAudioCodec().openCodec();
+	_isSetup = true;
 }
 
 bool AudioDecoder::decodeNextFrame( Frame& frameBuffer )
@@ -124,6 +169,9 @@ bool AudioDecoder::decodeNextFrame( Frame& frameBuffer, const size_t subStreamIn
 
 bool AudioDecoder::decodeNextFrame()
 {
+	if(!_isSetup)
+		setupDecoder();
+
 	int got_frame = 0;
 	while( ! got_frame )
 	{
@@ -145,35 +193,9 @@ bool AudioDecoder::decodeNextFrame()
 	return true;
 }
 
-void AudioDecoder::setProfile( const ProfileLoader::Profile& profile )
+void AudioDecoder::flushDecoder()
 {
-	AudioCodec& codec = _inputStream->getAudioCodec();
-
-	// set threads before any other options
-	if( profile.count( constants::avProfileThreads ) )
-		codec.getOption( constants::avProfileThreads ).setString( profile.at( constants::avProfileThreads ) );
-	else
-		codec.getOption( constants::avProfileThreads ).setString( "auto" );
-
-	// set decoder options
-	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
-	{
-		if( (*it).first == constants::avProfileIdentificator ||
-			(*it).first == constants::avProfileIdentificatorHuman ||
-			(*it).first == constants::avProfileType ||
-			(*it).first == constants::avProfileThreads )
-			continue;
-
-		try
-		{
-			Option& decodeOption = codec.getOption( (*it).first );
-			decodeOption.setString( (*it).second );
-		}
-		catch( std::exception& e )
-		{
-			LOG_WARN( "AudioDecoder - can't set option " << (*it).first <<  " to " << (*it).second << ": " << e.what() )
-		}
-	}
+	avcodec_flush_buffers( &_inputStream->getAudioCodec().getAVCodecContext() );
 }
 
 }

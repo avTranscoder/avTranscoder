@@ -3,6 +3,7 @@
 
 #include <AvTranscoder/frame/Frame.hpp>
 #include <AvTranscoder/codec/ICodec.hpp>
+#include <AvTranscoder/profile/ProfileLoader.hpp>
 
 namespace avtranscoder
 {
@@ -14,8 +15,10 @@ public:
 
 	/**
 	 * @brief Setup the encoder
+	 * @param profile: set encoder parameters from the given profile
+	 * @note Open the encoder.
 	 */
-	virtual void setup() = 0;
+	virtual void setupEncoder( const ProfileLoader::Profile& profile = ProfileLoader::Profile() ) = 0;
 
 	/**
 	 * @brief Encode a new frame, and get coded frame

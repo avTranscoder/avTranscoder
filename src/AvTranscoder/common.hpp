@@ -1,6 +1,10 @@
 #ifndef _AV_TRANSCODER_COMMON_HPP_
 #define _AV_TRANSCODER_COMMON_HPP_
 
+#define AVTRANSCODER_VERSION_MAJOR 0
+#define AVTRANSCODER_VERSION_MINOR 6
+#define AVTRANSCODER_VERSION_MICRO 0
+
 #include <AvTranscoder/system.hpp>
 
 extern "C" {

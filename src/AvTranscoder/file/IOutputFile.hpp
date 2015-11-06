@@ -26,7 +26,6 @@ public:
 
 	/**
 	 * @brief Add a video output stream
-	 * @note call setup() before adding any stream
 	 * @param videoCodec description of output stream
 	**/
 	virtual IOutputStream& addVideoStream( const VideoCodec& videoCodec )
@@ -36,7 +35,6 @@ public:
 
 	/**
 	 * @brief Add an audio output stream
-	 * @note call setup() before adding any stream
 	 * @param audioCodec description of output stream
 	**/
 	virtual IOutputStream& addAudioStream( const AudioCodec& audioCodec )
@@ -46,7 +44,6 @@ public:
 
 	/**
 	 * @brief Add a data output stream
-	 * @note call setup() before adding any stream
 	 * @param dataCodec description of output stream
 	**/
 	virtual IOutputStream& addDataStream( const DataCodec& dataCodec )
@@ -62,7 +59,9 @@ public:
 	/**
 	 * @brief Wrap a packet of data in the output ressource
 	 * @param data coded packet information for the current stream
-	 * @param streamId refers to the stream in output ressource
+	 * @param streamIndex refers to the stream in output ressource
+	 * @return the wrapping status after wrapping
+	 * @see EWrappingStatus
 	**/
 	virtual IOutputStream::EWrappingStatus wrap( const CodedData& data, const size_t streamIndex ) = 0;
 
@@ -73,7 +72,7 @@ public:
 	
 	/**
 	 * @brief Get the output stream
-	 * @param streamId select the output stream
+	 * @param streamIndex select the output stream
 	 * @return the output stream reference
 	**/
 	virtual IOutputStream& getStream( const size_t streamIndex ) = 0;

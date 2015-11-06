@@ -51,15 +51,15 @@ ICodec::~ICodec()
 	_avCodecContext = NULL;
 }
 
-void ICodec::open()
+void ICodec::openCodec()
 {
 	if( ! _avCodecContext )
-		throw std::runtime_error( "unable to open a codec with no codec context" );
+		throw std::runtime_error( "Unable to open a codec without codec context" );
 
-	int ret = avcodec_open2( _avCodecContext, _avCodec, NULL );
+	const int ret = avcodec_open2( _avCodecContext, _avCodec, NULL );
 	if( ret < 0 )
 	{
-		std::string msg = "unable open codec: ";
+		std::string msg = "Unable to open codec: ";
 
 		if( _avCodec && _avCodec->long_name )
 			msg +=  _avCodec->long_name;
@@ -82,7 +82,11 @@ void ICodec::open()
 std::string ICodec::getCodecName() const
 {
 	assert( _avCodecContext != NULL );
-	return avcodec_descriptor_get( _avCodecContext->codec_id )->name;
+	const AVCodecDescriptor * desc = avcodec_descriptor_get( _avCodecContext->codec_id );
+	if( ! desc )
+		throw std::runtime_error( "Codec Descriptor is not available." );
+
+	return desc->name;
 }
 
 AVCodecID ICodec::getCodecId() const
@@ -112,7 +116,7 @@ void ICodec::setCodec( const ECodecType type, const std::string& codecName )
 	const AVCodecDescriptor* avCodecDescriptor = avcodec_descriptor_get_by_name( codecName.c_str() );
 	if( ! avCodecDescriptor )
 	{
-		std::string msg( "unable to find codec " );
+		std::string msg( "Unable to find codec " );
 		msg += codecName;
 		throw std::runtime_error( msg );
 	}
@@ -142,7 +146,7 @@ void ICodec::allocateContext()
 	_avCodecContext = avcodec_alloc_context3( _avCodec );
 	if( ! _avCodecContext )
 	{
-		throw std::runtime_error( "unable to allocate the codecContext and set its fields to default values" );
+		throw std::runtime_error( "Unable to allocate the codecContext and set its fields to default values" );
 	}
 	_avCodecContext->codec = _avCodec;
 }

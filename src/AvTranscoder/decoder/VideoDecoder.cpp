@@ -17,8 +17,9 @@ namespace avtranscoder
 {
 
 VideoDecoder::VideoDecoder( InputStream& inputStream )
-	: _inputStream   ( &inputStream )
-	, _frame         ( NULL )
+	: _inputStream( &inputStream )
+	, _frame( NULL )
+	, _isSetup(false)
 {
 #if LIBAVCODEC_VERSION_MAJOR > 54
 	_frame = av_frame_alloc();
@@ -48,9 +49,53 @@ VideoDecoder::~VideoDecoder()
 	}
 }
 
-void VideoDecoder::setup()
+void VideoDecoder::setupDecoder( const ProfileLoader::Profile& profile )
 {
-	_inputStream->getVideoCodec().open();
+	// check the given profile
+	const bool isValid = ProfileLoader::checkVideoProfile( profile );
+	if( ! isValid && ! profile.empty() )
+	{
+		const std::string msg( "Invalid video profile to setup decoder." );
+		LOG_ERROR( msg )
+		throw std::runtime_error( msg );
+	}
+
+	if( ! profile.empty() )
+	{
+		LOG_INFO( "Setup video decoder with:\n" << profile )
+	}
+
+	VideoCodec& codec = _inputStream->getVideoCodec();
+
+	// set threads before any other options
+	if( profile.count( constants::avProfileThreads ) )
+		codec.getOption( constants::avProfileThreads ).setString( profile.at( constants::avProfileThreads ) );
+	else
+		codec.getOption( constants::avProfileThreads ).setInt( codec.getAVCodecContext().thread_count );
+
+	// set decoder options
+	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
+	{
+		if( (*it).first == constants::avProfileIdentificator ||
+			(*it).first == constants::avProfileIdentificatorHuman ||
+			(*it).first == constants::avProfileType ||
+			(*it).first == constants::avProfileThreads )
+			continue;
+
+		try
+		{
+			Option& decodeOption = codec.getOption( (*it).first );
+			decodeOption.setString( (*it).second );
+		}
+		catch( std::exception& e )
+		{
+			LOG_WARN( "VideoDecoder - can't set option " << (*it).first <<  " to " << (*it).second << ": " << e.what() )
+		}
+	}
+
+	// open decoder
+	_inputStream->getVideoCodec().openCodec();
+	_isSetup = true;
 }
 
 bool VideoDecoder::decodeNextFrame( Frame& frameBuffer )
@@ -78,6 +123,9 @@ bool VideoDecoder::decodeNextFrame( Frame& frameBuffer, const size_t subStreamIn
 
 bool VideoDecoder::decodeNextFrame()
 {
+	if(!_isSetup)
+		setupDecoder();
+
 	int got_frame = 0;
 	while( ! got_frame )
 	{
@@ -102,37 +150,6 @@ bool VideoDecoder::decodeNextFrame()
 void VideoDecoder::flushDecoder()
 {
 	avcodec_flush_buffers( &_inputStream->getVideoCodec().getAVCodecContext() );
-}
-
-void VideoDecoder::setProfile( const ProfileLoader::Profile& profile )
-{
-	VideoCodec& codec = _inputStream->getVideoCodec();
-
-	// set threads before any other options
-	if( profile.count( constants::avProfileThreads ) )
-		codec.getOption( constants::avProfileThreads ).setString( profile.at( constants::avProfileThreads ) );
-	else
-		codec.getOption( constants::avProfileThreads ).setString( "auto" );
-
-	// set decoder options
-	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
-	{
-		if( (*it).first == constants::avProfileIdentificator ||
-			(*it).first == constants::avProfileIdentificatorHuman ||
-			(*it).first == constants::avProfileType ||
-			(*it).first == constants::avProfileThreads )
-			continue;
-
-		try
-		{
-			Option& decodeOption = codec.getOption( (*it).first );
-			decodeOption.setString( (*it).second );
-		}
-		catch( std::exception& e )
-		{
-			LOG_WARN( "VideoDecoder - can't set option " << (*it).first <<  " to " << (*it).second << ": " << e.what() )
-		}
-	}
 }
 
 }

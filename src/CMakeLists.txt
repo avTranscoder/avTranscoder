@@ -2,18 +2,19 @@
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 include(AvTranscoderMacros)
 
-# find package ffmpeg/libav
-find_package(FFmpeg COMPONENTS avcodec avformat avutil swscale swresample avresample)
+# AvTranscoder versions
+message(STATUS "AvTranscoder version is ${AVTRANSCODER_VERSION}")
 
-# Check if FFmpeg or libav dependency
-if(avresample_FOUND)
-	add_definitions(-DAVTRANSCODER_LIBAV_DEPENDENCY)
-	message("Build avTranscoder with dependency to libav.")
-elseif(swresample_FOUND)
+# Find package ffmpeg/libav
+find_package(FFmpeg COMPONENTS avcodec avformat avutil swscale swresample avresample)
+if(swresample_FOUND)
 	add_definitions(-DAVTRANSCODER_FFMPEG_DEPENDENCY)
-        message("Build avTranscoder with dependency to ffmpeg.")
+	message(STATUS "Build avTranscoder with dependency to ffmpeg.")
+elseif(avresample_FOUND)
+	add_definitions(-DAVTRANSCODER_LIBAV_DEPENDENCY)
+	message(STATUS "Build avTranscoder with dependency to libav.")
 else()
-        message(SEND_ERROR "Can't define if you depend on ffmpeg or libav.")
+	message(SEND_ERROR "Can't define if you depend on ffmpeg or libav.")
 endif()
 
 # Include AvTranscoder and FFmpeg
@@ -35,9 +36,9 @@ else()
 endif()
 set_target_properties(avtranscoder-shared PROPERTIES SOVERSION ${AVTRANSCODER_VERSION_MAJOR})
 set_target_properties(avtranscoder-shared PROPERTIES VERSION ${AVTRANSCODER_VERSION})
+set_target_properties(avtranscoder-shared PROPERTIES INSTALL_RPATH_USE_LINK_PATH 1)
 target_link_libraries(avtranscoder-shared ${FFMPEG_LIBRARIES})
-target_include_directories(avtranscoder-shared PUBLIC
-    ${AVTRANSCODER_SRC_PATH} ${FFMPEG_INCLUDE_DIR})
+target_include_directories(avtranscoder-shared PUBLIC ${AVTRANSCODER_SRC_PATH} ${FFMPEG_INCLUDE_DIR})
 
 
 ### Install AvTranscoder libs and include
@@ -48,15 +49,12 @@ install(
 	PATTERN "*.hpp"
 	PATTERN "*.i"
 )
-set(LIBRARY_OUTPUT_PATH "${PROJECT_BINARY_DIR}/lib")
-install(
-	DIRECTORY "${LIBRARY_OUTPUT_PATH}"
-	DESTINATION "${CMAKE_INSTALL_PREFIX}"
-)
+install(TARGETS avtranscoder-static DESTINATION lib/ OPTIONAL)
+install(TARGETS avtranscoder-shared DESTINATION lib/ OPTIONAL)
 
-### Install AvTranscoder ressource
+### Install AvTranscoder avprofiles
 install(
-	DIRECTORY "${PROJECT_SOURCE_DIR}/ressource"
+	DIRECTORY "${PROJECT_SOURCE_DIR}/avprofiles"
 	DESTINATION "share"
 	FILES_MATCHING
 	PATTERN "*.prf"
@@ -78,16 +76,16 @@ if(SWIG_FOUND)
 	set(AVTRANSCODER_BINDING_FILE "AvTranscoder/avTranscoder.i")
 	set_source_files_properties(${AVTRANSCODER_BINDING_FILE} PROPERTIES CPLUSPLUS ON)
 
+	# Swig flags
+	set(CMAKE_SWIG_FLAGS -c++ -fcompact -small -O -Werror)
+
 	### PYTHON BINDING
 	if(AVTRANSCODER_DISABLE_PYTHON_BINDING)
 		message("PYTHON binding disabled, will not build python binding.")
 	else()
-		find_package(PythonLibs)
+		find_package(PythonLibs ${AVTRANSCODER_PYTHON_VERSION_OF_BINDING})
 		if(PYTHONLIBS_FOUND)
 			include_directories(${PYTHON_INCLUDE_PATH})
-
-			# Swig flags
-			set(CMAKE_SWIG_FLAGS -c++ -fcompact)
 
 			# Create '_avtranscoder' shared lib (python)
 			swig_add_module(avtranscoder-py python ${AVTRANSCODER_BINDING_FILE})
@@ -97,26 +95,36 @@ if(SWIG_FOUND)
 				set_target_properties(${SWIG_MODULE_avtranscoder-py_REAL_NAME} PROPERTIES SOVERSION ${AVTRANSCODER_VERSION_MAJOR})
 				set_target_properties(${SWIG_MODULE_avtranscoder-py_REAL_NAME} PROPERTIES VERSION ${AVTRANSCODER_VERSION})
 			endif()
+			# Force the library to look in the project lib folder relatively
+			set_target_properties(${SWIG_MODULE_avtranscoder-py_REAL_NAME} PROPERTIES INSTALL_RPATH_USE_LINK_PATH 1)
+			if(APPLE)
+				set_target_properties(${SWIG_MODULE_avtranscoder-py_REAL_NAME} PROPERTIES INSTALL_RPATH "@loader_path/../../..")
+			else()
+				set_target_properties(${SWIG_MODULE_avtranscoder-py_REAL_NAME} PROPERTIES INSTALL_RPATH "$ORIGIN/../../..:$ORIGIN")
+			endif()
 			swig_link_libraries(avtranscoder-py avtranscoder-shared ${PYTHON_LIBRARIES})
 
 			# Install python interface
 			set(AVTRANSCODER_PYTHON_BINDING_FILE "${CMAKE_SWIG_OUTDIR}/avtranscoder.py")
-			set(AVTRANSCODER_PYTHON_MODULE_OUTPUT_DIR "lib/python${PYTHONLIBS_VERSION_STRING}/site-packages/pyAvTranscoder/")
+			string(SUBSTRING ${PYTHONLIBS_VERSION_STRING} 0 3 PYTHON_VERSION)
+			set(AVTRANSCODER_PYTHON_MODULE_OUTPUT_DIR "lib/python${PYTHON_VERSION}/site-packages/pyAvTranscoder/")
 			install(
 				FILES ${AVTRANSCODER_PYTHON_BINDING_FILE} ${AVTRANSCODER_PYTHON_INIT_FILE}
 				DESTINATION ${AVTRANSCODER_PYTHON_MODULE_OUTPUT_DIR}
+				OPTIONAL
 			)
-			# Install __init__.py
+			# Install python lib and __init__.py files
+			install(TARGETS ${SWIG_MODULE_avtranscoder-py_REAL_NAME} DESTINATION ${AVTRANSCODER_PYTHON_MODULE_OUTPUT_DIR} OPTIONAL)
 			install(CODE "file(WRITE ${CMAKE_INSTALL_PREFIX}/${AVTRANSCODER_PYTHON_MODULE_OUTPUT_DIR}/__init__.py)")
 		else()
 			message("PYTHON not found, will not build python binding.")
 		endif()
-        endif()
+	endif()
 
 	### JAVA BINDING
-        if(AVTRANSCODER_DISABLE_JAVA_BINDING)
+	if(AVTRANSCODER_DISABLE_JAVA_BINDING)
 		message("JAVA binding disabled, will not build java binding.")
-        else()
+	else()
 		find_package(Java)
 		find_package(JNI)
 		if(JAVA_FOUND AND JNI_FOUND)
@@ -124,8 +132,13 @@ if(SWIG_FOUND)
 			include_directories(${JAVA_INCLUDE_PATH})
 			include_directories(${JNI_INCLUDE_DIRS})
 
+			# Update compilation flags
+			if(NOT MSVC)
+				set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fno-strict-aliasing")
+			endif()
+
 			# Swig flags
-			set(CMAKE_SWIG_FLAGS -c++ -fcompact -package org.avtranscoder)
+			set(CMAKE_SWIG_FLAGS ${CMAKE_SWIG_FLAGS} -package org.avtranscoder)
 
 			# Create 'avtranscoder-java' shared lib
 			swig_add_module(avtranscoder-java java ${AVTRANSCODER_BINDING_FILE})
@@ -135,6 +148,13 @@ if(SWIG_FOUND)
 			if(NOT APPLE AND NOT WIN32)
 				set_target_properties(${SWIG_MODULE_avtranscoder-java_REAL_NAME} PROPERTIES SOVERSION ${AVTRANSCODER_VERSION_MAJOR})
 				set_target_properties(${SWIG_MODULE_avtranscoder-java_REAL_NAME} PROPERTIES VERSION ${AVTRANSCODER_VERSION})
+			endif()
+			# Force the library to look in the project lib folder relatively
+			set_target_properties(${SWIG_MODULE_avtranscoder-java_REAL_NAME} PROPERTIES INSTALL_RPATH_USE_LINK_PATH 1)
+			if(APPLE)
+				set_target_properties(${SWIG_MODULE_avtranscoder-java_REAL_NAME} PROPERTIES INSTALL_RPATH "@loader_path/..")
+			else()
+				set_target_properties(${SWIG_MODULE_avtranscoder-java_REAL_NAME} PROPERTIES INSTALL_RPATH "$ORIGIN/..:$ORIGIN")
 			endif()
 			swig_link_libraries(avtranscoder-java avtranscoder-shared)
 
@@ -152,8 +172,9 @@ if(SWIG_FOUND)
 				COMMAND ${Java_JAR_EXECUTABLE} cf ${AVTRANSCODER_JAR_NAME} "-C" ${AVTRANSCODER_JAVA_CLASS_OUTPUT_PATH} "."
 			)
 
-			# Install jar file
-			install(FILES ${AVTRANSCODER_JAR_PATH}/${AVTRANSCODER_JAR_NAME} DESTINATION "share/java/")
+			# Install java lib and jar files
+			install(TARGETS ${SWIG_MODULE_avtranscoder-java_REAL_NAME} DESTINATION "lib/java" OPTIONAL)
+			install(FILES ${AVTRANSCODER_JAR_PATH}/${AVTRANSCODER_JAR_NAME} DESTINATION "share/java/" OPTIONAL)
 		else()
 			message("JAVA not found, will not build java binding.")
 		endif()
