@@ -56,6 +56,21 @@ size_t PixelProperties::getBitsPerPixel() const
 	return av_get_bits_per_pixel( _pixelDesc );
 }
 
+size_t PixelProperties::getMaxNbBitsInChannels() const
+{
+	if( ! _pixelDesc )
+		throw std::runtime_error( "unable to find pixel description." );
+
+	size_t maxNbBitsInChannels = 0;
+	for( unsigned int channelIndex = 0; channelIndex < _pixelDesc->nb_components; ++channelIndex )
+	{
+		const size_t nbBits =  _pixelDesc->comp[channelIndex].depth_minus1 + 1;
+		if( nbBits > maxNbBitsInChannels )
+			maxNbBitsInChannels = nbBits;
+	}
+	return maxNbBitsInChannels;
+}
+
 size_t PixelProperties::getNbComponents() const
 {
 	if( ! _pixelDesc )
@@ -230,6 +245,7 @@ PropertyVector PixelProperties::getPropertiesAsVector() const
 	addProperty( data, "pixelName", &PixelProperties::getPixelName );
 	addProperty( data, "pixelFormatName", &PixelProperties::getPixelFormatName );
 	addProperty( data, "bitDepth", &PixelProperties::getBitsPerPixel );
+	addProperty( data, "maxNbBitsInChannels", &PixelProperties::getMaxNbBitsInChannels );
 	addProperty( data, "nbComponents", &PixelProperties::getNbComponents );
 	addProperty( data, "chromaWidth", &PixelProperties::getChromaWidth );
 	addProperty( data, "chromaHeight", &PixelProperties::getChromaHeight );
