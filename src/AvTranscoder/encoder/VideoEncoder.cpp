@@ -38,7 +38,10 @@ VideoEncoder::~VideoEncoder()
 
 void VideoEncoder::setupVideoEncoder( const VideoFrameDesc& frameDesc, const ProfileLoader::Profile& profile )
 {
-	LOG_DEBUG( "Set profile of video encoder with:\n" << profile )
+	if( ! profile.empty() )
+	{
+		LOG_INFO( "Setup video encoder with:\n" << profile )
+	}
 
 	// set width, height, pixel format, fps
 	_codec.setImageParameters( frameDesc );
@@ -49,6 +52,15 @@ void VideoEncoder::setupVideoEncoder( const VideoFrameDesc& frameDesc, const Pro
 
 void VideoEncoder::setupEncoder( const ProfileLoader::Profile& profile )
 {
+	// check the given profile
+	const bool isValid = ProfileLoader::checkVideoProfile( profile );
+	if( ! isValid && ! profile.empty() )
+	{
+		const std::string msg( "Invalid video profile to setup encoder." );
+		LOG_ERROR( msg )
+		throw std::runtime_error( msg );
+	}
+
 	// set threads before any other options
 	if( profile.count( constants::avProfileThreads ) )
 		_codec.getOption( constants::avProfileThreads ).setString( profile.at( constants::avProfileThreads ) );

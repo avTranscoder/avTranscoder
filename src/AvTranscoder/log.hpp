@@ -44,6 +44,9 @@ public:
 	 * @note log filename is avtranscoder.log
 	 */
 	static void logInFile();
+
+private:
+	static std::string logHeaderMessage;  ///< First caracters present for each logging message
 };
 
 }

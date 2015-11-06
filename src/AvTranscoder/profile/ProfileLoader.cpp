@@ -117,11 +117,11 @@ void ProfileLoader::loadProfile( const Profile& profile )
 	bool isValid = false;
 	std::string type( profile.find( constants::avProfileType )->second );
 	if( type == constants::avProfileTypeFormat )
-		isValid = checkFormatProfile( profile );
+		isValid = ProfileLoader::checkFormatProfile( profile );
 	else if( type == constants::avProfileTypeVideo )
-		isValid = checkVideoProfile( profile );
+		isValid = ProfileLoader::checkVideoProfile( profile );
 	else if( type == constants::avProfileTypeAudio )
-		isValid = checkAudioProfile( profile );
+		isValid = ProfileLoader::checkAudioProfile( profile );
 
 	if( isValid )
 	{
@@ -205,7 +205,7 @@ const ProfileLoader::Profile& ProfileLoader::getProfile( const std::string& avPr
 }
 
 
-bool ProfileLoader::checkFormatProfile( const Profile& profileToCheck ) const
+bool ProfileLoader::checkFormatProfile( const Profile& profileToCheck )
 {
 	bool isValid = true;
 
@@ -220,7 +220,7 @@ bool ProfileLoader::checkFormatProfile( const Profile& profileToCheck ) const
 	return isValid;
 }
 
-bool ProfileLoader::checkVideoProfile( const Profile& profileToCheck ) const
+bool ProfileLoader::checkVideoProfile( const Profile& profileToCheck )
 {
 	bool isValid = true;
 
@@ -235,7 +235,7 @@ bool ProfileLoader::checkVideoProfile( const Profile& profileToCheck ) const
 	return isValid;
 }
 
-bool ProfileLoader::checkAudioProfile( const Profile& profileToCheck ) const
+bool ProfileLoader::checkAudioProfile( const Profile& profileToCheck )
 {
 	bool isValid = true;
 

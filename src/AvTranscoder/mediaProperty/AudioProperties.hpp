@@ -21,7 +21,6 @@ public:
 	std::string getChannelName() const;
 	std::string getChannelDescription() const;
 
-	size_t getStreamId() const;
 	size_t getCodecId() const;
 	size_t getSampleRate() const;
 	size_t getChannels() const;

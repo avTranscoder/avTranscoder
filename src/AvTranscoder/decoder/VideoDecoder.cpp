@@ -51,7 +51,19 @@ VideoDecoder::~VideoDecoder()
 
 void VideoDecoder::setupDecoder( const ProfileLoader::Profile& profile )
 {
-	LOG_DEBUG( "Set profile of video decoder with:\n" << profile )
+	// check the given profile
+	const bool isValid = ProfileLoader::checkVideoProfile( profile );
+	if( ! isValid && ! profile.empty() )
+	{
+		const std::string msg( "Invalid video profile to setup decoder." );
+		LOG_ERROR( msg )
+		throw std::runtime_error( msg );
+	}
+
+	if( ! profile.empty() )
+	{
+		LOG_INFO( "Setup video decoder with:\n" << profile )
+	}
 
 	VideoCodec& codec = _inputStream->getVideoCodec();
 

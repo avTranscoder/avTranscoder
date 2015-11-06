@@ -41,6 +41,13 @@ public:
 	 * @param inputFrame: the new next frame
 	 */
 	virtual void setNextFrame( Frame& inputFrame ) {}
+
+	/**
+	 * @brief Reset the internal decoder state / flush internal buffers.
+	 * @note Should be called when seeking or when switching to a different stream.
+	 * @note Not sense for generators.
+	 */
+	virtual void flushDecoder() {}
 };
 
 }

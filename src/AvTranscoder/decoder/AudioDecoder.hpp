@@ -21,6 +21,8 @@ public:
 	bool decodeNextFrame( Frame& frameBuffer );
 	bool decodeNextFrame( Frame& frameBuffer, const size_t subStreamIndex );
 
+	void flushDecoder();
+
 private:
 	bool decodeNextFrame();
 

@@ -231,7 +231,7 @@ ProcessStat Transcoder::process()
 ProcessStat Transcoder::process( IProgress& progress )
 {
 	if( _streamTranscoders.size() == 0 )
-		throw std::runtime_error( "missing input streams in transcoder" );
+		throw std::runtime_error( "Missing input streams in transcoder" );
 
 	manageSwitchToGenerator();
 
@@ -241,14 +241,14 @@ ProcessStat Transcoder::process( IProgress& progress )
 
 	preProcessCodecLatency();
 
-	double outputDuration = getOutputDuration();
-	LOG_DEBUG( "Output duration of the process will be " << outputDuration )
+	const double outputDuration = getOutputDuration();
+	LOG_INFO( "Output duration of the process will be " << outputDuration << "s." )
 
 	size_t frame = 0;
 	bool frameProcessed = true;
 	while( frameProcessed )
 	{
-		double progressDuration = _outputFile.getStream( 0 ).getStreamDuration();
+		const double progressDuration = _outputFile.getStream( 0 ).getStreamDuration();
 
 		// check if JobStatusCancel
 		if( progress.progress( ( progressDuration > outputDuration ) ? outputDuration : progressDuration, outputDuration ) == eJobStatusCancel )
@@ -317,7 +317,7 @@ void Transcoder::addTranscodeStream( const std::string& filename, const size_t s
 	// Add input file
 	InputFile* referenceFile = addInputFile( filename, streamIndex, offset );
 
-	switch( referenceFile->getStream( streamIndex ).getStreamType() )
+	switch( referenceFile->getStream( streamIndex ).getProperties().getStreamType() )
 	{
 		case AVMEDIA_TYPE_VIDEO:
 		case AVMEDIA_TYPE_AUDIO:
@@ -385,7 +385,7 @@ ProfileLoader::Profile Transcoder::getProfileFromFile( InputFile& inputFile, con
 	const StreamProperties* streamProperties = &inputFile.getProperties().getStreamPropertiesWithIndex( streamIndex );
 	const VideoProperties* videoProperties = NULL;
 	const AudioProperties* audioProperties = NULL;
-	switch( inputFile.getStream( streamIndex ).getStreamType() )
+	switch( inputFile.getStream( streamIndex ).getProperties().getStreamType() )
 	{
 		case AVMEDIA_TYPE_VIDEO:
 		{
@@ -483,34 +483,35 @@ void Transcoder::manageSwitchToGenerator()
 {
 	for( size_t i = 0; i < _streamTranscoders.size(); ++i )
 	{
+		const float currentDuration = _streamTranscoders.at( i )->getDuration();
 		switch( _eProcessMethod )
 		{
 			case eProcessMethodShortest :
-				if( _streamTranscoders.at( i )->getDuration() == getMinTotalDuration() )
-					_streamTranscoders.at( i )->canSwitchToGenerator( false );
+				if( _streamTranscoders.at( i )->getDuration() >= getMinTotalDuration() )
+					_streamTranscoders.at( i )->needToSwitchToGenerator( false );
 				else
-					_streamTranscoders.at( i )->canSwitchToGenerator( true );
+					_streamTranscoders.at( i )->needToSwitchToGenerator();
 				break;
 			case eProcessMethodLongest :
 				if( _streamTranscoders.at( i )->getDuration() == getMaxTotalDuration() )
-					_streamTranscoders.at( i )->canSwitchToGenerator( false );
+					_streamTranscoders.at( i )->needToSwitchToGenerator( false );
 				else
-					_streamTranscoders.at( i )->canSwitchToGenerator( true );
+					_streamTranscoders.at( i )->needToSwitchToGenerator();
 				break;
 			case eProcessMethodBasedOnStream :
-				if( i != _mainStreamIndex )
-					_streamTranscoders.at( i )->canSwitchToGenerator( true );
+				if( i != _mainStreamIndex && currentDuration < _streamTranscoders.at( _mainStreamIndex )->getDuration() )
+					_streamTranscoders.at( i )->needToSwitchToGenerator();
 				else
-					_streamTranscoders.at( i )->canSwitchToGenerator( false );
+					_streamTranscoders.at( i )->needToSwitchToGenerator( false );
 				break;
 			case eProcessMethodBasedOnDuration :
 				if( _streamTranscoders.at( i )->getDuration() >= _outputDuration )
-					_streamTranscoders.at( i )->canSwitchToGenerator( false );
+					_streamTranscoders.at( i )->needToSwitchToGenerator( false );
 				else
-					_streamTranscoders.at( i )->canSwitchToGenerator( true );
+					_streamTranscoders.at( i )->needToSwitchToGenerator();
 				break;
 			case eProcessMethodInfinity :
-				_streamTranscoders.at( i )->canSwitchToGenerator( true );
+				_streamTranscoders.at( i )->needToSwitchToGenerator();
 				break;
 		}
 	}
@@ -521,12 +522,13 @@ void Transcoder::fillProcessStat( ProcessStat& processStat )
 	for( size_t streamIndex = 0; streamIndex < _streamTranscoders.size(); ++streamIndex )
 	{
 		IOutputStream& stream = _streamTranscoders.at( streamIndex )->getOutputStream();
-		AVCodecContext& encoderContext = _streamTranscoders.at( streamIndex )->getEncoder().getCodec().getAVCodecContext();
-		switch( encoderContext.codec_type )
+		const AVMediaType mediaType = _streamTranscoders.at( streamIndex )->getInputStream().getProperties().getStreamType();
+		switch( mediaType )
 		{
 			case AVMEDIA_TYPE_VIDEO:
 			{
 				VideoStat videoStat( stream.getStreamDuration(), stream.getNbFrames() );
+				const AVCodecContext& encoderContext = _streamTranscoders.at( streamIndex )->getEncoder().getCodec().getAVCodecContext();
 				if( encoderContext.coded_frame && ( encoderContext.flags & CODEC_FLAG_PSNR) )
 				{
 					videoStat._quality = encoderContext.coded_frame->quality;
@@ -542,6 +544,7 @@ void Transcoder::fillProcessStat( ProcessStat& processStat )
 				break;
 			}
 			default:
+				LOG_WARN( "No process statistics for stream at index: " << streamIndex << " (AVMediaType = " << mediaType << ")" )
 				break;
 		}
 	}

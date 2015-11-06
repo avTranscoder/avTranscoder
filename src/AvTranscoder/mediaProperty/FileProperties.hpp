@@ -68,12 +68,13 @@ public:
 
 	//@{
 	// @brief Get the list of properties for a given type (video, audio...)
+	const std::vector< avtranscoder::StreamProperties* > getStreamProperties() const;
 	const std::vector< avtranscoder::VideoProperties >& getVideoProperties() const  { return  _videoStreams; }
 	const std::vector< avtranscoder::AudioProperties >& getAudioProperties() const  { return  _audioStreams; }
 	const std::vector< avtranscoder::DataProperties >& getDataProperties() const  { return  _dataStreams; }
 	const std::vector< avtranscoder::SubtitleProperties >& getSubtitleProperties() const  { return  _subtitleStreams; }
 	const std::vector< avtranscoder::AttachementProperties >& getAttachementProperties() const  { return  _attachementStreams; }
-	const std::vector< avtranscoder::UnknownProperties >& getUnknownPropertiesProperties() const  { return  _unknownStreams; }
+	const std::vector< avtranscoder::UnknownProperties >& getUnknownProperties() const  { return  _unknownStreams; }
 	//@}
 
 #ifndef SWIG

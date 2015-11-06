@@ -22,10 +22,15 @@ private:
 
 public:
 	/**
-	 * @brief Open an output media file
+	 * @brief Create an output media file.
 	 * @param filename resource to access
+	 * @param formatName should matches with the names of the registered formats
+	 * @param mimeType should matches with the MIME type of the registered formats
+	 * @note The caller should indicate formatName and/or mimeType if the filename has no extension.
+	 * @note The ressource is allocated when beginWrap.
+	 * @see beginWrap
 	**/
-	OutputFile( const std::string& filename = "" );
+	OutputFile( const std::string& filename, const std::string& formatName = "", const std::string& mimeType = "" );
 
 	~OutputFile();
 
@@ -34,11 +39,13 @@ public:
 	IOutputStream& addDataStream( const DataCodec& dataDesc );
 
 	/**
-	 * @brief Open ressource and write header.
-         */
+	 * @brief Open ressource, write header, and setup specific wrapping options given when call setupWrapping.
+	 * @note Need to add the streams to mux before calling this method.
+	 * @note After this call, a new list of AVOption, relative to the format choosen, will be available for the OutputFile.
+	 */
 	bool beginWrap();
 
-	IOutputStream::EWrappingStatus wrap( const CodedData& data, const size_t streamId );
+	IOutputStream::EWrappingStatus wrap( const CodedData& data, const size_t streamIndex );
 
 	/**
 	 * @brief Close ressource and write trailer.
@@ -52,9 +59,9 @@ public:
 	void addMetadata( const PropertyVector& data );
 	void addMetadata( const std::string& key, const std::string& value );
 	
-	IOutputStream& getStream( const size_t streamId );
+	IOutputStream& getStream( const size_t streamIndex );
 
-	std::string getFilename() const { return _filename; }
+	std::string getFilename() const;
 
 	/**
 	 * @brief A comma separated list of short names for the format, or empty if unknown.
@@ -74,18 +81,36 @@ public:
 	FormatContext& getFormatContext() { return _formatContext; }
 
 	/**
-	 * @brief Set the format of the output file
+	 * @brief Set the format and the generic options of the output file.
 	 * @param profile: the profile of the output format
+	 * @note options specific to the output format will be set in beginWrap.
+	 * @see beginWrap
 	 */
 	void setupWrapping( const ProfileLoader::Profile& profile );
+
+private:
+	//@{
+	// @brief Set options of output format.
+	// @note setupWrappingOptions: called when setupWrapping, to set common options.
+	// @note setupRemainingWrappingOptions: called when beginWrap, to set specific options.
+	// @see setupWrapping
+	void setupWrappingOptions( const ProfileLoader::Profile& profile );
+	void setupRemainingWrappingOptions();
+	//@}
 
 private:
 	FormatContext _formatContext;
 	std::vector<OutputStream*> _outputStreams;  ///< Has ownership
 	std::vector<size_t> _frameCount;  ///< Number of wrapped frames
 
-	std::string _filename;  ///< Output filename
 	double _previousProcessedStreamDuration;  ///< To manage process streams order
+
+	/**
+	 * @brief To setup specific wrapping options.
+	 * @see setupWrapping
+	 * @see beginWrap
+	 */
+	ProfileLoader::Profile _profile;
 };
 
 }

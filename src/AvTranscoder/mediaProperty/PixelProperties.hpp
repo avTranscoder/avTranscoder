@@ -55,7 +55,8 @@ public:
 	std::string getPixelName() const;
 	std::string getPixelFormatName() const;
 
-	size_t getBitsPerPixel() const;
+	size_t getBitsPerPixel() const; ///< padding bits are not counted
+	size_t getMaxNbBitsInChannels() const;
 	size_t getNbComponents() const;
 	size_t getChromaWidth() const;
 	size_t getChromaHeight() const;
@@ -90,11 +91,11 @@ private:
 	{
 		try
 		{
-		    detail::add( data, key, (this->*getter)() );
+			detail::add( data, key, (this->*getter)() );
 		}
 		catch( const std::exception& e )
 		{
-		    detail::add( data, key, e.what() );
+			detail::add( data, key, e.what() );
 		}
 	}
 #endif
