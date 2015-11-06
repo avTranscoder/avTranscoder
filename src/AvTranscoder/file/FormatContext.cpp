@@ -191,12 +191,12 @@ void FormatContext::setOutputFormat( const std::string& filename, const std::str
 		msg += filename;
 		if( ! shortName.empty() )
 		{
-			msg += ", ";
+			msg += ", formatName = ";
 			msg += shortName;
 		}
 		if( ! mimeType.empty() )
 		{
-			msg += ", ";
+			msg += ", mimeType = ";
 			msg += mimeType;
 		}
 		throw std::ios_base::failure( msg );

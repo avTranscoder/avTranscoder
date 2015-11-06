@@ -22,10 +22,15 @@ private:
 
 public:
 	/**
-	 * @brief Open an output media file
+	 * @brief Create an output media file.
 	 * @param filename resource to access
+	 * @param formatName should matches with the names of the registered formats
+	 * @param mimeType should matches with the MIME type of the registered formats
+	 * @note The caller should indicate formatName and/or mimeType if the filename has no extension.
+	 * @note The ressource is allocated when beginWrap.
+	 * @see beginWrap
 	**/
-	OutputFile( const std::string& filename = "" );
+	OutputFile( const std::string& filename, const std::string& formatName = "", const std::string& mimeType = "" );
 
 	~OutputFile();
 
