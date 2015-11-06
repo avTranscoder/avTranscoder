@@ -3,7 +3,7 @@ os:
 
 platform:
   - x86
-  - Any CPU
+  - x64
 
 matrix:
   fast_finish: true
@@ -16,15 +16,15 @@ before_build:
   - tools/appveyor.win.install.deps.bat
 
 build_script:
-  - MKDIR build
-  - cd build
-  - call cmake.exe .. -G "NMake Makefiles" -DCMAKE_INSTALL_PREFIX=%~dp0 -DCMAKE_PREFIX_PATH="%~dp0\ffmpeg-2.2.11-win32-dev"
-  - call nmake /F Makefile install
+  - tools/appveyor.build.bat
 
 before_test:
-  - pip install nosetests
+  - set PATH=C:\Python27\scripts;%PATH%
+  - pip install nose
 
 test_script:
   - cd ..
   - tools/appveyor.python.nosetests.bat
 
+on_failure:
+  - type "C:\projects\avtranscoder\build\CMakeFiles\CMakeOutput.log"
