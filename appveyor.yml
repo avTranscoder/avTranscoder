@@ -28,3 +28,24 @@ test_script:
 
 on_failure:
   - type "C:\projects\avtranscoder\build\CMakeFiles\CMakeOutput.log"
+
+#on_success:
+#  - create archives
+
+#artifacts:
+#  - path: C:\ProgramData\ffmpeg-2.2.11
+#    name: ffmpeg
+#    type: zip
+
+#  - path: C:\projects\avtranscoder\build
+#    name: avtranscoder
+#    type: zip
+
+#deploy:
+#  - provider: GitHub
+#    artifact: ffmpeg,avtranscoder
+#    auth_token:
+#    secure: <your encrypted token>
+#    on:
+#      branch: master
+#      appveyor_repo_tag: true
