@@ -7,6 +7,8 @@ extern "C" {
 #include <libavcodec/avcodec.h>
 }
 
+struct AVStream;
+
 namespace avtranscoder
 {
 
@@ -33,6 +35,7 @@ public:
 	/// Free buffer of data
 	~Frame();
 
+	void refAVStream( const AVStream& avStream ) { _avStream = &avStream; }
 	/// Resize data buffer
 	void resize( const size_t newSize );
 
@@ -58,6 +61,7 @@ public:
 	size_t getSize() const { return _packet.size; }
 
 #ifndef SWIG
+	const AVStream& getAVStream() const { return *_avStream; }
 	AVPacket& getAVPacket() { return _packet; }
 	const AVPacket& getAVPacket() const { return _packet; }
 	const unsigned char* getData() const { return _packet.data; }
@@ -69,6 +73,9 @@ private:
 
 private:
 	AVPacket _packet;
+
+	// Stream which contains the packet
+	const AVStream* _avStream;  //< Has link (no ownership)
 };
 
 // Typedef to represent buffer of coded data.
