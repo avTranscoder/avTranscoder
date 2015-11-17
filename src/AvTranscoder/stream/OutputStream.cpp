@@ -28,14 +28,6 @@ float OutputStream::getStreamDuration() const
 		return 0.f;
 	}
 
-	// if stream PTS is not set, use the duration of all packets wrapped
-	if( ! outputPTS.val )
-	{
-		LOG_WARN( "PTS generation when outputting stream " << _streamIndex << " is not set." )
-		if( _wrappedPacketsDuration )
-			return av_q2d( _outputAVStream.codec->time_base ) * _wrappedPacketsDuration;
-	}
-
 #if AVTRANSCODER_FFMPEG_DEPENDENCY && LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(55, 40, 100)
 	// returns the pts of the last muxed packet, converted from timebase to seconds
 	return av_q2d( outputTimeBase ) * av_stream_get_end_pts( &_outputAVStream );
