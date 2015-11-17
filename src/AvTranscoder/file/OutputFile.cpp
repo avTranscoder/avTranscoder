@@ -172,6 +172,7 @@ IOutputStream::EWrappingStatus OutputFile::wrap( const CodedData& data, const si
 	packet.stream_index = streamIndex;
 	packet.data = (uint8_t*)data.getData();
 	packet.size = data.getSize();
+	packet.flags = data.getAVPacket().flags;
 
 	// copy timing information
 	const AVRational& srcTimeBase = data.getAVStream().time_base;
