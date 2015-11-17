@@ -166,6 +166,7 @@ IOutputStream::EWrappingStatus OutputFile::wrap( const CodedData& data, const si
 
 	LOG_DEBUG( "Wrap on stream " << streamIndex << " (" << data.getSize() << " bytes for frame " << _frameCount.at( streamIndex ) << ")" )
 
+	// Packet to wrap
 	AVPacket packet;
 	av_init_packet( &packet );
 	packet.stream_index = streamIndex;
@@ -185,10 +186,8 @@ IOutputStream::EWrappingStatus OutputFile::wrap( const CodedData& data, const si
 	// dts
 	packet.dts = av_rescale_q( data.getAVPacket().dts, srcTimeBase, dstTimeBase );
 
+	// Write packet
 	_formatContext.writeFrame( packet );
-
-	// free packet.side_data, set packet.data to NULL and packet.size to 0
-	av_free_packet( &packet );
 
 	const double currentStreamDuration = _outputStreams.at( streamIndex )->getStreamDuration();
 	if( currentStreamDuration < _previousProcessedStreamDuration )
