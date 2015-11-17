@@ -104,7 +104,17 @@ IOutputStream& OutputFile::addDataStream( const DataCodec& dataDesc )
 IOutputStream& OutputFile::getStream( const size_t streamIndex )
 {
 	if( streamIndex >= _outputStreams.size() )
-		throw std::runtime_error( "unable to get output stream (out of range)" );
+	{
+		std::stringstream msg;
+		msg << "Unable to get the stream ";
+		msg << streamIndex;
+		msg << ": the OutputFile '";
+		msg << getFilename();
+		msg << "' has only ";
+		msg << _outputStreams.size();
+		msg << " streams.";
+		throw std::runtime_error( msg.str() );
+	}
 	return *_outputStreams.at( streamIndex );
 }
 
