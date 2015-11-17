@@ -10,16 +10,16 @@ file(GLOB_RECURSE AVTRANSCODER_SRC_FILES "AvTranscoder/*.cpp" "AvTranscoder/*.hp
 # AVTRANSCODER_VERSION
 file(STRINGS "${AVTRANSCODER_SRC_PATH}/AvTranscoder/common.hpp" _avtranscoder_VERSION_HPP_CONTENTS REGEX "#define AVTRANSCODER_VERSION_")
 foreach(v MAJOR MINOR MICRO)
-  if("${_avtranscoder_VERSION_HPP_CONTENTS}" MATCHES "#define AVTRANSCODER_VERSION_${v} ([0-9]+)")
-    set(AVTRANSCODER_VERSION_${v} "${CMAKE_MATCH_1}")
-  else()
-    set(AVTRANSCODER_RETRIEVE_VERSION_FAILED 1)
-  endif()
+	if("${_avtranscoder_VERSION_HPP_CONTENTS}" MATCHES "#define AVTRANSCODER_VERSION_${v} ([0-9]+)")
+		set(AVTRANSCODER_VERSION_${v} "${CMAKE_MATCH_1}")
+	else()
+		set(AVTRANSCODER_RETRIEVE_VERSION_FAILED 1)
+	endif()
 endforeach()
 unset(_avtranscoder_VERSION_HPP_CONTENTS)
 
 set(AVTRANSCODER_VERSION "${AVTRANSCODER_VERSION_MAJOR}.${AVTRANSCODER_VERSION_MINOR}.${AVTRANSCODER_VERSION_MICRO}")
 
 if(AVTRANSCODER_RETRIEVE_VERSION_FAILED)
-  message(SEND_ERROR "Failed to retrieve AvTranscoder version: ${AVTRANSCODER_VERSION}")
+	message(SEND_ERROR "Failed to retrieve AvTranscoder version: ${AVTRANSCODER_VERSION}")
 endif()

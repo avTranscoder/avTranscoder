@@ -2,6 +2,8 @@
 
 #include <AvTranscoder/mediaProperty/print.hpp>
 
+#include <cassert>
+
 namespace avtranscoder
 {
 
@@ -49,6 +51,11 @@ Frame* IReader::readPrevFrame()
 
 Frame* IReader::readFrameAt( const size_t frame )
 {
+	assert( _decoder != NULL );
+	assert( _transform != NULL );
+	assert( _srcFrame != NULL );
+	assert( _dstFrame != NULL );
+
 	if( (int)frame != _currentFrame + 1 )
 	{
 		// seek
@@ -65,6 +72,7 @@ Frame* IReader::readFrameAt( const size_t frame )
 
 void IReader::printInfo()
 {
+	assert( _streamProperties != NULL );
 	std::cout << *_streamProperties << std::endl;
 }
 

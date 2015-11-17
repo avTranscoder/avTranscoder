@@ -9,12 +9,12 @@ message(STATUS "AvTranscoder version is ${AVTRANSCODER_VERSION}")
 find_package(FFmpeg COMPONENTS avcodec avformat avutil swscale swresample avresample)
 if(swresample_FOUND)
 	add_definitions(-DAVTRANSCODER_FFMPEG_DEPENDENCY)
-        message(STATUS "Build avTranscoder with dependency to ffmpeg.")
+	message(STATUS "Build avTranscoder with dependency to ffmpeg.")
 elseif(avresample_FOUND)
 	add_definitions(-DAVTRANSCODER_LIBAV_DEPENDENCY)
 	message(STATUS "Build avTranscoder with dependency to libav.")
 else()
-        message(SEND_ERROR "Can't define if you depend on ffmpeg or libav.")
+	message(SEND_ERROR "Can't define if you depend on ffmpeg or libav.")
 endif()
 
 # Include AvTranscoder and FFmpeg
@@ -38,8 +38,7 @@ set_target_properties(avtranscoder-shared PROPERTIES SOVERSION ${AVTRANSCODER_VE
 set_target_properties(avtranscoder-shared PROPERTIES VERSION ${AVTRANSCODER_VERSION})
 set_target_properties(avtranscoder-shared PROPERTIES INSTALL_RPATH_USE_LINK_PATH 1)
 target_link_libraries(avtranscoder-shared ${FFMPEG_LIBRARIES})
-target_include_directories(avtranscoder-shared PUBLIC
-    ${AVTRANSCODER_SRC_PATH} ${FFMPEG_INCLUDE_DIR})
+target_include_directories(avtranscoder-shared PUBLIC ${AVTRANSCODER_SRC_PATH} ${FFMPEG_INCLUDE_DIR})
 
 
 ### Install AvTranscoder libs and include
@@ -120,12 +119,12 @@ if(SWIG_FOUND)
 		else()
 			message("PYTHON not found, will not build python binding.")
 		endif()
-        endif()
+	endif()
 
 	### JAVA BINDING
-        if(AVTRANSCODER_DISABLE_JAVA_BINDING)
+	if(AVTRANSCODER_DISABLE_JAVA_BINDING)
 		message("JAVA binding disabled, will not build java binding.")
-        else()
+	else()
 		find_package(Java)
 		find_package(JNI)
 		if(JAVA_FOUND AND JNI_FOUND)
