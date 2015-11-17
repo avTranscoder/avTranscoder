@@ -26,13 +26,13 @@ Frame::Frame( const AVPacket& avPacket )
 Frame::Frame( const Frame& other )
 {
 	copyAVPacket( other.getAVPacket() );
-	_avStream = &other.getAVStream();
+	_avStream = other.getAVStream();
 }
 
 Frame& Frame::operator=( const Frame& other )
 {
 	copyAVPacket( other.getAVPacket() );
-	_avStream = &other.getAVStream();
+	_avStream = other.getAVStream();
 	return *this;
 }
 

@@ -175,17 +175,20 @@ IOutputStream::EWrappingStatus OutputFile::wrap( const CodedData& data, const si
 	packet.flags = data.getAVPacket().flags;
 
 	// copy timing information
-	const AVRational& srcTimeBase = data.getAVStream().time_base;
-	const AVRational& dstTimeBase = _formatContext.getAVStream( streamIndex ).time_base;
-	// duration
-	packet.duration = av_rescale_q( data.getAVPacket().duration, srcTimeBase, dstTimeBase );
-	// pts
-	if( data.getAVPacket().pts != AV_NOPTS_VALUE )
-		packet.pts = av_rescale_q( data.getAVPacket().pts, srcTimeBase, dstTimeBase );
-	else
-		packet.pts = AV_NOPTS_VALUE;
-	// dts
-	packet.dts = av_rescale_q( data.getAVPacket().dts, srcTimeBase, dstTimeBase );
+	if( data.getAVStream() != NULL )
+	{
+		const AVRational& srcTimeBase = data.getAVStream()->time_base;
+		const AVRational& dstTimeBase = _formatContext.getAVStream( streamIndex ).time_base;
+		// duration
+		packet.duration = av_rescale_q( data.getAVPacket().duration, srcTimeBase, dstTimeBase );
+		// pts
+		if( data.getAVPacket().pts != AV_NOPTS_VALUE )
+			packet.pts = av_rescale_q( data.getAVPacket().pts, srcTimeBase, dstTimeBase );
+		else
+			packet.pts = AV_NOPTS_VALUE;
+		// dts
+		packet.dts = av_rescale_q( data.getAVPacket().dts, srcTimeBase, dstTimeBase );
+	}
 
 	// Write packet
 	_formatContext.writeFrame( packet );

@@ -61,7 +61,11 @@ public:
 	size_t getSize() const { return _packet.size; }
 
 #ifndef SWIG
-	const AVStream& getAVStream() const { return *_avStream; }
+	/**
+	 * @return the AVStream which contains the packet
+	 * @note may be NULL in case of generated packets
+	 */
+	const AVStream* getAVStream() const { return _avStream; }
 	AVPacket& getAVPacket() { return _packet; }
 	const AVPacket& getAVPacket() const { return _packet; }
 	const unsigned char* getData() const { return _packet.data; }
