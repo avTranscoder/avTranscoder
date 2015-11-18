@@ -13,6 +13,18 @@ av.preloadCodecsAndFormats()
 av.Logger.setLogLevel(av.AV_LOG_QUIET)
 
 
+def checkFormat(src_properties, dst_properties):
+    """
+    Check the values of the given format headers.
+    """
+    assert_equals( src_properties.getFormatName(), dst_properties.getFormatName() )
+    assert_equals( src_properties.getFormatLongName(), dst_properties.getFormatLongName() )
+    assert_equals( src_properties.getStartTime(), dst_properties.getStartTime() )
+    assert_equals( src_properties.getDuration(), dst_properties.getDuration() )
+    assert_greater_equal( src_properties.getBitRate(), dst_properties.getBitRate() )
+    assert_equals( src_properties.getPacketSize(), dst_properties.getPacketSize() )
+
+
 def testRewrapAudioStream():
     """
     Rewrap one audio stream.
@@ -40,12 +52,7 @@ def testRewrapAudioStream():
     dst_audioStream = dst_properties.getAudioProperties()[0]
 
     # check format
-    assert_equals( src_properties.getFormatName(), dst_properties.getFormatName() )
-    assert_equals( src_properties.getFormatLongName(), dst_properties.getFormatLongName() )
-    assert_equals( src_properties.getStartTime(), dst_properties.getStartTime() )
-    assert_equals( src_properties.getDuration(), dst_properties.getDuration() )
-    assert_greater_equal( src_properties.getBitRate(), dst_properties.getBitRate() )
-    assert_equals( src_properties.getPacketSize(), dst_properties.getPacketSize() )
+    checkFormat(src_properties, dst_properties)
 
     # check audio properties
     src_propertiesMap = src_audioStream.getPropertiesAsMap()
@@ -80,12 +87,7 @@ def testRewrapVideoStream():
     dst_videoStream = dst_properties.getVideoProperties()[0]
 
     # check format
-    assert_equals( src_properties.getFormatName(), dst_properties.getFormatName() )
-    assert_equals( src_properties.getFormatLongName(), dst_properties.getFormatLongName() )
-    assert_equals( src_properties.getStartTime(), dst_properties.getStartTime() )
-    assert_equals( src_properties.getDuration(), dst_properties.getDuration() )
-    assert_greater_equal( src_properties.getBitRate(), dst_properties.getBitRate() )
-    assert_equals( src_properties.getPacketSize(), dst_properties.getPacketSize() )
+    checkFormat(src_properties, dst_properties)
 
     # check audio properties
     src_propertiesMap = src_videoStream.getPropertiesAsMap()
