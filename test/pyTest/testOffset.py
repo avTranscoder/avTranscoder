@@ -102,8 +102,6 @@ def testRewrapAudioPositiveOffset():
 
     # check output duration
     assert_equals( src_audioStream.getDuration() + offset, dst_audioStream.getDuration() )
-    # check output duration
-    assert_equals( src_audioStream.getDuration() + offset, dst_audioStream.getDuration() )
     assert_equals( src_audioStream.getNbSamples() + ( offset * dst_audioStream.getSampleRate() * dst_audioStream.getChannels() ), dst_audioStream.getNbSamples() )
 
 
@@ -133,8 +131,6 @@ def testRewrapAudioNegativeOffset():
     dst_properties = dst_inputFile.getProperties()
     dst_audioStream = dst_properties.getAudioProperties()[0]
 
-    # check output duration
-    assert_almost_equals( src_audioStream.getDuration() + offset, dst_audioStream.getDuration(), delta=0.01 )
     # check output duration
     assert_almost_equals( src_audioStream.getDuration() + offset, dst_audioStream.getDuration(), delta=0.01 )
     assert_equals( src_audioStream.getNbSamples() + ( offset * dst_audioStream.getSampleRate() * dst_audioStream.getChannels() ), dst_audioStream.getNbSamples() )
@@ -228,8 +224,6 @@ def testRewrapVideoPositiveOffset():
 
     # check output duration
     assert_equals( src_videoStream.getDuration() + offset, dst_videoStream.getDuration() )
-    # check output duration
-    assert_equals( src_videoStream.getDuration() + offset, dst_videoStream.getDuration() )
     assert_equals( src_videoStream.getNbFrames() + ( offset * dst_videoStream.getFps() ), dst_videoStream.getNbFrames() )
 
 
@@ -259,8 +253,6 @@ def testRewrapVideoNegativeOffset():
     dst_properties = dst_inputFile.getProperties()
     dst_videoStream = dst_properties.getVideoProperties()[0]
 
-    # check output duration
-    assert_equals( src_videoStream.getDuration() + offset, dst_videoStream.getDuration() )
     # check output duration
     assert_equals( src_videoStream.getDuration() + offset, dst_videoStream.getDuration() )
     assert_equals( src_videoStream.getNbFrames() + ( offset * dst_videoStream.getFps() ), dst_videoStream.getNbFrames() )
@@ -296,7 +288,7 @@ def testMultipleOffsetFromSameInputFile():
     dst_videoStream = dst_properties.getVideoProperties()[0]
     dst_audioStream = dst_properties.getAudioProperties()[0]
 
-        # check output duration
+    # check output duration
     assert_equals( src_videoStream.getDuration() + offset_1, dst_videoStream.getDuration() )
     assert_equals( src_audioStream.getDuration() + offset_1, dst_audioStream.getDuration() )
 
