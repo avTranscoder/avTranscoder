@@ -14,6 +14,7 @@ OutputStream::OutputStream( OutputFile& outputFile, const size_t streamIndex )
 	, _streamIndex( streamIndex )
 	, _wrappedPacketsDuration( 0 )
 	, _lastWrappedPacketDuration( 0 )
+	, _isPTSGenerated( false )
 {
 }
 
@@ -46,6 +47,13 @@ size_t OutputStream::getNbFrames() const
 
 IOutputStream::EWrappingStatus OutputStream::wrap( const CodedData& data )
 {
+	// If stream PTS will be generated at rewrap time
+	if( ! _isPTSGenerated && (data.getAVPacket().pts == 0 || data.getAVPacket().pts == AV_NOPTS_VALUE) && data.getAVPacket().dts == AV_NOPTS_VALUE )
+	{
+		LOG_WARN( "PTS of output stream " << _streamIndex << " is generated at rewrap time." )
+		_isPTSGenerated = true;
+	}
+
 	// wrap packet
 	IOutputStream::EWrappingStatus status = _outputFile.wrap( data, _streamIndex );
 
