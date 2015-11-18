@@ -32,6 +32,12 @@ def checkStream(src_stream, dst_stream):
     src_propertiesMap = src_stream.getPropertiesAsMap()
     dst_propertiesMap = dst_stream.getPropertiesAsMap()
     for key in dst_propertiesMap:
+        # skip metadata of stream
+        if key in [x[0] for x in src_stream.getMetadatas()]:
+            continue
+        # skip streamId and streamIndex (could be different from input)
+        if key == 'streamId' or key == 'streamIndex':
+            continue
         assert_equals( src_propertiesMap[key], dst_propertiesMap[key] )
 
 
