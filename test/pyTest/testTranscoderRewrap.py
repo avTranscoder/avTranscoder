@@ -25,6 +25,16 @@ def checkFormat(src_properties, dst_properties):
     assert_equals( src_properties.getPacketSize(), dst_properties.getPacketSize() )
 
 
+def checkStream(src_stream, dst_stream):
+    """
+    Check the values of the given streams properties.
+    """
+    src_propertiesMap = src_stream.getPropertiesAsMap()
+    dst_propertiesMap = dst_stream.getPropertiesAsMap()
+    for key in dst_propertiesMap:
+        assert_equals( src_propertiesMap[key], dst_propertiesMap[key] )
+
+
 def testRewrapAudioStream():
     """
     Rewrap one audio stream.
@@ -55,10 +65,7 @@ def testRewrapAudioStream():
     checkFormat(src_properties, dst_properties)
 
     # check audio properties
-    src_propertiesMap = src_audioStream.getPropertiesAsMap()
-    dst_propertiesMap = dst_audioStream.getPropertiesAsMap()
-    for key in src_propertiesMap:
-        assert_equals( src_propertiesMap[key], dst_propertiesMap[key] )
+    checkStream(src_audioStream, dst_audioStream)
 
 def testRewrapVideoStream():
     """
@@ -89,8 +96,5 @@ def testRewrapVideoStream():
     # check format
     checkFormat(src_properties, dst_properties)
 
-    # check audio properties
-    src_propertiesMap = src_videoStream.getPropertiesAsMap()
-    dst_propertiesMap = dst_videoStream.getPropertiesAsMap()
-    for key in src_propertiesMap:
-        assert_equals( src_propertiesMap[key], dst_propertiesMap[key] )
+    # check video properties
+    checkStream(src_videoStream, dst_videoStream)
