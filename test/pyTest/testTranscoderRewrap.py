@@ -73,24 +73,58 @@ def testRewrapAudioStream():
     # check audio properties
     checkStream(src_audioStream, dst_audioStream)
 
-def testRewrapVideoStream():
+
+def testRewrapAVIVideoStream():
     """
-    Rewrap one video stream.
+    Rewrap one video stream from avi.
     """
     # get src file of wrap
     inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_AVI_FILE']
     src_inputFile = av.InputFile( inputFileName )
     progress = av.NoDisplayProgress()
     src_inputFile.analyse( progress )
-    src_properties = src_inputFile.getProperties()    
+    src_properties = src_inputFile.getProperties()
     src_videoStream = src_properties.getVideoProperties()[0]
 
     formatList = src_properties.getFormatName().split(",")
-    outputFileName = "testRewrapVideoStream." + formatList[0]
+    outputFileName = "testRewrapAVIVideoStream." + formatList[0]
     ouputFile = av.OutputFile( outputFileName )
 
     transcoder = av.Transcoder( ouputFile )
     transcoder.add( inputFileName, 0 )
+    transcoder.process( progress )
+
+    # get dst file of wrap
+    dst_inputFile = av.InputFile( outputFileName )
+    dst_inputFile.analyse( progress )
+    dst_properties = dst_inputFile.getProperties()
+    dst_videoStream = dst_properties.getVideoProperties()[0]
+
+    # check format
+    checkFormat(src_properties, dst_properties)
+
+    # check video properties
+    checkStream(src_videoStream, dst_videoStream)
+
+
+def testRewrapMOVVideoStream():
+    """
+    Rewrap one video stream from mov.
+    """
+    # get src file of wrap
+    inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_MOV_FILE']
+    src_inputFile = av.InputFile( inputFileName )
+    progress = av.NoDisplayProgress()
+    src_inputFile.analyse( progress )
+    src_properties = src_inputFile.getProperties()
+    src_videoStream = src_properties.getVideoProperties()[0]
+
+    formatList = src_properties.getFormatName().split(",")
+    outputFileName = "testRewrapMOVVideoStream." + formatList[0]
+    ouputFile = av.OutputFile( outputFileName )
+
+    transcoder = av.Transcoder( ouputFile )
+    transcoder.add( inputFileName, 1 )
     transcoder.process( progress )
 
     # get dst file of wrap
