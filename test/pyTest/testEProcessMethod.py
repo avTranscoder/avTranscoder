@@ -60,7 +60,7 @@ def testEProcessMethodLongest():
     progress = av.ConsoleProgress()
     transcoder.process( progress )
 
-        # get src file
+    # get src file
     src_inputFile_longest = av.InputFile( inputFileName_longest )
     src_properties_longest = src_inputFile_longest.getProperties()
 
@@ -78,7 +78,7 @@ def testEProcessMethodBasedOnStream():
     inputFileName_first = os.environ['AVTRANSCODER_TEST_VIDEO_AVI_FILE']
     inputFileName_second = os.environ['AVTRANSCODER_TEST_AUDIO_WAVE_FILE']
     inputFileName_third = os.environ['AVTRANSCODER_TEST_AUDIO_MOV_FILE']
-    outputFileName = "testEProcessMethodShortest.mov"
+    outputFileName = "testEProcessMethodBasedOnStream.mov"
 
     ouputFile = av.OutputFile( outputFileName )
     transcoder = av.Transcoder( ouputFile )
