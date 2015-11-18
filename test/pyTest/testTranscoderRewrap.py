@@ -38,6 +38,9 @@ def checkStream(src_stream, dst_stream):
         # skip streamId and streamIndex (could be different from input)
         if key == 'streamId' or key == 'streamIndex':
             continue
+        # skip timeBase (could be different from input)
+        if key == 'timeBase':
+            continue
         assert_equals( src_propertiesMap[key], dst_propertiesMap[key] )
 
 
