@@ -13,6 +13,7 @@ OutputStream::OutputStream( OutputFile& outputFile, const size_t streamIndex )
 	, _outputAVStream( outputFile.getFormatContext().getAVStream( streamIndex ) )
 	, _streamIndex( streamIndex )
 	, _wrappedPacketsDuration( 0 )
+	, _lastWrappedPacketDuration( 0 )
 {
 }
 
@@ -28,6 +29,8 @@ float OutputStream::getStreamDuration() const
 		return 0.f;
 	}
 
+	if( _wrappedPacketsDuration )
+		return av_q2d( outputTimeBase ) * _wrappedPacketsDuration;
 #if AVTRANSCODER_FFMPEG_DEPENDENCY && LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(55, 40, 100)
 	// returns the pts of the last muxed packet, converted from timebase to seconds
 	return av_q2d( outputTimeBase ) * av_stream_get_end_pts( &_outputAVStream );
@@ -46,8 +49,15 @@ IOutputStream::EWrappingStatus OutputStream::wrap( const CodedData& data )
 	// wrap packet
 	IOutputStream::EWrappingStatus status = _outputFile.wrap( data, _streamIndex );
 
-	// append duration of the packet to the stream
-	_wrappedPacketsDuration += data.getAVPacket().duration;
+	// Store duration of the last packet wrapped
+	if( data.getAVPacket().duration != 0  && data.getAVPacket().duration != _lastWrappedPacketDuration )
+		_lastWrappedPacketDuration = data.getAVPacket().duration;
+
+	// Append duration of the packet to the stream
+	if( data.getAVPacket().duration )
+		_wrappedPacketsDuration += data.getAVPacket().duration;
+	else
+		_wrappedPacketsDuration += _lastWrappedPacketDuration;
 
 	return status;
 }

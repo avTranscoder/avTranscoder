@@ -200,6 +200,10 @@ IOutputStream::EWrappingStatus OutputFile::wrap( const CodedData& data, const si
 		packet.dts = av_rescale_q( data.getAVPacket().dts, srcTimeBase, dstTimeBase );
 	}
 
+	// copy duration of packet wrapped
+	// @see OutputStream
+	const_cast<CodedData&>(data).getAVPacket().duration = packet.duration;
+
 	// Write packet
 	_formatContext.writeFrame( packet );
 

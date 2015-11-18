@@ -27,12 +27,13 @@ private:
 
 	size_t _streamIndex;  ///<  Index of the stream in the output file
 
-	/**
-	 * @brief This will help us to getStreamDuration if PTS of outputStream is not properly set during wrapping.
-	 * It corresponds to the addition of the duration of all packets wrapped by this stream.
-	 * @see getStreamDuration
-	 */
-	size_t _wrappedPacketsDuration;
+	//@{
+	// @brief These attributes will help us to get the stream duration.
+	// @see ffmpeg hack: https://github.com/FFmpeg/FFmpeg/blob/master/libavformat/mux.c#L585
+	// @see getStreamDuration
+	size_t _wrappedPacketsDuration;  //< the addition of the duration of all packets wrapped by this stream.
+	int _lastWrappedPacketDuration;  //< The duration of the last packet wrapped by this stream.
+	//@}
 };
 
 }
