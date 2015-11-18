@@ -44,8 +44,7 @@ def testRewrapAudioStream():
     assert_equals( src_properties.getFormatLongName(), dst_properties.getFormatLongName() )
     assert_equals( src_properties.getStartTime(), dst_properties.getStartTime() )
     assert_equals( src_properties.getDuration(), dst_properties.getDuration() )
-    deltaBitRateAudio = dst_properties.getBitRate() * 0.01
-    assert_almost_equals( src_properties.getBitRate(), dst_properties.getBitRate(), delta=deltaBitRateAudio )
+    assert_greater_equal( src_properties.getBitRate(), dst_properties.getBitRate() )
     assert_equals( src_properties.getPacketSize(), dst_properties.getPacketSize() )
 
     # check audio properties
@@ -85,8 +84,7 @@ def testRewrapVideoStream():
     assert_equals( src_properties.getFormatLongName(), dst_properties.getFormatLongName() )
     assert_equals( src_properties.getStartTime(), dst_properties.getStartTime() )
     assert_equals( src_properties.getDuration(), dst_properties.getDuration() )
-    deltaBitRateVideo = dst_properties.getBitRate() * 0.15
-    assert_almost_equals( src_properties.getBitRate(), dst_properties.getBitRate(), delta=deltaBitRateVideo )
+    assert_greater_equal( src_properties.getBitRate(), dst_properties.getBitRate() )
     assert_equals( src_properties.getPacketSize(), dst_properties.getPacketSize() )
 
     # check audio properties
