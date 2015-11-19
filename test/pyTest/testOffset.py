@@ -67,7 +67,7 @@ def testTranscodeAudioNegativeOffset():
     dst_audioStream = dst_properties.getAudioProperties()[0]
 
     # check output duration
-    assert_almost_equals( src_audioStream.getDuration() + offset, dst_audioStream.getDuration(), delta=0.01 )
+    assert_equals( src_audioStream.getDuration() + offset, dst_audioStream.getDuration() )
 
 
 def testRewrapAudioPositiveOffset():
@@ -128,7 +128,7 @@ def testRewrapAudioNegativeOffset():
     dst_audioStream = dst_properties.getAudioProperties()[0]
 
     # check output duration
-    assert_almost_equals( src_audioStream.getDuration() + offset, dst_audioStream.getDuration(), delta=0.01 )
+    assert_equals( src_audioStream.getDuration() + offset, dst_audioStream.getDuration() )
     assert_equals( src_audioStream.getNbSamples() + ( offset * dst_audioStream.getSampleRate() * dst_audioStream.getChannels() ), dst_audioStream.getNbSamples() )
 
 
@@ -321,5 +321,5 @@ def testMultipleOffsetFromSameStream():
     # check output duration
     assert_equals( src_videoStream.getDuration() + offset_1, dst_videoStream_1.getDuration() )
     assert_equals( src_videoStream.getDuration() + offset_1, dst_videoStream_2.getDuration() )
-    assert_almost_equals( src_videoStream.getNbFrames() + ( offset_1 * dst_videoStream_1.getFps() ), dst_videoStream_1.getNbFrames(), delta=0.01 )
-    assert_almost_equals( src_videoStream.getNbFrames() + ( offset_1 * dst_videoStream_2.getFps() ), dst_videoStream_2.getNbFrames(), delta=0.01 )
+    assert_equals( src_videoStream.getNbFrames() + ( offset_1 * dst_videoStream_1.getFps() ), dst_videoStream_1.getNbFrames() )
+    assert_equals( src_videoStream.getNbFrames() + ( offset_1 * dst_videoStream_2.getFps() ), dst_videoStream_2.getNbFrames() )
