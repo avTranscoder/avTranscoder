@@ -96,7 +96,7 @@ def testEProcessMethodBasedOnStream():
     dst_inputFile = av.InputFile( outputFileName )
     dst_properties = dst_inputFile.getProperties()
 
-    assert_equals( dst_properties.getDuration(), src_properties_second.getDuration() )
+    assert_equals( dst_properties.getStreamPropertiesWithIndex(1).getDuration(), src_properties_second.getDuration() )
 
 
 def testEProcessMethodBasedOnDuration():
