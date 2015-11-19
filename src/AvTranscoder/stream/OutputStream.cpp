@@ -45,6 +45,12 @@ size_t OutputStream::getNbFrames() const
 	return _outputAVStream.nb_frames;
 }
 
+int OutputStream::getStreamPTS() const
+{
+	const AVFrac& outputPTS = _outputAVStream.pts;
+	return ( outputPTS.val + ( outputPTS.num / outputPTS.den ) );
+}
+
 IOutputStream::EWrappingStatus OutputStream::wrap( const CodedData& data )
 {
 	// If stream PTS will be generated at rewrap time
