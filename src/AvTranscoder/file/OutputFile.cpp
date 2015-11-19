@@ -201,6 +201,13 @@ IOutputStream::EWrappingStatus OutputFile::wrap( const CodedData& data, const si
 			// dts
 			packet.dts = av_rescale_q( data.getAVPacket().dts, srcTimeBase, dstTimeBase );
 		}
+		// add stream PTS if already incremented
+		const int currentStreamPTS = _outputStreams.at( streamIndex )->getStreamPTS();
+		if( packet.pts != AV_NOPTS_VALUE && packet.pts < currentStreamPTS )
+		{
+			packet.pts += currentStreamPTS;
+			packet.dts += currentStreamPTS;
+		}
 	}
 
 	// copy duration of packet wrapped
