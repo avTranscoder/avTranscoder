@@ -71,7 +71,31 @@ IOutputStream::EWrappingStatus OutputStream::wrap( const CodedData& data )
 	if( data.getAVPacket().duration )
 		_wrappedPacketsDuration += data.getAVPacket().duration;
 	else
-		_wrappedPacketsDuration += _lastWrappedPacketDuration;
+	{
+		switch( _outputAVStream.codec->codec_type )
+		{
+			case AVMEDIA_TYPE_VIDEO:
+			{
+				_wrappedPacketsDuration += _lastWrappedPacketDuration;
+				break;
+			}
+			case AVMEDIA_TYPE_AUDIO:
+			{
+				Rational audioPacketDuration;
+				audioPacketDuration.num = 0;
+				audioPacketDuration.den = 0;
+				const int frame_size = av_get_audio_frame_duration(_outputAVStream.codec, data.getSize());
+				if( frame_size <= 0 || _outputAVStream.codec->sample_rate <= 0 )
+					break;
+				audioPacketDuration.num = frame_size;
+				audioPacketDuration.den = _outputAVStream.codec->sample_rate;
+				_wrappedPacketsDuration += av_rescale( 1, audioPacketDuration.num * (int64_t)_outputAVStream.time_base.den * _outputAVStream.codec->ticks_per_frame, audioPacketDuration.den * (int64_t)_outputAVStream.time_base.num );
+				break;
+			}
+			default:
+				break;
+		}
+	}
 
 	return status;
 }
