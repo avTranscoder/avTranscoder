@@ -528,11 +528,15 @@ void Transcoder::fillProcessStat( ProcessStat& processStat )
 			case AVMEDIA_TYPE_VIDEO:
 			{
 				VideoStat videoStat( stream.getStreamDuration(), stream.getNbFrames() );
-				const AVCodecContext& encoderContext = _streamTranscoders.at( streamIndex )->getEncoder()->getCodec().getAVCodecContext();
-				if( encoderContext.coded_frame && ( encoderContext.flags & CODEC_FLAG_PSNR) )
+				IEncoder* encoder = _streamTranscoders.at( streamIndex )->getEncoder();
+				if( encoder )
 				{
-					videoStat._quality = encoderContext.coded_frame->quality;
-					videoStat._psnr = VideoStat::psnr( encoderContext.coded_frame->error[0] / ( encoderContext.width * encoderContext.height * 255.0 * 255.0 ) );
+					const AVCodecContext& encoderContext = encoder->getCodec().getAVCodecContext();
+					if( encoderContext.coded_frame && ( encoderContext.flags & CODEC_FLAG_PSNR) )
+					{
+						videoStat._quality = encoderContext.coded_frame->quality;
+						videoStat._psnr = VideoStat::psnr( encoderContext.coded_frame->error[0] / ( encoderContext.width * encoderContext.height * 255.0 * 255.0 ) );
+					}
 				}
 				processStat.addVideoStat( streamIndex, videoStat );
 				break;
