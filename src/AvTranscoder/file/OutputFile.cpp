@@ -11,7 +11,7 @@
 namespace avtranscoder
 {
 
-OutputFile::OutputFile( const std::string& filename )
+OutputFile::OutputFile( const std::string& filename, const std::string& formatName, const std::string& mimeType )
 	: _formatContext( AV_OPT_FLAG_ENCODING_PARAM )
 	, _outputStreams()
 	, _frameCount()
@@ -19,7 +19,7 @@ OutputFile::OutputFile( const std::string& filename )
 	, _profile()
 {
 	_formatContext.setFilename( filename );
-	_formatContext.setOutputFormat( filename );
+	_formatContext.setOutputFormat( filename, formatName, mimeType );
 }
 
 OutputFile::~OutputFile()
@@ -223,7 +223,10 @@ void OutputFile::setupWrapping( const ProfileLoader::Profile& profile )
 		throw std::runtime_error( msg );
 	}
 
-	LOG_INFO( "Setup wrapping with:\n" << profile )
+	if( ! profile.empty() )
+	{
+		LOG_INFO( "Setup wrapping with:\n" << profile )
+	}
 
 	// check if output format indicated is valid with the filename extension
 	if( ! matchFormat( profile.find( constants::avProfileFormat )->second, getFilename() ) )

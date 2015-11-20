@@ -60,7 +60,10 @@ void VideoDecoder::setupDecoder( const ProfileLoader::Profile& profile )
 		throw std::runtime_error( msg );
 	}
 
-	LOG_INFO( "Setup video decoder with:\n" << profile )
+	if( ! profile.empty() )
+	{
+		LOG_INFO( "Setup video decoder with:\n" << profile )
+	}
 
 	VideoCodec& codec = _inputStream->getVideoCodec();
 

@@ -173,8 +173,10 @@ void InputFile::setupUnwrapping( const ProfileLoader::Profile& profile )
 		throw std::runtime_error( msg );
 	}
 
-	// set profile
-	LOG_INFO( "Setup unwrapping with:\n" << profile )
+	if( ! profile.empty() )
+	{
+		LOG_INFO( "Setup unwrapping with:\n" << profile )
+	}
 
 	for( ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it )
 	{

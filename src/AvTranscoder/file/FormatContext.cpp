@@ -142,11 +142,9 @@ AVStream& FormatContext::addAVStream( const AVCodec& avCodec )
 	return *stream;
 }
 
-bool FormatContext::seek( uint64_t position, const int flag )
+bool FormatContext::seek( const uint64_t position, const int flag )
 {
-	if( (int)getStartTime() != AV_NOPTS_VALUE )
-		position += getStartTime();
-
+	LOG_INFO( "Seek in '" << _avFormatContext->filename << "' at " << position << " (in AV_TIME_BASE units)" )
 	int err = av_seek_frame( _avFormatContext, -1, position, flag );
 	if( err < 0 )
 	{
@@ -193,12 +191,12 @@ void FormatContext::setOutputFormat( const std::string& filename, const std::str
 		msg += filename;
 		if( ! shortName.empty() )
 		{
-			msg += ", ";
+			msg += ", formatName = ";
 			msg += shortName;
 		}
 		if( ! mimeType.empty() )
 		{
-			msg += ", ";
+			msg += ", mimeType = ";
 			msg += mimeType;
 		}
 		throw std::ios_base::failure( msg );
