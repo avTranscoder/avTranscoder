@@ -33,16 +33,20 @@ logger = av.Logger().setLogLevel(av.AV_LOG_QUIET)
 av.preloadCodecsAndFormats()
 
 streamTypeToConcat = Set()
+codecToConcat = Set()
 # get all input files
 inputFiles = []
 for input in args.inputs:
     inputFile = av.InputFile(input)
     streamTypeToConcat.add( inputFile.getStream(0).getProperties().getStreamType() )
+    codecToConcat.add( inputFile.getStream(0).getProperties().getCodecName() )
     inputFiles.append(inputFile)
 
 # Check type of streams to rewrap
 if len(streamTypeToConcat) > 1:
     raise RuntimeError("Cannot concatenate streams of different type.")
+if len(codecToConcat) > 1:
+    raise RuntimeError("Cannot concatenate streams of different codec: ", [codec for codec in codecToConcat])
 
 # Create the output
 outputFile = av.OutputFile( args.outputFileName );
