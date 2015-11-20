@@ -20,6 +20,11 @@ public:
 	Rational getTimeBase() const;
 	float getDuration() const;  ///< in seconds
 	AVMediaType getStreamType() const;
+
+	size_t getCodecId() const;
+	std::string getCodecName() const;
+	std::string getCodecLongName() const;
+
 	const PropertyVector& getMetadatas() const { return _metadatas; }
 
 #ifndef SWIG
@@ -47,6 +52,8 @@ private:
 
 protected:
 	const AVFormatContext* _formatContext;  ///< Has link (no ownership)
+	AVCodecContext* _codecContext;  ///< Has link (no ownership)
+	AVCodec* _codec;  ///< Has link (no ownership)
 
 	size_t _streamIndex;
 	PropertyVector _metadatas;

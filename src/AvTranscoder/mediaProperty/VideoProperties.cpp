@@ -17,28 +17,12 @@ namespace avtranscoder
 
 VideoProperties::VideoProperties( const FormatContext& formatContext, const size_t index, IProgress& progress, const EAnalyseLevel level )
 	: StreamProperties( formatContext, index )
-	, _codecContext( NULL )
-	, _codec( NULL )
 	, _pixelProperties()
 	, _isInterlaced( false )
 	, _isTopFieldFirst( false )
 	, _gopStructure()
 	, _firstGopTimeCode( -1 )
 {
-	if( _formatContext )
-	{
-		if( _streamIndex > _formatContext->nb_streams )
-		{
-			std::stringstream ss;
-			ss << "video stream at index " << _streamIndex << " does not exist";
-			throw std::runtime_error( ss.str() );
-		}
-		_codecContext = _formatContext->streams[_streamIndex]->codec;
-	}
-
-	if( _formatContext && _codecContext )
-		_codec = avcodec_find_decoder( _codecContext->codec_id );
-
 	if( _codecContext )
 	{
 		_pixelProperties = PixelProperties( _codecContext->pix_fmt );
@@ -47,34 +31,6 @@ VideoProperties::VideoProperties( const FormatContext& formatContext, const size
 
 	if( level == eAnalyseLevelFirstGop )
 		analyseGopStructure( progress );
-}
-
-std::string VideoProperties::getCodecName() const
-{
-	if( ! _codecContext || ! _codec )
-		throw std::runtime_error( "unknown codec" );
-
-	if( _codec->capabilities & CODEC_CAP_TRUNCATED )
-		_codecContext->flags|= CODEC_FLAG_TRUNCATED;
-
-	if( ! _codec->name )
-		throw std::runtime_error( "unknown codec name" );
-
-	return std::string( _codec->name );
-}
-
-std::string VideoProperties::getCodecLongName() const
-{
-	if( ! _codecContext || ! _codec )
-		throw std::runtime_error( "unknown codec" );
-
-	if( _codec->capabilities & CODEC_CAP_TRUNCATED )
-		_codecContext->flags|= CODEC_FLAG_TRUNCATED;
-
-	if( ! _codec->long_name )
-		throw std::runtime_error( "unknown codec long name" );
-
-	return std::string( _codec->long_name );
 }
 
 std::string VideoProperties::getProfileName() const
@@ -365,13 +321,6 @@ Rational VideoProperties::getDar() const
 	return dar;
 }
 
-size_t VideoProperties::getCodecId() const
-{
-	if( ! _codecContext )
-		throw std::runtime_error( "unknown codec context" );
-	return _codecContext->codec_id;
-}
-
 size_t VideoProperties::getBitRate() const
 {
 	if( ! _codecContext )
@@ -606,9 +555,6 @@ PropertyVector VideoProperties::getPropertiesAsVector() const
 	PropertyVector basedProperty = StreamProperties::getPropertiesAsVector();
 	data.insert( data.begin(), basedProperty.begin(), basedProperty.end() );
 
-	addProperty( data, "codecId", &VideoProperties::getCodecId );
-	addProperty( data, "codecName", &VideoProperties::getCodecName );
-	addProperty( data, "codecLongName", &VideoProperties::getCodecLongName );
 	addProperty( data, "profile", &VideoProperties::getProfile );
 	addProperty( data, "profileName", &VideoProperties::getProfileName );
 	addProperty( data, "level", &VideoProperties::getLevel );

@@ -13,15 +13,12 @@ class AvExport AudioProperties : public StreamProperties
 public:
 	AudioProperties( const FormatContext& formatContext, const size_t index );
 
-	std::string getCodecName() const;
-	std::string getCodecLongName() const;
 	std::string getSampleFormatName() const;
 	std::string getSampleFormatLongName() const;
 	std::string getChannelLayout() const;
 	std::string getChannelName() const;
 	std::string getChannelDescription() const;
 
-	size_t getCodecId() const;
 	size_t getSampleRate() const;
 	size_t getChannels() const;
 	size_t getBitRate() const;  ///< 0 if unknown
@@ -50,10 +47,6 @@ private:
 		}
 	}
 #endif
-
-private:
-	AVCodecContext* _codecContext;  ///< Has link (no ownership)
-	AVCodec* _codec; ///< Has link (no ownership)
 };
 
 }
