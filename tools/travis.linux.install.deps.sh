@@ -5,7 +5,7 @@ set -x
 
 lsb_release -a
 
-if [ ! -d "${DEPENDENCY_INSTALL}/lib/" ]; then
+if [ ! -d "${DEPENDENCY_INSTALL_PATH}/lib/" ]; then
 
     if [[ ${DEPENDENCY_MODE} == "ffmpeg" ]]; then
 
@@ -14,7 +14,7 @@ if [ ! -d "${DEPENDENCY_INSTALL}/lib/" ]; then
         bunzip2 ffmpeg-${FFMPEG_VERSION}.tar.bz2
         tar -xvf ffmpeg-${FFMPEG_VERSION}.tar
         cd ffmpeg-${FFMPEG_VERSION}
-        ./configure --prefix=${DEPENDENCY_INSTALL} --disable-yasm --enable-shared --disable-static && make && make install
+        ./configure --prefix=${DEPENDENCY_INSTALL_PATH} --disable-yasm --enable-shared --disable-static && make && make install
 
     elif [[ ${DEPENDENCY_MODE} == "libav" ]]; then
 
@@ -22,7 +22,7 @@ if [ ! -d "${DEPENDENCY_INSTALL}/lib/" ]; then
         wget https://libav.org/releases/libav-${LIBAV_VERSION}.tar.gz
         tar -xvf libav-${LIBAV_VERSION}.tar.gz
         cd libav-${LIBAV_VERSION}
-        ./configure --prefix=${DEPENDENCY_INSTALL} --disable-yasm --enable-shared --disable-static && make && make install
+        ./configure --prefix=${DEPENDENCY_INSTALL_PATH} --disable-yasm --enable-shared --disable-static && make && make install
 
     fi
 
