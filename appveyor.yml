@@ -1,0 +1,51 @@
+os:
+  - Windows Server 2012 R2
+
+platform:
+  - x86
+#  - x64
+
+matrix:
+  fast_finish: true
+
+init:
+  - call "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" %platform%
+
+before_build:
+  - choco install -y swig
+  - tools/appveyor.win.install.deps.bat
+
+build_script:
+  - tools/appveyor.build.bat
+
+before_test:
+  - set PATH=C:\Python27\scripts;%PATH%
+  - pip install nose
+
+test_script:
+  - cd ..
+  - tools/appveyor.python.nosetests.bat
+
+on_failure:
+  - type "C:\projects\avtranscoder\build\CMakeFiles\CMakeOutput.log"
+
+#on_success:
+#  - create archives
+
+#artifacts:
+#  - path: C:\ProgramData\ffmpeg-2.2.11
+#    name: ffmpeg
+#    type: zip
+
+#  - path: C:\projects\avtranscoder\build
+#    name: avtranscoder
+#    type: zip
+
+#deploy:
+#  - provider: GitHub
+#    artifact: ffmpeg,avtranscoder
+#    auth_token:
+#    secure: <your encrypted token>
+#    on:
+#      branch: master
+#      appveyor_repo_tag: true
