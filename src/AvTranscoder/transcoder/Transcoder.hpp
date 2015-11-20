@@ -52,6 +52,12 @@ public:
 	~Transcoder();
 
 	/**
+	 * @brief Rewrap all streams of the file with the given filename.
+	 * @note Currently we rewrap only the video and the audio streams. The streams with an other type are skipped.
+	 */
+	void add( const std::string& filename );
+
+	/**
 	 * @brief Add a stream and set a profile
 	 * @note If profileName is empty, rewrap.
 	 * @note offset in seconds
@@ -159,7 +165,10 @@ private:
 
 	void addDummyStream( const ProfileLoader::Profile& profile, const ICodec& codec );
 
-	InputFile* addInputFile( const std::string& filename, const size_t streamIndex, const float offset );
+	/**
+	 * @note If streamIndex is negative, activate all streams of the file.
+	 */
+	InputFile* addInputFile( const std::string& filename, const int streamIndex, const float offset );
 
 	ProfileLoader::Profile getProfileFromFile( InputFile& inputFile, const size_t streamIndex );  ///< The function analyses the inputFile
 

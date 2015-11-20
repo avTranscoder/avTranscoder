@@ -33,6 +33,21 @@ Transcoder::~Transcoder()
 	}
 }
 
+void Transcoder::add( const std::string& filename )
+{
+	const int streamIndex = -1;
+	const float offset = 0;
+	const InputFile* referenceFile = addInputFile( filename, streamIndex, offset );
+	const std::vector< avtranscoder::StreamProperties* >& inputStreams = referenceFile->getProperties().getStreamProperties();
+	for( size_t index = 0; index < inputStreams.size(); ++index )
+	{
+		const AVMediaType streamType = referenceFile->getProperties().getStreamPropertiesWithIndex( index ).getStreamType();
+		// skip the stream if it is not video nor audio
+		if( streamType == AVMEDIA_TYPE_VIDEO || streamType == AVMEDIA_TYPE_AUDIO )
+			addRewrapStream( filename, index, offset );
+	}
+}
+
 void Transcoder::add( const std::string& filename, const size_t streamIndex, const std::string& profileName, const float offset )
 {
 	// Re-wrap
@@ -348,18 +363,21 @@ void Transcoder::addDummyStream( const ProfileLoader::Profile& profile, const IC
 	_streamTranscoders.push_back( _streamTranscodersAllocated.back() );
 }
 
-InputFile* Transcoder::addInputFile( const std::string& filename, const size_t streamIndex, const float offset )
+InputFile* Transcoder::addInputFile( const std::string& filename, const int streamIndex, const float offset )
 {
 	InputFile* referenceFile = NULL;
 
-	for( std::vector< InputFile* >::iterator it = _inputFiles.begin(); it != _inputFiles.end(); ++it )
+	if( streamIndex >= 0 )
 	{
-		if( ( (*it)->getFilename() == filename ) &&
-			! (*it)->getStream( streamIndex ).isActivated() )
+		for( std::vector< InputFile* >::iterator it = _inputFiles.begin(); it != _inputFiles.end(); ++it )
 		{
-			referenceFile = (*it);
-			LOG_DEBUG( "Get instance of InputFile from '" << filename << "'" )
-			break;
+			if( ( (*it)->getFilename() == filename ) &&
+				! (*it)->getStream( streamIndex ).isActivated() )
+			{
+				referenceFile = (*it);
+				LOG_DEBUG( "Get instance of InputFile from '" << filename << "'" )
+				break;
+			}
 		}
 	}
 
@@ -371,7 +389,13 @@ InputFile* Transcoder::addInputFile( const std::string& filename, const size_t s
 		referenceFile = _inputFiles.back();
 	}
 
-	referenceFile->activateStream( streamIndex );
+	if( streamIndex >= 0 )
+		referenceFile->activateStream( streamIndex );
+	else
+	{
+		for( size_t index = 0; index < referenceFile->getProperties().getNbStreams(); ++index )
+			referenceFile->activateStream( index );
+	}
 
 	// If negative offset, move forward in the input stream
 	if( offset < 0 )
