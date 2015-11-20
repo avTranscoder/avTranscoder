@@ -34,3 +34,41 @@ def testAddStreamTranscoder():
     progress = av.NoDisplayProgress()
     transcoder.process( progress )
 
+
+@raises(IOError)
+def testAddAllStreamsOfFileWhichDoesNotExist():
+    """
+    Add all streams from a given file.
+    """
+    # input
+    inputFileName = "fileWhichDoesNotExist.mov"
+
+    # output
+    outputFileName = "testAddAllStreamsOfFileWhichDoesNotExist.mov"
+    ouputFile = av.OutputFile( outputFileName )
+
+    transcoder = av.Transcoder( ouputFile )
+    transcoder.add( inputFileName )
+
+    # process
+    progress = av.ConsoleProgress()
+    transcoder.process( progress )
+
+
+def testAddAllStreamsOfAGivenFile():
+    """
+    Add all streams from a given file.
+    """
+    # input
+    inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_MOV_FILE']
+
+    # output
+    outputFileName = "testAddAllStreamsOfAGivenFile.mov"
+    ouputFile = av.OutputFile( outputFileName )
+
+    transcoder = av.Transcoder( ouputFile )
+    transcoder.add( inputFileName )
+
+    # process
+    progress = av.ConsoleProgress()
+    transcoder.process( progress )
