@@ -408,7 +408,7 @@ bool StreamTranscoder::processRewrap()
 	LOG_DEBUG( "StreamTranscoder::processRewrap" )
 
 	// if switched to generator, process frame
-	if( _currentDecoder == _generator )
+	if( _currentDecoder && _currentDecoder == _generator )
 	{
 		return processTranscode();
 	}
