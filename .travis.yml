@@ -18,7 +18,6 @@ env:
      - AVTRANSCODER_BUILD_PATH=${TRAVIS_BUILD_DIR}/build-avtranscoder
      - AVTRANSCODER_INSTALL_PATH=${TRAVIS_BUILD_DIR}/install-avtranscoder
      - DEPENDENCY_INSTALL_PATH=${TRAVIS_BUILD_DIR}/install-dependency
-     - CI_NODE_TOTAL=2
   matrix:
     - DEPENDENCY_MODE=libav ENABLE_COVERAGE=true
     - DEPENDENCY_MODE=libav ENABLE_COVERAGE=false
