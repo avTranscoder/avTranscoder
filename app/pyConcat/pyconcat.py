@@ -2,6 +2,8 @@
 
 from pyAvTranscoder import avtranscoder as av
 
+from sets import Set
+
 
 # Get command line arguments
 args = []
@@ -30,20 +32,23 @@ except ImportError:
 logger = av.Logger().setLogLevel(av.AV_LOG_QUIET)
 av.preloadCodecsAndFormats()
 
-# output
-outputFile = av.OutputFile( args.outputFileName );
-
+streamTypeToConcat = Set()
 # get all input files
 inputFiles = []
-streamTypeToConcat = 0
 for input in args.inputs:
     inputFile = av.InputFile(input)
-    streamTypeToConcat = inputFile.getStream(0).getProperties().getStreamType()
+    streamTypeToConcat.add( inputFile.getStream(0).getProperties().getStreamType() )
     inputFiles.append(inputFile)
 
-if streamTypeToConcat == av.AVMEDIA_TYPE_VIDEO:
+# Check type of streams to rewrap
+if len(streamTypeToConcat) > 1:
+    raise RuntimeError("Cannot concatenate streams of different type.")
+
+# Create the output
+outputFile = av.OutputFile( args.outputFileName );
+if av.AVMEDIA_TYPE_VIDEO in streamTypeToConcat:
     outputFile.addVideoStream( inputFiles[-1].getStream(0).getVideoCodec() )
-elif streamTypeToConcat == av.AVMEDIA_TYPE_AUDIO:
+elif av.AVMEDIA_TYPE_AUDIO in streamTypeToConcat:
     outputFile.addVideoStream( inputFiles[-1].getStream(0).getAudioCodec() )
 
 ### process
