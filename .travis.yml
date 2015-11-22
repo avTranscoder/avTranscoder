@@ -15,10 +15,11 @@ compiler:
 
 env:
   global:
-     - AVTRANSCODER_BUILD=${TRAVIS_BUILD_DIR}/build-avtranscoder
-     - AVTRANSCODER_INSTALL=${TRAVIS_BUILD_DIR}/install-avtranscoder
-     - DEPENDENCY_INSTALL=${TRAVIS_BUILD_DIR}/install-dependency
-     - CI_NODE_TOTAL=2
+     - AVTRANSCODER_BUILD_PATH=${TRAVIS_BUILD_DIR}/build-avtranscoder
+     - AVTRANSCODER_INSTALL=install-avtranscoder
+     - AVTRANSCODER_INSTALL_PATH=${TRAVIS_BUILD_DIR}/${AVTRANSCODER_INSTALL}
+     - DEPENDENCY_INSTALL=install-dependency
+     - DEPENDENCY_INSTALL_PATH=${TRAVIS_BUILD_DIR}/${DEPENDENCY_INSTALL}
   matrix:
     - DEPENDENCY_MODE=libav ENABLE_COVERAGE=true
     - DEPENDENCY_MODE=libav ENABLE_COVERAGE=false
@@ -54,7 +55,7 @@ cache:
   apt: true
   # Caching other directories
   directories:
-  - ${DEPENDENCY_INSTALL}
+  - ${DEPENDENCY_INSTALL_PATH}
 
 before_script:
   - env | sort  
