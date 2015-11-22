@@ -70,16 +70,9 @@ outputFile.setupWrapping( formatProfile )
 
 # create transcoder
 transcoder = av.Transcoder( outputFile )
-
-def addStreamsToTranscoder(transcoder, streams):
-    for st in streams:
-        stIndex = st.getStreamIndex()
-        transcoder.add( args.inputFileName, stIndex )
-
-addStreamsToTranscoder(transcoder, inputFile.getProperties().getVideoProperties())
-addStreamsToTranscoder(transcoder, inputFile.getProperties().getAudioProperties())
-# addStreamsToTranscoder(transcoder, inputFile.getProperties().getDataProperties())
+transcoder.add( args.inputFileName ) 
 
 # launch process
 progress = av.ConsoleProgress()
 transcoder.process(progress)
+
