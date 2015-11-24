@@ -73,8 +73,6 @@ def testEProcessMethodLongest():
     assert_equals( dst_properties.getDuration(), src_properties_longest.getDuration() )
 
 
-# Several output streams have not the correct duration.
-@nottest 
 def testEProcessMethodBasedOnStream():
     """
     Process with method testEProcessMethodBasedOnStream, check output duration.
@@ -104,7 +102,7 @@ def testEProcessMethodBasedOnStream():
     dst_properties = dst_inputFile.getProperties()
 
     for dst_stream_properties in dst_properties.getStreamProperties():
-        assert_equals( dst_stream_properties.getDuration(), src_properties_second.getDuration() )
+        assert_almost_equals( dst_stream_properties.getDuration(), src_properties_second.getDuration(), delta=0.05 )
 
 
 def testEProcessMethodBasedOnDuration():
