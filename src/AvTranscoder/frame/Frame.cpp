@@ -6,16 +6,19 @@ namespace avtranscoder
 {
 
 Frame::Frame()
+	: _avStream( NULL )
 {
 	initAVPacket();
 }
 
 Frame::Frame( const size_t dataSize )
+	: _avStream( NULL )
 {
 	av_new_packet( &_packet, dataSize );
 }
 
 Frame::Frame( const AVPacket& avPacket )
+	: _avStream( NULL )
 {
 	copyAVPacket( avPacket );
 }
@@ -23,11 +26,13 @@ Frame::Frame( const AVPacket& avPacket )
 Frame::Frame( const Frame& other )
 {
 	copyAVPacket( other.getAVPacket() );
+	_avStream = other.getAVStream();
 }
 
 Frame& Frame::operator=( const Frame& other )
 {
 	copyAVPacket( other.getAVPacket() );
+	_avStream = other.getAVStream();
 	return *this;
 }
 

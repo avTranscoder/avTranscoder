@@ -67,6 +67,9 @@ bool InputFile::readNextPacket( CodedData& data, const size_t streamIndex )
 			return false;
 		}
 
+		// Add Stream info to the packet
+		data.refAVStream( _formatContext.getAVStream( streamIndex ) );
+
 		// if the packet stream is the expected one
 		// return the packet data
 		const int packetStreamIndex = data.getAVPacket().stream_index;

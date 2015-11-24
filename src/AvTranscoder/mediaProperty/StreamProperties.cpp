@@ -29,18 +29,13 @@ Rational StreamProperties::getTimeBase() const
 {
 	if( ! _formatContext )
 		throw std::runtime_error( "unknown format context" );
-
-	Rational timeBase = {
-		_formatContext->streams[_streamIndex]->time_base.num,
-		_formatContext->streams[_streamIndex]->time_base.den,
-	};
-	return timeBase;
+	return _formatContext->streams[_streamIndex]->time_base;
 }
 
 float StreamProperties::getDuration() const
 {
-	Rational timeBase = getTimeBase();
-	return ( timeBase.num / (float) timeBase.den ) * _formatContext->streams[_streamIndex]->duration;
+	const Rational timeBase = getTimeBase();
+	return av_q2d( timeBase ) * _formatContext->streams[_streamIndex]->duration;
 }
 
 AVMediaType StreamProperties::getStreamType() const

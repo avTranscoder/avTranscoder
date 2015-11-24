@@ -241,14 +241,14 @@ ProcessStat Transcoder::process( IProgress& progress )
 
 	preProcessCodecLatency();
 
-	const double outputDuration = getOutputDuration();
+	const float outputDuration = getOutputDuration();
 	LOG_INFO( "Output duration of the process will be " << outputDuration << "s." )
 
 	size_t frame = 0;
 	bool frameProcessed = true;
 	while( frameProcessed )
 	{
-		const double progressDuration = _outputFile.getStream( 0 ).getStreamDuration();
+		const float progressDuration = _outputFile.getStream( 0 ).getStreamDuration();
 
 		// check if JobStatusCancel
 		if( progress.progress( ( progressDuration > outputDuration ) ? outputDuration : progressDuration, outputDuration ) == eJobStatusCancel )
@@ -528,11 +528,15 @@ void Transcoder::fillProcessStat( ProcessStat& processStat )
 			case AVMEDIA_TYPE_VIDEO:
 			{
 				VideoStat videoStat( stream.getStreamDuration(), stream.getNbFrames() );
-				const AVCodecContext& encoderContext = _streamTranscoders.at( streamIndex )->getEncoder().getCodec().getAVCodecContext();
-				if( encoderContext.coded_frame && ( encoderContext.flags & CODEC_FLAG_PSNR) )
+				IEncoder* encoder = _streamTranscoders.at( streamIndex )->getEncoder();
+				if( encoder )
 				{
-					videoStat._quality = encoderContext.coded_frame->quality;
-					videoStat._psnr = VideoStat::psnr( encoderContext.coded_frame->error[0] / ( encoderContext.width * encoderContext.height * 255.0 * 255.0 ) );
+					const AVCodecContext& encoderContext = encoder->getCodec().getAVCodecContext();
+					if( encoderContext.coded_frame && ( encoderContext.flags & CODEC_FLAG_PSNR) )
+					{
+						videoStat._quality = encoderContext.coded_frame->quality;
+						videoStat._psnr = VideoStat::psnr( encoderContext.coded_frame->error[0] / ( encoderContext.width * encoderContext.height * 255.0 * 255.0 ) );
+					}
 				}
 				processStat.addVideoStat( streamIndex, videoStat );
 				break;

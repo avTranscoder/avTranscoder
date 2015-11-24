@@ -319,15 +319,14 @@ void StreamTranscoder::preProcessCodecLatency()
 {
 	if( ! _outputEncoder )
 	{
-		std::stringstream os;
-		os << "No output encoder found for stream ";		
+		std::stringstream msg;
+		msg << "No encoder found for input stream ";
 		if( getProcessCase() == eProcessCaseGenerator )
-			os << "generator";
+			msg << "generator";
 		else
-			os << _inputStream->getStreamIndex();
-		os << ": will not preProcessCodecLatency.";
-		LOG_INFO( os.str() )
-
+			msg << _inputStream->getStreamIndex();
+		msg << ": will not preProcessCodecLatency.";
+		LOG_WARN( msg.str() )
 		return;
 	}
 
@@ -408,7 +407,7 @@ bool StreamTranscoder::processRewrap()
 	LOG_DEBUG( "StreamTranscoder::processRewrap" )
 
 	// if switched to generator, process frame
-	if( _currentDecoder == _generator )
+	if( _currentDecoder && _currentDecoder == _generator )
 	{
 		return processTranscode();
 	}
