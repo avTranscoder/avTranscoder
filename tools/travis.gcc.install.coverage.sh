@@ -12,7 +12,7 @@ sudo make -C lcov-1.11/ install
 gem install coveralls-lcov
 
 # init coverage to 0 (optional)
-lcov --directory ${AVTRANSCODER_BUILD} --zerocounters
+lcov --directory ${AVTRANSCODER_BUILD_PATH} --zerocounters
 
 # install nosetests plugins
 sudo pip install coverage
