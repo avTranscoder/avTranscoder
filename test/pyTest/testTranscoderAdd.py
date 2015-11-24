@@ -69,3 +69,19 @@ def testAddAllStreamsOfAGivenFile():
     # process
     progress = av.ConsoleProgress()
     transcoder.process( progress )
+
+    # get src file
+    src_inputFile = av.InputFile( inputFileName )
+    src_properties = src_inputFile.getProperties()
+    src_streams_properties = src_properties.getStreamProperties()
+
+    # get dst file
+    dst_inputFile = av.InputFile( outputFileName )
+    dst_properties = dst_inputFile.getProperties()
+    dst_streams_properties = dst_properties.getStreamProperties()
+
+    import testTranscoderRewrap
+    # for each stream
+    for src_stream, dst_stream in zip(src_streams_properties, dst_streams_properties):
+        # check properties
+        testTranscoderRewrap.checkStream(src_stream, dst_stream)
