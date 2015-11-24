@@ -89,7 +89,11 @@ IOutputStream::EWrappingStatus OutputStream::wrap( const CodedData& data )
 					break;
 				audioPacketDuration.num = frame_size;
 				audioPacketDuration.den = _outputAVStream.codec->sample_rate;
-				_wrappedPacketsDuration += av_rescale( 1, audioPacketDuration.num * (int64_t)_outputAVStream.time_base.den * _outputAVStream.codec->ticks_per_frame, audioPacketDuration.den * (int64_t)_outputAVStream.time_base.num );
+				_wrappedPacketsDuration += av_rescale(
+						1,
+						audioPacketDuration.num * (int64_t)_outputAVStream.time_base.den * _outputAVStream.codec->ticks_per_frame,
+						audioPacketDuration.den * (int64_t)_outputAVStream.time_base.num
+					);
 				break;
 			}
 			default:
