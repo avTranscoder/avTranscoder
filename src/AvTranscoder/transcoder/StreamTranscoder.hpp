@@ -70,10 +70,10 @@ public:
 	 */
 	float getDuration() const;
 
-	/// Returns a reference to the current decoder (from input file or from generator)
-	IDecoder& getCurrentDecoder() const { return *_currentDecoder; }
-	/// Returns a reference to the encoder
-	IEncoder& getEncoder() const { return *_outputEncoder; }
+	/// Returns a pointer to the current decoder (from input file or from generator)
+	IDecoder* getCurrentDecoder() const { return _currentDecoder; }
+	/// Returns a pointer to the encoder
+	IEncoder* getEncoder() const { return _outputEncoder; }
 
 	/// Returns a reference to the object which transforms the decoded data
 	ITransform& getTransform() const { return *_transform; }

@@ -104,7 +104,17 @@ IOutputStream& OutputFile::addDataStream( const DataCodec& dataDesc )
 IOutputStream& OutputFile::getStream( const size_t streamIndex )
 {
 	if( streamIndex >= _outputStreams.size() )
-		throw std::runtime_error( "unable to get output stream (out of range)" );
+	{
+		std::stringstream msg;
+		msg << "Unable to get the stream ";
+		msg << streamIndex;
+		msg << ": the OutputFile '";
+		msg << getFilename();
+		msg << "' has only ";
+		msg << _outputStreams.size();
+		msg << " streams.";
+		throw std::runtime_error( msg.str() );
+	}
 	return *_outputStreams.at( streamIndex );
 }
 
@@ -166,16 +176,46 @@ IOutputStream::EWrappingStatus OutputFile::wrap( const CodedData& data, const si
 
 	LOG_DEBUG( "Wrap on stream " << streamIndex << " (" << data.getSize() << " bytes for frame " << _frameCount.at( streamIndex ) << ")" )
 
+	// Packet to wrap
 	AVPacket packet;
 	av_init_packet( &packet );
 	packet.stream_index = streamIndex;
 	packet.data = (uint8_t*)data.getData();
 	packet.size = data.getSize();
+	packet.flags = data.getAVPacket().flags;
 
+	// copy timing information
+	if( ! _outputStreams.at( streamIndex )->isPTSGenerated() )
+	{
+		if( data.getAVStream() != NULL )
+		{
+			const AVRational& srcTimeBase = data.getAVStream()->time_base;
+			const AVRational& dstTimeBase = _formatContext.getAVStream( streamIndex ).time_base;
+			// duration
+			packet.duration = av_rescale_q( data.getAVPacket().duration, srcTimeBase, dstTimeBase );
+			// pts
+			if( data.getAVPacket().pts != AV_NOPTS_VALUE )
+				packet.pts = av_rescale_q( data.getAVPacket().pts, srcTimeBase, dstTimeBase );
+			else
+				packet.pts = AV_NOPTS_VALUE;
+			// dts
+			packet.dts = av_rescale_q( data.getAVPacket().dts, srcTimeBase, dstTimeBase );
+		}
+		// add stream PTS if already incremented
+		const int currentStreamPTS = _outputStreams.at( streamIndex )->getStreamPTS();
+		if( packet.pts != AV_NOPTS_VALUE && packet.pts < currentStreamPTS )
+		{
+			packet.pts += currentStreamPTS;
+			packet.dts += currentStreamPTS;
+		}
+	}
+
+	// copy duration of packet wrapped
+	// @see OutputStream
+	const_cast<CodedData&>(data).getAVPacket().duration = packet.duration;
+
+	// Write packet
 	_formatContext.writeFrame( packet );
-
-	// free packet.side_data, set packet.data to NULL and packet.size to 0
-	av_free_packet( &packet );
 
 	const double currentStreamDuration = _outputStreams.at( streamIndex )->getStreamDuration();
 	if( currentStreamDuration < _previousProcessedStreamDuration )
