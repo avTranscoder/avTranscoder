@@ -118,6 +118,7 @@ private:
 typedef std::vector<Option> OptionArray;
 typedef std::map<std::string, Option> OptionMap;  ///< Key: option name / value: option
 
+#ifndef SWIG
 /**
  * @param outOptions: map or array of options
  * @param av_class: a libav context (could be an AVFormatContext or an AVCodecContext).
@@ -125,6 +126,7 @@ typedef std::map<std::string, Option> OptionMap;  ///< Key: option name / value:
  */
 void AvExport loadOptions( OptionMap& outOptions, void* av_class, int req_flags = 0 );
 void AvExport loadOptions( OptionArray& outOptions, void* av_class, int req_flags = 0 );
+#endif
 
 }
 
