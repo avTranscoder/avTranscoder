@@ -41,7 +41,7 @@ private:
 		}
 		catch( const std::exception& e )
 		{
-			detail::add( dataVector, key, e.what() );
+			detail::add( dataVector, key, detail::propertyValueIfError );
 		}
 	}
 #endif

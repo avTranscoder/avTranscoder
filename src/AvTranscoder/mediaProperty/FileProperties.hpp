@@ -96,7 +96,7 @@ private:
 		}
 		catch( const std::exception& e )
 		{
-			detail::add( data, key, e.what() );
+			detail::add( data, key, "null" );
 		}
 	}
 #endif
