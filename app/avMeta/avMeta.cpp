@@ -7,11 +7,15 @@
 
 int main( int argc, char** argv )
 {
+	bool toJson = false;
+
 	std::string help;
 	help += "Usage\n";
-	help += "\tavmeta INPUT_FILE [--help]\n";
+	help += "\tavmeta INPUT_FILE [--json][--help]\n";
+	help += "Command line options\n";
+	help += "\t--json: print properties as json\n";
 
-	if( argc != 2 )
+	if( argc < 2 )
 	{
 		std::cout << help << std::endl;
 		return( 1 );
@@ -30,6 +34,10 @@ int main( int argc, char** argv )
 			std::cout << help << std::endl;
 			return 0;
 		}
+		else if( arguments.at( argument ) == "--json" )
+		{
+			toJson = true;
+		}
 	}
 
 	avtranscoder::preloadCodecsAndFormats();
@@ -40,5 +48,8 @@ int main( int argc, char** argv )
 	input.analyse( p, avtranscoder::eAnalyseLevelFirstGop );
 
 	// display file properties
-	std::cout << input;
+	if( toJson )
+		std::cout << input.getProperties().getPropertiesAsJson() << std::endl;
+	else
+		std::cout << input;
 }
