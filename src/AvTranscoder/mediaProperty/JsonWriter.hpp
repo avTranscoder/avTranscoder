@@ -1,7 +1,7 @@
-#ifndef _AV_TRANSCODER_JSONWRITER_HPP_
-#define _AV_TRANSCODER_JSONWRITER_HPP_
+#ifndef _AV_TRANSCODER_MEDIA_PROPERTY_JSONWRITER_HPP_
+#define _AV_TRANSCODER_MEDIA_PROPERTY_JSONWRITER_HPP_
 
-#include "common.hpp"
+#include <AvTranscoder/common.hpp>
 
 #include <iostream>
 #include <sstream>

@@ -1,6 +1,6 @@
 #include "FileProperties.hpp"
 
-#include <AvTranscoder/JsonWriter.hpp>
+#include <AvTranscoder/mediaProperty/JsonWriter.hpp>
 #include <AvTranscoder/progress/NoDisplayProgress.hpp>
 
 #include <stdexcept>
