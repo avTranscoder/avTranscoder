@@ -7,10 +7,29 @@
 
 int main( int argc, char** argv )
 {
+	std::string help;
+	help += "Usage\n";
+	help += "\tavmeta INPUT_FILE [--help]\n";
+
 	if( argc != 2 )
 	{
-		std::cout << "avmeta require a media filename" << std::endl;
-		return( -1 );
+		std::cout << help << std::endl;
+		return( 1 );
+	}
+
+	// List command line arguments
+	std::vector< std::string > arguments;
+	for( int argument = 1; argument < argc; ++argument )
+	{
+		arguments.push_back( argv[argument] );
+	}
+	for( size_t argument = 0; argument < arguments.size(); ++argument )
+	{
+		if( arguments.at( argument ) == "--help" )
+		{
+			std::cout << help << std::endl;
+			return 0;
+		}
 	}
 
 	avtranscoder::preloadCodecsAndFormats();
