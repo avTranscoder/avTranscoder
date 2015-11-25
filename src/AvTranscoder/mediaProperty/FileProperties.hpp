@@ -82,8 +82,8 @@ public:
 #endif
 
 	std::string getPropertiesAsJson() const;  ///< Return all properties as a json format.
-	PropertyMap getPropertiesAsMap() const;  ///< Return all properties as a map (name of property, value)
-	PropertyVector getPropertiesAsVector() const;  ///< Return all file properties as a vector (name of property: value)
+	PropertyMap getPropertiesAsMap() const;  ///< Return format properties as a map (name of property, value)
+	PropertyVector getPropertiesAsVector() const;  ///< Return format properties as a vector (name of property: value)
 
 private:
 #ifndef SWIG
