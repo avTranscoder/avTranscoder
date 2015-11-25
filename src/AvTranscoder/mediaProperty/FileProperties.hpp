@@ -81,6 +81,7 @@ public:
 	const AVFormatContext& getAVFormatContext() { return *_avFormatContext; }
 #endif
 
+	PropertyMap getPropertiesAsMap() const;  ///< Return all properties as a map (name of property, value)
 	PropertyVector getPropertiesAsVector() const;  ///< Return all file properties as a vector (name of property: value)
 
 private:
