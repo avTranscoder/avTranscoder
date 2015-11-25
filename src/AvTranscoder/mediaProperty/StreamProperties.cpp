@@ -1,5 +1,7 @@
 #include "StreamProperties.hpp"
 
+#include <AvTranscoder/JsonWriter.hpp>
+
 #include <stdexcept>
 
 namespace avtranscoder
@@ -75,6 +77,15 @@ PropertyMap StreamProperties::getPropertiesAsMap() const
 	}
 
 	return dataMap;
+}
+
+std::string StreamProperties::getPropertiesAsJson() const
+{
+	json::JsonObjectStreamWriter writer;
+	PropertyMap properties = getPropertiesAsMap();
+	for(PropertyMap::iterator it = properties.begin(); it != properties.end(); ++it)
+		writer << std::make_pair(it->first.c_str(), it->second.c_str());
+	return writer.build();
 }
 
 }

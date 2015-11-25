@@ -26,6 +26,7 @@ public:
 	const AVFormatContext& getAVFormatContext() const { return *_formatContext; }
 #endif
 
+	std::string getPropertiesAsJson() const;  ///< Return all properties as a json format.
 	PropertyMap getPropertiesAsMap() const;  ///< Return all properties as a map (name of property, value)
 	virtual PropertyVector getPropertiesAsVector() const;  ///< Same data with a specific order
 
