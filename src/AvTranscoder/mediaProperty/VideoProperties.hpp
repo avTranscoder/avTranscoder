@@ -23,8 +23,6 @@ class AvExport VideoProperties : public StreamProperties
 public:
 	VideoProperties( const FormatContext& formatContext, const size_t index, IProgress& progress, const EAnalyseLevel level = eAnalyseLevelFirstGop );
 
-	std::string getCodecName() const;
-	std::string getCodecLongName() const;
 	std::string getProfileName() const;
 	std::string getColorTransfert() const;
 	std::string getColorspace() const;
@@ -41,7 +39,6 @@ public:
 	Rational getSar() const; // sample/pixel aspect ratio
 	Rational getDar() const; // display aspect ratio
 
-	size_t getCodecId() const;
 	size_t getBitRate() const;  ///< in bits/s
 	size_t getMaxBitRate() const;
 	size_t getMinBitRate() const;
@@ -106,9 +103,6 @@ private:
 #endif
 
 private:
-	AVCodecContext* _codecContext;  ///< Has link (no ownership)
-	AVCodec* _codec;  ///< Has link (no ownership)
-
 	PixelProperties _pixelProperties;
 	//@{
 	// Can acces these data when analyse first gop
