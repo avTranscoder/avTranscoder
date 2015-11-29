@@ -21,32 +21,35 @@ env:
      - DEPENDENCY_INSTALL=install-dependency
      - DEPENDENCY_INSTALL_PATH=${TRAVIS_BUILD_DIR}/${DEPENDENCY_INSTALL}
   matrix:
-    - DEPENDENCY_MODE=libav ENABLE_COVERAGE=true
-    - DEPENDENCY_MODE=libav ENABLE_COVERAGE=false
-    - DEPENDENCY_MODE=ffmpeg ENABLE_COVERAGE=true
-    - DEPENDENCY_MODE=ffmpeg ENABLE_COVERAGE=false
+    - DEPENDENCY_MODE=libav ENABLE_COVERAGE=true PYTHON_VERSION=2.7
+    - DEPENDENCY_MODE=libav ENABLE_COVERAGE=false PYTHON_VERSION=2.7
+    - DEPENDENCY_MODE=libav ENABLE_COVERAGE=false PYTHON_VERSION=2.6
+    - DEPENDENCY_MODE=ffmpeg ENABLE_COVERAGE=true PYTHON_VERSION=2.7
+    - DEPENDENCY_MODE=ffmpeg ENABLE_COVERAGE=false PYTHON_VERSION=2.7
+    - DEPENDENCY_MODE=ffmpeg ENABLE_COVERAGE=false PYTHON_VERSION=2.6
 
 matrix:
   # generate coverage only with gcc
   exclude:
     - compiler: clang
-      env: DEPENDENCY_MODE=ffmpeg ENABLE_COVERAGE=true
+      env: DEPENDENCY_MODE=ffmpeg ENABLE_COVERAGE=true PYTHON_VERSION=2.7
     - compiler: clang
-      env: DEPENDENCY_MODE=libav ENABLE_COVERAGE=true
+      env: DEPENDENCY_MODE=libav ENABLE_COVERAGE=true PYTHON_VERSION=2.7
   allow_failures:
     - os: osx
   fast_finish: true
 
-# This results in a 2×2×2x2 build matrix.
-# Where the variables are: os / compiler / DEPENDENCY_MODE / ENABLE_COVERAGE
+# This results in a 2×2×2x2x2 build matrix.
+# Where the variables are: os / compiler / DEPENDENCY_MODE / PYTHON_VERSION / ENABLE_COVERAGE
 
 addons:
   apt:
-    sources: ['kalakris-cmake']
+    sources: ['kalakris-cmake', 'pythonxy-devel']
     packages:
     - cmake
     - swig
-    - python-dev
+    - python2.6-dev
+    - python2.7-dev
     - python-nose
     - freeglut3-dev
 
@@ -87,7 +90,7 @@ before_deploy:
   - if [ ${TRAVIS_OS_NAME} = "linux" ]; then cp /lib/x86_64-linux-gnu/{libbz2.so.1,libbz2.so.1.0,libbz2.so.1.0.4} ${DEPENDENCY_INSTALL_PATH}/lib; fi
   # create archive
   - cd ${TRAVIS_BUILD_DIR}
-  - tar -cvzf avtranscoder-${TRAVIS_OS_NAME}-${CC}-${DEPENDENCY_MODE}.tgz ${DEPENDENCY_INSTALL} ${AVTRANSCODER_INSTALL}
+  - tar -cvzf avtranscoder-${TRAVIS_OS_NAME}-${CC}-${PYTHON_VERSION}-${DEPENDENCY_MODE}.tgz ${DEPENDENCY_INSTALL} ${AVTRANSCODER_INSTALL}
 
 deploy:
   provider: releases

@@ -8,8 +8,14 @@ brew update
 # To build
 brew install gcc cmake swig doxygen
 
+# To generate python binding
+if [[ ${PYTHON_VERSION} == "2.7" ]]; then
+    brew install python
+elif [[ ${PYTHON_VERSION} == "2.6" ]]; then
+    brew install python26
+fi
+
 # To launch nosetests
-brew install python
 pip install nose
 
 # To build avplay application
