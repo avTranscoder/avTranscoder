@@ -48,6 +48,10 @@ public:
 	 */
 	Frame* readFrameAt( const size_t frame );
 
+	/**
+	 * @brief Get the properties of the source stream read.
+	 */
+	const StreamProperties* getSourceProperties() const { return _streamProperties; }
 
 protected:
 	InputFile* _inputFile;
