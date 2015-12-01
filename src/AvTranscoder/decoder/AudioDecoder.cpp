@@ -13,6 +13,7 @@ extern "C" {
 }
 
 #include <stdexcept>
+#include <sstream>
 
 namespace avtranscoder
 {
@@ -142,7 +143,13 @@ bool AudioDecoder::decodeNextFrame( Frame& frameBuffer, const size_t channelInde
 
 	if( channelIndex > srcNbChannels - 1 )
 	{
-		throw std::runtime_error( "The subStream doesn't exist");
+		std::stringstream msg;
+		msg << "The channel at index ";
+		msg << channelIndex;
+		msg << " doesn't exist (srcNbChannels = ";
+		msg << srcNbChannels;
+		msg << ").";
+		throw std::runtime_error( msg.str() );
 	}
 
 	AudioFrame& audioBuffer = static_cast<AudioFrame&>( frameBuffer );
