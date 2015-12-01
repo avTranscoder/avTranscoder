@@ -52,8 +52,7 @@ void VideoReader::init()
 	_outputWidth = srcFrame->desc().getWidth();
 	_outputHeight = srcFrame->desc().getHeight();
 	_outputPixelProperties = PixelProperties( "rgb24" );
-	VideoFrameDesc videoFrameDescToDisplay( _outputWidth, _outputHeight, getOutputPixelFormat() );
-	_dstFrame = new VideoFrame( videoFrameDescToDisplay );
+	_dstFrame = new VideoFrame( VideoFrameDesc( _outputWidth, _outputHeight, getOutputPixelFormat() ) );
 }
 
 VideoReader::~VideoReader()
