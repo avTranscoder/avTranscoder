@@ -1,5 +1,6 @@
-
 #include "Window.hpp"
+
+#include <AvTranscoder/mediaProperty/print.hpp>
 
 #ifdef __APPLE__
  #include <OpenGL/gl.h>
@@ -421,7 +422,9 @@ void Window::displayInformations()
 	std::cout << textureType << " " << _width << "x" << _height << std::endl;
 
 	// stream info
-	_reader->printInfo();
+	const avtranscoder::VideoProperties* properties = _reader->getVideoProperties();
+	if( properties != NULL )
+		std::cout << *properties << std::endl;
 }
 
 void Window::move( float x, float y )

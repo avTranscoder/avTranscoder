@@ -40,7 +40,6 @@ public:
 	// @brief Input info
 	const VideoProperties* getVideoProperties() const {return _videoStreamProperties;}
 
-	void printInfo();
 
 private:
 	void init();

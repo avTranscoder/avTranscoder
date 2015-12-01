@@ -37,7 +37,6 @@ public:
 	// @brief Input info
 	const AudioProperties* getAudioProperties() const {return _audioStreamProperties;}
 
-	void printInfo();
 
 private:
 	void init();

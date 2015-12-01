@@ -4,7 +4,6 @@
 #include <AvTranscoder/frame/AudioFrame.hpp>
 #include <AvTranscoder/transform/AudioTransform.hpp>
 #include <AvTranscoder/progress/NoDisplayProgress.hpp>
-#include <AvTranscoder/mediaProperty/print.hpp>
 
 namespace avtranscoder
 {
@@ -70,11 +69,6 @@ void AudioReader::updateOutput( const size_t sampleRate, const size_t nbChannels
 	// update dst frame
 	delete _dstFrame;
 	_dstFrame = new AudioFrame( AudioFrameDesc( _outputSampleRate, _outputNbChannels, _outputSampleFormat ) );
-}
-
-void AudioReader::printInfo()
-{
-	std::cout << *_audioStreamProperties << std::endl;
 }
 
 }

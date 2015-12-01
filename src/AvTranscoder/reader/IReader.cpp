@@ -1,7 +1,5 @@
 #include "IReader.hpp"
 
-#include <AvTranscoder/mediaProperty/print.hpp>
-
 #include <cassert>
 
 namespace avtranscoder
@@ -74,12 +72,6 @@ Frame* IReader::readFrameAt( const size_t frame )
 	_transform->convert( *_srcFrame, *_dstFrame );
 	// return buffer
 	return _dstFrame;
-}
-
-void IReader::printInfo()
-{
-	assert( _streamProperties != NULL );
-	std::cout << *_streamProperties << std::endl;
 }
 
 }

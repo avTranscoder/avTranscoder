@@ -4,7 +4,6 @@
 #include <AvTranscoder/frame/VideoFrame.hpp>
 #include <AvTranscoder/transform/VideoTransform.hpp>
 #include <AvTranscoder/progress/NoDisplayProgress.hpp>
-#include <AvTranscoder/mediaProperty/print.hpp>
 
 namespace avtranscoder
 {
@@ -71,11 +70,6 @@ void VideoReader::updateOutput(const size_t width, const size_t height, const st
 	// update dst frame
 	delete _dstFrame;
 	_dstFrame = new VideoFrame( VideoFrameDesc( _outputWidth, _outputHeight, getOutputPixelFormat() ) );
-}
-
-void VideoReader::printInfo()
-{
-	std::cout << *_videoStreamProperties << std::endl;
 }
 
 }
