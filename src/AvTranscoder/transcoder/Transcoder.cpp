@@ -428,7 +428,7 @@ ProfileLoader::Profile Transcoder::getProfileFromFile( InputFile& inputFile, con
 		ss << audioProperties->getSampleRate();
 		profile[ constants::avProfileSampleRate ] = ss.str();
 		ss.str( "" );
-		ss << audioProperties->getChannels();
+		ss << audioProperties->getNbChannels();
 		profile[ constants::avProfileChannel ] = ss.str();
 	}
 

@@ -109,7 +109,7 @@ size_t AudioProperties::getSampleRate() const
 	return _codecContext->sample_rate;
 }
 
-size_t AudioProperties::getChannels() const 
+size_t AudioProperties::getNbChannels() const 
 {
 	if( ! _codecContext )
 		throw std::runtime_error( "unknown codec context" );
@@ -136,7 +136,7 @@ size_t AudioProperties::getNbSamples() const
 		throw std::runtime_error( "unknown format context" );
 	size_t nbSamples = _formatContext->streams[_streamIndex]->nb_frames;
 	if(nbSamples == 0)
-		nbSamples = getSampleRate() * getChannels() * getDuration();
+		nbSamples = getSampleRate() * getNbChannels() * getDuration();
 	return nbSamples;
 }
 
@@ -160,7 +160,7 @@ PropertyVector AudioProperties::getPropertiesAsVector() const
 	addProperty( data, "sampleRate", &AudioProperties::getSampleRate );
 	addProperty( data, "bitRate", &AudioProperties::getBitRate );
 	addProperty( data, "nbSamples", &AudioProperties::getNbSamples );
-	addProperty( data, "channels", &AudioProperties::getChannels );
+	addProperty( data, "nbChannels", &AudioProperties::getNbChannels );
 	addProperty( data, "channelLayout", &AudioProperties::getChannelLayout );
 	addProperty( data, "channelName", &AudioProperties::getChannelName );
 	addProperty( data, "channelDescription", &AudioProperties::getChannelDescription );
