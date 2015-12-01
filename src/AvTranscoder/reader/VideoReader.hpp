@@ -18,11 +18,17 @@ public:
 	// @param height: if 0, get height of source
 	// @param pixelFormat: rgb24 by default (to display)
 	//
-	VideoReader( const std::string& filename, const size_t videoStreamIndex, const size_t width = 0, const size_t height = 0, const std::string& pixelFormat = "rgb24" );
-	VideoReader( InputFile& inputFile, const size_t videoStreamIndex, const size_t width = 0, const size_t height = 0, const std::string& pixelFormat = "rgb24" );
+	VideoReader( const std::string& filename, const size_t videoStreamIndex );
+	VideoReader( InputFile& inputFile, const size_t videoStreamIndex );
 	//@}
 
 	~VideoReader();
+
+	/**
+	 * @brief Update width, height and pixelFormat of the output.
+	 * @note Will transform the decoded data when read the stream.
+	 */
+	void updateOutput(const size_t width, const size_t height, const std::string& pixelFormat);
 
 	//@{
 	// @brief Output info

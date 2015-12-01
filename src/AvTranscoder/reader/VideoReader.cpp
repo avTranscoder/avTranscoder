@@ -9,22 +9,22 @@
 namespace avtranscoder
 {
 
-VideoReader::VideoReader( const std::string& filename, const size_t videoStreamIndex, const size_t width, const size_t height, const std::string& pixelFormat )
+VideoReader::VideoReader( const std::string& filename, const size_t videoStreamIndex )
 	: IReader( filename, videoStreamIndex )
 	, _videoStreamProperties(NULL)
-	, _width( width )
-	, _height( height )
-	, _pixelProperties( pixelFormat )
+	, _width( 0 )
+	, _height( 0 )
+	, _pixelProperties()
 {
 	init();
 }
 
-VideoReader::VideoReader( InputFile& inputFile, const size_t videoStreamIndex, const size_t width, const size_t height, const std::string& pixelFormat )
+VideoReader::VideoReader( InputFile& inputFile, const size_t videoStreamIndex )
 	: IReader( inputFile, videoStreamIndex )
 	, _videoStreamProperties(NULL)
-	, _width( width )
-	, _height( height )
-	, _pixelProperties( pixelFormat )
+	, _width( 0 )
+	, _height( 0 )
+	, _pixelProperties()
 {
 	init();
 }
@@ -42,19 +42,18 @@ void VideoReader::init()
 	_decoder = new VideoDecoder( _inputFile->getStream( _streamIndex ) );
 	_decoder->setupDecoder();
 
+	// create transform
+	_transform = new VideoTransform();
+
 	// create src frame
 	_srcFrame = new VideoFrame( _inputFile->getStream( _streamIndex ).getVideoCodec().getVideoFrameDesc() );
 	VideoFrame* srcFrame = static_cast<VideoFrame*>(_srcFrame);
 	// create dst frame
-	if( _width == 0 )
-		_width = srcFrame->desc().getWidth();
-	if( _height == 0 )
-		_height = srcFrame->desc().getHeight();
+	_width = srcFrame->desc().getWidth();
+	_height = srcFrame->desc().getHeight();
+	_pixelProperties = PixelProperties( "rgb24" );
 	VideoFrameDesc videoFrameDescToDisplay( _width, _height, getPixelFormat() );
 	_dstFrame = new VideoFrame( videoFrameDescToDisplay );
-
-	// create transform
-	_transform = new VideoTransform();
 }
 
 VideoReader::~VideoReader()
@@ -63,6 +62,16 @@ VideoReader::~VideoReader()
 	delete _srcFrame;
 	delete _dstFrame;
 	delete _transform;
+}
+
+void VideoReader::updateOutput(const size_t width, const size_t height, const std::string& pixelFormat)
+{
+	_width = width;
+	_height = height;
+	_pixelProperties = PixelProperties( pixelFormat );
+	// update dst frame
+	delete _dstFrame;
+	_dstFrame = new VideoFrame( VideoFrameDesc( _width, _height, getPixelFormat() ) );
 }
 
 size_t VideoReader::getWidth()
