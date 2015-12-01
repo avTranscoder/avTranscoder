@@ -10,12 +10,16 @@ int main( int argc, char** argv )
 {
 	std::string filename;
 	size_t streamIndex = 0;
+	size_t width = 0;
+	size_t height = 0;
 
 	std::string help;
 	help += "Usage\n";
-	help += "\tavplay filename [streamIndex] [--help]\n";
+	help += "\tavplay filename [streamIndex] [--width width] [--height height] [--help]\n";
 	help += "Command line options\n";
-	help += "\tstreamIndex: index of the stream to read (by default 0)\n";
+	help += "\tstreamIndex: specify the index of the stream to read (by default 0)\n";
+	help += "\t--width: specify the output width (by default the same as input)\n";
+	help += "\t--height: specify the output height (by default the same as input)\n";
 	help += "\t--help: display this help\n";
 
 	// List command line arguments
@@ -30,6 +34,30 @@ int main( int argc, char** argv )
 		{
 			std::cout << help << std::endl;
 			return 0;
+		}
+		else if( arguments.at( argument ) == "--width" )
+		{
+			try
+			{
+				width = atoi( arguments.at( ++argument ).c_str() );
+			}
+			catch(...)
+			{
+				std::cout << help << std::endl;
+				return 0;
+			}
+		}
+		else if( arguments.at( argument ) == "--height" )
+		{
+			try
+			{
+				height = atoi( arguments.at( ++argument ).c_str() );
+			}
+			catch(...)
+			{
+				std::cout << help << std::endl;
+				return 0;
+			}
 		}
 		// positional arguments
 		if( argument == 0 )
@@ -54,6 +82,11 @@ int main( int argc, char** argv )
 	avtranscoder::preloadCodecsAndFormats();
 	
 	avtranscoder::VideoReader reader( filename, streamIndex );
+	if( width == 0 )
+		width = reader.getOutputWidth();
+	if( height == 0 )
+		height = reader.getOutputHeight();
+	reader.updateOutput(width, height, "rgb24");
 	Window window( reader );
 	window.launch();
 }
