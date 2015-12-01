@@ -14,9 +14,8 @@ class AvExport VideoReader : public IReader
 {
 public:
 	//@{
-	// @param width: if 0, get width of source
-	// @param height: if 0, get height of source
-	// @param pixelFormat: rgb24 by default (to display)
+	// @note Transform the input stream to rgb24 pixel format (to display).
+	// @see updateOutput
 	//
 	VideoReader( const std::string& filename, const size_t videoStreamIndex );
 	VideoReader( InputFile& inputFile, const size_t videoStreamIndex );
