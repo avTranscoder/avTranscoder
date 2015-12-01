@@ -2,6 +2,7 @@
 
 #include <stdexcept>
 #include <stdlib.h>
+#include <sstream>
 
 namespace avtranscoder
 {
@@ -31,9 +32,17 @@ size_t AudioFrameDesc::getDataSize() const
 	if( _sampleFormat == AV_SAMPLE_FMT_NONE )
 		throw std::runtime_error( "incorrect sample format" );
 
-	size_t size = ( _sampleRate / _fps ) * _channels * av_get_bytes_per_sample( _sampleFormat );
+	const size_t size = ( _sampleRate / _fps ) * _channels * av_get_bytes_per_sample( _sampleFormat );
 	if( size == 0 )
-		throw std::runtime_error( "unable to determine audio buffer size" );
+	{
+		std::stringstream msg;
+		msg << "Unable to determine audio buffer size:" << std::endl;
+		msg << "sampleRate = " << _sampleRate << std::endl;
+		msg << "fps = " << _fps << std::endl;
+		msg << "channels = " << _channels << std::endl;
+		msg << "bytes per sample = " << av_get_bytes_per_sample( _sampleFormat ) << std::endl;
+		throw std::runtime_error( msg.str() );
+	}
 
 	return size;
 }
