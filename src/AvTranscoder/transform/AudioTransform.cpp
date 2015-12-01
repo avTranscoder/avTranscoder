@@ -63,7 +63,15 @@ bool AudioTransform::init( const Frame& srcFrame, const Frame& dstFrame )
 	if( InitResampleContext( _audioConvertContext ) < 0 )
 	{
 		FreeResampleContext( &_audioConvertContext );
-		throw std::runtime_error( "unable to open audio convert context" );
+		std::stringstream msg;
+		msg << "Unable to open audio convert context:" << std::endl;
+		msg << "in_channel_layout " << av_get_default_channel_layout( src.desc().getChannels() ) << std::endl;
+		msg << "out_channel_layout " << av_get_default_channel_layout( dst.desc().getChannels() ) << std::endl;
+		msg << "in_sample_rate " << src.desc().getSampleRate() << std::endl;
+		msg << "out_sample_rate " << dst.desc().getSampleRate() << std::endl;
+		msg << "in_sample_fmt " << src.desc().getSampleFormat() << std::endl;
+		msg << "out_sample_fmt " << dst.desc().getSampleFormat() << std::endl;
+		throw std::runtime_error( msg.str() );
 	}
 	
 	return true;
