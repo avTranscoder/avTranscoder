@@ -13,14 +13,19 @@ class AvExport AudioReader : public IReader
 {
 public:
 	//@{
-	// @param sampleRate: if 0, get sample rate of source
-	// @param nbChannels: if 0, get number of channels of source
-	// @param sampleFormat: pcm_16le by default (to listen)
-	//
-	AudioReader( const std::string& filename, const size_t audioStreamIndex, const size_t sampleRate = 0, const size_t nbChannels = 0, const std::string& sampleFormat = "s16" );
-	AudioReader( InputFile& inputFile, const size_t audioStreamIndex, const size_t sampleRate = 0, const size_t nbChannels = 0, const std::string& sampleFormat = "s16" );
+	// @note Transform the input stream to s16 sample format (to listen).
+	// @see updateOutput
+	AudioReader( const std::string& filename, const size_t audioStreamIndex );
+	AudioReader( InputFile& inputFile, const size_t audioStreamIndex );
+	//@}
 
 	~AudioReader();
+
+	/**
+	 * @brief Update sample rate, number of channels and sample format of the output.
+	 * @note Will transform the decoded data when read the stream.
+	 */
+	void updateOutput( const size_t sampleRate, const size_t nbChannels, const std::string& sampleFormat );
 
 	//@{
 	// @brief Output info
