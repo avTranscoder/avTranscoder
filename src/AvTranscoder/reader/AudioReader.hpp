@@ -29,9 +29,9 @@ public:
 
 	//@{
 	// @brief Output info
-	size_t getSampleRate();
-	size_t getChannels();
-	AVSampleFormat getSampleFormat();
+	size_t getSampleRate() const { return _sampleRate; }
+	size_t getChannels() const { return _nbChannels; }
+	AVSampleFormat getSampleFormat() const { return _sampleFormat; }
 	//@}
 
 	// @brief Input info

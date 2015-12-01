@@ -72,21 +72,6 @@ void AudioReader::updateOutput( const size_t sampleRate, const size_t nbChannels
 	_dstFrame = new AudioFrame( AudioFrameDesc( _sampleRate, _nbChannels, _sampleFormat ) );
 }
 
-size_t AudioReader::getSampleRate()
-{
-	return _sampleRate;
-}
-
-size_t AudioReader::getChannels()
-{
-	return _nbChannels;
-}
-
-AVSampleFormat AudioReader::getSampleFormat()
-{
-	return _sampleFormat;
-}
-
 void AudioReader::printInfo()
 {
 	std::cout << *_audioStreamProperties << std::endl;
