@@ -120,6 +120,6 @@ def testCheckAudioProperties():
     assert_equals( audioStream.getCodecName(), expectedCodecName )
     assert_equals( audioStream.getNbSamples(), expectedSamples )
     assert_equals( round(audioStream.getDuration(), 2), expectedDuration )
-    assert_equals( audioStream.getChannels(), expectedChannels )
+    assert_equals( audioStream.getNbChannels(), expectedChannels )
     assert_equals( audioStream.getChannelLayout(), expectedChannelLayout )
     assert_equals( audioStream.getSampleRate(), expectedSampleRate )

@@ -106,5 +106,5 @@ def testSetAudioFrame():
     assert_equals( "s32", dst_audioStream.getSampleFormatName() )
     assert_equals( "signed 32 bits", dst_audioStream.getSampleFormatLongName() )
     assert_equals( 48000, dst_audioStream.getSampleRate() )
-    assert_equals( 1, dst_audioStream.getChannels() )
+    assert_equals( 1, dst_audioStream.getNbChannels() )
 
