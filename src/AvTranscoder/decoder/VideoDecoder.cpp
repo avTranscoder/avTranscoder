@@ -116,7 +116,7 @@ bool VideoDecoder::decodeNextFrame( Frame& frameBuffer )
 	return true;
 }
 
-bool VideoDecoder::decodeNextFrame( Frame& frameBuffer, const size_t subStreamIndex )
+bool VideoDecoder::decodeNextFrame( Frame& frameBuffer, const size_t channelIndex )
 {
 	return false;
 }
