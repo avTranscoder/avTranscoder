@@ -9,8 +9,8 @@
 namespace avtranscoder
 {
 
-AudioReader::AudioReader( const std::string& filename, const size_t audioStreamIndex )
-	: IReader( filename, audioStreamIndex )
+AudioReader::AudioReader( const std::string& filename, const size_t streamIndex, const int channelIndex )
+	: IReader( filename, streamIndex, channelIndex )
 	, _audioStreamProperties(NULL)
 	, _outputSampleRate( 0 )
 	, _outputNbChannels( 0 )
@@ -19,8 +19,8 @@ AudioReader::AudioReader( const std::string& filename, const size_t audioStreamI
 	init();
 }
 
-AudioReader::AudioReader( InputFile& inputFile, const size_t audioStreamIndex )
-	: IReader( inputFile, audioStreamIndex )
+AudioReader::AudioReader( InputFile& inputFile, const size_t streamIndex, const int channelIndex )
+	: IReader( inputFile, streamIndex, channelIndex )
 	, _audioStreamProperties(NULL)
 	, _outputSampleRate( 0 )
 	, _outputNbChannels( 0 )
