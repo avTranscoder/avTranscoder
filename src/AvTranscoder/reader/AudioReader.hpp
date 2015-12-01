@@ -30,7 +30,7 @@ public:
 	//@{
 	// @brief Output info
 	size_t getOutputSampleRate() const { return _outputSampleRate; }
-	size_t getOutputChannels() const { return _outputNbChannels; }
+	size_t getOutputNbChannels() const { return _outputNbChannels; }
 	AVSampleFormat getOutputSampleFormat() const { return _outputSampleFormat; }
 	//@}
 
