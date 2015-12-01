@@ -20,14 +20,15 @@ class AvExport IReader
 public:
 	/**
 	 * @brief Create a new InputFile and prepare to read the stream at the given index
+	 * @param streamIndex by default read the first stream
 	 */
-	IReader( const std::string& filename, const size_t streamIndex );
+	IReader( const std::string& filename, const size_t streamIndex = 0 );
 
 	/**
 	 * @brief Get the existing InputFile and prepare to read the stream at the given index
 	 * @note This constructor can improve performances when you create several readers from one InputFile.
 	 */
-	IReader( InputFile& inputFile, const size_t streamIndex );
+	IReader( InputFile& inputFile, const size_t streamIndex = 0 );
 
 	virtual ~IReader() = 0;
 
