@@ -74,31 +74,6 @@ void VideoReader::updateOutput(const size_t width, const size_t height, const st
 	_dstFrame = new VideoFrame( VideoFrameDesc( _width, _height, getPixelFormat() ) );
 }
 
-size_t VideoReader::getWidth()
-{
-	return _width;
-};
-
-size_t VideoReader::getHeight()
-{
-	return _height;
-}
-
-size_t VideoReader::getComponents()
-{
-	return _pixelProperties.getNbComponents();
-}
-
-size_t VideoReader::getBitDepth()
-{
-	return _pixelProperties.getBitsPerPixel();
-}
-
-AVPixelFormat VideoReader::getPixelFormat()
-{
-	return _pixelProperties.getAVPixelFormat();
-}
-
 void VideoReader::printInfo()
 {
 	std::cout << *_videoStreamProperties << std::endl;

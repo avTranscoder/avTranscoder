@@ -32,11 +32,11 @@ public:
 
 	//@{
 	// @brief Output info
-	size_t getWidth();
-	size_t getHeight();
-	size_t getComponents();
-	size_t getBitDepth();
-	AVPixelFormat getPixelFormat();
+	size_t getWidth() const { return _width; }
+	size_t getHeight() const { return _height; }
+	size_t getComponents() const { return _pixelProperties.getNbComponents(); }
+	size_t getBitDepth() const { return _pixelProperties.getBitsPerPixel(); }
+	AVPixelFormat getPixelFormat() const { return _pixelProperties.getAVPixelFormat(); }
 	//@}
 
 	// @brief Input info
