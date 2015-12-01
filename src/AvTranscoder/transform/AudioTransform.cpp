@@ -26,6 +26,7 @@ extern "C" {
 }
 
 #include <stdexcept>
+#include <sstream>
 
 namespace avtranscoder
 {
@@ -73,6 +74,14 @@ bool AudioTransform::init( const Frame& srcFrame, const Frame& dstFrame )
 		msg << "out_sample_fmt " << dst.desc().getSampleFormat() << std::endl;
 		throw std::runtime_error( msg.str() );
 	}
+
+	std::stringstream msg;
+	msg << "Audio conversion from " << src.desc().getSampleFormatName() << " to " << dst.desc().getSampleFormatName() << std::endl;
+	msg << "Source, number of channels = " << src.desc().getChannels() << std::endl;
+	msg << "Source, sample rate = " << src.desc().getSampleRate() << std::endl;
+	msg << "Destination, number of channels = " << dst.desc().getChannels() << std::endl;
+	msg << "Destination, sample rate = " << dst.desc().getSampleRate() << std::endl;
+	LOG_INFO( msg.str() )
 	
 	return true;
 }
