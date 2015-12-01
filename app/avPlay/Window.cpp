@@ -97,8 +97,8 @@ void loadNewTexture( const char* data, GLint internalFormat, size_t width, size_
 Window::Window( avtranscoder::VideoReader& reader )
 {
 	_reader = &reader;
-	_width  = _reader->getWidth();
-	_height = _reader->getHeight();
+	_width  = _reader->getOutputWidth();
+	_height = _reader->getOutputHeight();
 
 	char *argv[2] = { (char*)"", NULL };
 	int   argc    = 1;
@@ -530,14 +530,14 @@ void Window::showAlphaChannelTexture( )
 void Window::displayNextFrame()
 {
 	const char* buffer = (const char*)_reader->readNextFrame()->getData();
-	loadNewTexture( buffer, _reader->getComponents(), _reader->getWidth(), _reader->getHeight(), GL_RGB, GL_UNSIGNED_BYTE );
+	loadNewTexture( buffer, _reader->getOutputNbComponents(), _reader->getOutputWidth(), _reader->getOutputHeight(), GL_RGB, GL_UNSIGNED_BYTE );
 	display();
 }
 
 void Window::displayPrevFrame()
 {
 	const char* buffer = (const char*)_reader->readPrevFrame()->getData();
-	loadNewTexture( buffer, _reader->getComponents(), _reader->getWidth(), _reader->getHeight(), GL_RGB, GL_UNSIGNED_BYTE );
+	loadNewTexture( buffer, _reader->getOutputNbComponents(), _reader->getOutputWidth(), _reader->getOutputHeight(), GL_RGB, GL_UNSIGNED_BYTE );
 	display();
 }
 
@@ -549,7 +549,7 @@ void Window::displayFirstFrame()
 void Window::displayAtFrame( const size_t frame )
 {
 	const char* buffer = (const char*)_reader->readFrameAt( frame )->getData();
-	loadNewTexture( buffer, _reader->getComponents(), _reader->getWidth(), _reader->getHeight(), GL_RGB, GL_UNSIGNED_BYTE );
+	loadNewTexture( buffer, _reader->getOutputNbComponents(), _reader->getOutputWidth(), _reader->getOutputHeight(), GL_RGB, GL_UNSIGNED_BYTE );
 	display();
 }
 

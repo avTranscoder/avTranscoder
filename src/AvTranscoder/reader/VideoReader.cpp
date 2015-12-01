@@ -12,9 +12,9 @@ namespace avtranscoder
 VideoReader::VideoReader( const std::string& filename, const size_t videoStreamIndex )
 	: IReader( filename, videoStreamIndex )
 	, _videoStreamProperties(NULL)
-	, _width( 0 )
-	, _height( 0 )
-	, _pixelProperties()
+	, _outputWidth( 0 )
+	, _outputHeight( 0 )
+	, _outputPixelProperties()
 {
 	init();
 }
@@ -22,9 +22,9 @@ VideoReader::VideoReader( const std::string& filename, const size_t videoStreamI
 VideoReader::VideoReader( InputFile& inputFile, const size_t videoStreamIndex )
 	: IReader( inputFile, videoStreamIndex )
 	, _videoStreamProperties(NULL)
-	, _width( 0 )
-	, _height( 0 )
-	, _pixelProperties()
+	, _outputWidth( 0 )
+	, _outputHeight( 0 )
+	, _outputPixelProperties()
 {
 	init();
 }
@@ -49,10 +49,10 @@ void VideoReader::init()
 	_srcFrame = new VideoFrame( _inputFile->getStream( _streamIndex ).getVideoCodec().getVideoFrameDesc() );
 	VideoFrame* srcFrame = static_cast<VideoFrame*>(_srcFrame);
 	// create dst frame
-	_width = srcFrame->desc().getWidth();
-	_height = srcFrame->desc().getHeight();
-	_pixelProperties = PixelProperties( "rgb24" );
-	VideoFrameDesc videoFrameDescToDisplay( _width, _height, getPixelFormat() );
+	_outputWidth = srcFrame->desc().getWidth();
+	_outputHeight = srcFrame->desc().getHeight();
+	_outputPixelProperties = PixelProperties( "rgb24" );
+	VideoFrameDesc videoFrameDescToDisplay( _outputWidth, _outputHeight, getOutputPixelFormat() );
 	_dstFrame = new VideoFrame( videoFrameDescToDisplay );
 }
 
@@ -66,12 +66,12 @@ VideoReader::~VideoReader()
 
 void VideoReader::updateOutput(const size_t width, const size_t height, const std::string& pixelFormat)
 {
-	_width = width;
-	_height = height;
-	_pixelProperties = PixelProperties( pixelFormat );
+	_outputWidth = width;
+	_outputHeight = height;
+	_outputPixelProperties = PixelProperties( pixelFormat );
 	// update dst frame
 	delete _dstFrame;
-	_dstFrame = new VideoFrame( VideoFrameDesc( _width, _height, getPixelFormat() ) );
+	_dstFrame = new VideoFrame( VideoFrameDesc( _outputWidth, _outputHeight, getOutputPixelFormat() ) );
 }
 
 void VideoReader::printInfo()

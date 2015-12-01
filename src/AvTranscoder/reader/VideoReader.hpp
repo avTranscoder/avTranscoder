@@ -32,11 +32,11 @@ public:
 
 	//@{
 	// @brief Output info
-	size_t getWidth() const { return _width; }
-	size_t getHeight() const { return _height; }
-	size_t getComponents() const { return _pixelProperties.getNbComponents(); }
-	size_t getBitDepth() const { return _pixelProperties.getBitsPerPixel(); }
-	AVPixelFormat getPixelFormat() const { return _pixelProperties.getAVPixelFormat(); }
+	size_t getOutputWidth() const { return _outputWidth; }
+	size_t getOutputHeight() const { return _outputHeight; }
+	size_t getOutputNbComponents() const { return _outputPixelProperties.getNbComponents(); }
+	size_t getOutputBitDepth() const { return _outputPixelProperties.getBitsPerPixel(); }
+	AVPixelFormat getOutputPixelFormat() const { return _outputPixelProperties.getAVPixelFormat(); }
 	//@}
 
 	// @brief Input info
@@ -52,9 +52,9 @@ private:
 
 	//@{
 	// @brief Output info
-	size_t _width;
-	size_t _height;
-	PixelProperties _pixelProperties;
+	size_t _outputWidth;
+	size_t _outputHeight;
+	PixelProperties _outputPixelProperties;
 	//@}
 };
 
