@@ -422,7 +422,7 @@ void Window::displayInformations()
 	std::cout << textureType << " " << _width << "x" << _height << std::endl;
 
 	// stream info
-	const avtranscoder::VideoProperties* properties = _reader->getVideoProperties();
+	const avtranscoder::VideoProperties* properties = _reader->getSourceVideoProperties();
 	if( properties != NULL )
 		std::cout << *properties << std::endl;
 }

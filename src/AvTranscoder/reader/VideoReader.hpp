@@ -37,9 +37,8 @@ public:
 	AVPixelFormat getOutputPixelFormat() const { return _outputPixelProperties.getAVPixelFormat(); }
 	//@}
 
-	// @brief Input info
-	const VideoProperties* getVideoProperties() const {return _videoStreamProperties;}
-
+	// @brief Get source video properties
+	const VideoProperties* getSourceVideoProperties() const { return _videoStreamProperties; }
 
 private:
 	void init();

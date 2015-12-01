@@ -34,9 +34,8 @@ public:
 	AVSampleFormat getOutputSampleFormat() const { return _outputSampleFormat; }
 	//@}
 
-	// @brief Input info
-	const AudioProperties* getAudioProperties() const {return _audioStreamProperties;}
-
+	// @brief Get source audio properties
+	const AudioProperties* getSourceAudioProperties() const {return _audioStreamProperties;}
 
 private:
 	void init();
