@@ -80,6 +80,7 @@ int main( int argc, char** argv )
 
 	// Setup avtranscoder
 	avtranscoder::preloadCodecsAndFormats();
+	avtranscoder::Logger::setLogLevel( AV_LOG_QUIET );
 	
 	avtranscoder::VideoReader reader( filename, streamIndex );
 	if( width == 0 )
