@@ -63,13 +63,13 @@ bool VideoTransform::init( const Frame& srcFrame, const Frame& dstFrame )
 	const char* dstPixFmt;
 	dstPixFmt = av_get_pix_fmt_name( dstPixelFormat );
 
-	LOG_DEBUG( "Video conversion from " << ( srcPixFmt != NULL ? srcPixFmt : "None" ) << " to " << ( dstPixFmt != NULL ? dstPixFmt : "None" ) )
-
-	LOG_DEBUG( "Source, width = " << src.desc().getWidth() )
-	LOG_DEBUG( "Source, height = " << src.desc().getHeight() )
-
-	LOG_DEBUG( "Destination, width = " << dst.desc().getWidth() )
-	LOG_DEBUG( "Destination, height = " << dst.desc().getHeight() )
+	std::stringstream msg;
+	msg << "Video conversion from " << ( srcPixFmt != NULL ? srcPixFmt : "None" ) << " to " << ( dstPixFmt != NULL ? dstPixFmt : "None" ) << std::endl;
+	msg << "Source, width = " << src.desc().getWidth() << std::endl;
+	msg << "Source, height = " << src.desc().getHeight() << std::endl;
+	msg << "Destination, width = " << dst.desc().getWidth() << std::endl;
+	msg << "Destination, height = " << dst.desc().getHeight() << std::endl;
+	LOG_INFO( msg.str() )
 
 	return true;
 }
