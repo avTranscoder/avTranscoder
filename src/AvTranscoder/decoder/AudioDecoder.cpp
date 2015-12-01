@@ -107,7 +107,8 @@ bool AudioDecoder::decodeNextFrame( Frame& frameBuffer )
 
 	AVCodecContext& avCodecContext = _inputStream->getAudioCodec().getAVCodecContext();
 
-	size_t decodedSize = av_samples_get_buffer_size( NULL, avCodecContext.channels, _frame->nb_samples, avCodecContext.sample_fmt, 1 );
+	const int noAlignment = 1;
+	const size_t decodedSize = av_samples_get_buffer_size( NULL, avCodecContext.channels, _frame->nb_samples, avCodecContext.sample_fmt, noAlignment );
 	if( decodedSize == 0 )
 		return false;
 
@@ -130,21 +131,19 @@ bool AudioDecoder::decodeNextFrame( Frame& frameBuffer, const size_t channelInde
 		return false;
 
 	AVCodecContext& avCodecContext = _inputStream->getAudioCodec().getAVCodecContext();
+	const size_t srcNbChannels = avCodecContext.channels;
+	const size_t bytePerSample = av_get_bytes_per_sample( (AVSampleFormat)_frame->format );
 
-	const int output_nbChannels = 1;
-	const int output_align = 1;
-	size_t decodedSize = av_samples_get_buffer_size(NULL, output_nbChannels, _frame->nb_samples, avCodecContext.sample_fmt, output_align);
-	
-	size_t nbSubStreams = avCodecContext.channels;
-	size_t bytePerSample = av_get_bytes_per_sample( (AVSampleFormat)_frame->format );
+	const int dstNbChannels = 1;
+	const int noAlignment = 1;
+	const size_t decodedSize = av_samples_get_buffer_size(NULL, dstNbChannels, _frame->nb_samples, avCodecContext.sample_fmt, noAlignment);
+	if( decodedSize == 0 )
+		return false;
 
-	if( channelIndex > nbSubStreams - 1 )
+	if( channelIndex > srcNbChannels - 1 )
 	{
 		throw std::runtime_error( "The subStream doesn't exist");
 	}
-
-	if( decodedSize == 0 )
-		return false;
 
 	AudioFrame& audioBuffer = static_cast<AudioFrame&>( frameBuffer );
 	audioBuffer.setNbSamples( _frame->nb_samples );
@@ -161,7 +160,7 @@ bool AudioDecoder::decodeNextFrame( Frame& frameBuffer, const size_t channelInde
 	{
 		memcpy( dst, src, bytePerSample );
 		dst += bytePerSample;
-		src += bytePerSample * nbSubStreams;
+		src += bytePerSample * srcNbChannels;
 	}
 
 	return true;
