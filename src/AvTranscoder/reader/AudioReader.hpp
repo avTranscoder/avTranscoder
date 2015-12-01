@@ -29,9 +29,9 @@ public:
 
 	//@{
 	// @brief Output info
-	size_t getSampleRate() const { return _sampleRate; }
-	size_t getChannels() const { return _nbChannels; }
-	AVSampleFormat getSampleFormat() const { return _sampleFormat; }
+	size_t getOutputSampleRate() const { return _outputSampleRate; }
+	size_t getOutputChannels() const { return _outputNbChannels; }
+	AVSampleFormat getOutputSampleFormat() const { return _outputSampleFormat; }
 	//@}
 
 	// @brief Input info
@@ -47,9 +47,9 @@ private:
 
 	//@{
 	// @brief Output info
-	size_t _sampleRate;
-	size_t _nbChannels;
-	AVSampleFormat _sampleFormat;
+	size_t _outputSampleRate;
+	size_t _outputNbChannels;
+	AVSampleFormat _outputSampleFormat;
 	//@}
 };
 

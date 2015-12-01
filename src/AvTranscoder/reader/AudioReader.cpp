@@ -12,9 +12,9 @@ namespace avtranscoder
 AudioReader::AudioReader( const std::string& filename, const size_t audioStreamIndex )
 	: IReader( filename, audioStreamIndex )
 	, _audioStreamProperties(NULL)
-	, _sampleRate( 0 )
-	, _nbChannels( 0 )
-	, _sampleFormat( AV_SAMPLE_FMT_S16 )
+	, _outputSampleRate( 0 )
+	, _outputNbChannels( 0 )
+	, _outputSampleFormat( AV_SAMPLE_FMT_S16 )
 {
 	init();
 }
@@ -22,9 +22,9 @@ AudioReader::AudioReader( const std::string& filename, const size_t audioStreamI
 AudioReader::AudioReader( InputFile& inputFile, const size_t audioStreamIndex )
 	: IReader( inputFile, audioStreamIndex )
 	, _audioStreamProperties(NULL)
-	, _sampleRate( 0 )
-	, _nbChannels( 0 )
-	, _sampleFormat( AV_SAMPLE_FMT_S16 )
+	, _outputSampleRate( 0 )
+	, _outputNbChannels( 0 )
+	, _outputSampleFormat( AV_SAMPLE_FMT_S16 )
 {
 	init();
 }
@@ -49,9 +49,9 @@ void AudioReader::init()
 	_srcFrame = new AudioFrame( _inputFile->getStream( _streamIndex ).getAudioCodec().getAudioFrameDesc() );
 	AudioFrame* srcFrame = static_cast<AudioFrame*>(_srcFrame);
 	// create dst frame
-	_sampleRate = srcFrame->desc().getSampleRate();
-	_nbChannels = srcFrame->desc().getChannels();
-	_dstFrame = new AudioFrame( AudioFrameDesc( _sampleRate, _nbChannels, _sampleFormat ) );
+	_outputSampleRate = srcFrame->desc().getSampleRate();
+	_outputNbChannels = srcFrame->desc().getChannels();
+	_dstFrame = new AudioFrame( AudioFrameDesc( _outputSampleRate, _outputNbChannels, _outputSampleFormat ) );
 }
 
 AudioReader::~AudioReader()
@@ -64,12 +64,12 @@ AudioReader::~AudioReader()
 
 void AudioReader::updateOutput( const size_t sampleRate, const size_t nbChannels, const std::string& sampleFormat )
 {
-	_sampleRate = sampleRate;
-	_nbChannels = nbChannels;
-	_sampleFormat = av_get_sample_fmt( sampleFormat.c_str() );
+	_outputSampleRate = sampleRate;
+	_outputNbChannels = nbChannels;
+	_outputSampleFormat = av_get_sample_fmt( sampleFormat.c_str() );
 	// update dst frame
 	delete _dstFrame;
-	_dstFrame = new AudioFrame( AudioFrameDesc( _sampleRate, _nbChannels, _sampleFormat ) );
+	_dstFrame = new AudioFrame( AudioFrameDesc( _outputSampleRate, _outputNbChannels, _outputSampleFormat ) );
 }
 
 void AudioReader::printInfo()
