@@ -64,13 +64,18 @@ Frame* IReader::readFrameAt( const size_t frame )
 	}
 	_currentFrame = frame;
 	// decode
+	bool decodingStatus = false;
 	if( _channelIndex != -1 )
-		_decoder->decodeNextFrame( *_srcFrame, _channelIndex );
+		decodingStatus = _decoder->decodeNextFrame( *_srcFrame, _channelIndex );
 	else
-		_decoder->decodeNextFrame( *_srcFrame );
+		decodingStatus = _decoder->decodeNextFrame( *_srcFrame );
+	if( ! decodingStatus )
+	{
+		_dstFrame->clear();
+		return _dstFrame;
+	}
 	// transform
 	_transform->convert( *_srcFrame, *_dstFrame );
-	// return buffer
 	return _dstFrame;
 }
 
