@@ -88,8 +88,9 @@ public:
 	size_t getStartTime() const { return _avFormatContext->start_time; }
 
 	OptionArray getOptions();  ///< Get options as array
+#ifndef SWIG
 	OptionMap& getOptionsMap() { return _options; }  ///< Get options as map
-
+#endif
 	Option& getOption( const std::string& optionName ) { return _options.at(optionName); }
 
 	/**
