@@ -9,11 +9,13 @@
 namespace avtranscoder {
 namespace json {
 
-// To manage 'null' element in JSON
+/**
+ * @brief To manage 'null' element in JSON
+ */
 struct JsonNull {};
 
 /**
- * 
+ * @brief Based class to write element to a stream.
  */
 class AvExport JsonStreamWriter
 {
@@ -59,7 +61,9 @@ template <> JsonStreamWriter& JsonStreamWriter::operator<<(const char *string);
 // Write null (empty value) to the stream.
 template <> JsonStreamWriter& JsonStreamWriter::operator<<(JsonNull);
 
-// Write an object to the stream.
+/**
+ * @brief Write an object to a stream.
+ */
 class AvExport JsonObjectStreamWriter : public JsonStreamWriter
 {
 public:
@@ -76,7 +80,9 @@ protected:
 	virtual std::ostream& finish() { return stream << '}'; }
 };
 
-// Write an array to the stream.
+/**
+ * @brief Write an array to a stream.
+ */
 class AvExport JsonArrayStreamWriter : public JsonStreamWriter
 {
 public:
