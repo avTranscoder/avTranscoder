@@ -16,25 +16,6 @@ namespace avtranscoder
 AudioProperties::AudioProperties( const FormatContext& formatContext, const size_t index )
 	: StreamProperties( formatContext, index )
 {
-	if( _formatContext )
-		_codecContext = _formatContext->streams[index]->codec;
-
-	if( _formatContext && _codecContext )
-		_codec = avcodec_find_decoder( _codecContext->codec_id );
-}
-
-std::string AudioProperties::getCodecName() const
-{
-	if( ! _codec || ! _codec->name )
-		throw std::runtime_error( "unknown codec name" );
-	return std::string( _codec->name );
-}
-
-std::string AudioProperties::getCodecLongName() const
-{
-	if( ! _codec || ! _codec->long_name )
-		throw std::runtime_error( "unknown codec long name" );
-	return std::string( _codec->long_name );
 }
 
 std::string AudioProperties::getSampleFormatName() const
@@ -121,13 +102,6 @@ std::string AudioProperties::getChannelDescription() const
 #endif
 }
 
-size_t AudioProperties::getCodecId() const 
-{
-	if( ! _codecContext )
-		throw std::runtime_error( "unknown codec context" );
-	return _codecContext->codec_id;
-}
-
 size_t AudioProperties::getSampleRate() const 
 {
 	if( ! _codecContext )
@@ -181,9 +155,6 @@ PropertyVector AudioProperties::asVector() const
 	PropertyVector basedProperty = StreamProperties::asVector();
 	data.insert( data.begin(), basedProperty.begin(), basedProperty.end() );
 
-	addProperty( data, "codecId", &AudioProperties::getCodecId );
-	addProperty( data, "codecName", &AudioProperties::getCodecName );
-	addProperty( data, "codecLongName", &AudioProperties::getCodecLongName );
 	addProperty( data, "sampleFormatName", &AudioProperties::getSampleFormatName );
 	addProperty( data, "sampleFormatLongName", &AudioProperties::getSampleFormatLongName );
 	addProperty( data, "sampleRate", &AudioProperties::getSampleRate );

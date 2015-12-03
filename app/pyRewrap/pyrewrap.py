@@ -18,7 +18,7 @@ try:
     # requirements
     parser.add_argument('inputFileName', type=str, help='It could be any video file. Support file without extension.')
     # options
-    parser.add_argument("-o", "--outputFile", dest="outputFileName", type=str, default="output.mov", help="Set the output filename (thumbnail.jpg by default). Must be with jpg extension!")
+    parser.add_argument("-o", "--outputFile", dest="outputFileName", type=str, default="output.mov", help="Set the output filename (output.mov by default).")
     parser.add_argument("-c", "--format", dest="format", type=str, default="mov", help="Specify the output format.")
     parser.add_argument("-f", "--faststart", dest="faststart", action="store_true", default=False, help="Specify if the faststart option must be apply during rewrapping process (warning: 'mov' specific option).")
     # Parse command-line
@@ -37,7 +37,7 @@ except ImportError:
     # requirements
     parser.add_option("-i", "--inputFile", dest='inputFileName', type="string", help='It could be any video file. Support file without extension.')
     # options
-    parser.add_option("-o", "--outputFile", dest="outputFileName", type="string", default="output.mov", help="Set the output filename (thumbnail.jpg by default). Must be with jpg extension!")
+    parser.add_option("-o", "--outputFile", dest="outputFileName", type="string", default="output.mov", help="Set the output filename (output.mov by default).")
     parser.add_option("-c", "--format", dest="format", type="string", default="mov", help="Specify the output format.")
     parser.add_option("-f", "--faststart", dest="faststart", action="store_true", default=False, help="Specify if the faststart option must be apply during rewrapping process (warning: 'mov' specific option).")
     # Parse command-line
@@ -70,16 +70,9 @@ outputFile.setupWrapping( formatProfile )
 
 # create transcoder
 transcoder = av.Transcoder( outputFile )
-
-def addStreamsToTranscoder(transcoder, streams):
-    for st in streams:
-        stIndex = st.getStreamIndex()
-        transcoder.add( args.inputFileName, stIndex )
-
-addStreamsToTranscoder(transcoder, inputFile.getProperties().getVideoProperties())
-addStreamsToTranscoder(transcoder, inputFile.getProperties().getAudioProperties())
-# addStreamsToTranscoder(transcoder, inputFile.getProperties().getDataProperties())
+transcoder.add( args.inputFileName ) 
 
 # launch process
 progress = av.ConsoleProgress()
 transcoder.process(progress)
+

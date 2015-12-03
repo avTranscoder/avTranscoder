@@ -40,6 +40,7 @@ IOutputStream& OutputFile::addVideoStream( const VideoCodec& videoDesc )
 	stream.codec->pix_fmt = videoDesc.getAVCodecContext().pix_fmt;
 	stream.codec->profile = videoDesc.getAVCodecContext().profile;
 	stream.codec->level = videoDesc.getAVCodecContext().level;
+	stream.codec->field_order = videoDesc.getAVCodecContext().field_order;
 
 	// some codecs need/can use extradata to decode
 	uint8_t* srcExtradata = videoDesc.getAVCodecContext().extradata;

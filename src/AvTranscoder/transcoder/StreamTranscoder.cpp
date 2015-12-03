@@ -541,7 +541,7 @@ void StreamTranscoder::needToSwitchToGenerator( const bool needToSwitch )
 	if( needToSwitch && ! canSwitchToGenerator() )
 	{
 		std::stringstream os;
-		os << "The stream " << _inputStream->getStreamIndex() << " needs to switch to a generator during the process, but it cannot.";
+		os << "The stream " << _inputStream->getStreamIndex() << " has a duration of "<< getDuration() << "s. It needs to switch to a generator during the process, but it cannot.";
 		throw std::runtime_error( os.str() );
 	}
 	_needToSwitchToGenerator = needToSwitch;

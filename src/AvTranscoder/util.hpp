@@ -48,6 +48,7 @@ AVPixelFormat AvExport getAVPixelFormat( const std::string& pixelFormat );
 */
 AVSampleFormat AvExport getAVSampleFormat( const std::string& sampleFormat );
 
+#ifndef SWIG
 /**
  * @brief Get array of short/long names of all format supported by FFmpeg / libav.
  */
@@ -77,6 +78,7 @@ OptionArrayMap AvExport getVideoCodecOptions();
  * @brief Get the list of options for each audio codec
  */
 OptionArrayMap AvExport getAudioCodecOptions();
+#endif
 
 }
 
