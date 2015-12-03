@@ -80,7 +80,7 @@ public:
 	const AVPixFmtDescriptor* getAVPixFmtDescriptor() const { return _pixelDesc; }
 #endif
 
-	PropertyVector getPropertiesAsVector() const;  ///< Return all pixel properties as a vector (name of property: value)
+	PropertyVector asVector() const;  ///< Return all pixel properties as a vector (name of property: value)
 
 private:
 	void init( const AVPixelFormat avPixelFormat );

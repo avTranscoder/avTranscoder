@@ -207,7 +207,7 @@ size_t FileProperties::getNbStreams() const
 	return _avFormatContext->nb_streams;
 }
 
-PropertyVector FileProperties::getPropertiesAsVector() const
+PropertyVector FileProperties::asVector() const
 {
 	PropertyVector data;
 
@@ -236,11 +236,11 @@ PropertyVector FileProperties::getPropertiesAsVector() const
 	return data;
 }
 
-PropertyMap FileProperties::getPropertiesAsMap() const
+PropertyMap FileProperties::asMap() const
 {
 	PropertyMap dataMap;
 
-	PropertyVector dataVector( getPropertiesAsVector() );
+	PropertyVector dataVector( asVector() );
 	for( PropertyVector::const_iterator it = dataVector.begin();
 			it != dataVector.end();
 			++it )
@@ -251,13 +251,13 @@ PropertyMap FileProperties::getPropertiesAsMap() const
 	return dataMap;
 }
 
-std::string FileProperties::getPropertiesAsJson() const
+std::string FileProperties::asJson() const
 {
 	json::JsonObjectStreamWriter writer;
 	{
 		// format
 		json::JsonArrayStreamWriter array;
-		PropertyMap properties = getPropertiesAsMap();
+		PropertyMap properties = asMap();
 		json::JsonObjectStreamWriter format;
 		for(PropertyMap::iterator it = properties.begin(); it != properties.end(); ++it)
 			format << std::make_pair(it->first.c_str(), it->second.c_str());
@@ -269,7 +269,7 @@ std::string FileProperties::getPropertiesAsJson() const
 		json::JsonArrayStreamWriter video;
 		for( std::vector< avtranscoder::VideoProperties >::const_iterator it = _videoStreams.begin(); it != _videoStreams.end(); ++it )
 		{
-			video << it->getPropertiesAsJson();
+			video << it->asJson();
 		}
 		writer << std::make_pair("video", video.build());
 	}
@@ -278,7 +278,7 @@ std::string FileProperties::getPropertiesAsJson() const
 		json::JsonArrayStreamWriter audio;
 		for( std::vector< avtranscoder::AudioProperties >::const_iterator it = _audioStreams.begin(); it != _audioStreams.end(); ++it )
 		{
-			audio << it->getPropertiesAsJson();
+			audio << it->asJson();
 		}
 		writer << std::make_pair("audio", audio.build());
 	}
@@ -287,7 +287,7 @@ std::string FileProperties::getPropertiesAsJson() const
 		json::JsonArrayStreamWriter data;
 		for( std::vector< avtranscoder::DataProperties >::const_iterator it = _dataStreams.begin(); it != _dataStreams.end(); ++it )
 		{
-			data << it->getPropertiesAsJson();
+			data << it->asJson();
 		}
 		writer << std::make_pair("data", data.build());
 	}
@@ -296,7 +296,7 @@ std::string FileProperties::getPropertiesAsJson() const
 		json::JsonArrayStreamWriter subtitle;
 		for( std::vector< avtranscoder::SubtitleProperties >::const_iterator it = _subtitleStreams.begin(); it != _subtitleStreams.end(); ++it )
 		{
-			subtitle << it->getPropertiesAsJson();
+			subtitle << it->asJson();
 		}
 		writer << std::make_pair("subtitle", subtitle.build());
 	}
@@ -305,7 +305,7 @@ std::string FileProperties::getPropertiesAsJson() const
 		json::JsonArrayStreamWriter attachement;
 		for( std::vector< avtranscoder::AttachementProperties >::const_iterator it = _attachementStreams.begin(); it != _attachementStreams.end(); ++it )
 		{
-			attachement << it->getPropertiesAsJson();
+			attachement << it->asJson();
 		}
 		writer << std::make_pair("attachement", attachement.build());
 	}
@@ -314,7 +314,7 @@ std::string FileProperties::getPropertiesAsJson() const
 		json::JsonArrayStreamWriter unknown;
 		for( std::vector< avtranscoder::UnknownProperties >::const_iterator it = _unknownStreams.begin(); it != _unknownStreams.end(); ++it )
 		{
-			unknown << it->getPropertiesAsJson();
+			unknown << it->asJson();
 		}
 		writer << std::make_pair("unknown", unknown.build());
 	}

@@ -31,8 +31,8 @@ def checkStream(src_stream, dst_stream):
     """
     Check the values of the given streams properties.
     """
-    src_propertiesMap = src_stream.getPropertiesAsMap()
-    dst_propertiesMap = dst_stream.getPropertiesAsMap()
+    src_propertiesMap = src_stream.asMap()
+    dst_propertiesMap = dst_stream.asMap()
     for key in dst_propertiesMap:
         # skip metadata of stream
         if key in [x[0] for x in src_stream.getMetadatas()]:

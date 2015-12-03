@@ -238,7 +238,7 @@ std::vector<Channel> PixelProperties::getChannels() const
 	return channels;
 }
 
-PropertyVector PixelProperties::getPropertiesAsVector() const
+PropertyVector PixelProperties::asVector() const
 {
 	PropertyVector data;
 

@@ -81,9 +81,9 @@ public:
 	const AVFormatContext& getAVFormatContext() { return *_avFormatContext; }
 #endif
 
-	std::string getPropertiesAsJson() const;  ///< Return all properties as a json format.
-	PropertyMap getPropertiesAsMap() const;  ///< Return format properties as a map (name of property, value)
-	PropertyVector getPropertiesAsVector() const;  ///< Return format properties as a vector (name of property: value)
+	std::string asJson() const;  ///< Return all properties as a json format.
+	PropertyMap asMap() const;  ///< Return format properties as a map (name of property, value)
+	PropertyVector asVector() const;  ///< Return format properties as a vector (name of property: value)
 
 private:
 #ifndef SWIG

@@ -81,7 +81,7 @@ public:
 	const PixelProperties& getPixelProperties() const { return _pixelProperties; }
 #endif
 
-	PropertyVector getPropertiesAsVector() const;
+	PropertyVector asVector() const;
 
 private:
 	/**

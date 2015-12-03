@@ -33,7 +33,7 @@ public:
 	AVCodecContext& getAVCodecContext() { return *_codecContext; }
 #endif
 
-	PropertyVector getPropertiesAsVector() const;
+	PropertyVector asVector() const;
 
 private:
 #ifndef SWIG
