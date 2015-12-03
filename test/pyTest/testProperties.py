@@ -139,6 +139,6 @@ def testCheckFilePropertiesAsJson():
 
     import json
     # throw exception if it is not a valid JSON
-    json.loads(inputFile.getProperties().asJson())
+    json.loads(inputFile.getProperties().allPropertiesAsJson())
 
 
