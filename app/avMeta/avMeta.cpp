@@ -50,7 +50,7 @@ int main( int argc, char** argv )
 
 	// display file properties
 	if( toJson )
-		std::cout << input.getProperties().asJson() << std::endl;
+		std::cout << input.getProperties().allPropertiesAsJson() << std::endl;
 	else
 		std::cout << input;
 }

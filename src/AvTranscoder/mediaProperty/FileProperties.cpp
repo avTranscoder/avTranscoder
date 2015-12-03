@@ -254,15 +254,20 @@ PropertyMap FileProperties::asMap() const
 std::string FileProperties::asJson() const
 {
 	json::JsonObjectStreamWriter writer;
+	PropertyMap properties = asMap();
+	for(PropertyMap::iterator it = properties.begin(); it != properties.end(); ++it)
+		writer << std::make_pair(it->first.c_str(), it->second.c_str());
+	return writer.build();
+}
+
+std::string FileProperties::allPropertiesAsJson() const
+{
+	json::JsonObjectStreamWriter writer;
 	{
 		// format
-		json::JsonArrayStreamWriter array;
-		PropertyMap properties = asMap();
-		json::JsonObjectStreamWriter format;
-		for(PropertyMap::iterator it = properties.begin(); it != properties.end(); ++it)
-			format << std::make_pair(it->first.c_str(), it->second.c_str());
-		array << format.build();
-		writer << std::make_pair("format", array.build());
+		json::JsonArrayStreamWriter format;
+		format << asJson();
+		writer << std::make_pair("format", format.build());
 	}
 	{
 		// video streams
