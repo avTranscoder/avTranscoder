@@ -2,7 +2,7 @@ import os
 
 # Check if environment is setup to run the tests
 if os.environ.get('AVTRANSCODER_TEST_AUDIO_WAVE_FILE') is None or \
-    os.environ.get('AVTRANSCODER_TEST_AUDIO_MP4_FILE') is None or \
+    os.environ.get('AVTRANSCODER_TEST_VIDEO_MP4_FILE') is None or \
     os.environ.get('AVTRANSCODER_TEST_VIDEO_MOV_FILE') is None:
     from nose.plugins.skip import SkipTest
     raise SkipTest("Need to define environment variables "
