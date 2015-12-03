@@ -96,7 +96,7 @@ private:
 		}
 		catch( const std::exception& e )
 		{
-			detail::add( data, key, "null" );
+			detail::add( data, key, detail::propertyValueIfError );
 		}
 	}
 #endif
