@@ -1,6 +1,6 @@
 #include "StreamProperties.hpp"
 
-#include <AvTranscoder/mediaProperty/JsonWriter.hpp>
+#include <AvTranscoder/properties/JsonWriter.hpp>
 
 #include <stdexcept>
 

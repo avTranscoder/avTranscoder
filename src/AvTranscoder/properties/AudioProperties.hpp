@@ -1,7 +1,7 @@
 #ifndef _AV_TRANSCODER_MEDIA_PROPERTY_AUDIO_PROPERTIES_HPP
 #define _AV_TRANSCODER_MEDIA_PROPERTY_AUDIO_PROPERTIES_HPP
 
-#include <AvTranscoder/mediaProperty/StreamProperties.hpp>
+#include <AvTranscoder/properties/StreamProperties.hpp>
 
 #include <string>
 

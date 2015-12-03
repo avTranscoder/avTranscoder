@@ -1,7 +1,7 @@
 #ifndef _AV_TRANSCODER_CODED_STREAM_I_INPUT_STREAM_HPP_
 #define _AV_TRANSCODER_CODED_STREAM_I_INPUT_STREAM_HPP_
 
-#include <AvTranscoder/mediaProperty/StreamProperties.hpp>
+#include <AvTranscoder/properties/StreamProperties.hpp>
 
 #include <AvTranscoder/codec/AudioCodec.hpp>
 #include <AvTranscoder/codec/VideoCodec.hpp>

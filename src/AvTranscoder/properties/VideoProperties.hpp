@@ -3,7 +3,7 @@
 
 #include "PixelProperties.hpp"
 
-#include <AvTranscoder/mediaProperty/StreamProperties.hpp>
+#include <AvTranscoder/properties/StreamProperties.hpp>
 #include <AvTranscoder/file/util.hpp>
 #include <AvTranscoder/progress/IProgress.hpp>
 

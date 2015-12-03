@@ -22,7 +22,7 @@
 %}
 
 %include "AvTranscoder/progress/progress.i"
-%include "AvTranscoder/mediaProperty/mediaProperty.i"
+%include "AvTranscoder/properties/properties.i"
 %include "AvTranscoder/frame/frame.i"
 %include "AvTranscoder/profile/profile.i"
 

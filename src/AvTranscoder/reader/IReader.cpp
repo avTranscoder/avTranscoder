@@ -1,6 +1,6 @@
 #include "IReader.hpp"
 
-#include <AvTranscoder/mediaProperty/print.hpp>
+#include <AvTranscoder/properties/print.hpp>
 
 #include <cassert>
 

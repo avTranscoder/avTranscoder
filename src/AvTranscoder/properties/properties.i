@@ -1,14 +1,14 @@
 %{
-#include <AvTranscoder/mediaProperty/util.hpp>
-#include <AvTranscoder/mediaProperty/FileProperties.hpp>
-#include <AvTranscoder/mediaProperty/PixelProperties.hpp>
-#include <AvTranscoder/mediaProperty/StreamProperties.hpp>
-#include <AvTranscoder/mediaProperty/VideoProperties.hpp>
-#include <AvTranscoder/mediaProperty/AudioProperties.hpp>
-#include <AvTranscoder/mediaProperty/DataProperties.hpp>
-#include <AvTranscoder/mediaProperty/SubtitleProperties.hpp>
-#include <AvTranscoder/mediaProperty/AttachementProperties.hpp>
-#include <AvTranscoder/mediaProperty/UnknownProperties.hpp>
+#include <AvTranscoder/properties/util.hpp>
+#include <AvTranscoder/properties/FileProperties.hpp>
+#include <AvTranscoder/properties/PixelProperties.hpp>
+#include <AvTranscoder/properties/StreamProperties.hpp>
+#include <AvTranscoder/properties/VideoProperties.hpp>
+#include <AvTranscoder/properties/AudioProperties.hpp>
+#include <AvTranscoder/properties/DataProperties.hpp>
+#include <AvTranscoder/properties/SubtitleProperties.hpp>
+#include <AvTranscoder/properties/AttachementProperties.hpp>
+#include <AvTranscoder/properties/UnknownProperties.hpp>
 
 using namespace avtranscoder;
 %}
@@ -46,13 +46,13 @@ namespace std {
 %template(ChannelVector)   vector< avtranscoder::Channel >;
 }
 
-%include <AvTranscoder/mediaProperty/util.hpp>
-%include <AvTranscoder/mediaProperty/FileProperties.hpp>
-%include <AvTranscoder/mediaProperty/PixelProperties.hpp>
-%include <AvTranscoder/mediaProperty/StreamProperties.hpp>
-%include <AvTranscoder/mediaProperty/VideoProperties.hpp>
-%include <AvTranscoder/mediaProperty/AudioProperties.hpp>
-%include <AvTranscoder/mediaProperty/DataProperties.hpp>
-%include <AvTranscoder/mediaProperty/SubtitleProperties.hpp>
-%include <AvTranscoder/mediaProperty/AttachementProperties.hpp>
-%include <AvTranscoder/mediaProperty/UnknownProperties.hpp>
+%include <AvTranscoder/properties/util.hpp>
+%include <AvTranscoder/properties/FileProperties.hpp>
+%include <AvTranscoder/properties/PixelProperties.hpp>
+%include <AvTranscoder/properties/StreamProperties.hpp>
+%include <AvTranscoder/properties/VideoProperties.hpp>
+%include <AvTranscoder/properties/AudioProperties.hpp>
+%include <AvTranscoder/properties/DataProperties.hpp>
+%include <AvTranscoder/properties/SubtitleProperties.hpp>
+%include <AvTranscoder/properties/AttachementProperties.hpp>
+%include <AvTranscoder/properties/UnknownProperties.hpp>

@@ -2,17 +2,17 @@
 #define _AV_TRANSCODER_MEDIA_PROPERTY_FILE_PROPERTIES_HPP
 
 #include <AvTranscoder/common.hpp>
-#include <AvTranscoder/mediaProperty/util.hpp>
+#include <AvTranscoder/properties/util.hpp>
 #include <AvTranscoder/file/FormatContext.hpp>
 #include <AvTranscoder/progress/IProgress.hpp>
 
-#include <AvTranscoder/mediaProperty/StreamProperties.hpp>
-#include <AvTranscoder/mediaProperty/VideoProperties.hpp>
-#include <AvTranscoder/mediaProperty/AudioProperties.hpp>
-#include <AvTranscoder/mediaProperty/DataProperties.hpp>
-#include <AvTranscoder/mediaProperty/SubtitleProperties.hpp>
-#include <AvTranscoder/mediaProperty/AttachementProperties.hpp>
-#include <AvTranscoder/mediaProperty/UnknownProperties.hpp>
+#include <AvTranscoder/properties/StreamProperties.hpp>
+#include <AvTranscoder/properties/VideoProperties.hpp>
+#include <AvTranscoder/properties/AudioProperties.hpp>
+#include <AvTranscoder/properties/DataProperties.hpp>
+#include <AvTranscoder/properties/SubtitleProperties.hpp>
+#include <AvTranscoder/properties/AttachementProperties.hpp>
+#include <AvTranscoder/properties/UnknownProperties.hpp>
 
 #include <string>
 #include <vector>

@@ -2,7 +2,7 @@
 #define _AV_TRANSCODER_FRAME_PIXEL_PROPERTIES_HPP_
 
 #include <AvTranscoder/common.hpp>
-#include <AvTranscoder/mediaProperty/util.hpp>
+#include <AvTranscoder/properties/util.hpp>
 
 extern "C" {
 #include <libavutil/pixfmt.h>

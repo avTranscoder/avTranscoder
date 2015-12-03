@@ -3,7 +3,7 @@
 
 #include <AvTranscoder/file/IOutputFile.hpp>
 
-#include <AvTranscoder/mediaProperty/util.hpp>
+#include <AvTranscoder/properties/util.hpp>
 #include <AvTranscoder/file/FormatContext.hpp>
 
 #include <vector>

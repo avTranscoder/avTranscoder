@@ -2,7 +2,7 @@
 #define _AV_TRANSCODER_MEDIA_PROPERTY_STREAM_PROPERTIES_HPP
 
 #include <AvTranscoder/common.hpp>
-#include <AvTranscoder/mediaProperty/util.hpp>
+#include <AvTranscoder/properties/util.hpp>
 #include <AvTranscoder/file/FormatContext.hpp>
 
 namespace avtranscoder
