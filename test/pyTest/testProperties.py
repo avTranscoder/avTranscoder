@@ -138,7 +138,5 @@ def testCheckFilePropertiesAsJson():
     inputFile = av.InputFile( inputFileName )
 
     import json
-    # throw exception if it is not a valid JSON
+    # json.loads method throws a ValueError if it is not a valid JSON.
     json.loads(inputFile.getProperties().allPropertiesAsJson())
-
-

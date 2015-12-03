@@ -52,6 +52,9 @@ protected:
 	}
 
 	virtual std::ostream& finish() = 0;
+
+	// Escape strings accordingly to the JSON standard
+	std::string escapeJsonString(const std::string& input);
 };
 
 // Write a boolean to the stream.
@@ -73,6 +76,15 @@ public:
 	JsonObjectStreamWriter& operator<<(const std::pair<const char *, T> pair)
 	{
 		addSep() << pair.first << ':' << pair.second;
+		return *this;
+	}
+
+	template<>
+	JsonObjectStreamWriter& operator<<(const std::pair<const char *, const char*> pair)
+	{
+		std::string first(pair.first);
+		std::string second(pair.second);
+		addSep() << escapeJsonString(first).c_str() << ':' << escapeJsonString(second).c_str();
 		return *this;
 	}
 
