@@ -79,18 +79,12 @@ public:
 		return *this;
 	}
 
-	template<>
-	JsonObjectStreamWriter& operator<<(const std::pair<const char *, const char*> pair)
-	{
-		std::string first(pair.first);
-		std::string second(pair.second);
-		addSep() << escapeJsonString(first).c_str() << ':' << escapeJsonString(second).c_str();
-		return *this;
-	}
-
 protected:
 	virtual std::ostream& finish() { return stream << '}'; }
 };
+
+template<>
+JsonObjectStreamWriter& JsonObjectStreamWriter::operator<<(const std::pair<const char *, const char*> pair);
 
 /**
  * @brief Write an array to a stream.

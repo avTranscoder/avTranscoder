@@ -18,6 +18,15 @@ std::string JsonStreamWriter::escapeJsonString(const std::string& input)
 	return ss.str();
 }
 
+template<>
+JsonObjectStreamWriter& JsonObjectStreamWriter::operator<<(const std::pair<const char *, const char*> pair)
+{
+	std::string first(pair.first);
+	std::string second(pair.second);
+	addSep() << escapeJsonString(first).c_str() << ':' << escapeJsonString(second).c_str();
+	return *this;
+}
+
 template <>
 JsonStreamWriter& JsonStreamWriter::operator<<(bool value)
 {
