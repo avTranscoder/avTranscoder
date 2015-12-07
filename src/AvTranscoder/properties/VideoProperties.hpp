@@ -3,7 +3,7 @@
 
 #include "PixelProperties.hpp"
 
-#include <AvTranscoder/mediaProperty/StreamProperties.hpp>
+#include <AvTranscoder/properties/StreamProperties.hpp>
 #include <AvTranscoder/file/util.hpp>
 #include <AvTranscoder/progress/IProgress.hpp>
 
@@ -78,7 +78,7 @@ public:
 	const PixelProperties& getPixelProperties() const { return _pixelProperties; }
 #endif
 
-	PropertyVector getPropertiesAsVector() const;
+	PropertyVector asVector() const;
 
 private:
 	/**
@@ -97,7 +97,7 @@ private:
 		}
 		catch( const std::exception& e )
 		{
-			detail::add( dataVector, key, e.what() );
+			detail::add( dataVector, key, detail::propertyValueIfError );
 		}
 	}
 #endif

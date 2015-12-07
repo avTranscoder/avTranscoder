@@ -15,7 +15,7 @@ std::ostream& operator<<( std::ostream& flux, const FileProperties& fileProperti
 	flux << std::left;
 	flux << separator << " Wrapper " << separator << std::endl;
 
-	PropertyVector properties = fileProperties.getPropertiesAsVector();
+	PropertyVector properties = fileProperties.asVector();
 	for( PropertyVector::iterator it = properties.begin(); it != properties.end(); ++it )
 	{
 		flux << std::setw( keyWidth ) << it->first << ": " << it->second << std::endl;
@@ -29,7 +29,7 @@ std::ostream& operator<<( std::ostream& flux, const StreamProperties& streamProp
 	flux << std::left;
 	flux << separator << " Stream " << separator << std::endl;
 
-	PropertyVector properties = streamProperties.getPropertiesAsVector();
+	PropertyVector properties = streamProperties.asVector();
 	for( PropertyVector::iterator it = properties.begin(); it != properties.end(); ++it )
 	{
 		flux << std::setw( keyWidth ) << it->first << ": " << it->second << std::endl;
@@ -43,7 +43,7 @@ std::ostream& operator<<( std::ostream& flux, const VideoProperties& videoProper
 	flux << std::left;
 	flux << separator << " Video stream " << separator << std::endl;
 
-	PropertyVector properties = videoProperties.getPropertiesAsVector();
+	PropertyVector properties = videoProperties.asVector();
 	for( PropertyVector::iterator it = properties.begin(); it != properties.end(); ++it )
 	{
 		flux << std::setw( keyWidth ) << it->first << ": " << it->second << std::endl;
@@ -57,7 +57,7 @@ std::ostream& operator<<( std::ostream& flux, const AudioProperties& audioProper
 	flux << std::left;
 	flux << separator << " Audio stream " << separator << std::endl;
 
-	PropertyVector properties = audioProperties.getPropertiesAsVector();
+	PropertyVector properties = audioProperties.asVector();
 	for( PropertyVector::iterator it = properties.begin(); it != properties.end(); ++it )
 	{
 		flux << std::setw( keyWidth ) << it->first << ": " << it->second << std::endl;
@@ -70,7 +70,7 @@ std::ostream& operator<<( std::ostream& flux, const DataProperties& dataProperti
 {
 	flux << separator << " Data stream " << separator << std::endl;
 
-	PropertyVector properties = dataProperties.getPropertiesAsVector();
+	PropertyVector properties = dataProperties.asVector();
 	for( PropertyVector::iterator it = properties.begin(); it != properties.end(); ++it )
 	{
 		flux << std::setw( keyWidth ) << it->first << ": " << it->second << std::endl;
@@ -83,7 +83,7 @@ std::ostream& operator<<( std::ostream& flux, const SubtitleProperties& subtitle
 {
 	flux << separator << " Subtitle stream " << separator << std::endl;
 
-	PropertyVector properties = subtitleProperties.getPropertiesAsVector();
+	PropertyVector properties = subtitleProperties.asVector();
 	for( PropertyVector::iterator it = properties.begin(); it != properties.end(); ++it )
 	{
 		flux << std::setw( keyWidth ) << it->first << ": " << it->second << std::endl;
@@ -96,7 +96,7 @@ std::ostream& operator<<( std::ostream& flux, const AttachementProperties& attac
 {
 	flux << separator << " Attachement stream " << separator << std::endl;
 
-	PropertyVector properties = attachementProperties.getPropertiesAsVector();
+	PropertyVector properties = attachementProperties.asVector();
 	for( PropertyVector::iterator it = properties.begin(); it != properties.end(); ++it )
 	{
 		flux << std::setw( keyWidth ) << it->first << ": " << it->second << std::endl;
@@ -109,7 +109,7 @@ std::ostream& operator<<( std::ostream& flux, const UnknownProperties& unknownPr
 {
 	flux << separator << " Unknown stream " << separator << std::endl;
 
-	PropertyVector properties = unknownProperties.getPropertiesAsVector();
+	PropertyVector properties = unknownProperties.asVector();
 	for( PropertyVector::iterator it = properties.begin(); it != properties.end(); ++it )
 	{
 		flux << std::setw( keyWidth ) << it->first << ": " << it->second << std::endl;

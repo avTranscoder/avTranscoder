@@ -2,7 +2,7 @@
 #define _AV_TRANSCODER_MEDIA_PROPERTY_STREAM_PROPERTIES_HPP
 
 #include <AvTranscoder/common.hpp>
-#include <AvTranscoder/mediaProperty/util.hpp>
+#include <AvTranscoder/properties/util.hpp>
 #include <AvTranscoder/file/FormatContext.hpp>
 
 namespace avtranscoder
@@ -31,8 +31,9 @@ public:
 	const AVFormatContext& getAVFormatContext() const { return *_formatContext; }
 #endif
 
-	PropertyMap getPropertiesAsMap() const;  ///< Return all properties as a map (name of property, value)
-	virtual PropertyVector getPropertiesAsVector() const;  ///< Same data with a specific order
+	std::string asJson() const;  ///< Return all properties as a json format.
+	PropertyMap asMap() const;  ///< Return all properties as a map (name of property, value)
+	virtual PropertyVector asVector() const;  ///< Same data with a specific order
 
 private:
 #ifndef SWIG
@@ -45,7 +46,7 @@ private:
 		}
 		catch( const std::exception& e )
 		{
-			detail::add( dataVector, key, e.what() );
+			detail::add( dataVector, key, detail::propertyValueIfError );
 		}
 	}
 #endif

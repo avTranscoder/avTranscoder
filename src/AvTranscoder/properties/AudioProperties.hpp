@@ -1,7 +1,7 @@
 #ifndef _AV_TRANSCODER_MEDIA_PROPERTY_AUDIO_PROPERTIES_HPP
 #define _AV_TRANSCODER_MEDIA_PROPERTY_AUDIO_PROPERTIES_HPP
 
-#include <AvTranscoder/mediaProperty/StreamProperties.hpp>
+#include <AvTranscoder/properties/StreamProperties.hpp>
 
 #include <string>
 
@@ -30,7 +30,7 @@ public:
 	AVCodecContext& getAVCodecContext() { return *_codecContext; }
 #endif
 
-	PropertyVector getPropertiesAsVector() const;
+	PropertyVector asVector() const;
 
 private:
 #ifndef SWIG
@@ -39,11 +39,11 @@ private:
 	{
 		try
 		{
-		    detail::add( data, key, (this->*getter)() );
+			detail::add( data, key, (this->*getter)() );
 		}
 		catch( const std::exception& e )
 		{
-		    detail::add( data, key, e.what() );
+			detail::add( data, key, detail::propertyValueIfError );
 		}
 	}
 #endif

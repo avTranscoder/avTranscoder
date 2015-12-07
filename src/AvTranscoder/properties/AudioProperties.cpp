@@ -147,12 +147,12 @@ size_t AudioProperties::getTicksPerFrame() const
 	return _codecContext->ticks_per_frame;
 }
 
-PropertyVector AudioProperties::getPropertiesAsVector() const
+PropertyVector AudioProperties::asVector() const
 {
 	PropertyVector data;
 
 	// Add properties of base class
-	PropertyVector basedProperty = StreamProperties::getPropertiesAsVector();
+	PropertyVector basedProperty = StreamProperties::asVector();
 	data.insert( data.begin(), basedProperty.begin(), basedProperty.end() );
 
 	addProperty( data, "sampleFormatName", &AudioProperties::getSampleFormatName );

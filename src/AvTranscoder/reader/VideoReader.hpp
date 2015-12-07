@@ -4,8 +4,8 @@
 #include "IReader.hpp"
 
 #include <AvTranscoder/file/InputFile.hpp>
-#include <AvTranscoder/mediaProperty/PixelProperties.hpp>
-#include <AvTranscoder/mediaProperty/VideoProperties.hpp>
+#include <AvTranscoder/properties/PixelProperties.hpp>
+#include <AvTranscoder/properties/VideoProperties.hpp>
 
 namespace avtranscoder
 {

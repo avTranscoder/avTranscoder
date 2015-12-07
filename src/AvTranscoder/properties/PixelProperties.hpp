@@ -2,7 +2,7 @@
 #define _AV_TRANSCODER_FRAME_PIXEL_PROPERTIES_HPP_
 
 #include <AvTranscoder/common.hpp>
-#include <AvTranscoder/mediaProperty/util.hpp>
+#include <AvTranscoder/properties/util.hpp>
 
 extern "C" {
 #include <libavutil/pixfmt.h>
@@ -80,7 +80,7 @@ public:
 	const AVPixFmtDescriptor* getAVPixFmtDescriptor() const { return _pixelDesc; }
 #endif
 
-	PropertyVector getPropertiesAsVector() const;  ///< Return all pixel properties as a vector (name of property: value)
+	PropertyVector asVector() const;  ///< Return all pixel properties as a vector (name of property: value)
 
 private:
 	void init( const AVPixelFormat avPixelFormat );
@@ -95,7 +95,7 @@ private:
 		}
 		catch( const std::exception& e )
 		{
-			detail::add( data, key, e.what() );
+			detail::add( data, key, detail::propertyValueIfError );
 		}
 	}
 #endif

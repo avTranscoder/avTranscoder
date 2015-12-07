@@ -238,7 +238,7 @@ std::vector<Channel> PixelProperties::getChannels() const
 	return channels;
 }
 
-PropertyVector PixelProperties::getPropertiesAsVector() const
+PropertyVector PixelProperties::asVector() const
 {
 	PropertyVector data;
 
@@ -306,7 +306,7 @@ PropertyVector PixelProperties::getPropertiesAsVector() const
 	}
 	catch( const std::exception& e )
 	{
-		detail::add( data, "subsampling", e.what() );
+		detail::add( data, "subsampling", detail::propertyValueIfError );
 	}
 
 	addProperty( data, "isBigEndian", &PixelProperties::isBigEndian );
@@ -336,7 +336,7 @@ PropertyVector PixelProperties::getPropertiesAsVector() const
 	}
 	catch( const std::exception& e )
 	{
-		detail::add( data, "channels", e.what() );
+		detail::add( data, "channels", detail::propertyValueIfError );
 	}
 
 	return data;

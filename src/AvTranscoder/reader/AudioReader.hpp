@@ -4,7 +4,7 @@
 #include "IReader.hpp"
 
 #include <AvTranscoder/file/InputFile.hpp>
-#include <AvTranscoder/mediaProperty/AudioProperties.hpp>
+#include <AvTranscoder/properties/AudioProperties.hpp>
 
 namespace avtranscoder
 {

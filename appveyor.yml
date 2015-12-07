@@ -27,6 +27,7 @@ test_script:
   - tools/appveyor.python.nosetests.bat
 
 on_failure:
+  - type "C:\ProgramData\chocolatey\logs\chocolatey.log"
   - type "C:\projects\avtranscoder\build\CMakeFiles\CMakeOutput.log"
 
 #on_success:

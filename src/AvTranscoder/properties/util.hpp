@@ -25,6 +25,11 @@ typedef std::map< std::string, std::string > PropertyMap;
 namespace detail
 {
 
+/**
+ * If cannot access the property, get this value.
+ */
+const std::string propertyValueIfError = "null";
+
 template<typename T>
 void add( PropertyVector& propertyVector, const std::string& key, const T& value )
 {
