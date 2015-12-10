@@ -33,8 +33,6 @@ matrix:
       env: DEPENDENCY_MODE=ffmpeg ENABLE_COVERAGE=true
     - compiler: clang
       env: DEPENDENCY_MODE=libav ENABLE_COVERAGE=true
-  allow_failures:
-    - os: osx
   fast_finish: true
 
 # This results in a 2×2×2x2 build matrix.
