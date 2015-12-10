@@ -21,22 +21,22 @@ env:
      - DEPENDENCY_INSTALL=install-dependency
      - DEPENDENCY_INSTALL_PATH=${TRAVIS_BUILD_DIR}/${DEPENDENCY_INSTALL}
   matrix:
-    - DEPENDENCY_MODE=libav ENABLE_COVERAGE=true
-    - DEPENDENCY_MODE=libav ENABLE_COVERAGE=false
-    - DEPENDENCY_MODE=ffmpeg ENABLE_COVERAGE=true
-    - DEPENDENCY_MODE=ffmpeg ENABLE_COVERAGE=false
+    - DEPENDENCY_NAME=libav ENABLE_COVERAGE=true
+    - DEPENDENCY_NAME=libav ENABLE_COVERAGE=false
+    - DEPENDENCY_NAME=ffmpeg ENABLE_COVERAGE=true
+    - DEPENDENCY_NAME=ffmpeg ENABLE_COVERAGE=false
 
 matrix:
   # generate coverage only with gcc
   exclude:
     - compiler: clang
-      env: DEPENDENCY_MODE=ffmpeg ENABLE_COVERAGE=true
+      env: DEPENDENCY_NAME=ffmpeg ENABLE_COVERAGE=true
     - compiler: clang
-      env: DEPENDENCY_MODE=libav ENABLE_COVERAGE=true
+      env: DEPENDENCY_NAME=libav ENABLE_COVERAGE=true
   fast_finish: true
 
 # This results in a 2×2×2x2 build matrix.
-# Where the variables are: os / compiler / DEPENDENCY_MODE / ENABLE_COVERAGE
+# Where the variables are: os / compiler / DEPENDENCY_NAME / ENABLE_COVERAGE
 
 addons:
   apt:
@@ -56,7 +56,7 @@ cache:
   - ${DEPENDENCY_INSTALL_PATH}
 
 before_script:
-  - env | sort  
+  - env | sort
   - date -u
   - uname -a
 
@@ -74,7 +74,7 @@ script:
   - ./tools/travis.build.sh
 
   # launch tests
-  - if [ ${TRAVIS_OS_NAME} = "linux" && ${DEPENDENCY_MODE} = "ffmpeg" ]; then ./tools/travis.python.nosetests.sh; fi
+  - if [ ${TRAVIS_OS_NAME} = "linux" && ${DEPENDENCY_NAME} = "ffmpeg" ]; then ./tools/travis.python.nosetests.sh; fi
 
 after_success:
   # generate coverage for coveralls
@@ -85,13 +85,13 @@ before_deploy:
   - if [ ${TRAVIS_OS_NAME} = "linux" ]; then cp /lib/x86_64-linux-gnu/{libbz2.so.1,libbz2.so.1.0,libbz2.so.1.0.4} ${DEPENDENCY_INSTALL_PATH}/lib; fi
   # create archive
   - cd ${TRAVIS_BUILD_DIR}
-  - tar -cvzf avtranscoder-${TRAVIS_OS_NAME}-${CC}-${DEPENDENCY_MODE}.tgz ${DEPENDENCY_INSTALL} ${AVTRANSCODER_INSTALL}
+  - tar -cvzf avtranscoder-${TRAVIS_OS_NAME}-${CC}-${DEPENDENCY_NAME}.tgz ${DEPENDENCY_INSTALL} ${AVTRANSCODER_INSTALL}
 
 deploy:
   provider: releases
   api_key:
     secure: ${GITHUB_RELEASE_API_KEY}
-  file: avtranscoder-${TRAVIS_OS_NAME}-${CC}-${DEPENDENCY_MODE}.tgz
+  file: avtranscoder-${TRAVIS_OS_NAME}-${CC}-${DEPENDENCY_NAME}.tgz
   skip_cleanup: true
   on:
     branch: master

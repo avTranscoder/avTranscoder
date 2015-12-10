@@ -16,9 +16,9 @@ pip install nose
 brew install freeglut
 
 # Main dependency
-if [[ ${DEPENDENCY_MODE} == "ffmpeg" ]]; then
+if [[ ${DEPENDENCY_NAME} == "ffmpeg" ]]; then
     brew install ffmpeg
-elif [[ ${DEPENDENCY_MODE} == "libav" ]]; then
+elif [[ ${DEPENDENCY_NAME} == "libav" ]]; then
     export LIBAV_VERSION=11.3
     wget https://libav.org/releases/libav-${LIBAV_VERSION}.tar.gz
     tar -xvf libav-${LIBAV_VERSION}.tar.gz

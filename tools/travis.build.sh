@@ -13,7 +13,7 @@ if [[ ${TRAVIS_OS_NAME} == "linux" ]]; then
     export CMAKE_PREFIX_PATH=${DEPENDENCY_INSTALL_PATH}
 elif [[ ${TRAVIS_OS_NAME} == "osx" ]]; then
     # Ask cmake to search in all homebrew packages
-    export CMAKE_PREFIX_PATH=$(echo /usr/local/Cellar/${DEPENDENCY_MODE}/* | sed 's/ /;/g')
+    export CMAKE_PREFIX_PATH=$(echo /usr/local/Cellar/${DEPENDENCY_NAME}/* | sed 's/ /;/g')
 fi
 
 # Build avTranscoder
