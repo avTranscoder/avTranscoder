@@ -19,10 +19,10 @@ brew install freeglut
 if [[ ${DEPENDENCY_NAME} == "ffmpeg" ]]; then
     brew install ffmpeg
 elif [[ ${DEPENDENCY_NAME} == "libav" ]]; then
-    export LIBAV_VERSION=11.3
-    wget https://libav.org/releases/libav-${LIBAV_VERSION}.tar.gz
-    tar -xvf libav-${LIBAV_VERSION}.tar.gz
-    cd libav-${LIBAV_VERSION}
+
+    wget https://libav.org/releases/libav-${DEPENDENCY_VERSION}.tar.gz
+    tar -xvf libav-${DEPENDENCY_VERSION}.tar.gz
+    cd libav-${DEPENDENCY_VERSION}
     ./configure --disable-yasm --enable-shared --disable-static && make -k && make install
 
 fi

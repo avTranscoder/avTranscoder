@@ -21,10 +21,10 @@ env:
      - DEPENDENCY_INSTALL=install-dependency
      - DEPENDENCY_INSTALL_PATH=${TRAVIS_BUILD_DIR}/${DEPENDENCY_INSTALL}
   matrix:
-    - DEPENDENCY_NAME=libav ENABLE_COVERAGE=true
-    - DEPENDENCY_NAME=libav ENABLE_COVERAGE=false
-    - DEPENDENCY_NAME=ffmpeg ENABLE_COVERAGE=true
-    - DEPENDENCY_NAME=ffmpeg ENABLE_COVERAGE=false
+    - DEPENDENCY_NAME=libav DEPENDENCY_VERSION=11.3 ENABLE_COVERAGE=true
+    - DEPENDENCY_NAME=libav DEPENDENCY_VERSION=11.3 ENABLE_COVERAGE=false
+    - DEPENDENCY_NAME=ffmpeg DEPENDENCY_VERSION=2.2.9 ENABLE_COVERAGE=true
+    - DEPENDENCY_NAME=ffmpeg DEPENDENCY_VERSION=2.2.9 ENABLE_COVERAGE=false
 
 matrix:
   # generate coverage only with gcc
@@ -85,13 +85,13 @@ before_deploy:
   - if [ ${TRAVIS_OS_NAME} = "linux" ]; then cp /lib/x86_64-linux-gnu/{libbz2.so.1,libbz2.so.1.0,libbz2.so.1.0.4} ${DEPENDENCY_INSTALL_PATH}/lib; fi
   # create archive
   - cd ${TRAVIS_BUILD_DIR}
-  - tar -cvzf avtranscoder-${TRAVIS_OS_NAME}-${CC}-${DEPENDENCY_NAME}.tgz ${DEPENDENCY_INSTALL} ${AVTRANSCODER_INSTALL}
+  - tar -cvzf avtranscoder-${TRAVIS_OS_NAME}-${CC}-${DEPENDENCY_NAME}-${DEPENDENCY_VERSION}.tgz ${DEPENDENCY_INSTALL} ${AVTRANSCODER_INSTALL}
 
 deploy:
   provider: releases
   api_key:
     secure: ${GITHUB_RELEASE_API_KEY}
-  file: avtranscoder-${TRAVIS_OS_NAME}-${CC}-${DEPENDENCY_NAME}.tgz
+  file: avtranscoder-${TRAVIS_OS_NAME}-${CC}-${DEPENDENCY_NAME}-${DEPENDENCY_VERSION}.tgz
   skip_cleanup: true
   on:
     branch: master
