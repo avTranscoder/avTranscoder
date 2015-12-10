@@ -7,6 +7,7 @@ Based on Libav/FFmpeg libraries to support various video and audio formats, avTr
 [![Build Status](https://travis-ci.org/avTranscoder/avTranscoder.svg?branch=develop)](https://travis-ci.org/avTranscoder/avTranscoder)
 [![Coverage Status](https://coveralls.io/repos/avTranscoder/avTranscoder/badge.svg)](https://coveralls.io/r/avTranscoder/avTranscoder)
 <a href="https://scan.coverity.com/projects/2626"><img alt="Coverity Scan Build Status" src="https://scan.coverity.com/projects/2626/badge.svg"/></a>
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/avTranscoder/avtranscoder/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
 #### What you need to know
 * C++ library
@@ -50,8 +51,3 @@ Note: for continuous integration, we launch tests with media files contained in 
 
 ###### Build openSUSE  
 comming soon
-
-
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/avTranscoder/avtranscoder/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
