@@ -3,8 +3,6 @@
 # Print commands and their arguments as they are executed.
 set -x
 
-lsb_release -a
-
 if [ ! -d "${DEPENDENCY_INSTALL_PATH}/lib/" ]; then
 
     if [[ ${DEPENDENCY_NAME} == "ffmpeg" ]]; then

@@ -16,13 +16,4 @@ pip install nose
 brew install freeglut
 
 # Main dependency
-if [[ ${DEPENDENCY_NAME} == "ffmpeg" ]]; then
-    brew install ffmpeg
-elif [[ ${DEPENDENCY_NAME} == "libav" ]]; then
-
-    wget https://libav.org/releases/libav-${DEPENDENCY_VERSION}.tar.gz
-    tar -xvf libav-${DEPENDENCY_VERSION}.tar.gz
-    cd libav-${DEPENDENCY_VERSION}
-    ./configure --disable-yasm --enable-shared --disable-static && make -k && make install
-
-fi
+./travis.linux.install.deps.sh
