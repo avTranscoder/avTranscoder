@@ -30,9 +30,9 @@ matrix:
   # generate coverage only with gcc
   exclude:
     - compiler: clang
-      env: DEPENDENCY_NAME=ffmpeg ENABLE_COVERAGE=true
+      env: DEPENDENCY_NAME=ffmpeg DEPENDENCY_VERSION=2.2.9 ENABLE_COVERAGE=true
     - compiler: clang
-      env: DEPENDENCY_NAME=libav ENABLE_COVERAGE=true
+      env: DEPENDENCY_NAME=libav DEPENDENCY_VERSION=11.3 ENABLE_COVERAGE=true
   fast_finish: true
 
 # This results in a 2×2×2x2 build matrix.
