@@ -79,7 +79,7 @@ script:
   - ./tools/travis.build.sh
 
   # launch tests
-  - if [ ${TRAVIS_OS_NAME} = "linux" && ${DEPENDENCY_NAME} = "ffmpeg" ]; then ./tools/travis.python.nosetests.sh; fi
+  - if [ ${TRAVIS_OS_NAME} = "linux" ] && [ ${DEPENDENCY_NAME} = "ffmpeg" ]; then ./tools/travis.python.nosetests.sh; fi
 
 after_success:
   # generate coverage for coveralls
