@@ -14,6 +14,9 @@ Based on Libav/FFmpeg libraries to support various video and audio formats, avTr
 * multiplateform (Linux, MAC, Windows)
 * your call to be based on Libav, FFmpeg, or your custom fork of one of these librairies
 
+[![Stories in Progress](https://badge.waffle.io/avTranscoder/avTranscoder.svg?label=2 - Working&title=In Progress)](http://waffle.io/avTranscoder/avTranscoder)   
+Click on the badge above to have a big picture view of what's in progress and how you can help.  
+
 #### License
 See [**COPYING.md**](COPYING.md)
 
