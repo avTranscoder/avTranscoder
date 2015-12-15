@@ -11,23 +11,23 @@ namespace avtranscoder
 class AvExport AudioEncoder : public IEncoder
 {
 public:
-	AudioEncoder( const std::string& audioCodecName );
-	~AudioEncoder();
+    AudioEncoder(const std::string& audioCodecName);
+    ~AudioEncoder();
 
-	void setupAudioEncoder( const AudioFrameDesc& frameDesc, const ProfileLoader::Profile& profile = ProfileLoader::Profile() );
-	void setupEncoder( const ProfileLoader::Profile& profile = ProfileLoader::Profile() );
+    void setupAudioEncoder(const AudioFrameDesc& frameDesc,
+                           const ProfileLoader::Profile& profile = ProfileLoader::Profile());
+    void setupEncoder(const ProfileLoader::Profile& profile = ProfileLoader::Profile());
 
-	bool encodeFrame( const Frame& sourceFrame, Frame& codedFrame );
-	bool encodeFrame( Frame& codedFrame );
+    bool encodeFrame(const Frame& sourceFrame, Frame& codedFrame);
+    bool encodeFrame(Frame& codedFrame);
 
-	ICodec& getCodec() { return _codec; }
-	AudioCodec& getAudioCodec() { return _codec; }
+    ICodec& getCodec() { return _codec; }
+    AudioCodec& getAudioCodec() { return _codec; }
 
 private:
-	AudioCodec _codec;
-	AVFrame* _frame;  ///< Contains the encoded data to pass to the Frame when encodeFrame
+    AudioCodec _codec;
+    AVFrame* _frame; ///< Contains the encoded data to pass to the Frame when encodeFrame
 };
-
 }
 
 #endif
