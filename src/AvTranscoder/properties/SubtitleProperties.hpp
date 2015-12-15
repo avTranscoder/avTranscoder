@@ -9,11 +9,11 @@ namespace avtranscoder
 class AvExport SubtitleProperties : public StreamProperties
 {
 public:
-	SubtitleProperties( const FormatContext& formatContext, const size_t index )
-	    : StreamProperties( formatContext, index )
-	{}
+    SubtitleProperties(const FormatContext& formatContext, const size_t index)
+        : StreamProperties(formatContext, index)
+    {
+    }
 };
-
 }
 
 #endif

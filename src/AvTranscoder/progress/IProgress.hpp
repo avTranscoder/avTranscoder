@@ -11,8 +11,8 @@ namespace avtranscoder
  */
 enum EJobStatus
 {
-	eJobStatusContinue = 0,
-	eJobStatusCancel
+    eJobStatusContinue = 0,
+    eJobStatusCancel
 };
 
 /**
@@ -23,17 +23,16 @@ enum EJobStatus
 class AvExport IProgress
 {
 public:
-	virtual ~IProgress() {};
-	
-	/**
-	 * @brief Manage the progress.
-	 * @param processedDuration: what is processed
-	 * @param programDuration: what you need to process (the totality)
-	 * @return return EJobStatus to manage the process (continuing, stopping, paused, etc)
-	 */
-	virtual EJobStatus progress( const double processedDuration, const double programDuration ) = 0;
-};
+    virtual ~IProgress(){};
 
+    /**
+     * @brief Manage the progress.
+     * @param processedDuration: what is processed
+     * @param programDuration: what you need to process (the totality)
+     * @return return EJobStatus to manage the process (continuing, stopping, paused, etc)
+     */
+    virtual EJobStatus progress(const double processedDuration, const double programDuration) = 0;
+};
 }
 
 #endif

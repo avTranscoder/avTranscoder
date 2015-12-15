@@ -19,8 +19,8 @@ namespace avtranscoder
 /**
  * @brief PropertyVector is a vector of pair, because the order of properties matters to us.
  */
-typedef std::vector< std::pair<std::string, std::string> > PropertyVector;
-typedef std::map< std::string, std::string > PropertyMap;
+typedef std::vector<std::pair<std::string, std::string> > PropertyVector;
+typedef std::map<std::string, std::string> PropertyMap;
 
 namespace detail
 {
@@ -30,30 +30,28 @@ namespace detail
  */
 const std::string propertyValueIfError = "null";
 
-template<typename T>
-void add( PropertyVector& propertyVector, const std::string& key, const T& value )
+template <typename T>
+void add(PropertyVector& propertyVector, const std::string& key, const T& value)
 {
-	std::stringstream ss;
-	ss << value;
-	add( propertyVector, key, ss.str() );
+    std::stringstream ss;
+    ss << value;
+    add(propertyVector, key, ss.str());
 }
 
-template<>
-void add( PropertyVector& propertyVector, const std::string& key, const std::string& value );
+template <>
+void add(PropertyVector& propertyVector, const std::string& key, const std::string& value);
 
-template<>
-void add( PropertyVector& propertyVector, const std::string& key, const bool& value );
+template <>
+void add(PropertyVector& propertyVector, const std::string& key, const bool& value);
 
-template<>
-void add( PropertyVector& propertyVector, const std::string& key, const Rational& value );
+template <>
+void add(PropertyVector& propertyVector, const std::string& key, const Rational& value);
 
 /**
  * @brief Fill metadata parameter with the given AVDictionary.
  */
-void AvExport fillMetadataDictionnary( AVDictionary* avdictionnary, PropertyVector& metadata );
-
+void AvExport fillMetadataDictionnary(AVDictionary* avdictionnary, PropertyVector& metadata);
 }
-
 }
 
 #endif
