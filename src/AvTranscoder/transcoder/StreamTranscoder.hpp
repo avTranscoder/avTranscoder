@@ -79,7 +79,7 @@ public:
 	ITransform& getTransform() const { return *_transform; }
 
 	/// Returns a reference to the stream which unwraps data
-	IInputStream& getInputStream() const { return *_inputStream; }
+	IInputStream* getInputStream() const { return _inputStream; }
 	/// Returns a reference to the stream which wraps data
 	IOutputStream& getOutputStream() const { return *_outputStream; }
 
