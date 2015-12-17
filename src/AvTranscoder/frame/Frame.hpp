@@ -15,78 +15,77 @@ namespace avtranscoder
 class AvExport Frame
 {
 public:
-	/// Create a frame with empty buffer data
-	Frame();
+    /// Create a frame with empty buffer data
+    Frame();
 
-	/// Create a frame with a the given buffer size
-	Frame( const size_t dataSize );
+    /// Create a frame with a the given buffer size
+    Frame(const size_t dataSize);
 
 #ifndef SWIG
-	/// Create a frame from the given AVPAcket (copy data of given packet)
-	Frame( const AVPacket& avPacket );
+    /// Create a frame from the given AVPAcket (copy data of given packet)
+    Frame(const AVPacket& avPacket);
 #endif
 
-	/// Override copy constructor in order to copy AVPacket data
-	Frame( const Frame& other );
+    /// Override copy constructor in order to copy AVPacket data
+    Frame(const Frame& other);
 
-	/// Override operator = in order to copy AVPacket data
-	Frame& operator=( const Frame& other );
+    /// Override operator = in order to copy AVPacket data
+    Frame& operator=(const Frame& other);
 
-	/// Free buffer of data
-	~Frame();
+    /// Free buffer of data
+    ~Frame();
 
-	void refAVStream( const AVStream& avStream ) { _avStream = &avStream; }
-	/// Resize data buffer
-	void resize( const size_t newSize );
+    void refAVStream(const AVStream& avStream) { _avStream = &avStream; }
+    /// Resize data buffer
+    void resize(const size_t newSize);
 
-	///@{
-	/// Ref to external data buffer
-	void refData( Frame& frame );
-	void refData( unsigned char* buffer, const size_t size );
-	///@}
+    ///@{
+    /// Ref to external data buffer
+    void refData(Frame& frame);
+    void refData(unsigned char* buffer, const size_t size);
+    ///@}
 
-	/// Copy external data buffer
-	void copyData( unsigned char* buffer, const size_t size );
+    /// Copy external data buffer
+    void copyData(unsigned char* buffer, const size_t size);
 
-	/**
-	 * @brief Resize the buffer with the given size, and copy the given value
-	 * @note Use this function to check if we can modify the buffer
-	 */
-	void assign( const size_t size, const int value );
+    /**
+     * @brief Resize the buffer with the given size, and copy the given value
+     * @note Use this function to check if we can modify the buffer
+     */
+    void assign(const size_t size, const int value);
 
-	/// Clear existing data and set size to 0
-	void clear();
+    /// Clear existing data and set size to 0
+    void clear();
 
-	unsigned char* getData() { return _packet.data; }
-	size_t getSize() const { return _packet.size; }
+    unsigned char* getData() { return _packet.data; }
+    size_t getSize() const { return _packet.size; }
 
 #ifndef SWIG
-	/**
-	 * @return the AVStream which contains the packet
-	 * @note may be NULL in case of generated packets
-	 */
-	const AVStream* getAVStream() const { return _avStream; }
-	AVPacket& getAVPacket() { return _packet; }
-	const AVPacket& getAVPacket() const { return _packet; }
-	const unsigned char* getData() const { return _packet.data; }
+    /**
+     * @return the AVStream which contains the packet
+     * @note may be NULL in case of generated packets
+     */
+    const AVStream* getAVStream() const { return _avStream; }
+    AVPacket& getAVPacket() { return _packet; }
+    const AVPacket& getAVPacket() const { return _packet; }
+    const unsigned char* getData() const { return _packet.data; }
 #endif
 
 private:
-	void initAVPacket();
-	void copyAVPacket( const AVPacket& avPacket );
+    void initAVPacket();
+    void copyAVPacket(const AVPacket& avPacket);
 
 private:
-	AVPacket _packet;
+    AVPacket _packet;
 
-	// Stream which contains the packet
-	const AVStream* _avStream;  //< Has link (no ownership)
+    // Stream which contains the packet
+    const AVStream* _avStream; //< Has link (no ownership)
 };
 
 // Typedef to represent buffer of coded data.
 // Example 1: in case of image, no sense to get size if coded data.
 // Example 2: in case of audio, no sense to get number of channels if coded data.
 typedef Frame CodedData;
-
 }
 
 #endif

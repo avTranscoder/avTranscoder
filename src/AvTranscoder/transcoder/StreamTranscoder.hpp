@@ -21,121 +21,123 @@ class ITransform;
 class AvExport StreamTranscoder
 {
 private:
-	StreamTranscoder( const StreamTranscoder& streamTranscoder );
-	StreamTranscoder& operator=( const StreamTranscoder& streamTranscoder );
+    StreamTranscoder(const StreamTranscoder& streamTranscoder);
+    StreamTranscoder& operator=(const StreamTranscoder& streamTranscoder);
 
 public:
-	/**
-	 * @brief rewrap stream
-	 * @note offset feature when rewrap a stream is not supported
-	 **/
-	StreamTranscoder( IInputStream& inputStream, IOutputFile& outputFile, const float offset = 0 );
+    /**
+     * @brief rewrap stream
+     * @note offset feature when rewrap a stream is not supported
+     **/
+    StreamTranscoder(IInputStream& inputStream, IOutputFile& outputFile, const float offset = 0);
 
-	/**
-	 * @brief transcode stream
-	 **/
-	StreamTranscoder( IInputStream& inputStream, IOutputFile& outputFile, const ProfileLoader::Profile& profile, const int subStreamIndex = -1, const float offset = 0 );
+    /**
+     * @brief transcode stream
+     **/
+    StreamTranscoder(IInputStream& inputStream, IOutputFile& outputFile, const ProfileLoader::Profile& profile,
+                     const int subStreamIndex = -1, const float offset = 0);
 
-	/**
-	 * @brief encode from a generated stream
-	 * @note offset feature has no sense here
-	 **/
-	StreamTranscoder( const ICodec& inputCodec, IOutputFile& outputFile, const ProfileLoader::Profile& profile );
+    /**
+     * @brief encode from a generated stream
+     * @note offset feature has no sense here
+     **/
+    StreamTranscoder(const ICodec& inputCodec, IOutputFile& outputFile, const ProfileLoader::Profile& profile);
 
-	~StreamTranscoder();
+    ~StreamTranscoder();
 
-	/**
-	 * @brief Pre-process codec latency.
-	 * @note This can be called several times with no side effects.
-	 * @note Can take a little bit of time.
-	 */
-	void preProcessCodecLatency();
-	
-	/**
-	 * @brief process a single frame for the current stream
-	 * @return the process status result
-	 */
-	bool processFrame();
+    /**
+     * @brief Pre-process codec latency.
+     * @note This can be called several times with no side effects.
+     * @note Can take a little bit of time.
+     */
+    void preProcessCodecLatency();
 
-	//@{
-	/** Switch decoder */
-	void switchToGeneratorDecoder();
-	void switchToInputDecoder();
-	//@}
+    /**
+     * @brief process a single frame for the current stream
+     * @return the process status result
+     */
+    bool processFrame();
 
-	/**
-	 * @brief Get the total duration (in seconds), ie. duration of the stream and the offset applies
-	 * @note if it's a generated stream, return limit of double.
-	 * @note if offset > duration of the stream, return 0
-	 */
-	float getDuration() const;
+    //@{
+    /** Switch decoder */
+    void switchToGeneratorDecoder();
+    void switchToInputDecoder();
+    //@}
 
-	/// Returns a pointer to the current decoder (from input file or from generator)
-	IDecoder* getCurrentDecoder() const { return _currentDecoder; }
-	/// Returns a pointer to the encoder
-	IEncoder* getEncoder() const { return _outputEncoder; }
+    /**
+     * @brief Get the total duration (in seconds), ie. duration of the stream and the offset applies
+     * @note if it's a generated stream, return limit of double.
+     * @note if offset > duration of the stream, return 0
+     */
+    float getDuration() const;
 
-	/// Returns a reference to the object which transforms the decoded data
-	ITransform& getTransform() const { return *_transform; }
+    /// Returns a pointer to the current decoder (from input file or from generator)
+    IDecoder* getCurrentDecoder() const { return _currentDecoder; }
+    /// Returns a pointer to the encoder
+    IEncoder* getEncoder() const { return _outputEncoder; }
 
-	/// Returns a reference to the stream which unwraps data
-	IInputStream& getInputStream() const { return *_inputStream; }
-	/// Returns a reference to the stream which wraps data
-	IOutputStream& getOutputStream() const { return *_outputStream; }
+    /// Returns a reference to the object which transforms the decoded data
+    ITransform& getTransform() const { return *_transform; }
 
-	/**
-	 * @brief Returns if the stream has the ability to switch to a generator.
-	 */
-	bool canSwitchToGenerator();
+    /// Returns a reference to the stream which unwraps data
+    IInputStream* getInputStream() const { return _inputStream; }
+    /// Returns a reference to the stream which wraps data
+    IOutputStream& getOutputStream() const { return *_outputStream; }
 
-	/**
-	 * @brief Set if the stream needs to switch to a generator when ended
-	 * @note Throws a runtime_error exception if the stream cannot switch to a generator
-	 * @see canSwitchToGenerator
-	 */
-	void needToSwitchToGenerator( const bool needToSwitch = true );
+    /**
+     * @brief Returns if the stream has the ability to switch to a generator.
+     */
+    bool canSwitchToGenerator();
 
-	/**
-	 * @note Throws a runtime_error exception if it's a positive offset and the stream cannot switch to a generator
-	 * @see needToSwitchToGenerator
-	 */
-	void setOffset( const float offset );
+    /**
+     * @brief Set if the stream needs to switch to a generator when ended
+     * @note Throws a runtime_error exception if the stream cannot switch to a generator
+     * @see canSwitchToGenerator
+     */
+    void needToSwitchToGenerator(const bool needToSwitch = true);
 
-private:
-	bool processRewrap();
-	bool processTranscode( const int subStreamIndex = -1 );  ///< By default transcode all channels
-
-	//@{
-	// Get the current process case.
-	enum EProcessCase {
-	    eProcessCaseTranscode,
-	    eProcessCaseRewrap,
-	    eProcessCaseGenerator
-	};
-	EProcessCase getProcessCase() const;
-	//@}
+    /**
+     * @note Throws a runtime_error exception if it's a positive offset and the stream cannot switch to a generator
+     * @see needToSwitchToGenerator
+     */
+    void setOffset(const float offset);
 
 private:
-	IInputStream* _inputStream;  ///< Input stream to read next packet (has link, no ownership)
-	IOutputStream* _outputStream;  ///< Output stream to wrap next packet (has link, no ownership)
+    bool processRewrap();
+    bool processTranscode(const int subStreamIndex = -1); ///< By default transcode all channels
 
-	Frame* _sourceBuffer;  ///< Has ownership
-	Frame* _frameBuffer;  ///< Has ownership
+    //@{
+    // Get the current process case.
+    enum EProcessCase
+    {
+        eProcessCaseTranscode,
+        eProcessCaseRewrap,
+        eProcessCaseGenerator
+    };
+    EProcessCase getProcessCase() const;
+    //@}
 
-	IDecoder* _inputDecoder;  ///< Decoder of packets read from _inputStream (has ownership)
-	IDecoder* _generator;  ///< Generator of audio or video packets (has ownership)
-	IDecoder* _currentDecoder;  ///< Link to _inputDecoder or _generator
-	IEncoder* _outputEncoder;  ///< Encoder of packets which will be wrapped by _outputStream (has ownership)
+private:
+    IInputStream* _inputStream;   ///< Input stream to read next packet (has link, no ownership)
+    IOutputStream* _outputStream; ///< Output stream to wrap next packet (has link, no ownership)
 
-	ITransform* _transform;  ///< Video or audio transform (has ownership)
+    Frame* _sourceBuffer; ///< Has ownership
+    Frame* _frameBuffer;  ///< Has ownership
 
-	int  _subStreamIndex;  ///< Index of channel that is processed from the input stream (<0 if no demultiplexing).
+    IDecoder* _inputDecoder;   ///< Decoder of packets read from _inputStream (has ownership)
+    IDecoder* _generator;      ///< Generator of audio or video packets (has ownership)
+    IDecoder* _currentDecoder; ///< Link to _inputDecoder or _generator
+    IEncoder* _outputEncoder;  ///< Encoder of packets which will be wrapped by _outputStream (has ownership)
 
-	float _offset;  ///< Offset, in seconds, at the beginning of the StreamTranscoder.
+    ITransform* _transform; ///< Video or audio transform (has ownership)
 
-	bool _needToSwitchToGenerator;  ///< Set if need to switch to a generator during the process (because, of other streams duration, or an offset)
+    int _subStreamIndex; ///< Index of channel that is processed from the input stream (<0 if no demultiplexing).
+
+    float _offset; ///< Offset, in seconds, at the beginning of the StreamTranscoder.
+
+    bool _needToSwitchToGenerator; ///< Set if need to switch to a generator during the process (because, of other streams
+                                   ///duration, or an offset)
 };
-
 }
 
 #endif
