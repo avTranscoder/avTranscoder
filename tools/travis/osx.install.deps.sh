@@ -16,4 +16,4 @@ pip install nose
 brew install freeglut
 
 # Main dependency
-./tools/travis.linux.install.deps.sh
+./tools/travis/linux.install.deps.sh
