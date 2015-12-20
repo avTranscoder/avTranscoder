@@ -65,22 +65,22 @@ before_script:
   - cd ${TRAVIS_BUILD_DIR}
 
   # install coverage tools
-  - if [ ${ENABLE_COVERAGE} ]; then ./tools/travis.gcc.install.coverage.sh; fi
+  - if [ ${ENABLE_COVERAGE} ]; then ./tools/travis/gcc.install.coverage.sh; fi
 
   # install avtranscoder dependencies
-  - if [ ${TRAVIS_OS_NAME} = "linux" ]; then ./tools/travis.linux.install.deps.sh; fi
-  - if [ ${TRAVIS_OS_NAME} = "osx" ]; then ./tools/travis.osx.install.deps.sh; fi
+  - if [ ${TRAVIS_OS_NAME} = "linux" ]; then ./tools/travis/linux.install.deps.sh; fi
+  - if [ ${TRAVIS_OS_NAME} = "osx" ]; then ./tools/travis/osx.install.deps.sh; fi
 
 script:
   # build
-  - ./tools/travis.build.sh
+  - ./tools/travis/build.sh
 
   # launch tests
-  - if [ ${DEPENDENCY_MODE} = "ffmpeg" ]; then ./tools/travis.python.nosetests.sh; fi
+  - if [ ${DEPENDENCY_MODE} = "ffmpeg" ]; then ./tools/travis/python.nosetests.sh; fi
 
 after_success:
   # generate coverage for coveralls
-  - if [ ${ENABLE_COVERAGE} ]; then ./tools/travis.gcc.generate.coverage.sh; fi
+  - if [ ${ENABLE_COVERAGE} ]; then ./tools/travis/gcc.generate.coverage.sh; fi
 
 before_deploy:
   # copy libbz2, external dependency of libavformat

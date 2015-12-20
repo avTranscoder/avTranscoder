@@ -4,7 +4,7 @@
 #include "IReader.hpp"
 
 #include <AvTranscoder/file/InputFile.hpp>
-#include <AvTranscoder/mediaProperty/AudioProperties.hpp>
+#include <AvTranscoder/properties/AudioProperties.hpp>
 
 namespace avtranscoder
 {
@@ -12,45 +12,44 @@ namespace avtranscoder
 class AvExport AudioReader : public IReader
 {
 public:
-	//@{
-	// @note Transform the input stream to s16 sample format (to listen).
-	// @see updateOutput
-	AudioReader( const std::string& filename, const size_t streamIndex = 0, const int channelIndex = -1 );
-	AudioReader( InputFile& inputFile, const size_t streamIndex = 0, const int channelIndex = -1 );
-	//@}
+    //@{
+    // @note Transform the input stream to s16 sample format (to listen).
+    // @see updateOutput
+    AudioReader(const std::string& filename, const size_t streamIndex = 0, const int channelIndex = -1);
+    AudioReader(InputFile& inputFile, const size_t streamIndex = 0, const int channelIndex = -1);
+    //@}
 
-	~AudioReader();
+    ~AudioReader();
 
-	/**
-	 * @brief Update sample rate, number of channels and sample format of the output.
-	 * @note Will transform the decoded data when read the stream.
-	 */
-	void updateOutput( const size_t sampleRate, const size_t nbChannels, const std::string& sampleFormat );
+    /**
+     * @brief Update sample rate, number of channels and sample format of the output.
+     * @note Will transform the decoded data when read the stream.
+     */
+    void updateOutput(const size_t sampleRate, const size_t nbChannels, const std::string& sampleFormat);
 
-	//@{
-	// @brief Output info
-	size_t getOutputSampleRate() const { return _outputSampleRate; }
-	size_t getOutputNbChannels() const { return _outputNbChannels; }
-	AVSampleFormat getOutputSampleFormat() const { return _outputSampleFormat; }
-	//@}
+    //@{
+    // @brief Output info
+    size_t getOutputSampleRate() const { return _outputSampleRate; }
+    size_t getOutputNbChannels() const { return _outputNbChannels; }
+    AVSampleFormat getOutputSampleFormat() const { return _outputSampleFormat; }
+    //@}
 
-	// @brief Get source audio properties
-	const AudioProperties* getSourceAudioProperties() const {return _audioStreamProperties;}
-
-private:
-	void init();
+    // @brief Get source audio properties
+    const AudioProperties* getSourceAudioProperties() const { return _audioStreamProperties; }
 
 private:
-	const AudioProperties* _audioStreamProperties;  ///< Properties of the source audio stream read (no ownership, has link)
+    void init();
 
-	//@{
-	// @brief Output info
-	size_t _outputSampleRate;
-	size_t _outputNbChannels;
-	AVSampleFormat _outputSampleFormat;
-	//@}
+private:
+    const AudioProperties* _audioStreamProperties; ///< Properties of the source audio stream read (no ownership, has link)
+
+    //@{
+    // @brief Output info
+    size_t _outputSampleRate;
+    size_t _outputNbChannels;
+    AVSampleFormat _outputSampleFormat;
+    //@}
 };
-
 }
 
 #endif

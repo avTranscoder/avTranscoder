@@ -10,18 +10,15 @@ namespace avtranscoder
 class AvExport ITransform
 {
 public:
-	ITransform()
-	{}
+    ITransform() {}
 
-	virtual ~ITransform()
-	{}
+    virtual ~ITransform() {}
 
-	virtual void convert( const Frame& src, Frame& dst ) = 0;
+    virtual void convert(const Frame& src, Frame& dst) = 0;
 
 protected:
-	virtual bool init( const Frame& src, const Frame& dst ) = 0;
+    virtual bool init(const Frame& src, const Frame& dst) = 0;
 };
-
 }
 
 #endif

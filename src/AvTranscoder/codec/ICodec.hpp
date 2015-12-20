@@ -18,60 +18,59 @@ namespace avtranscoder
  */
 enum ECodecType
 {
-	eCodecTypeEncoder,
-	eCodecTypeDecoder
+    eCodecTypeEncoder,
+    eCodecTypeDecoder
 };
 
 class AvExport ICodec
 {
 private:
-	ICodec( const ICodec& iCodec );
-	ICodec& operator=( const ICodec& iCodec );
+    ICodec(const ICodec& iCodec);
+    ICodec& operator=(const ICodec& iCodec);
 
 public:
-	ICodec( const ECodecType type, const std::string& codecName );
-	ICodec( const ECodecType type, const AVCodecID codecId );
-	ICodec( const ECodecType type, AVCodecContext& avCodecContext );
+    ICodec(const ECodecType type, const std::string& codecName);
+    ICodec(const ECodecType type, const AVCodecID codecId);
+    ICodec(const ECodecType type, AVCodecContext& avCodecContext);
 
-	virtual ~ICodec() = 0;
+    virtual ~ICodec() = 0;
 
-	/// Initialize the codec context.
-	void openCodec();
+    /// Initialize the codec context.
+    void openCodec();
 
-	std::string getCodecName() const;
-	AVCodecID getCodecId() const;
-	ECodecType getCodecType() const { return _type; }
-	int getLatency() const;
+    std::string getCodecName() const;
+    AVCodecID getCodecId() const;
+    ECodecType getCodecType() const { return _type; }
+    int getLatency() const;
 
-	OptionArray getOptions();  ///< Get options as array
-	OptionMap& getOptionsMap() { return _options; }  ///< Get options as map
-
-	Option& getOption( const std::string& optionName ) { return _options.at(optionName); }
-	
+    OptionArray getOptions(); ///< Get options as array
 #ifndef SWIG
-	AVCodecContext& getAVCodecContext() { return *_avCodecContext; }
-	const AVCodecContext& getAVCodecContext() const { return *_avCodecContext; }
-	AVCodec& getAVCodec() { return *_avCodec; }
-	const AVCodec& getAVCodec() const { return *_avCodec; }
+    OptionMap& getOptionsMap() { return _options; } ///< Get options as map
+#endif
+    Option& getOption(const std::string& optionName) { return _options.at(optionName); }
+
+#ifndef SWIG
+    AVCodecContext& getAVCodecContext() { return *_avCodecContext; }
+    const AVCodecContext& getAVCodecContext() const { return *_avCodecContext; }
+    AVCodec& getAVCodec() { return *_avCodec; }
+    const AVCodec& getAVCodec() const { return *_avCodec; }
 #endif
 
 private:
-	void setCodec( const ECodecType type, const std::string& codecName );
-	void setCodec( const ECodecType type, const AVCodecID codecId );
-	void allocateContext();
-	void loadCodecOptions();
+    void setCodec(const ECodecType type, const std::string& codecName);
+    void setCodec(const ECodecType type, const AVCodecID codecId);
+    void allocateContext();
+    void loadCodecOptions();
 
 protected:
-	AVCodecContext* _avCodecContext; ///< Full codec instance description (has ownership)
-	AVCodec* _avCodec; ///< Codec abstract description
-	const bool _isCodecContextAllocated;  ///< Is the AVCodecContext allocated by the class
+    AVCodecContext* _avCodecContext;     ///< Full codec instance description (has ownership)
+    AVCodec* _avCodec;                   ///< Codec abstract description
+    const bool _isCodecContextAllocated; ///< Is the AVCodecContext allocated by the class
 
-	ECodecType _type;
+    ECodecType _type;
 
-	OptionMap _options;
+    OptionMap _options;
 };
-
 }
 
 #endif
-

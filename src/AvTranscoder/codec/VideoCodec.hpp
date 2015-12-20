@@ -10,15 +10,14 @@ namespace avtranscoder
 class AvExport VideoCodec : public ICodec
 {
 public:
-	VideoCodec( const ECodecType type, const std::string& codecName = "" );
-	VideoCodec( const ECodecType type, const AVCodecID codecId );
-	VideoCodec( const ECodecType type, AVCodecContext& avCodecContext );
+    VideoCodec(const ECodecType type, const std::string& codecName = "");
+    VideoCodec(const ECodecType type, const AVCodecID codecId);
+    VideoCodec(const ECodecType type, AVCodecContext& avCodecContext);
 
-	VideoFrameDesc getVideoFrameDesc() const;
+    VideoFrameDesc getVideoFrameDesc() const;
 
-	void setImageParameters( const VideoFrameDesc& videoFrameDesc );
+    void setImageParameters(const VideoFrameDesc& videoFrameDesc);
 };
-
 }
 
 #endif

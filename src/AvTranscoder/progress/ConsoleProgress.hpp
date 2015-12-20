@@ -12,11 +12,10 @@ namespace avtranscoder
 class AvExport ConsoleProgress : public IProgress
 {
 public:
-	~ConsoleProgress();
+    ~ConsoleProgress();
 
-	EJobStatus progress( const double processedDuration, const double programDuration );
+    EJobStatus progress(const double processedDuration, const double programDuration);
 };
-
 }
 
 #endif
