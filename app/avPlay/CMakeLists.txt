@@ -44,9 +44,3 @@ install(
 	DESTINATION "bin/"
 	OPTIONAL
 )
-
-install(
-	FILES ${CMAKE_CURRENT_SOURCE_DIR}/avplay.man
-	RENAME avplay.1
-	DESTINATION "share/man/man1/"
-)
