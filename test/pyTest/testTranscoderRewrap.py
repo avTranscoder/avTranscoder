@@ -48,9 +48,12 @@ def checkStream(src_stream, dst_stream):
 def checkVideoStat(src_videoStream, dst_videoStat):
     """
     Check the values of the video process stats returned after a process.
+    @note Because the process does not include a profile with "processStat", output quality and PSNR are not set.
     """
-    assert_equals(src_videoStream.getDuration(), dst_videoStat.getDuration())
-    assert_equals(int(src_videoStream.getDuration() * src_videoStream.getFps()), dst_videoStat.getNbFrames())
+    assert_equals(dst_videoStat.getDuration(), src_videoStream.getDuration())
+    assert_equals(dst_videoStat.getNbFrames(), int(src_videoStream.getDuration() * src_videoStream.getFps()))
+    assert_equals(dst_videoStat.getQuality(), 0)
+    assert_equals(dst_videoStat.getPSNR(), 0)
 
 
 def testRewrapAudioStream():
