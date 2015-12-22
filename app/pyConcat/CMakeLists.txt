@@ -1,4 +1,6 @@
 ### python/pyConcat
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+include(AvTranscoderMacros)
 
 # Install app
 install(
@@ -8,5 +10,6 @@ install(
 )
 
 if(UNIX)
-	install( CODE "EXECUTE_PROCESS(COMMAND ln -sf python/pyconcat.py ${CMAKE_INSTALL_PREFIX}/bin/pyconcat)" )
+	install( CODE "EXECUTE_PROCESS(COMMAND ln -sf python/pyconcat.py ${CMAKE_INSTALL_PREFIX}/bin/pyconcat-${AVTRANSCODER_VERSION})" )
+	install( CODE "EXECUTE_PROCESS(COMMAND ln -sf pyconcat-${AVTRANSCODER_VERSION} ${CMAKE_INSTALL_PREFIX}/bin/pyconcat)" )
 endif(UNIX)

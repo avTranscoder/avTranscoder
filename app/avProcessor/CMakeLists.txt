@@ -22,9 +22,3 @@ install(
 	DESTINATION "bin/"
 	OPTIONAL
 )
-
-install(
-	FILES ${CMAKE_CURRENT_SOURCE_DIR}/avprocessor.man
-	RENAME avprocessor.1
-	DESTINATION "share/man/man1/"
-)
