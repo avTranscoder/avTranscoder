@@ -19,6 +19,10 @@ public:
     }
 
 public:
+    float getDuration() const { return _duration; }
+    size_t getNbPackets() const { return _nbPackets; }
+
+private:
     float _duration;
     size_t _nbPackets;
 };

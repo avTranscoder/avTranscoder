@@ -5,8 +5,8 @@
 namespace avtranscoder
 {
 
-double VideoStat::psnr(const double d)
+double VideoStat::toPSNR(const double mse)
 {
-    return -10.0 * log10(d);
+    return -10.0 * log10(mse);
 }
 }

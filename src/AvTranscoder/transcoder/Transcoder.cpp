@@ -580,9 +580,9 @@ void Transcoder::fillProcessStat(ProcessStat& processStat)
                     const AVCodecContext& encoderContext = encoder->getCodec().getAVCodecContext();
                     if(encoderContext.coded_frame && (encoderContext.flags & CODEC_FLAG_PSNR))
                     {
-                        videoStat._quality = encoderContext.coded_frame->quality;
-                        videoStat._psnr = VideoStat::psnr(encoderContext.coded_frame->error[0] /
-                                                          (encoderContext.width * encoderContext.height * 255.0 * 255.0));
+                        videoStat.setQuality(encoderContext.coded_frame->quality);
+                        videoStat.setPSNR(encoderContext.coded_frame->error[0] /
+                                          (encoderContext.width * encoderContext.height * 255.0 * 255.0));
                     }
                 }
                 processStat.addVideoStat(streamIndex, videoStat);
