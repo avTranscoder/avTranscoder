@@ -43,12 +43,13 @@ ICodec::ICodec( const ECodecType type, AVCodecContext& avCodecContext )
 
 ICodec::~ICodec()
 {
-	if( ! _isCodecContextAllocated )
-		return;
+    avcodec_close(_avCodecContext);
 
-	avcodec_close( _avCodecContext );
-	av_free( _avCodecContext );
-	_avCodecContext = NULL;
+    if(!_isCodecContextAllocated)
+        return;
+
+    av_free(_avCodecContext);
+    _avCodecContext = NULL;
 }
 
 void ICodec::openCodec()
