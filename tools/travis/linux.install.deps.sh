@@ -3,26 +3,22 @@
 # Print commands and their arguments as they are executed.
 set -x
 
-lsb_release -a
-
 if [ ! -d "${DEPENDENCY_INSTALL_PATH}/lib/" ]; then
 
-    if [[ ${DEPENDENCY_MODE} == "ffmpeg" ]]; then
+    if [[ ${DEPENDENCY_NAME} == "ffmpeg" ]]; then
 
-        export FFMPEG_VERSION=2.2.9
-        wget https://www.ffmpeg.org/releases/ffmpeg-${FFMPEG_VERSION}.tar.bz2
-        bunzip2 ffmpeg-${FFMPEG_VERSION}.tar.bz2
-        tar -xvf ffmpeg-${FFMPEG_VERSION}.tar
-        cd ffmpeg-${FFMPEG_VERSION}
-        ./configure --prefix=${DEPENDENCY_INSTALL_PATH} --disable-yasm --enable-shared --disable-static && make && make install
+        wget https://www.ffmpeg.org/releases/ffmpeg-${DEPENDENCY_VERSION}.tar.bz2
+        bunzip2 ffmpeg-${DEPENDENCY_VERSION}.tar.bz2
+        tar -xvf ffmpeg-${DEPENDENCY_VERSION}.tar
+        cd ffmpeg-${DEPENDENCY_VERSION}
+        ./configure --prefix=${DEPENDENCY_INSTALL_PATH} --disable-yasm --enable-shared --disable-static && make -k && make install
 
-    elif [[ ${DEPENDENCY_MODE} == "libav" ]]; then
+    elif [[ ${DEPENDENCY_NAME} == "libav" ]]; then
 
-        export LIBAV_VERSION=11.3
-        wget https://libav.org/releases/libav-${LIBAV_VERSION}.tar.gz
-        tar -xvf libav-${LIBAV_VERSION}.tar.gz
-        cd libav-${LIBAV_VERSION}
-        ./configure --prefix=${DEPENDENCY_INSTALL_PATH} --disable-yasm --enable-shared --disable-static && make && make install
+        wget https://libav.org/releases/libav-${DEPENDENCY_VERSION}.tar.gz
+        tar -xvf libav-${DEPENDENCY_VERSION}.tar.gz
+        cd libav-${DEPENDENCY_VERSION}
+        ./configure --prefix=${DEPENDENCY_INSTALL_PATH} --disable-yasm --enable-shared --disable-static && make -k && make install
 
     fi
 
