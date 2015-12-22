@@ -68,7 +68,7 @@ public:
      * @note require to launch analyse() before to fill the property struture
      * @return structure of media metadatas
      **/
-    const FileProperties& getProperties() const { return _properties; }
+    const FileProperties& getProperties() const { return *_properties; }
 
     /**
      * @brief Get stream type: video, audio, subtitle, etc.
@@ -121,7 +121,7 @@ private:
 
 protected:
     FormatContext _formatContext;
-    FileProperties _properties;
+    FileProperties* _properties;
     std::string _filename;
     std::vector<InputStream*> _inputStreams; ///< Has ownership
 };
