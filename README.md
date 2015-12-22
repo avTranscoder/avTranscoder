@@ -5,6 +5,7 @@ C++ API for Libav / FFmpeg
 Based on Libav/FFmpeg libraries to support various video and audio formats, avTranscoder provides the high level API to re-wrap or transcode media easily.
 
 [![Build Status](https://travis-ci.org/avTranscoder/avTranscoder.svg?branch=develop)](https://travis-ci.org/avTranscoder/avTranscoder)
+[![Build status](https://ci.appveyor.com/api/projects/status/6urf0otyhtj8xuny?svg=true)](https://ci.appveyor.com/project/cchampet/avtranscoder)
 [![Coverage Status](https://coveralls.io/repos/avTranscoder/avTranscoder/badge.svg)](https://coveralls.io/r/avTranscoder/avTranscoder)
 <a href="https://scan.coverity.com/projects/2626"><img alt="Coverity Scan Build Status" src="https://scan.coverity.com/projects/2626/badge.svg"/></a>
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/avTranscoder/avtranscoder/trend.png)](https://bitdeli.com/free "Bitdeli Badge")  
