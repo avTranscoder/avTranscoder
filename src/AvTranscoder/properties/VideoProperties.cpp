@@ -490,14 +490,16 @@ void VideoProperties::analyseGopStructure(IProgress& progress)
             _codecContext->skip_frame = AVDISCARD_NONE;
 
             AVPacket pkt;
+            av_init_packet(&pkt);
 
+// Allocate frame
 #if LIBAVCODEC_VERSION_MAJOR > 54
             AVFrame* frame = av_frame_alloc();
 #else
             AVFrame* frame = avcodec_alloc_frame();
 #endif
 
-            av_init_packet(&pkt);
+            // Initialize the AVCodecContext to use the given AVCodec
             avcodec_open2(_codecContext, _codec, NULL);
 
             int count = 0;
@@ -531,6 +533,11 @@ void VideoProperties::analyseGopStructure(IProgress& progress)
                 if(stopAnalyse)
                     break;
             }
+
+            // Close a given AVCodecContext and free all the data associated with it (but not the AVCodecContext itself)
+            avcodec_close(_codecContext);
+
+// Free frame
 #if LIBAVCODEC_VERSION_MAJOR > 54
             av_frame_free(&frame);
 #else
