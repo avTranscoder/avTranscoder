@@ -45,6 +45,13 @@ def checkStream(src_stream, dst_stream):
             continue
         assert_equals( src_propertiesMap[key], dst_propertiesMap[key] )
 
+def checkVideoStat(src_videoStream, dst_videoStat):
+    """
+    Check the values of the video process stats returned after a process.
+    """
+    assert_equals(src_videoStream.getDuration(), dst_videoStat.getDuration())
+    assert_equals(int(src_videoStream.getDuration() * src_videoStream.getFps()), dst_videoStat.getNbFrames())
+
 
 def testRewrapAudioStream():
     """
@@ -63,7 +70,11 @@ def testRewrapAudioStream():
     transcoder = av.Transcoder( ouputFile )
     transcoder.add( inputFileName, 0 )
     progress = av.NoDisplayProgress()
-    transcoder.process( progress )
+    processStat = transcoder.process( progress )
+
+    # check process stat returned
+    audioStat = processStat.getAudioStat(0)
+    assert_equals(src_audioStream.getDuration(), audioStat.getDuration())
 
     # get dst file of wrap
     dst_inputFile = av.InputFile( outputFileName )
@@ -94,7 +105,10 @@ def testRewrapAVIVideoStream():
     transcoder = av.Transcoder( ouputFile )
     transcoder.add( inputFileName, 0 )
     progress = av.NoDisplayProgress()
-    transcoder.process( progress )
+    processStat = transcoder.process( progress )
+
+    # check process stat returned
+    checkVideoStat(src_videoStream, processStat.getVideoStat(0))
 
     # get dst file of wrap
     dst_inputFile = av.InputFile( outputFileName )
@@ -125,7 +139,10 @@ def testRewrapMOVVideoStream():
     transcoder = av.Transcoder( ouputFile )
     transcoder.add( inputFileName, 1 )
     progress = av.NoDisplayProgress()
-    transcoder.process( progress )
+    processStat = transcoder.process( progress )
+
+    # check process stat returned
+    checkVideoStat(src_videoStream, processStat.getVideoStat(0))
 
     # get dst file of wrap
     dst_inputFile = av.InputFile( outputFileName )
