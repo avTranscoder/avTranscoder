@@ -44,6 +44,9 @@ matrix:
 # This results in a 2×2×2x2 build matrix.
 # Where the variables are: os / compiler / DEPENDENCY_NAME / ENABLE_COVERAGE
 
+# If ENABLE_COVERAGE is True, we push the coverage to coveralls.
+# If ENABLE_COVERAGE is False, we push the binaries to github releases.
+
 addons:
   apt:
     sources: ['kalakris-cmake']
