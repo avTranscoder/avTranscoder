@@ -252,21 +252,26 @@ ProcessStat Transcoder::process( IProgress& progress )
 
 		// check if JobStatusCancel
 		if( progress.progress( ( progressDuration > outputDuration ) ? outputDuration : progressDuration, outputDuration ) == eJobStatusCancel )
+		{
+			LOG_INFO( "End of process because the job was canceled." )
 			break;
+		}
 
 		// check progressDuration
 		if( _eProcessMethod == eProcessMethodBasedOnDuration && progressDuration >= outputDuration )
+		{
+			LOG_INFO( "End of process because the output program duration (" << progressDuration << "s) is equal or upper than " << outputDuration << "s." )
 			break;
+		}
 
 		LOG_DEBUG( "Process frame " << frame )
 		frameProcessed =  processFrame();
-
 		++frame;
 	}
 
 	_outputFile.endWrap();
 
-	LOG_INFO( "End of process" )
+	LOG_INFO( "End of process: " << frame << " frames processed" )
 
 	LOG_INFO( "Get process statistics" )
 	ProcessStat processStat;
