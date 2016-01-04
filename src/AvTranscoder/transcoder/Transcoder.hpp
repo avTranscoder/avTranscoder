@@ -186,6 +186,13 @@ private:
 	float getOutputDuration() const;
 
 	/**
+	 * @brief Get the current duration of the output program
+	 * @note Returns the duration of the smallest stream.
+	 * @return -1 if there is no output stream.
+	 */
+	float getCurrentOutputDuration() const;
+
+	/**
 	 * @brief Set for each StreamTranscoder if it can switch to generator at the end.
          */
 	void manageSwitchToGenerator();
