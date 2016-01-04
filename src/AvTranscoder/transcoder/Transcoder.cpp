@@ -258,8 +258,8 @@ ProcessStat Transcoder::process( IProgress& progress )
 
 	preProcessCodecLatency();
 
-	const float outputDuration = getOutputDuration();
-	LOG_INFO( "Output duration of the process will be " << outputDuration << "s." )
+	const float expectedOutputDuration = getExpectedOutputDuration();
+	LOG_INFO( "Output duration of the process will be " << expectedOutputDuration << "s." )
 
 	size_t frame = 0;
 	bool frameProcessed = true;
@@ -268,16 +268,16 @@ ProcessStat Transcoder::process( IProgress& progress )
 		const float progressDuration = getCurrentOutputDuration();
 
 		// check if JobStatusCancel
-		if( progress.progress( ( progressDuration > outputDuration ) ? outputDuration : progressDuration, outputDuration ) == eJobStatusCancel )
+		if( progress.progress( ( progressDuration > expectedOutputDuration ) ? expectedOutputDuration : progressDuration, expectedOutputDuration ) == eJobStatusCancel )
 		{
 			LOG_INFO( "End of process because the job was canceled." )
 			break;
 		}
 
 		// check progressDuration
-		if( progressDuration >= outputDuration )
+		if( progressDuration >= expectedOutputDuration )
 		{
-			LOG_INFO( "End of process because the output program duration (" << progressDuration << "s) is equal or upper than " << outputDuration << "s." )
+			LOG_INFO( "End of process because the output program duration (" << progressDuration << "s) is equal or upper than " << expectedOutputDuration << "s." )
 			break;
 		}
 
@@ -482,7 +482,7 @@ float Transcoder::getMaxTotalDuration() const
 	return maxTotalDuration;
 }
 
-float Transcoder::getOutputDuration() const
+float Transcoder::getExpectedOutputDuration() const
 {
 	switch( _eProcessMethod )
 	{
