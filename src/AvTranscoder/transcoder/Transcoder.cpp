@@ -16,7 +16,7 @@ Transcoder::Transcoder( IOutputFile& outputFile )
 	, _streamTranscoders()
 	, _streamTranscodersAllocated()
 	, _profileLoader( true )
-	, _eProcessMethod ( eProcessMethodBasedOnStream )
+	, _eProcessMethod ( eProcessMethodProcessAll )
 	, _mainStreamIndex( 0 )
 	, _outputDuration( 0 )
 {}
@@ -209,15 +209,32 @@ bool Transcoder::processFrame()
 	if( _streamTranscoders.size() == 0 )
 		return false;
 
+	// For each stream, process a frame
+	size_t nbStreamProcessStatusFailed = 0;
 	for( size_t streamIndex = 0; streamIndex < _streamTranscoders.size(); ++streamIndex )
 	{
 		LOG_DEBUG( "Process stream " << streamIndex << "/" << ( _streamTranscoders.size() - 1 ) )
-
-		bool streamProcessStatus = _streamTranscoders.at( streamIndex )->processFrame();
-		if( ! streamProcessStatus )
+		const bool currentStreamProcessStatus = _streamTranscoders.at( streamIndex )->processFrame();
+		if( ! currentStreamProcessStatus )
 		{
-			return false;
+			LOG_WARN( "Failed to process stream " << streamIndex )
+			++nbStreamProcessStatusFailed;
 		}
+	}
+
+	// Get the number of streams without the generators (they always succeed)
+	size_t nbStreamsWithoutGenerator = _streamTranscoders.size();
+	for( size_t streamIndex = 0; streamIndex < _streamTranscoders.size(); ++streamIndex )
+	{
+		if( _streamTranscoders.at( streamIndex )->getProcessCase() == StreamTranscoder::eProcessCaseGenerator )
+			--nbStreamsWithoutGenerator;
+	}
+
+	// If all streams failed to process a new frame
+	if( nbStreamsWithoutGenerator != 0 && nbStreamProcessStatusFailed == nbStreamsWithoutGenerator )
+	{
+		LOG_INFO( "End of process because all streams (except generators) failed to process a new frame." )
+		return false;
 	}
 	return true;
 }
@@ -241,32 +258,37 @@ ProcessStat Transcoder::process( IProgress& progress )
 
 	preProcessCodecLatency();
 
-	const float outputDuration = getOutputDuration();
-	LOG_INFO( "Output duration of the process will be " << outputDuration << "s." )
+	const float expectedOutputDuration = getExpectedOutputDuration();
+	LOG_INFO( "Output duration of the process will be " << expectedOutputDuration << "s." )
 
 	size_t frame = 0;
 	bool frameProcessed = true;
 	while( frameProcessed )
 	{
-		const float progressDuration = _outputFile.getStream( 0 ).getStreamDuration();
+		const float progressDuration = getCurrentOutputDuration();
 
 		// check if JobStatusCancel
-		if( progress.progress( ( progressDuration > outputDuration ) ? outputDuration : progressDuration, outputDuration ) == eJobStatusCancel )
+		if( progress.progress( ( progressDuration > expectedOutputDuration ) ? expectedOutputDuration : progressDuration, expectedOutputDuration ) == eJobStatusCancel )
+		{
+			LOG_INFO( "End of process because the job was canceled." )
 			break;
+		}
 
 		// check progressDuration
-		if( progressDuration >= outputDuration )
+		if( _eProcessMethod != eProcessMethodProcessAll && progressDuration >= expectedOutputDuration )
+		{
+			LOG_INFO( "End of process because the output program duration (" << progressDuration << "s) is equal or upper than " << expectedOutputDuration << "s." )
 			break;
+		}
 
 		LOG_DEBUG( "Process frame " << frame )
 		frameProcessed =  processFrame();
-
 		++frame;
 	}
 
 	_outputFile.endWrap();
 
-	LOG_INFO( "End of process" )
+	LOG_INFO( "End of process: " << frame << " frames processed" )
 
 	LOG_INFO( "Get process statistics" )
 	ProcessStat processStat;
@@ -460,7 +482,7 @@ float Transcoder::getMaxTotalDuration() const
 	return maxTotalDuration;
 }
 
-float Transcoder::getOutputDuration() const
+float Transcoder::getExpectedOutputDuration() const
 {
 	switch( _eProcessMethod )
 	{
@@ -477,6 +499,20 @@ float Transcoder::getOutputDuration() const
 		default:
 			return getMaxTotalDuration();
 	}	
+}
+
+float Transcoder::getCurrentOutputDuration() const
+{
+	float currentOutputDuration = -1;
+	for( size_t streamIndex = 0; streamIndex < _streamTranscoders.size(); ++streamIndex )
+	{
+		const float currentStreamDuration = _outputFile.getStream( streamIndex ).getStreamDuration();
+		if( currentOutputDuration == -1 )
+			currentOutputDuration = currentStreamDuration;
+		else if( currentStreamDuration < currentOutputDuration )
+			currentOutputDuration = currentStreamDuration;
+	}
+	return currentOutputDuration;
 }
 
 void Transcoder::manageSwitchToGenerator()

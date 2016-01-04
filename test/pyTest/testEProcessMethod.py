@@ -2,11 +2,13 @@ import os
 
 # Check if environment is setup to run the tests
 if os.environ.get('AVTRANSCODER_TEST_VIDEO_AVI_FILE') is None or \
+    os.environ.get('AVTRANSCODER_TEST_VIDEO_MOV_FILE') is None or \
     os.environ.get('AVTRANSCODER_TEST_AUDIO_MOV_FILE') is None or \
     os.environ.get('AVTRANSCODER_TEST_AUDIO_WAVE_FILE') is None:
     from nose.plugins.skip import SkipTest
     raise SkipTest("Need to define environment variables "
         "AVTRANSCODER_TEST_VIDEO_AVI_FILE and "
+        "AVTRANSCODER_TEST_VIDEO_MOV_FILE and "
         "AVTRANSCODER_TEST_AUDIO_MOV_FILE and "
         "AVTRANSCODER_TEST_AUDIO_WAVE_FILE")
 
@@ -41,7 +43,7 @@ def testEProcessMethodShortest():
     dst_inputFile = av.InputFile( outputFileName )
     dst_properties = dst_inputFile.getProperties()
 
-    assert_equals( dst_properties.getDuration(), src_properties_shortest.getDuration() )
+    assert_equals( src_properties_shortest.getStreamProperties()[0].getDuration(), dst_properties.getStreamProperties()[1].getDuration() )
 
 
 def testEProcessMethodLongest():
@@ -70,7 +72,7 @@ def testEProcessMethodLongest():
     dst_inputFile = av.InputFile( outputFileName )
     dst_properties = dst_inputFile.getProperties()
 
-    assert_equals( dst_properties.getDuration(), src_properties_longest.getDuration() )
+    assert_equals( src_properties_longest.getStreamProperties()[0].getDuration(), dst_properties.getStreamProperties()[0].getDuration() )
 
 
 def testEProcessMethodBasedOnStream():
@@ -105,6 +107,35 @@ def testEProcessMethodBasedOnStream():
         assert_almost_equals( dst_stream_properties.getDuration(), src_properties_second.getDuration(), delta=0.05 )
 
 
+def testEProcessMethodProcessAll():
+    """
+    Process with method eProcessMethodProcessAll, check the duration of each output stream (which could be differentes).
+    """
+    inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_MOV_FILE']
+    outputFileName = "testEProcessMethodProcessAll.mov"
+
+    ouputFile = av.OutputFile( outputFileName )
+    transcoder = av.Transcoder( ouputFile )
+    transcoder.setProcessMethod( av.eProcessMethodProcessAll )
+
+    transcoder.add( inputFileName, 0 )
+    transcoder.add( inputFileName, 1 )
+
+    progress = av.ConsoleProgress()
+    transcoder.process( progress )
+
+    # get src file
+    src_inputFile = av.InputFile( inputFileName )
+    src_properties = src_inputFile.getProperties()
+
+    # get dst file
+    dst_inputFile = av.InputFile( outputFileName )
+    dst_properties = dst_inputFile.getProperties()
+
+    assert_equals( src_properties.getStreamProperties()[0].getDuration(), dst_properties.getStreamProperties()[0].getDuration() )
+    assert_equals( src_properties.getStreamProperties()[1].getDuration(), dst_properties.getStreamProperties()[1].getDuration() )
+
+
 def testEProcessMethodBasedOnDuration():
     """
     Process with method eProcessMethodBasedOnDuration, check output duration.
@@ -130,5 +161,4 @@ def testEProcessMethodBasedOnDuration():
     dst_inputFile = av.InputFile( outputFileName )
     dst_properties = dst_inputFile.getProperties()
 
-    assert_equals( dst_properties.getDuration(), outputDuration )
-
+    assert_equals( dst_properties.getStreamProperties()[0].getDuration(), outputDuration )
