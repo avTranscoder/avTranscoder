@@ -265,7 +265,7 @@ ProcessStat Transcoder::process( IProgress& progress )
 	bool frameProcessed = true;
 	while( frameProcessed )
 	{
-		const float progressDuration = _outputFile.getStream( 0 ).getStreamDuration();
+		const float progressDuration = getCurrentOutputDuration();
 
 		// check if JobStatusCancel
 		if( progress.progress( ( progressDuration > outputDuration ) ? outputDuration : progressDuration, outputDuration ) == eJobStatusCancel )
@@ -499,6 +499,20 @@ float Transcoder::getOutputDuration() const
 		default:
 			return getMaxTotalDuration();
 	}	
+}
+
+float Transcoder::getCurrentOutputDuration() const
+{
+	float currentOutputDuration = -1;
+	for( size_t streamIndex = 0; streamIndex < _streamTranscoders.size(); ++streamIndex )
+	{
+		const float currentStreamDuration = _outputFile.getStream( streamIndex ).getStreamDuration();
+		if( currentOutputDuration == -1 )
+			currentOutputDuration = currentStreamDuration;
+		else if( currentStreamDuration < currentOutputDuration )
+			currentOutputDuration = currentStreamDuration;
+	}
+	return currentOutputDuration;
 }
 
 void Transcoder::manageSwitchToGenerator()
