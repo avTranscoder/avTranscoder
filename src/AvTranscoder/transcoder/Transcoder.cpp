@@ -209,15 +209,32 @@ bool Transcoder::processFrame()
 	if( _streamTranscoders.size() == 0 )
 		return false;
 
+	// For each stream, process a frame
+	size_t nbStreamProcessStatusFailed = 0;
 	for( size_t streamIndex = 0; streamIndex < _streamTranscoders.size(); ++streamIndex )
 	{
 		LOG_DEBUG( "Process stream " << streamIndex << "/" << ( _streamTranscoders.size() - 1 ) )
-
-		bool streamProcessStatus = _streamTranscoders.at( streamIndex )->processFrame();
-		if( ! streamProcessStatus )
+		const bool currentStreamProcessStatus = _streamTranscoders.at( streamIndex )->processFrame();
+		if( ! currentStreamProcessStatus )
 		{
-			return false;
+			LOG_WARN( "Failed to process stream " << streamIndex )
+			++nbStreamProcessStatusFailed;
 		}
+	}
+
+	// Get the number of streams without the generators (they always succeed)
+	size_t nbStreamsWithoutGenerator = _streamTranscoders.size();
+	for( size_t streamIndex = 0; streamIndex < _streamTranscoders.size(); ++streamIndex )
+	{
+		if( _streamTranscoders.at( streamIndex )->getProcessCase() == StreamTranscoder::eProcessCaseGenerator )
+			--nbStreamsWithoutGenerator;
+	}
+
+	// If all streams failed to process a new frame
+	if( nbStreamProcessStatusFailed == nbStreamsWithoutGenerator )
+	{
+		LOG_INFO( "End of process because all streams (except generators) failed to process a new frame." )
+		return false;
 	}
 	return true;
 }
