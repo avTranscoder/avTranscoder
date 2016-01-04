@@ -22,6 +22,7 @@ namespace avtranscoder
  * eProcessMethodLongest: stop transcode at the end of the longest stream.
  * eProcessMethodBasedOnStream: stop transcode at the end of an indicated stream (@see _indexBasedStream attribute of Transcoder).
  * eProcessMethodBasedOnDuration: stop transcode at the end of an indicated duration, in seconds (@see _outputDuration attribute of Transcoder).
+ * eProcessMethodProcessAll: stop the process when all the input data are read.
  * eProcessMethodInfinity: stop transcode by outside of avTranscoder (streaming mode)
  */
 enum EProcessMethod
@@ -30,6 +31,7 @@ enum EProcessMethod
 	eProcessMethodLongest,
 	eProcessMethodBasedOnStream,
 	eProcessMethodBasedOnDuration,
+	eProcessMethodProcessAll,
 	eProcessMethodInfinity,
 };
 
@@ -211,7 +213,7 @@ private:
 
 	ProfileLoader _profileLoader;  ///< Objet to get existing profiles, and add new ones for the Transcoder.
 
-	EProcessMethod _eProcessMethod;  ///< Transcoding policy
+	EProcessMethod _eProcessMethod;  ///< Transcoding policy (eProcessMethodProcessAll by default)
 	size_t _mainStreamIndex;  ///< Index of stream used to stop the process of transcode in case of eProcessMethodBasedOnStream.
 	float _outputDuration;  ///< Duration of output media used to stop the process of transcode in case of eProcessMethodBasedOnDuration.
 };

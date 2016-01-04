@@ -16,7 +16,7 @@ Transcoder::Transcoder( IOutputFile& outputFile )
 	, _streamTranscoders()
 	, _streamTranscodersAllocated()
 	, _profileLoader( true )
-	, _eProcessMethod ( eProcessMethodBasedOnStream )
+	, _eProcessMethod ( eProcessMethodProcessAll )
 	, _mainStreamIndex( 0 )
 	, _outputDuration( 0 )
 {}
@@ -275,7 +275,7 @@ ProcessStat Transcoder::process( IProgress& progress )
 		}
 
 		// check progressDuration
-		if( progressDuration >= expectedOutputDuration )
+		if( _eProcessMethod != eProcessMethodProcessAll && progressDuration >= expectedOutputDuration )
 		{
 			LOG_INFO( "End of process because the output program duration (" << progressDuration << "s) is equal or upper than " << expectedOutputDuration << "s." )
 			break;
