@@ -255,7 +255,7 @@ ProcessStat Transcoder::process( IProgress& progress )
 			break;
 
 		// check progressDuration
-		if( progressDuration >= outputDuration )
+		if( _eProcessMethod == eProcessMethodBasedOnDuration && progressDuration >= outputDuration )
 			break;
 
 		LOG_DEBUG( "Process frame " << frame )
