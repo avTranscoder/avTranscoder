@@ -258,7 +258,7 @@ ProcessStat Transcoder::process( IProgress& progress )
 
 	preProcessCodecLatency();
 
-	const float outputDuration = getOutputDuration();
+	const float outputDuration = getExpectedOutputDuration();
 	LOG_INFO( "Output duration of the process will be " << outputDuration << "s." )
 
 	size_t frame = 0;
@@ -482,7 +482,7 @@ float Transcoder::getMaxTotalDuration() const
 	return maxTotalDuration;
 }
 
-float Transcoder::getOutputDuration() const
+float Transcoder::getExpectedOutputDuration() const
 {
 	switch( _eProcessMethod )
 	{

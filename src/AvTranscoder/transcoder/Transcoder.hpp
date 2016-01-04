@@ -180,10 +180,10 @@ private:
 	float getMaxTotalDuration() const;
 
 	/**
-	 * @brief Get the duration of the output program
+	 * @brief Get the expected duration of the output program
 	 * @note Depends on the streams, the process method, and the main stream index.
          */
-	float getOutputDuration() const;
+	float getExpectedOutputDuration() const;
 
 	/**
 	 * @brief Get the current duration of the output program
