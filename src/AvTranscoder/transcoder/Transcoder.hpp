@@ -180,10 +180,17 @@ private:
 	float getMaxTotalDuration() const;
 
 	/**
-	 * @brief Get the duration of the output program
+	 * @brief Get the expected duration of the output program
 	 * @note Depends on the streams, the process method, and the main stream index.
          */
-	float getOutputDuration() const;
+	float getExpectedOutputDuration() const;
+
+	/**
+	 * @brief Get the current duration of the output program
+	 * @note Returns the duration of the smallest stream.
+	 * @return -1 if there is no output stream.
+	 */
+	float getCurrentOutputDuration() const;
 
 	/**
 	 * @brief Set for each StreamTranscoder if it can switch to generator at the end.

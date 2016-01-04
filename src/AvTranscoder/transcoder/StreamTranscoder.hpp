@@ -101,10 +101,6 @@ public:
 	 */
 	void setOffset( const float offset );
 
-private:
-	bool processRewrap();
-	bool processTranscode( const int subStreamIndex = -1 );  ///< By default transcode all channels
-
 	//@{
 	// Get the current process case.
 	enum EProcessCase {
@@ -114,6 +110,10 @@ private:
 	};
 	EProcessCase getProcessCase() const;
 	//@}
+
+private:
+	bool processRewrap();
+	bool processTranscode( const int subStreamIndex = -1 );  ///< By default transcode all channels
 
 private:
 	IInputStream* _inputStream;  ///< Input stream to read next packet (has link, no ownership)
