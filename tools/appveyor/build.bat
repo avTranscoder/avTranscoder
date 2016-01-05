@@ -1,7 +1,5 @@
 @echo on
 
-set FFMPEG_VERSION=2.4.5
-
 MKDIR build
 cd build
 

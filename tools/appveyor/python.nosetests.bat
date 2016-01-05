@@ -1,7 +1,6 @@
 @echo on
 
 set PWD=C:\projects\avtranscoder
-set FFMPEG_VERSION=2.4.5
 
 :: Get avtranscoder library
 set PYTHONPATH=%PWD%\build\lib\python2.7\site-packages;%PYTHONPATH%
