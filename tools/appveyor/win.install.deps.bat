@@ -1,6 +1,6 @@
 @echo on
 
-set FFMPEG_VERSION=2.2.11
+set FFMPEG_VERSION=2.4.5
 
 if %platform% == x86 set PLATFORM_VERSION=32
 if %platform% == X64 set PLATFORM_VERSION=64
