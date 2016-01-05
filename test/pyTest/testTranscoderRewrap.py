@@ -45,6 +45,16 @@ def checkStream(src_stream, dst_stream):
             continue
         assert_equals( src_propertiesMap[key], dst_propertiesMap[key] )
 
+def checkVideoStat(src_videoStream, dst_videoStat):
+    """
+    Check the values of the video process stats returned after a process.
+    @note Because the process does not include a profile with "processStat", output quality and PSNR are not set.
+    """
+    assert_equals(dst_videoStat.getDuration(), src_videoStream.getDuration())
+    assert_equals(dst_videoStat.getNbFrames(), int(src_videoStream.getDuration() * src_videoStream.getFps()))
+    assert_equals(dst_videoStat.getQuality(), 0)
+    assert_equals(dst_videoStat.getPSNR(), 0)
+
 
 def testRewrapAudioStream():
     """
@@ -53,8 +63,6 @@ def testRewrapAudioStream():
     # get src file of wrap
     inputFileName = os.environ['AVTRANSCODER_TEST_AUDIO_WAVE_FILE']
     src_inputFile = av.InputFile( inputFileName )
-    progress = av.NoDisplayProgress()
-    src_inputFile.analyse( progress )
     src_properties = src_inputFile.getProperties()
     src_audioStream = src_properties.getAudioProperties()[0]
 
@@ -64,11 +72,15 @@ def testRewrapAudioStream():
 
     transcoder = av.Transcoder( ouputFile )
     transcoder.add( inputFileName, 0 )
-    transcoder.process( progress )
+    progress = av.NoDisplayProgress()
+    processStat = transcoder.process( progress )
+
+    # check process stat returned
+    audioStat = processStat.getAudioStat(0)
+    assert_equals(src_audioStream.getDuration(), audioStat.getDuration())
 
     # get dst file of wrap
     dst_inputFile = av.InputFile( outputFileName )
-    dst_inputFile.analyse( progress, av.eAnalyseLevelHeader )
     dst_properties = dst_inputFile.getProperties()
     dst_audioStream = dst_properties.getAudioProperties()[0]
 
@@ -86,8 +98,6 @@ def testRewrapAVIVideoStream():
     # get src file of wrap
     inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_AVI_FILE']
     src_inputFile = av.InputFile( inputFileName )
-    progress = av.NoDisplayProgress()
-    src_inputFile.analyse( progress )
     src_properties = src_inputFile.getProperties()
     src_videoStream = src_properties.getVideoProperties()[0]
 
@@ -97,11 +107,14 @@ def testRewrapAVIVideoStream():
 
     transcoder = av.Transcoder( ouputFile )
     transcoder.add( inputFileName, 0 )
-    transcoder.process( progress )
+    progress = av.NoDisplayProgress()
+    processStat = transcoder.process( progress )
+
+    # check process stat returned
+    checkVideoStat(src_videoStream, processStat.getVideoStat(0))
 
     # get dst file of wrap
     dst_inputFile = av.InputFile( outputFileName )
-    dst_inputFile.analyse( progress )
     dst_properties = dst_inputFile.getProperties()
     dst_videoStream = dst_properties.getVideoProperties()[0]
 
@@ -119,8 +132,6 @@ def testRewrapMOVVideoStream():
     # get src file of wrap
     inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_MOV_FILE']
     src_inputFile = av.InputFile( inputFileName )
-    progress = av.NoDisplayProgress()
-    src_inputFile.analyse( progress )
     src_properties = src_inputFile.getProperties()
     src_videoStream = src_properties.getVideoProperties()[0]
 
@@ -130,11 +141,14 @@ def testRewrapMOVVideoStream():
 
     transcoder = av.Transcoder( ouputFile )
     transcoder.add( inputFileName, 1 )
-    transcoder.process( progress )
+    progress = av.NoDisplayProgress()
+    processStat = transcoder.process( progress )
+
+    # check process stat returned
+    checkVideoStat(src_videoStream, processStat.getVideoStat(0))
 
     # get dst file of wrap
     dst_inputFile = av.InputFile( outputFileName )
-    dst_inputFile.analyse( progress )
     dst_properties = dst_inputFile.getProperties()
     dst_videoStream = dst_properties.getVideoProperties()[0]
 

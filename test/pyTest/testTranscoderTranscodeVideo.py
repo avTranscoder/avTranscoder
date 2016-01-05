@@ -20,14 +20,21 @@ def testTranscodeDnxhd120():
     ouputFile = av.OutputFile( outputFileName )
     transcoder = av.Transcoder( ouputFile )
 
-    transcoder.add( inputFileName, 0, "dnxhd120" )
+    inputFile = av.InputFile( inputFileName )
+    src_videoStream = inputFile.getProperties().getVideoProperties()[0]
+    videoStreamIndex = src_videoStream.getStreamIndex()
+    transcoder.add( inputFileName, videoStreamIndex, "dnxhd120" )
 
     progress = av.ConsoleProgress()
-    transcoder.process( progress )
+    processStat = transcoder.process( progress )
+
+    # check process stat returned
+    videoStat = processStat.getVideoStat(0)
+    # do not test duration because the profile "dnxhd120" forces the fps to 25
+    assert_equals(int(src_videoStream.getDuration() * src_videoStream.getFps()), videoStat.getNbFrames())
 
     # get dst file of transcode
     dst_inputFile = av.InputFile( outputFileName )
-    dst_inputFile.analyse( progress, av.eAnalyseLevelFirstGop )
     dst_properties = dst_inputFile.getProperties()
     dst_videoStream = dst_properties.getVideoProperties()[0]
 
@@ -49,14 +56,21 @@ def testTranscodeDnxhd185():
     ouputFile = av.OutputFile( outputFileName )
     transcoder = av.Transcoder( ouputFile )
 
-    transcoder.add( inputFileName, 0, "dnxhd185" )
+    inputFile = av.InputFile( inputFileName )
+    src_videoStream = inputFile.getProperties().getVideoProperties()[0]
+    videoStreamIndex = src_videoStream.getStreamIndex()
+    transcoder.add( inputFileName, videoStreamIndex, "dnxhd185" )
 
     progress = av.ConsoleProgress()
-    transcoder.process( progress )
+    processStat = transcoder.process( progress )
+
+    # check process stat returned
+    videoStat = processStat.getVideoStat(0)
+    # do not test duration because the profile "dnxhd185" forces the fps to 25
+    assert_equals(int(src_videoStream.getDuration() * src_videoStream.getFps()), videoStat.getNbFrames())
 
     # get dst file of transcode
     dst_inputFile = av.InputFile( outputFileName )
-    dst_inputFile.analyse( progress, av.eAnalyseLevelHeader )
     dst_properties = dst_inputFile.getProperties()
     dst_videoStream = dst_properties.getVideoProperties()[0]
 
@@ -78,14 +92,21 @@ def testTranscodeDnxhd185x():
     ouputFile = av.OutputFile( outputFileName )
     transcoder = av.Transcoder( ouputFile )
 
-    transcoder.add( inputFileName, 0, "dnxhd185x" )
+    inputFile = av.InputFile( inputFileName )
+    src_videoStream = inputFile.getProperties().getVideoProperties()[0]
+    videoStreamIndex = src_videoStream.getStreamIndex()
+    transcoder.add( inputFileName, videoStreamIndex, "dnxhd185x" )
 
     progress = av.ConsoleProgress()
-    transcoder.process( progress )
+    processStat = transcoder.process( progress )
+
+    # check process stat returned
+    videoStat = processStat.getVideoStat(0)
+    # do not test duration because the profile "dnxhd185x" forces the fps to 25
+    assert_equals(int(src_videoStream.getDuration() * src_videoStream.getFps()), videoStat.getNbFrames())
 
     # get dst file of transcode
     dst_inputFile = av.InputFile( outputFileName )
-    dst_inputFile.analyse( progress, av.eAnalyseLevelHeader )
     dst_properties = dst_inputFile.getProperties()
     dst_videoStream = dst_properties.getVideoProperties()[0]
 
@@ -115,14 +136,21 @@ def testTranscodeYUV420():
     customProfile[av.avProfileCodec] = "mpeg2video"
     customProfile[av.avProfilePixelFormat] = "yuv420p"
 
-    transcoder.add( inputFileName, 0, customProfile )
+    inputFile = av.InputFile( inputFileName )
+    src_videoStream = inputFile.getProperties().getVideoProperties()[0]
+    videoStreamIndex = src_videoStream.getStreamIndex()
+    transcoder.add( inputFileName, videoStreamIndex, customProfile )
 
     progress = av.ConsoleProgress()
-    transcoder.process( progress )
+    processStat = transcoder.process( progress )
+
+    # check process stat returned
+    videoStat = processStat.getVideoStat(0)
+    assert_equals(src_videoStream.getDuration(), videoStat.getDuration())
+    assert_equals(int(src_videoStream.getDuration() * src_videoStream.getFps()), videoStat.getNbFrames())
 
     # get dst file of transcode
     dst_inputFile = av.InputFile( outputFileName )
-    dst_inputFile.analyse( progress, av.eAnalyseLevelHeader )
     dst_properties = dst_inputFile.getProperties()
     dst_videoStream = dst_properties.getVideoProperties()[0]
 

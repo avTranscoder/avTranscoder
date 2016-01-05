@@ -21,9 +21,18 @@ public:
     }
 
 public:
-    static double psnr(const double d);
+    float getDuration() const { return _duration; }
+    size_t getNbFrames() const { return _nbFrames; }
+    size_t getQuality() const { return _quality; }
+    double getPSNR() const { return _psnr; }
 
-public:
+    void setQuality(const size_t quality) { _quality = quality; }
+    void setPSNR(const double mse) { _psnr = VideoStat::toPSNR(mse); }
+
+private:
+    static double toPSNR(const double mse);
+
+private:
     float _duration;
     size_t _nbFrames;
     size_t _quality; ///< Between 1 (good) and FF_LAMBDA_MAX (bad). 0 if unknown.
