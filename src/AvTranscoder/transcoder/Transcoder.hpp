@@ -17,12 +17,13 @@ namespace avtranscoder
 {
 
 /**
- * @brief Enum to set a policy of how we manage the transcode in case of several streams.
- * eProcessMethodShortest: stop transcode at the end of the shortest stream.
- * eProcessMethodLongest: stop transcode at the end of the longest stream.
- * eProcessMethodBasedOnStream: stop transcode at the end of an indicated stream (@see _indexBasedStream attribute of Transcoder).
- * eProcessMethodBasedOnDuration: stop transcode at the end of an indicated duration, in seconds (@see _outputDuration attribute of Transcoder).
- * eProcessMethodInfinity: stop transcode by outside of avTranscoder (streaming mode)
+ * @brief Enum to set a policy of how we manage the process in case of several streams.
+ * eProcessMethodShortest: stop the process at the end of the shortest stream.
+ * eProcessMethodLongest: stop the process at the end of the longest stream.
+ * eProcessMethodBasedOnStream: stop the process at the end of an indicated stream (@see _indexBasedStream attribute of Transcoder).
+ * eProcessMethodBasedOnDuration: stop the process at the end of an indicated duration, in seconds (@see _outputDuration attribute of Transcoder).
+ * eProcessMethodProcessAll: stop the process when all the input data are read.
+ * eProcessMethodInfinity: stop the process by outside of avTranscoder (streaming mode)
  */
 enum EProcessMethod
 {
@@ -30,6 +31,7 @@ enum EProcessMethod
 	eProcessMethodLongest,
 	eProcessMethodBasedOnStream,
 	eProcessMethodBasedOnDuration,
+	eProcessMethodProcessAll,
 	eProcessMethodInfinity,
 };
 
@@ -204,7 +206,7 @@ private:
 
 	ProfileLoader _profileLoader;  ///< Objet to get existing profiles, and add new ones for the Transcoder.
 
-	EProcessMethod _eProcessMethod;  ///< Transcoding policy
+	EProcessMethod _eProcessMethod;  ///< Processing policy (eProcessMethodProcessAll by default)
 	size_t _mainStreamIndex;  ///< Index of stream used to stop the process of transcode in case of eProcessMethodBasedOnStream.
 	float _outputDuration;  ///< Duration of output media used to stop the process of transcode in case of eProcessMethodBasedOnDuration.
 };

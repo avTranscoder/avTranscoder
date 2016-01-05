@@ -556,9 +556,9 @@ void StreamTranscoder::setOffset( const float offset )
 
 StreamTranscoder::EProcessCase StreamTranscoder::getProcessCase() const
 {
-	if( _inputStream && _inputDecoder )
+	if( _inputStream && _inputDecoder && _currentDecoder == _inputDecoder )
 		return eProcessCaseTranscode;
-	else if( _inputStream && ! _inputDecoder )
+	else if( _inputStream && ! _inputDecoder && ! _currentDecoder )
 		return eProcessCaseRewrap;
 	else
 		return eProcessCaseGenerator;

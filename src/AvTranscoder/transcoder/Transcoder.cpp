@@ -16,7 +16,7 @@ Transcoder::Transcoder( IOutputFile& outputFile )
 	, _streamTranscoders()
 	, _streamTranscodersAllocated()
 	, _profileLoader( true )
-	, _eProcessMethod ( eProcessMethodBasedOnStream )
+	, _eProcessMethod ( eProcessMethodProcessAll )
 	, _mainStreamIndex( 0 )
 	, _outputDuration( 0 )
 {}
@@ -209,15 +209,32 @@ bool Transcoder::processFrame()
 	if( _streamTranscoders.size() == 0 )
 		return false;
 
+	// For each stream, process a frame
+	size_t nbStreamProcessStatusFailed = 0;
 	for( size_t streamIndex = 0; streamIndex < _streamTranscoders.size(); ++streamIndex )
 	{
 		LOG_DEBUG( "Process stream " << streamIndex << "/" << ( _streamTranscoders.size() - 1 ) )
-
-		bool streamProcessStatus = _streamTranscoders.at( streamIndex )->processFrame();
-		if( ! streamProcessStatus )
+		const bool currentStreamProcessStatus = _streamTranscoders.at( streamIndex )->processFrame();
+		if( ! currentStreamProcessStatus )
 		{
-			return false;
+			LOG_WARN( "Failed to process stream " << streamIndex )
+			++nbStreamProcessStatusFailed;
 		}
+	}
+
+	// Get the number of streams without the generators (they always succeed)
+	size_t nbStreamsWithoutGenerator = _streamTranscoders.size();
+	for( size_t streamIndex = 0; streamIndex < _streamTranscoders.size(); ++streamIndex )
+	{
+		if( _streamTranscoders.at( streamIndex )->getProcessCase() == StreamTranscoder::eProcessCaseGenerator )
+			--nbStreamsWithoutGenerator;
+	}
+
+	// If all streams failed to process a new frame
+	if( nbStreamsWithoutGenerator != 0 && nbStreamProcessStatusFailed == nbStreamsWithoutGenerator )
+	{
+		LOG_INFO( "End of process because all streams (except generators) failed to process a new frame." )
+		return false;
 	}
 	return true;
 }
@@ -252,21 +269,26 @@ ProcessStat Transcoder::process( IProgress& progress )
 
 		// check if JobStatusCancel
 		if( progress.progress( ( progressDuration > outputDuration ) ? outputDuration : progressDuration, outputDuration ) == eJobStatusCancel )
+		{
+			LOG_INFO( "End of process because the job was canceled." )
 			break;
+		}
 
 		// check progressDuration
-		if( progressDuration >= outputDuration )
+		if( _eProcessMethod != eProcessMethodProcessAll && progressDuration >= outputDuration )
+		{
+			LOG_INFO( "End of process because the output program duration (" << progressDuration << "s) is equal or upper than " << outputDuration << "s." )
 			break;
+		}
 
 		LOG_DEBUG( "Process frame " << frame )
 		frameProcessed =  processFrame();
-
 		++frame;
 	}
 
 	_outputFile.endWrap();
 
-	LOG_INFO( "End of process" )
+	LOG_INFO( "End of process: " << frame << " frames processed" )
 
 	LOG_INFO( "Get process statistics" )
 	ProcessStat processStat;
