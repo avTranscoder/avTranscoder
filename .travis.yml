@@ -23,25 +23,29 @@ env:
   matrix:
     - DEPENDENCY_NAME=libav DEPENDENCY_VERSION=11.3 ENABLE_COVERAGE=true
     - DEPENDENCY_NAME=libav DEPENDENCY_VERSION=11.3 ENABLE_COVERAGE=false
-    - DEPENDENCY_NAME=ffmpeg DEPENDENCY_VERSION=2.2.9 ENABLE_COVERAGE=true
-    - DEPENDENCY_NAME=ffmpeg DEPENDENCY_VERSION=2.2.9 ENABLE_COVERAGE=false
+    - DEPENDENCY_NAME=ffmpeg DEPENDENCY_VERSION=2.4.2 ENABLE_COVERAGE=true
+    - DEPENDENCY_NAME=ffmpeg DEPENDENCY_VERSION=2.4.2 ENABLE_COVERAGE=false
+    - DEPENDENCY_NAME=ffmpeg DEPENDENCY_VERSION=2.5.7 ENABLE_COVERAGE=false
 
 matrix:
   exclude:
     # generate coverage only with gcc
     - compiler: clang
-      env: DEPENDENCY_NAME=ffmpeg DEPENDENCY_VERSION=2.2.9 ENABLE_COVERAGE=true
+      env: DEPENDENCY_NAME=ffmpeg DEPENDENCY_VERSION=2.4.2 ENABLE_COVERAGE=true
     - compiler: clang
       env: DEPENDENCY_NAME=libav DEPENDENCY_VERSION=11.3 ENABLE_COVERAGE=true
     # generate coverage only on linux
     - os: osx
       env: DEPENDENCY_NAME=libav DEPENDENCY_VERSION=11.3 ENABLE_COVERAGE=true
     - os: osx
-      env: DEPENDENCY_NAME=ffmpeg DEPENDENCY_VERSION=2.2.9 ENABLE_COVERAGE=true
+      env: DEPENDENCY_NAME=ffmpeg DEPENDENCY_VERSION=2.4.2 ENABLE_COVERAGE=true
   fast_finish: true
 
 # This results in a 2×2×2x2 build matrix.
 # Where the variables are: os / compiler / DEPENDENCY_NAME / ENABLE_COVERAGE
+
+# If ENABLE_COVERAGE is True, we push the coverage to coveralls.
+# If ENABLE_COVERAGE is False, we push the binaries to github releases.
 
 addons:
   apt:
