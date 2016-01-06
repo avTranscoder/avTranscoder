@@ -86,8 +86,5 @@ def testAddAllStreamsOfAGivenFile():
     import testTranscoderRewrap
     # for each stream
     for src_stream, dst_stream in zip(src_streams_properties, dst_streams_properties):
-        # FIXME: analyse only the first stream because all the input audio data are not read
-        if src_stream.getStreamId() != 1:
-            continue
         # check properties
         testTranscoderRewrap.checkStream(src_stream, dst_stream)
