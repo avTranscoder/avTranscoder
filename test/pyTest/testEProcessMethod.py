@@ -41,7 +41,8 @@ def testEProcessMethodShortest():
     dst_inputFile = av.InputFile( outputFileName )
     dst_properties = dst_inputFile.getProperties()
 
-    assert_equals( dst_properties.getDuration(), src_properties_shortest.getDuration() )
+    for dst_stream_properties in dst_properties.getStreamProperties():
+        assert_almost_equals( dst_stream_properties.getDuration(), src_properties_shortest.getDuration(), delta=0.05 )
 
 
 def testEProcessMethodLongest():
@@ -70,7 +71,8 @@ def testEProcessMethodLongest():
     dst_inputFile = av.InputFile( outputFileName )
     dst_properties = dst_inputFile.getProperties()
 
-    assert_equals( dst_properties.getDuration(), src_properties_longest.getDuration() )
+    for dst_stream_properties in dst_properties.getStreamProperties():
+        assert_almost_equals( dst_stream_properties.getDuration(), src_properties_longest.getDuration(), delta=0.05 )
 
 
 def testEProcessMethodBasedOnStream():
@@ -130,5 +132,6 @@ def testEProcessMethodBasedOnDuration():
     dst_inputFile = av.InputFile( outputFileName )
     dst_properties = dst_inputFile.getProperties()
 
-    assert_equals( dst_properties.getDuration(), outputDuration )
+    for dst_stream_properties in dst_properties.getStreamProperties():
+        assert_almost_equals( dst_stream_properties.getDuration(), outputDuration, delta=0.05 )
 
