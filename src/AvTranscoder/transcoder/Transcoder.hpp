@@ -236,13 +236,13 @@ private:
     std::vector<StreamTranscoder*> _streamTranscoders;          ///< All streams of the output media file after process.
     std::vector<StreamTranscoder*> _streamTranscodersAllocated; ///< Streams allocated inside the Transcoder (has ownership)
 
-    ProfileLoader _profileLoader;   ///< Objet to get existing profiles, and add new ones for the Transcoder.
+    ProfileLoader _profileLoader; ///< Objet to get existing profiles, and add new ones for the Transcoder.
 
     EProcessMethod _eProcessMethod; ///< Processing policy
     size_t
         _mainStreamIndex;  ///< Index of stream used to stop the process of transcode in case of eProcessMethodBasedOnStream.
     float _outputDuration; ///< Duration of output media used to stop the process of transcode in case of
-                           ///eProcessMethodBasedOnDuration.
+    /// eProcessMethodBasedOnDuration.
 };
 }
 

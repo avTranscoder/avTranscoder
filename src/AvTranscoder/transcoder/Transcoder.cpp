@@ -599,9 +599,10 @@ void Transcoder::fillProcessStat(ProcessStat& processStat)
     for(size_t streamIndex = 0; streamIndex < _streamTranscoders.size(); ++streamIndex)
     {
         IOutputStream& stream = _streamTranscoders.at(streamIndex)->getOutputStream();
-        const IInputStream* inputStream = _streamTranscoders.at( streamIndex )->getInputStream();
-        if(inputStream == NULL) {
-            LOG_WARN( "Cannot process statistics of generated stream." )
+        const IInputStream* inputStream = _streamTranscoders.at(streamIndex)->getInputStream();
+        if(inputStream == NULL)
+        {
+            LOG_WARN("Cannot process statistics of generated stream.")
             continue;
         }
         const AVMediaType mediaType = inputStream->getProperties().getStreamType();

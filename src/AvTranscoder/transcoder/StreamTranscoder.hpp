@@ -136,7 +136,7 @@ private:
     float _offset; ///< Offset, in seconds, at the beginning of the StreamTranscoder.
 
     bool _needToSwitchToGenerator; ///< Set if need to switch to a generator during the process (because, of other streams
-                                   ///duration, or an offset)
+    /// duration, or an offset)
 };
 }
 
