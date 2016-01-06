@@ -327,15 +327,19 @@ void StreamTranscoder::preProcessCodecLatency()
         return;
 
     // set a decoder to preload generated frames
+    bool wasARewrapCase = false;
     if(getProcessCase() == eProcessCaseRewrap)
+    {
         switchToGeneratorDecoder();
+        wasARewrapCase = true;
+    }
 
     while((latency--) > 0)
     {
         processFrame();
     }
 
-    if(getProcessCase() == eProcessCaseRewrap)
+    if(wasARewrapCase)
         _currentDecoder = NULL;
 }
 
