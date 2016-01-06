@@ -283,7 +283,7 @@ ProcessStat Transcoder::process(IProgress& progress)
     preProcessCodecLatency();
 
     const float expectedOutputDuration = getExpectedOutputDuration();
-    LOG_INFO("Output duration of the process will be " << expectedOutputDuration << "s.")
+    LOG_INFO("The expected output duration of the program will be " << expectedOutputDuration << "s.")
 
     size_t frame = 0;
     bool frameProcessed = true;
