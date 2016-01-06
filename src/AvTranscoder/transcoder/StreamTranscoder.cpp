@@ -363,7 +363,6 @@ bool StreamTranscoder::processFrame()
             // process generator
             if(_currentDecoder != _generator)
             {
-                LOG_INFO("Switch to generator to process offset")
                 switchToGeneratorDecoder();
             }
         }
