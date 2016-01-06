@@ -77,7 +77,7 @@ public:
     IEncoder* getEncoder() const { return _outputEncoder; }
 
     /// Returns a reference to the object which transforms the decoded data
-    ITransform& getTransform() const { return *_transform; }
+    ITransform* getTransform() const { return _transform; }
 
     /// Returns a reference to the stream which unwraps data
     IInputStream* getInputStream() const { return _inputStream; }
