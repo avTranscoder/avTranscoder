@@ -16,7 +16,7 @@ Transcoder::Transcoder(IOutputFile& outputFile)
     , _streamTranscoders()
     , _streamTranscodersAllocated()
     , _profileLoader(true)
-    , _eProcessMethod(eProcessMethodBasedOnStream)
+    , _eProcessMethod(eProcessMethodLongest)
     , _mainStreamIndex(0)
     , _outputDuration(0)
 {
