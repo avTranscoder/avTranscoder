@@ -341,7 +341,23 @@ void StreamTranscoder::preProcessCodecLatency()
 
 bool StreamTranscoder::processFrame()
 {
-    if(getProcessCase() == eProcessCaseGenerator)
+    const EProcessCase processCase = getProcessCase();
+    std::string msg = "Current process case of the stream is a "; 
+    switch(processCase)
+    {
+        case eProcessCaseTranscode:
+            msg += "transcode.";
+            break;
+        case eProcessCaseRewrap:
+            msg += "rewrap.";
+            break;
+        case eProcessCaseGenerator:
+            msg += "generator.";
+            break;
+    }
+    LOG_DEBUG(msg)
+
+    if(processCase == eProcessCaseGenerator)
         return processTranscode();
 
     // Manage offset
@@ -380,7 +396,7 @@ bool StreamTranscoder::processFrame()
         }
     }
 
-    if(getProcessCase() == eProcessCaseRewrap)
+    if(processCase == eProcessCaseRewrap)
         return processRewrap();
 
     return processTranscode(_subStreamIndex);
