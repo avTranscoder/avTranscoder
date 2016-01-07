@@ -327,21 +327,41 @@ void StreamTranscoder::preProcessCodecLatency()
         return;
 
     // set a decoder to preload generated frames
+    bool wasARewrapCase = false;
     if(getProcessCase() == eProcessCaseRewrap)
+    {
         switchToGeneratorDecoder();
+        wasARewrapCase = true;
+    }
 
     while((latency--) > 0)
     {
         processFrame();
     }
 
-    if(getProcessCase() == eProcessCaseRewrap)
+    if(wasARewrapCase)
         _currentDecoder = NULL;
 }
 
 bool StreamTranscoder::processFrame()
 {
-    if(getProcessCase() == eProcessCaseGenerator)
+    const EProcessCase processCase = getProcessCase();
+    std::string msg = "Current process case of the stream is a "; 
+    switch(processCase)
+    {
+        case eProcessCaseTranscode:
+            msg += "transcode.";
+            break;
+        case eProcessCaseRewrap:
+            msg += "rewrap.";
+            break;
+        case eProcessCaseGenerator:
+            msg += "generator.";
+            break;
+    }
+    LOG_DEBUG(msg)
+
+    if(processCase == eProcessCaseGenerator)
         return processTranscode();
 
     // Manage offset
@@ -363,7 +383,6 @@ bool StreamTranscoder::processFrame()
             // process generator
             if(_currentDecoder != _generator)
             {
-                LOG_INFO("Switch to generator to process offset")
                 switchToGeneratorDecoder();
             }
         }
@@ -381,7 +400,7 @@ bool StreamTranscoder::processFrame()
         }
     }
 
-    if(getProcessCase() == eProcessCaseRewrap)
+    if(processCase == eProcessCaseRewrap)
         return processRewrap();
 
     return processTranscode(_subStreamIndex);
@@ -531,9 +550,10 @@ void StreamTranscoder::needToSwitchToGenerator(const bool needToSwitch)
     if(needToSwitch && !canSwitchToGenerator())
     {
         std::stringstream os;
-        os << "The stream " << _inputStream->getStreamIndex() << " has a duration of " << getDuration()
-           << "s. It needs to switch to a generator during the process, but it cannot.";
-        throw std::runtime_error(os.str());
+        LOG_WARN("The stream " << _inputStream->getStreamIndex() << " has a duration of " << getDuration()
+                               << "s. It needs to switch to a generator during the process, but it cannot. "
+                               << "No generator will be used for this stream.")
+        return;
     }
     _needToSwitchToGenerator = needToSwitch;
 }
@@ -547,9 +567,9 @@ void StreamTranscoder::setOffset(const float offset)
 
 StreamTranscoder::EProcessCase StreamTranscoder::getProcessCase() const
 {
-    if(_inputStream && _inputDecoder)
+    if(_inputStream && _inputDecoder && _currentDecoder == _inputDecoder)
         return eProcessCaseTranscode;
-    else if(_inputStream && !_inputDecoder)
+    else if(_inputStream && !_inputDecoder && !_currentDecoder)
         return eProcessCaseRewrap;
     else
         return eProcessCaseGenerator;
