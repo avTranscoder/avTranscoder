@@ -49,7 +49,7 @@ void AudioReader::init()
     AudioFrame* srcFrame = static_cast<AudioFrame*>(_srcFrame);
     // create dst frame
     _outputSampleRate = srcFrame->desc().getSampleRate();
-    _outputNbChannels = (_channelIndex == -1) ? srcFrame->desc().getChannels() : 1;
+    _outputNbChannels = (_channelIndex == -1) ? srcFrame->desc().getNbChannels() : 1;
     _dstFrame = new AudioFrame(AudioFrameDesc(_outputSampleRate, _outputNbChannels, _outputSampleFormat));
 }
 

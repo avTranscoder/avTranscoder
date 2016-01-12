@@ -60,7 +60,7 @@ void AudioFrameDesc::setParameters(const ProfileLoader::Profile& profile)
         setSampleRate(atoi(profile.find(constants::avProfileSampleRate)->second.c_str()));
     // channel
     if(profile.count(constants::avProfileChannel))
-        setChannels(atoi(profile.find(constants::avProfileChannel)->second.c_str()));
+        setNbChannels(atoi(profile.find(constants::avProfileChannel)->second.c_str()));
     // sample format
     if(profile.count(constants::avProfileSampleFormat))
         setSampleFormat(profile.find(constants::avProfileSampleFormat)->second);

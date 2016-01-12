@@ -186,7 +186,7 @@ StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outpu
             if(subStreamIndex > -1)
             {
                 // @todo manage downmix ?
-                outputFrameDesc.setChannels(1);
+                outputFrameDesc.setNbChannels(1);
             }
             outputAudio->setupAudioEncoder(outputFrameDesc, profile);
 
@@ -196,7 +196,7 @@ StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outpu
             // buffers to process
             AudioFrameDesc inputFrameDesc(_inputStream->getAudioCodec().getAudioFrameDesc());
             if(subStreamIndex > -1)
-                inputFrameDesc.setChannels(1);
+                inputFrameDesc.setNbChannels(1);
 
             _sourceBuffer = new AudioFrame(inputFrameDesc);
             _frameBuffer = new AudioFrame(outputAudio->getAudioCodec().getAudioFrameDesc());

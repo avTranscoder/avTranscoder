@@ -21,7 +21,7 @@ public:
     AudioFrameDesc(const size_t sampleRate, const size_t channels, const std::string& sampleFormat);
 
     size_t getSampleRate() const { return _sampleRate; }
-    size_t getChannels() const { return _channels; }
+    size_t getNbChannels() const { return _channels; }
     AVSampleFormat getSampleFormat() const { return _sampleFormat; }
     std::string getSampleFormatName() const;
     double getFps() const { return _fps; }
@@ -29,7 +29,7 @@ public:
     size_t getDataSize() const;
 
     void setSampleRate(const size_t sampleRate) { _sampleRate = sampleRate; }
-    void setChannels(const size_t channels) { _channels = channels; }
+    void setNbChannels(const size_t channels) { _channels = channels; }
     void setSampleFormat(const std::string& sampleFormatName);
     void setSampleFormat(const AVSampleFormat sampleFormat) { _sampleFormat = sampleFormat; }
     void setFps(const double fps) { _fps = fps; }
