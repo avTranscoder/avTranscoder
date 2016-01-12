@@ -33,7 +33,7 @@ namespace avtranscoder
 
 AudioTransform::AudioTransform()
     : _audioConvertContext(NULL)
-    , _nbSamplesOfPreviousFrame(0)
+    , _previousNbInputSamplesPerChannel(0)
     , _isInit(false)
 {
 }
@@ -97,7 +97,7 @@ void AudioTransform::updateOutputFrame(const size_t nbInputSamples, Frame& dstFr
     dstFrame.resize(bufferSizeNeeded);
 
     // set nbSamples of output frame
-    dst.setNbSamples(nbInputSamples);
+    dst.setNbSamplesPerChannel(nbInputSamples);
 }
 
 void AudioTransform::convert(const Frame& srcFrame, Frame& dstFrame)
@@ -106,11 +106,11 @@ void AudioTransform::convert(const Frame& srcFrame, Frame& dstFrame)
         _isInit = init(srcFrame, dstFrame);
 
     // if number of samples change from previous frame
-    const size_t nbSamplesOfCurrentFrame = static_cast<const AudioFrame&>(srcFrame).getNbSamplesPerChannel();
-    if(nbSamplesOfCurrentFrame != _nbSamplesOfPreviousFrame)
+    const size_t nbInputSamplesPerChannel = static_cast<const AudioFrame&>(srcFrame).getNbSamplesPerChannel();
+    if(nbInputSamplesPerChannel != _previousNbInputSamplesPerChannel)
     {
-        updateOutputFrame(nbSamplesOfCurrentFrame, dstFrame);
-        _nbSamplesOfPreviousFrame = nbSamplesOfCurrentFrame;
+        updateOutputFrame(nbInputSamplesPerChannel, dstFrame);
+        _previousNbInputSamplesPerChannel = nbInputSamplesPerChannel;
     }
 
     const unsigned char* srcData = srcFrame.getData();
@@ -118,11 +118,11 @@ void AudioTransform::convert(const Frame& srcFrame, Frame& dstFrame)
 
     int nbOutputSamplesPerChannel;
 #ifdef AVTRANSCODER_LIBAV_DEPENDENCY
-    nbOutputSamplesPerChannel = avresample_convert(_audioConvertContext, (uint8_t**)&dstData, 0, nbSamplesOfCurrentFrame,
-                                                   (uint8_t**)&srcData, 0, nbSamplesOfCurrentFrame);
+    nbOutputSamplesPerChannel = avresample_convert(_audioConvertContext, (uint8_t**)&dstData, 0, nbInputSamplesPerChannel,
+                                                   (uint8_t**)&srcData, 0, nbInputSamplesPerChannel);
 #else
     nbOutputSamplesPerChannel =
-        swr_convert(_audioConvertContext, &dstData, nbSamplesOfCurrentFrame, &srcData, nbSamplesOfCurrentFrame);
+        swr_convert(_audioConvertContext, &dstData, nbInputSamplesPerChannel, &srcData, nbInputSamplesPerChannel);
 #endif
 
     if(nbOutputSamplesPerChannel < 0)

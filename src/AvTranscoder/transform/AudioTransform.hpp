@@ -38,7 +38,7 @@ private:
 private:
     ResampleContext* _audioConvertContext;
 
-    size_t _nbSamplesOfPreviousFrame; ///< To check if the number of samples change between frames
+    size_t _previousNbInputSamplesPerChannel; ///< To check if the number of samples change between frames
 
     bool _isInit;
 };
