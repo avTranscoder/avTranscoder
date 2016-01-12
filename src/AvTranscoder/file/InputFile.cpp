@@ -22,11 +22,15 @@ namespace avtranscoder
 
 InputFile::InputFile(const std::string& filename)
     : _formatContext(filename, AV_OPT_FLAG_DECODING_PARAM)
-    , _properties(_formatContext)
+    , _properties(NULL)
     , _filename(filename)
     , _inputStreams()
 {
+    // Fill the FormatContext with the stream information
     _formatContext.findStreamInfo();
+
+    // Get the stream information as properties
+    _properties = new FileProperties(_formatContext);
 
     // Create streams
     for(size_t streamIndex = 0; streamIndex < _formatContext.getNbStreams(); ++streamIndex)
@@ -37,6 +41,7 @@ InputFile::InputFile(const std::string& filename)
 
 InputFile::~InputFile()
 {
+    delete _properties;
     for(std::vector<InputStream*>::iterator it = _inputStreams.begin(); it != _inputStreams.end(); ++it)
     {
         delete(*it);
@@ -45,7 +50,7 @@ InputFile::~InputFile()
 
 void InputFile::analyse(IProgress& progress, const EAnalyseLevel level)
 {
-    _properties.extractStreamProperties(progress, level);
+    _properties->extractStreamProperties(progress, level);
 }
 
 FileProperties InputFile::analyseFile(const std::string& filename, IProgress& progress, const EAnalyseLevel level)
@@ -63,7 +68,7 @@ bool InputFile::readNextPacket(CodedData& data, const size_t streamIndex)
         const int ret = av_read_frame(&_formatContext.getAVFormatContext(), &data.getAVPacket());
         if(ret < 0) // error or end of file
         {
-            LOG_INFO("No more data to read on file '" << _filename << "'")
+            LOG_INFO("No more data to read on file '" << _filename << "' for stream " << streamIndex)
             return false;
         }
 
@@ -160,8 +165,8 @@ std::string InputFile::getFormatMimeType() const
 double InputFile::getFps()
 {
     double fps = 1;
-    if(_properties.getNbVideoStreams())
-        fps = _properties.getVideoProperties().at(0).getFps();
+    if(_properties->getNbVideoStreams())
+        fps = _properties->getVideoProperties().at(0).getFps();
     return fps;
 }
 

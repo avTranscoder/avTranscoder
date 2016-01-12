@@ -17,14 +17,14 @@ namespace avtranscoder
 {
 
 /**
- * @brief Enum to set a policy of how we manage the transcode in case of several streams.
- * eProcessMethodShortest: stop transcode at the end of the shortest stream.
- * eProcessMethodLongest: stop transcode at the end of the longest stream.
- * eProcessMethodBasedOnStream: stop transcode at the end of an indicated stream (@see _indexBasedStream attribute of
+ * @brief Enum to set a policy of how we manage the process in case of several streams.
+ * eProcessMethodShortest: stop the process at the end of the shortest stream.
+ * eProcessMethodLongest: stop the process at the end of the longest stream.
+ * eProcessMethodBasedOnStream: stop the process at the end of an indicated stream (@see _indexBasedStream attribute of
  * Transcoder).
- * eProcessMethodBasedOnDuration: stop transcode at the end of an indicated duration, in seconds (@see _outputDuration
+ * eProcessMethodBasedOnDuration: stop the process at the end of an indicated duration, in seconds (@see _outputDuration
  * attribute of Transcoder).
- * eProcessMethodInfinity: stop transcode by outside of avTranscoder (streaming mode)
+ * eProcessMethodInfinity: stop the process by outside of avTranscoder (streaming mode)
  */
 enum EProcessMethod
 {
@@ -207,10 +207,17 @@ private:
     float getMaxTotalDuration() const;
 
     /**
-     * @brief Get the duration of the output program
+     * @brief Get the expected duration of the output program
      * @note Depends on the streams, the process method, and the main stream index.
      */
-    float getOutputDuration() const;
+    float getExpectedOutputDuration() const;
+
+    /**
+     * @brief Get the current duration of the output program
+     * @note Returns the duration of the smallest stream.
+     * @return -1 if there is no output stream.
+     */
+    float getCurrentOutputDuration() const;
 
     /**
      * @brief Set for each StreamTranscoder if it can switch to generator at the end.
@@ -231,7 +238,7 @@ private:
 
     ProfileLoader _profileLoader; ///< Objet to get existing profiles, and add new ones for the Transcoder.
 
-    EProcessMethod _eProcessMethod; ///< Transcoding policy
+    EProcessMethod _eProcessMethod; ///< Processing policy
     size_t
         _mainStreamIndex;  ///< Index of stream used to stop the process of transcode in case of eProcessMethodBasedOnStream.
     float _outputDuration; ///< Duration of output media used to stop the process of transcode in case of

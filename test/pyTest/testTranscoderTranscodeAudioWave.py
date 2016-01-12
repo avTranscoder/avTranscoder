@@ -20,14 +20,20 @@ def testTranscodeWave24b48k5_1():
     ouputFile = av.OutputFile( outputFileName )
     transcoder = av.Transcoder( ouputFile )
 
-    transcoder.add( inputFileName, 0, "wave24b48k5_1" )
+    inputFile = av.InputFile( inputFileName )
+    src_audioStream = inputFile.getProperties().getAudioProperties()[0]
+    audioStreamIndex = src_audioStream.getStreamIndex()
+    transcoder.add( inputFileName, audioStreamIndex, "wave24b48k5_1" )
 
     progress = av.ConsoleProgress()
-    transcoder.process( progress )
+    processStat = transcoder.process( progress )
+
+    # check process stat returned
+    audioStat = processStat.getAudioStat(0)
+    assert_equals(src_audioStream.getDuration(), audioStat.getDuration())
 
     # get dst file of transcode
     dst_inputFile = av.InputFile( outputFileName )
-    dst_inputFile.analyse( progress, av.eAnalyseLevelHeader )
     dst_properties = dst_inputFile.getProperties()
     dst_audioStream = dst_properties.getAudioProperties()[0]
 
@@ -48,14 +54,20 @@ def testTranscodeWave24b48kstereo():
     ouputFile = av.OutputFile( outputFileName )
     transcoder = av.Transcoder( ouputFile )
 
-    transcoder.add( inputFileName, 0, "wave24b48kstereo" )
+    inputFile = av.InputFile( inputFileName )
+    src_audioStream = inputFile.getProperties().getAudioProperties()[0]
+    audioStreamIndex = src_audioStream.getStreamIndex()
+    transcoder.add( inputFileName, audioStreamIndex, "wave24b48kstereo" )
 
     progress = av.ConsoleProgress()
-    transcoder.process( progress )
+    processStat = transcoder.process( progress )
+
+    # check process stat returned
+    audioStat = processStat.getAudioStat(0)
+    assert_equals(src_audioStream.getDuration(), audioStat.getDuration())
 
     # get dst file of transcode
     dst_inputFile = av.InputFile( outputFileName )
-    dst_inputFile.analyse( progress, av.eAnalyseLevelHeader )
     dst_properties = dst_inputFile.getProperties()
     dst_audioStream = dst_properties.getAudioProperties()[0]
 
@@ -76,14 +88,20 @@ def testTranscodeWave24b48kmono():
     ouputFile = av.OutputFile( outputFileName )
     transcoder = av.Transcoder( ouputFile )
 
-    transcoder.add( inputFileName, 0, "wave24b48kmono" )
+    inputFile = av.InputFile( inputFileName )
+    src_audioStream = inputFile.getProperties().getAudioProperties()[0]
+    audioStreamIndex = src_audioStream.getStreamIndex()
+    transcoder.add( inputFileName, audioStreamIndex, "wave24b48kmono" )
 
     progress = av.ConsoleProgress()
-    transcoder.process( progress )
+    processStat = transcoder.process( progress )
+
+    # check process stat returned
+    audioStat = processStat.getAudioStat(0)
+    assert_equals(src_audioStream.getDuration(), audioStat.getDuration())
 
     # get dst file of transcode
     dst_inputFile = av.InputFile( outputFileName )
-    dst_inputFile.analyse( progress, av.eAnalyseLevelHeader )
     dst_properties = dst_inputFile.getProperties()
     dst_audioStream = dst_properties.getAudioProperties()[0]
 
@@ -104,14 +122,20 @@ def testTranscodeWave16b48kmono():
     ouputFile = av.OutputFile( outputFileName )
     transcoder = av.Transcoder( ouputFile )
 
-    transcoder.add( inputFileName, 0, "wave16b48kmono" )
+    inputFile = av.InputFile( inputFileName )
+    src_audioStream = inputFile.getProperties().getAudioProperties()[0]
+    audioStreamIndex = src_audioStream.getStreamIndex()
+    transcoder.add( inputFileName, audioStreamIndex, "wave16b48kmono" )
 
     progress = av.ConsoleProgress()
-    transcoder.process( progress )
+    processStat = transcoder.process( progress )
+
+    # check process stat returned
+    audioStat = processStat.getAudioStat(0)
+    assert_equals(src_audioStream.getDuration(), audioStat.getDuration())
 
     # get dst file of transcode
     dst_inputFile = av.InputFile( outputFileName )
-    dst_inputFile.analyse( progress, av.eAnalyseLevelHeader )
     dst_properties = dst_inputFile.getProperties()
     dst_audioStream = dst_properties.getAudioProperties()[0]
 
