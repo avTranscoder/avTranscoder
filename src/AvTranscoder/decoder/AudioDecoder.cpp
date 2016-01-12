@@ -112,7 +112,7 @@ bool AudioDecoder::decodeNextFrame(Frame& frameBuffer)
         return false;
 
     AudioFrame& audioBuffer = static_cast<AudioFrame&>(frameBuffer);
-    audioBuffer.setNbSamples(_frame->nb_samples);
+    audioBuffer.setNbSamplesPerChannel(_frame->nb_samples);
     audioBuffer.resize(decodedSize);
 
     // @todo manage cases with data of frame not only on data[0] (use _frame.linesize)
@@ -152,7 +152,7 @@ bool AudioDecoder::decodeNextFrame(Frame& frameBuffer, const size_t channelIndex
     }
 
     AudioFrame& audioBuffer = static_cast<AudioFrame&>(frameBuffer);
-    audioBuffer.setNbSamples(_frame->nb_samples);
+    audioBuffer.setNbSamplesPerChannel(_frame->nb_samples);
     audioBuffer.resize(decodedSize);
 
     // @todo manage cases with data of frame not only on data[0] (use _frame.linesize)

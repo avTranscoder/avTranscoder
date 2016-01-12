@@ -119,7 +119,7 @@ bool AudioEncoder::encodeFrame(const Frame& sourceFrame, Frame& codedFrame)
 
     const AudioFrame& sourceAudioFrame = static_cast<const AudioFrame&>(sourceFrame);
 
-    _frame->nb_samples = sourceAudioFrame.getNbSamples();
+    _frame->nb_samples = sourceAudioFrame.getNbSamplesPerChannel();
     _frame->format = avCodecContext.sample_fmt;
     _frame->channel_layout = avCodecContext.channel_layout;
 

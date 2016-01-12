@@ -55,8 +55,8 @@ public:
 
     const AudioFrameDesc& desc() const { return _audioFrameDesc; }
 
-    size_t getNbSamples() const { return _nbSamples; }
-    void setNbSamples(size_t nbSamples) { _nbSamples = nbSamples; }
+    size_t getNbSamplesPerChannel() const { return _nbSamples; }
+    void setNbSamplesPerChannel(const size_t nbSamples) { _nbSamples = nbSamples; }
 
 private:
     const AudioFrameDesc _audioFrameDesc;

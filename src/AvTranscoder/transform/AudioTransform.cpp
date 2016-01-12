@@ -106,7 +106,7 @@ void AudioTransform::convert(const Frame& srcFrame, Frame& dstFrame)
         _isInit = init(srcFrame, dstFrame);
 
     // if number of samples change from previous frame
-    const size_t nbSamplesOfCurrentFrame = static_cast<const AudioFrame&>(srcFrame).getNbSamples();
+    const size_t nbSamplesOfCurrentFrame = static_cast<const AudioFrame&>(srcFrame).getNbSamplesPerChannel();
     if(nbSamplesOfCurrentFrame != _nbSamplesOfPreviousFrame)
     {
         updateOutputFrame(nbSamplesOfCurrentFrame, dstFrame);
