@@ -77,7 +77,7 @@ Libraries getLibraries()
 {
     Libraries libs;
 
-    libs.push_back(Library("avtranscoder", "GPL or LGPL version 3", AVTRANSCODER_VERSION_MAJOR, AVTRANSCODER_VERSION_MINOR,
+    libs.push_back(Library("avtranscoder", "GPL v2 or LGPL v2.1", AVTRANSCODER_VERSION_MAJOR, AVTRANSCODER_VERSION_MINOR,
                            AVTRANSCODER_VERSION_MICRO));
     libs.push_back(
         Library("avutil", avutil_license(), LIBAVUTIL_VERSION_MAJOR, LIBAVUTIL_VERSION_MINOR, LIBAVUTIL_VERSION_MICRO));
