@@ -1,7 +1,7 @@
 #include "VideoReader.hpp"
 
 #include <AvTranscoder/decoder/VideoDecoder.hpp>
-#include <AvTranscoder/frame/VideoFrame.hpp>
+#include <AvTranscoder/data/VideoFrame.hpp>
 #include <AvTranscoder/transform/VideoTransform.hpp>
 #include <AvTranscoder/progress/NoDisplayProgress.hpp>
 

@@ -3,7 +3,7 @@
 
 #include <AvTranscoder/codec/AudioCodec.hpp>
 #include <AvTranscoder/codec/VideoCodec.hpp>
-#include <AvTranscoder/frame/Frame.hpp>
+#include <AvTranscoder/data/Frame.hpp>
 
 namespace avtranscoder
 {

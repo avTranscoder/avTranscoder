@@ -1,6 +1,6 @@
 #include "AudioTransform.hpp"
 
-#include <AvTranscoder/frame/AudioFrame.hpp>
+#include <AvTranscoder/data/AudioFrame.hpp>
 
 extern "C" {
 #include <libavcodec/avcodec.h>

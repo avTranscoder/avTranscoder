@@ -1,7 +1,7 @@
 #ifndef _AV_TRANSCODER_ESSENCE_STREAM_IENCODER_HPP_
 #define _AV_TRANSCODER_ESSENCE_STREAM_IENCODER_HPP_
 
-#include <AvTranscoder/frame/Frame.hpp>
+#include <AvTranscoder/data/Frame.hpp>
 #include <AvTranscoder/codec/ICodec.hpp>
 #include <AvTranscoder/profile/ProfileLoader.hpp>
 

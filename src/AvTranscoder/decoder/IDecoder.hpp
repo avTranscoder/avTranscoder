@@ -2,7 +2,7 @@
 #define _AV_TRANSCODER_ESSENCE_STREAM_IDECODER_HPP_
 
 #include <AvTranscoder/common.hpp>
-#include <AvTranscoder/frame/Frame.hpp>
+#include <AvTranscoder/data/Frame.hpp>
 #include <AvTranscoder/profile/ProfileLoader.hpp>
 
 namespace avtranscoder

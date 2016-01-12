@@ -2,7 +2,7 @@
 #define _AV_TRANSCODER_CODEC_AUDIO_CODEC_HPP_
 
 #include "ICodec.hpp"
-#include <AvTranscoder/frame/AudioFrame.hpp>
+#include <AvTranscoder/data/AudioFrame.hpp>
 
 namespace avtranscoder
 {

@@ -1,6 +1,6 @@
 #include "VideoTransform.hpp"
 
-#include <AvTranscoder/frame/VideoFrame.hpp>
+#include <AvTranscoder/data/VideoFrame.hpp>
 
 extern "C" {
 #include <libavcodec/avcodec.h>

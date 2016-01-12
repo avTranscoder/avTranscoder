@@ -6,7 +6,7 @@
 #include <AvTranscoder/file/InputFile.hpp>
 #include <AvTranscoder/properties/StreamProperties.hpp>
 #include <AvTranscoder/decoder/IDecoder.hpp>
-#include <AvTranscoder/frame/Frame.hpp>
+#include <AvTranscoder/data/Frame.hpp>
 #include <AvTranscoder/transform/ITransform.hpp>
 
 namespace avtranscoder

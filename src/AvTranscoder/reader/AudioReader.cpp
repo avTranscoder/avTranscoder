@@ -1,7 +1,7 @@
 #include "AudioReader.hpp"
 
 #include <AvTranscoder/decoder/AudioDecoder.hpp>
-#include <AvTranscoder/frame/AudioFrame.hpp>
+#include <AvTranscoder/data/AudioFrame.hpp>
 #include <AvTranscoder/transform/AudioTransform.hpp>
 #include <AvTranscoder/progress/NoDisplayProgress.hpp>
 

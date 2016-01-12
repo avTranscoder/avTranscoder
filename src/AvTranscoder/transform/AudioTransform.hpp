@@ -4,7 +4,7 @@
 #include "ITransform.hpp"
 
 #include <AvTranscoder/common.hpp>
-#include <AvTranscoder/frame/Frame.hpp>
+#include <AvTranscoder/data/Frame.hpp>
 
 #ifdef AVTRANSCODER_LIBAV_DEPENDENCY
 #define ResampleContext AVAudioResampleContext

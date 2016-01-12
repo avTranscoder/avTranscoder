@@ -5,7 +5,7 @@
 
 #include "ITransform.hpp"
 
-#include <AvTranscoder/frame/Frame.hpp>
+#include <AvTranscoder/data/Frame.hpp>
 
 class SwsContext;
 

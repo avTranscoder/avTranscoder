@@ -2,7 +2,7 @@
 
 #include <AvTranscoder/codec/ICodec.hpp>
 #include <AvTranscoder/stream/InputStream.hpp>
-#include <AvTranscoder/frame/VideoFrame.hpp>
+#include <AvTranscoder/data/VideoFrame.hpp>
 
 extern "C" {
 #include <libavcodec/avcodec.h>
