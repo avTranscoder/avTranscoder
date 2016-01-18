@@ -105,6 +105,18 @@ AVSampleFormat getAVSampleFormat(const std::string& sampleFormat)
     return av_get_sample_fmt(sampleFormat.c_str());
 }
 
+std::string getPixelFormatName(const AVPixelFormat pixelFormat)
+{
+    const char* formatName = av_get_pix_fmt_name(pixelFormat);
+    return formatName ? std::string(formatName) : "";
+}
+
+std::string getSampleFormatName(const AVSampleFormat sampleFormat)
+{
+    const char* formatName = av_get_sample_fmt_name(sampleFormat);
+    return formatName ? std::string(formatName) : "";
+}
+
 NamesArray getFormatsNames()
 {
     NamesArray formatsNames;

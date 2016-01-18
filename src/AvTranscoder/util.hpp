@@ -50,6 +50,18 @@ AVPixelFormat AvExport getAVPixelFormat(const std::string& pixelFormat);
 */
 AVSampleFormat AvExport getAVSampleFormat(const std::string& sampleFormat);
 
+/**
+ * @return The name of the given pixel format.
+ * @note Returns an empty string if the format is not found.
+ */
+std::string AvExport getPixelFormatName(const AVPixelFormat pixelFormat);
+
+/**
+ * @return The name of the given sample format.
+ * @note Returns an empty string if the format is not found.
+ */
+std::string AvExport getSampleFormatName(const AVSampleFormat sampleFormat);
+
 #ifndef SWIG
 /**
  * @brief Get array of short/long names of all format supported by FFmpeg / libav.
