@@ -21,6 +21,7 @@ public:
 
     const AudioFrameDesc& getAudioFrameDesc() const { return _frameDesc; }
     void setAudioFrameDesc(const AudioFrameDesc& frameDesc);
+
     void setFrame(Frame& inputFrame);
 
 private:

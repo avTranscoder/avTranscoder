@@ -1,7 +1,8 @@
 #include "AudioReader.hpp"
 
+#include <AvTranscoder/util.hpp>
 #include <AvTranscoder/decoder/AudioDecoder.hpp>
-#include <AvTranscoder/data/AudioFrame.hpp>
+#include <AvTranscoder/data/decoded/AudioFrame.hpp>
 #include <AvTranscoder/transform/AudioTransform.hpp>
 #include <AvTranscoder/progress/NoDisplayProgress.hpp>
 
@@ -48,8 +49,8 @@ void AudioReader::init()
     _srcFrame = new AudioFrame(_inputFile->getStream(_streamIndex).getAudioCodec().getAudioFrameDesc());
     AudioFrame* srcFrame = static_cast<AudioFrame*>(_srcFrame);
     // create dst frame
-    _outputSampleRate = srcFrame->desc().getSampleRate();
-    _outputNbChannels = (_channelIndex == -1) ? srcFrame->desc().getNbChannels() : 1;
+    _outputSampleRate = srcFrame->getSampleRate();
+    _outputNbChannels = (_channelIndex == -1) ? srcFrame->getNbChannels() : 1;
     _dstFrame = new AudioFrame(AudioFrameDesc(_outputSampleRate, _outputNbChannels, _outputSampleFormat));
 }
 
@@ -65,7 +66,7 @@ void AudioReader::updateOutput(const size_t sampleRate, const size_t nbChannels,
 {
     _outputSampleRate = sampleRate;
     _outputNbChannels = nbChannels;
-    _outputSampleFormat = av_get_sample_fmt(sampleFormat.c_str());
+    _outputSampleFormat = getAVSampleFormat(sampleFormat);
     // update dst frame
     delete _dstFrame;
     _dstFrame = new AudioFrame(AudioFrameDesc(_outputSampleRate, _outputNbChannels, _outputSampleFormat));

@@ -2,7 +2,7 @@
 #define _AV_TRANSCODER_CODEC_VIDEO_CODEC_HPP_
 
 #include "ICodec.hpp"
-#include <AvTranscoder/data/VideoFrame.hpp>
+#include <AvTranscoder/data/decoded/VideoFrame.hpp>
 
 namespace avtranscoder
 {

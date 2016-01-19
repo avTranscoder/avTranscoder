@@ -1,7 +1,7 @@
 #include "VideoReader.hpp"
 
 #include <AvTranscoder/decoder/VideoDecoder.hpp>
-#include <AvTranscoder/data/VideoFrame.hpp>
+#include <AvTranscoder/data/decoded/VideoFrame.hpp>
 #include <AvTranscoder/transform/VideoTransform.hpp>
 #include <AvTranscoder/progress/NoDisplayProgress.hpp>
 
@@ -48,9 +48,8 @@ void VideoReader::init()
     _srcFrame = new VideoFrame(_inputFile->getStream(_streamIndex).getVideoCodec().getVideoFrameDesc());
     VideoFrame* srcFrame = static_cast<VideoFrame*>(_srcFrame);
     // create dst frame
-    _outputWidth = srcFrame->desc().getWidth();
-    _outputHeight = srcFrame->desc().getHeight();
-    _outputPixelProperties = PixelProperties("rgb24");
+    _outputWidth = srcFrame->getWidth();
+    _outputHeight = srcFrame->getHeight();
     _dstFrame = new VideoFrame(VideoFrameDesc(_outputWidth, _outputHeight, getOutputPixelFormat()));
 }
 

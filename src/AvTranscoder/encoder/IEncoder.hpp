@@ -1,7 +1,8 @@
 #ifndef _AV_TRANSCODER_ESSENCE_STREAM_IENCODER_HPP_
 #define _AV_TRANSCODER_ESSENCE_STREAM_IENCODER_HPP_
 
-#include <AvTranscoder/data/Frame.hpp>
+#include <AvTranscoder/data/decoded/Frame.hpp>
+#include <AvTranscoder/data/coded/CodedData.hpp>
 #include <AvTranscoder/codec/ICodec.hpp>
 #include <AvTranscoder/profile/ProfileLoader.hpp>
 
@@ -26,14 +27,14 @@ public:
      * @param codedFrame data of the coded frame if present (first frames can be delayed)
      * @return status of encoding
      */
-    virtual bool encodeFrame(const Frame& sourceFrame, Frame& codedFrame) = 0;
+    virtual bool encodeFrame(const Frame& sourceFrame, CodedData& codedFrame) = 0;
 
     /**
      * @brief Get delayed encoded frames
      * @param codedFrame data of the coded frame if present (first frames can be delayed)
      * @return status of encoding
      */
-    virtual bool encodeFrame(Frame& codedFrame) = 0;
+    virtual bool encodeFrame(CodedData& codedFrame) = 0;
 
     /**
      * @brief Get codec used for encoding.

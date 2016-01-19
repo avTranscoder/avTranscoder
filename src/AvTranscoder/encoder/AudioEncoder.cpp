@@ -13,26 +13,11 @@ namespace avtranscoder
 
 AudioEncoder::AudioEncoder(const std::string& audioCodecName)
     : _codec(eCodecTypeEncoder, audioCodecName)
-    , _frame(NULL)
 {
-#if LIBAVCODEC_VERSION_MAJOR > 54
-    _frame = av_frame_alloc();
-#else
-    _frame = avcodec_alloc_frame();
-#endif
 }
 
 AudioEncoder::~AudioEncoder()
 {
-#if LIBAVCODEC_VERSION_MAJOR > 54
-    av_frame_free(&_frame);
-#else
-#if LIBAVCODEC_VERSION_MAJOR > 53
-    avcodec_free_frame(&_frame);
-#else
-    av_free(_frame);
-#endif
-#endif
 }
 
 void AudioEncoder::setupAudioEncoder(const AudioFrameDesc& frameDesc, const ProfileLoader::Profile& profile)
@@ -106,38 +91,9 @@ void AudioEncoder::setupEncoder(const ProfileLoader::Profile& profile)
     }
 }
 
-bool AudioEncoder::encodeFrame(const Frame& sourceFrame, Frame& codedFrame)
+bool AudioEncoder::encodeFrame(const Frame& sourceFrame, CodedData& codedFrame)
 {
     AVCodecContext& avCodecContext = _codec.getAVCodecContext();
-
-// Set default frame parameters
-#if LIBAVCODEC_VERSION_MAJOR > 54
-    av_frame_unref(_frame);
-#else
-    avcodec_get_frame_defaults(_frame);
-#endif
-
-    const AudioFrame& sourceAudioFrame = static_cast<const AudioFrame&>(sourceFrame);
-
-    _frame->nb_samples = sourceAudioFrame.getNbSamplesPerChannel();
-    _frame->format = avCodecContext.sample_fmt;
-    _frame->channel_layout = avCodecContext.channel_layout;
-
-    // we calculate the size of the samples buffer in bytes
-    int bufferSize =
-        av_samples_get_buffer_size(NULL, avCodecContext.channels, _frame->nb_samples, avCodecContext.sample_fmt, 0);
-    if(bufferSize < 0)
-    {
-        throw std::runtime_error("Encode audio frame error: buffer size < 0 - " + getDescriptionFromErrorCode(bufferSize));
-    }
-
-    int retvalue = avcodec_fill_audio_frame(_frame, avCodecContext.channels, avCodecContext.sample_fmt,
-                                            sourceAudioFrame.getData(), bufferSize, 0);
-    if(retvalue < 0)
-    {
-        throw std::runtime_error("Encode audio frame error: avcodec fill audio frame - " +
-                                 getDescriptionFromErrorCode(retvalue));
-    }
 
     AVPacket& packet = codedFrame.getAVPacket();
     packet.stream_index = 0;
@@ -154,14 +110,14 @@ bool AudioEncoder::encodeFrame(const Frame& sourceFrame, Frame& codedFrame)
 
 #if LIBAVCODEC_VERSION_MAJOR > 53
     int gotPacket = 0;
-    int ret = avcodec_encode_audio2(&avCodecContext, &packet, _frame, &gotPacket);
+    int ret = avcodec_encode_audio2(&avCodecContext, &packet, &sourceFrame.getAVFrame(), &gotPacket);
     if(ret != 0 && gotPacket == 0)
     {
         throw std::runtime_error("Encode audio frame error: avcodec encode audio frame - " +
                                  getDescriptionFromErrorCode(ret));
     }
 #else
-    int ret = avcodec_encode_audio(&avCodecContext, packet.data, packet.size, _frame);
+    int ret = avcodec_encode_audio(&avCodecContext, packet.data, packet.size, &sourceFrame.getAVFrame());
     if(ret < 0)
     {
         throw std::runtime_error("Encode audio frame error: avcodec encode audio frame - " +
@@ -175,7 +131,7 @@ bool AudioEncoder::encodeFrame(const Frame& sourceFrame, Frame& codedFrame)
     return ret == 0;
 }
 
-bool AudioEncoder::encodeFrame(Frame& codedFrame)
+bool AudioEncoder::encodeFrame(CodedData& codedFrame)
 {
     AVCodecContext& avCodecContext = _codec.getAVCodecContext();
 

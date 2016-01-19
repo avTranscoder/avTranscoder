@@ -23,11 +23,11 @@ def testVideoReaderCreateNewInputFile():
 
     # read all frames and check their size
     for i in xrange(0, reader.getSourceVideoProperties().getNbFrames()):
-        frame = reader.readNextFrame()
+        frame = av.VideoFrame(reader.readNextFrame())
         assert_equals( frame.getSize(), reader.getOutputWidth() * reader.getOutputHeight() * reader.getOutputNbComponents() )
 
     # check if the next frame is empty
-    frame = reader.readNextFrame()
+    frame = av.VideoFrame(reader.readNextFrame())
     assert_equals( frame.getSize(), 0 )
 
 
@@ -42,11 +42,11 @@ def testVideoReaderReferenceInputFile():
 
     # read all frames and check their size
     for i in xrange(0, reader.getSourceVideoProperties().getNbFrames()):
-        frame = reader.readNextFrame()
+        frame = av.VideoFrame(reader.readNextFrame())
         assert_equals( frame.getSize(), reader.getOutputWidth() * reader.getOutputHeight() * reader.getOutputNbComponents() )
 
     # check if the next frame is empty
-    frame = reader.readNextFrame()
+    frame = av.VideoFrame(reader.readNextFrame())
     assert_equals( frame.getSize(), 0 )
 
 
@@ -64,13 +64,13 @@ def testAudioReaderChannelsExtraction():
     readerOfAllChannels = av.AudioReader(inputFile, streamIndex)
     nbChannels = readerOfAllChannels.getOutputNbChannels()
     # read first frame
-    frame = readerOfAllChannels.readNextFrame()
+    frame = av.AudioFrame(readerOfAllChannels.readNextFrame())
     sizeOfFrameWithAllChannels = frame.getSize()
 
     # create reader to read one channel of the audio stream
     readerOfOneChannel = av.AudioReader(inputFile, streamIndex, channelIndex)
     # read first frame
-    frame = readerOfOneChannel.readNextFrame()
+    frame = av.AudioFrame(readerOfOneChannel.readNextFrame())
     sizeOfFrameWithOneChannels = frame.getSize()
 
     assert_equals( sizeOfFrameWithAllChannels / nbChannels, sizeOfFrameWithOneChannels )

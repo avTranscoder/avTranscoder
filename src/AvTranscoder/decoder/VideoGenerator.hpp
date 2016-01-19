@@ -21,6 +21,7 @@ public:
 
     const VideoFrameDesc& getVideoFrameDesc() const { return _frameDesc; }
     void setVideoFrameDesc(const VideoFrameDesc& frameDesc);
+
     void setNextFrame(Frame& inputFrame);
 
 private:

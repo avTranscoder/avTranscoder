@@ -30,8 +30,8 @@ AudioFrameDesc AudioCodec::getAudioFrameDesc() const
 
 void AudioCodec::setAudioParameters(const AudioFrameDesc& audioFrameDesc)
 {
-    _avCodecContext->sample_rate = audioFrameDesc.getSampleRate();
-    _avCodecContext->channels = audioFrameDesc.getNbChannels();
-    _avCodecContext->sample_fmt = audioFrameDesc.getSampleFormat();
+    _avCodecContext->sample_rate = audioFrameDesc._sampleRate;
+    _avCodecContext->channels = audioFrameDesc._nbChannels;
+    _avCodecContext->sample_fmt = audioFrameDesc._sampleFormat;
 }
 }

@@ -33,7 +33,7 @@ AudioGenerator::~AudioGenerator()
 void AudioGenerator::setAudioFrameDesc(const AudioFrameDesc& frameDesc)
 {
     _frameDesc = frameDesc;
-    _frameDesc.setFps(25.);
+    _frameDesc._fps = 25.;
 }
 
 void AudioGenerator::setFrame(Frame& inputFrame)
@@ -46,24 +46,19 @@ bool AudioGenerator::decodeNextFrame(Frame& frameBuffer)
     // Generate silent
     if(!_inputFrame)
     {
-        AudioFrame& audioBuffer = static_cast<AudioFrame&>(frameBuffer);
-        audioBuffer.setNbSamplesPerChannel(_frameDesc.getSampleRate() / _frameDesc.getFps());
-
         // Generate the silent only once
         if(!_silent)
         {
-            int fillChar = 0;
-
+            AudioFrame& audioBuffer = static_cast<AudioFrame&>(frameBuffer);
             _silent = new AudioFrame(audioBuffer.desc());
-            _silent->assign(_frameDesc.getDataSize(), fillChar);
-            _silent->setNbSamplesPerChannel(audioBuffer.getNbSamplesPerChannel());
         }
-        frameBuffer.refData(*_silent);
+        frameBuffer.getAVFrame().nb_samples = _silent->getAVFrame().nb_samples;
+        frameBuffer.copyData(*_silent);
     }
     // Take audio frame from _inputFrame
     else
     {
-        frameBuffer.refData(_inputFrame->getData(), _inputFrame->getSize());
+        frameBuffer.copyData(*_inputFrame);
     }
     return true;
 }

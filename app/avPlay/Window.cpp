@@ -550,7 +550,7 @@ void Window::showAlphaChannelTexture()
 
 void Window::displayNextFrame()
 {
-    const char* buffer = (const char*)_reader->readNextFrame()->getData();
+    const char* buffer = (const char*)_reader->readNextFrame()->getData()[0];
     loadNewTexture(buffer, _reader->getOutputNbComponents(), _reader->getOutputWidth(), _reader->getOutputHeight(), GL_RGB,
                    GL_UNSIGNED_BYTE);
     display();
@@ -558,7 +558,7 @@ void Window::displayNextFrame()
 
 void Window::displayPrevFrame()
 {
-    const char* buffer = (const char*)_reader->readPrevFrame()->getData();
+    const char* buffer = (const char*)_reader->readPrevFrame()->getData()[0];
     loadNewTexture(buffer, _reader->getOutputNbComponents(), _reader->getOutputWidth(), _reader->getOutputHeight(), GL_RGB,
                    GL_UNSIGNED_BYTE);
     display();
@@ -571,7 +571,7 @@ void Window::displayFirstFrame()
 
 void Window::displayAtFrame(const size_t frame)
 {
-    const char* buffer = (const char*)_reader->readFrameAt(frame)->getData();
+    const char* buffer = (const char*)_reader->readFrameAt(frame)->getData()[0];
     loadNewTexture(buffer, _reader->getOutputNbComponents(), _reader->getOutputWidth(), _reader->getOutputHeight(), GL_RGB,
                    GL_UNSIGNED_BYTE);
     display();

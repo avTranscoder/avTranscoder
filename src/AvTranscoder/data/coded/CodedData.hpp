@@ -18,14 +18,14 @@ namespace avtranscoder
 class AvExport CodedData
 {
 public:
-    /// Create a frame with empty buffer data
+    /// Create an empty data buffer
     CodedData();
 
-    /// Create a frame with a the given buffer size
+    /// Create a data buffer with a the given size
     CodedData(const size_t dataSize);
 
 #ifndef SWIG
-    /// Create a frame from the given AVPAcket (copy data of given packet)
+    /// Create a data buffer from the given AVPAcket (copy data of given packet)
     CodedData(const AVPacket& avPacket);
 #endif
 
@@ -38,7 +38,9 @@ public:
     /// Free buffer of data
     ~CodedData();
 
+#ifndef SWIG
     void refAVStream(const AVStream& avStream) { _avStream = &avStream; }
+#endif
     /// Resize data buffer
     void resize(const size_t newSize);
 
@@ -61,6 +63,10 @@ public:
     void clear();
 
     unsigned char* getData() { return _packet.data; }
+#ifndef SWIG
+    const unsigned char* getData() const { return _packet.data; }
+#endif
+
     size_t getSize() const { return _packet.size; }
 
 #ifndef SWIG
@@ -71,7 +77,6 @@ public:
     const AVStream* getAVStream() const { return _avStream; }
     AVPacket& getAVPacket() { return _packet; }
     const AVPacket& getAVPacket() const { return _packet; }
-    const unsigned char* getData() const { return _packet.data; }
 #endif
 
 private:

@@ -3,8 +3,6 @@
 
 #include "IDecoder.hpp"
 
-struct AVFrame;
-
 namespace avtranscoder
 {
 
@@ -24,11 +22,7 @@ public:
     void flushDecoder();
 
 private:
-    bool decodeNextFrame();
-
-private:
     InputStream* _inputStream; ///< Stream from which we read next frames (no ownership, has link)
-    AVFrame* _frame;           ///< Libav object to store decoded data (has ownership)
 
     bool _isSetup;
 };

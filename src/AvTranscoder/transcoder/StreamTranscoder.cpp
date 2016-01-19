@@ -186,7 +186,7 @@ StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outpu
             if(subStreamIndex > -1)
             {
                 // @todo manage downmix ?
-                outputFrameDesc.setNbChannels(1);
+                outputFrameDesc._nbChannels = 1;
             }
             outputAudio->setupAudioEncoder(outputFrameDesc, profile);
 
@@ -196,7 +196,7 @@ StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outpu
             // buffers to process
             AudioFrameDesc inputFrameDesc(_inputStream->getAudioCodec().getAudioFrameDesc());
             if(subStreamIndex > -1)
-                inputFrameDesc.setNbChannels(1);
+                inputFrameDesc._nbChannels = 1;
 
             _sourceBuffer = new AudioFrame(inputFrameDesc);
             _frameBuffer = new AudioFrame(outputAudio->getAudioCodec().getAudioFrameDesc());
@@ -346,7 +346,7 @@ void StreamTranscoder::preProcessCodecLatency()
 bool StreamTranscoder::processFrame()
 {
     const EProcessCase processCase = getProcessCase();
-    std::string msg = "Current process case of the stream is a "; 
+    std::string msg = "Current process case of the stream is a ";
     switch(processCase)
     {
         case eProcessCaseTranscode:
@@ -467,10 +467,10 @@ bool StreamTranscoder::processTranscode(const int subStreamIndex)
     CodedData data;
     if(decodingStatus)
     {
-        LOG_DEBUG("Convert (" << _sourceBuffer->getSize() << " bytes)")
+        LOG_DEBUG("Convert")
         _transform->convert(*_sourceBuffer, *_frameBuffer);
 
-        LOG_DEBUG("Encode (" << _frameBuffer->getSize() << " bytes)")
+        LOG_DEBUG("Encode")
         _outputEncoder->encodeFrame(*_frameBuffer, data);
     }
     else

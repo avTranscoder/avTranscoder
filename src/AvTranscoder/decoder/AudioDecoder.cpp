@@ -2,7 +2,7 @@
 
 #include <AvTranscoder/codec/ICodec.hpp>
 #include <AvTranscoder/stream/InputStream.hpp>
-#include <AvTranscoder/data/AudioFrame.hpp>
+#include <AvTranscoder/data/decoded/AudioFrame.hpp>
 
 extern "C" {
 #include <libavcodec/avcodec.h>
@@ -20,35 +20,12 @@ namespace avtranscoder
 
 AudioDecoder::AudioDecoder(InputStream& inputStream)
     : _inputStream(&inputStream)
-    , _frame(NULL)
     , _isSetup(false)
 {
-#if LIBAVCODEC_VERSION_MAJOR > 54
-    _frame = av_frame_alloc();
-#else
-    _frame = avcodec_alloc_frame();
-#endif
-    if(_frame == NULL)
-    {
-        throw std::runtime_error("unable to setup frame buffer");
-    }
 }
 
 AudioDecoder::~AudioDecoder()
 {
-    if(_frame != NULL)
-    {
-#if LIBAVCODEC_VERSION_MAJOR > 54
-        av_frame_free(&_frame);
-#else
-#if LIBAVCODEC_VERSION_MAJOR > 53
-        avcodec_free_frame(&_frame);
-#else
-        av_free(_frame);
-#endif
-#endif
-        _frame = NULL;
-    }
 }
 
 void AudioDecoder::setupDecoder(const ProfileLoader::Profile& profile)
@@ -100,46 +77,62 @@ void AudioDecoder::setupDecoder(const ProfileLoader::Profile& profile)
 
 bool AudioDecoder::decodeNextFrame(Frame& frameBuffer)
 {
-    if(!decodeNextFrame())
-        return false;
+    bool decodeNextFrame = false;
 
-    AVCodecContext& avCodecContext = _inputStream->getAudioCodec().getAVCodecContext();
+    if(!_isSetup)
+        setupDecoder();
 
-    const int noAlignment = 1;
-    const size_t decodedSize = av_samples_get_buffer_size(NULL, avCodecContext.channels, _frame->nb_samples,
-                                                          avCodecContext.sample_fmt, noAlignment);
-    if(decodedSize == 0)
-        return false;
+    int got_frame = 0;
+    while(!got_frame)
+    {
+        CodedData data;
 
-    AudioFrame& audioBuffer = static_cast<AudioFrame&>(frameBuffer);
-    audioBuffer.setNbSamplesPerChannel(_frame->nb_samples);
-    audioBuffer.resize(decodedSize);
+        const bool nextPacketRead = _inputStream->readNextPacket(data);
+        // if error or end of file
+        if(!nextPacketRead)
+        {
+            data.clear();
+            return false;
+        }
 
-    // @todo manage cases with data of frame not only on data[0] (use _frame.linesize)
-    unsigned char* const src = _frame->data[0];
-    unsigned char* dst = audioBuffer.getData();
+        // decoding
+        int ret = avcodec_decode_audio4(&_inputStream->getAudioCodec().getAVCodecContext(), &frameBuffer.getAVFrame(),
+                                        &got_frame, &data.getAVPacket());
+        if(ret < 0)
+        {
+            throw std::runtime_error("an error occured during audio decoding" + getDescriptionFromErrorCode(ret));
+        }
 
-    av_samples_copy(&dst, &src, 0, 0, _frame->nb_samples, avCodecContext.channels, avCodecContext.sample_fmt);
-
-    return true;
+        // if no frame could be decompressed
+        if(!nextPacketRead && ret == 0 && got_frame == 0)
+            decodeNextFrame = false;
+        else
+            decodeNextFrame = true;
+    }
+    return decodeNextFrame;
 }
 
 bool AudioDecoder::decodeNextFrame(Frame& frameBuffer, const size_t channelIndex)
 {
-    if(!decodeNextFrame())
+    AudioFrame& audioBuffer = static_cast<AudioFrame&>(frameBuffer);
+
+    // decode all data of the next frame
+    AudioFrame allDataOfNextFrame(audioBuffer.desc());
+    if(!decodeNextFrame(allDataOfNextFrame))
         return false;
 
     AVCodecContext& avCodecContext = _inputStream->getAudioCodec().getAVCodecContext();
     const size_t srcNbChannels = avCodecContext.channels;
-    const size_t bytePerSample = av_get_bytes_per_sample((AVSampleFormat)_frame->format);
+    const size_t bytePerSample = av_get_bytes_per_sample((AVSampleFormat)frameBuffer.getAVFrame().format);
 
     const int dstNbChannels = 1;
-    const int noAlignment = 1;
-    const size_t decodedSize =
-        av_samples_get_buffer_size(NULL, dstNbChannels, _frame->nb_samples, avCodecContext.sample_fmt, noAlignment);
+    const int noAlignment = 0;
+    const size_t decodedSize = av_samples_get_buffer_size(NULL, dstNbChannels, frameBuffer.getAVFrame().nb_samples,
+                                                          avCodecContext.sample_fmt, noAlignment);
     if(decodedSize == 0)
         return false;
 
+    // check if the expected channel exists
     if(channelIndex > srcNbChannels - 1)
     {
         std::stringstream msg;
@@ -151,51 +144,27 @@ bool AudioDecoder::decodeNextFrame(Frame& frameBuffer, const size_t channelIndex
         throw std::runtime_error(msg.str());
     }
 
-    AudioFrame& audioBuffer = static_cast<AudioFrame&>(frameBuffer);
-    audioBuffer.setNbSamplesPerChannel(_frame->nb_samples);
-    audioBuffer.resize(decodedSize);
+    // copy frame properties of decoded frame
+    audioBuffer.copyProperties(allDataOfNextFrame);
+    av_frame_set_channels(&audioBuffer.getAVFrame(), 1);
+    av_frame_set_channel_layout(&audioBuffer.getAVFrame(), AV_CH_LAYOUT_MONO);
+    audioBuffer.setNbSamplesPerChannel(allDataOfNextFrame.getNbSamplesPerChannel());
 
     // @todo manage cases with data of frame not only on data[0] (use _frame.linesize)
-    unsigned char* src = _frame->data[0];
-    unsigned char* dst = audioBuffer.getData();
+    unsigned char* src = allDataOfNextFrame.getAVFrame().data[0];
+    unsigned char* dst = audioBuffer.getData()[0];
 
     // offset
     src += channelIndex * bytePerSample;
 
-    for(int sample = 0; sample < _frame->nb_samples; ++sample)
+    // extract one channel
+    for(int sample = 0; sample < allDataOfNextFrame.getAVFrame().nb_samples; ++sample)
     {
         memcpy(dst, src, bytePerSample);
         dst += bytePerSample;
         src += bytePerSample * srcNbChannels;
     }
 
-    return true;
-}
-
-bool AudioDecoder::decodeNextFrame()
-{
-    if(!_isSetup)
-        setupDecoder();
-
-    int got_frame = 0;
-    while(!got_frame)
-    {
-        CodedData data;
-
-        bool nextPacketRead = _inputStream->readNextPacket(data);
-        if(!nextPacketRead) // error or end of file
-            data.clear();
-
-        int ret = avcodec_decode_audio4(&_inputStream->getAudioCodec().getAVCodecContext(), _frame, &got_frame,
-                                        &data.getAVPacket());
-        if(!nextPacketRead && ret == 0 && got_frame == 0) // no frame could be decompressed
-            return false;
-
-        if(ret < 0)
-        {
-            throw std::runtime_error("an error occured during audio decoding" + getDescriptionFromErrorCode(ret));
-        }
-    }
     return true;
 }
 

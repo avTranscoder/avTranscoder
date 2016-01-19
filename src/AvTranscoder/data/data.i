@@ -1,13 +1,13 @@
 %apply char * { unsigned char * };
 
 %{
-#include <AvTranscoder/data/CodedData.hpp>
-#include <AvTranscoder/data/Frame.hpp>
-#include <AvTranscoder/data/VideoFrame.hpp>
-#include <AvTranscoder/data/AudioFrame.hpp>
+#include <AvTranscoder/data/coded/CodedData.hpp>
+#include <AvTranscoder/data/decoded/Frame.hpp>
+#include <AvTranscoder/data/decoded/VideoFrame.hpp>
+#include <AvTranscoder/data/decoded/AudioFrame.hpp>
 %}
 
-%include <AvTranscoder/data/CodedData.hpp>
-%include <AvTranscoder/data/Frame.hpp>
-%include <AvTranscoder/data/VideoFrame.hpp>
-%include <AvTranscoder/data/AudioFrame.hpp>
+%include <AvTranscoder/data/coded/CodedData.hpp>
+%include <AvTranscoder/data/decoded/Frame.hpp>
+%include <AvTranscoder/data/decoded/VideoFrame.hpp>
+%include <AvTranscoder/data/decoded/AudioFrame.hpp>
