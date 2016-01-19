@@ -34,11 +34,6 @@ public:
     unsigned char** getData() { return _frame->data; }
 
     /**
-     * @return The specified data plane.
-     */
-    unsigned char* getPlaneData(const size_t plane);
-
-    /**
      * @brief Returns the size in byte.
      * For video, size in bytes of each picture line.
      * For audio, size in bytes of each plane.

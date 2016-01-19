@@ -40,14 +40,6 @@ Frame::~Frame()
     }
 }
 
-unsigned char* Frame::getPlaneData(const size_t plane)
-{
-    AVBufferRef* buffer = av_frame_get_plane_buffer(_frame, plane);
-    if(buffer != NULL)
-        return buffer->data;
-    return NULL;
-}
-
 void Frame::copyData(const Frame& frameToRef)
 {
     const int ret = av_frame_copy(_frame, &frameToRef.getAVFrame());
