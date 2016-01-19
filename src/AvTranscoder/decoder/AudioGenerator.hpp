@@ -19,7 +19,7 @@ public:
     bool decodeNextFrame(Frame& frameBuffer);
     bool decodeNextFrame(Frame& frameBuffer, const size_t subStreamIndex);
 
-    void setFrame(Frame& inputFrame);
+    void setNextFrame(Frame& inputFrame);
 
 private:
     Frame* _inputFrame;        ///< Has link (no ownership)
