@@ -42,7 +42,7 @@ def testTranscodeWave24b48k5_1():
     assert_equals( "s32", dst_audioStream.getSampleFormatName() )
     assert_equals( "signed 32 bits", dst_audioStream.getSampleFormatLongName() )
     assert_equals( 48000, dst_audioStream.getSampleRate() )
-    assert_equals( 6, dst_audioStream.getChannels() )
+    assert_equals( 6, dst_audioStream.getNbChannels() )
 
 def testTranscodeWave24b48kstereo():
     """
@@ -76,7 +76,7 @@ def testTranscodeWave24b48kstereo():
     assert_equals( "s32", dst_audioStream.getSampleFormatName() )
     assert_equals( "signed 32 bits", dst_audioStream.getSampleFormatLongName() )
     assert_equals( 48000, dst_audioStream.getSampleRate() )
-    assert_equals( 2, dst_audioStream.getChannels() )
+    assert_equals( 2, dst_audioStream.getNbChannels() )
 
 def testTranscodeWave24b48kmono():
     """
@@ -110,7 +110,7 @@ def testTranscodeWave24b48kmono():
     assert_equals( "s32", dst_audioStream.getSampleFormatName() )
     assert_equals( "signed 32 bits", dst_audioStream.getSampleFormatLongName() )
     assert_equals( 48000, dst_audioStream.getSampleRate() )
-    assert_equals( 1, dst_audioStream.getChannels() )
+    assert_equals( 1, dst_audioStream.getNbChannels() )
 
 def testTranscodeWave16b48kmono():
     """
@@ -144,4 +144,4 @@ def testTranscodeWave16b48kmono():
     assert_equals( "s16", dst_audioStream.getSampleFormatName() )
     assert_equals( "signed 16 bits", dst_audioStream.getSampleFormatLongName() )
     assert_equals( 48000, dst_audioStream.getSampleRate() )
-    assert_equals( 1, dst_audioStream.getChannels() )
+    assert_equals( 1, dst_audioStream.getNbChannels() )

@@ -24,14 +24,13 @@ AudioCodec::AudioCodec(const ECodecType type, AVCodecContext& avCodecContext)
 AudioFrameDesc AudioCodec::getAudioFrameDesc() const
 {
     assert(_avCodecContext != NULL);
-    AudioFrameDesc audioFrameDesc(_avCodecContext->sample_rate, _avCodecContext->channels, _avCodecContext->sample_fmt);
-    return audioFrameDesc;
+    return AudioFrameDesc(_avCodecContext->sample_rate, _avCodecContext->channels, _avCodecContext->sample_fmt);
 }
 
 void AudioCodec::setAudioParameters(const AudioFrameDesc& audioFrameDesc)
 {
-    _avCodecContext->sample_rate = audioFrameDesc.getSampleRate();
-    _avCodecContext->channels = audioFrameDesc.getChannels();
-    _avCodecContext->sample_fmt = audioFrameDesc.getSampleFormat();
+    _avCodecContext->sample_rate = audioFrameDesc._sampleRate;
+    _avCodecContext->channels = audioFrameDesc._nbChannels;
+    _avCodecContext->sample_fmt = audioFrameDesc._sampleFormat;
 }
 }

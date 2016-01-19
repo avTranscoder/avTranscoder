@@ -6,7 +6,7 @@
 #include <AvTranscoder/file/InputFile.hpp>
 #include <AvTranscoder/properties/StreamProperties.hpp>
 #include <AvTranscoder/decoder/IDecoder.hpp>
-#include <AvTranscoder/frame/Frame.hpp>
+#include <AvTranscoder/data/decoded/Frame.hpp>
 #include <AvTranscoder/transform/ITransform.hpp>
 
 namespace avtranscoder
@@ -20,14 +20,16 @@ class AvExport IReader
 public:
     /**
      * @brief Create a new InputFile and prepare to read the stream at the given index
+     * @param streamIndex by default read the first stream
+     * @param channelIndex by default -1 (all channels of the stream)
      */
-    IReader(const std::string& filename, const size_t streamIndex);
+    IReader(const std::string& filename, const size_t streamIndex = 0, const int channelIndex = -1);
 
     /**
      * @brief Get the existing InputFile and prepare to read the stream at the given index
      * @note This constructor can improve performances when you create several readers from one InputFile.
      */
-    IReader(InputFile& inputFile, const size_t streamIndex);
+    IReader(InputFile& inputFile, const size_t streamIndex = 0, const int channelIndex = -1);
 
     virtual ~IReader() = 0;
 
@@ -47,9 +49,9 @@ public:
     Frame* readFrameAt(const size_t frame);
 
     /**
-     * @brief Print info of the source stream read.
+     * @brief Get the properties of the source stream read.
      */
-    virtual void printInfo();
+    const StreamProperties* getSourceProperties() const { return _streamProperties; }
 
 protected:
     InputFile* _inputFile;
@@ -62,6 +64,7 @@ protected:
     ITransform* _transform;
 
     size_t _streamIndex;
+    int _channelIndex;
 
 private:
     int _currentFrame;        ///< The current decoded frame.

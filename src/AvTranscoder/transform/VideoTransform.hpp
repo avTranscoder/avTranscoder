@@ -5,7 +5,7 @@
 
 #include "ITransform.hpp"
 
-#include <AvTranscoder/frame/Frame.hpp>
+#include <AvTranscoder/data/decoded/Frame.hpp>
 
 class SwsContext;
 
@@ -28,12 +28,6 @@ private:
     bool init(const Frame& srcFrame, const Frame& dstFrame);
 
     SwsContext* _imageConvertContext;
-
-    std::vector<uint8_t*> _srcData;
-    std::vector<uint8_t*> _dstData;
-    std::vector<int> _srcLineSize;
-    std::vector<int> _dstLineSize;
-
     bool _isInit;
 };
 }

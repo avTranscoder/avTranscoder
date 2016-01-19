@@ -2,7 +2,7 @@
 #define _AV_TRANSCODER_ESSENCE_STREAM_IDECODER_HPP_
 
 #include <AvTranscoder/common.hpp>
-#include <AvTranscoder/frame/Frame.hpp>
+#include <AvTranscoder/data/decoded/Frame.hpp>
 #include <AvTranscoder/profile/ProfileLoader.hpp>
 
 namespace avtranscoder
@@ -30,10 +30,10 @@ public:
     /**
      * @brief Decode substream of next frame
      * @param frameBuffer: the frame decoded
-     * @param subStreamIndex: index of substream to extract
+     * @param channelIndex: index of channel to extract
      * @return status of decoding
      */
-    virtual bool decodeNextFrame(Frame& frameBuffer, const size_t subStreamIndex) = 0;
+    virtual bool decodeNextFrame(Frame& frameBuffer, const size_t channelIndex) = 0;
 
     /**
      * @brief Set the next frame of the input stream (which bypass the work of decoding)

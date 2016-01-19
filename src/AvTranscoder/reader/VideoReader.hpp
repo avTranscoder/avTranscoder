@@ -14,31 +14,31 @@ class AvExport VideoReader : public IReader
 {
 public:
     //@{
-    // @param width: if 0, get width of source
-    // @param height: if 0, get height of source
-    // @param pixelFormat: rgb24 by default (to display)
-    //
-    VideoReader(const std::string& filename, const size_t videoStreamIndex, const size_t width = 0, const size_t height = 0,
-                const std::string& pixelFormat = "rgb24");
-    VideoReader(InputFile& inputFile, const size_t videoStreamIndex, const size_t width = 0, const size_t height = 0,
-                const std::string& pixelFormat = "rgb24");
+    // @note Transform the input stream to rgb24 pixel format (to display).
+    // @see updateOutput
+    VideoReader(const std::string& filename, const size_t videoStreamIndex = 0);
+    VideoReader(InputFile& inputFile, const size_t videoStreamIndex = 0);
     //@}
 
     ~VideoReader();
 
+    /**
+     * @brief Update width, height and pixelFormat of the output.
+     * @note Will transform the decoded data when read the stream.
+     */
+    void updateOutput(const size_t width, const size_t height, const std::string& pixelFormat);
+
     //@{
     // @brief Output info
-    size_t getWidth();
-    size_t getHeight();
-    size_t getComponents();
-    size_t getBitDepth();
-    AVPixelFormat getPixelFormat();
+    size_t getOutputWidth() const { return _outputWidth; }
+    size_t getOutputHeight() const { return _outputHeight; }
+    size_t getOutputNbComponents() const { return _outputPixelProperties.getNbComponents(); }
+    size_t getOutputBitDepth() const { return _outputPixelProperties.getBitsPerPixel(); }
+    AVPixelFormat getOutputPixelFormat() const { return _outputPixelProperties.getAVPixelFormat(); }
     //@}
 
-    // @brief Input info
-    const VideoProperties* getVideoProperties() const { return _videoStreamProperties; }
-
-    void printInfo();
+    // @brief Get source video properties
+    const VideoProperties* getSourceVideoProperties() const { return _videoStreamProperties; }
 
 private:
     void init();
@@ -48,9 +48,9 @@ private:
 
     //@{
     // @brief Output info
-    size_t _width;
-    size_t _height;
-    PixelProperties _pixelProperties;
+    size_t _outputWidth;
+    size_t _outputHeight;
+    PixelProperties _outputPixelProperties;
     //@}
 };
 }

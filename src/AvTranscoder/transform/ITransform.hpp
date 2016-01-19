@@ -2,7 +2,7 @@
 #define _AV_TRANSCODER_ESSENCE_TRANSFORM_ESSENCE_TRANSFORM_HPP_
 
 #include <AvTranscoder/common.hpp>
-#include <AvTranscoder/frame/Frame.hpp>
+#include <AvTranscoder/data/decoded/Frame.hpp>
 
 namespace avtranscoder
 {

@@ -1,5 +1,5 @@
-#ifndef _AV_TRANSCODER_FRAME_FRAME_HPP_
-#define _AV_TRANSCODER_FRAME_FRAME_HPP_
+#ifndef _AV_TRANSCODER_FRAME_CODEDDATA_HPP_
+#define _AV_TRANSCODER_FRAME_CODEDDATA_HPP_
 
 #include <AvTranscoder/common.hpp>
 
@@ -12,36 +12,41 @@ struct AVStream;
 namespace avtranscoder
 {
 
-class AvExport Frame
+/**
+ * @brief This class describes coded data.
+ */
+class AvExport CodedData
 {
 public:
-    /// Create a frame with empty buffer data
-    Frame();
+    /// Create an empty data buffer
+    CodedData();
 
-    /// Create a frame with a the given buffer size
-    Frame(const size_t dataSize);
+    /// Create a data buffer with a the given size
+    CodedData(const size_t dataSize);
 
 #ifndef SWIG
-    /// Create a frame from the given AVPAcket (copy data of given packet)
-    Frame(const AVPacket& avPacket);
+    /// Create a data buffer from the given AVPAcket (copy data of given packet)
+    CodedData(const AVPacket& avPacket);
 #endif
 
     /// Override copy constructor in order to copy AVPacket data
-    Frame(const Frame& other);
+    CodedData(const CodedData& other);
 
     /// Override operator = in order to copy AVPacket data
-    Frame& operator=(const Frame& other);
+    CodedData& operator=(const CodedData& other);
 
     /// Free buffer of data
-    ~Frame();
+    ~CodedData();
 
+#ifndef SWIG
     void refAVStream(const AVStream& avStream) { _avStream = &avStream; }
+#endif
     /// Resize data buffer
     void resize(const size_t newSize);
 
     ///@{
     /// Ref to external data buffer
-    void refData(Frame& frame);
+    void refData(CodedData& frame);
     void refData(unsigned char* buffer, const size_t size);
     ///@}
 
@@ -58,6 +63,10 @@ public:
     void clear();
 
     unsigned char* getData() { return _packet.data; }
+#ifndef SWIG
+    const unsigned char* getData() const { return _packet.data; }
+#endif
+
     size_t getSize() const { return _packet.size; }
 
 #ifndef SWIG
@@ -68,7 +77,6 @@ public:
     const AVStream* getAVStream() const { return _avStream; }
     AVPacket& getAVPacket() { return _packet; }
     const AVPacket& getAVPacket() const { return _packet; }
-    const unsigned char* getData() const { return _packet.data; }
 #endif
 
 private:
@@ -81,11 +89,6 @@ private:
     // Stream which contains the packet
     const AVStream* _avStream; //< Has link (no ownership)
 };
-
-// Typedef to represent buffer of coded data.
-// Example 1: in case of image, no sense to get size if coded data.
-// Example 2: in case of audio, no sense to get number of channels if coded data.
-typedef Frame CodedData;
 }
 
 #endif

@@ -1,5 +1,6 @@
-
 #include "Window.hpp"
+
+#include <AvTranscoder/properties/print.hpp>
 
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
@@ -103,8 +104,8 @@ void loadNewTexture(const char* data, GLint internalFormat, size_t width, size_t
 Window::Window(avtranscoder::VideoReader& reader)
 {
     _reader = &reader;
-    _width = _reader->getWidth();
-    _height = _reader->getHeight();
+    _width = _reader->getOutputWidth();
+    _height = _reader->getOutputHeight();
 
     char* argv[2] = {(char*)"", NULL};
     int argc = 1;
@@ -439,7 +440,9 @@ void Window::displayInformations()
     std::cout << textureType << " " << _width << "x" << _height << std::endl;
 
     // stream info
-    _reader->printInfo();
+    const avtranscoder::VideoProperties* properties = _reader->getSourceVideoProperties();
+    if(properties != NULL)
+        std::cout << *properties << std::endl;
 }
 
 void Window::move(float x, float y)
@@ -547,15 +550,17 @@ void Window::showAlphaChannelTexture()
 
 void Window::displayNextFrame()
 {
-    const char* buffer = (const char*)_reader->readNextFrame()->getData();
-    loadNewTexture(buffer, _reader->getComponents(), _reader->getWidth(), _reader->getHeight(), GL_RGB, GL_UNSIGNED_BYTE);
+    const char* buffer = (const char*)_reader->readNextFrame()->getData()[0];
+    loadNewTexture(buffer, _reader->getOutputNbComponents(), _reader->getOutputWidth(), _reader->getOutputHeight(), GL_RGB,
+                   GL_UNSIGNED_BYTE);
     display();
 }
 
 void Window::displayPrevFrame()
 {
-    const char* buffer = (const char*)_reader->readPrevFrame()->getData();
-    loadNewTexture(buffer, _reader->getComponents(), _reader->getWidth(), _reader->getHeight(), GL_RGB, GL_UNSIGNED_BYTE);
+    const char* buffer = (const char*)_reader->readPrevFrame()->getData()[0];
+    loadNewTexture(buffer, _reader->getOutputNbComponents(), _reader->getOutputWidth(), _reader->getOutputHeight(), GL_RGB,
+                   GL_UNSIGNED_BYTE);
     display();
 }
 
@@ -566,8 +571,9 @@ void Window::displayFirstFrame()
 
 void Window::displayAtFrame(const size_t frame)
 {
-    const char* buffer = (const char*)_reader->readFrameAt(frame)->getData();
-    loadNewTexture(buffer, _reader->getComponents(), _reader->getWidth(), _reader->getHeight(), GL_RGB, GL_UNSIGNED_BYTE);
+    const char* buffer = (const char*)_reader->readFrameAt(frame)->getData()[0];
+    loadNewTexture(buffer, _reader->getOutputNbComponents(), _reader->getOutputWidth(), _reader->getOutputHeight(), GL_RGB,
+                   GL_UNSIGNED_BYTE);
     display();
 }
 

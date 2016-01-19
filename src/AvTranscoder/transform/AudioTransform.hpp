@@ -4,7 +4,7 @@
 #include "ITransform.hpp"
 
 #include <AvTranscoder/common.hpp>
-#include <AvTranscoder/frame/Frame.hpp>
+#include <AvTranscoder/data/decoded/Frame.hpp>
 
 #ifdef AVTRANSCODER_LIBAV_DEPENDENCY
 #define ResampleContext AVAudioResampleContext
@@ -32,13 +32,8 @@ public:
 private:
     bool init(const Frame& srcFrame, const Frame& dstFrame);
 
-    /// Update output buffer if source has a different size from the last process
-    void updateOutputFrame(const size_t nbInputSamples, Frame& dstFrame) const;
-
 private:
     ResampleContext* _audioConvertContext;
-
-    size_t _nbSamplesOfPreviousFrame; ///< To check if the number of samples change between frames
 
     bool _isInit;
 };
