@@ -215,7 +215,9 @@ IOutputStream::EWrappingStatus OutputFile::wrap(const CodedData& data, const siz
     const double currentStreamDuration = _outputStreams.at(streamIndex)->getStreamDuration();
     if(currentStreamDuration < _previousProcessedStreamDuration)
     {
-        // if the current stream is strictly shorter than the previous, wait for more data
+        LOG_DEBUG("The output stream " << streamIndex << " is strictly shorter than the previous duration saved ("
+                                       << currentStreamDuration << "s < " << _previousProcessedStreamDuration
+                                       << "s): wait for more data.")
         return IOutputStream::eWrappingWaitingForData;
     }
 
