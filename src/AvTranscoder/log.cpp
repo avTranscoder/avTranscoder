@@ -25,10 +25,12 @@ void callbackToWriteInFile(void* ptr, int level, const char* fmt, va_list vl)
 
 void Logger::setLogLevel(const int level)
 {
-    // set ffmpeg log level
     av_log_set_level(level);
+}
 
-    // set avtranscoder header message
+void Logger::log(const int level, const std::string& msg)
+{
+    // add header message
     std::string levelStr;
     switch(level)
     {
@@ -47,14 +49,13 @@ void Logger::setLogLevel(const int level)
         default:
             break;
     }
-    Logger::logHeaderMessage = "[avTranscoder - " + levelStr + "] ";
-}
+    std::string logMessage = "[avTranscoder - " + levelStr + "] ";
 
-void Logger::log(const int level, const std::string& msg)
-{
-    std::string logMessage = Logger::logHeaderMessage;
+    // add content message
     logMessage += msg;
     logMessage += "\n";
+
+    // send message
     av_log(NULL, level, logMessage.c_str());
 }
 
