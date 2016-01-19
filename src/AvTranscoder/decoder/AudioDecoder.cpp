@@ -117,7 +117,7 @@ bool AudioDecoder::decodeNextFrame(Frame& frameBuffer, const size_t channelIndex
     AudioFrame& audioBuffer = static_cast<AudioFrame&>(frameBuffer);
 
     // decode all data of the next frame
-    AudioFrame allDataOfNextFrame(audioBuffer.desc());
+    AudioFrame allDataOfNextFrame(audioBuffer);
     if(!decodeNextFrame(allDataOfNextFrame))
         return false;
 
@@ -151,7 +151,7 @@ bool AudioDecoder::decodeNextFrame(Frame& frameBuffer, const size_t channelIndex
     audioBuffer.setNbSamplesPerChannel(allDataOfNextFrame.getNbSamplesPerChannel());
 
     // @todo manage cases with data of frame not only on data[0] (use _frame.linesize)
-    unsigned char* src = allDataOfNextFrame.getAVFrame().data[0];
+    unsigned char* src = allDataOfNextFrame.getData()[0];
     unsigned char* dst = audioBuffer.getData()[0];
 
     // offset
