@@ -24,8 +24,7 @@ AudioCodec::AudioCodec(const ECodecType type, AVCodecContext& avCodecContext)
 AudioFrameDesc AudioCodec::getAudioFrameDesc() const
 {
     assert(_avCodecContext != NULL);
-    AudioFrameDesc audioFrameDesc(_avCodecContext->sample_rate, _avCodecContext->channels, _avCodecContext->sample_fmt);
-    return audioFrameDesc;
+    return AudioFrameDesc(_avCodecContext->sample_rate, _avCodecContext->channels, _avCodecContext->sample_fmt);
 }
 
 void AudioCodec::setAudioParameters(const AudioFrameDesc& audioFrameDesc)

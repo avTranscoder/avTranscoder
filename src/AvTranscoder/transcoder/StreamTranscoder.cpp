@@ -82,7 +82,6 @@ StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outpu
 
                 // generator decoder
                 AudioGenerator* generatorAudio = new AudioGenerator();
-                generatorAudio->setAudioFrameDesc(inputFrameDesc);
                 _generator = generatorAudio;
 
                 // buffers to process
@@ -206,7 +205,6 @@ StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outpu
 
             // generator decoder
             AudioGenerator* generatorAudio = new AudioGenerator();
-            generatorAudio->setAudioFrameDesc(outputAudio->getAudioCodec().getAudioFrameDesc());
             _generator = generatorAudio;
 
             break;
@@ -266,7 +264,6 @@ StreamTranscoder::StreamTranscoder(const ICodec& inputCodec, IOutputFile& output
         // generator decoder
         AudioGenerator* generatorAudio = new AudioGenerator();
         const AudioCodec& inputAudioCodec = static_cast<const AudioCodec&>(inputCodec);
-        generatorAudio->setAudioFrameDesc(inputAudioCodec.getAudioFrameDesc());
         _generator = generatorAudio;
         _currentDecoder = _generator;
 

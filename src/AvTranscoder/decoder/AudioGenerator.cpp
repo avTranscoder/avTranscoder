@@ -6,14 +6,12 @@ namespace avtranscoder
 AudioGenerator::AudioGenerator()
     : _inputFrame(NULL)
     , _silent(NULL)
-    , _frameDesc()
 {
 }
 
 AudioGenerator::AudioGenerator(const AudioGenerator& audioGenerator)
     : _inputFrame(NULL)
     , _silent(NULL)
-    , _frameDesc(audioGenerator.getAudioFrameDesc())
 {
 }
 
@@ -21,7 +19,6 @@ AudioGenerator& AudioGenerator::operator=(const AudioGenerator& audioGenerator)
 {
     _inputFrame = NULL;
     _silent = NULL;
-    _frameDesc = audioGenerator.getAudioFrameDesc();
     return *this;
 }
 
@@ -30,13 +27,7 @@ AudioGenerator::~AudioGenerator()
     delete _silent;
 }
 
-void AudioGenerator::setAudioFrameDesc(const AudioFrameDesc& frameDesc)
-{
-    _frameDesc = frameDesc;
-    _frameDesc._fps = 25.;
-}
-
-void AudioGenerator::setFrame(Frame& inputFrame)
+void AudioGenerator::setNextFrame(Frame& inputFrame)
 {
     _inputFrame = &inputFrame;
 }

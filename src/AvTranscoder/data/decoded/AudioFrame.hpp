@@ -28,7 +28,6 @@ public:
     size_t _sampleRate;
     size_t _nbChannels;
     AVSampleFormat _sampleFormat;
-    double _fps;
 };
 
 /**

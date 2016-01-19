@@ -16,7 +16,6 @@ AudioFrameDesc::AudioFrameDesc(const size_t sampleRate, const size_t nbChannels,
     : _sampleRate(sampleRate)
     , _nbChannels(nbChannels)
     , _sampleFormat(sampleFormat)
-    , _fps(25.)
 {
 }
 
@@ -24,7 +23,6 @@ AudioFrameDesc::AudioFrameDesc(const size_t sampleRate, const size_t nbChannels,
     : _sampleRate(sampleRate)
     , _nbChannels(nbChannels)
     , _sampleFormat(getAVSampleFormat(sampleFormatName))
-    , _fps(25.)
 {
 }
 
@@ -39,9 +37,6 @@ void AudioFrameDesc::setParameters(const ProfileLoader::Profile& profile)
     // sample format
     if(profile.count(constants::avProfileSampleFormat))
         _sampleFormat = getAVSampleFormat(profile.find(constants::avProfileSampleFormat)->second.c_str());
-    // fps
-    if(profile.count(constants::avProfileFrameRate))
-        _fps = atof(profile.find(constants::avProfileFrameRate)->second.c_str());
 }
 
 AudioFrame::AudioFrame(const AudioFrameDesc& ref)
@@ -83,7 +78,7 @@ void AudioFrame::allocateAVSample(const AudioFrameDesc& desc)
     _frame->channels = desc._nbChannels;
     _frame->channel_layout = av_get_default_channel_layout(desc._nbChannels);
     _frame->format = desc._sampleFormat;
-    _frame->nb_samples = desc._sampleRate / desc._fps; // cannot be known before calling avcodec_decode_audio4
+    _frame->nb_samples = desc._sampleRate / 25.; // cannot be known before calling avcodec_decode_audio4
 
     // Allocate data
     const int align = 0;
