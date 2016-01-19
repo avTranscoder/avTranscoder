@@ -1,5 +1,6 @@
 #include "Frame.hpp"
-#include <iostream>
+
+#include <stdexcept>
 
 namespace avtranscoder
 {
