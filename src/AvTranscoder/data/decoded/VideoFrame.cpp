@@ -90,8 +90,9 @@ void VideoFrame::allocateAVPicture(const VideoFrameDesc& desc)
 void VideoFrame::assign(const unsigned char value)
 {
     // Create the image buffer
+    // The buffer will be freed in destructor of based class
     const int imageSize = getSize();
-    unsigned char imageBuffer[imageSize];
+    unsigned char* imageBuffer = new unsigned char[imageSize];
     memset(imageBuffer, value, imageSize);
 
     // Fill the picture

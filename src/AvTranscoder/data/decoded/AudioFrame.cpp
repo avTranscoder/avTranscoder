@@ -100,8 +100,9 @@ void AudioFrame::allocateAVSample(const AudioFrameDesc& desc)
 void AudioFrame::assign(const unsigned char value)
 {
     // Create the audio buffer
+    // The buffer will be freed in destructor of based class
     const int audioSize = getSize();
-    unsigned char audioBuffer[audioSize];
+    unsigned char* audioBuffer = new unsigned char[audioSize];
     memset(audioBuffer, value, audioSize);
 
     // Fill the picture
