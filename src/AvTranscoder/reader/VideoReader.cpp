@@ -4,7 +4,6 @@
 #include <AvTranscoder/frame/VideoFrame.hpp>
 #include <AvTranscoder/transform/VideoTransform.hpp>
 #include <AvTranscoder/progress/NoDisplayProgress.hpp>
-#include <AvTranscoder/properties/print.hpp>
 
 namespace avtranscoder
 {

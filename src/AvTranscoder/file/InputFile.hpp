@@ -125,6 +125,10 @@ protected:
     std::string _filename;
     std::vector<InputStream*> _inputStreams; ///< Has ownership
 };
+
+#ifndef SWIG
+AvExport std::ostream& operator<<(std::ostream& flux, const InputFile& input);
+#endif
 }
 
 #endif

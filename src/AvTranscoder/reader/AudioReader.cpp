@@ -4,7 +4,6 @@
 #include <AvTranscoder/frame/AudioFrame.hpp>
 #include <AvTranscoder/transform/AudioTransform.hpp>
 #include <AvTranscoder/progress/NoDisplayProgress.hpp>
-#include <AvTranscoder/properties/print.hpp>
 
 namespace avtranscoder
 {

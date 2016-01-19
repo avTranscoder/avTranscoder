@@ -48,6 +48,10 @@ private:
     }
 #endif
 };
+
+#ifndef SWIG
+AvExport std::ostream& operator<<(std::ostream& flux, const AudioProperties& audioProperties);
+#endif
 }
 
 #endif

@@ -14,6 +14,10 @@ public:
     {
     }
 };
+
+#ifndef SWIG
+AvExport std::ostream& operator<<(std::ostream& flux, const UnknownProperties& unknownProperties);
+#endif
 }
 
 #endif

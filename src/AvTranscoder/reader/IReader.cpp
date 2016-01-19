@@ -1,7 +1,5 @@
 #include "IReader.hpp"
 
-#include <AvTranscoder/properties/print.hpp>
-
 #include <cassert>
 
 namespace avtranscoder

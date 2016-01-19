@@ -1,5 +1,6 @@
 #include "VideoProperties.hpp"
 
+#include <AvTranscoder/properties/util.hpp>
 #include <AvTranscoder/progress/NoDisplayProgress.hpp>
 
 extern "C" {
@@ -601,5 +602,19 @@ PropertyVector VideoProperties::asVector() const
     data.insert(data.end(), pixelProperties.begin(), pixelProperties.end());
 
     return data;
+}
+
+std::ostream& operator<<(std::ostream& flux, const VideoProperties& videoProperties)
+{
+    flux << std::left;
+    flux << detail::separator << " Video stream " << detail::separator << std::endl;
+
+    PropertyVector properties = videoProperties.asVector();
+    for(PropertyVector::iterator it = properties.begin(); it != properties.end(); ++it)
+    {
+        flux << std::setw(detail::keyWidth) << it->first << ": " << it->second << std::endl;
+    }
+
+    return flux;
 }
 }

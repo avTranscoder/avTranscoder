@@ -1,5 +1,7 @@
 #include "DataProperties.hpp"
 
+#include <AvTranscoder/properties/util.hpp>
+
 extern "C" {
 #include <libavcodec/avcodec.h>
 }
@@ -76,5 +78,18 @@ void DataProperties::detectAncillaryData()
         if(detection)
             break;
     }
+}
+
+std::ostream& operator<<(std::ostream& flux, const DataProperties& dataProperties)
+{
+    flux << detail::separator << " Data stream " << detail::separator << std::endl;
+
+    PropertyVector properties = dataProperties.asVector();
+    for(PropertyVector::iterator it = properties.begin(); it != properties.end(); ++it)
+    {
+        flux << std::setw(detail::keyWidth) << it->first << ": " << it->second << std::endl;
+    }
+
+    return flux;
 }
 }

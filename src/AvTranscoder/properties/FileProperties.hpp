@@ -120,6 +120,10 @@ private:
 
     PropertyVector _metadatas;
 };
+
+#ifndef SWIG
+AvExport std::ostream& operator<<(std::ostream& flux, const FileProperties& fileProperties);
+#endif
 }
 
 #endif

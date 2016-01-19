@@ -59,6 +59,10 @@ protected:
     size_t _streamIndex;
     PropertyVector _metadatas;
 };
+
+#ifndef SWIG
+AvExport std::ostream& operator<<(std::ostream& flux, const StreamProperties& streamProperties);
+#endif
 }
 
 #endif
