@@ -5,7 +5,7 @@
 
 #include "ITransform.hpp"
 
-#include <AvTranscoder/frame/Frame.hpp>
+#include <AvTranscoder/data/decoded/Frame.hpp>
 
 class SwsContext;
 
@@ -15,28 +15,21 @@ namespace avtranscoder
 class AvExport VideoTransform : public ITransform
 {
 private:
-	VideoTransform( const VideoTransform& videoTransform );
-	VideoTransform& operator=( const VideoTransform& videoTransform );
+    VideoTransform(const VideoTransform& videoTransform);
+    VideoTransform& operator=(const VideoTransform& videoTransform);
 
 public:
-	VideoTransform();
-	~VideoTransform();
+    VideoTransform();
+    ~VideoTransform();
 
-	void convert( const Frame& srcFrame, Frame& dstFrame );
+    void convert(const Frame& srcFrame, Frame& dstFrame);
 
 private:
-	bool init( const Frame& srcFrame, const Frame& dstFrame );
+    bool init(const Frame& srcFrame, const Frame& dstFrame);
 
-	SwsContext* _imageConvertContext;
-
-	std::vector<uint8_t *> _srcData;
-	std::vector<uint8_t *> _dstData;
-	std::vector<int>       _srcLineSize;
-	std::vector<int>       _dstLineSize;
-
-	bool _isInit;
+    SwsContext* _imageConvertContext;
+    bool _isInit;
 };
-
 }
 
 #endif

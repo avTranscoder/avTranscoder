@@ -1,16 +1,18 @@
 import os
 
 # Check if environment is setup to run the tests
-if os.environ.get('AVTRANSCODER_TEST_AUDIO_WAVE_FILE') is None or os.environ.get('AVTRANSCODER_TEST_VIDEO_MP4_FILE') is None:
+if os.environ.get('AVTRANSCODER_TEST_AUDIO_WAVE_FILE') is None or \
+    os.environ.get('AVTRANSCODER_TEST_VIDEO_MP4_FILE') is None or \
+    os.environ.get('AVTRANSCODER_TEST_VIDEO_MOV_FILE') is None:
     from nose.plugins.skip import SkipTest
-    raise SkipTest("Need to define environment variables AVTRANSCODER_TEST_AUDIO_WAVE_FILE / AVTRANSCODER_TEST_VIDEO_MP4_FILE")
+    raise SkipTest("Need to define environment variables "
+        "AVTRANSCODER_TEST_AUDIO_WAVE_FILE and "
+        "AVTRANSCODER_TEST_VIDEO_MP4_FILE and "
+        "AVTRANSCODER_TEST_VIDEO_MOV_FILE")
 
 from nose.tools import *
 
 from pyAvTranscoder import avtranscoder as av
-
-av.preloadCodecsAndFormats()
-av.Logger.setLogLevel(av.AV_LOG_QUIET)
 
 
 def testAddMetadataDate():
@@ -37,6 +39,7 @@ def testAddMetadataDate():
     properties = inputFile.getProperties()
 
     assert_in( metadata_to_check, properties.getMetadatas() )
+
 
 def testAddImpossibleMetadata():
     """
@@ -94,6 +97,7 @@ def testCheckVideoProperties():
     assert_equals( round(videoStream.getDuration(), 2), expectedDuration )
     assert_equals( videoStream.getFps(), expectedFps )
 
+
 def testCheckAudioProperties():
     """
     Check properties of an audio stream.
@@ -120,6 +124,19 @@ def testCheckAudioProperties():
     assert_equals( audioStream.getCodecName(), expectedCodecName )
     assert_equals( audioStream.getNbSamples(), expectedSamples )
     assert_equals( round(audioStream.getDuration(), 2), expectedDuration )
-    assert_equals( audioStream.getChannels(), expectedChannels )
+    assert_equals( audioStream.getNbChannels(), expectedChannels )
     assert_equals( audioStream.getChannelLayout(), expectedChannelLayout )
     assert_equals( audioStream.getSampleRate(), expectedSampleRate )
+
+
+def testCheckFilePropertiesAsJson():
+    """
+    Check file properties as json.
+    """
+    # get src file
+    inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_MOV_FILE']
+    inputFile = av.InputFile( inputFileName )
+
+    import json
+    # json.loads method throws a ValueError if it is not a valid JSON.
+    json.loads(inputFile.getProperties().allPropertiesAsJson())

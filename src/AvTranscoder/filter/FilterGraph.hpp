@@ -14,34 +14,33 @@ namespace avtranscoder
 {
 
 /**
- * @brief 
+ * @brief
  **/
 class AvExport FilterGraph
 {
 private:
-	FilterGraph( const FilterGraph& otherFilterGraph );
-	FilterGraph& operator=( const FilterGraph& otherFilterGraph );
+    FilterGraph(const FilterGraph& otherFilterGraph);
+    FilterGraph& operator=(const FilterGraph& otherFilterGraph);
 
 public:
-	typedef std::pair<AVFilter*, AVFilterContext*> Filter;
+    typedef std::pair<AVFilter*, AVFilterContext*> Filter;
 
 public:
-	FilterGraph();
-	~FilterGraph();
+    FilterGraph();
+    ~FilterGraph();
 
-	void addFilter( const std::string& filtername );
-	Filter& getFirstFilter() { return _filters.at(0); }
-	Filter& getLastFilter() { return _filters.at(_filters.size()-1); }
+    void addFilter(const std::string& filtername);
+    Filter& getFirstFilter() { return _filters.at(0); }
+    Filter& getLastFilter() { return _filters.at(_filters.size() - 1); }
 
-	bool hasFilters() const { return ! _filters.empty(); }
+    bool hasFilters() const { return !_filters.empty(); }
 
-	void connectFilters();
+    void connectFilters();
 
 private:
-	AVFilterGraph* _graph;
-	std::vector< Filter > _filters;
+    AVFilterGraph* _graph;
+    std::vector<Filter> _filters;
 };
-
 }
 
 #endif

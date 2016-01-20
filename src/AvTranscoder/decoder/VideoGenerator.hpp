@@ -10,25 +10,25 @@ namespace avtranscoder
 class AvExport VideoGenerator : public IDecoder
 {
 public:
-	VideoGenerator();
-	VideoGenerator( const VideoGenerator& videoGenerator );
-	VideoGenerator& operator=( const VideoGenerator& videoGenerator );
+    VideoGenerator();
+    VideoGenerator(const VideoGenerator& videoGenerator);
+    VideoGenerator& operator=(const VideoGenerator& videoGenerator);
 
-	~VideoGenerator();
+    ~VideoGenerator();
 
-	bool decodeNextFrame( Frame& frameBuffer );
-	bool decodeNextFrame( Frame& frameBuffer, const size_t subStreamIndex );
+    bool decodeNextFrame(Frame& frameBuffer);
+    bool decodeNextFrame(Frame& frameBuffer, const size_t channelIndex);
 
-	const VideoFrameDesc& getVideoFrameDesc() const { return _frameDesc; }
-	void setVideoFrameDesc( const VideoFrameDesc& frameDesc );
-	void setNextFrame( Frame& inputFrame );
+    const VideoFrameDesc& getVideoFrameDesc() const { return _frameDesc; }
+    void setVideoFrameDesc(const VideoFrameDesc& frameDesc);
+
+    void setNextFrame(Frame& inputFrame);
 
 private:
-	Frame* _inputFrame;  ///< A frame given from outside (has link, no ownership)
-	VideoFrame* _blackImage;   ///< The generated black image (has ownership)
-	VideoFrameDesc _frameDesc;  ///< The description of the black image (width, height...) 
+    Frame* _inputFrame;        ///< A frame given from outside (has link, no ownership)
+    VideoFrame* _blackImage;   ///< The generated black image (has ownership)
+    VideoFrameDesc _frameDesc; ///< The description of the black image (width, height...)
 };
-
 }
 
 #endif

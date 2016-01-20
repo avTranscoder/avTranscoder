@@ -9,9 +9,6 @@ from nose.tools import *
 
 from pyAvTranscoder import avtranscoder as av
 
-av.preloadCodecsAndFormats()
-av.Logger.setLogLevel(av.AV_LOG_QUIET)
-
 
 def testTranscodeMovVariableNbSamplesPerFrame():
     """
@@ -33,11 +30,16 @@ def testTranscodeMovVariableNbSamplesPerFrame():
     customProfile[av.avProfileCodec] = "pcm_s24le"
 
     inputFile = av.InputFile( inputFileName )
-    audioStreamIndex = inputFile.getProperties().getAudioProperties()[0].getStreamIndex()
+    src_audioStream = inputFile.getProperties().getAudioProperties()[0]
+    audioStreamIndex = src_audioStream.getStreamIndex()
     transcoder.add( inputFileName, audioStreamIndex, customProfile )
 
     progress = av.ConsoleProgress()
-    transcoder.process( progress )
+    processStat = transcoder.process( progress )
+
+    # check process stat returned
+    audioStat = processStat.getAudioStat(0)
+    assert_equals(src_audioStream.getDuration(), audioStat.getDuration())
 
     # get dst file of transcode
     dst_inputFile = av.InputFile( outputFileName )
@@ -47,4 +49,3 @@ def testTranscodeMovVariableNbSamplesPerFrame():
 
     assert_equals( "pcm_s24le", dst_audioStream.getCodecName() )
     assert_equals( "PCM signed 24-bit little-endian", dst_audioStream.getCodecLongName() )
-

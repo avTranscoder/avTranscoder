@@ -12,33 +12,34 @@ namespace avtranscoder
 class AvExport Library
 {
 public:
-	Library( const std::string& name, const std::string& license, const size_t major, const size_t minor, const size_t release );
+    Library(const std::string& name, const std::string& license, const size_t major, const size_t minor,
+            const size_t release);
 
-	std::string getName();
+    std::string getName();
 
-	std::vector<size_t> getVersion();
-	std::string getStringVersion();
-	size_t getMajorVersion();
-	size_t getMinorVersion();
-	size_t getReleaseVersion();
+    std::vector<size_t> getVersion();
+    std::string getStringVersion();
+    size_t getMajorVersion();
+    size_t getMinorVersion();
+    size_t getReleaseVersion();
 
-	std::string getLicense();
+    std::string getLicense();
+
 private:
-	std::string _name;
-	std::string _licence;
-	size_t      _major;
-	size_t      _minor;
-	size_t      _release;
+    std::string _name;
+    std::string _licence;
+    size_t _major;
+    size_t _minor;
+    size_t _release;
 };
 
-typedef std::vector< Library > Libraries;
+typedef std::vector<Library> Libraries;
 
 Libraries AvExport getLibraries();
 
 std::vector<std::string> AvExport getInputExtensions();
 
 std::vector<std::string> AvExport getOutputExtensions();
-
 }
 
 #endif

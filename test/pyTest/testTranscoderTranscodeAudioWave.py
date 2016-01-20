@@ -9,9 +9,6 @@ from nose.tools import *
 
 from pyAvTranscoder import avtranscoder as av
 
-av.preloadCodecsAndFormats()
-av.Logger.setLogLevel(av.AV_LOG_QUIET)
-
 
 def testTranscodeWave24b48k5_1():
     """
@@ -23,14 +20,20 @@ def testTranscodeWave24b48k5_1():
     ouputFile = av.OutputFile( outputFileName )
     transcoder = av.Transcoder( ouputFile )
 
-    transcoder.add( inputFileName, 0, "wave24b48k5_1" )
+    inputFile = av.InputFile( inputFileName )
+    src_audioStream = inputFile.getProperties().getAudioProperties()[0]
+    audioStreamIndex = src_audioStream.getStreamIndex()
+    transcoder.add( inputFileName, audioStreamIndex, "wave24b48k5_1" )
 
     progress = av.ConsoleProgress()
-    transcoder.process( progress )
+    processStat = transcoder.process( progress )
+
+    # check process stat returned
+    audioStat = processStat.getAudioStat(0)
+    assert_equals(src_audioStream.getDuration(), audioStat.getDuration())
 
     # get dst file of transcode
     dst_inputFile = av.InputFile( outputFileName )
-    dst_inputFile.analyse( progress, av.eAnalyseLevelHeader )
     dst_properties = dst_inputFile.getProperties()
     dst_audioStream = dst_properties.getAudioProperties()[0]
 
@@ -39,7 +42,7 @@ def testTranscodeWave24b48k5_1():
     assert_equals( "s32", dst_audioStream.getSampleFormatName() )
     assert_equals( "signed 32 bits", dst_audioStream.getSampleFormatLongName() )
     assert_equals( 48000, dst_audioStream.getSampleRate() )
-    assert_equals( 6, dst_audioStream.getChannels() )
+    assert_equals( 6, dst_audioStream.getNbChannels() )
 
 def testTranscodeWave24b48kstereo():
     """
@@ -51,14 +54,20 @@ def testTranscodeWave24b48kstereo():
     ouputFile = av.OutputFile( outputFileName )
     transcoder = av.Transcoder( ouputFile )
 
-    transcoder.add( inputFileName, 0, "wave24b48kstereo" )
+    inputFile = av.InputFile( inputFileName )
+    src_audioStream = inputFile.getProperties().getAudioProperties()[0]
+    audioStreamIndex = src_audioStream.getStreamIndex()
+    transcoder.add( inputFileName, audioStreamIndex, "wave24b48kstereo" )
 
     progress = av.ConsoleProgress()
-    transcoder.process( progress )
+    processStat = transcoder.process( progress )
+
+    # check process stat returned
+    audioStat = processStat.getAudioStat(0)
+    assert_equals(src_audioStream.getDuration(), audioStat.getDuration())
 
     # get dst file of transcode
     dst_inputFile = av.InputFile( outputFileName )
-    dst_inputFile.analyse( progress, av.eAnalyseLevelHeader )
     dst_properties = dst_inputFile.getProperties()
     dst_audioStream = dst_properties.getAudioProperties()[0]
 
@@ -67,7 +76,7 @@ def testTranscodeWave24b48kstereo():
     assert_equals( "s32", dst_audioStream.getSampleFormatName() )
     assert_equals( "signed 32 bits", dst_audioStream.getSampleFormatLongName() )
     assert_equals( 48000, dst_audioStream.getSampleRate() )
-    assert_equals( 2, dst_audioStream.getChannels() )
+    assert_equals( 2, dst_audioStream.getNbChannels() )
 
 def testTranscodeWave24b48kmono():
     """
@@ -79,14 +88,20 @@ def testTranscodeWave24b48kmono():
     ouputFile = av.OutputFile( outputFileName )
     transcoder = av.Transcoder( ouputFile )
 
-    transcoder.add( inputFileName, 0, "wave24b48kmono" )
+    inputFile = av.InputFile( inputFileName )
+    src_audioStream = inputFile.getProperties().getAudioProperties()[0]
+    audioStreamIndex = src_audioStream.getStreamIndex()
+    transcoder.add( inputFileName, audioStreamIndex, "wave24b48kmono" )
 
     progress = av.ConsoleProgress()
-    transcoder.process( progress )
+    processStat = transcoder.process( progress )
+
+    # check process stat returned
+    audioStat = processStat.getAudioStat(0)
+    assert_equals(src_audioStream.getDuration(), audioStat.getDuration())
 
     # get dst file of transcode
     dst_inputFile = av.InputFile( outputFileName )
-    dst_inputFile.analyse( progress, av.eAnalyseLevelHeader )
     dst_properties = dst_inputFile.getProperties()
     dst_audioStream = dst_properties.getAudioProperties()[0]
 
@@ -95,7 +110,7 @@ def testTranscodeWave24b48kmono():
     assert_equals( "s32", dst_audioStream.getSampleFormatName() )
     assert_equals( "signed 32 bits", dst_audioStream.getSampleFormatLongName() )
     assert_equals( 48000, dst_audioStream.getSampleRate() )
-    assert_equals( 1, dst_audioStream.getChannels() )
+    assert_equals( 1, dst_audioStream.getNbChannels() )
 
 def testTranscodeWave16b48kmono():
     """
@@ -107,14 +122,20 @@ def testTranscodeWave16b48kmono():
     ouputFile = av.OutputFile( outputFileName )
     transcoder = av.Transcoder( ouputFile )
 
-    transcoder.add( inputFileName, 0, "wave16b48kmono" )
+    inputFile = av.InputFile( inputFileName )
+    src_audioStream = inputFile.getProperties().getAudioProperties()[0]
+    audioStreamIndex = src_audioStream.getStreamIndex()
+    transcoder.add( inputFileName, audioStreamIndex, "wave16b48kmono" )
 
     progress = av.ConsoleProgress()
-    transcoder.process( progress )
+    processStat = transcoder.process( progress )
+
+    # check process stat returned
+    audioStat = processStat.getAudioStat(0)
+    assert_equals(src_audioStream.getDuration(), audioStat.getDuration())
 
     # get dst file of transcode
     dst_inputFile = av.InputFile( outputFileName )
-    dst_inputFile.analyse( progress, av.eAnalyseLevelHeader )
     dst_properties = dst_inputFile.getProperties()
     dst_audioStream = dst_properties.getAudioProperties()[0]
 
@@ -123,4 +144,4 @@ def testTranscodeWave16b48kmono():
     assert_equals( "s16", dst_audioStream.getSampleFormatName() )
     assert_equals( "signed 16 bits", dst_audioStream.getSampleFormatLongName() )
     assert_equals( 48000, dst_audioStream.getSampleRate() )
-    assert_equals( 1, dst_audioStream.getChannels() )
+    assert_equals( 1, dst_audioStream.getNbChannels() )

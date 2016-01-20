@@ -4,7 +4,7 @@
 #include "IReader.hpp"
 
 #include <AvTranscoder/file/InputFile.hpp>
-#include <AvTranscoder/mediaProperty/AudioProperties.hpp>
+#include <AvTranscoder/properties/AudioProperties.hpp>
 
 namespace avtranscoder
 {
@@ -12,42 +12,44 @@ namespace avtranscoder
 class AvExport AudioReader : public IReader
 {
 public:
-	//@{
-	// @param sampleRate: if 0, get sample rate of source
-	// @param nbChannels: if 0, get number of channels of source
-	// @param sampleFormat: pcm_16le by default (to listen)
-	//
-	AudioReader( const std::string& filename, const size_t audioStreamIndex, const size_t sampleRate = 0, const size_t nbChannels = 0, const std::string& sampleFormat = "s16" );
-	AudioReader( InputFile& inputFile, const size_t audioStreamIndex, const size_t sampleRate = 0, const size_t nbChannels = 0, const std::string& sampleFormat = "s16" );
+    //@{
+    // @note Transform the input stream to s16 sample format (to listen).
+    // @see updateOutput
+    AudioReader(const std::string& filename, const size_t streamIndex = 0, const int channelIndex = -1);
+    AudioReader(InputFile& inputFile, const size_t streamIndex = 0, const int channelIndex = -1);
+    //@}
 
-	~AudioReader();
+    ~AudioReader();
 
-	//@{
-	// @brief Output info
-	size_t getSampleRate();
-	size_t getChannels();
-	AVSampleFormat getSampleFormat();
-	//@}
+    /**
+     * @brief Update sample rate, number of channels and sample format of the output.
+     * @note Will transform the decoded data when read the stream.
+     */
+    void updateOutput(const size_t sampleRate, const size_t nbChannels, const std::string& sampleFormat);
 
-	// @brief Input info
-	const AudioProperties* getAudioProperties() const {return _audioStreamProperties;}
+    //@{
+    // @brief Output info
+    size_t getOutputSampleRate() const { return _outputSampleRate; }
+    size_t getOutputNbChannels() const { return _outputNbChannels; }
+    AVSampleFormat getOutputSampleFormat() const { return _outputSampleFormat; }
+    //@}
 
-	void printInfo();
+    // @brief Get source audio properties
+    const AudioProperties* getSourceAudioProperties() const { return _audioStreamProperties; }
 
 private:
-	void init();
+    void init();
 
 private:
-	const AudioProperties* _audioStreamProperties;  ///< Properties of the source audio stream read (no ownership, has link)
+    const AudioProperties* _audioStreamProperties; ///< Properties of the source audio stream read (no ownership, has link)
 
-	//@{
-	// @brief Output info
-	size_t _sampleRate;
-	size_t _nbChannels;
-	AVSampleFormat _sampleFormat;
-	//@}
+    //@{
+    // @brief Output info
+    size_t _outputSampleRate;
+    size_t _outputNbChannels;
+    AVSampleFormat _outputSampleFormat;
+    //@}
 };
-
 }
 
 #endif

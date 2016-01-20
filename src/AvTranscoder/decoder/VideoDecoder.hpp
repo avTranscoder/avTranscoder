@@ -3,8 +3,6 @@
 
 #include "IDecoder.hpp"
 
-struct AVFrame;
-
 namespace avtranscoder
 {
 
@@ -13,26 +11,21 @@ class InputStream;
 class AvExport VideoDecoder : public IDecoder
 {
 public:
-	VideoDecoder( InputStream& inputStream );
-	~VideoDecoder();
+    VideoDecoder(InputStream& inputStream);
+    ~VideoDecoder();
 
-	void setupDecoder( const ProfileLoader::Profile& profile = ProfileLoader::Profile() );
+    void setupDecoder(const ProfileLoader::Profile& profile = ProfileLoader::Profile());
 
-	bool decodeNextFrame( Frame& frameBuffer );
-	bool decodeNextFrame( Frame& frameBuffer, const size_t subStreamIndex );
+    bool decodeNextFrame(Frame& frameBuffer);
+    bool decodeNextFrame(Frame& frameBuffer, const size_t subStreamIndex);
 
-	void flushDecoder();
-
-private:
-	bool decodeNextFrame();
+    void flushDecoder();
 
 private:
-	InputStream* _inputStream;  ///< Stream from which we read next frames (no ownership, has link)
-	AVFrame* _frame;  ///< Libav object to store decoded data (has ownership)
+    InputStream* _inputStream; ///< Stream from which we read next frames (no ownership, has link)
 
-	bool _isSetup;
+    bool _isSetup;
 };
-
 }
 
 #endif

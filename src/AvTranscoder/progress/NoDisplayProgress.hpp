@@ -12,15 +12,10 @@ namespace avtranscoder
 class AvExport NoDisplayProgress : public IProgress
 {
 public:
-	~NoDisplayProgress()
-	{}
+    ~NoDisplayProgress() {}
 
-	EJobStatus progress( const double processedDuration, const double programDuration )
-	{
-		return eJobStatusContinue;
-	}
+    EJobStatus progress(const double processedDuration, const double programDuration) { return eJobStatusContinue; }
 };
-
 }
 
 #endif

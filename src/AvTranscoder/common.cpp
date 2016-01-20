@@ -7,7 +7,7 @@ extern "C" {
 }
 
 #ifndef AV_ERROR_MAX_STRING_SIZE
- #define AV_ERROR_MAX_STRING_SIZE 64
+#define AV_ERROR_MAX_STRING_SIZE 64
 #endif
 
 namespace avtranscoder
@@ -15,15 +15,14 @@ namespace avtranscoder
 
 void preloadCodecsAndFormats()
 {
-	av_register_all();
-	avfilter_register_all();
+    av_register_all();
+    avfilter_register_all();
 }
 
-std::string getDescriptionFromErrorCode( const int code )
+std::string getDescriptionFromErrorCode(const int code)
 {
     char err[AV_ERROR_MAX_STRING_SIZE];
-    av_strerror( code, err, sizeof(err) );
-    return std::string( err );
+    av_strerror(code, err, sizeof(err));
+    return std::string(err);
 }
-
 }

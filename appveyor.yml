@@ -5,6 +5,9 @@ platform:
   - x86
 #  - x64
 
+environment:
+  FFMPEG_VERSION: 2.4.5
+
 matrix:
   fast_finish: true
 
@@ -13,10 +16,10 @@ init:
 
 before_build:
   - choco install -y swig
-  - tools/appveyor.win.install.deps.bat
+  - tools/appveyor/win.install.deps.bat
 
 build_script:
-  - tools/appveyor.build.bat
+  - tools/appveyor/build.bat
 
 before_test:
   - set PATH=C:\Python27\scripts;%PATH%
@@ -24,9 +27,10 @@ before_test:
 
 test_script:
   - cd ..
-  - tools/appveyor.python.nosetests.bat
+  - tools/appveyor/python.nosetests.bat
 
 on_failure:
+  - type "C:\ProgramData\chocolatey\logs\chocolatey.log"
   - type "C:\projects\avtranscoder\build\CMakeFiles\CMakeOutput.log"
 
 #on_success:
