@@ -210,8 +210,12 @@ size_t FileProperties::getNbStreams() const
 
 PropertyVector FileProperties::asVector() const
 {
-    PropertyVector data;
+    PropertyVector propertyVector;
+    return fillVector(propertyVector);
+}
 
+PropertyVector& FileProperties::fillVector(PropertyVector& data) const
+{
     addProperty(data, "filename", &FileProperties::getFilename);
     addProperty(data, "formatName", &FileProperties::getFormatName);
     addProperty(data, "formatLongName", &FileProperties::getFormatLongName);

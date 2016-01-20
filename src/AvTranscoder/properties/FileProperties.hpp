@@ -85,6 +85,7 @@ public:
     std::string asJson() const;              ///< Return all format properties as a json format.
     PropertyMap asMap() const;               ///< Return format properties as a map (name of property, value)
     PropertyVector asVector() const;         ///< Return format properties as a vector (name of property: value)
+    PropertyVector& fillVector(PropertyVector& data) const; ///< To avoid copy of the vector
 
 private:
 #ifndef SWIG

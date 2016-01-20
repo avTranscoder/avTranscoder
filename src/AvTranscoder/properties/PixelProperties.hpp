@@ -81,6 +81,7 @@ public:
 #endif
 
     PropertyVector asVector() const; ///< Return all pixel properties as a vector (name of property: value)
+    PropertyVector& fillVector(PropertyVector& data) const; ///< To avoid copy of the vector
 
 private:
     void init(const AVPixelFormat avPixelFormat);

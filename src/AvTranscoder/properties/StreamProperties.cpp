@@ -100,8 +100,12 @@ std::string StreamProperties::getCodecLongName() const
 
 PropertyVector StreamProperties::asVector() const
 {
-    PropertyVector data;
+    PropertyVector propertyVector;
+    return fillVector(propertyVector);
+}
 
+PropertyVector& StreamProperties::fillVector(PropertyVector& data) const
+{
     addProperty(data, "streamId", &StreamProperties::getStreamId);
     addProperty(data, "streamIndex", &StreamProperties::getStreamIndex);
     addProperty(data, "timeBase", &StreamProperties::getTimeBase);

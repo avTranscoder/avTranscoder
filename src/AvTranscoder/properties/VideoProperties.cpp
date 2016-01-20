@@ -552,12 +552,11 @@ void VideoProperties::analyseGopStructure(IProgress& progress)
     }
 }
 
-PropertyVector VideoProperties::asVector() const
+PropertyVector& VideoProperties::fillVector(PropertyVector& data) const
 {
-    PropertyVector data;
-
     // Add properties of base class
-    PropertyVector basedProperty = StreamProperties::asVector();
+    PropertyVector basedProperty;
+    StreamProperties::fillVector(basedProperty);
     data.insert(data.begin(), basedProperty.begin(), basedProperty.end());
 
     addProperty(data, "profile", &VideoProperties::getProfile);
@@ -598,7 +597,8 @@ PropertyVector VideoProperties::asVector() const
     addProperty(data, "referencesFrames", &VideoProperties::getReferencesFrames);
 
     // Add properties of the pixel
-    PropertyVector pixelProperties = _pixelProperties.asVector();
+    PropertyVector pixelProperties;
+    _pixelProperties.fillVector(pixelProperties);
     data.insert(data.end(), pixelProperties.begin(), pixelProperties.end());
 
     return data;
