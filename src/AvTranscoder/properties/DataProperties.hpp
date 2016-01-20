@@ -17,6 +17,10 @@ public:
 private:
     void detectAncillaryData();
 };
+
+#ifndef SWIG
+AvExport std::ostream& operator<<(std::ostream& flux, const DataProperties& dataProperties);
+#endif
 }
 
 #endif

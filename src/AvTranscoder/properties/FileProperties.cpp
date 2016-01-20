@@ -1,5 +1,6 @@
 #include "FileProperties.hpp"
 
+#include <AvTranscoder/properties/util.hpp>
 #include <AvTranscoder/properties/JsonWriter.hpp>
 #include <AvTranscoder/progress/NoDisplayProgress.hpp>
 
@@ -209,8 +210,12 @@ size_t FileProperties::getNbStreams() const
 
 PropertyVector FileProperties::asVector() const
 {
-    PropertyVector data;
+    PropertyVector propertyVector;
+    return fillVector(propertyVector);
+}
 
+PropertyVector& FileProperties::fillVector(PropertyVector& data) const
+{
     addProperty(data, "filename", &FileProperties::getFilename);
     addProperty(data, "formatName", &FileProperties::getFormatName);
     addProperty(data, "formatLongName", &FileProperties::getFormatLongName);
@@ -340,5 +345,19 @@ void FileProperties::clearStreamProperties()
     _subtitleStreams.clear();
     _attachementStreams.clear();
     _unknownStreams.clear();
+}
+
+std::ostream& operator<<(std::ostream& flux, const FileProperties& fileProperties)
+{
+    flux << std::left;
+    flux << detail::separator << " Wrapper " << detail::separator << std::endl;
+
+    PropertyVector properties = fileProperties.asVector();
+    for(PropertyVector::iterator it = properties.begin(); it != properties.end(); ++it)
+    {
+        flux << std::setw(detail::keyWidth) << it->first << ": " << it->second << std::endl;
+    }
+
+    return flux;
 }
 }

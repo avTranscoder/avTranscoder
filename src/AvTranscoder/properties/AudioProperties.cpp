@@ -1,5 +1,7 @@
 #include "AudioProperties.hpp"
 
+#include <AvTranscoder/properties/util.hpp>
+
 extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
@@ -147,12 +149,11 @@ size_t AudioProperties::getTicksPerFrame() const
     return _codecContext->ticks_per_frame;
 }
 
-PropertyVector AudioProperties::asVector() const
+PropertyVector& AudioProperties::fillVector(PropertyVector& data) const
 {
-    PropertyVector data;
-
     // Add properties of base class
-    PropertyVector basedProperty = StreamProperties::asVector();
+    PropertyVector basedProperty;
+    StreamProperties::fillVector(basedProperty);
     data.insert(data.begin(), basedProperty.begin(), basedProperty.end());
 
     addProperty(data, "sampleFormatName", &AudioProperties::getSampleFormatName);
@@ -167,5 +168,19 @@ PropertyVector AudioProperties::asVector() const
     addProperty(data, "ticksPerFrame", &AudioProperties::getTicksPerFrame);
 
     return data;
+}
+
+std::ostream& operator<<(std::ostream& flux, const AudioProperties& audioProperties)
+{
+    flux << std::left;
+    flux << detail::separator << " Audio stream " << detail::separator << std::endl;
+
+    PropertyVector properties = audioProperties.asVector();
+    for(PropertyVector::iterator it = properties.begin(); it != properties.end(); ++it)
+    {
+        flux << std::setw(detail::keyWidth) << it->first << ": " << it->second << std::endl;
+    }
+
+    return flux;
 }
 }

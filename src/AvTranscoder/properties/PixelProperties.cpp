@@ -235,8 +235,12 @@ std::vector<Channel> PixelProperties::getChannels() const
 
 PropertyVector PixelProperties::asVector() const
 {
-    PropertyVector data;
+    PropertyVector propertyVector;
+    return fillVector(propertyVector);
+}
 
+PropertyVector& PixelProperties::fillVector(PropertyVector& data) const
+{
     addProperty(data, "pixelName", &PixelProperties::getPixelName);
     addProperty(data, "pixelFormatName", &PixelProperties::getPixelFormatName);
     addProperty(data, "bitDepth", &PixelProperties::getBitsPerPixel);

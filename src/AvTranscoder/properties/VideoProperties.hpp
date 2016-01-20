@@ -79,7 +79,7 @@ public:
     const PixelProperties& getPixelProperties() const { return _pixelProperties; }
 #endif
 
-    PropertyVector asVector() const;
+    PropertyVector& fillVector(PropertyVector& data) const;
 
 private:
     /**
@@ -118,6 +118,10 @@ private:
      */
     int64_t _firstGopTimeCode;
 };
+
+#ifndef SWIG
+AvExport std::ostream& operator<<(std::ostream& flux, const StreamProperties& streamProperties);
+#endif
 }
 
 #endif

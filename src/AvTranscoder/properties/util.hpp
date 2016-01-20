@@ -12,6 +12,7 @@ extern "C" {
 #include <map>
 #include <string>
 #include <sstream>
+#include <iomanip>
 
 namespace avtranscoder
 {
@@ -24,6 +25,12 @@ typedef std::map<std::string, std::string> PropertyMap;
 
 namespace detail
 {
+
+/**
+ * Variables to print properties class to the terminal.
+ */
+const size_t keyWidth = 32;
+const std::string separator = "====================";
 
 /**
  * If cannot access the property, get this value.

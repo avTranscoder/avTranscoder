@@ -1,5 +1,6 @@
 #include "StreamProperties.hpp"
 
+#include <AvTranscoder/properties/util.hpp>
 #include <AvTranscoder/properties/JsonWriter.hpp>
 
 #include <stdexcept>
@@ -99,8 +100,12 @@ std::string StreamProperties::getCodecLongName() const
 
 PropertyVector StreamProperties::asVector() const
 {
-    PropertyVector data;
+    PropertyVector propertyVector;
+    return fillVector(propertyVector);
+}
 
+PropertyVector& StreamProperties::fillVector(PropertyVector& data) const
+{
     addProperty(data, "streamId", &StreamProperties::getStreamId);
     addProperty(data, "streamIndex", &StreamProperties::getStreamIndex);
     addProperty(data, "timeBase", &StreamProperties::getTimeBase);
@@ -137,5 +142,19 @@ std::string StreamProperties::asJson() const
     for(PropertyMap::iterator it = properties.begin(); it != properties.end(); ++it)
         writer << std::make_pair(it->first.c_str(), it->second.c_str());
     return writer.build();
+}
+
+std::ostream& operator<<(std::ostream& flux, const StreamProperties& streamProperties)
+{
+    flux << std::left;
+    flux << detail::separator << " Stream " << detail::separator << std::endl;
+
+    PropertyVector properties = streamProperties.asVector();
+    for(PropertyVector::iterator it = properties.begin(); it != properties.end(); ++it)
+    {
+        flux << std::setw(detail::keyWidth) << it->first << ": " << it->second << std::endl;
+    }
+
+    return flux;
 }
 }
