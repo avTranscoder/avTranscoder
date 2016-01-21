@@ -76,13 +76,13 @@ public:
     /// Returns a pointer to the encoder
     IEncoder* getEncoder() const { return _outputEncoder; }
 
-    /// Returns a reference to the object which transforms the decoded data
+    /// Returns a pointer to the object which transforms the decoded data
     ITransform* getTransform() const { return _transform; }
 
     /// Returns a pointer to the object which manage filtering
     FilterGraph* getFilterGraph() const { return _filterGraph; }
 
-    /// Returns a reference to the stream which unwraps data
+    /// Returns a pointer to the stream which unwraps data
     IInputStream* getInputStream() const { return _inputStream; }
     /// Returns a reference to the stream which wraps data
     IOutputStream& getOutputStream() const { return *_outputStream; }
