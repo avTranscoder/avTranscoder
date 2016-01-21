@@ -38,5 +38,6 @@
 %include "AvTranscoder/transform/transform.i"
 %include "AvTranscoder/file/file.i"
 %include "AvTranscoder/stat/stat.i"
+%include "AvTranscoder/filter/filter.i"
 %include "AvTranscoder/transcoder/transcoder.i"
 %include "AvTranscoder/reader/reader.i"
