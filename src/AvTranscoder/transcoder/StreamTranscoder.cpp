@@ -483,6 +483,9 @@ bool StreamTranscoder::processTranscode(const int subStreamIndex)
     else
         decodingStatus = _currentDecoder->decodeNextFrame(*_sourceBuffer, subStreamIndex);
 
+    LOG_DEBUG("Filtering")
+    _filterGraph->process(*_sourceBuffer);
+
     CodedData data;
     if(decodingStatus)
     {
