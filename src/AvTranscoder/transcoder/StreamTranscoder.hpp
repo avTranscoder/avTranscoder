@@ -10,7 +10,7 @@
 #include <AvTranscoder/encoder/IEncoder.hpp>
 
 #include <AvTranscoder/file/IOutputFile.hpp>
-
+#include <AvTranscoder/filter/FilterGraph.hpp>
 #include <AvTranscoder/profile/ProfileLoader.hpp>
 
 namespace avtranscoder
@@ -130,6 +130,8 @@ private:
     IEncoder* _outputEncoder;  ///< Encoder of packets which will be wrapped by _outputStream (has ownership)
 
     ITransform* _transform; ///< Video or audio transform (has ownership)
+
+    FilterGraph* _filterGraph; ///< Filter graph (has ownership)
 
     int _subStreamIndex; ///< Index of channel that is processed from the input stream (<0 if no demultiplexing).
 
