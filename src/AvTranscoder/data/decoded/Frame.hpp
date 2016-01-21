@@ -63,6 +63,18 @@ public:
      */
     void clear();
 
+    /**
+     * @return If it corresponds to a valid audio frame.
+     * @see AudioFrame
+     */
+    bool isAudioFrame() const;
+
+    /**
+     * @return If it corresponds to a valid video frame.
+     * @see VideoFrame
+     */
+    bool isVideoFrame() const;
+
 #ifndef SWIG
     AVFrame& getAVFrame() { return *_frame; }
     const AVFrame& getAVFrame() const { return *_frame; }
