@@ -23,9 +23,7 @@ def testCreateOutputFileWithoutExtension():
     Create an OutputFile with a filename without extension.
     """
     outputFileName = "testCreateOutputFileWithoutExtension"
-    ouputFile = av.OutputFile( outputFileName )
-
-    assert_equals( ouputFile.getFilename(), outputFileName )
+    av.OutputFile( outputFileName )
 
 
 def testCreateOutputFileWithoutExtensionWithFormat():
