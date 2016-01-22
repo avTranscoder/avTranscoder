@@ -1,7 +1,5 @@
 #include "Window.hpp"
 
-#include <AvTranscoder/properties/print.hpp>
-
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
 #include <GLUT/glut.h>
