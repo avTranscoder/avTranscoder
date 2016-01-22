@@ -141,7 +141,7 @@ void FilterGraph::pushInBuffer(const Frame& frame)
                       << _codec.getAVCodecContext().time_base.den << ":";
         filterOptions << "sample_rate=" << audioFrame.getSampleRate() << ":";
         filterOptions << "sample_fmt=" << getSampleFormatName(audioFrame.getSampleFormat()) << ":";
-        filterOptions << "channel_layout=0x" << audioFrame.getChannelLayout();
+        filterOptions << "channel_layout=0x" << std::hex << audioFrame.getChannelLayout();
     }
     // video frame
     else if(frame.isVideoFrame())
