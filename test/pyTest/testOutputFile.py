@@ -8,11 +8,13 @@ def testCreateOutputFileWithExtension():
     Create an OutputFile with a filename with extension.
     """
     formatName = "mov"
+    formatLongName = "QuickTime / MOV"
     outputFileName = "testCreateOutputFileWithExtension." + formatName
     ouputFile = av.OutputFile( outputFileName )
 
     assert_equals( ouputFile.getFilename(), outputFileName )
     assert_equals( ouputFile.getFormatName(), formatName )
+    assert_equals( ouputFile.getFormatLongName(), formatLongName )
 
 
 @raises(IOError)
@@ -32,11 +34,13 @@ def testCreateOutputFileWithoutExtensionWithFormat():
     Indicate the format.
     """
     formatName = "mov"
+    formatLongName = "QuickTime / MOV"
     outputFileName = "testCreateOutputFileWithoutExtensionWithFormat"
     ouputFile = av.OutputFile( outputFileName, formatName )
 
     assert_equals( ouputFile.getFilename(), outputFileName )
     assert_equals( ouputFile.getFormatName(), formatName )
+    assert_equals( ouputFile.getFormatLongName(), formatLongName )
 
 
 def testCreateOutputFileWithoutExtensionWithMimeType():
@@ -59,10 +63,12 @@ def testCreateOutputFileWithoutExtensionWithInconsistentFormatAndMimeType():
     The OutputFile should by-pass the Mime Type.
     """
     formatName = "mov"
+    formatLongName = "QuickTime / MOV"
     mimeType = "application/mp4"
     outputFileName = "testCreateOutputFileWithoutExtensionWithInconsistentFormatAndMimeType"
     ouputFile = av.OutputFile( outputFileName, formatName, mimeType )
 
     assert_equals( ouputFile.getFilename(), outputFileName )
     assert_equals( ouputFile.getFormatName(), formatName )
+    assert_equals( ouputFile.getFormatLongName(), formatLongName )
 
