@@ -116,6 +116,12 @@ bool AudioDecoder::decodeNextFrame(Frame& frameBuffer, const size_t channelIndex
 {
     AudioFrame& audioBuffer = static_cast<AudioFrame&>(frameBuffer);
 
+    // if no need to extract one channel in the audio stream
+    if(audioBuffer.getNbChannels() == 1 && channelIndex == 0)
+    {
+        return decodeNextFrame(frameBuffer);
+    }
+
     // decode all data of the next frame
     AudioFrame allDataOfNextFrame(audioBuffer);
     if(!decodeNextFrame(allDataOfNextFrame))
