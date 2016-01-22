@@ -22,8 +22,8 @@ public:
     void setNextFrame(Frame& inputFrame);
 
 private:
-    Frame* _inputFrame;        ///< Has link (no ownership)
-    AudioFrame* _silent;       ///< The generated silent (has ownership)
+    Frame* _inputFrame;  ///< Has link (no ownership)
+    AudioFrame* _silent; ///< The generated silent (has ownership)
 };
 }
 

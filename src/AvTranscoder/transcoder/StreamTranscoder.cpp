@@ -30,6 +30,7 @@ StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outpu
     , _currentDecoder(NULL)
     , _outputEncoder(NULL)
     , _transform(NULL)
+    , _filterGraph(NULL)
     , _subStreamIndex(-1)
     , _offset(offset)
     , _needToSwitchToGenerator(false)
@@ -44,6 +45,9 @@ StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outpu
 
             try
             {
+                // filter
+                _filterGraph = new FilterGraph(_inputStream->getVideoCodec());
+
                 VideoFrameDesc inputFrameDesc(_inputStream->getVideoCodec().getVideoFrameDesc());
 
                 // generator decoder
@@ -78,6 +82,9 @@ StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outpu
 
             try
             {
+                // filter
+                _filterGraph = new FilterGraph(_inputStream->getAudioCodec());
+
                 AudioFrameDesc inputFrameDesc(_inputStream->getAudioCodec().getAudioFrameDesc());
 
                 // generator decoder
@@ -128,6 +135,7 @@ StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outpu
     , _currentDecoder(NULL)
     , _outputEncoder(NULL)
     , _transform(NULL)
+    , _filterGraph(NULL)
     , _subStreamIndex(subStreamIndex)
     , _offset(offset)
     , _needToSwitchToGenerator(false)
@@ -137,6 +145,9 @@ StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outpu
     {
         case AVMEDIA_TYPE_VIDEO:
         {
+            // filter
+            _filterGraph = new FilterGraph(_inputStream->getVideoCodec());
+
             // input decoder
             VideoDecoder* inputVideo = new VideoDecoder(*static_cast<InputStream*>(_inputStream));
             inputVideo->setupDecoder();
@@ -170,6 +181,9 @@ StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outpu
         }
         case AVMEDIA_TYPE_AUDIO:
         {
+            // filter
+            _filterGraph = new FilterGraph(_inputStream->getAudioCodec());
+
             // input decoder
             AudioDecoder* inputAudio = new AudioDecoder(*static_cast<InputStream*>(_inputStream));
             inputAudio->setupDecoder();
@@ -228,6 +242,7 @@ StreamTranscoder::StreamTranscoder(const ICodec& inputCodec, IOutputFile& output
     , _currentDecoder(NULL)
     , _outputEncoder(NULL)
     , _transform(NULL)
+    , _filterGraph(NULL)
     , _subStreamIndex(-1)
     , _offset(0)
     , _needToSwitchToGenerator(false)
@@ -240,6 +255,9 @@ StreamTranscoder::StreamTranscoder(const ICodec& inputCodec, IOutputFile& output
         generatorVideo->setVideoFrameDesc(inputVideoCodec.getVideoFrameDesc());
         _generator = generatorVideo;
         _currentDecoder = _generator;
+
+        // filter
+        _filterGraph = new FilterGraph(inputVideoCodec);
 
         // buffers to process
         VideoFrameDesc inputFrameDesc = inputVideoCodec.getVideoFrameDesc();
@@ -266,6 +284,9 @@ StreamTranscoder::StreamTranscoder(const ICodec& inputCodec, IOutputFile& output
         const AudioCodec& inputAudioCodec = static_cast<const AudioCodec&>(inputCodec);
         _generator = generatorAudio;
         _currentDecoder = _generator;
+
+        // filter
+        _filterGraph = new FilterGraph(inputAudioCodec);
 
         // buffers to process
         AudioFrameDesc inputFrameDesc = inputAudioCodec.getAudioFrameDesc();
@@ -298,6 +319,7 @@ StreamTranscoder::~StreamTranscoder()
     delete _generator;
     delete _outputEncoder;
     delete _transform;
+    delete _filterGraph;
     delete _inputDecoder;
 }
 
@@ -460,6 +482,9 @@ bool StreamTranscoder::processTranscode(const int subStreamIndex)
         decodingStatus = _currentDecoder->decodeNextFrame(*_sourceBuffer);
     else
         decodingStatus = _currentDecoder->decodeNextFrame(*_sourceBuffer, subStreamIndex);
+
+    LOG_DEBUG("Filtering")
+    _filterGraph->process(*_sourceBuffer);
 
     CodedData data;
     if(decodingStatus)

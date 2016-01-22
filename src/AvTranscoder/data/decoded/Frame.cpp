@@ -80,4 +80,18 @@ void Frame::allocateAVFrame()
         throw std::runtime_error("Unable to allocate an empty Frame.");
     }
 }
+
+bool Frame::isAudioFrame() const
+{
+    if(_frame->sample_rate && _frame->channels && _frame->channel_layout && _frame->format != -1)
+        return true;
+    return false;
+}
+
+bool Frame::isVideoFrame() const
+{
+    if(_frame->width && _frame->height && _frame->format != -1)
+        return true;
+    return false;
+}
 }

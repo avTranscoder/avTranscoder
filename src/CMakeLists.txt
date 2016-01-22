@@ -6,7 +6,7 @@ include(AvTranscoderMacros)
 message(STATUS "AvTranscoder version is ${AVTRANSCODER_VERSION}")
 
 # Find package ffmpeg/libav
-find_package(FFmpeg COMPONENTS avcodec avformat avutil swscale swresample avresample)
+find_package(FFmpeg COMPONENTS avcodec avformat avutil swscale avfilter swresample avresample)
 if(swresample_FOUND)
 	add_definitions(-DAVTRANSCODER_FFMPEG_DEPENDENCY)
 	message(STATUS "Build avTranscoder with dependency to ffmpeg.")

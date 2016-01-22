@@ -5,12 +5,14 @@ extern "C" {
 #include <libavcodec/version.h>
 #include <libswscale/version.h>
 #include <libswscale/swscale.h>
+#include <libavfilter/version.h>
 #ifdef AVTRANSCODER_LIBAV_DEPENDENCY
 #include <libavresample/version.h>
 #else
 #include <libswresample/version.h>
 #endif
 #include <libavformat/avformat.h>
+#include <libavfilter/avfilter.h>
 }
 
 #include <cstring>
@@ -94,6 +96,8 @@ Libraries getLibraries()
 #endif
     libs.push_back(
         Library("swscale", swscale_license(), LIBSWSCALE_VERSION_MAJOR, LIBSWSCALE_VERSION_MINOR, LIBSWSCALE_VERSION_MICRO));
+    libs.push_back(Library("avfilter", avfilter_license(), LIBAVFILTER_VERSION_MAJOR, LIBAVFILTER_VERSION_MINOR,
+                           LIBAVFILTER_VERSION_MICRO));
 
     return libs;
 }

@@ -10,7 +10,7 @@
 #include <AvTranscoder/encoder/IEncoder.hpp>
 
 #include <AvTranscoder/file/IOutputFile.hpp>
-
+#include <AvTranscoder/filter/FilterGraph.hpp>
 #include <AvTranscoder/profile/ProfileLoader.hpp>
 
 namespace avtranscoder
@@ -76,10 +76,13 @@ public:
     /// Returns a pointer to the encoder
     IEncoder* getEncoder() const { return _outputEncoder; }
 
-    /// Returns a reference to the object which transforms the decoded data
+    /// Returns a pointer to the object which transforms the decoded data
     ITransform* getTransform() const { return _transform; }
 
-    /// Returns a reference to the stream which unwraps data
+    /// Returns a pointer to the object which manage filtering
+    FilterGraph* getFilterGraph() const { return _filterGraph; }
+
+    /// Returns a pointer to the stream which unwraps data
     IInputStream* getInputStream() const { return _inputStream; }
     /// Returns a reference to the stream which wraps data
     IOutputStream& getOutputStream() const { return *_outputStream; }
@@ -130,6 +133,8 @@ private:
     IEncoder* _outputEncoder;  ///< Encoder of packets which will be wrapped by _outputStream (has ownership)
 
     ITransform* _transform; ///< Video or audio transform (has ownership)
+
+    FilterGraph* _filterGraph; ///< Filter graph (has ownership)
 
     int _subStreamIndex; ///< Index of channel that is processed from the input stream (<0 if no demultiplexing).
 
