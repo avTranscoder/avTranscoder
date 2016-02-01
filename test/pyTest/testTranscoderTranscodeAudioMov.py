@@ -43,9 +43,39 @@ def testTranscodeMovVariableNbSamplesPerFrame():
 
     # get dst file of transcode
     dst_inputFile = av.InputFile( outputFileName )
-    dst_inputFile.analyse( progress, av.eAnalyseLevelHeader )
     dst_properties = dst_inputFile.getProperties()
     dst_audioStream = dst_properties.getAudioProperties()[0]
 
     assert_equals( "pcm_s24le", dst_audioStream.getCodecName() )
     assert_equals( "PCM signed 24-bit little-endian", dst_audioStream.getCodecLongName() )
+
+
+def testTranscodeMovExtractChannels():
+    """
+    Transcode the audio stream of a MOV file which contains a video stream.
+    Extract channel one and third of the audio stream (5.1).
+    The encoding profile will be found from from input.
+    """
+    inputFileName = os.environ['AVTRANSCODER_TEST_AUDIO_MOV_FILE']
+    outputFileName = "testTranscodeMovExtractChannels.mov"
+
+    ouputFile = av.OutputFile( outputFileName )
+    transcoder = av.Transcoder( ouputFile )
+
+    inputFile = av.InputFile( inputFileName )
+    src_audioStream = inputFile.getProperties().getAudioProperties()[0]
+    audioStreamIndex = src_audioStream.getStreamIndex()
+    transcoder.add( inputFileName, audioStreamIndex, 0 )
+    transcoder.add( inputFileName, audioStreamIndex, 3 )
+
+    progress = av.ConsoleProgress()
+    processStat = transcoder.process( progress )
+
+    # check process stat returned
+    audioStat = processStat.getAudioStat(0)
+    assert_equals(src_audioStream.getDuration(), audioStat.getDuration())
+
+    # check dst audio streams
+    dst_inputFile = av.InputFile( outputFileName )
+    for dst_audioStream in dst_inputFile.getProperties().getAudioProperties():
+        assert_equals( 1, dst_audioStream.getNbChannels() )
