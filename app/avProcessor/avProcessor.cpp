@@ -144,6 +144,7 @@ int main(int argc, char** argv)
         avtranscoder::OutputFile outputFile(argv[2]);
 
         avtranscoder::Transcoder transcoder(outputFile);
+        transcoder.setProcessMethod(avtranscoder::eProcessMethodBasedOnStream, 0);
 
         parseConfigFile(inputConfigFile, transcoder);
 
