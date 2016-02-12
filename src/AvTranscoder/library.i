@@ -9,6 +9,7 @@ namespace std {
 
 // Create instantiations of a template classes
 %template(Libraries) vector< avtranscoder::Library >;
+%template(IntVector) vector< size_t >;
 }
 
 %include <AvTranscoder/Library.hpp>
