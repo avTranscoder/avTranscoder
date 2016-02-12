@@ -48,6 +48,10 @@ matrix:
       env: DEPENDENCY_NAME=libav DEPENDENCY_VERSION=11.3 ENABLE_COVERAGE=true
     - os: osx
       env: DEPENDENCY_NAME=ffmpeg DEPENDENCY_VERSION=2.4.2 ENABLE_COVERAGE=true
+  allow_failures:
+    # build with libav
+    - env: DEPENDENCY_NAME=libav DEPENDENCY_VERSION=11.3 ENABLE_COVERAGE=true
+    - env: DEPENDENCY_NAME=libav DEPENDENCY_VERSION=11.3 ENABLE_COVERAGE=false
   fast_finish: true
 
 # This results in a 2×2×2x2 build matrix.
@@ -92,7 +96,7 @@ script:
   - ./tools/travis/build.sh
 
   # launch tests
-  - if [ ${TRAVIS_OS_NAME} = "linux" ] && [ ${DEPENDENCY_NAME} = "ffmpeg" ]; then ./tools/travis/python.nosetests.sh; fi
+  - if [ ${TRAVIS_OS_NAME} = "linux" ]; then ./tools/travis/python.nosetests.sh; fi
 
 after_success:
   # generate coverage for coveralls
