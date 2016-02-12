@@ -3,7 +3,9 @@
 # Print commands and their arguments as they are executed.
 set -x
 
-if [ ! -d "${DEPENDENCY_INSTALL_PATH}/lib/" ]; then
+# Use TRAVIS_JOB_ID to detect that we are in travis.
+# In that case, use a simple check to detect if the cache is already there.
+if  [ -z ${TRAVIS_JOB_ID} ] || [ ! -d "${DEPENDENCY_INSTALL_PATH}/lib/" ]; then
 
     if [[ ${DEPENDENCY_NAME} == "ffmpeg" ]]; then
 
