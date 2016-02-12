@@ -9,7 +9,7 @@
 namespace avtranscoder
 {
 
-ProfileLoader::ProfileLoader(bool autoload)
+ProfileLoader::ProfileLoader(const bool autoload)
 {
     if(autoload)
         loadProfiles();
