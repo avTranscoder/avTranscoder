@@ -22,8 +22,8 @@
 
 %include "AvTranscoder/progress/progress.i"
 %include "AvTranscoder/properties/properties.i"
-%include "AvTranscoder/data/data.i"
 %include "AvTranscoder/profile/profile.i"
+%include "AvTranscoder/data/data.i"
 
 %include <AvTranscoder/log.hpp>
 
