@@ -17,7 +17,6 @@
 %include "AvTranscoder/swig/avOperator.i"
 
 %{
-#include <AvTranscoder/Library.hpp>
 #include <AvTranscoder/log.hpp>
 %}
 
@@ -26,9 +25,9 @@
 %include "AvTranscoder/data/data.i"
 %include "AvTranscoder/profile/profile.i"
 
-%include <AvTranscoder/Library.hpp>
 %include <AvTranscoder/log.hpp>
 
+%include "AvTranscoder/library.i"
 %include "AvTranscoder/option.i"
 %include "AvTranscoder/util.i"
 %include "AvTranscoder/codec/codec.i"
