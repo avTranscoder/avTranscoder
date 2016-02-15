@@ -143,7 +143,7 @@ if  [ -z ${TRAVIS_JOB_ID} ] || [ ! -d "${DEPENDENCY_INSTALL_PATH}/lib/" ]; then
     export RELEASE_OPTIONS=--disable-debug
     export DEBUG_OPTIONS=--enable-debug=3\ --disable-optimizations\ --disable-sse\ --disable-stripping
     export LICENSING_OPTIONS=--enable-gpl\ --enable-nonfree
-    export THIRD_PARTIES_OPTIONS=--enable-libfaac\ --enable-libmp3lame\ --enable-libx264\ --enable-libxvid\ --enable-postproc\ --enable-avresample\ --enable-libfdk_aac\ --enable-libopus\ --enable-libvorbis\ --enable-libvpx
+    export THIRD_PARTIES_OPTIONS=--enable-libfaac\ --enable-libmp3lame\ --enable-libx264\ --enable-libxvid\ --enable-avresample\ --enable-libfdk_aac\ --enable-libopus\ --enable-libvorbis\ --enable-libvpx
 
     if [[ ${DEPENDENCY_NAME} == "ffmpeg" ]]; then
 
@@ -158,7 +158,7 @@ if  [ -z ${TRAVIS_JOB_ID} ] || [ ! -d "${DEPENDENCY_INSTALL_PATH}/lib/" ]; then
                       $COMPILE_OPTIONS \
                       $RELEASE_OPTIONS \
                       $LICENSING_OPTIONS \
-                      $THIRD_PARTIES_OPTIONS && \
+                      $THIRD_PARTIES_OPTIONS --enable-postproc && \
                       make -k > ${DEPENDENCY_LOG_FILE} 2>&1 && \
                       make install && \
                       rm -rf ${DIR}
