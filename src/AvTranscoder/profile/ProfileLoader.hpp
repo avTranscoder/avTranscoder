@@ -39,7 +39,10 @@ public:
     typedef std::vector<Profile> Profiles;
 
 public:
-    ProfileLoader(bool autoload = false);
+    /**
+     * @param autoload: load profiles defined as text files at AVPROFILES
+     */
+    ProfileLoader(const bool autoload = true);
 
     /**
      * @brief Load profiles from files in avProfilesPath directory
