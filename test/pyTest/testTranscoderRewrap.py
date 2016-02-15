@@ -20,7 +20,6 @@ def checkFormat(src_properties, dst_properties):
     Check the values of the given format headers.
     """
     assert_equals( src_properties.getFormatName(), dst_properties.getFormatName() )
-    assert_equals( src_properties.getFormatLongName(), dst_properties.getFormatLongName() )
     assert_equals( src_properties.getStartTime(), dst_properties.getStartTime() )
     assert_equals( src_properties.getDuration(), dst_properties.getDuration() )
     assert_greater_equal( src_properties.getBitRate(), dst_properties.getBitRate() )

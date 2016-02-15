@@ -39,7 +39,6 @@ def testTranscodeDnxhd120():
     dst_videoStream = dst_properties.getVideoProperties()[0]
 
     assert_equals( "dnxhd", dst_videoStream.getCodecName() )
-    assert_equals( "VC3/DNxHD", dst_videoStream.getCodecLongName() )
     expectedBitRate = 120000000
     deltaBitRate = expectedBitRate * 0.05
     assert_almost_equals( expectedBitRate, dst_videoStream.getBitRate(), delta=deltaBitRate )
@@ -75,7 +74,6 @@ def testTranscodeDnxhd185():
     dst_videoStream = dst_properties.getVideoProperties()[0]
 
     assert_equals( "dnxhd", dst_videoStream.getCodecName() )
-    assert_equals( "VC3/DNxHD", dst_videoStream.getCodecLongName() )
     expectedBitRate = 185000000
     deltaBitRate = expectedBitRate * 0.05
     assert_almost_equals( expectedBitRate, dst_videoStream.getBitRate(), delta=deltaBitRate )
@@ -111,7 +109,6 @@ def testTranscodeDnxhd185x():
     dst_videoStream = dst_properties.getVideoProperties()[0]
 
     assert_equals( "dnxhd", dst_videoStream.getCodecName() )
-    assert_equals( "VC3/DNxHD", dst_videoStream.getCodecLongName() )
     expectedBitRate = 185000000
     deltaBitRate = expectedBitRate * 0.05
     assert_almost_equals( expectedBitRate, dst_videoStream.getBitRate(), delta=deltaBitRate )
