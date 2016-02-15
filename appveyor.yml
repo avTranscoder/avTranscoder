@@ -7,6 +7,8 @@ platform:
 
 environment:
   FFMPEG_VERSION: 2.4.5
+  DEPENDENCY_INSTALL_PATH: C:\ProgramData\ffmpeg-2.4.5
+  AVTRANSCODER_INSTALL_PATH: C:\projects\avtranscoder\build\install
 
 matrix:
   fast_finish: true
