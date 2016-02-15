@@ -139,11 +139,11 @@ if  [ -z ${TRAVIS_JOB_ID} ] || [ ! -d "${DEPENDENCY_INSTALL_PATH}/lib/" ]; then
                   make install && \
                   rm -rf ${DIR}
 
-    export COMPILE_OPTIONS=--extra-cflags="-I${DEPENDENCY_INSTALL_PATH}/include" --extra-ldflags="-L${DEPENDENCY_INSTALL_PATH}/lib64 -L${DEPENDENCY_INSTALL_PATH}/lib" --bindir="${DEPENDENCY_INSTALL_PATH}/bin" --extra-libs=-ldl --enable-small --enable-shared --disable-static
+    export COMPILE_OPTIONS=--extra-libs=-ldl\ --enable-small\ --enable-shared\ --disable-static
     export RELEASE_OPTIONS=--disable-debug
-    export DEBUG_OPTIONS=--enable-debug=3 --disable-optimizations --disable-sse --disable-stripping
-    export LICENSING_OPTIONS=--enable-gpl --enable-nonfree
-    export THIRD_PARTIES_OPTIONS=--enable-libfaac --enable-libmp3lame --enable-libx264 --enable-libxvid --enable-postproc --enable-avresample --enable-libfdk_aac --enable-libopus --enable-libvorbis --enable-libvpx
+    export DEBUG_OPTIONS=--enable-debug=3\ --disable-optimizations\ --disable-sse\ --disable-stripping
+    export LICENSING_OPTIONS=--enable-gpl\ --enable-nonfree
+    export THIRD_PARTIES_OPTIONS=--enable-libfaac\ --enable-libmp3lame\ --enable-libx264\ --enable-libxvid\ --enable-postproc\ --enable-avresample\ --enable-libfdk_aac\ --enable-libopus\ --enable-libvorbis\ --enable-libvpx
 
     if [[ ${DEPENDENCY_NAME} == "ffmpeg" ]]; then
 
@@ -154,6 +154,7 @@ if  [ -z ${TRAVIS_JOB_ID} ] || [ ! -d "${DEPENDENCY_INSTALL_PATH}/lib/" ]; then
                       tar xzvf ffmpeg-${DEPENDENCY_VERSION}.tar.gz && \
                       cd ffmpeg-${DEPENDENCY_VERSION} && \
                       ./configure --prefix="${DEPENDENCY_INSTALL_PATH}" \
+                      --extra-cflags="-I${DEPENDENCY_INSTALL_PATH}/include" --extra-ldflags="-L${DEPENDENCY_INSTALL_PATH}/lib64 -L${DEPENDENCY_INSTALL_PATH}/lib" --bindir="${DEPENDENCY_INSTALL_PATH}/bin" \
                       $COMPILE_OPTIONS \
                       $RELEASE_OPTIONS \
                       $LICENSING_OPTIONS \
@@ -171,6 +172,7 @@ if  [ -z ${TRAVIS_JOB_ID} ] || [ ! -d "${DEPENDENCY_INSTALL_PATH}/lib/" ]; then
                       tar xzvf libav-${DEPENDENCY_VERSION}.tar.gz && \
                       cd libav-${DEPENDENCY_VERSION} && \
                       ./configure --prefix="${DEPENDENCY_INSTALL_PATH}" \
+                      --extra-cflags="-I${DEPENDENCY_INSTALL_PATH}/include" --extra-ldflags="-L${DEPENDENCY_INSTALL_PATH}/lib64 -L${DEPENDENCY_INSTALL_PATH}/lib" --bindir="${DEPENDENCY_INSTALL_PATH}/bin" \
                       $COMPILE_OPTIONS \
                       $RELEASE_OPTIONS \
                       $LICENSING_OPTIONS \
