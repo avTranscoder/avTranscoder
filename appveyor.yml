@@ -35,23 +35,24 @@ on_failure:
   - type "C:\ProgramData\chocolatey\logs\chocolatey.log"
   - type "C:\projects\avtranscoder\build\CMakeFiles\CMakeOutput.log"
 
-#on_success:
-#  - create archives
+on_success:
+  - 7z a ffmpeg.zip %DEPENDENCY_INSTALL_PATH%
+  - 7z a avtranscoder.zip %AVTRANSCODER_INSTALL_PATH%
 
-#artifacts:
-#  - path: C:\ProgramData\ffmpeg-2.2.11
-#    name: ffmpeg
-#    type: zip
+artifacts:
+  - path: ffmpeg.zip
+    name: ffmpeg
+    type: zip
 
-#  - path: C:\projects\avtranscoder\build
-#    name: avtranscoder
-#    type: zip
+  - path: avtranscoder.zip
+    name: avtranscoder
+    type: zip
 
-#deploy:
-#  - provider: GitHub
-#    artifact: ffmpeg,avtranscoder
-#    auth_token:
-#    secure: <your encrypted token>
-#    on:
-#      branch: master
-#      appveyor_repo_tag: true
+deploy:
+  - provider: GitHub
+    artifact: ffmpeg,avtranscoder
+    auth_token:
+    secure: sApasbQe2i7Uu+XNhlkXg+F6zI0VNHUjhq5QfK6/+NSs4lX/9BwhkLvibQc6bmMv
+    on:
+      branch: master
+      appveyor_repo_tag: true
