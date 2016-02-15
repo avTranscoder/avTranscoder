@@ -58,6 +58,8 @@ matrix:
     # build with libav
     - env: DEPENDENCY_NAME=libav DEPENDENCY_VERSION=11.3 ENABLE_COVERAGE=true
     - env: DEPENDENCY_NAME=libav DEPENDENCY_VERSION=11.3 ENABLE_COVERAGE=false
+    # build with ffmpeg-2.8.6
+    - env: DEPENDENCY_NAME=ffmpeg DEPENDENCY_VERSION=2.8.6 ENABLE_COVERAGE=false
   fast_finish: true
 
 # This results in a 2×2×2x2 build matrix.
