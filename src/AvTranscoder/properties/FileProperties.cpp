@@ -145,6 +145,22 @@ std::string FileProperties::getFormatLongName() const
     return _avFormatContext->iformat->long_name;
 }
 
+std::string FileProperties::getFormatMimeType() const
+{
+#if LIBAVFORMAT_VERSION_MAJOR <= 55
+    LOG_WARN("Cannot get mime type format of '" << getFilename()
+                                                << "' because your libavformat library has a major version <= 55.")
+    return "not available";
+#else
+    if(_avFormatContext->iformat->mime_type == NULL)
+    {
+        LOG_WARN("Unknown demuxer format mime type of '" << getFilename() << "'.")
+        return "";
+    }
+    return std::string(_avFormatContext->iformat->mime_type);
+#endif
+}
+
 size_t FileProperties::getProgramsCount() const
 {
     if(!_avFormatContext)
