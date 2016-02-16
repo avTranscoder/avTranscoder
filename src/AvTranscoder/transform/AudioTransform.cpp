@@ -102,7 +102,7 @@ void AudioTransform::convert(const Frame& srcFrame, Frame& dstFrame)
     int nbOutputSamplesPerChannel;
 #ifdef AVTRANSCODER_LIBAV_DEPENDENCY
     nbOutputSamplesPerChannel =
-        avresample_convert(_audioConvertContext, dstData, 0, nbInputSamplesPerChannel, srcData, 0, nbInputSamplesPerChannel);
+        avresample_convert(_audioConvertContext, dstData, 0, nbInputSamplesPerChannel, (uint8_t**)srcData, 0, nbInputSamplesPerChannel);
 #else
     nbOutputSamplesPerChannel =
         swr_convert(_audioConvertContext, dstData, nbInputSamplesPerChannel, srcData, nbInputSamplesPerChannel);
