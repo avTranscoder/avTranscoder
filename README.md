@@ -1,8 +1,8 @@
 # avTranscoder
 
-C++ API for Libav / FFmpeg
+C++ API for FFmpeg / Libav
 
-Based on Libav/FFmpeg libraries to support various video and audio formats, avTranscoder provides the high level API to re-wrap or transcode media easily.
+Based on FFmpeg/Libav libraries to support various video and audio formats, avTranscoder provides the high level API to re-wrap or transcode media easily.
 
 [![Build Status](https://travis-ci.org/avTranscoder/avTranscoder.svg?branch=develop)](https://travis-ci.org/avTranscoder/avTranscoder)
 [![Build status](https://ci.appveyor.com/api/projects/status/6urf0otyhtj8xuny?svg=true)](https://ci.appveyor.com/project/cchampet/avtranscoder)
@@ -12,6 +12,8 @@ Based on Libav/FFmpeg libraries to support various video and audio formats, avTr
 
 [![Stories in Progress](https://badge.waffle.io/avTranscoder/avTranscoder.svg?label=2 - Working&title=In Progress)](http://waffle.io/avTranscoder/avTranscoder)   
 Click on the badge above to have a big picture view of what's in progress and how you can help.  
+
+:warning: The latest avTranscoder API does not fit with libav.
 
 #### What you need to know
 * C++ library

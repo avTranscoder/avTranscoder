@@ -3,11 +3,11 @@
 set PWD=C:\projects\avtranscoder
 
 :: Get avtranscoder library
-set PYTHONPATH=%PWD%\build\lib\python2.7\site-packages;%PYTHONPATH%
-set PATH=C:\ProgramData\ffmpeg-%FFMPEG_VERSION%\bin;%PWD%\build\lib;%PATH%
+set PYTHONPATH=%AVTRANSCODER_INSTALL_PATH%\lib\python2.7\site-packages;%PYTHONPATH%
+set PATH=%DEPENDENCY_INSTALL_PATH%\bin;%AVTRANSCODER_INSTALL_PATH%\lib;%PATH%
 
 :: Get avtranscoder profiles
-set AVPROFILES=%PWD%\build\share\avprofiles
+set AVPROFILES=%AVTRANSCODER_INSTALL_PATH%\share\avprofiles
 
 :: Get assets
 git clone https://github.com/avTranscoder/avTranscoder-data.git
