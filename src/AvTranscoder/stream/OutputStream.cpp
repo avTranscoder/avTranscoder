@@ -2,6 +2,10 @@
 
 #include <AvTranscoder/file/OutputFile.hpp>
 
+extern "C" {
+#include <libavutil/mathematics.h>
+}
+
 #include <cassert>
 
 namespace avtranscoder
