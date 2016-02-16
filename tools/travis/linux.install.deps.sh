@@ -128,22 +128,23 @@ if  [ -z ${TRAVIS_JOB_ID} ] || [ ! -d "${DEPENDENCY_INSTALL_PATH}/lib/" ]; then
                   rm -rf ${DIR}
 
     # libopus
-    echo ""
-    echo "Building libopus (last version)"
-    DIR=$(mktemp -d libopusXXX) && cd ${DIR} && \
-                  git clone git://git.opus-codec.org/opus.git && \
-                  cd opus && \
-                  autoreconf -fiv && \
-                  ./configure --prefix="${DEPENDENCY_INSTALL_PATH}" --enable-shared --with-pic && \
-                  make -k && \
-                  make install && \
-                  rm -rf ${DIR}
+    # Compile error on OSX
+#    echo ""
+#    echo "Building libopus (last version)"
+#    DIR=$(mktemp -d libopusXXX) && cd ${DIR} && \
+#                  git clone git://git.opus-codec.org/opus.git && \
+#                  cd opus && \
+#                  autoreconf -fiv && \
+#                  ./configure --prefix="${DEPENDENCY_INSTALL_PATH}" --enable-shared --with-pic && \
+#                  make -k > ${DEPENDENCY_LOG_FILE} 2>&1 && \
+#                  make install && \
+#                  rm -rf ${DIR}
 
     export COMPILE_OPTIONS=--extra-libs=-ldl\ --enable-small\ --enable-shared\ --disable-static
     export RELEASE_OPTIONS=--disable-debug
     export DEBUG_OPTIONS=--enable-debug=3\ --disable-optimizations\ --disable-sse\ --disable-stripping
     export LICENSING_OPTIONS=--enable-gpl\ --enable-nonfree
-    export THIRD_PARTIES_OPTIONS=--enable-libfaac\ --enable-libmp3lame\ --enable-libx264\ --enable-libxvid\ --enable-avresample\ --enable-libfdk_aac\ --enable-libopus\ --enable-libvorbis\ --enable-libvpx
+    export THIRD_PARTIES_OPTIONS=--enable-libfaac\ --enable-libmp3lame\ --enable-libx264\ --enable-libxvid\ --enable-avresample\ --enable-libfdk_aac\ --enable-libvorbis\ --enable-libvpx
 
     if [[ ${DEPENDENCY_NAME} == "ffmpeg" ]]; then
 
