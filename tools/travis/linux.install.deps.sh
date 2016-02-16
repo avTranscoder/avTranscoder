@@ -15,7 +15,7 @@ if  [ -z ${TRAVIS_JOB_ID} ] || [ ! -d "${DEPENDENCY_INSTALL_PATH}/lib/" ]; then
 
     # yasm
     echo "Building YASM (${YASM_VERSION})"
-    DIR=$(mktemp -d) && cd ${DIR} && \
+    DIR=$(mktemp -d yasmXXX) && cd ${DIR} && \
                   curl -Os http://www.tortall.net/projects/yasm/releases/yasm-${YASM_VERSION}.tar.gz && \
                   tar xzf yasm-${YASM_VERSION}.tar.gz && \
                   cd yasm-${YASM_VERSION} && \
@@ -27,7 +27,7 @@ if  [ -z ${TRAVIS_JOB_ID} ] || [ ! -d "${DEPENDENCY_INSTALL_PATH}/lib/" ]; then
     # x264
     echo ""
     echo "Building x264 (last version)"
-    DIR=$(mktemp -d) && cd ${DIR} && \
+    DIR=$(mktemp -d x264XXX) && cd ${DIR} && \
                   git clone --depth 1 git://git.videolan.org/x264 && \
                   cd x264 && \
                   ./configure --prefix="$DEPENDENCY_INSTALL_PATH" --bindir="${DEPENDENCY_INSTALL_PATH}/bin" --enable-shared --disable-asm && \
@@ -38,7 +38,7 @@ if  [ -z ${TRAVIS_JOB_ID} ] || [ ! -d "${DEPENDENCY_INSTALL_PATH}/lib/" ]; then
     # libmp3lame
     echo ""
     echo "Building libmp3lame (${LAME_VERSION})"
-    DIR=$(mktemp -d) && cd ${DIR} && \
+    DIR=$(mktemp -d libmp3lameXXX) && cd ${DIR} && \
                   curl -L -Os http://downloads.sourceforge.net/project/lame/lame/${LAME_VERSION%.*}/lame-${LAME_VERSION}.tar.gz  && \
                   tar xzf lame-${LAME_VERSION}.tar.gz && \
                   cd lame-${LAME_VERSION} && \
@@ -53,7 +53,7 @@ if  [ -z ${TRAVIS_JOB_ID} ] || [ ! -d "${DEPENDENCY_INSTALL_PATH}/lib/" ]; then
     # http://sourceforge.net/p/faac/bugs/162/#46a0
     echo ""
     echo "Building faac (${FAAC_VERSION})"
-    DIR=$(mktemp -d) && cd ${DIR} && \
+    DIR=$(mktemp -d faacXXX) && cd ${DIR} && \
                   curl -L -Os http://downloads.sourceforge.net/faac/faac-${FAAC_VERSION}.tar.gz  && \
                   tar xzf faac-${FAAC_VERSION}.tar.gz && \
                   cd faac-${FAAC_VERSION} && \
@@ -67,7 +67,7 @@ if  [ -z ${TRAVIS_JOB_ID} ] || [ ! -d "${DEPENDENCY_INSTALL_PATH}/lib/" ]; then
     # xvid
     echo ""
     echo "Building xvid (${XVID_VERSION})"
-    DIR=$(mktemp -d) && cd ${DIR} && \
+    DIR=$(mktemp -d xvidXXX) && cd ${DIR} && \
                   curl -L -Os  http://downloads.xvid.org/downloads/xvidcore-${XVID_VERSION}.tar.gz  && \
                   tar xzf xvidcore-${XVID_VERSION}.tar.gz && \
                   cd xvidcore/build/generic && \
@@ -81,7 +81,7 @@ if  [ -z ${TRAVIS_JOB_ID} ] || [ ! -d "${DEPENDENCY_INSTALL_PATH}/lib/" ]; then
     # Warning: need automake + libtool
     echo ""
     echo "Building fdk-aac (${FDKAAC_VERSION})"
-    DIR=$(mktemp -d) && cd ${DIR} && \
+    DIR=$(mktemp -d fdk-aacXXX) && cd ${DIR} && \
                   curl -s https://codeload.github.com/mstorsjo/fdk-aac/tar.gz/v${FDKAAC_VERSION} | tar zxf - && \
                   cd fdk-aac-${FDKAAC_VERSION} && \
                   autoreconf -fiv && \
@@ -93,7 +93,7 @@ if  [ -z ${TRAVIS_JOB_ID} ] || [ ! -d "${DEPENDENCY_INSTALL_PATH}/lib/" ]; then
     # libogg
     echo ""
     echo "Building libogg (${OGG_VERSION})"
-    DIR=$(mktemp -d) && cd ${DIR} && \
+    DIR=$(mktemp -d liboggXXX) && cd ${DIR} && \
                   curl -O http://downloads.xiph.org/releases/ogg/libogg-${OGG_VERSION}.tar.gz && \
                   tar xzf libogg-${OGG_VERSION}.tar.gz && \
                   cd libogg-${OGG_VERSION} && \
@@ -105,7 +105,7 @@ if  [ -z ${TRAVIS_JOB_ID} ] || [ ! -d "${DEPENDENCY_INSTALL_PATH}/lib/" ]; then
     # libvorbis
     echo ""
     echo "Building libvorbis (${VORBIS_VERSION})"
-    DIR=$(mktemp -d) && cd ${DIR} && \
+    DIR=$(mktemp -d libvorbisXXX) && cd ${DIR} && \
                   curl -O http://downloads.xiph.org/releases/vorbis/libvorbis-${VORBIS_VERSION}.tar.gz && \
                   tar xzf libvorbis-${VORBIS_VERSION}.tar.gz && \
                   cd libvorbis-${VORBIS_VERSION} && \
@@ -118,7 +118,7 @@ if  [ -z ${TRAVIS_JOB_ID} ] || [ ! -d "${DEPENDENCY_INSTALL_PATH}/lib/" ]; then
     # https://trac.ffmpeg.org/ticket/4956
     echo ""
     echo "Building libvpx (${VPX_VERSION})"
-    DIR=$(mktemp -d) && cd ${DIR} && \
+    DIR=$(mktemp -d libvpxXXX) && cd ${DIR} && \
                   git clone https://github.com/webmproject/libvpx.git && \
                   cd libvpx && \
                   git checkout v${VPX_VERSION} && \
@@ -130,12 +130,12 @@ if  [ -z ${TRAVIS_JOB_ID} ] || [ ! -d "${DEPENDENCY_INSTALL_PATH}/lib/" ]; then
     # libopus
     echo ""
     echo "Building libopus (last version)"
-    DIR=$(mktemp -d) && cd ${DIR} && \
+    DIR=$(mktemp -d libopusXXX) && cd ${DIR} && \
                   git clone git://git.opus-codec.org/opus.git && \
                   cd opus && \
                   autoreconf -fiv && \
                   ./configure --prefix="${DEPENDENCY_INSTALL_PATH}" --enable-shared --with-pic && \
-                  make -k > ${DEPENDENCY_LOG_FILE} 2>&1 && \
+                  make -k && \
                   make install && \
                   rm -rf ${DIR}
 
@@ -149,7 +149,7 @@ if  [ -z ${TRAVIS_JOB_ID} ] || [ ! -d "${DEPENDENCY_INSTALL_PATH}/lib/" ]; then
 
         echo ""
         echo "Building ffmpeg (${DEPENDENCY_VERSION})"
-        DIR=$(mktemp -d) && cd ${DIR} && \
+        DIR=$(mktemp -d ffmpegXXX) && cd ${DIR} && \
                       curl -Os http://ffmpeg.org/releases/ffmpeg-${DEPENDENCY_VERSION}.tar.gz && \
                       tar xzf ffmpeg-${DEPENDENCY_VERSION}.tar.gz && \
                       cd ffmpeg-${DEPENDENCY_VERSION} && \
@@ -167,7 +167,7 @@ if  [ -z ${TRAVIS_JOB_ID} ] || [ ! -d "${DEPENDENCY_INSTALL_PATH}/lib/" ]; then
 
         echo ""
         echo "Building libav (${DEPENDENCY_VERSION})"
-        DIR=$(mktemp -d) && cd ${DIR} && \
+        DIR=$(mktemp -d libavXXX) && cd ${DIR} && \
                       curl -Os https://libav.org/releases/libav-${DEPENDENCY_VERSION}.tar.gz && \
                       tar xzf libav-${DEPENDENCY_VERSION}.tar.gz && \
                       cd libav-${DEPENDENCY_VERSION} && \
