@@ -8,7 +8,8 @@ extern "C" {
 }
 
 #include <stdexcept>
-#include <stdlib.h>
+#include <cstdlib>
+#include <cstring>
 
 namespace avtranscoder
 {
@@ -102,7 +103,7 @@ void VideoFrame::assign(const unsigned char value)
 void VideoFrame::assign(const unsigned char* ptrValue)
 {
     const int ret =
-        avpicture_fill(reinterpret_cast<AVPicture*>(_frame), ptrValue, getPixelFormat(), getWidth(), getHeight());
+        avpicture_fill(reinterpret_cast<AVPicture*>(_frame), (uint8_t*)ptrValue, getPixelFormat(), getWidth(), getHeight());
     if(ret < 0)
     {
         std::stringstream os;
