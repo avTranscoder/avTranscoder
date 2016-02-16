@@ -126,42 +126,6 @@ InputStream& InputFile::getStream(size_t index)
     }
 }
 
-std::string InputFile::getFormatName() const
-{
-    if(_formatContext.getAVInputFormat().name == NULL)
-    {
-        LOG_WARN("Unknown demuxer format name of '" << _filename << "'.")
-        return "";
-    }
-    return std::string(_formatContext.getAVInputFormat().name);
-}
-
-std::string InputFile::getFormatLongName() const
-{
-    if(_formatContext.getAVInputFormat().long_name == NULL)
-    {
-        LOG_WARN("Unknown demuxer format long name of '" << _filename << "'.")
-        return "";
-    }
-    return std::string(_formatContext.getAVInputFormat().long_name);
-}
-
-std::string InputFile::getFormatMimeType() const
-{
-#if LIBAVFORMAT_VERSION_MAJOR <= 55
-    LOG_WARN("Cannot get mime type format of '" << _filename
-                                                << "' because your libavformat library has a major version <= 55.")
-    return "not available";
-#else
-    if(_formatContext.getAVInputFormat().mime_type == NULL)
-    {
-        LOG_WARN("Unknown demuxer format mime type of '" << _filename << "'.")
-        return "";
-    }
-    return std::string(_formatContext.getAVInputFormat().mime_type);
-#endif
-}
-
 double InputFile::getFps()
 {
     double fps = 1;
