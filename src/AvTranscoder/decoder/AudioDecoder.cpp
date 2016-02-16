@@ -146,8 +146,8 @@ bool AudioDecoder::decodeNextFrame(Frame& frameBuffer, const size_t channelIndex
 
     // copy frame properties of decoded frame
     audioBuffer.copyProperties(allDataOfNextFrame);
-    av_frame_set_channels(&audioBuffer.getAVFrame(), 1);
-    av_frame_set_channel_layout(&audioBuffer.getAVFrame(), AV_CH_LAYOUT_MONO);
+    audioBuffer.setNbChannels(1);
+    audioBuffer.setChannelLayout(AV_CH_LAYOUT_MONO);
     audioBuffer.setNbSamplesPerChannel(allDataOfNextFrame.getNbSamplesPerChannel());
 
     // @todo manage cases with data of frame not only on data[0] (use _frame.linesize)

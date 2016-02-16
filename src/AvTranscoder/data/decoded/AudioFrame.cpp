@@ -79,6 +79,25 @@ size_t AudioFrame::getChannelLayout() const
 #endif
 }
 
+
+void AudioFrame::setNbChannels(const size_t nbChannels)
+{
+#ifdef AVTRANSCODER_LIBAV_DEPENDENCY
+    //_frame->channels = nbChannels;
+#else
+    av_frame_set_channels(_frame, nbChannels);
+#endif
+}
+
+void AudioFrame::setChannelLayout(const size_t channelLayout)
+{
+#ifdef AVTRANSCODER_LIBAV_DEPENDENCY
+    _frame->channel_layout = channelLayout;
+#else
+    av_frame_set_channel_layout(_frame, channelLayout);
+#endif
+}
+
 size_t AudioFrame::getSize() const
 {
     if(getSampleFormat() == AV_SAMPLE_FMT_NONE)
