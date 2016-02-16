@@ -83,7 +83,7 @@ void Frame::allocateAVFrame()
 
 bool Frame::isAudioFrame() const
 {
-    if(_frame->sample_rate && _frame->channels && _frame->channel_layout && _frame->format != -1)
+    if(_frame->sample_rate && _frame->channel_layout && _frame->format != -1)
         return true;
     return false;
 }
