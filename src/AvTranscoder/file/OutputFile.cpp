@@ -2,6 +2,10 @@
 
 #include <AvTranscoder/util.hpp>
 
+extern "C" {
+#include <libavutil/mathematics.h>
+}
+
 #include <stdexcept>
 
 #ifndef FF_INPUT_BUFFER_PADDING_SIZE
