@@ -39,8 +39,9 @@ public:
     void extractStreamProperties(IProgress& progress, const EAnalyseLevel level);
 
     std::string getFilename() const;
-    std::string getFormatName() const; ///< A comma separated list of short names for the format
-    std::string getFormatLongName() const;
+    std::string getFormatName() const; ///< A comma separated list of short names for the format, or empty if unknown.
+    std::string getFormatLongName() const; ///< Descriptive name for the format, meant to be more human-readable than name, or empty if unknown.
+    std::string getFormatMimeType() const; ///< Comma-separated list of mime types, or empty if unknown.
 
     size_t getProgramsCount() const;
     double getStartTime() const;
