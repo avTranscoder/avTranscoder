@@ -42,9 +42,9 @@ public:
     AudioFrame(const AudioFrameDesc& ref);
     AudioFrame(const Frame& otherFrame);
 
-    size_t getSampleRate() const { return av_frame_get_sample_rate(_frame); }
-    size_t getNbChannels() const { return av_frame_get_channels(_frame); }
-    size_t getChannelLayout() const { return av_frame_get_channel_layout(_frame); }
+    size_t getSampleRate() const;
+    size_t getNbChannels() const;
+    size_t getChannelLayout() const;
     AVSampleFormat getSampleFormat() const { return static_cast<AVSampleFormat>(_frame->format); }
     size_t getNbSamplesPerChannel() const { return _frame->nb_samples; }
     AudioFrameDesc desc() const { return AudioFrameDesc(getSampleRate(), getNbChannels(), getSampleFormat()); }

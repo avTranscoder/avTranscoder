@@ -8,6 +8,8 @@ extern "C" {
 }
 
 #include <stdexcept>
+#include <cstdlib>
+#include <cstring>
 
 namespace avtranscoder
 {
@@ -50,6 +52,33 @@ AudioFrame::AudioFrame(const Frame& otherFrame)
 {
 }
 
+size_t AudioFrame::getSampleRate() const
+{
+#ifdef AVTRANSCODER_LIBAV_DEPENDENCY
+    return _frame->sample_rate;
+#else
+    return av_frame_get_sample_rate(_frame);
+#endif
+}
+
+size_t AudioFrame::getNbChannels() const
+{
+#ifdef AVTRANSCODER_LIBAV_DEPENDENCY
+    return av_get_channel_layout_nb_channels(_frame->channel_layout);
+#else
+    return av_frame_get_channels(_frame);
+#endif
+}
+
+size_t AudioFrame::getChannelLayout() const
+{
+#ifdef AVTRANSCODER_LIBAV_DEPENDENCY
+    return _frame->channel_layout;
+#else
+    return av_frame_get_channel_layout(_frame);
+#endif
+}
+
 size_t AudioFrame::getSize() const
 {
     if(getSampleFormat() == AV_SAMPLE_FMT_NONE)
@@ -75,7 +104,9 @@ void AudioFrame::allocateAVSample(const AudioFrameDesc& desc)
 {
     // Set Frame properties
     _frame->sample_rate = desc._sampleRate;
+#ifdef AVTRANSCODER_FFMPEG_DEPENDENCY
     _frame->channels = desc._nbChannels;
+#endif
     _frame->channel_layout = av_get_default_channel_layout(desc._nbChannels);
     _frame->format = desc._sampleFormat;
     _frame->nb_samples = desc._sampleRate / 25.; // cannot be known before calling avcodec_decode_audio4
@@ -83,15 +114,15 @@ void AudioFrame::allocateAVSample(const AudioFrameDesc& desc)
     // Allocate data
     const int align = 0;
     const int ret =
-        av_samples_alloc(_frame->data, _frame->linesize, _frame->channels, _frame->nb_samples, desc._sampleFormat, align);
+        av_samples_alloc(_frame->data, _frame->linesize, getNbChannels(), getNbSamplesPerChannel(), desc._sampleFormat, align);
     if(ret < 0)
     {
         std::stringstream os;
         os << "Unable to allocate an audio frame of ";
-        os << "sample rate = " << _frame->sample_rate << ", ";
-        os << "nb channels = " << _frame->channels << ", ";
-        os << "channel layout = " << av_get_channel_name(_frame->channels) << ", ";
-        os << "nb samples = " << _frame->nb_samples << ", ";
+        os << "sample rate = " << getSampleRate() << ", ";
+        os << "nb channels = " << getNbChannels() << ", ";
+        os << "channel layout = " << av_get_channel_name(getNbChannels()) << ", ";
+        os << "nb samples = " << getNbSamplesPerChannel() << ", ";
         os << "sample format = " << getSampleFormatName(desc._sampleFormat);
         throw std::runtime_error(os.str());
     }
