@@ -8,7 +8,7 @@ platform:
 environment:
   global:
     DEPENDENCY_NAME: ffmpeg
-    FFMPEG_VERSION: 2.4.5
+    DEPENDENCY_VERSION: 2.4.5
     DEPENDENCY_INSTALL_PATH: C:\ProgramData\ffmpeg-2.4.5
     AVTRANSCODER_INSTALL_PATH: C:\projects\avtranscoder\build\install
 
@@ -54,10 +54,10 @@ on_failure:
   - type "C:\projects\avtranscoder\build\CMakeFiles\CMakeOutput.log"
 
 on_success:
-  - 7z a avtranscoder-win${PLATFORM}-${DEPENDENCY_NAME}-${FFMPEG_VERSION}.zip %DEPENDENCY_INSTALL_PATH% %AVTRANSCODER_INSTALL_PATH%
+  - 7z a avtranscoder-win${PLATFORM}-${DEPENDENCY_NAME}-${DEPENDENCY_VERSION}.zip %DEPENDENCY_INSTALL_PATH% %AVTRANSCODER_INSTALL_PATH%
 
 artifacts:
-  - path: avtranscoder-win${PLATFORM}-${DEPENDENCY_NAME}-${FFMPEG_VERSION}.zip
+  - path: avtranscoder-win${PLATFORM}-${DEPENDENCY_NAME}-${DEPENDENCY_VERSION}.zip
     name: avtranscoder
     type: zip
 
