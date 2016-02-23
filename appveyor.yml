@@ -54,10 +54,10 @@ on_failure:
   - type "C:\projects\avtranscoder\build\CMakeFiles\CMakeOutput.log"
 
 on_success:
-  - 7z a avtranscoder-win${PLATFORM}-${DEPENDENCY_NAME}-${DEPENDENCY_VERSION}.zip %DEPENDENCY_INSTALL_PATH% %AVTRANSCODER_INSTALL_PATH%
+  - 7z a avtranscoder-win%PLATFORM%-%DEPENDENCY_NAME%-%DEPENDENCY_VERSION%.zip %DEPENDENCY_INSTALL_PATH% %AVTRANSCODER_INSTALL_PATH%
 
 artifacts:
-  - path: avtranscoder-win${PLATFORM}-${DEPENDENCY_NAME}-${DEPENDENCY_VERSION}.zip
+  - path: avtranscoder-win%PLATFORM%-%DEPENDENCY_NAME%-%DEPENDENCY_VERSION%.zip
     name: avtranscoder
     type: zip
 
