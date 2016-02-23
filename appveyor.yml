@@ -6,26 +6,43 @@ platform:
   - x64
 
 environment:
-  FFMPEG_VERSION: 2.4.5
-  DEPENDENCY_INSTALL_PATH: C:\ProgramData\ffmpeg-2.4.5
-  AVTRANSCODER_INSTALL_PATH: C:\projects\avtranscoder\build\install
+  global:
+    FFMPEG_VERSION: 2.4.5
+    DEPENDENCY_INSTALL_PATH: C:\ProgramData\ffmpeg-2.4.5
+    AVTRANSCODER_INSTALL_PATH: C:\projects\avtranscoder\build\install
 
-matrix:
-  fast_finish: true
+  matrix:
+    - fast_finish: true
 
 init:
   - call "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" %platform%
 
-before_build:
+install:
+  # Install build dependencies
   - choco install -y swig
   - tools/appveyor/win.install.deps.bat
 
+  # Get the correct python version
+  - ps: if($env:platform -eq 'x86') {
+          $env:PYTHON = "C:\Python27";
+        }
+        else {
+          $env:PYTHON = "C:\Python27-x64";
+        }
+  # Prepend newly installed Python to the PATH of this build
+  - cmd: set PATH=%PYTHON%;%PYTHON%\Scripts;%PATH%
+  - cmd: echo %PATH%
+  # Check that we have the expected version and architecture for Python
+  - "python --version"
+  - "python -c \"import struct; print(struct.calcsize('P') * 8)\""
+  # Upgrade to the latest version of pip to avoid it displaying warnings about it being out of date.
+  - pip install --disable-pip-version-check --user --upgrade pip
+
+  # Install tests dependencies
+  - pip install nose
+
 build_script:
   - tools/appveyor/build.bat
-
-before_test:
-  - set PATH=C:\Python27\scripts;%PATH%
-  - pip install nose
 
 test_script:
   - cd ..
