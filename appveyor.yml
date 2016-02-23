@@ -67,5 +67,4 @@ deploy:
     auth_token:
     secure: sApasbQe2i7Uu+XNhlkXg+F6zI0VNHUjhq5QfK6/+NSs4lX/9BwhkLvibQc6bmMv
     on:
-      branch: master
       appveyor_repo_tag: true
