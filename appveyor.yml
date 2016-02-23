@@ -3,7 +3,7 @@ os:
 
 platform:
   - x86
-#  - x64
+  - x64
 
 environment:
   FFMPEG_VERSION: 2.4.5
