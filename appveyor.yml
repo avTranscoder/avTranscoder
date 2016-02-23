@@ -9,8 +9,8 @@ environment:
   global:
     DEPENDENCY_NAME: ffmpeg
     DEPENDENCY_VERSION: 2.4.5
-    DEPENDENCY_INSTALL_PATH: C:\ProgramData\ffmpeg-2.4.5
-    AVTRANSCODER_INSTALL_PATH: C:\projects\avtranscoder\build\install
+    DEPENDENCY_INSTALL_PATH: C:\ProgramData\ffmpeg-2.4.5\install-dependency
+    AVTRANSCODER_INSTALL_PATH: C:\projects\avtranscoder\build\install-avtranscoder
 
   matrix:
     - fast_finish: true
