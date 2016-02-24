@@ -12,6 +12,6 @@ curl -kLO http://ffmpeg.zeranoe.com/builds/win%PLATFORM_VERSION%/shared/ffmpeg-%
 7z x ffmpeg-%DEPENDENCY_VERSION%-win%PLATFORM_VERSION%-shared.7z
 
 move ffmpeg-%DEPENDENCY_VERSION%-win%PLATFORM_VERSION%-shared\bin ffmpeg-%DEPENDENCY_VERSION%-win%PLATFORM_VERSION%-dev
-move ffmpeg-%DEPENDENCY_VERSION%-win%PLATFORM_VERSION%-dev C:\ProgramData\ffmpeg-%DEPENDENCY_VERSION%
+move ffmpeg-%DEPENDENCY_VERSION%-win%PLATFORM_VERSION%-dev %DEPENDENCY_INSTALL_PATH%
 
 @echo off
