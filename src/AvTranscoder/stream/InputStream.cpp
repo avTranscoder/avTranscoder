@@ -58,14 +58,14 @@ bool InputStream::readNextPacket(CodedData& data)
     // if packet is already cached
     if(!_streamCache.empty())
     {
-        LOG_DEBUG("Get packet data of stream " << _streamIndex << " from the cache")
+        LOG_DEBUG("Get packet of '" << _inputFile->getFilename() << "' (stream " << _streamIndex << ") from the cache")
         data.copyData(_streamCache.front().getData(), _streamCache.front().getSize());
         _streamCache.pop();
     }
     // else read next packet
     else
     {
-        LOG_DEBUG("Read next packet")
+        LOG_DEBUG("Read next packet of '" << _inputFile->getFilename() << "' (stream " << _streamIndex << ")")
         return _inputFile->readNextPacket(data, _streamIndex) && _streamCache.empty();
     }
 
