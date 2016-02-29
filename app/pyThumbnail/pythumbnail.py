@@ -97,10 +97,10 @@ outputStream = av.StreamTranscoder( inputStream, outputFile, videoProfile )
 
 # create transcoder
 transcoder = av.Transcoder( outputFile )
-transcoder.add( outputStream );
+transcoder.add( outputStream )
 
 # launch process
-outputFile.beginWrap();
-transcoder.preProcessCodecLatency();
-transcoder.processFrame();
-outputFile.endWrap();
+outputFile.beginWrap()
+transcoder.preProcessCodecLatency()
+transcoder.processFrame()
+outputFile.endWrap()
