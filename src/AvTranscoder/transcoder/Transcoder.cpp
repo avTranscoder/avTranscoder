@@ -289,6 +289,10 @@ ProcessStat Transcoder::process(IProgress& progress)
     bool frameProcessed = true;
     while(frameProcessed)
     {
+        LOG_DEBUG("Process frame " << frame)
+        frameProcessed = processFrame();
+        ++frame;
+
         const float progressDuration = getCurrentOutputDuration();
 
         // check if JobStatusCancel
@@ -306,10 +310,6 @@ ProcessStat Transcoder::process(IProgress& progress)
                      << progressDuration << "s) is equal or upper than " << expectedOutputDuration << "s.")
             break;
         }
-
-        LOG_DEBUG("Process frame " << frame)
-        frameProcessed = processFrame();
-        ++frame;
     }
 
     _outputFile.endWrap();
