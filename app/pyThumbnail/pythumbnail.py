@@ -53,7 +53,7 @@ except ImportError:
 
 
 # setup avtranscoder
-logger = av.Logger().setLogLevel(av.AV_LOG_QUIET)
+av.Logger().setLogLevel(av.AV_LOG_QUIET)
 av.preloadCodecsAndFormats()
 
 # create input file
