@@ -95,19 +95,10 @@ bool AudioEncoder::encodeFrame(const Frame& sourceFrame, CodedData& codedFrame)
 {
     AVCodecContext& avCodecContext = _codec.getAVCodecContext();
 
+    // Packet of encoded data
     AVPacket& packet = codedFrame.getAVPacket();
-    packet.stream_index = 0;
 
-    if((avCodecContext.coded_frame) && (avCodecContext.coded_frame->pts != (int)AV_NOPTS_VALUE))
-    {
-        packet.pts = avCodecContext.coded_frame->pts;
-    }
-
-    if(avCodecContext.coded_frame && avCodecContext.coded_frame->key_frame)
-    {
-        packet.flags |= AV_PKT_FLAG_KEY;
-    }
-
+    // Fill data
 #if LIBAVCODEC_VERSION_MAJOR > 53
     int gotPacket = 0;
     int ret = avcodec_encode_audio2(&avCodecContext, &packet, &sourceFrame.getAVFrame(), &gotPacket);
@@ -124,6 +115,15 @@ bool AudioEncoder::encodeFrame(const Frame& sourceFrame, CodedData& codedFrame)
                                  getDescriptionFromErrorCode(ret));
     }
 #endif
+
+    // Fill timing information
+    if(avCodecContext.coded_frame && avCodecContext.coded_frame->key_frame)
+    {
+        packet.flags |= AV_PKT_FLAG_KEY;
+    }
+    packet.duration = av_frame_get_pkt_duration(&sourceFrame.getAVFrame());
+    packet.pts = sourceFrame.getAVFrame().pkt_pts;
+    packet.dts = sourceFrame.getAVFrame().pkt_dts;
 
 #if LIBAVCODEC_VERSION_MAJOR > 53
     return ret == 0 && gotPacket == 1;
