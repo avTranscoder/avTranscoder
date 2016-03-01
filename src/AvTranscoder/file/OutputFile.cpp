@@ -165,9 +165,6 @@ bool OutputFile::beginWrap()
 
 IOutputStream::EWrappingStatus OutputFile::wrap(const CodedData& data, const size_t streamIndex)
 {
-    if(!data.getSize())
-        return IOutputStream::eWrappingSuccess;
-
     LOG_DEBUG("Wrap on stream " << streamIndex << " (" << data.getSize() << " bytes for frame "
                                 << _frameCount.at(streamIndex) << ")")
 
