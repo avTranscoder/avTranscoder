@@ -93,6 +93,9 @@ void AudioTransform::convert(const Frame& srcFrame, Frame& dstFrame)
     if(!_isInit)
         _isInit = init(srcFrame, dstFrame);
 
+    // copy Frame properties
+    dstFrame.copyProperties(srcFrame);
+
     // if number of samples change from previous frame
     const size_t nbInputSamplesPerChannel = srcFrame.getAVFrame().nb_samples;
 

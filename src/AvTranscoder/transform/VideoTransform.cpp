@@ -78,6 +78,9 @@ void VideoTransform::convert(const Frame& srcFrame, Frame& dstFrame)
     if(!_isInit)
         _isInit = init(srcFrame, dstFrame);
 
+    // copy Frame properties
+    dst.copyProperties(srcFrame);
+
     if(!_imageConvertContext)
     {
         throw std::runtime_error("unknown color convert context");
