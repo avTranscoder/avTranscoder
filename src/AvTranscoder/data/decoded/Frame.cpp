@@ -7,12 +7,14 @@ namespace avtranscoder
 
 Frame::Frame()
     : _frame(NULL)
+    , _avStream(NULL)
 {
     allocateAVFrame();
 }
 
 Frame::Frame(const Frame& otherFrame)
     : _frame(NULL)
+    , _avStream(otherFrame.getAVStream())
 {
     // allocate frame
     allocateAVFrame();
@@ -52,6 +54,7 @@ void Frame::copyData(const Frame& frameToRef)
 void Frame::copyProperties(const Frame& otherFrame)
 {
     av_frame_copy_props(_frame, &otherFrame.getAVFrame());
+    _avStream = otherFrame.getAVStream();
 }
 
 void Frame::refFrame(const Frame& otherFrame)

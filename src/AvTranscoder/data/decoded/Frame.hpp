@@ -7,6 +7,8 @@ extern "C" {
 #include <libavutil/frame.h>
 }
 
+struct AVStream;
+
 namespace avtranscoder
 {
 
@@ -58,6 +60,10 @@ public:
      */
     void refFrame(const Frame& otherFrame);
 
+#ifndef SWIG
+    void refAVStream(const AVStream& avStream) { _avStream = &avStream; }
+#endif
+
     /**
      * @brief Unreference all the buffers referenced by frame and reset the frame fields.
      */
@@ -76,8 +82,15 @@ public:
     bool isVideoFrame() const;
 
 #ifndef SWIG
+    /**
+     * @return the AVStream which contains the decoded packet
+     * @note may be NULL in case of generated packets
+     */
+    const AVStream* getAVStream() const { return _avStream; }
+
     AVFrame& getAVFrame() { return *_frame; }
     const AVFrame& getAVFrame() const { return *_frame; }
+
     const unsigned char** getData() const { return const_cast<const unsigned char**>(_frame->data); }
 #endif
 
@@ -86,6 +99,9 @@ private:
 
 protected:
     AVFrame* _frame;
+
+    // Stream which contains the decoded packet
+    const AVStream* _avStream; //< Has link (no ownership)
 };
 }
 
