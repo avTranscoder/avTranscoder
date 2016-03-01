@@ -14,6 +14,8 @@ export AVTRANSCODER_TEST_VIDEO_MP4_FILE=`pwd`/avTranscoder-data/video/BigBuckBun
 export AVTRANSCODER_TEST_VIDEO_MOV_FILE=`pwd`/avTranscoder-data/video/BigBuckBunny/BigBuckBunny_640p_h264.mov
 export AVTRANSCODER_TEST_AUDIO_WAVE_FILE=`pwd`/avTranscoder-data/audio/frequenciesPerChannel.wav
 export AVTRANSCODER_TEST_AUDIO_MOV_FILE=`pwd`/avTranscoder-data/video/BigBuckBunny/BigBuckBunny_1080p_5_1.mov
+export AVTRANSCODER_TEST_IMAGE_PNG_FILE=`pwd`/avTranscoder-data/image/BigBuckBunny/bbb-splash.thumbnail.png
+export AVTRANSCODER_TEST_IMAGE_JPG_FILE=`pwd`/avTranscoder-data/image/BigBuckBunny/title_anouncement.thumbnail.jpg
 
 # Launch tests
 nosetests ${TRAVIS_BUILD_DIR}/test/pyTest --with-coverage

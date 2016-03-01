@@ -89,13 +89,15 @@ bool AudioDecoder::decodeNextFrame(Frame& frameBuffer)
 
         const bool nextPacketRead = _inputStream->readNextPacket(data);
         // if error or end of file
-        if(!nextPacketRead)
+        if(!nextPacketRead && !decodeNextFrame)
         {
             data.clear();
             return false;
         }
 
         // decoding
+        // @note could be called several times to return the remaining frames (last call with an empty packet)
+        // @see CODEC_CAP_DELAY
         int ret = avcodec_decode_audio4(&_inputStream->getAudioCodec().getAVCodecContext(), &frameBuffer.getAVFrame(),
                                         &got_frame, &data.getAVPacket());
         if(ret < 0)

@@ -53,7 +53,7 @@ except ImportError:
 
 
 # setup avtranscoder
-logger = av.Logger().setLogLevel(av.AV_LOG_QUIET)
+av.Logger().setLogLevel(av.AV_LOG_QUIET)
 av.preloadCodecsAndFormats()
 
 # create input file
@@ -97,10 +97,10 @@ outputStream = av.StreamTranscoder( inputStream, outputFile, videoProfile )
 
 # create transcoder
 transcoder = av.Transcoder( outputFile )
-transcoder.add( outputStream );
+transcoder.add( outputStream )
 
 # launch process
-outputFile.beginWrap();
-transcoder.preProcessCodecLatency();
-transcoder.processFrame();
-outputFile.endWrap();
+outputFile.beginWrap()
+transcoder.preProcessCodecLatency()
+transcoder.processFrame()
+outputFile.endWrap()

@@ -16,6 +16,8 @@ set AVTRANSCODER_TEST_VIDEO_MP4_FILE=%PWD%\avTranscoder-data\video\BigBuckBunny\
 set AVTRANSCODER_TEST_VIDEO_MOV_FILE=%PWD%\avTranscoder-data\video\BigBuckBunny\BigBuckBunny_640p_h264.mov
 set AVTRANSCODER_TEST_AUDIO_WAVE_FILE=%PWD%\avTranscoder-data\audio\frequenciesPerChannel.wav
 set AVTRANSCODER_TEST_AUDIO_MOV_FILE=%PWD%\avTranscoder-data\video\BigBuckBunny\BigBuckBunny_1080p_5_1.mov
+set AVTRANSCODER_TEST_IMAGE_PNG_FILE=%PWD%\avTranscoder-data\image\BigBuckBunny\bbb-splash.thumbnail.png
+set AVTRANSCODER_TEST_IMAGE_JPG_FILE=%PWD%\avTranscoder-data\image\BigBuckBunny\title_anouncement.thumbnail.jpg
 
 :: Launch tests
 cd test\pyTest

@@ -80,7 +80,7 @@ bool InputFile::readNextPacket(CodedData& data, const size_t streamIndex)
         const int packetStreamIndex = data.getAVPacket().stream_index;
         if(packetStreamIndex == (int)streamIndex)
         {
-            LOG_DEBUG("Get a packet data of the stream " << streamIndex)
+            LOG_DEBUG("Get a packet from stream " << streamIndex)
             nextPacketFound = true;
         }
         // else add the packet data to the stream cache
