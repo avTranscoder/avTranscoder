@@ -93,6 +93,9 @@ bool VideoDecoder::decodeNextFrame(Frame& frameBuffer)
             return false;
         }
 
+        // add ref to AVStream
+        frameBuffer.refAVStream(*data.getAVStream());
+
         // decoding
         // @note could be called several times to return the remaining frames (last call with an empty packet)
         // @see CODEC_CAP_DELAY
