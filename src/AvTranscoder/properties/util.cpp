@@ -27,7 +27,7 @@ template <>
 void add(PropertyVector& propertyVector, const std::string& key, const float& value)
 {
     std::stringstream ss;
-    if(value <= AV_NOPTS_VALUE || value >= AV_NOPTS_VALUE)
+    if(value <= AV_NOPTS_VALUE)
         ss << "N/A";
     else
         ss << value;
