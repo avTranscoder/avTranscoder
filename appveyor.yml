@@ -53,7 +53,7 @@ on_failure:
   - type "C:\ProgramData\chocolatey\logs\chocolatey.log"
   - type "C:\projects\avtranscoder\build\CMakeFiles\CMakeOutput.log"
 
-on_success:
+after_build:
   - 7z a avtranscoder-win%PLATFORM%-%DEPENDENCY_NAME%-%DEPENDENCY_VERSION%.zip %DEPENDENCY_INSTALL_PATH% %AVTRANSCODER_INSTALL_PATH%
 
 artifacts:
@@ -65,6 +65,6 @@ deploy:
   - provider: GitHub
     artifact: avtranscoder
     auth_token:
-    secure: sApasbQe2i7Uu+XNhlkXg+F6zI0VNHUjhq5QfK6/+NSs4lX/9BwhkLvibQc6bmMv
+      secure: sApasbQe2i7Uu+XNhlkXg+F6zI0VNHUjhq5QfK6/+NSs4lX/9BwhkLvibQc6bmMv
     on:
       appveyor_repo_tag: true
