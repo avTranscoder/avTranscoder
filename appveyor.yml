@@ -46,7 +46,6 @@ build_script:
   - tools/appveyor/build.bat
 
 test_script:
-  - cd ..
   - tools/appveyor/python.nosetests.bat
 
 on_failure:

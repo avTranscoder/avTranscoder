@@ -10,4 +10,6 @@ call cmake.exe .. -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTAL
 call nmake /F Makefile
 call nmake /F Makefile install
 
+cd ..
+
 @echo off
