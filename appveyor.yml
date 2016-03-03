@@ -52,13 +52,13 @@ on_failure:
   - type "C:\ProgramData\chocolatey\logs\chocolatey.log"
   - type "C:\projects\avtranscoder\build\CMakeFiles\CMakeOutput.log"
 
-after_build:
+after_test:
   - 7z a avtranscoder-win%PLATFORM%-%DEPENDENCY_NAME%-%DEPENDENCY_VERSION%.zip %DEPENDENCY_INSTALL_PATH% %AVTRANSCODER_INSTALL_PATH%
+  - ps: Push-AppveyorArtifact avtranscoder-win*.zip
 
 artifacts:
-  - path: avtranscoder-win%PLATFORM%-%DEPENDENCY_NAME%-%DEPENDENCY_VERSION%.zip
+  - path: avtranscoder-win*.zip
     name: avtranscoder
-    type: zip
 
 deploy:
   - provider: GitHub
