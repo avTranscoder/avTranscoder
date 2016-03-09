@@ -65,31 +65,37 @@ std::string AvExport getSampleFormatName(const AVSampleFormat sampleFormat);
 #ifndef SWIG
 /**
  * @brief Get array of short/long names of all format available by FFmpeg / libav.
+ * @note Need to call preloadCodecsAndFormats before using this function.
  */
 NamesArray AvExport getAvailableFormatsNames();
 
 /**
  * @brief Get array of short/long names of all video codec available by FFmpeg / libav.
+ * @note Need to call preloadCodecsAndFormats before using this function.
  */
 NamesArray AvExport getAvailableVideoCodecsNames();
 
 /**
  * @brief Get array of short/long names of all audio codec available by FFmpeg / libav.
+ * @note Need to call preloadCodecsAndFormats before using this function.
  */
 NamesArray AvExport getAvailableAudioCodecsNames();
 
 /**
  * @brief Get the list of options for each output format
+ * @note Need to call preloadCodecsAndFormats before using this function.
  */
 OptionArrayMap AvExport getAvailableOptionsPerOutputFormat();
 
 /**
  * @brief Get the list of options for each video codec
+ * @note Need to call preloadCodecsAndFormats before using this function.
  */
 OptionArrayMap AvExport getAvailableOptionsPerVideoCodec();
 
 /**
  * @brief Get the list of options for each audio codec
+ * @note Need to call preloadCodecsAndFormats before using this function.
  */
 OptionArrayMap AvExport getAvailableOptionsPerAudioCodec();
 #endif
