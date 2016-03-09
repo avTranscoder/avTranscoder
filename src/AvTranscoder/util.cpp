@@ -192,18 +192,16 @@ OptionArrayMap getAvailableOptionsPerOutputFormat()
     // iterate on formats
     while(outputFormat)
     {
-        // add only format with video track
-        // outputFormat->audio_codec ?
-        if(outputFormat->video_codec != AV_CODEC_ID_NONE)
+        if(!outputFormat->name)
+            continue;
+
+        const std::string outputFormatName(outputFormat->name);
+        OptionArray options;
+        if(outputFormat->priv_class)
         {
-            if(outputFormat->priv_class)
-            {
-                const std::string outputFormatName(outputFormat->name);
-                OptionArray options;
-                loadOptions(options, (void*)&outputFormat->priv_class, 0);
-                optionsPerFormat.insert(std::make_pair(outputFormatName, options));
-            }
+            loadOptions(options, (void*)&outputFormat->priv_class, 0);
         }
+        optionsPerFormat.insert(std::make_pair(outputFormatName, options));
         outputFormat = av_oformat_next(outputFormat);
     }
     return optionsPerFormat;
