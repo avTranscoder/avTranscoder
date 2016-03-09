@@ -216,16 +216,19 @@ OptionArrayMap getAvailableOptionsPerVideoCodec()
     // iterate on codecs
     while(codec)
     {
+        if(!codec->name)
+            continue;
+
         // add only video codec
         if(codec->type == AVMEDIA_TYPE_VIDEO)
         {
+            const std::string videoCodecName(codec->name);
+            OptionArray options;
             if(codec->priv_class)
             {
-                std::string videoCodecName(codec->name);
-                OptionArray options;
                 loadOptions(options, (void*)&codec->priv_class, 0);
-                videoCodecOptions.insert(std::make_pair(videoCodecName, options));
             }
+            videoCodecOptions.insert(std::make_pair(videoCodecName, options));
         }
         codec = av_codec_next(codec);
     }
@@ -241,16 +244,19 @@ OptionArrayMap getAvailableOptionsPerAudioCodec()
     // iterate on codecs
     while(codec)
     {
+        if(!codec->name)
+            continue;
+
         // add only audio codec
         if(codec->type == AVMEDIA_TYPE_AUDIO)
         {
+            const std::string audioCodecName(codec->name);
+            OptionArray options;
             if(codec->priv_class)
             {
-                std::string audioCodecName(codec->name);
-                OptionArray options;
                 loadOptions(options, (void*)&codec->priv_class, 0);
-                audioCodecOptions.insert(std::make_pair(audioCodecName, options));
             }
+            audioCodecOptions.insert(std::make_pair(audioCodecName, options));
         }
         codec = av_codec_next(codec);
     }
