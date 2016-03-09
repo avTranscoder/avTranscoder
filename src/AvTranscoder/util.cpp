@@ -146,10 +146,10 @@ NamesArray getAvailableVideoCodecsNames()
     {
         if(c->type == AVMEDIA_TYPE_VIDEO)
         {
-            if(!c->name && !c->long_name)
+            if(!c->name)
                 continue;
 
-            std::pair<std::string, std::string> codecNames(std::string(c->name ? c->name : ""),
+            std::pair<std::string, std::string> codecNames(std::string(c->name),
                                                            std::string(c->long_name ? c->long_name : ""));
 
             // skip duplicates
@@ -171,10 +171,10 @@ NamesArray getAvailableAudioCodecsNames()
     {
         if(c->type == AVMEDIA_TYPE_AUDIO)
         {
-            if(!c->name && !c->long_name)
+            if(!c->name)
                 continue;
 
-            std::pair<std::string, std::string> codecNames(std::string(c->name ? c->name : ""),
+            const std::pair<std::string, std::string> codecNames(std::string(c->name),
                                                            std::string(c->long_name ? c->long_name : ""));
 
             // skip duplicates
