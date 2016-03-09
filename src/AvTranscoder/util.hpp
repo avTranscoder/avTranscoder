@@ -17,7 +17,7 @@ namespace avtranscoder
 {
 
 typedef std::map<std::string, OptionArray> OptionArrayMap;
-typedef std::vector<std::pair<std::string, std::string> > NamesArray; //< short/long names of format/video codec/audio codec
+typedef std::map<std::string, std::string> NamesArray; //< short/long names of format/video codec/audio codec
 
 /**
  * @brief Check if a format name corresponds to the format of a given filename

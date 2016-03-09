@@ -127,7 +127,7 @@ NamesArray getAvailableFormatsNames()
         if(!fmt->name)
             continue;
 
-        formatsNames.push_back(
+        formatsNames.insert(
             std::make_pair(std::string(fmt->name), std::string(fmt->long_name ? fmt->long_name : "")));
     }
     return formatsNames;
@@ -145,14 +145,8 @@ NamesArray getAvailableVideoCodecsNames()
             if(!c->name)
                 continue;
 
-            std::pair<std::string, std::string> codecNames(std::string(c->name),
-                                                           std::string(c->long_name ? c->long_name : ""));
-
-            // skip duplicates
-            if(std::find(videoCodecsNames.begin(), videoCodecsNames.end(), codecNames) != videoCodecsNames.end())
-                continue;
-
-            videoCodecsNames.push_back(codecNames);
+            videoCodecsNames.insert(
+                std::make_pair(std::string(c->name), std::string(c->long_name ? c->long_name : "")));
         }
     }
     return videoCodecsNames;
@@ -170,14 +164,8 @@ NamesArray getAvailableAudioCodecsNames()
             if(!c->name)
                 continue;
 
-            const std::pair<std::string, std::string> codecNames(std::string(c->name),
-                                                           std::string(c->long_name ? c->long_name : ""));
-
-            // skip duplicates
-            if(std::find(audioCodecsNames.begin(), audioCodecsNames.end(), codecNames) != audioCodecsNames.end())
-                continue;
-
-            audioCodecsNames.push_back(codecNames);
+            audioCodecsNames.insert(
+                std::make_pair(std::string(c->name), std::string(c->long_name ? c->long_name : "")));
         }
     }
     return audioCodecsNames;
