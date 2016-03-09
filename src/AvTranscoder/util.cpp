@@ -124,10 +124,6 @@ NamesArray getAvailableFormatsNames()
     AVOutputFormat* fmt = NULL;
     while((fmt = av_oformat_next(fmt)))
     {
-        // skip undefined codec
-        if(fmt->video_codec == AV_CODEC_ID_NONE)
-            continue;
-
         if(!fmt->name)
             continue;
 
