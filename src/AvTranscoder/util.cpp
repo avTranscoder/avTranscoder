@@ -128,11 +128,11 @@ NamesArray getAvailableFormatsNames()
         if(fmt->video_codec == AV_CODEC_ID_NONE)
             continue;
 
-        if(!fmt->name && !fmt->long_name)
+        if(!fmt->name)
             continue;
 
         formatsNames.push_back(
-            std::make_pair(std::string(fmt->name ? fmt->name : ""), std::string(fmt->long_name ? fmt->long_name : "")));
+            std::make_pair(std::string(fmt->name), std::string(fmt->long_name ? fmt->long_name : "")));
     }
     return formatsNames;
 }
