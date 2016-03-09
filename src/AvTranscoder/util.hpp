@@ -62,7 +62,6 @@ std::string AvExport getPixelFormatName(const AVPixelFormat pixelFormat);
  */
 std::string AvExport getSampleFormatName(const AVSampleFormat sampleFormat);
 
-#ifndef SWIG
 /**
  * @brief Get array of short/long names of all format available by FFmpeg / libav.
  * @note Need to call preloadCodecsAndFormats before using this function.
@@ -81,6 +80,7 @@ NamesArray AvExport getAvailableVideoCodecsNames();
  */
 NamesArray AvExport getAvailableAudioCodecsNames();
 
+#ifndef SWIG
 /**
  * @brief Get the list of options for each output format
  * @note Need to call preloadCodecsAndFormats before using this function.
