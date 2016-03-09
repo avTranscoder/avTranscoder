@@ -18,7 +18,7 @@ bool matchFormat(const std::string& format, const std::string& filename)
     return avOutputFormat != NULL;
 }
 
-std::vector<std::string> getPixelFormats(const std::string& videoCodecName)
+std::vector<std::string> getSupportedPixelFormats(const std::string& videoCodecName)
 {
     std::vector<std::string> pixelFormats;
 
@@ -63,7 +63,7 @@ std::vector<std::string> getPixelFormats(const std::string& videoCodecName)
     return pixelFormats;
 }
 
-std::vector<std::string> getSampleFormats(const std::string& audioCodecName)
+std::vector<std::string> getSupportedSampleFormats(const std::string& audioCodecName)
 {
     std::vector<std::string> sampleFormats;
 

@@ -29,14 +29,14 @@ bool AvExport matchFormat(const std::string& format, const std::string& filename
 *  @param videoCodecName: the video codec name (empty if not indicated, and so get all pixel formats supported by all video
 * codecs).
 */
-std::vector<std::string> AvExport getPixelFormats(const std::string& videoCodecName = "");
+std::vector<std::string> AvExport getSupportedPixelFormats(const std::string& videoCodecName = "");
 
 /**
 *  @brief Get sample format supported by an audio codec.
 *  @param audioCodecName: the audio codec name (empty if not indicated, and so get all sample formats supported by all audio
 * codecs).
 */
-std::vector<std::string> AvExport getSampleFormats(const std::string& audioCodecName = "");
+std::vector<std::string> AvExport getSupportedSampleFormats(const std::string& audioCodecName = "");
 
 /**
 * @brief Get the corresponding AVPixelFormat from the pixel format name
