@@ -81,17 +81,17 @@ NamesArray AvExport getAudioCodecsNames();
 /**
  * @brief Get the list of options for each output format
  */
-OptionArrayMap AvExport getOutputFormatOptions();
+OptionArrayMap AvExport getAvailableOptionsPerOutputFormat();
 
 /**
  * @brief Get the list of options for each video codec
  */
-OptionArrayMap AvExport getVideoCodecOptions();
+OptionArrayMap AvExport getAvailableOptionsPerVideoCodec();
 
 /**
  * @brief Get the list of options for each audio codec
  */
-OptionArrayMap AvExport getAudioCodecOptions();
+OptionArrayMap AvExport getAvailableOptionsPerAudioCodec();
 #endif
 }
 

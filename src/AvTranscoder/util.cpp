@@ -187,7 +187,7 @@ NamesArray getAudioCodecsNames()
     return audioCodecsNames;
 }
 
-OptionArrayMap getOutputFormatOptions()
+OptionArrayMap getAvailableOptionsPerOutputFormat()
 {
     OptionArrayMap optionsPerFormat;
 
@@ -213,7 +213,7 @@ OptionArrayMap getOutputFormatOptions()
     return optionsPerFormat;
 }
 
-OptionArrayMap getVideoCodecOptions()
+OptionArrayMap getAvailableOptionsPerVideoCodec()
 {
     OptionArrayMap videoCodecOptions;
 
@@ -238,7 +238,7 @@ OptionArrayMap getVideoCodecOptions()
     return videoCodecOptions;
 }
 
-OptionArrayMap getAudioCodecOptions()
+OptionArrayMap getAvailableOptionsPerAudioCodec()
 {
     OptionArrayMap audioCodecOptions;
 
