@@ -117,7 +117,7 @@ std::string getSampleFormatName(const AVSampleFormat sampleFormat)
     return formatName ? std::string(formatName) : "";
 }
 
-NamesArray getFormatsNames()
+NamesArray getAvailableFormatsNames()
 {
     NamesArray formatsNames;
 
@@ -137,7 +137,7 @@ NamesArray getFormatsNames()
     return formatsNames;
 }
 
-NamesArray getVideoCodecsNames()
+NamesArray getAvailableVideoCodecsNames()
 {
     NamesArray videoCodecsNames;
 
@@ -162,7 +162,7 @@ NamesArray getVideoCodecsNames()
     return videoCodecsNames;
 }
 
-NamesArray getAudioCodecsNames()
+NamesArray getAvailableAudioCodecsNames()
 {
     NamesArray audioCodecsNames;
 
