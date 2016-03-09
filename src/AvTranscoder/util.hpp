@@ -20,11 +20,6 @@ typedef std::map<std::string, OptionArray> OptionArrayMap;
 typedef std::map<std::string, std::string> NamesArray; //< short/long names of format/video codec/audio codec
 
 /**
- * @brief Check if a format name corresponds to the format of a given filename
- */
-bool AvExport matchFormat(const std::string& format, const std::string& filename);
-
-/**
 *  @brief Get pixel format supported by a video codec.
 *  @param videoCodecName: the video codec name (empty if not indicated, and so get all pixel formats supported by all video
 * codecs).

@@ -12,12 +12,6 @@ extern "C" {
 namespace avtranscoder
 {
 
-bool matchFormat(const std::string& format, const std::string& filename)
-{
-    AVOutputFormat* avOutputFormat = av_guess_format(format.c_str(), filename.c_str(), NULL);
-    return avOutputFormat != NULL;
-}
-
 std::vector<std::string> getSupportedPixelFormats(const std::string& videoCodecName)
 {
     std::vector<std::string> pixelFormats;
