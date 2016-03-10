@@ -62,6 +62,12 @@ def testAccessToAvailableFormatsNames():
     availableFormats = av.getAvailableFormatsNames()
     assert_greater_equal(len(availableFormats), 135)
 
+    availableVideoFormats = av.getAvailableVideoFormatsNames()
+    assert_greater_equal(len(availableVideoFormats), 71)
+
+    availableAudioFormats = av.getAvailableAudioFormatsNames()
+    assert_greater_equal(len(availableAudioFormats), 99)
+
 
 def testAccessToAvailableVideoCodecsNames():
     """
