@@ -121,8 +121,43 @@ NamesMap getAvailableFormatsNames()
         if(!fmt->name)
             continue;
 
-        formatsNames.insert(
-            std::make_pair(std::string(fmt->name), std::string(fmt->long_name ? fmt->long_name : "")));
+        formatsNames.insert(std::make_pair(std::string(fmt->name), std::string(fmt->long_name ? fmt->long_name : "")));
+    }
+    return formatsNames;
+}
+
+NamesMap getAvailableVideoFormatsNames()
+{
+    NamesMap formatsNames;
+
+    AVOutputFormat* fmt = NULL;
+    while((fmt = av_oformat_next(fmt)))
+    {
+        if(!fmt->name)
+            continue;
+
+        if(fmt->video_codec == AV_CODEC_ID_NONE)
+            continue;
+
+        formatsNames.insert(std::make_pair(std::string(fmt->name), std::string(fmt->long_name ? fmt->long_name : "")));
+    }
+    return formatsNames;
+}
+
+NamesMap getAvailableAudioFormatsNames()
+{
+    NamesMap formatsNames;
+
+    AVOutputFormat* fmt = NULL;
+    while((fmt = av_oformat_next(fmt)))
+    {
+        if(!fmt->name)
+            continue;
+
+        if(fmt->audio_codec == AV_CODEC_ID_NONE)
+            continue;
+
+        formatsNames.insert(std::make_pair(std::string(fmt->name), std::string(fmt->long_name ? fmt->long_name : "")));
     }
     return formatsNames;
 }
@@ -139,8 +174,7 @@ NamesMap getAvailableVideoCodecsNames()
             if(!c->name)
                 continue;
 
-            videoCodecsNames.insert(
-                std::make_pair(std::string(c->name), std::string(c->long_name ? c->long_name : "")));
+            videoCodecsNames.insert(std::make_pair(std::string(c->name), std::string(c->long_name ? c->long_name : "")));
         }
     }
     return videoCodecsNames;
@@ -158,8 +192,7 @@ NamesMap getAvailableAudioCodecsNames()
             if(!c->name)
                 continue;
 
-            audioCodecsNames.insert(
-                std::make_pair(std::string(c->name), std::string(c->long_name ? c->long_name : "")));
+            audioCodecsNames.insert(std::make_pair(std::string(c->name), std::string(c->long_name ? c->long_name : "")));
         }
     }
     return audioCodecsNames;

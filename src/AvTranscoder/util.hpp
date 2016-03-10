@@ -58,19 +58,31 @@ std::string AvExport getPixelFormatName(const AVPixelFormat pixelFormat);
 std::string AvExport getSampleFormatName(const AVSampleFormat sampleFormat);
 
 /**
- * @brief Get a map of short/long names of all format available by FFmpeg / libav.
+ * @brief Get a map of short/long names of all formats available by FFmpeg / libav.
  * @note Need to call preloadCodecsAndFormats before using this function.
  */
 NamesMap AvExport getAvailableFormatsNames();
 
 /**
- * @brief Get a map of short/long names of all video codec available by FFmpeg / libav.
+ * @brief Get a map of short/long names of all formats dedicate for video available by FFmpeg / libav.
+ * @note Need to call preloadCodecsAndFormats before using this function.
+ */
+NamesMap AvExport getAvailableVideoFormatsNames();
+
+/**
+ * @brief Get a map of short/long names of all formats dedicate for video available by FFmpeg / libav.
+ * @note Need to call preloadCodecsAndFormats before using this function.
+ */
+NamesMap AvExport getAvailableAudioFormatsNames();
+
+/**
+ * @brief Get a map of short/long names of all video codecs available by FFmpeg / libav.
  * @note Need to call preloadCodecsAndFormats before using this function.
  */
 NamesMap AvExport getAvailableVideoCodecsNames();
 
 /**
- * @brief Get a map of short/long names of all audio codec available by FFmpeg / libav.
+ * @brief Get a map of short/long names of all audio codecs available by FFmpeg / libav.
  * @note Need to call preloadCodecsAndFormats before using this function.
  */
 NamesMap AvExport getAvailableAudioCodecsNames();
