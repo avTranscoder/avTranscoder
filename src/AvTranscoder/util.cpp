@@ -1,8 +1,6 @@
 #include "util.hpp"
 
 extern "C" {
-#include <libavcodec/avcodec.h>
-#include <libavformat/avformat.h>
 #include <libavutil/pixdesc.h>
 }
 
@@ -111,9 +109,9 @@ std::string getSampleFormatName(const AVSampleFormat sampleFormat)
     return formatName ? std::string(formatName) : "";
 }
 
-NamesMap getAvailableFormatsNames()
+std::vector<AVOutputFormat*> getAvailableFormats()
 {
-    NamesMap formatsNames;
+    std::vector<AVOutputFormat*> formats;
 
     AVOutputFormat* fmt = NULL;
     while((fmt = av_oformat_next(fmt)))
@@ -121,6 +119,18 @@ NamesMap getAvailableFormatsNames()
         if(!fmt->name)
             continue;
 
+        formats.push_back(fmt);
+    }
+    return formats;
+}
+
+NamesMap getAvailableFormatsNames()
+{
+    NamesMap formatsNames;
+    std::vector<AVOutputFormat*> formats = getAvailableFormats();
+    for(size_t i = 0; i < formats.size(); ++i)
+    {
+        AVOutputFormat* fmt = formats.at(i);
         formatsNames.insert(std::make_pair(std::string(fmt->name), std::string(fmt->long_name ? fmt->long_name : "")));
     }
     return formatsNames;
@@ -129,16 +139,13 @@ NamesMap getAvailableFormatsNames()
 NamesMap getAvailableVideoFormatsNames()
 {
     NamesMap formatsNames;
-
-    AVOutputFormat* fmt = NULL;
-    while((fmt = av_oformat_next(fmt)))
+    std::vector<AVOutputFormat*> formats = getAvailableFormats();
+    for(size_t i = 0; i < formats.size(); ++i)
     {
-        if(!fmt->name)
-            continue;
-
+        AVOutputFormat* fmt = formats.at(i);
+        // skip format which cannot handle video
         if(fmt->video_codec == AV_CODEC_ID_NONE)
             continue;
-
         formatsNames.insert(std::make_pair(std::string(fmt->name), std::string(fmt->long_name ? fmt->long_name : "")));
     }
     return formatsNames;
@@ -147,33 +154,42 @@ NamesMap getAvailableVideoFormatsNames()
 NamesMap getAvailableAudioFormatsNames()
 {
     NamesMap formatsNames;
-
-    AVOutputFormat* fmt = NULL;
-    while((fmt = av_oformat_next(fmt)))
+    std::vector<AVOutputFormat*> formats = getAvailableFormats();
+    for(size_t i = 0; i < formats.size(); ++i)
     {
-        if(!fmt->name)
-            continue;
-
+        AVOutputFormat* fmt = formats.at(i);
+        // skip format which cannot handle audio
         if(fmt->audio_codec == AV_CODEC_ID_NONE)
             continue;
-
         formatsNames.insert(std::make_pair(std::string(fmt->name), std::string(fmt->long_name ? fmt->long_name : "")));
     }
     return formatsNames;
 }
 
+std::vector<AVCodec*> getAvailableCodecs()
+{
+    std::vector<AVCodec*> codecs;
+
+    AVCodec* c = NULL;
+    while((c = av_codec_next(c)))
+    {
+        if(!c->name)
+            continue;
+
+        codecs.push_back(c);
+    }
+    return codecs;
+}
+
 NamesMap getAvailableVideoCodecsNames()
 {
     NamesMap videoCodecsNames;
-
-    AVCodec* c = NULL;
-    while((c = av_codec_next(c)) != NULL)
+    std::vector<AVCodec*> codecs = getAvailableCodecs();
+    for(size_t i = 0; i < codecs.size(); ++i)
     {
+        AVCodec* c = codecs.at(i);
         if(c->type == AVMEDIA_TYPE_VIDEO)
         {
-            if(!c->name)
-                continue;
-
             videoCodecsNames.insert(std::make_pair(std::string(c->name), std::string(c->long_name ? c->long_name : "")));
         }
     }
@@ -183,15 +199,12 @@ NamesMap getAvailableVideoCodecsNames()
 NamesMap getAvailableAudioCodecsNames()
 {
     NamesMap audioCodecsNames;
-
-    AVCodec* c = NULL;
-    while((c = av_codec_next(c)) != NULL)
+    std::vector<AVCodec*> codecs = getAvailableCodecs();
+    for(size_t i = 0; i < codecs.size(); ++i)
     {
+        AVCodec* c = codecs.at(i);
         if(c->type == AVMEDIA_TYPE_AUDIO)
         {
-            if(!c->name)
-                continue;
-
             audioCodecsNames.insert(std::make_pair(std::string(c->name), std::string(c->long_name ? c->long_name : "")));
         }
     }

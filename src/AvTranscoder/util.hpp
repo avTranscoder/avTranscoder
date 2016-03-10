@@ -5,6 +5,8 @@
 #include "Option.hpp"
 
 extern "C" {
+#include <libavcodec/avcodec.h>
+#include <libavformat/avformat.h>
 #include <libavutil/pixfmt.h>
 #include <libavutil/samplefmt.h>
 }
@@ -57,6 +59,12 @@ std::string AvExport getPixelFormatName(const AVPixelFormat pixelFormat);
  */
 std::string AvExport getSampleFormatName(const AVSampleFormat sampleFormat);
 
+#ifndef SWIG
+/**
+ * @return The list of all formats available by FFmpeg / libav.
+ */
+std::vector<AVOutputFormat*> getAvailableFormats();
+#endif
 /**
  * @brief Get a map of short/long names of all formats available by FFmpeg / libav.
  * @note Need to call preloadCodecsAndFormats before using this function.
@@ -74,6 +82,13 @@ NamesMap AvExport getAvailableVideoFormatsNames();
  * @note Need to call preloadCodecsAndFormats before using this function.
  */
 NamesMap AvExport getAvailableAudioFormatsNames();
+
+#ifndef SWIG
+/**
+ * @return The list of all codecs available by FFmpeg / libav.
+ */
+std::vector<AVCodec*> getAvailableCodecs();
+#endif
 
 /**
  * @brief Get a map of short/long names of all video codecs available by FFmpeg / libav.
