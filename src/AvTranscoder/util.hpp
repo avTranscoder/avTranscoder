@@ -61,43 +61,43 @@ std::string AvExport getSampleFormatName(const AVSampleFormat sampleFormat);
 
 #ifndef SWIG
 /**
- * @return The list of all formats available by FFmpeg / libav.
+ * @return The list of all formats available in FFmpeg / libav.
  */
 std::vector<AVOutputFormat*> getAvailableFormats();
 #endif
 /**
- * @brief Get a map of short/long names of all formats available by FFmpeg / libav.
+ * @brief Get a map of short/long names of all formats available in FFmpeg / libav.
  * @note Need to call preloadCodecsAndFormats before using this function.
  */
 NamesMap AvExport getAvailableFormatsNames();
 
 /**
- * @brief Get a map of short/long names of all formats dedicate for video available by FFmpeg / libav.
+ * @brief Get a map of short/long names of all formats dedicate for video available in FFmpeg / libav.
  * @note Need to call preloadCodecsAndFormats before using this function.
  */
 NamesMap AvExport getAvailableVideoFormatsNames();
 
 /**
- * @brief Get a map of short/long names of all formats dedicate for video available by FFmpeg / libav.
+ * @brief Get a map of short/long names of all formats dedicate for video available in FFmpeg / libav.
  * @note Need to call preloadCodecsAndFormats before using this function.
  */
 NamesMap AvExport getAvailableAudioFormatsNames();
 
 #ifndef SWIG
 /**
- * @return The list of all codecs available by FFmpeg / libav.
+ * @return The list of all codecs available in FFmpeg / libav.
  */
 std::vector<AVCodec*> getAvailableCodecs();
 #endif
 
 /**
- * @brief Get a map of short/long names of all video codecs available by FFmpeg / libav.
+ * @brief Get a map of short/long names of all video codecs available in FFmpeg / libav.
  * @note Need to call preloadCodecsAndFormats before using this function.
  */
 NamesMap AvExport getAvailableVideoCodecsNames();
 
 /**
- * @brief Get a map of short/long names of all audio codecs available by FFmpeg / libav.
+ * @brief Get a map of short/long names of all audio codecs available in FFmpeg / libav.
  * @note Need to call preloadCodecsAndFormats before using this function.
  */
 NamesMap AvExport getAvailableAudioCodecsNames();
