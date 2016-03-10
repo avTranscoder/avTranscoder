@@ -111,9 +111,9 @@ std::string getSampleFormatName(const AVSampleFormat sampleFormat)
     return formatName ? std::string(formatName) : "";
 }
 
-NamesArray getAvailableFormatsNames()
+NamesMap getAvailableFormatsNames()
 {
-    NamesArray formatsNames;
+    NamesMap formatsNames;
 
     AVOutputFormat* fmt = NULL;
     while((fmt = av_oformat_next(fmt)))
@@ -127,9 +127,9 @@ NamesArray getAvailableFormatsNames()
     return formatsNames;
 }
 
-NamesArray getAvailableVideoCodecsNames()
+NamesMap getAvailableVideoCodecsNames()
 {
-    NamesArray videoCodecsNames;
+    NamesMap videoCodecsNames;
 
     AVCodec* c = NULL;
     while((c = av_codec_next(c)) != NULL)
@@ -146,9 +146,9 @@ NamesArray getAvailableVideoCodecsNames()
     return videoCodecsNames;
 }
 
-NamesArray getAvailableAudioCodecsNames()
+NamesMap getAvailableAudioCodecsNames()
 {
-    NamesArray audioCodecsNames;
+    NamesMap audioCodecsNames;
 
     AVCodec* c = NULL;
     while((c = av_codec_next(c)) != NULL)

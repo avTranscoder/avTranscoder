@@ -17,7 +17,7 @@ namespace avtranscoder
 {
 
 typedef std::map<std::string, OptionArray> OptionArrayMap;
-typedef std::map<std::string, std::string> NamesArray; //< short/long names of format/video codec/audio codec
+typedef std::map<std::string, std::string> NamesMap; //< short/long names of format/video codec/audio codec
 
 /**
 *  @brief Get pixel format supported by a video codec.
@@ -58,22 +58,22 @@ std::string AvExport getPixelFormatName(const AVPixelFormat pixelFormat);
 std::string AvExport getSampleFormatName(const AVSampleFormat sampleFormat);
 
 /**
- * @brief Get array of short/long names of all format available by FFmpeg / libav.
+ * @brief Get a map of short/long names of all format available by FFmpeg / libav.
  * @note Need to call preloadCodecsAndFormats before using this function.
  */
-NamesArray AvExport getAvailableFormatsNames();
+NamesMap AvExport getAvailableFormatsNames();
 
 /**
- * @brief Get array of short/long names of all video codec available by FFmpeg / libav.
+ * @brief Get a map of short/long names of all video codec available by FFmpeg / libav.
  * @note Need to call preloadCodecsAndFormats before using this function.
  */
-NamesArray AvExport getAvailableVideoCodecsNames();
+NamesMap AvExport getAvailableVideoCodecsNames();
 
 /**
- * @brief Get array of short/long names of all audio codec available by FFmpeg / libav.
+ * @brief Get a map of short/long names of all audio codec available by FFmpeg / libav.
  * @note Need to call preloadCodecsAndFormats before using this function.
  */
-NamesArray AvExport getAvailableAudioCodecsNames();
+NamesMap AvExport getAvailableAudioCodecsNames();
 
 #ifndef SWIG
 /**
