@@ -68,12 +68,12 @@ bool VideoGenerator::decodeNextFrame(Frame& frameBuffer)
             VideoTransform videoTransform;
             videoTransform.convert(intermediateBuffer, *_blackImage);
         }
-        frameBuffer.copyData(*_blackImage);
+        frameBuffer.refData(*_blackImage);
     }
     // Take image from _inputFrame
     else
     {
-        frameBuffer.copyData(*_inputFrame);
+        frameBuffer.refData(*_inputFrame);
     }
     return true;
 }

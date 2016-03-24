@@ -43,9 +43,11 @@ public:
     int* getLineSize() const { return _frame->linesize; }
 
     /**
-    * @brief Copy the data of the given Frame.
-    */
-    void copyData(const Frame& frameToRef);
+     * @brief Ref to data of the given Frame.
+     * @note This function does not allocate anything.
+     * The current Frame must be already initialized and allocated with the same parameters as frameToRef.
+     */
+    void refData(const Frame& frameToRef);
 
     /**
      * @brief Copy all the fields that do not affect the data layout in the buffers.

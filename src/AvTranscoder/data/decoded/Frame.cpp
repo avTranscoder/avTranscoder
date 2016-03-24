@@ -40,7 +40,7 @@ Frame::~Frame()
     }
 }
 
-void Frame::copyData(const Frame& frameToRef)
+void Frame::refData(const Frame& frameToRef)
 {
     const int ret = av_frame_copy(_frame, &frameToRef.getAVFrame());
     if(ret < 0)

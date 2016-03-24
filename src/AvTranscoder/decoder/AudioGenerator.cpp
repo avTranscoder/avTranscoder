@@ -44,12 +44,12 @@ bool AudioGenerator::decodeNextFrame(Frame& frameBuffer)
             _silent = new AudioFrame(audioBuffer.desc());
         }
         frameBuffer.getAVFrame().nb_samples = _silent->getAVFrame().nb_samples;
-        frameBuffer.copyData(*_silent);
+        frameBuffer.refData(*_silent);
     }
     // Take audio frame from _inputFrame
     else
     {
-        frameBuffer.copyData(*_inputFrame);
+        frameBuffer.refData(*_inputFrame);
     }
     return true;
 }
