@@ -79,8 +79,7 @@ Frame* IReader::readFrameAt(const size_t frame)
         // return an empty frame
         if(!_continueWithGenerator)
         {
-            _dstFrame->clear();
-            return _dstFrame;
+            return &_emptyFrame;
         }
         // or generate data (ie silence or black)
         else

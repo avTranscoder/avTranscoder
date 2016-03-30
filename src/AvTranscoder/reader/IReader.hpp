@@ -77,6 +77,7 @@ private:
     int _currentFrame;        ///< The current decoded frame.
     bool _inputFileAllocated; ///< Does the InputFile is held by the class or not (depends on the constructor called)
     bool _continueWithGenerator;  ///< If there is no more data to decode, complete with generated data
+    Frame _emptyFrame;  ///< If there is no more data to decode, return an empty frame
 };
 }
 
