@@ -76,15 +76,15 @@ Frame* IReader::readFrameAt(const size_t frame)
     // if decoding failed
     if(!decodingStatus)
     {
-        // return an empty frame
-        if(!_continueWithGenerator)
+        // generate data (ie silence or black)
+        if(_continueWithGenerator)
         {
-            return &_emptyFrame;
+            _generator->decodeNextFrame(*_srcFrame);
         }
-        // or generate data (ie silence or black)
+        // or return an empty frame
         else
         {
-           _generator->decodeNextFrame(*_srcFrame);
+           return &_emptyFrame;
         }
     }
     // transform
