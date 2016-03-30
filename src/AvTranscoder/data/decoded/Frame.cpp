@@ -63,11 +63,6 @@ void Frame::refFrame(const Frame& otherFrame)
     }
 }
 
-void Frame::clear()
-{
-    av_frame_unref(_frame);
-}
-
 void Frame::allocateAVFrame()
 {
 #if LIBAVCODEC_VERSION_MAJOR > 54

@@ -61,11 +61,6 @@ public:
     void refFrame(const Frame& otherFrame);
 
     /**
-     * @brief Unreference all the buffers referenced by frame and reset the frame fields.
-     */
-    void clear();
-
-    /**
      * @return If it corresponds to a valid audio frame.
      * @see AudioFrame
      */
