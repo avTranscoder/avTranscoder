@@ -18,4 +18,5 @@ export AVTRANSCODER_TEST_IMAGE_PNG_FILE=`pwd`/avTranscoder-data/image/BigBuckBun
 export AVTRANSCODER_TEST_IMAGE_JPG_FILE=`pwd`/avTranscoder-data/image/BigBuckBunny/title_anouncement.thumbnail.jpg
 
 # Launch tests
-nosetests ${TRAVIS_BUILD_DIR}/test/pyTest --with-coverage
+nosetests ${TRAVIS_BUILD_DIR}/test/pyTest --with-coverage > progress.txt
+
