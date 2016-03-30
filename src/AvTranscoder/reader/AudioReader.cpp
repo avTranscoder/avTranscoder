@@ -2,6 +2,7 @@
 
 #include <AvTranscoder/util.hpp>
 #include <AvTranscoder/decoder/AudioDecoder.hpp>
+#include <AvTranscoder/decoder/AudioGenerator.hpp>
 #include <AvTranscoder/data/decoded/AudioFrame.hpp>
 #include <AvTranscoder/transform/AudioTransform.hpp>
 #include <AvTranscoder/progress/NoDisplayProgress.hpp>
@@ -42,6 +43,9 @@ void AudioReader::init()
     _decoder = new AudioDecoder(_inputFile->getStream(_streamIndex));
     _decoder->setupDecoder();
 
+    // generator
+    _generator = new AudioGenerator();
+
     // create transform
     _transform = new AudioTransform();
 
@@ -57,6 +61,7 @@ void AudioReader::init()
 AudioReader::~AudioReader()
 {
     delete _decoder;
+    delete _generator;
     delete _srcFrame;
     delete _dstFrame;
     delete _transform;

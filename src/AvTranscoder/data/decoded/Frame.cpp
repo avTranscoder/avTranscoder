@@ -40,7 +40,7 @@ Frame::~Frame()
     }
 }
 
-void Frame::copyData(const Frame& frameToRef)
+void Frame::refData(const Frame& frameToRef)
 {
     const int ret = av_frame_copy(_frame, &frameToRef.getAVFrame());
     if(ret < 0)
@@ -61,11 +61,6 @@ void Frame::refFrame(const Frame& otherFrame)
     {
         throw std::ios_base::failure("Unable to reference other frame: " + getDescriptionFromErrorCode(ret));
     }
-}
-
-void Frame::clear()
-{
-    av_frame_unref(_frame);
 }
 
 void Frame::allocateAVFrame()

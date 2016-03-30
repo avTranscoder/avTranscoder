@@ -3,6 +3,8 @@
 #include <AvTranscoder/util.hpp>
 #include <AvTranscoder/transform/VideoTransform.hpp>
 
+#include <sstream>
+
 namespace avtranscoder
 {
 
@@ -51,6 +53,13 @@ bool VideoGenerator::decodeNextFrame(Frame& frameBuffer)
         // Generate the black image only once
         if(!_blackImage)
         {
+            std::stringstream msg;
+            msg << "Generate a black image with the following features:" << std::endl;
+            msg << "width = " << _frameDesc._width << std::endl;
+            msg << "height = " << _frameDesc._height << std::endl;
+            msg << "pixel format = rgb24" << std::endl;
+            LOG_INFO(msg.str())
+
             VideoFrame& imageBuffer = static_cast<VideoFrame&>(frameBuffer);
 
             // Input of convert
@@ -68,12 +77,14 @@ bool VideoGenerator::decodeNextFrame(Frame& frameBuffer)
             VideoTransform videoTransform;
             videoTransform.convert(intermediateBuffer, *_blackImage);
         }
-        frameBuffer.copyData(*_blackImage);
+        LOG_INFO("Reference the black image when decode next frame")
+        frameBuffer.refData(*_blackImage);
     }
     // Take image from _inputFrame
     else
     {
-        frameBuffer.copyData(*_inputFrame);
+        LOG_INFO("Reference the image data specified when decode next frame")
+        frameBuffer.refData(*_inputFrame);
     }
     return true;
 }
