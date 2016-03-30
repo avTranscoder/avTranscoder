@@ -24,7 +24,8 @@ def testVideoReaderCreateNewInputFile():
     # read all frames and check their size
     for i in xrange(0, reader.getSourceVideoProperties().getNbFrames()):
         frame = av.VideoFrame(reader.readNextFrame())
-        assert_equals( frame.getSize(), reader.getOutputWidth() * reader.getOutputHeight() * reader.getOutputNbComponents() )
+        bytesPerPixel = reader.getOutputBitDepth() / 8
+        assert_equals( frame.getSize(), reader.getOutputWidth() * reader.getOutputHeight() * bytesPerPixel )
 
     # check if the next frame is empty
     frame = av.VideoFrame(reader.readNextFrame())
@@ -43,7 +44,8 @@ def testVideoReaderReferenceInputFile():
     # read all frames and check their size
     for i in xrange(0, reader.getSourceVideoProperties().getNbFrames()):
         frame = av.VideoFrame(reader.readNextFrame())
-        assert_equals( frame.getSize(), reader.getOutputWidth() * reader.getOutputHeight() * reader.getOutputNbComponents() )
+        bytesPerPixel = reader.getOutputBitDepth() / 8
+        assert_equals( frame.getSize(), reader.getOutputWidth() * reader.getOutputHeight() * bytesPerPixel )
 
     # check if the next frame is empty
     frame = av.VideoFrame(reader.readNextFrame())
