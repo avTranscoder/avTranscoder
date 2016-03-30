@@ -57,7 +57,7 @@ bool AudioGenerator::decodeNextFrame(Frame& frameBuffer)
         }
         LOG_INFO("Reference the silence when decode next frame")
         frameBuffer.getAVFrame().nb_samples = _silent->getAVFrame().nb_samples;
-        frameBuffer.refData(*_silent);
+        dynamic_cast<AudioFrame&>(frameBuffer).assign(_silent->getData()[0]);
     }
     // Take audio frame from _inputFrame
     else
