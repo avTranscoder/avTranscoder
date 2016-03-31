@@ -27,9 +27,9 @@ def testVideoReaderCreateNewInputFile():
         bytesPerPixel = reader.getOutputBitDepth() / 8
         assert_equals( frame.getSize(), reader.getOutputWidth() * reader.getOutputHeight() * bytesPerPixel )
 
-    # check if the next frame is empty
-    frame = av.VideoFrame(reader.readNextFrame())
-    assert_equals( frame.getSize(), 0 )
+    # check if there is no next frame
+    frame = reader.readNextFrame()
+    assert_equals( reader.readNextFrame(), None )
 
 
 def testVideoReaderReferenceInputFile():
@@ -47,9 +47,8 @@ def testVideoReaderReferenceInputFile():
         bytesPerPixel = reader.getOutputBitDepth() / 8
         assert_equals( frame.getSize(), reader.getOutputWidth() * reader.getOutputHeight() * bytesPerPixel )
 
-    # check if the next frame is empty
-    frame = av.VideoFrame(reader.readNextFrame())
-    assert_equals( frame.getSize(), 0 )
+    # check if there is no next frame
+    assert_equals( reader.readNextFrame(), None )
 
 
 def testAudioReaderChannelsExtraction():

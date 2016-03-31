@@ -81,11 +81,10 @@ Frame* IReader::readFrameAt(const size_t frame)
         {
            _generator->decodeNextFrame(*_srcFrame);
         }
-        // or return an empty frame
+        // or return NULL
         else
         {
-            _dstFrame->clear();
-            return _dstFrame;
+            return NULL;
         }
     }
     // transform

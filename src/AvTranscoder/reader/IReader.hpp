@@ -35,16 +35,20 @@ public:
 
     /**
      * @return Get next frame after decoding
+     * @see readFrameAt
      */
     Frame* readNextFrame();
 
     /**
      * @return Get previous frame after decoding
+     * @see readFrameAt
      */
     Frame* readPrevFrame();
 
     /**
      * @return Get indicated frame after decoding
+     * @warn Returns NULL if there is no more frame to read.
+     * @see continueWithGenerator
      */
     Frame* readFrameAt(const size_t frame);
 
