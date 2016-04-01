@@ -54,9 +54,12 @@ bool AudioGenerator::decodeNextFrame(Frame& frameBuffer)
             msg << "sample format = " << getSampleFormatName(_silent->getSampleFormat()) << std::endl;
             msg << "number of samples per channel = " << _silent->getNbSamplesPerChannel() << std::endl;
             LOG_INFO(msg.str())
+
+            // Set the number of samples of silence to the number of samples of the given frame
+            // (which was allocated to expect this number of samples).
+            _silent->setNbSamplesPerChannel(frameBuffer.getAVFrame().nb_samples);
         }
         LOG_DEBUG("Copy data of the silence when decode next frame")
-        frameBuffer.getAVFrame().nb_samples = _silent->getAVFrame().nb_samples;
         frameBuffer.copyData(*_silent);
     }
     // Take audio frame from _inputFrame
