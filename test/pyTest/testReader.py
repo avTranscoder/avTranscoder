@@ -24,11 +24,12 @@ def testVideoReaderCreateNewInputFile():
     # read all frames and check their size
     for i in xrange(0, reader.getSourceVideoProperties().getNbFrames()):
         frame = av.VideoFrame(reader.readNextFrame())
-        assert_equals( frame.getSize(), reader.getOutputWidth() * reader.getOutputHeight() * reader.getOutputNbComponents() )
+        bytesPerPixel = reader.getOutputBitDepth() / 8
+        assert_equals( frame.getSize(), reader.getOutputWidth() * reader.getOutputHeight() * bytesPerPixel )
 
-    # check if the next frame is empty
-    frame = av.VideoFrame(reader.readNextFrame())
-    assert_equals( frame.getSize(), 0 )
+    # check if there is no next frame
+    frame = reader.readNextFrame()
+    assert_equals( reader.readNextFrame(), None )
 
 
 def testVideoReaderReferenceInputFile():
@@ -43,11 +44,11 @@ def testVideoReaderReferenceInputFile():
     # read all frames and check their size
     for i in xrange(0, reader.getSourceVideoProperties().getNbFrames()):
         frame = av.VideoFrame(reader.readNextFrame())
-        assert_equals( frame.getSize(), reader.getOutputWidth() * reader.getOutputHeight() * reader.getOutputNbComponents() )
+        bytesPerPixel = reader.getOutputBitDepth() / 8
+        assert_equals( frame.getSize(), reader.getOutputWidth() * reader.getOutputHeight() * bytesPerPixel )
 
-    # check if the next frame is empty
-    frame = av.VideoFrame(reader.readNextFrame())
-    assert_equals( frame.getSize(), 0 )
+    # check if there is no next frame
+    assert_equals( reader.readNextFrame(), None )
 
 
 def testAudioReaderChannelsExtraction():
@@ -74,3 +75,59 @@ def testAudioReaderChannelsExtraction():
     sizeOfFrameWithOneChannels = frame.getSize()
 
     assert_equals( sizeOfFrameWithAllChannels / nbChannels, sizeOfFrameWithOneChannels )
+
+
+def testVideoReaderWithGenerator():
+    """
+    Read a video stream with the VideoReader.
+    When there is no more data to decode, switch to a generator and process some frames.
+    """
+    inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_AVI_FILE']
+    reader = av.VideoReader(inputFileName)
+
+    # read all frames and check their size
+    for i in xrange(0, reader.getSourceVideoProperties().getNbFrames()):
+        frame = av.VideoFrame(reader.readNextFrame())
+        bytesPerPixel = reader.getOutputBitDepth() / 8
+        assert_equals( frame.getSize(), reader.getOutputWidth() * reader.getOutputHeight() * bytesPerPixel )
+
+    # check if there is no next frame
+    assert_equals( reader.readNextFrame(), None )
+
+    # generate 10 frames of black
+    reader.continueWithGenerator()
+    for i in xrange(0, 9):
+        frame = av.VideoFrame(reader.readNextFrame())
+        bytesPerPixel = reader.getOutputBitDepth() / 8
+        assert_equals( frame.getSize(), reader.getOutputWidth() * reader.getOutputHeight() * bytesPerPixel )
+
+
+def testAudioReaderWithGenerator():
+    """
+    Read an audio stream with the AudioReader.
+    When there is no more data to decode, switch to a generator and process some frames.
+    """
+    inputFileName = os.environ['AVTRANSCODER_TEST_AUDIO_WAVE_FILE']
+    inputFile = av.InputFile(inputFileName)
+    reader = av.AudioReader(inputFile)
+
+    # read all frames and check their size
+    while True:
+        frame = reader.readNextFrame()
+        if not frame:
+            break
+        frame = av.AudioFrame(frame)
+        nbSamplesPerChannel = frame.getNbSamplesPerChannel()
+        bytesPerSample = 2
+        assert_equals( frame.getSize(), reader.getOutputNbChannels() * nbSamplesPerChannel * bytesPerSample )
+
+    # check if there is no next frame
+    assert_equals( reader.readNextFrame(), None )
+
+    # generate 10 frames of silence
+    reader.continueWithGenerator()
+    for i in xrange(0, 9):
+        frame = av.AudioFrame(reader.readNextFrame())
+        nbSamplesPerChannel = frame.getNbSamplesPerChannel()
+        bytesPerSample = 2
+        assert_equals( frame.getSize(), reader.getOutputNbChannels() * nbSamplesPerChannel * bytesPerSample )

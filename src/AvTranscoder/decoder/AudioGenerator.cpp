@@ -1,5 +1,9 @@
 #include "AudioGenerator.hpp"
 
+#include <AvTranscoder/util.hpp>
+
+#include <sstream>
+
 namespace avtranscoder
 {
 
@@ -42,13 +46,26 @@ bool AudioGenerator::decodeNextFrame(Frame& frameBuffer)
         {
             AudioFrame& audioBuffer = static_cast<AudioFrame&>(frameBuffer);
             _silent = new AudioFrame(audioBuffer.desc());
+
+            std::stringstream msg;
+            msg << "Generate a silence with the following features:" << std::endl;
+            msg << "sample rate = " << _silent->getSampleRate() << std::endl;
+            msg << "number of channels = " << _silent->getNbChannels() << std::endl;
+            msg << "sample format = " << getSampleFormatName(_silent->getSampleFormat()) << std::endl;
+            msg << "number of samples per channel = " << _silent->getNbSamplesPerChannel() << std::endl;
+            LOG_INFO(msg.str())
+
+            // Set the number of samples of silence to the number of samples of the given frame
+            // (which was allocated to expect this number of samples).
+            _silent->setNbSamplesPerChannel(frameBuffer.getAVFrame().nb_samples);
         }
-        frameBuffer.getAVFrame().nb_samples = _silent->getAVFrame().nb_samples;
+        LOG_DEBUG("Copy data of the silence when decode next frame")
         frameBuffer.copyData(*_silent);
     }
     // Take audio frame from _inputFrame
     else
     {
+        LOG_DEBUG("Copy data of the audio specified when decode next frame")
         frameBuffer.copyData(*_inputFrame);
     }
     return true;
