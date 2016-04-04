@@ -38,6 +38,15 @@ void AudioGenerator::setNextFrame(Frame& inputFrame)
 
 bool AudioGenerator::decodeNextFrame(Frame& frameBuffer)
 {
+    // Check channel layout of the given frame to be able to copy audio data to it.
+    // @see Frame.copyData method
+    if(frameBuffer.getAVFrame().channel_layout == 0)
+    {
+        const size_t channelLayout = av_get_default_channel_layout(frameBuffer.getAVFrame().channels);
+        LOG_WARN("Channel layout en the audio frame is not set. Set it to '" << channelLayout << "' to be able to copy silence data.")
+        av_frame_set_channel_layout(&frameBuffer.getAVFrame(), channelLayout);
+    }
+
     // Generate silent
     if(!_inputFrame)
     {
