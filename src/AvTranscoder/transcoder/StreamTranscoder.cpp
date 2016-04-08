@@ -86,9 +86,7 @@ StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outpu
                 AudioFrameDesc inputFrameDesc(_inputStream->getAudioCodec().getAudioFrameDesc());
 
                 // generator decoder
-                AudioGenerator* generatorAudio = new AudioGenerator();
-                generatorAudio->setAudioFrameDesc(inputFrameDesc);
-                _generator = generatorAudio;
+                _generator = new AudioGenerator(inputFrameDesc);
 
                 // buffers to process
                 _sourceBuffer = new AudioFrame(inputFrameDesc);
@@ -215,9 +213,7 @@ StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outpu
             _transform = new AudioTransform();
 
             // generator decoder
-            AudioGenerator* generatorAudio = new AudioGenerator();
-            generatorAudio->setAudioFrameDesc(outputFrameDesc);
-            _generator = generatorAudio;
+            _generator = new AudioGenerator(outputFrameDesc);
 
             break;
         }
@@ -275,11 +271,9 @@ StreamTranscoder::StreamTranscoder(const ICodec& inputCodec, IOutputFile& output
     }
     else if(profile.find(constants::avProfileType)->second == constants::avProfileTypeAudio)
     {
-        // generator decoder
-        AudioGenerator* generatorAudio = new AudioGenerator();
         const AudioCodec& inputAudioCodec = static_cast<const AudioCodec&>(inputCodec);
-        generatorAudio->setAudioFrameDesc(inputAudioCodec.getAudioFrameDesc());
-        _generator = generatorAudio;
+        // generator decoder
+        _generator = new AudioGenerator(inputAudioCodec.getAudioFrameDesc());
         _currentDecoder = _generator;
 
         // filter
