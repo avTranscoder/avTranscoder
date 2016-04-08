@@ -474,12 +474,12 @@ bool StreamTranscoder::processTranscode(const int subStreamIndex)
     else
         decodingStatus = _currentDecoder->decodeNextFrame(*_sourceBuffer, subStreamIndex);
 
-    LOG_DEBUG("Filtering")
-    _filterGraph->process(*_sourceBuffer);
-
     CodedData data;
     if(decodingStatus)
     {
+        LOG_DEBUG("Filtering")
+        _filterGraph->process(*_sourceBuffer);
+
         LOG_DEBUG("Convert")
         _transform->convert(*_sourceBuffer, *_frameBuffer);
 
