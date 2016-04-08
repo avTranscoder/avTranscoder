@@ -35,16 +35,6 @@ VideoGenerator::~VideoGenerator()
     delete _blackImage;
 }
 
-void VideoGenerator::setVideoFrameDesc(const VideoFrameDesc& frameDesc)
-{
-    _frameDesc = frameDesc;
-}
-
-void VideoGenerator::setNextFrame(Frame& inputFrame)
-{
-    _inputFrame = &inputFrame;
-}
-
 bool VideoGenerator::decodeNextFrame(Frame& frameBuffer)
 {
     // Generate black image

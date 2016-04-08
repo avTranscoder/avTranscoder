@@ -20,9 +20,9 @@ public:
     bool decodeNextFrame(Frame& frameBuffer, const size_t channelIndex);
 
     const VideoFrameDesc& getVideoFrameDesc() const { return _frameDesc; }
-    void setVideoFrameDesc(const VideoFrameDesc& frameDesc);
+    void setVideoFrameDesc(const VideoFrameDesc& frameDesc) { _frameDesc = frameDesc; }
 
-    void setNextFrame(Frame& inputFrame);
+    void setNextFrame(Frame& inputFrame) { _inputFrame = &inputFrame; }
 
 private:
     Frame* _inputFrame;        ///< A frame given from outside (has link, no ownership)
