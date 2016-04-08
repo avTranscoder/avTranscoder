@@ -70,6 +70,12 @@ private:
      * @brief Allocate the audio buffer of the frame.
      */
     void allocateAVSample(const AudioFrameDesc& ref);
+
+    /**
+     * @note To allocate new audio buffer if needed.
+     * @see allocateAVSample
+     */
+    friend class AudioGenerator;
 };
 }
 

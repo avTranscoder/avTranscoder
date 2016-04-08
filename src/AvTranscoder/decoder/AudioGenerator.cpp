@@ -16,6 +16,7 @@ AudioGenerator::AudioGenerator()
 AudioGenerator::AudioGenerator(const AudioGenerator& audioGenerator)
     : _inputFrame(NULL)
     , _silent(NULL)
+    , _frameDesc(audioGenerator.getAudioFrameDesc())
 {
 }
 
@@ -23,6 +24,7 @@ AudioGenerator& AudioGenerator::operator=(const AudioGenerator& audioGenerator)
 {
     _inputFrame = NULL;
     _silent = NULL;
+    _frameDesc = audioGenerator.getAudioFrameDesc();
     return *this;
 }
 
@@ -38,6 +40,14 @@ void AudioGenerator::setNextFrame(Frame& inputFrame)
 
 bool AudioGenerator::decodeNextFrame(Frame& frameBuffer)
 {
+    // check the given frame
+    if(!frameBuffer.isAudioFrame())
+    {
+        LOG_WARN("The given frame is not a valid audio frame: allocate a new AVSample to put generated data into it.");
+        frameBuffer.clear();
+        static_cast<AudioFrame&>(frameBuffer).allocateAVSample(_frameDesc);
+    }
+
     // Check channel layout of the given frame to be able to copy audio data to it.
     // @see Frame.copyData method
     if(frameBuffer.getAVFrame().channel_layout == 0)
