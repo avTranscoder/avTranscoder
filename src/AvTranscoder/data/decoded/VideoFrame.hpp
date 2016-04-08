@@ -70,6 +70,12 @@ private:
      * @brief Allocate the image buffer of the frame.
      */
     void allocateAVPicture(const VideoFrameDesc& desc);
+
+    /**
+     * @note To allocate new image buffer if needed.
+     * @see allocateAVPicture
+     */
+    friend class VideoGenerator;
 };
 }
 
