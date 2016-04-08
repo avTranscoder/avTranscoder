@@ -51,9 +51,7 @@ StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outpu
                 VideoFrameDesc inputFrameDesc(_inputStream->getVideoCodec().getVideoFrameDesc());
 
                 // generator decoder
-                VideoGenerator* generatorVideo = new VideoGenerator();
-                generatorVideo->setVideoFrameDesc(inputFrameDesc);
-                _generator = generatorVideo;
+                _generator = new VideoGenerator(inputFrameDesc);
 
                 // buffers to process
                 _sourceBuffer = new VideoFrame(inputFrameDesc);
@@ -174,9 +172,7 @@ StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outpu
             _transform = new VideoTransform();
 
             // generator decoder
-            VideoGenerator* generatorVideo = new VideoGenerator();
-            generatorVideo->setVideoFrameDesc(outputVideo->getVideoCodec().getVideoFrameDesc());
-            _generator = generatorVideo;
+            _generator = new VideoGenerator(outputVideo->getVideoCodec().getVideoFrameDesc());
 
             break;
         }
@@ -251,11 +247,9 @@ StreamTranscoder::StreamTranscoder(const ICodec& inputCodec, IOutputFile& output
 {
     if(profile.find(constants::avProfileType)->second == constants::avProfileTypeVideo)
     {
-        // generator decoder
-        VideoGenerator* generatorVideo = new VideoGenerator();
         const VideoCodec& inputVideoCodec = static_cast<const VideoCodec&>(inputCodec);
-        generatorVideo->setVideoFrameDesc(inputVideoCodec.getVideoFrameDesc());
-        _generator = generatorVideo;
+        // generator decoder
+        _generator = new VideoGenerator(inputVideoCodec.getVideoFrameDesc());
         _currentDecoder = _generator;
 
         // filter

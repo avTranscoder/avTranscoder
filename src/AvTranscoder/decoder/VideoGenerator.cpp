@@ -8,17 +8,17 @@
 namespace avtranscoder
 {
 
-VideoGenerator::VideoGenerator()
+VideoGenerator::VideoGenerator(const VideoFrameDesc& frameDesc)
     : _inputFrame(NULL)
     , _blackImage(NULL)
-    , _frameDesc()
+    , _frameDesc(frameDesc)
 {
 }
 
 VideoGenerator::VideoGenerator(const VideoGenerator& videoGenerator)
     : _inputFrame(NULL)
     , _blackImage(NULL)
-    , _frameDesc(videoGenerator.getVideoFrameDesc())
+    , _frameDesc(videoGenerator._frameDesc)
 {
 }
 
@@ -26,7 +26,7 @@ VideoGenerator& VideoGenerator::operator=(const VideoGenerator& videoGenerator)
 {
     _inputFrame = NULL;
     _blackImage = NULL;
-    _frameDesc = videoGenerator.getVideoFrameDesc();
+    _frameDesc = videoGenerator._frameDesc;
     return *this;
 }
 
