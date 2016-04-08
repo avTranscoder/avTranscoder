@@ -41,6 +41,7 @@ void VideoReader::init()
     // setup decoder
     _decoder = new VideoDecoder(_inputFile->getStream(_streamIndex));
     _decoder->setupDecoder();
+    _currentDecoder = _decoder;
 
     // generator
     _generator = new VideoGenerator(_inputFile->getStream(_streamIndex).getVideoCodec().getVideoFrameDesc());
