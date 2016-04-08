@@ -66,6 +66,9 @@ public:
     void assign(const unsigned char* ptrValue);
 
 private:
+    /**
+     * @brief Allocate the image buffer of the frame.
+     */
     void allocateAVPicture(const VideoFrameDesc& desc);
 };
 }

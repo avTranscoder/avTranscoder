@@ -18,6 +18,7 @@ class AvExport Frame
 public:
     /**
      * @brief Allocate an empty frame.
+     * @warn This only allocates the AVFrame itself, not the data buffers.
      */
     Frame();
 

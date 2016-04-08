@@ -66,6 +66,9 @@ public:
     void assign(const unsigned char* ptrValue);
 
 private:
+    /**
+     * @brief Allocate the audio buffer of the frame.
+     */
     void allocateAVSample(const AudioFrameDesc& ref);
 };
 }
