@@ -19,9 +19,10 @@ public:
     bool decodeNextFrame(Frame& frameBuffer);
     bool decodeNextFrame(Frame& frameBuffer, const size_t subStreamIndex);
 
-    void setNextFrame(Frame& inputFrame);
     const AudioFrameDesc& getAudioFrameDesc() const { return _frameDesc; }
     void setAudioFrameDesc(const AudioFrameDesc& frameDesc) { _frameDesc = frameDesc; }
+
+    void setNextFrame(Frame& inputFrame) { _inputFrame = &inputFrame; }
 
 private:
     Frame* _inputFrame;  ///< Has link (no ownership)

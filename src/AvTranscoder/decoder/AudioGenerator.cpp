@@ -33,11 +33,6 @@ AudioGenerator::~AudioGenerator()
     delete _silent;
 }
 
-void AudioGenerator::setNextFrame(Frame& inputFrame)
-{
-    _inputFrame = &inputFrame;
-}
-
 bool AudioGenerator::decodeNextFrame(Frame& frameBuffer)
 {
     // check the given frame
