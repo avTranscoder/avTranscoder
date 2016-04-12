@@ -15,21 +15,6 @@ VideoGenerator::VideoGenerator(const VideoFrameDesc& frameDesc)
 {
 }
 
-VideoGenerator::VideoGenerator(const VideoGenerator& videoGenerator)
-    : _inputFrame(NULL)
-    , _blackImage(NULL)
-    , _frameDesc(videoGenerator._frameDesc)
-{
-}
-
-VideoGenerator& VideoGenerator::operator=(const VideoGenerator& videoGenerator)
-{
-    _inputFrame = NULL;
-    _blackImage = NULL;
-    _frameDesc = videoGenerator._frameDesc;
-    return *this;
-}
-
 VideoGenerator::~VideoGenerator()
 {
     delete _blackImage;

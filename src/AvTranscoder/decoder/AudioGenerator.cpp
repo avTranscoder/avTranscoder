@@ -14,21 +14,6 @@ AudioGenerator::AudioGenerator(const AudioFrameDesc& frameDesc)
 {
 }
 
-AudioGenerator::AudioGenerator(const AudioGenerator& audioGenerator)
-    : _inputFrame(NULL)
-    , _silent(NULL)
-    , _frameDesc(audioGenerator._frameDesc)
-{
-}
-
-AudioGenerator& AudioGenerator::operator=(const AudioGenerator& audioGenerator)
-{
-    _inputFrame = NULL;
-    _silent = NULL;
-    _frameDesc = audioGenerator._frameDesc;
-    return *this;
-}
-
 AudioGenerator::~AudioGenerator()
 {
     delete _silent;
