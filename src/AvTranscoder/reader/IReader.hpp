@@ -68,6 +68,7 @@ protected:
     const StreamProperties* _streamProperties;
     IDecoder* _decoder;
     IDecoder* _generator;
+    IDecoder* _currentDecoder; ///< Link to _inputDecoder or _generator
 
     Frame* _srcFrame;
     Frame* _dstFrame;

@@ -68,7 +68,7 @@ bool InputFile::readNextPacket(CodedData& data, const size_t streamIndex)
         const int ret = av_read_frame(&_formatContext.getAVFormatContext(), &data.getAVPacket());
         if(ret < 0) // error or end of file
         {
-            LOG_INFO("No more data to read on file '" << _filename << "' for stream " << streamIndex)
+            LOG_INFO("Stop reading the next frame of file '" << _filename << "', stream " << streamIndex << " (" << getDescriptionFromErrorCode(ret) << ")")
             return false;
         }
 

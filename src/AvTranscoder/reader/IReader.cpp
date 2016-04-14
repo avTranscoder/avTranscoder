@@ -9,6 +9,8 @@ IReader::IReader(const std::string& filename, const size_t streamIndex, const in
     : _inputFile(NULL)
     , _streamProperties(NULL)
     , _decoder(NULL)
+    , _generator(NULL)
+    , _currentDecoder(NULL)
     , _srcFrame(NULL)
     , _dstFrame(NULL)
     , _transform(NULL)
@@ -25,6 +27,8 @@ IReader::IReader(InputFile& inputFile, const size_t streamIndex, const int chann
     : _inputFile(&inputFile)
     , _streamProperties(NULL)
     , _decoder(NULL)
+    , _generator(NULL)
+    , _currentDecoder(NULL)
     , _srcFrame(NULL)
     , _dstFrame(NULL)
     , _transform(NULL)
@@ -54,8 +58,7 @@ Frame* IReader::readPrevFrame()
 
 Frame* IReader::readFrameAt(const size_t frame)
 {
-    assert(_decoder != NULL);
-    assert(_generator != NULL);
+    assert(_currentDecoder != NULL);
     assert(_transform != NULL);
     assert(_srcFrame != NULL);
     assert(_dstFrame != NULL);
@@ -70,16 +73,17 @@ Frame* IReader::readFrameAt(const size_t frame)
     // decode
     bool decodingStatus = false;
     if(_channelIndex != -1)
-        decodingStatus = _decoder->decodeNextFrame(*_srcFrame, _channelIndex);
+        decodingStatus = _currentDecoder->decodeNextFrame(*_srcFrame, _channelIndex);
     else
-        decodingStatus = _decoder->decodeNextFrame(*_srcFrame);
+        decodingStatus = _currentDecoder->decodeNextFrame(*_srcFrame);
     // if decoding failed
     if(!decodingStatus)
     {
         // generate data (ie silence or black)
         if(_continueWithGenerator)
         {
-           _generator->decodeNextFrame(*_srcFrame);
+            _currentDecoder = _generator;
+            return readFrameAt(frame);
         }
         // or return NULL
         else

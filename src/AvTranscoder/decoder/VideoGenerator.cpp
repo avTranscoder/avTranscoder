@@ -8,26 +8,11 @@
 namespace avtranscoder
 {
 
-VideoGenerator::VideoGenerator()
+VideoGenerator::VideoGenerator(const VideoFrameDesc& frameDesc)
     : _inputFrame(NULL)
     , _blackImage(NULL)
-    , _frameDesc()
+    , _frameDesc(frameDesc)
 {
-}
-
-VideoGenerator::VideoGenerator(const VideoGenerator& videoGenerator)
-    : _inputFrame(NULL)
-    , _blackImage(NULL)
-    , _frameDesc(videoGenerator.getVideoFrameDesc())
-{
-}
-
-VideoGenerator& VideoGenerator::operator=(const VideoGenerator& videoGenerator)
-{
-    _inputFrame = NULL;
-    _blackImage = NULL;
-    _frameDesc = videoGenerator.getVideoFrameDesc();
-    return *this;
 }
 
 VideoGenerator::~VideoGenerator()
@@ -35,18 +20,16 @@ VideoGenerator::~VideoGenerator()
     delete _blackImage;
 }
 
-void VideoGenerator::setVideoFrameDesc(const VideoFrameDesc& frameDesc)
-{
-    _frameDesc = frameDesc;
-}
-
-void VideoGenerator::setNextFrame(Frame& inputFrame)
-{
-    _inputFrame = &inputFrame;
-}
-
 bool VideoGenerator::decodeNextFrame(Frame& frameBuffer)
 {
+    // check the given frame
+    if(!frameBuffer.isVideoFrame())
+    {
+        LOG_WARN("The given frame is not a valid video frame: allocate a new AVPicture to put generated data into it.");
+        frameBuffer.clear();
+        static_cast<VideoFrame&>(frameBuffer).allocateAVPicture(_frameDesc);
+    }
+
     // Generate black image
     if(!_inputFrame)
     {

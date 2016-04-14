@@ -7,23 +7,11 @@
 namespace avtranscoder
 {
 
-AudioGenerator::AudioGenerator()
+AudioGenerator::AudioGenerator(const AudioFrameDesc& frameDesc)
     : _inputFrame(NULL)
     , _silent(NULL)
+    , _frameDesc(frameDesc)
 {
-}
-
-AudioGenerator::AudioGenerator(const AudioGenerator& audioGenerator)
-    : _inputFrame(NULL)
-    , _silent(NULL)
-{
-}
-
-AudioGenerator& AudioGenerator::operator=(const AudioGenerator& audioGenerator)
-{
-    _inputFrame = NULL;
-    _silent = NULL;
-    return *this;
 }
 
 AudioGenerator::~AudioGenerator()
@@ -31,13 +19,16 @@ AudioGenerator::~AudioGenerator()
     delete _silent;
 }
 
-void AudioGenerator::setNextFrame(Frame& inputFrame)
-{
-    _inputFrame = &inputFrame;
-}
-
 bool AudioGenerator::decodeNextFrame(Frame& frameBuffer)
 {
+    // check the given frame
+    if(!frameBuffer.isAudioFrame())
+    {
+        LOG_WARN("The given frame is not a valid audio frame: allocate a new AVSample to put generated data into it.");
+        frameBuffer.clear();
+        static_cast<AudioFrame&>(frameBuffer).allocateAVSample(_frameDesc);
+    }
+
     // Check channel layout of the given frame to be able to copy audio data to it.
     // @see Frame.copyData method
     if(frameBuffer.getAVFrame().channel_layout == 0)
