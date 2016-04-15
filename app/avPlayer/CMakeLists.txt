@@ -1,4 +1,4 @@
-### cpp/avplay
+### cpp/avplayer
 
 # Load custom cmake utilities
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
@@ -7,7 +7,7 @@ include(AvTranscoderMacros)
 # Check OpenGL
 find_package(OpenGL)
 if(NOT OPENGL_FOUND)
-	message("OpenGL not found, will not build avplay app.")
+	message("OpenGL not found, will not build avplayer app.")
 	return()
 endif()
 
@@ -27,15 +27,15 @@ endif()
 include_directories( ${OPENGL_INCLUDE_DIRS}  ${GLUT_INCLUDE_DIR} )
 
 file(GLOB AVPLAY_SRC_FILES "*.cpp" "*.hpp")
-add_executable(avplay ${AVPLAY_SRC_FILES})
-set_target_properties(avplay PROPERTIES VERSION ${AVTRANSCODER_VERSION})
-target_link_libraries(avplay avtranscoder-shared ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES})
+add_executable(avplayer ${AVPLAY_SRC_FILES})
+set_target_properties(avplayer PROPERTIES VERSION ${AVTRANSCODER_VERSION})
+target_link_libraries(avplayer avtranscoder-shared ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES})
 
 # Install app
 if(WIN32)
-	set(BINARY_FILES "${CMAKE_CURRENT_BINARY_DIR}/avplay.exe")
+	set(BINARY_FILES "${CMAKE_CURRENT_BINARY_DIR}/avplayer.exe")
 else()
-	set(BINARY_FILES "${CMAKE_CURRENT_BINARY_DIR}/avplay" "${CMAKE_CURRENT_BINARY_DIR}/avplay-${AVTRANSCODER_VERSION}")
+	set(BINARY_FILES "${CMAKE_CURRENT_BINARY_DIR}/avplayer" "${CMAKE_CURRENT_BINARY_DIR}/avplayer-${AVTRANSCODER_VERSION}")
 endif()
 
 install(
