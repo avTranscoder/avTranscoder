@@ -129,13 +129,14 @@ bool VideoEncoder::encodeFrame(CodedData& codedFrame)
 
 bool VideoEncoder::encode(const AVFrame* decodedData, AVPacket& encodedData)
 {
+    // Be sure that data of AVPacket is NULL so that the encoder will allocate it
     encodedData.data = NULL;
     encodedData.stream_index = 0;
 
     AVCodecContext& avCodecContext = _codec.getAVCodecContext();
 #if LIBAVCODEC_VERSION_MAJOR > 53
     int gotPacket = 0;
-    int ret = avcodec_encode_video2(&avCodecContext, &encodedData, decodedData, &gotPacket);
+    const int ret = avcodec_encode_video2(&avCodecContext, &encodedData, decodedData, &gotPacket);
     if(ret != 0)
     {
         throw std::runtime_error("Encode video frame error: avcodec encode video frame - " +
@@ -143,7 +144,7 @@ bool VideoEncoder::encode(const AVFrame* decodedData, AVPacket& encodedData)
     }
     return ret == 0 && gotPacket == 1;
 #else
-    int ret = avcodec_encode_video(&avCodecContext, encodedData.data, encodedData.size, decodedData);
+    const int ret = avcodec_encode_video(&avCodecContext, encodedData.data, encodedData.size, decodedData);
     if(ret < 0)
     {
         throw std::runtime_error("Encode video frame error: avcodec encode video frame - " +
