@@ -96,9 +96,6 @@ bool AudioEncoder::encodeFrame(const Frame& sourceFrame, CodedData& codedFrame)
     AVCodecContext& avCodecContext = _codec.getAVCodecContext();
 
     AVPacket& packet = codedFrame.getAVPacket();
-    packet.data = NULL;
-    packet.stream_index = 0;
-
     if((avCodecContext.coded_frame) && (avCodecContext.coded_frame->pts != (int)AV_NOPTS_VALUE))
     {
         packet.pts = avCodecContext.coded_frame->pts;
@@ -109,53 +106,39 @@ bool AudioEncoder::encodeFrame(const Frame& sourceFrame, CodedData& codedFrame)
         packet.flags |= AV_PKT_FLAG_KEY;
     }
 
-#if LIBAVCODEC_VERSION_MAJOR > 53
-    int gotPacket = 0;
-    int ret = avcodec_encode_audio2(&avCodecContext, &packet, &sourceFrame.getAVFrame(), &gotPacket);
-    if(ret != 0)
-    {
-        throw std::runtime_error("Encode audio frame error: avcodec encode audio frame - " +
-                                 getDescriptionFromErrorCode(ret));
-    }
-    return ret == 0 && gotPacket == 1;
-#else
-    int ret = avcodec_encode_audio(&avCodecContext, packet.data, packet.size, &sourceFrame.getAVFrame());
-    if(ret < 0)
-    {
-        throw std::runtime_error("Encode audio frame error: avcodec encode audio frame - " +
-                                 getDescriptionFromErrorCode(ret));
-    }
-    return ret == 0;
-#endif
+    return encode(&sourceFrame.getAVFrame(), packet);
 }
 
 bool AudioEncoder::encodeFrame(CodedData& codedFrame)
 {
+    return encode(NULL, codedFrame.getAVPacket());
+}
+
+bool AudioEncoder::encode(const AVFrame* decodedData, AVPacket& encodedData)
+{
+    // Be sure that data of AVPacket is NULL so that the encoder will allocate it
+    encodedData.data = NULL;
+    encodedData.stream_index = 0;
+
     AVCodecContext& avCodecContext = _codec.getAVCodecContext();
-
-    AVPacket& packet = codedFrame.getAVPacket();
-    packet.data = NULL;
-    packet.stream_index = 0;
-
 #if LIBAVCODEC_VERSION_MAJOR > 53
     int gotPacket = 0;
-    int ret = avcodec_encode_audio2(&avCodecContext, &packet, NULL, &gotPacket);
+    const int ret = avcodec_encode_audio2(&avCodecContext, &encodedData, decodedData, &gotPacket);
     if(ret != 0)
     {
-        throw std::runtime_error("Encode audio frame error: avcodec encode last audio frame - " +
+        throw std::runtime_error("Encode audio frame error: avcodec encode audio frame - " +
                                  getDescriptionFromErrorCode(ret));
     }
     return ret == 0 && gotPacket == 1;
-
 #else
-    int ret = avcodec_encode_audio(&avCodecContext, packet.data, packet.size, NULL);
+    const int ret = avcodec_encode_audio(&avCodecContext, encodedData.data, encodedData.size, decodedData);
     if(ret < 0)
     {
-        throw std::runtime_error("Encode audio frame error: avcodec encode last audio frame - " +
+        throw std::runtime_error("Encode audio frame error: avcodec encode audio frame - " +
                                  getDescriptionFromErrorCode(ret));
     }
     return ret == 0;
-
 #endif
 }
+
 }
