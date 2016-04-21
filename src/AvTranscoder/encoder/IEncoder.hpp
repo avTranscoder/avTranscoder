@@ -23,16 +23,18 @@ public:
 
     /**
      * @brief Encode a new frame, and get coded frame
-     * @param sourceFrame frame need to be encoded
-     * @param codedFrame data of the coded frame if present (first frames can be delayed)
+     * @param sourceFrame: frame that needs to be encoded
+     * @param codedFrame: output encoded coded data (first frames can be delayed)
      * @return status of encoding
+     * @throw runtime_error if the encoded process failed.
      */
     virtual bool encodeFrame(const Frame& sourceFrame, CodedData& codedFrame) = 0;
 
     /**
      * @brief Get delayed encoded frames
-     * @param codedFrame data of the coded frame if present (first frames can be delayed)
+     * @param codedFrame: output encoded coded data of last frames
      * @return status of encoding
+     * @throw runtime_error if the encoded process failed.
      */
     virtual bool encodeFrame(CodedData& codedFrame) = 0;
 
