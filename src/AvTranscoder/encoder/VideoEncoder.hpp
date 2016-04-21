@@ -25,6 +25,9 @@ public:
     VideoCodec& getVideoCodec() { return _codec; }
 
 private:
+    bool encode(const AVFrame* decodedData, AVPacket& encodedData);
+
+private:
     VideoCodec _codec;
 };
 }
