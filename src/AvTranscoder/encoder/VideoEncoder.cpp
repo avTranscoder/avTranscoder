@@ -125,11 +125,12 @@ bool VideoEncoder::encodeFrame(const Frame& sourceFrame, CodedData& codedFrame)
 #if LIBAVCODEC_VERSION_MAJOR > 53
     int gotPacket = 0;
     int ret = avcodec_encode_video2(&avCodecContext, &packet, &sourceFrame.getAVFrame(), &gotPacket);
-    if(ret != 0 && gotPacket == 0)
+    if(ret != 0)
     {
         throw std::runtime_error("Encode video frame error: avcodec encode video frame - " +
                                  getDescriptionFromErrorCode(ret));
     }
+    return ret == 0 && gotPacket == 1;
 #else
     int ret = avcodec_encode_video(&avCodecContext, packet.data, packet.size, &sourceFrame.getAVFrame());
     if(ret < 0)
@@ -137,12 +138,8 @@ bool VideoEncoder::encodeFrame(const Frame& sourceFrame, CodedData& codedFrame)
         throw std::runtime_error("Encode video frame error: avcodec encode video frame - " +
                                  getDescriptionFromErrorCode(ret));
     }
-#endif
-
-#if LIBAVCODEC_VERSION_MAJOR > 53
-    return ret == 0 && gotPacket == 1;
-#endif
     return ret == 0;
+#endif
 }
 
 bool VideoEncoder::encodeFrame(CodedData& codedFrame)
@@ -156,7 +153,7 @@ bool VideoEncoder::encodeFrame(CodedData& codedFrame)
 #if LIBAVCODEC_VERSION_MAJOR > 53
     int gotPacket = 0;
     int ret = avcodec_encode_video2(&avCodecContext, &packet, NULL, &gotPacket);
-    if(ret != 0 && gotPacket == 0)
+    if(ret != 0)
     {
         throw std::runtime_error("Encode video frame error: avcodec encode last video frame - " +
                                  getDescriptionFromErrorCode(ret));
