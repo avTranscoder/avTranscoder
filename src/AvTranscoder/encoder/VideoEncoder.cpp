@@ -109,6 +109,7 @@ bool VideoEncoder::encodeFrame(const Frame& sourceFrame, CodedData& codedFrame)
     AVCodecContext& avCodecContext = _codec.getAVCodecContext();
 
     AVPacket& packet = codedFrame.getAVPacket();
+    packet.data = NULL;
     packet.stream_index = 0;
 
     if((avCodecContext.coded_frame) && (avCodecContext.coded_frame->pts != (int)AV_NOPTS_VALUE))
@@ -149,6 +150,7 @@ bool VideoEncoder::encodeFrame(CodedData& codedFrame)
     AVCodecContext& avCodecContext = _codec.getAVCodecContext();
 
     AVPacket& packet = codedFrame.getAVPacket();
+    packet.data = NULL;
     packet.stream_index = 0;
 
 #if LIBAVCODEC_VERSION_MAJOR > 53
