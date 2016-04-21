@@ -118,7 +118,6 @@ bool AudioEncoder::encode(const AVFrame* decodedData, AVPacket& encodedData)
 {
     // Be sure that data of AVPacket is NULL so that the encoder will allocate it
     encodedData.data = NULL;
-    encodedData.stream_index = 0;
 
     AVCodecContext& avCodecContext = _codec.getAVCodecContext();
 #if LIBAVCODEC_VERSION_MAJOR > 53
