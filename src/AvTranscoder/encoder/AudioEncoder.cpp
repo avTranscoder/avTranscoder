@@ -128,7 +128,7 @@ bool AudioEncoder::encode(const AVFrame* decodedData, AVPacket& encodedData)
         throw std::runtime_error("Encode audio frame error: avcodec encode audio frame - " +
                                  getDescriptionFromErrorCode(ret));
     }
-    return ret == 0 && gotPacket == 1;
+    return gotPacket == 1;
 #else
     const int ret = avcodec_encode_audio(&avCodecContext, encodedData.data, encodedData.size, decodedData);
     if(ret < 0)
@@ -136,7 +136,7 @@ bool AudioEncoder::encode(const AVFrame* decodedData, AVPacket& encodedData)
         throw std::runtime_error("Encode audio frame error: avcodec encode audio frame - " +
                                  getDescriptionFromErrorCode(ret));
     }
-    return ret == 0;
+    return true;
 #endif
 }
 

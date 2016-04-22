@@ -141,7 +141,7 @@ bool VideoEncoder::encode(const AVFrame* decodedData, AVPacket& encodedData)
         throw std::runtime_error("Encode video frame error: avcodec encode video frame - " +
                                  getDescriptionFromErrorCode(ret));
     }
-    return ret == 0 && gotPacket == 1;
+    return gotPacket == 1;
 #else
     const int ret = avcodec_encode_video(&avCodecContext, encodedData.data, encodedData.size, decodedData);
     if(ret < 0)
@@ -149,7 +149,7 @@ bool VideoEncoder::encode(const AVFrame* decodedData, AVPacket& encodedData)
         throw std::runtime_error("Encode video frame error: avcodec encode video frame - " +
                                  getDescriptionFromErrorCode(ret));
     }
-    return ret == 0;
+    return true;
 #endif
 }
 
