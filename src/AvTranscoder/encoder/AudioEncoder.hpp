@@ -25,6 +25,9 @@ public:
     AudioCodec& getAudioCodec() { return _codec; }
 
 private:
+    bool encode(const AVFrame* decodedData, AVPacket& encodedData);
+
+private:
     AudioCodec _codec;
 };
 }

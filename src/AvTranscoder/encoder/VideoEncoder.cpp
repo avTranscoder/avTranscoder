@@ -109,8 +109,6 @@ bool VideoEncoder::encodeFrame(const Frame& sourceFrame, CodedData& codedFrame)
     AVCodecContext& avCodecContext = _codec.getAVCodecContext();
 
     AVPacket& packet = codedFrame.getAVPacket();
-    packet.stream_index = 0;
-
     if((avCodecContext.coded_frame) && (avCodecContext.coded_frame->pts != (int)AV_NOPTS_VALUE))
     {
         packet.pts = avCodecContext.coded_frame->pts;
@@ -121,53 +119,38 @@ bool VideoEncoder::encodeFrame(const Frame& sourceFrame, CodedData& codedFrame)
         packet.flags |= AV_PKT_FLAG_KEY;
     }
 
-#if LIBAVCODEC_VERSION_MAJOR > 53
-    int gotPacket = 0;
-    int ret = avcodec_encode_video2(&avCodecContext, &packet, &sourceFrame.getAVFrame(), &gotPacket);
-    if(ret != 0 && gotPacket == 0)
-    {
-        throw std::runtime_error("Encode video frame error: avcodec encode video frame - " +
-                                 getDescriptionFromErrorCode(ret));
-    }
-#else
-    int ret = avcodec_encode_video(&avCodecContext, packet.data, packet.size, &sourceFrame.getAVFrame());
-    if(ret < 0)
-    {
-        throw std::runtime_error("Encode video frame error: avcodec encode video frame - " +
-                                 getDescriptionFromErrorCode(ret));
-    }
-#endif
-
-#if LIBAVCODEC_VERSION_MAJOR > 53
-    return ret == 0 && gotPacket == 1;
-#endif
-    return ret == 0;
+    return encode(&sourceFrame.getAVFrame(), packet);
 }
 
 bool VideoEncoder::encodeFrame(CodedData& codedFrame)
 {
+    return encode(NULL, codedFrame.getAVPacket());
+}
+
+bool VideoEncoder::encode(const AVFrame* decodedData, AVPacket& encodedData)
+{
+    // Be sure that data of AVPacket is NULL so that the encoder will allocate it
+    encodedData.data = NULL;
+
     AVCodecContext& avCodecContext = _codec.getAVCodecContext();
-
-    AVPacket& packet = codedFrame.getAVPacket();
-    packet.stream_index = 0;
-
 #if LIBAVCODEC_VERSION_MAJOR > 53
     int gotPacket = 0;
-    int ret = avcodec_encode_video2(&avCodecContext, &packet, NULL, &gotPacket);
-    if(ret != 0 && gotPacket == 0)
+    const int ret = avcodec_encode_video2(&avCodecContext, &encodedData, decodedData, &gotPacket);
+    if(ret != 0)
     {
-        throw std::runtime_error("Encode video frame error: avcodec encode last video frame - " +
+        throw std::runtime_error("Encode video frame error: avcodec encode video frame - " +
                                  getDescriptionFromErrorCode(ret));
     }
-    return ret == 0 && gotPacket == 1;
+    return gotPacket == 1;
 #else
-    int ret = avcodec_encode_video(&avCodecContext, packet.data, packet.size, NULL);
+    const int ret = avcodec_encode_video(&avCodecContext, encodedData.data, encodedData.size, decodedData);
     if(ret < 0)
     {
-        throw std::runtime_error("Encode video frame error: avcodec encode last video frame - " +
+        throw std::runtime_error("Encode video frame error: avcodec encode video frame - " +
                                  getDescriptionFromErrorCode(ret));
     }
-    return ret == 0;
+    return true;
 #endif
 }
+
 }
