@@ -31,8 +31,8 @@ public:
     virtual bool encodeFrame(const Frame& sourceFrame, CodedData& codedFrame) = 0;
 
     /**
-     * @brief Get delayed encoded frames
-     * @param codedFrame: output encoded coded data of last frames
+     * @brief Get the frames remaining into the encoder
+     * @param codedFrame: output encoded data
      * @return status of encoding
      * @throw runtime_error if the encoded process failed.
      */
