@@ -110,6 +110,11 @@ private:
 #endif
 
 private:
+    /**
+     * @brief Level of analysis asked.
+     */
+    EAnalyseLevel _levelAnalysis;
+
     PixelProperties _pixelProperties;
     //@{
     // Can acces these data when analyse first gop
