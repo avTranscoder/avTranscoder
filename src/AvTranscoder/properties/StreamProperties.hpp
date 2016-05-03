@@ -18,6 +18,13 @@ public:
     size_t getStreamIndex() const { return _streamIndex; }
     size_t getStreamId() const;
     Rational getTimeBase() const;
+
+    /**
+     * @return duration of the stream in seconds
+     * @throw runtime_error if the duration is unknown
+     * @note If a source file does not specify a duration, but does specify
+     * a bitrate, this value will be estimated from bitrate and file size.
+     */
     float getDuration() const; ///< in seconds
     AVMediaType getStreamType() const;
 

@@ -53,7 +53,10 @@ Rational StreamProperties::getTimeBase() const
 float StreamProperties::getDuration() const
 {
     const Rational timeBase = getTimeBase();
-    return av_q2d(timeBase) * _formatContext->streams[_streamIndex]->duration;
+    const size_t streamDurationInStreamTimeBase = _formatContext->streams[_streamIndex]->duration;
+    if(streamDurationInStreamTimeBase == (size_t)AV_NOPTS_VALUE)
+        throw std::runtime_error("unknown stream duration");
+    return av_q2d(timeBase) * streamDurationInStreamTimeBase;
 }
 
 AVMediaType StreamProperties::getStreamType() const
