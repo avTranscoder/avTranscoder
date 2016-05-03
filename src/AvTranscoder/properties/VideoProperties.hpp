@@ -74,7 +74,7 @@ public:
      * @return the distance between two nearest I frame
      */
     size_t getGopSize() const { return _gopSize; }
-    std::vector<std::pair<char, bool> > getGopStructure() const { return _gopStructure; }
+    std::vector<std::pair<char, int> > getGopStructure() const { return _gopStructure; }
 //@}
 
 #ifndef SWIG
@@ -122,7 +122,7 @@ private:
     bool _isInterlaced;
     bool _isTopFieldFirst;
     size_t _gopSize;
-    std::vector<std::pair<char, bool> > _gopStructure;
+    std::vector<std::pair<char, int> > _gopStructure;  ///< picture type, encoded frame size in bytes
     //@}
 
     /**
