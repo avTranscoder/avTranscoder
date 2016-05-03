@@ -20,6 +20,7 @@ namespace avtranscoder
 VideoProperties::VideoProperties(const FormatContext& formatContext, const size_t index, IProgress& progress,
                                  const EAnalyseLevel level)
     : StreamProperties(formatContext, index)
+    , _levelAnalysis(level)
     , _pixelProperties()
     , _isInterlaced(false)
     , _isTopFieldFirst(false)
