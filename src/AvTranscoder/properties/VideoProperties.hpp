@@ -112,7 +112,11 @@ private:
      */
     EAnalyseLevel _levelAnalysis;
 
+    /**
+     * @brief All the pixel properties contained in this stream.
+     */
     PixelProperties _pixelProperties;
+
     //@{
     // Can acces these data when analyse first gop
     bool _isInterlaced;
