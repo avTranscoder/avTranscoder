@@ -31,6 +31,7 @@ def testInputFileAnalyseFirstGop():
     videoProperties = inputFile.getProperties().getVideoProperties()[0]
     assert_equals(videoProperties.isInterlaced(), False)
     assert_equals(videoProperties.isTopFieldFirst(), False)
+    assert_equals(videoProperties.getGopSize(), 0)
     assert_equals(videoProperties.getGopStructure(), ())
 
     # Analyse first GOP
@@ -39,4 +40,5 @@ def testInputFileAnalyseFirstGop():
 
     # Check properties after GOP analysis
     videoProperties = inputFile.getProperties().getVideoProperties()[0]
+    assert_greater(videoProperties.getGopSize(), 0)
     assert_not_equals(videoProperties.getGopStructure(), ())
