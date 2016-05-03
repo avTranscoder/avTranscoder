@@ -47,13 +47,6 @@ public:
     size_t getTicksPerFrame() const;
     size_t getWidth() const;
     size_t getHeight() const;
-
-    /**
-     * @return the distance between two nearest I frame
-     * @note it returns 0 for intra_only
-     */
-    size_t getGopSize() const;
-
     size_t getDtgActiveFormat() const;
     size_t getReferencesFrames() const;
     int getProfile() const;
@@ -77,6 +70,10 @@ public:
     // @see analyseGopStructure
     bool isInterlaced() const { return _isInterlaced; }
     bool isTopFieldFirst() const { return _isTopFieldFirst; }
+    /**
+     * @return the distance between two nearest I frame
+     */
+    size_t getGopSize() const { return _gopSize; }
     std::vector<std::pair<char, bool> > getGopStructure() const { return _gopStructure; }
 //@}
 
@@ -120,6 +117,7 @@ private:
     // Can acces these data when analyse first gop
     bool _isInterlaced;
     bool _isTopFieldFirst;
+    size_t _gopSize;
     std::vector<std::pair<char, bool> > _gopStructure;
     //@}
 
