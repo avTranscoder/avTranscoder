@@ -40,6 +40,11 @@ Frame::~Frame()
     }
 }
 
+int Frame::getEncodedSize() const
+{
+    return av_frame_get_pkt_size(_frame);
+}
+
 void Frame::copyData(const Frame& frameToRef)
 {
     const int ret = av_frame_copy(_frame, &frameToRef.getAVFrame());
