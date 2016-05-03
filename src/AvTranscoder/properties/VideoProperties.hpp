@@ -47,7 +47,13 @@ public:
     size_t getTicksPerFrame() const;
     size_t getWidth() const;
     size_t getHeight() const;
+
+    /**
+     * @return the distance between two nearest I frame
+     * @note it returns 0 for intra_only
+     */
     size_t getGopSize() const;
+
     size_t getDtgActiveFormat() const;
     size_t getReferencesFrames() const;
     int getProfile() const;
