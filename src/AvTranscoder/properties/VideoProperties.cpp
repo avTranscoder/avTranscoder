@@ -47,7 +47,7 @@ std::string VideoProperties::getProfileName() const
         throw std::runtime_error("unknown codec profile");
 
     const char* profile = NULL;
-    if((profile = av_get_profile_name(_codec, _codecContext->profile)) == NULL)
+    if((profile = av_get_profile_name(_codec, getProfile())) == NULL)
         throw std::runtime_error("unknown codec profile");
 
     return std::string(profile);
