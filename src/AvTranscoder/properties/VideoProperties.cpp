@@ -1,5 +1,6 @@
 #include "VideoProperties.hpp"
 
+#include <AvTranscoder/data/decoded/Frame.hpp>
 #include <AvTranscoder/properties/util.hpp>
 #include <AvTranscoder/progress/NoDisplayProgress.hpp>
 
@@ -336,11 +337,7 @@ size_t VideoProperties::getBitRate() const
     // discard no frame type when decode
     _codecContext->skip_frame = AVDISCARD_NONE;
 
-#if LIBAVCODEC_VERSION_MAJOR > 54
-    AVFrame* frame = av_frame_alloc();
-#else
-    AVFrame* frame = avcodec_alloc_frame();
-#endif
+    Frame frame;
     AVPacket pkt;
     av_init_packet(&pkt);
     avcodec_open2(_codecContext, _codec, NULL);
@@ -353,11 +350,11 @@ size_t VideoProperties::getBitRate() const
     {
         if(pkt.stream_index == (int)_streamIndex)
         {
-            avcodec_decode_video2(_codecContext, frame, &gotFrame, &pkt);
+            avcodec_decode_video2(_codecContext, &frame.getAVFrame(), &gotFrame, &pkt);
             if(gotFrame)
             {
 #if LIBAVUTIL_VERSION_INT >= AV_VERSION_INT(54, 7, 100)
-                gopFramesSize += av_frame_get_pkt_size(frame);
+                gopFramesSize += av_frame_get_pkt_size(&frame.getAVFrame());
 #else
                 gopFramesSize += pkt.size;
 #endif
@@ -368,13 +365,6 @@ size_t VideoProperties::getBitRate() const
         if(_codecContext->gop_size == count)
             break;
     }
-#if LIBAVCODEC_VERSION_MAJOR > 54
-    av_frame_free(&frame);
-#elif LIBAVCODEC_VERSION_MAJOR > 53
-    avcodec_free_frame(&frame);
-#else
-    av_free(frame);
-#endif
 
     int bitsPerByte = 8;
     return (gopFramesSize / _codecContext->gop_size) * bitsPerByte * getFps();
@@ -493,16 +483,10 @@ void VideoProperties::analyseGopStructure(IProgress& progress)
             AVPacket pkt;
             av_init_packet(&pkt);
 
-// Allocate frame
-#if LIBAVCODEC_VERSION_MAJOR > 54
-            AVFrame* frame = av_frame_alloc();
-#else
-            AVFrame* frame = avcodec_alloc_frame();
-#endif
-
             // Initialize the AVCodecContext to use the given AVCodec
             avcodec_open2(_codecContext, _codec, NULL);
 
+            Frame frame;
             int count = 0;
             int gotFrame = 0;
             bool stopAnalyse = false;
@@ -511,13 +495,14 @@ void VideoProperties::analyseGopStructure(IProgress& progress)
             {
                 if(pkt.stream_index == (int)_streamIndex)
                 {
-                    avcodec_decode_video2(_codecContext, frame, &gotFrame, &pkt);
+                    avcodec_decode_video2(_codecContext, &frame.getAVFrame(), &gotFrame, &pkt);
                     if(gotFrame)
                     {
+                        AVFrame& avFrame = frame.getAVFrame();
                         _gopStructure.push_back(
-                            std::make_pair(av_get_picture_type_char(frame->pict_type), frame->key_frame));
-                        _isInterlaced = frame->interlaced_frame;
-                        _isTopFieldFirst = frame->top_field_first;
+                            std::make_pair(av_get_picture_type_char(avFrame.pict_type), avFrame.key_frame));
+                        _isInterlaced = avFrame.interlaced_frame;
+                        _isTopFieldFirst = avFrame.top_field_first;
                         ++count;
                         if(progress.progress(count, _codecContext->gop_size) == eJobStatusCancel)
                             stopAnalyse = true;
@@ -537,17 +522,6 @@ void VideoProperties::analyseGopStructure(IProgress& progress)
 
             // Close a given AVCodecContext and free all the data associated with it (but not the AVCodecContext itself)
             avcodec_close(_codecContext);
-
-// Free frame
-#if LIBAVCODEC_VERSION_MAJOR > 54
-            av_frame_free(&frame);
-#else
-#if LIBAVCODEC_VERSION_MAJOR > 53
-            avcodec_free_frame(&frame);
-#else
-            av_free(frame);
-#endif
-#endif
         }
     }
 }
