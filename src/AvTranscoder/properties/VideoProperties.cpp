@@ -340,7 +340,7 @@ size_t VideoProperties::getBitRate() const
     avcodec_open2(_codecContext, _codec, NULL);
 
     int gotFrame = 0;
-    int count = 0;
+    size_t count = 0;
     int gopFramesSize = 0;
 
     while(!av_read_frame(const_cast<AVFormatContext*>(_formatContext), &pkt))
@@ -359,12 +359,12 @@ size_t VideoProperties::getBitRate() const
             }
         }
         av_free_packet(&pkt);
-        if(_codecContext->gop_size == count)
+        if(getGopSize() == count)
             break;
     }
 
     int bitsPerByte = 8;
-    return (gopFramesSize / _codecContext->gop_size) * bitsPerByte * getFps();
+    return (gopFramesSize / getGopSize()) * bitsPerByte * getFps();
 }
 
 size_t VideoProperties::getMaxBitRate() const
@@ -484,7 +484,7 @@ void VideoProperties::analyseGopStructure(IProgress& progress)
             avcodec_open2(_codecContext, _codec, NULL);
 
             Frame frame;
-            int count = 0;
+            size_t count = 0;
             int gotFrame = 0;
             bool stopAnalyse = false;
 
@@ -501,14 +501,14 @@ void VideoProperties::analyseGopStructure(IProgress& progress)
                         _isInterlaced = avFrame.interlaced_frame;
                         _isTopFieldFirst = avFrame.top_field_first;
                         ++count;
-                        if(progress.progress(count, _codecContext->gop_size) == eJobStatusCancel)
+                        if(progress.progress(count, getGopSize()) == eJobStatusCancel)
                             stopAnalyse = true;
                     }
                 }
 
                 av_free_packet(&pkt);
 
-                if(_codecContext->gop_size == count)
+                if(getGopSize() == count)
                 {
                     stopAnalyse = true;
                 }
