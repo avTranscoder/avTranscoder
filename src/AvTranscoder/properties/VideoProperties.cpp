@@ -564,13 +564,16 @@ PropertyVector& VideoProperties::fillVector(PropertyVector& data) const
     addProperty(data, "minBitRate", &VideoProperties::getMinBitRate);
     addProperty(data, "gopSize", &VideoProperties::getGopSize);
 
-    std::string gop;
+    std::stringstream gop;
     for(size_t frameIndex = 0; frameIndex < _gopStructure.size(); ++frameIndex)
     {
-        gop += _gopStructure.at(frameIndex).first;
-        gop += " ";
+        gop << _gopStructure.at(frameIndex).first;
+        gop << "(";
+        gop << _gopStructure.at(frameIndex).second;;
+        gop << ")";
+        gop << " ";
     }
-    detail::add(data, "gop", gop);
+    detail::add(data, "gop", gop.str());
     // detail::add( data, "isClosedGop", isClosedGop() );
 
     addProperty(data, "hasBFrames", &VideoProperties::hasBFrames);
