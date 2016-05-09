@@ -46,9 +46,6 @@ std::string VideoProperties::getProfileName() const
     if(_codec->capabilities & CODEC_CAP_TRUNCATED)
         _codecContext->flags |= CODEC_FLAG_TRUNCATED;
 
-    if(_codecContext->profile == -99)
-        throw std::runtime_error("unknown codec profile");
-
     const char* profile = NULL;
     if((profile = av_get_profile_name(_codec, getProfile())) == NULL)
         throw std::runtime_error("unknown codec profile");
