@@ -34,7 +34,7 @@ VideoProperties::VideoProperties(const FormatContext& formatContext, const size_
         _firstGopTimeCode = _codecContext->timecode_frame_start;
     }
 
-    if(level == eAnalyseLevelFirstGop)
+    if(_levelAnalysis == eAnalyseLevelFirstGop)
         analyseGopStructure(progress);
 }
 
