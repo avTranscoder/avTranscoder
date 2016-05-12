@@ -78,6 +78,7 @@ public:
      * @param position: can be in AV_TIME_BASE units, in frames... depending on the flag value
      * @param flag: seeking mode (AVSEEK_FLAG_xxx)
      * @return seek status
+     * @warn No seek is done if the format is a raw bitstreams
      * @see flushDecoder
      */
     bool seek(const uint64_t position, const int flag);

@@ -144,6 +144,16 @@ AVStream& FormatContext::addAVStream(const AVCodec& avCodec)
 
 bool FormatContext::seek(const uint64_t position, const int flag)
 {
+    // Check if the format is a raw bitstreams, without any container.
+    // In this case, avoid seeking.
+    const std::string formatLongName(_avFormatContext->iformat->long_name);
+    const std::size_t rawIndex = formatLongName.find("raw");
+    if(rawIndex != std::string::npos)
+    {
+        LOG_WARN("Seek in '" << _avFormatContext->filename << "' is not possible since this is a raw bitstreams without access to timing information.")
+        return false;
+    }
+
     LOG_INFO("Seek in '" << _avFormatContext->filename << "' at " << position << " with flag '"<< flag << "'")
     const int err = av_seek_frame(_avFormatContext, -1, position, flag);
     if(err < 0)
