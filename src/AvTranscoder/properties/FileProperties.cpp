@@ -235,6 +235,7 @@ PropertyVector& FileProperties::fillVector(PropertyVector& data) const
     addProperty(data, "filename", &FileProperties::getFilename);
     addProperty(data, "formatName", &FileProperties::getFormatName);
     addProperty(data, "formatLongName", &FileProperties::getFormatLongName);
+    addProperty(data, "mimeType", &FileProperties::getFormatMimeType);
 
     addProperty(data, "startTime", &FileProperties::getStartTime);
     addProperty(data, "duration", &FileProperties::getDuration);
