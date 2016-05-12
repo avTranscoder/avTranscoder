@@ -553,8 +553,6 @@ PropertyVector& VideoProperties::fillVector(PropertyVector& data) const
     addProperty(data, "colorRange", &VideoProperties::getColorRange);
     addProperty(data, "colorPrimaries", &VideoProperties::getColorPrimaries);
     addProperty(data, "chromaSampleLocation", &VideoProperties::getChromaSampleLocation);
-    addProperty(data, "interlaced ", &VideoProperties::isInterlaced);
-    addProperty(data, "topFieldFirst", &VideoProperties::isTopFieldFirst);
     addProperty(data, "fieldOrder", &VideoProperties::getFieldOrder);
     addProperty(data, "fps", &VideoProperties::getFps);
     addProperty(data, "nbFrame", &VideoProperties::getNbFrames);
@@ -562,22 +560,36 @@ PropertyVector& VideoProperties::fillVector(PropertyVector& data) const
     addProperty(data, "bitRate", &VideoProperties::getBitRate);
     addProperty(data, "maxBitRate", &VideoProperties::getMaxBitRate);
     addProperty(data, "minBitRate", &VideoProperties::getMinBitRate);
-    addProperty(data, "gopSize", &VideoProperties::getGopSize);
-
-    std::stringstream gop;
-    for(size_t frameIndex = 0; frameIndex < _gopStructure.size(); ++frameIndex)
-    {
-        gop << _gopStructure.at(frameIndex).first;
-        gop << "(";
-        gop << _gopStructure.at(frameIndex).second;;
-        gop << ")";
-        gop << " ";
-    }
-    detail::add(data, "gop", gop.str());
-    // detail::add( data, "isClosedGop", isClosedGop() );
-
     addProperty(data, "hasBFrames", &VideoProperties::hasBFrames);
     addProperty(data, "referencesFrames", &VideoProperties::getReferencesFrames);
+
+    // Add properties available when decode first gop
+    if(_levelAnalysis < eAnalyseLevelFirstGop)
+    {
+        detail::add(data, "gopSize", detail::propertyValueIfError);
+        detail::add(data, "gop", detail::propertyValueIfError);
+        detail::add(data, "interlaced", detail::propertyValueIfError);
+        detail::add(data, "topFieldFirst", detail::propertyValueIfError);
+    }
+    else
+    {
+        addProperty(data, "gopSize", &VideoProperties::getGopSize);
+
+        std::stringstream gop;
+        for(size_t frameIndex = 0; frameIndex < _gopStructure.size(); ++frameIndex)
+        {
+            gop << _gopStructure.at(frameIndex).first;
+            gop << "(";
+            gop << _gopStructure.at(frameIndex).second;;
+            gop << ")";
+            gop << " ";
+        }
+        detail::add(data, "gop", gop.str());
+        // detail::add( data, "isClosedGop", isClosedGop() );
+
+        addProperty(data, "interlaced ", &VideoProperties::isInterlaced);
+        addProperty(data, "topFieldFirst", &VideoProperties::isTopFieldFirst);
+    }
 
     // Add properties of the pixel
     PropertyVector pixelProperties;
