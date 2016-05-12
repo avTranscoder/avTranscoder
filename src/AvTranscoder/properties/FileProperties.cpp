@@ -31,6 +31,10 @@ void FileProperties::extractStreamProperties(IProgress& progress, const EAnalyse
 {
     clearStreamProperties();
 
+    // Seek at first key frame before the analysis
+    if(level > eAnalyseLevelHeader)
+        const_cast<FormatContext*>(_formatContext)->seek(0, AVSEEK_FLAG_BACKWARD);
+
     for(size_t streamIndex = 0; streamIndex < _formatContext->getNbStreams(); ++streamIndex)
     {
         switch(_formatContext->getAVStream(streamIndex).codec->codec_type)
@@ -114,6 +118,10 @@ void FileProperties::extractStreamProperties(IProgress& progress, const EAnalyse
         const size_t unknownStreamIndex = _unknownStreams.at(streamIndex).getStreamIndex();
         _streams[unknownStreamIndex] = &_unknownStreams.at(streamIndex);
     }
+
+    // Seek at first key frame after the analysis
+    if(level > eAnalyseLevelHeader)
+        const_cast<FormatContext*>(_formatContext)->seek(0, AVSEEK_FLAG_BACKWARD);
 }
 
 std::string FileProperties::getFilename() const
