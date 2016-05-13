@@ -29,12 +29,14 @@ FileProperties::FileProperties(const FormatContext& formatContext)
 
 void FileProperties::extractStreamProperties(IProgress& progress, const EAnalyseLevel level)
 {
-    clearStreamProperties();
-
     // if the analysis level wiil decode some streams parts, seek at the beginning
-    if(level > eAnalyseLevelHeader)
+    if(level > eAnalyseLevelHeader && ! isRawFormat())
         const_cast<FormatContext*>(_formatContext)->seek(0, AVSEEK_FLAG_BACKWARD);
 
+    // clear properties
+    clearStreamProperties();
+
+    // reload properties
     for(size_t streamIndex = 0; streamIndex < _formatContext->getNbStreams(); ++streamIndex)
     {
         switch(_formatContext->getAVStream(streamIndex).codec->codec_type)
@@ -120,7 +122,7 @@ void FileProperties::extractStreamProperties(IProgress& progress, const EAnalyse
     }
 
     // if the analysis level has decoded some streams parts, return at the beginning
-    if(level > eAnalyseLevelHeader)
+    if(level > eAnalyseLevelHeader && ! isRawFormat())
         const_cast<FormatContext*>(_formatContext)->seek(0, AVSEEK_FLAG_BACKWARD);
 }
 
