@@ -145,6 +145,16 @@ std::string FileProperties::getFormatLongName() const
     return _avFormatContext->iformat->long_name;
 }
 
+bool FileProperties::isRawFormat() const
+{
+    if(getNbStreams() != 1)
+        return false;
+    // the format name should be the same as the codec name
+    if(getFormatName() == getStreamProperties().at(0)->getCodecName())
+        return true;
+    return false;
+}
+
 std::string FileProperties::getFormatMimeType() const
 {
 #if LIBAVFORMAT_VERSION_MAJOR <= 55
