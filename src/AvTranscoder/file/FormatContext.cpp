@@ -146,7 +146,7 @@ bool FormatContext::seek(const uint64_t position, const int flag)
 {
     // Check if the format is a raw bitstreams, without any container.
     // In this case, avoid seeking.
-    const std::string formatLongName(_avFormatContext->iformat->long_name);
+    const std::string formatLongName(_avFormatContext->iformat->long_name ? _avFormatContext->iformat->long_name : "");
     const std::size_t rawIndex = formatLongName.find("raw");
     if(rawIndex != std::string::npos)
     {
