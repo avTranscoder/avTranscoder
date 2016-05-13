@@ -47,7 +47,6 @@ public:
     size_t getTicksPerFrame() const;
     size_t getWidth() const;
     size_t getHeight() const;
-    size_t getGopSize() const;
     size_t getDtgActiveFormat() const;
     size_t getReferencesFrames() const;
     int getProfile() const;
@@ -71,7 +70,11 @@ public:
     // @see analyseGopStructure
     bool isInterlaced() const { return _isInterlaced; }
     bool isTopFieldFirst() const { return _isTopFieldFirst; }
-    std::vector<std::pair<char, bool> > getGopStructure() const { return _gopStructure; }
+    /**
+     * @return the distance between two nearest I frame
+     */
+    size_t getGopSize() const { return _gopSize; }
+    std::vector<std::pair<char, int> > getGopStructure() const { return _gopStructure; }
 //@}
 
 #ifndef SWIG
@@ -104,12 +107,22 @@ private:
 #endif
 
 private:
+    /**
+     * @brief Level of analysis asked.
+     */
+    EAnalyseLevel _levelAnalysis;
+
+    /**
+     * @brief All the pixel properties contained in this stream.
+     */
     PixelProperties _pixelProperties;
+
     //@{
     // Can acces these data when analyse first gop
     bool _isInterlaced;
     bool _isTopFieldFirst;
-    std::vector<std::pair<char, bool> > _gopStructure;
+    size_t _gopSize;
+    std::vector<std::pair<char, int> > _gopStructure;  ///< picture type, encoded frame size in bytes
     //@}
 
     /**
