@@ -53,7 +53,7 @@ FormatContext::~FormatContext()
 
 void FormatContext::findStreamInfo(AVDictionary** options)
 {
-    int err = avformat_find_stream_info(_avFormatContext, options);
+    const int err = avformat_find_stream_info(_avFormatContext, options);
     if(err < 0)
     {
         throw std::ios_base::failure("Unable to find stream informations: " + getDescriptionFromErrorCode(err));
@@ -65,7 +65,7 @@ void FormatContext::openRessource(const std::string& url, int flags)
     if((_avFormatContext->flags & AVFMT_NOFILE) == AVFMT_NOFILE)
         return;
 
-    int err = avio_open2(&_avFormatContext->pb, url.c_str(), flags, NULL, NULL);
+    const int err = avio_open2(&_avFormatContext->pb, url.c_str(), flags, NULL, NULL);
     if(err < 0)
     {
         throw std::ios_base::failure("Error when opening output format: " + getDescriptionFromErrorCode(err));
@@ -77,7 +77,7 @@ void FormatContext::closeRessource()
     if((_avFormatContext->flags & AVFMT_NOFILE) == AVFMT_NOFILE)
         return;
 
-    int err = avio_close(_avFormatContext->pb);
+    const int err = avio_close(_avFormatContext->pb);
     if(err < 0)
     {
         throw std::ios_base::failure("Error when close output format: " + getDescriptionFromErrorCode(err));
@@ -86,7 +86,7 @@ void FormatContext::closeRessource()
 
 void FormatContext::writeHeader(AVDictionary** options)
 {
-    int ret = avformat_write_header(_avFormatContext, options);
+    const int ret = avformat_write_header(_avFormatContext, options);
     if(ret != 0)
     {
         throw std::runtime_error("Could not write header: " + getDescriptionFromErrorCode(ret));
@@ -115,7 +115,7 @@ void FormatContext::writeFrame(AVPacket& packet, bool interleaved)
 
 void FormatContext::writeTrailer()
 {
-    int ret = av_write_trailer(_avFormatContext);
+    const int ret = av_write_trailer(_avFormatContext);
     if(ret != 0)
     {
         throw std::runtime_error("Could not write trailer: " + getDescriptionFromErrorCode(ret));
@@ -124,7 +124,7 @@ void FormatContext::writeTrailer()
 
 void FormatContext::addMetaData(const std::string& key, const std::string& value)
 {
-    int ret = av_dict_set(&_avFormatContext->metadata, key.c_str(), value.c_str(), 0);
+    const int ret = av_dict_set(&_avFormatContext->metadata, key.c_str(), value.c_str(), 0);
     if(ret < 0)
     {
         LOG_ERROR(getDescriptionFromErrorCode(ret))
@@ -144,8 +144,8 @@ AVStream& FormatContext::addAVStream(const AVCodec& avCodec)
 
 bool FormatContext::seek(const uint64_t position, const int flag)
 {
-    LOG_INFO("Seek in '" << _avFormatContext->filename << "' at " << position << " (in AV_TIME_BASE units)")
-    int err = av_seek_frame(_avFormatContext, -1, position, flag);
+    LOG_INFO("Seek in '" << _avFormatContext->filename << "' at " << position << " with flag '"<< flag << "'")
+    const int err = av_seek_frame(_avFormatContext, -1, position, flag);
     if(err < 0)
     {
         LOG_ERROR("Error when seek at " << position << " (in AV_TIME_BASE units) in file")

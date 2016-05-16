@@ -1,5 +1,6 @@
 #include "VideoProperties.hpp"
 
+#include <AvTranscoder/data/decoded/Frame.hpp>
 #include <AvTranscoder/properties/util.hpp>
 #include <AvTranscoder/progress/NoDisplayProgress.hpp>
 
@@ -19,9 +20,11 @@ namespace avtranscoder
 VideoProperties::VideoProperties(const FormatContext& formatContext, const size_t index, IProgress& progress,
                                  const EAnalyseLevel level)
     : StreamProperties(formatContext, index)
+    , _levelAnalysis(level)
     , _pixelProperties()
     , _isInterlaced(false)
     , _isTopFieldFirst(false)
+    , _gopSize(0)
     , _gopStructure()
     , _firstGopTimeCode(-1)
 {
@@ -31,7 +34,7 @@ VideoProperties::VideoProperties(const FormatContext& formatContext, const size_
         _firstGopTimeCode = _codecContext->timecode_frame_start;
     }
 
-    if(level == eAnalyseLevelFirstGop)
+    if(_levelAnalysis == eAnalyseLevelFirstGop)
         analyseGopStructure(progress);
 }
 
@@ -43,11 +46,8 @@ std::string VideoProperties::getProfileName() const
     if(_codec->capabilities & CODEC_CAP_TRUNCATED)
         _codecContext->flags |= CODEC_FLAG_TRUNCATED;
 
-    if(_codecContext->profile == -99)
-        throw std::runtime_error("unknown codec profile");
-
     const char* profile = NULL;
-    if((profile = av_get_profile_name(_codec, _codecContext->profile)) == NULL)
+    if((profile = av_get_profile_name(_codec, getProfile())) == NULL)
         throw std::runtime_error("unknown codec profile");
 
     return std::string(profile);
@@ -333,31 +333,31 @@ size_t VideoProperties::getBitRate() const
     if(!_codecContext->width || !_codecContext->height)
         throw std::runtime_error("cannot compute bit rate: invalid frame size");
 
+    // Needed to get the gop size
+    if(_levelAnalysis < eAnalyseLevelFirstGop)
+        throw std::runtime_error("cannot compute bit rate: need to get info from the first gop (see eAnalyseLevelFirstGop)");
+
     // discard no frame type when decode
     _codecContext->skip_frame = AVDISCARD_NONE;
 
-#if LIBAVCODEC_VERSION_MAJOR > 54
-    AVFrame* frame = av_frame_alloc();
-#else
-    AVFrame* frame = avcodec_alloc_frame();
-#endif
+    Frame frame;
     AVPacket pkt;
     av_init_packet(&pkt);
     avcodec_open2(_codecContext, _codec, NULL);
 
     int gotFrame = 0;
-    int count = 0;
+    size_t count = 0;
     int gopFramesSize = 0;
 
     while(!av_read_frame(const_cast<AVFormatContext*>(_formatContext), &pkt))
     {
         if(pkt.stream_index == (int)_streamIndex)
         {
-            avcodec_decode_video2(_codecContext, frame, &gotFrame, &pkt);
+            avcodec_decode_video2(_codecContext, &frame.getAVFrame(), &gotFrame, &pkt);
             if(gotFrame)
             {
 #if LIBAVUTIL_VERSION_INT >= AV_VERSION_INT(54, 7, 100)
-                gopFramesSize += av_frame_get_pkt_size(frame);
+                gopFramesSize += frame.getEncodedSize();
 #else
                 gopFramesSize += pkt.size;
 #endif
@@ -365,19 +365,12 @@ size_t VideoProperties::getBitRate() const
             }
         }
         av_free_packet(&pkt);
-        if(_codecContext->gop_size == count)
+        if(getGopSize() == count)
             break;
     }
-#if LIBAVCODEC_VERSION_MAJOR > 54
-    av_frame_free(&frame);
-#elif LIBAVCODEC_VERSION_MAJOR > 53
-    avcodec_free_frame(&frame);
-#else
-    av_free(frame);
-#endif
 
     int bitsPerByte = 8;
-    return (gopFramesSize / _codecContext->gop_size) * bitsPerByte * getFps();
+    return (gopFramesSize / getGopSize()) * bitsPerByte * getFps();
 }
 
 size_t VideoProperties::getMaxBitRate() const
@@ -423,13 +416,6 @@ size_t VideoProperties::getHeight() const
     if(!_codecContext)
         throw std::runtime_error("unknown codec context");
     return _codecContext->height;
-}
-
-size_t VideoProperties::getGopSize() const
-{
-    if(!_codecContext)
-        throw std::runtime_error("unknown codec context");
-    return _codecContext->gop_size;
 }
 
 size_t VideoProperties::getDtgActiveFormat() const
@@ -493,61 +479,55 @@ void VideoProperties::analyseGopStructure(IProgress& progress)
             AVPacket pkt;
             av_init_packet(&pkt);
 
-// Allocate frame
-#if LIBAVCODEC_VERSION_MAJOR > 54
-            AVFrame* frame = av_frame_alloc();
-#else
-            AVFrame* frame = avcodec_alloc_frame();
-#endif
-
             // Initialize the AVCodecContext to use the given AVCodec
             avcodec_open2(_codecContext, _codec, NULL);
 
-            int count = 0;
+            Frame frame;
+            size_t count = 0;
             int gotFrame = 0;
-            bool stopAnalyse = false;
+            int positionOfFirstKeyFrame = -1;
+            int positionOfLastKeyFrame = -1;
 
             while(!av_read_frame(const_cast<AVFormatContext*>(_formatContext), &pkt))
             {
                 if(pkt.stream_index == (int)_streamIndex)
                 {
-                    avcodec_decode_video2(_codecContext, frame, &gotFrame, &pkt);
+                    avcodec_decode_video2(_codecContext, &frame.getAVFrame(), &gotFrame, &pkt);
                     if(gotFrame)
                     {
+                        AVFrame& avFrame = frame.getAVFrame();
+
                         _gopStructure.push_back(
-                            std::make_pair(av_get_picture_type_char(frame->pict_type), frame->key_frame));
-                        _isInterlaced = frame->interlaced_frame;
-                        _isTopFieldFirst = frame->top_field_first;
+                            std::make_pair(av_get_picture_type_char(avFrame.pict_type), frame.getEncodedSize()));
+                        _isInterlaced = avFrame.interlaced_frame;
+                        _isTopFieldFirst = avFrame.top_field_first;
+                        if(avFrame.pict_type == AV_PICTURE_TYPE_I)
+                        {
+                            if(positionOfFirstKeyFrame == -1)
+                                positionOfFirstKeyFrame = count;
+                            else
+                                positionOfLastKeyFrame = count;
+                        }
+
                         ++count;
-                        if(progress.progress(count, _codecContext->gop_size) == eJobStatusCancel)
-                            stopAnalyse = true;
                     }
                 }
-
                 av_free_packet(&pkt);
 
-                if(_codecContext->gop_size == count)
+                // If the first 2 key frames are found
+                if(positionOfFirstKeyFrame != -1 && positionOfLastKeyFrame != -1)
                 {
-                    stopAnalyse = true;
-                }
-
-                if(stopAnalyse)
+                    // Set gop size as distance between these 2 key frames
+                    _gopSize = positionOfLastKeyFrame - positionOfFirstKeyFrame;
+                    // Update gop structure to keep only one gop
+                    while(_gopStructure.size() > _gopSize)
+                        _gopStructure.pop_back();
                     break;
+                }
             }
 
             // Close a given AVCodecContext and free all the data associated with it (but not the AVCodecContext itself)
             avcodec_close(_codecContext);
-
-// Free frame
-#if LIBAVCODEC_VERSION_MAJOR > 54
-            av_frame_free(&frame);
-#else
-#if LIBAVCODEC_VERSION_MAJOR > 53
-            avcodec_free_frame(&frame);
-#else
-            av_free(frame);
-#endif
-#endif
         }
     }
 }
@@ -573,8 +553,6 @@ PropertyVector& VideoProperties::fillVector(PropertyVector& data) const
     addProperty(data, "colorRange", &VideoProperties::getColorRange);
     addProperty(data, "colorPrimaries", &VideoProperties::getColorPrimaries);
     addProperty(data, "chromaSampleLocation", &VideoProperties::getChromaSampleLocation);
-    addProperty(data, "interlaced ", &VideoProperties::isInterlaced);
-    addProperty(data, "topFieldFirst", &VideoProperties::isTopFieldFirst);
     addProperty(data, "fieldOrder", &VideoProperties::getFieldOrder);
     addProperty(data, "fps", &VideoProperties::getFps);
     addProperty(data, "nbFrame", &VideoProperties::getNbFrames);
@@ -582,19 +560,36 @@ PropertyVector& VideoProperties::fillVector(PropertyVector& data) const
     addProperty(data, "bitRate", &VideoProperties::getBitRate);
     addProperty(data, "maxBitRate", &VideoProperties::getMaxBitRate);
     addProperty(data, "minBitRate", &VideoProperties::getMinBitRate);
-    addProperty(data, "gopSize", &VideoProperties::getGopSize);
-
-    std::string gop;
-    for(size_t frameIndex = 0; frameIndex < _gopStructure.size(); ++frameIndex)
-    {
-        gop += _gopStructure.at(frameIndex).first;
-        gop += " ";
-    }
-    detail::add(data, "gop", gop);
-    // detail::add( data, "isClosedGop", isClosedGop() );
-
     addProperty(data, "hasBFrames", &VideoProperties::hasBFrames);
     addProperty(data, "referencesFrames", &VideoProperties::getReferencesFrames);
+
+    // Add properties available when decode first gop
+    if(_levelAnalysis < eAnalyseLevelFirstGop)
+    {
+        detail::add(data, "gopSize", detail::propertyValueIfError);
+        detail::add(data, "gop", detail::propertyValueIfError);
+        detail::add(data, "interlaced", detail::propertyValueIfError);
+        detail::add(data, "topFieldFirst", detail::propertyValueIfError);
+    }
+    else
+    {
+        addProperty(data, "gopSize", &VideoProperties::getGopSize);
+
+        std::stringstream gop;
+        for(size_t frameIndex = 0; frameIndex < _gopStructure.size(); ++frameIndex)
+        {
+            gop << _gopStructure.at(frameIndex).first;
+            gop << "(";
+            gop << _gopStructure.at(frameIndex).second;;
+            gop << ")";
+            gop << " ";
+        }
+        detail::add(data, "gop", gop.str());
+        // detail::add( data, "isClosedGop", isClosedGop() );
+
+        addProperty(data, "interlaced ", &VideoProperties::isInterlaced);
+        addProperty(data, "topFieldFirst", &VideoProperties::isTopFieldFirst);
+    }
 
     // Add properties of the pixel
     PropertyVector pixelProperties;
