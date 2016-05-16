@@ -274,7 +274,7 @@ PropertyVector& PixelProperties::fillVector(PropertyVector& data) const
     }
     catch(const std::exception& e)
     {
-        detail::add(data, "colorComponents", e.what());
+        detail::add(data, "colorComponents", detail::propertyValueIfError);
     }
 
     try
