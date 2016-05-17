@@ -78,6 +78,7 @@ public:
      * @param position: can be in AV_TIME_BASE units, in frames... depending on the flag value
      * @param flag: seeking mode (AVSEEK_FLAG_xxx)
      * @return seek status
+     * @warn seeking on a raw bitstreams (without any container) could produce an error (because of a lack of timing information)
      * @see flushDecoder
      */
     bool seek(const uint64_t position, const int flag);

@@ -41,6 +41,7 @@ public:
     std::string getFilename() const;
     std::string getFormatName() const; ///< A comma separated list of short names for the format, or empty if unknown.
     std::string getFormatLongName() const; ///< Descriptive name for the format, meant to be more human-readable than name, or empty if unknown.
+    bool isRawFormat() const; ///< Is there a container, or a raw bitstreams without access to timing information.
     std::string getFormatMimeType() const; ///< Comma-separated list of mime types, or empty if unknown.
 
     size_t getProgramsCount() const;
