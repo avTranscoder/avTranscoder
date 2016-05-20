@@ -33,23 +33,6 @@ See [**Doxygen documentation**](http://avtranscoder.github.io/avTranscoder-doxyg
 #### Compilation
 See [**INSTALL.md**](INSTALL.md)
 
-#### Tests
-
-###### nosetests
-Python tests using nosetests.
-```
-cd test/pyTest
-nosetests
-```
-
-Some tests need environment variables to be executed (otherwise they will be skipped):
-* ```AVTRANSCODER_TEST_VIDEO_FILE```
-* ```AVTRANSCODER_TEST_AUDIO_WAVE_FILE```
-* ```AVTRANSCODER_TEST_AUDIO_MOV_FILE```
-
-Note: for continuous integration, we launch tests with media files contained in ```avTranscoder-data``` repository.
-
-
 #### Packaging
 
 ###### Build openSUSE  
