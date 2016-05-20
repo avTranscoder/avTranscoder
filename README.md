@@ -15,11 +15,11 @@ Click on the badge above to have a big picture view of what's in progress and ho
 
 :warning: The latest avTranscoder API does not fit with libav.
 
-#### What you need to know
-* C++ library
-* Java and Python bindings generated with SWIG
-* multiplateform (Linux, MAC, Windows)
-* your call to be based on Libav, FFmpeg, or your custom fork of one of these librairies
+#### The basics
+* avTranscoder is a C++ library.
+* avTranscoder uses [SWIG](http://www.swig.org/) to generate __Java__ and __Python__ bindings.
+* avTranscoder is multiplateform (Linux, MAC, Windows).
+* avTranscoder could be based on [Libav](https://libav.org/), [FFmpeg](https://ffmpeg.org/), or your custom fork of one of these librairies.
 
 #### License
 See [**COPYING.md**](COPYING.md)
