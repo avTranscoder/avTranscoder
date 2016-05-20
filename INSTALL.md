@@ -9,31 +9,30 @@ AvTranscoder can depend on ffmpeg, libav, or any fork of these projects that fol
 
 #### To build
 ```
-mkdir build && cd build
-cmake ..
+cmake .
 make
 make install
 ```
 
 #### To indicate a specific ffmpeg/libav folder
 ```
-cmake .. -DCMAKE_PREFIX_PATH=/path/to/your/install
+cmake . -DCMAKE_PREFIX_PATH=/path/to/your/install
 ```
 
 #### To not build apps
 ```
-cmake .. -DAVTRANSCODER_DISABLE_APPS=True
+cmake . -DAVTRANSCODER_DISABLE_APPS=True
 ```
 
 #### To not build bindings
 ```
-cmake .. -DAVTRANSCODER_DISABLE_BINDINGS=True
+cmake . -DAVTRANSCODER_DISABLE_BINDINGS=True
 ```
 ```
-cmake .. -DAVTRANSCODER_DISABLE_PYTHON_BINDING=True
+cmake . -DAVTRANSCODER_DISABLE_PYTHON_BINDING=True
 ```
 ```
-cmake .. -DAVTRANSCODER_DISABLE_JAVA_BINDING=True
+cmake . -DAVTRANSCODER_DISABLE_JAVA_BINDING=True
 ```
 
 #### Other useful flags
@@ -50,7 +49,7 @@ cmake .. -DCMAKE_BUILD_TYPE=Release/Debug
 cmake .. -DAVTRANSCODER_PYTHON_VERSION_OF_BINDING=2.7
 ```
 
-#### Mac OSX using homebrew
+#### To install on Mac OSX
 
 ###### Install homebrew
 http://brew.sh/
