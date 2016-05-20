@@ -1,6 +1,6 @@
 # avTranscoder
 
-C++ API for FFmpeg / Libav
+High level API for FFmpeg / Libav.
 
 Based on FFmpeg/Libav libraries to support various video and audio formats, avTranscoder provides the high level API to re-wrap or transcode media easily.
 
