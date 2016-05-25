@@ -1,13 +1,13 @@
 # How to use avTranscoder
 
 ## When to use avTranscoder
-* when you need to access the API of ffmpeg, but you want to avoid the head-hurting part of AVPacket, AV_TIME_BASE and all the stuff deep inside ffmpeg.
-* when you would like to access the ffmpeg features in your language (currently Java and python, tomorrow what you want!).
+* when you need to access the API of ffmpeg, but you want to avoid the head-hurting part of AVPacket, AV_TIME_BASE and all the deep ffmpeg components.
+* when you would like to access the ffmpeg features in your language (currently Java and Python, tomorrow what you want!).
 
 
 ## API
-The original code is in C++, but almost all the methods are translated into python/java without any changes.  
-So a good way to start is to have a look at the [C++ code](src/AvTranscoder) (since the generated python/java code is ugly).  
+The original code is in C++, but almost all the methods are translated into Java/Python without any changes.  
+So you should start having a look at the [C++ code](src/AvTranscoder) (since the generated Java/Python code is ugly).  
 
 In the sake of brevity, the example code of the following section is written in python.
 
@@ -48,7 +48,7 @@ Some properties could have a value of _null_ because:
 * the property is not accessible in the header.
 
 For the second point, you can launch a deeper analysis.  
-This is the case if you would like to have access to the GOP structure of a video stream:
+For instance, you might like to access to the GOP structure:
 ```python
 # create InputFile
 inputFile = avtranscoder.InputFile("/path/to/media/file.mov")
@@ -67,7 +67,7 @@ print videoProperties.getGopStructure()
 Check out [__avmeta__](app/avMeta/avMeta.cpp) application to see a C++ example of this use case.
 
 #### Process media
-An important part of the API concerns media processing. The general overview of the workflow could be separate in 2 main cases:  
+An important part of the API concerns media processing. The general overview of the workflow could be separated into two main cases:  
 * _transcoding_: demuxing, decoding, transform, encoding and muxing. Here we can update all parts of the media, from the container to the codec used to encode data.  
 See the [transcoding process](https://ffmpeg.org/ffmpeg.html#toc-Detailed-description) in ffmpeg documentation.
 * _rewrap_: omit the decoding, transform and encoding steps. It is useful for changing the container format or modifying container-level metadata.  
@@ -191,4 +191,4 @@ PADdef / Slingshot uses avTranscoder in one of its application to transcode medi
 
 #### Ploud
 A set of applications developed by [Mikros Image](http://www.mikrosimage.eu/) to analyse, visualize and correct the loudness.  
-PADdef / Slingshot uses avTranscoder in [one of its application](https://github.com/mikrosimage/loudness_validator/tree/develop/app/mediaAnalyser) to give decoded data to the loudness analyser.
+Ploud uses avTranscoder in [one of its application](https://github.com/mikrosimage/loudness_validator/tree/develop/app/mediaAnalyser) to give decoded data to the loudness analyser.
