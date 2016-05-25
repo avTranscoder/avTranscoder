@@ -28,8 +28,21 @@ StreamProperties::StreamProperties(const FormatContext& formatContext, const siz
         _codecContext = _formatContext->streams[_streamIndex]->codec;
     }
 
+    // find the decoder
     if(_formatContext && _codecContext)
+    {
         _codec = avcodec_find_decoder(_codecContext->codec_id);
+
+        if(_codec)
+        {
+            // load specific options of the codec
+            if(avcodec_open2(_codecContext, _codec, NULL) == 0)
+            {
+                loadOptions(_options, _codecContext);
+                avcodec_close(_codecContext);
+            }
+        }
+    }
 }
 
 StreamProperties::~StreamProperties()
@@ -96,6 +109,16 @@ std::string StreamProperties::getCodecLongName() const
         throw std::runtime_error("unknown codec long name");
 
     return std::string(_codec->long_name);
+}
+
+std::vector<Option> StreamProperties::getCodecOptions()
+{
+    std::vector<Option> optionsArray;
+    for(OptionMap::iterator it = _options.begin(); it != _options.end(); ++it)
+    {
+        optionsArray.push_back(it->second);
+    }
+    return optionsArray;
 }
 
 PropertyVector StreamProperties::asVector() const
