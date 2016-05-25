@@ -334,7 +334,7 @@ size_t VideoProperties::getBitRate() const
         throw std::runtime_error("cannot compute bit rate: invalid frame size");
 
     // Needed to get the gop size
-    if(_levelAnalysis < eAnalyseLevelFirstGop)
+    if(getGopSize() == 0)
         throw std::runtime_error("cannot compute bit rate: need to get info from the first gop (see eAnalyseLevelFirstGop)");
 
     // discard no frame type when decode
