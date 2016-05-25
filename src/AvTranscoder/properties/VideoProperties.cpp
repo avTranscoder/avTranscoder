@@ -509,7 +509,7 @@ void VideoProperties::analyseGopStructure(IProgress& progress)
                                 positionOfLastKeyFrame = count;
                         }
 
-                        ++count;
+                        _gopSize = ++count;
                     }
                 }
                 av_free_packet(&pkt);
