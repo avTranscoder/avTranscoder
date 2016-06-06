@@ -42,6 +42,16 @@ IOutputStream& OutputFile::addVideoStream(const VideoCodec& videoDesc)
     stream.codec->level = videoDesc.getAVCodecContext().level;
     stream.codec->field_order = videoDesc.getAVCodecContext().field_order;
 
+    if (_formatContext.getAVOutputFormat().flags & AVFMT_GLOBALHEADER) {
+        stream.codec->flags = CODEC_FLAG_GLOBAL_HEADER;
+    }
+
+    // if the codec is experimental, allow it
+    if(videoDesc.getAVCodec().capabilities & CODEC_CAP_EXPERIMENTAL) {
+        LOG_WARN("This codec is considered experimental by libav/ffmpeg:" << videoDesc.getCodecName());
+        stream.codec->strict_std_compliance = FF_COMPLIANCE_EXPERIMENTAL;
+    }
+
     // some codecs need/can use extradata to decode
     uint8_t* srcExtradata = videoDesc.getAVCodecContext().extradata;
     const int srcExtradataSize = videoDesc.getAVCodecContext().extradata_size;
