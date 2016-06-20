@@ -48,6 +48,7 @@ public:
     double getStartTime() const;
     float getDuration() const; ///< in seconds, 0 if not available
     size_t getBitRate() const; ///< total stream bitrate in bit/s, 0 if not available (result of a computation by ffmpeg)
+    size_t getFileSize() const; ///< in bytes
     size_t getPacketSize() const;
 
     const PropertyVector& getMetadatas() const { return _metadatas; }

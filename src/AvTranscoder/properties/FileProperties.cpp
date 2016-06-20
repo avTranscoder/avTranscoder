@@ -6,6 +6,7 @@
 
 #include <stdexcept>
 #include <sstream>
+#include <fstream>
 
 namespace avtranscoder
 {
@@ -197,6 +198,12 @@ size_t FileProperties::getBitRate() const
     if(!_avFormatContext)
         throw std::runtime_error("unknown format context");
     return _avFormatContext->bit_rate;
+}
+
+size_t FileProperties::getFileSize() const
+{
+    std::ifstream in(getFilename().c_str(), std::ios::binary | std::ios::ate);
+    return in.tellg(); 
 }
 
 size_t FileProperties::getPacketSize() const
