@@ -66,7 +66,10 @@ Rational StreamProperties::getTimeBase() const
 float StreamProperties::getDuration() const
 {
     const Rational timeBase = getTimeBase();
-    return av_q2d(timeBase) * _formatContext->streams[_streamIndex]->duration;
+    const size_t duration = _formatContext->streams[_streamIndex]->duration;
+    if(duration == (size_t)AV_NOPTS_VALUE)
+        return 0;
+    return av_q2d(timeBase) * duration;
 }
 
 AVMediaType StreamProperties::getStreamType() const

@@ -19,7 +19,7 @@ public:
     size_t getStreamIndex() const { return _streamIndex; }
     size_t getStreamId() const;
     Rational getTimeBase() const;
-    float getDuration() const; ///< in seconds
+    float getDuration() const; ///< in seconds, 0 if not available
     AVMediaType getStreamType() const;
 
     size_t getCodecId() const;
