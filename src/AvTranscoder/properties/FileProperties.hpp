@@ -61,7 +61,7 @@ public:
     size_t getNbAttachementStreams() const { return _attachementStreams.size(); }
     size_t getNbUnknownStreams() const { return _unknownStreams.size(); }
 
-    const FormatContext& getFormatContext() { return *_formatContext; }
+    const FormatContext& getFormatContext() const { return *_formatContext; }
 
     //@{
     // @brief Get the properties at the indicated stream index
@@ -81,7 +81,7 @@ public:
 //@}
 
 #ifndef SWIG
-    const AVFormatContext& getAVFormatContext() { return *_avFormatContext; }
+    const AVFormatContext& getAVFormatContext() const { return *_avFormatContext; }
 #endif
 
     std::string allPropertiesAsJson() const; ///< Return all properties as a json format.
