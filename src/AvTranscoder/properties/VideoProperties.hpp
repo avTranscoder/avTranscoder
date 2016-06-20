@@ -40,7 +40,7 @@ public:
     Rational getSar() const; // sample/pixel aspect ratio
     Rational getDar() const; // display aspect ratio
 
-    size_t getBitRate() const; ///< in bits/s
+    size_t getBitRate() const; ///< in bits/s, 0 if unknown
     size_t getMaxBitRate() const;
     size_t getMinBitRate() const;
     size_t getNbFrames() const; ///< 0 if unknown

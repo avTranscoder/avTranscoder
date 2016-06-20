@@ -473,8 +473,12 @@ float VideoProperties::getDuration() const
         LOG_WARN("The duration of the stream '" << _streamIndex << "' of file '" << _formatContext->filename << "' is unknown.")
         if(_fileProperties->isRawFormat())
         {
-            LOG_INFO("Get the file size to compute the duration.")
-            return _fileProperties->getFileSize() / getBitRate() * 8;
+            const size_t bitRate = getBitRate();
+            if(bitRate)
+            {
+                LOG_INFO("Get the file size to compute the duration.")
+                return _fileProperties->getFileSize() / bitRate * 8;
+            }
         }
         return 0;
     }
