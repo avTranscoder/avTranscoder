@@ -337,6 +337,9 @@ size_t VideoProperties::getBitRate() const
     if(getGopSize() == 0)
         throw std::runtime_error("cannot compute bit rate: need to get info from the first gop (see eAnalyseLevelFirstGop)");
 
+    LOG_WARN("The bitrate of the stream '" << _streamIndex << "' of file '" << _formatContext->filename << "' is unknown.")
+    LOG_INFO("Decode the first GOP to compute the bitrate.")
+
     // discard no frame type when decode
     _codecContext->skip_frame = AVDISCARD_NONE;
 
