@@ -2,6 +2,7 @@
 
 #include <AvTranscoder/data/decoded/Frame.hpp>
 #include <AvTranscoder/properties/util.hpp>
+#include <AvTranscoder/properties/FileProperties.hpp>
 #include <AvTranscoder/progress/NoDisplayProgress.hpp>
 
 extern "C" {
@@ -462,6 +463,22 @@ int VideoProperties::getLevel() const
 float VideoProperties::getFps() const
 {
     return av_q2d(_formatContext->streams[_streamIndex]->avg_frame_rate);
+}
+
+float VideoProperties::getDuration() const
+{
+    const float duration = StreamProperties::getDuration();
+    if(duration == 0)
+    {
+        LOG_WARN("The duration of the stream '" << _streamIndex << "' of file '" << _formatContext->filename << "' is unknown.")
+        if(_fileProperties->isRawFormat())
+        {
+            LOG_INFO("Get the file size to compute the duration.")
+            return _fileProperties->getFileSize() / getBitRate() * 8;
+        }
+        return 0;
+    }
+    return duration;
 }
 
 bool VideoProperties::hasBFrames() const

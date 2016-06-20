@@ -61,6 +61,12 @@ public:
      */
     float getFps() const;
 
+    /**
+     * @brief Override StreamProperties method.
+     * @return The stream duration in seconds, 0 if not available
+     */
+    float getDuration() const;
+
     bool hasBFrames() const;
     // bool isClosedGop() const;
 
