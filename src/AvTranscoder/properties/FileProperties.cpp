@@ -186,6 +186,9 @@ float FileProperties::getDuration() const
 {
     if(!_avFormatContext)
         throw std::runtime_error("unknown format context");
+    const size_t duration = _avFormatContext->duration;
+    if(duration == (size_t)AV_NOPTS_VALUE)
+        return 0;
     return 1.0 * _avFormatContext->duration / AV_TIME_BASE;
 }
 
