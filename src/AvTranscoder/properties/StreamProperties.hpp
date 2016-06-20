@@ -9,11 +9,13 @@
 namespace avtranscoder
 {
 
+class FileProperties;
+
 /// Virtual based class of properties for all types of stream
 class AvExport StreamProperties
 {
 public:
-    StreamProperties(const FormatContext& formatContext, const size_t index);
+    StreamProperties(const FileProperties& fileProperties, const size_t index);
     virtual ~StreamProperties() = 0;
 
     size_t getStreamIndex() const { return _streamIndex; }
@@ -65,6 +67,7 @@ private:
 #endif
 
 protected:
+    const FileProperties* _fileProperties; ///< Has link (no ownership)
     const AVFormatContext* _formatContext; ///< Has link (no ownership)
     AVCodecContext* _codecContext;         ///< Has link (no ownership)
     AVCodec* _codec;                       ///< Has link (no ownership)

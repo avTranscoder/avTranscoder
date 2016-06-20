@@ -9,8 +9,8 @@ namespace avtranscoder
 class AvExport DataProperties : public StreamProperties
 {
 public:
-    DataProperties(const FormatContext& formatContext, const size_t index)
-        : StreamProperties(formatContext, index)
+    DataProperties(const FileProperties& fileProperties, const size_t index)
+        : StreamProperties(fileProperties, index)
     {
     }
 

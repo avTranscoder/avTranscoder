@@ -44,37 +44,37 @@ void FileProperties::extractStreamProperties(IProgress& progress, const EAnalyse
         {
             case AVMEDIA_TYPE_VIDEO:
             {
-                VideoProperties properties(*_formatContext, streamIndex, progress, level);
+                VideoProperties properties(*this, streamIndex, progress, level);
                 _videoStreams.push_back(properties);
                 break;
             }
             case AVMEDIA_TYPE_AUDIO:
             {
-                AudioProperties properties(*_formatContext, streamIndex);
+                AudioProperties properties(*this, streamIndex);
                 _audioStreams.push_back(properties);
                 break;
             }
             case AVMEDIA_TYPE_DATA:
             {
-                DataProperties properties(*_formatContext, streamIndex);
+                DataProperties properties(*this, streamIndex);
                 _dataStreams.push_back(properties);
                 break;
             }
             case AVMEDIA_TYPE_SUBTITLE:
             {
-                SubtitleProperties properties(*_formatContext, streamIndex);
+                SubtitleProperties properties(*this, streamIndex);
                 _subtitleStreams.push_back(properties);
                 break;
             }
             case AVMEDIA_TYPE_ATTACHMENT:
             {
-                AttachementProperties properties(*_formatContext, streamIndex);
+                AttachementProperties properties(*this, streamIndex);
                 _attachementStreams.push_back(properties);
                 break;
             }
             case AVMEDIA_TYPE_UNKNOWN:
             {
-                UnknownProperties properties(*_formatContext, streamIndex);
+                UnknownProperties properties(*this, streamIndex);
                 _unknownStreams.push_back(properties);
                 break;
             }

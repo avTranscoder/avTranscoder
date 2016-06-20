@@ -2,14 +2,16 @@
 
 #include <AvTranscoder/properties/util.hpp>
 #include <AvTranscoder/properties/JsonWriter.hpp>
+#include <AvTranscoder/properties/FileProperties.hpp>
 
 #include <stdexcept>
 
 namespace avtranscoder
 {
 
-StreamProperties::StreamProperties(const FormatContext& formatContext, const size_t index)
-    : _formatContext(&formatContext.getAVFormatContext())
+StreamProperties::StreamProperties(const FileProperties& fileProperties, const size_t index)
+    : _fileProperties(&fileProperties)
+    , _formatContext(&fileProperties.getAVFormatContext())
     , _codecContext(NULL)
     , _codec(NULL)
     , _streamIndex(index)

@@ -21,7 +21,7 @@ namespace avtranscoder
 class AvExport VideoProperties : public StreamProperties
 {
 public:
-    VideoProperties(const FormatContext& formatContext, const size_t index, IProgress& progress,
+    VideoProperties(const FileProperties& fileProperties, const size_t index, IProgress& progress,
                     const EAnalyseLevel level = eAnalyseLevelFirstGop);
 
     std::string getProfileName() const;

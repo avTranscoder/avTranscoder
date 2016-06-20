@@ -17,9 +17,9 @@ extern "C" {
 namespace avtranscoder
 {
 
-VideoProperties::VideoProperties(const FormatContext& formatContext, const size_t index, IProgress& progress,
+VideoProperties::VideoProperties(const FileProperties& fileProperties, const size_t index, IProgress& progress,
                                  const EAnalyseLevel level)
-    : StreamProperties(formatContext, index)
+    : StreamProperties(fileProperties, index)
     , _levelAnalysis(level)
     , _pixelProperties()
     , _isInterlaced(false)
