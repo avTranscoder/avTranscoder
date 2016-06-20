@@ -257,6 +257,8 @@ PropertyVector& FileProperties::fillVector(PropertyVector& data) const
     addProperty(data, "startTime", &FileProperties::getStartTime);
     addProperty(data, "duration", &FileProperties::getDuration);
     addProperty(data, "bitrate", &FileProperties::getBitRate);
+    addProperty(data, "fileSize", &FileProperties::getFileSize);
+    addProperty(data, "packetSize", &FileProperties::getPacketSize);
     addProperty(data, "numberOfStreams", &FileProperties::getNbStreams);
     addProperty(data, "numberOfPrograms", &FileProperties::getProgramsCount);
 
