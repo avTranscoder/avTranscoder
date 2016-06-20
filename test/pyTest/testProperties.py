@@ -3,12 +3,14 @@ import os
 # Check if environment is setup to run the tests
 if os.environ.get('AVTRANSCODER_TEST_AUDIO_WAVE_FILE') is None or \
     os.environ.get('AVTRANSCODER_TEST_VIDEO_MP4_FILE') is None or \
-    os.environ.get('AVTRANSCODER_TEST_VIDEO_MOV_FILE') is None:
+    os.environ.get('AVTRANSCODER_TEST_VIDEO_MOV_FILE') is None or \
+    os.environ.get('AVTRANSCODER_TEST_VIDEO_RAW_FILE') is None:
     from nose.plugins.skip import SkipTest
     raise SkipTest("Need to define environment variables "
         "AVTRANSCODER_TEST_AUDIO_WAVE_FILE and "
         "AVTRANSCODER_TEST_VIDEO_MP4_FILE and "
-        "AVTRANSCODER_TEST_VIDEO_MOV_FILE")
+        "AVTRANSCODER_TEST_VIDEO_MOV_FILE and "
+        "AVTRANSCODER_TEST_VIDEO_RAW_FILE")
 
 from nose.tools import *
 
@@ -96,6 +98,36 @@ def testCheckVideoProperties():
     assert_equals( videoStream.getNbFrames(), expectedNbFrames )
     assert_equals( round(videoStream.getDuration(), 2), expectedDuration )
     assert_equals( videoStream.getFps(), expectedFps )
+
+
+
+def testCheckRawVideoProperties():
+    """
+    Check properties of a raw video stream.
+    A raw stream does not contain header (so the duration, number of frames... needs to be computed).
+    """
+    inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_RAW_FILE']
+    progress = av.NoDisplayProgress()
+    inputFile = av.InputFile(inputFileName)
+    inputFile.analyse(progress, av.eAnalyseLevelFirstGop)
+    properties = inputFile.getProperties()
+
+    assert_true(properties.isRawFormat())
+    assert_equals(properties.getNbStreams(), 1)
+    assert_equals(properties.getNbVideoStreams(), 1)
+    assert_equals(properties.getDuration(), 0) # file duration is unknown
+    assert_equals(properties.getBitRate(), 0) # file bitrate is unknown
+
+    expectedBitRate = 177200L
+    expectedNbFrames = 200
+    expectedDuration = 8
+    expectedFps = 25
+
+    videoStream = properties.getVideoProperties()[0]
+    assert_equals(videoStream.getNbFrames(), expectedNbFrames)
+    assert_equals(videoStream.getDuration(), expectedDuration)
+    assert_equals(videoStream.getBitRate(), expectedBitRate)
+    assert_equals(videoStream.getFps(), expectedFps)
 
 
 def testCheckAudioProperties():
