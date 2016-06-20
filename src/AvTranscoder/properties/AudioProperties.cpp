@@ -129,7 +129,7 @@ size_t AudioProperties::getBitRate() const
 
     // else get computed bit rate from our computation (warning: way to compute bit rate of PCM audio data)
     const int bitsPerSample = av_get_bits_per_sample(_codecContext->codec_id); // 0 if unknown for the given codec
-    return _codecContext->sample_rate * _codecContext->channels * bitsPerSample;
+    return getSampleRate() * getNbChannels() * bitsPerSample;
 }
 
 size_t AudioProperties::getNbSamples() const
