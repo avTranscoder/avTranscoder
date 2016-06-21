@@ -118,6 +118,9 @@ def testCheckRawVideoProperties():
     assert_equals(properties.getDuration(), 0) # file duration is unknown
     assert_equals(properties.getBitRate(), 0) # file bitrate is unknown
 
+    expectedFileSize = 256293L
+    assert_equals(properties.getFileSize(), expectedFileSize)
+
     expectedBitRate = 177200L
     expectedNbFrames = 200
     expectedDuration = 8
