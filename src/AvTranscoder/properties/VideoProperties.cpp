@@ -334,10 +334,6 @@ size_t VideoProperties::getBitRate() const
     if(!_codecContext->width || !_codecContext->height)
         throw std::runtime_error("cannot compute bit rate: invalid frame size");
 
-    // Needed to get the gop size
-    if(getGopSize() == 0)
-        throw std::runtime_error("cannot compute bit rate: need to get info from the first gop (see eAnalyseLevelFirstGop)");
-
     LOG_WARN("The bitrate of the stream '" << _streamIndex << "' of file '" << _formatContext->filename << "' is unknown.")
     LOG_INFO("Decode the first GOP to compute the bitrate.")
 
@@ -350,8 +346,10 @@ size_t VideoProperties::getBitRate() const
     avcodec_open2(_codecContext, _codec, NULL);
 
     int gotFrame = 0;
-    size_t count = 0;
+    size_t nbDecodedFrames = 0;
     int gopFramesSize = 0;
+    int positionOfFirstKeyFrame = -1;
+    int positionOfLastKeyFrame = -1;
 
     while(!av_read_frame(const_cast<AVFormatContext*>(_formatContext), &pkt))
     {
@@ -360,20 +358,35 @@ size_t VideoProperties::getBitRate() const
             avcodec_decode_video2(_codecContext, &frame.getAVFrame(), &gotFrame, &pkt);
             if(gotFrame)
             {
+                // check distance between key frames
+                AVFrame& avFrame = frame.getAVFrame();
+                if(avFrame.pict_type == AV_PICTURE_TYPE_I)
+                {
+                    if(positionOfFirstKeyFrame == -1)
+                        positionOfFirstKeyFrame = nbDecodedFrames;
+                    else
+                        positionOfLastKeyFrame = nbDecodedFrames;
+                }
+                ++nbDecodedFrames;
+
+                // added size of all frames of the same gop
+                if(positionOfLastKeyFrame == -1)
+                {
 #if LIBAVUTIL_VERSION_INT >= AV_VERSION_INT(54, 7, 100)
-                gopFramesSize += frame.getEncodedSize();
+                    gopFramesSize += frame.getEncodedSize();
 #else
-                gopFramesSize += pkt.size;
+                    gopFramesSize += pkt.size;
 #endif
-                ++count;
+                }
             }
         }
         av_free_packet(&pkt);
-        if(getGopSize() == count)
+        if(positionOfFirstKeyFrame != -1 && positionOfLastKeyFrame != -1)
             break;
     }
 
-    return (gopFramesSize / getGopSize()) * 8 * getFps();
+    const size_t gopSize = positionOfLastKeyFrame - positionOfFirstKeyFrame;
+    return (gopFramesSize / gopSize) * 8 * getFps();
 }
 
 size_t VideoProperties::getMaxBitRate() const
