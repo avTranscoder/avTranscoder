@@ -484,6 +484,9 @@ void VideoProperties::analyseGopStructure(IProgress& progress)
 
             // Close a given AVCodecContext and free all the data associated with it (but not the AVCodecContext itself)
             avcodec_close(_codecContext);
+
+            // Returns at the beginning of the stream
+            const_cast<FormatContext*>(&_fileProperties->getFormatContext())->seek(0, AVSEEK_FLAG_BYTE);
         }
     }
 }

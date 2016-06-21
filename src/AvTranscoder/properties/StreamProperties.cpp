@@ -139,7 +139,11 @@ size_t StreamProperties::getBitRate() const
             if(positionOfFirstKeyFrame != -1 && positionOfLastKeyFrame != -1)
                 break;
         }
+        // Close a given AVCodecContext and free all the data associated with it (but not the AVCodecContext itself)
         avcodec_close(_codecContext);
+
+        // Returns at the beginning of the stream
+        const_cast<FormatContext*>(&_fileProperties->getFormatContext())->seek(0, AVSEEK_FLAG_BYTE);
 
         const size_t gopSize = positionOfLastKeyFrame - positionOfFirstKeyFrame;
         if(gopSize > 0)
