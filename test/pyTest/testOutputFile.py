@@ -14,7 +14,7 @@ def testCreateOutputFileWithExtension():
 
     assert_equals( ouputFile.getFilename(), outputFileName )
     assert_equals( ouputFile.getFormatName(), formatName )
-    assert_equals( ouputFile.getFormatLongName(), formatLongName )
+    assert_in( ouputFile.getFormatLongName(), (formatLongName, '') )
 
 
 @raises(IOError)
@@ -38,7 +38,7 @@ def testCreateOutputFileWithoutExtensionWithFormat():
 
     assert_equals( ouputFile.getFilename(), outputFileName )
     assert_equals( ouputFile.getFormatName(), formatName )
-    assert_equals( ouputFile.getFormatLongName(), formatLongName )
+    assert_in( ouputFile.getFormatLongName(), (formatLongName, '') )
 
 
 def testCreateOutputFileWithUnknownExtensionWithFormat():
@@ -53,7 +53,7 @@ def testCreateOutputFileWithUnknownExtensionWithFormat():
 
     assert_equals(ouputFile.getFilename(), outputFileName)
     assert_equals(ouputFile.getFormatName(), formatName)
-    assert_equals(ouputFile.getFormatLongName(), formatLongName)
+    assert_in( ouputFile.getFormatLongName(), (formatLongName, '') )
 
 
 def testCreateOutputFileWithoutExtensionWithMimeType():
@@ -83,7 +83,7 @@ def testCreateOutputFileWithoutExtensionWithInconsistentFormatAndMimeType():
 
     assert_equals( ouputFile.getFilename(), outputFileName )
     assert_equals( ouputFile.getFormatName(), formatName )
-    assert_equals( ouputFile.getFormatLongName(), formatLongName )
+    assert_in( ouputFile.getFormatLongName(), (formatLongName, '') )
     assert_not_equals( ouputFile.getFormatMimeType(), mimeType )
 
 
