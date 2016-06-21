@@ -87,16 +87,6 @@ public:
      */
     virtual void setupUnwrapping(const ProfileLoader::Profile& profile);
 
-public:
-    /**
-     * @brief Get media file properties using static method.
-     * @param filename input filename
-     * @param progress callback to get analysis progression
-     * @return structure of media metadatas
-     **/
-    static FileProperties analyseFile(const std::string& filename, IProgress& progress,
-                                      const EAnalyseLevel level = eAnalyseLevelFirstGop);
-
 private:
     /**
      * @brief Get Fps from first video stream
