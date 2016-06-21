@@ -373,8 +373,7 @@ size_t VideoProperties::getBitRate() const
             break;
     }
 
-    int bitsPerByte = 8;
-    return (gopFramesSize / getGopSize()) * bitsPerByte * getFps();
+    return (gopFramesSize / getGopSize()) * 8 * getFps();
 }
 
 size_t VideoProperties::getMaxBitRate() const
