@@ -70,3 +70,13 @@ def testCreateOutputFileWithoutExtensionWithInconsistentFormatAndMimeType():
     assert_equals( ouputFile.getFormatName(), formatName )
     assert_equals( ouputFile.getFormatLongName(), formatLongName )
     assert_not_equals( ouputFile.getFormatMimeType(), mimeType )
+
+
+@raises(RuntimeError)
+def testGetUnexistedOutputStream():
+    """
+    Create an OutputFile, and try to access a stream which does not exist.
+    """
+    outputFileName = "testGetUnexistedOutputStream.mov"
+    ouputFile = av.OutputFile(outputFileName)
+    ouputFile.getStream(0)
