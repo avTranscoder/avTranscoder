@@ -17,7 +17,7 @@ from nose.tools import *
 from pyAvTranscoder import avtranscoder as av
 
 
-def testAddMetadataDate():
+def testAddPossibleMetadata():
     """
     Add metadata 'date' to the outputFile.
     """
@@ -29,9 +29,10 @@ def testAddMetadataDate():
     # rewrap a stream
     transcoder.add( os.environ['AVTRANSCODER_TEST_AUDIO_WAVE_FILE'], 0, "")
 
-    # add one metadata
-    metadata_to_check = ("date", "value")
-    ouputFile.addMetadata( metadata_to_check[0], metadata_to_check[1] )
+    # add a set of metadata
+    metadata_to_check = av.PropertyVector()
+    metadata_to_check.append(("date", "value"))
+    ouputFile.addMetadata(metadata_to_check)
 
     progress = av.NoDisplayProgress()
     transcoder.process( progress )
@@ -40,7 +41,8 @@ def testAddMetadataDate():
     inputFile.analyse( progress, av.eAnalyseLevelHeader )
     properties = inputFile.getProperties()
 
-    assert_in( metadata_to_check, properties.getMetadatas() )
+    for metadata in metadata_to_check:
+        assert_in( metadata, properties.getMetadatas() )
 
 
 def testAddImpossibleMetadata():
