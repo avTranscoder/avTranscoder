@@ -41,6 +41,21 @@ def testCreateOutputFileWithoutExtensionWithFormat():
     assert_equals( ouputFile.getFormatLongName(), formatLongName )
 
 
+def testCreateOutputFileWithUnknownExtensionWithFormat():
+    """
+    Create an OutputFile with a filename with an unknown extension.
+    Indicate the format.
+    """
+    formatName = "h264"
+    formatLongName = "raw H.264 video"
+    outputFileName = "testCreateOutputFileWithUnknownExtensionWithFormat.avc"
+    ouputFile = av.OutputFile(outputFileName, formatName)
+
+    assert_equals(ouputFile.getFilename(), outputFileName)
+    assert_equals(ouputFile.getFormatName(), formatName)
+    assert_equals(ouputFile.getFormatLongName(), formatLongName)
+
+
 def testCreateOutputFileWithoutExtensionWithMimeType():
     """
     Create an OutputFile with a filename without extension.
