@@ -68,7 +68,7 @@ install(
 install(FILES
         ${CMAKE_CURRENT_BINARY_DIR}/cmake/AvTranscoderConfig.cmake
         ${PROJECT_SOURCE_DIR}/cmake/FindAvTranscoder.cmake
-	DESTINATION "lib/cmake/AvTranscoder"
+	DESTINATION "share/cmake/AvTranscoder"
 )
 
 ### Bindings with SWIG
