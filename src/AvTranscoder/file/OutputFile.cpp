@@ -43,7 +43,7 @@ IOutputStream& OutputFile::addVideoStream(const VideoCodec& videoDesc)
     stream.codec->field_order = videoDesc.getAVCodecContext().field_order;
 
     if (_formatContext.getAVOutputFormat().flags & AVFMT_GLOBALHEADER) {
-        stream.codec->flags = CODEC_FLAG_GLOBAL_HEADER;
+        stream.codec->flags |= CODEC_FLAG_GLOBAL_HEADER;
     }
 
     // if the codec is experimental, allow it
