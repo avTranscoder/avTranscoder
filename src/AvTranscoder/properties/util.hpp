@@ -46,6 +46,12 @@ void add(PropertyVector& propertyVector, const std::string& key, const T& value)
 }
 
 template <>
+void add(PropertyVector& propertyVector, const std::string& key, const size_t& value);
+
+template <>
+void add(PropertyVector& propertyVector, const std::string& key, const float& value);
+
+template <>
 void add(PropertyVector& propertyVector, const std::string& key, const std::string& value);
 
 template <>

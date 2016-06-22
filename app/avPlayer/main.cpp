@@ -14,7 +14,7 @@ int main(int argc, char** argv)
 
     std::string help;
     help += "Usage\n";
-    help += "\tavplay filename [streamIndex] [--width width] [--height height] [--help]\n";
+    help += "\tavplayer filename [streamIndex] [--width width] [--height height] [--help]\n";
     help += "Command line options\n";
     help += "\tstreamIndex: specify the index of the stream to read (by default 0)\n";
     help += "\t--width: specify the output width (by default the same as input)\n";

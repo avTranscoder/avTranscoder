@@ -1,8 +1,8 @@
 # avTranscoder
 
-C++ API for Libav / FFmpeg
+High level API for FFmpeg / Libav.
 
-Based on Libav/FFmpeg libraries to support various video and audio formats, avTranscoder provides the high level API to re-wrap or transcode media easily.
+Based on FFmpeg/Libav libraries to support various video and audio formats, avTranscoder provides the high level API to re-wrap or transcode media easily.
 
 [![Build Status](https://travis-ci.org/avTranscoder/avTranscoder.svg?branch=develop)](https://travis-ci.org/avTranscoder/avTranscoder)
 [![Build status](https://ci.appveyor.com/api/projects/status/6urf0otyhtj8xuny?svg=true)](https://ci.appveyor.com/project/cchampet/avtranscoder)
@@ -13,11 +13,13 @@ Based on Libav/FFmpeg libraries to support various video and audio formats, avTr
 [![Stories in Progress](https://badge.waffle.io/avTranscoder/avTranscoder.svg?label=2 - Working&title=In Progress)](http://waffle.io/avTranscoder/avTranscoder)   
 Click on the badge above to have a big picture view of what's in progress and how you can help.  
 
-#### What you need to know
-* C++ library
-* Java and Python bindings generated with SWIG
-* multiplateform (Linux, MAC, Windows)
-* your call to be based on Libav, FFmpeg, or your custom fork of one of these librairies
+:warning: The latest avTranscoder API does not fit with libav.
+
+#### The basics
+* avTranscoder is a C++ library.
+* avTranscoder uses [SWIG](http://www.swig.org/) to generate __Java__ and __Python__ bindings.
+* avTranscoder is multiplateform (Linux, MAC, Windows).
+* avTranscoder could be based on [Libav](https://libav.org/), [FFmpeg](https://ffmpeg.org/), or your custom fork of one of these librairies.
 
 #### License
 See [**COPYING.md**](COPYING.md)
@@ -30,23 +32,6 @@ See [**Doxygen documentation**](http://avtranscoder.github.io/avTranscoder-doxyg
 
 #### Compilation
 See [**INSTALL.md**](INSTALL.md)
-
-#### Tests
-
-###### nosetests
-Python tests using nosetests.
-```
-cd test/pyTest
-nosetests
-```
-
-Some tests need environment variables to be executed (otherwise they will be skipped):
-* ```AVTRANSCODER_TEST_VIDEO_FILE```
-* ```AVTRANSCODER_TEST_AUDIO_WAVE_FILE```
-* ```AVTRANSCODER_TEST_AUDIO_MOV_FILE```
-
-Note: for continuous integration, we launch tests with media files contained in ```avTranscoder-data``` repository.
-
 
 #### Packaging
 

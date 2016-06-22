@@ -122,11 +122,9 @@ size_t AudioFrame::getSize() const
 void AudioFrame::allocateAVSample(const AudioFrameDesc& desc)
 {
     // Set Frame properties
-    _frame->sample_rate = desc._sampleRate;
-#ifdef AVTRANSCODER_FFMPEG_DEPENDENCY
-    _frame->channels = desc._nbChannels;
-#endif
-    _frame->channel_layout = av_get_default_channel_layout(desc._nbChannels);
+    av_frame_set_sample_rate(_frame, desc._sampleRate);
+    av_frame_set_channels(_frame, desc._nbChannels);
+    av_frame_set_channel_layout(_frame, av_get_default_channel_layout(desc._nbChannels));
     _frame->format = desc._sampleFormat;
     _frame->nb_samples = desc._sampleRate / 25.; // cannot be known before calling avcodec_decode_audio4
 

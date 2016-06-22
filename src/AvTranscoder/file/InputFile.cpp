@@ -68,7 +68,7 @@ bool InputFile::readNextPacket(CodedData& data, const size_t streamIndex)
         const int ret = av_read_frame(&_formatContext.getAVFormatContext(), &data.getAVPacket());
         if(ret < 0) // error or end of file
         {
-            LOG_INFO("No more data to read on file '" << _filename << "' for stream " << streamIndex)
+            LOG_INFO("Stop reading the next frame of file '" << _filename << "', stream " << streamIndex << " (" << getDescriptionFromErrorCode(ret) << ")")
             return false;
         }
 
@@ -80,7 +80,7 @@ bool InputFile::readNextPacket(CodedData& data, const size_t streamIndex)
         const int packetStreamIndex = data.getAVPacket().stream_index;
         if(packetStreamIndex == (int)streamIndex)
         {
-            LOG_DEBUG("Get a packet data of the stream " << streamIndex)
+            LOG_DEBUG("Get a packet from stream " << streamIndex)
             nextPacketFound = true;
         }
         // else add the packet data to the stream cache
@@ -124,42 +124,6 @@ InputStream& InputFile::getStream(size_t index)
         msg << index;
         throw std::runtime_error(msg.str());
     }
-}
-
-std::string InputFile::getFormatName() const
-{
-    if(_formatContext.getAVInputFormat().name == NULL)
-    {
-        LOG_WARN("Unknown demuxer format name of '" << _filename << "'.")
-        return "";
-    }
-    return std::string(_formatContext.getAVInputFormat().name);
-}
-
-std::string InputFile::getFormatLongName() const
-{
-    if(_formatContext.getAVInputFormat().long_name == NULL)
-    {
-        LOG_WARN("Unknown demuxer format long name of '" << _filename << "'.")
-        return "";
-    }
-    return std::string(_formatContext.getAVInputFormat().long_name);
-}
-
-std::string InputFile::getFormatMimeType() const
-{
-#if LIBAVFORMAT_VERSION_MAJOR <= 55
-    LOG_WARN("Cannot get mime type format of '" << _filename
-                                                << "' because your libavformat library has a major version <= 55.")
-    return "not available";
-#else
-    if(_formatContext.getAVInputFormat().mime_type == NULL)
-    {
-        LOG_WARN("Unknown demuxer format mime type of '" << _filename << "'.")
-        return "";
-    }
-    return std::string(_formatContext.getAVInputFormat().mime_type);
-#endif
 }
 
 double InputFile::getFps()

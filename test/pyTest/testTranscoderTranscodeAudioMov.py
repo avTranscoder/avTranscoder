@@ -47,7 +47,6 @@ def testTranscodeMovVariableNbSamplesPerFrame():
     dst_audioStream = dst_properties.getAudioProperties()[0]
 
     assert_equals( "pcm_s24le", dst_audioStream.getCodecName() )
-    assert_equals( "PCM signed 24-bit little-endian", dst_audioStream.getCodecLongName() )
 
 
 def testTranscodeMovExtractChannels():

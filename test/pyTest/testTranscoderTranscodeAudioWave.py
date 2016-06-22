@@ -38,11 +38,11 @@ def testTranscodeWave24b48k5_1():
     dst_audioStream = dst_properties.getAudioProperties()[0]
 
     assert_equals( "pcm_s24le", dst_audioStream.getCodecName() )
-    assert_equals( "PCM signed 24-bit little-endian", dst_audioStream.getCodecLongName() )
     assert_equals( "s32", dst_audioStream.getSampleFormatName() )
     assert_equals( "signed 32 bits", dst_audioStream.getSampleFormatLongName() )
     assert_equals( 48000, dst_audioStream.getSampleRate() )
     assert_equals( 6, dst_audioStream.getNbChannels() )
+
 
 def testTranscodeWave24b48kstereo():
     """
@@ -72,11 +72,11 @@ def testTranscodeWave24b48kstereo():
     dst_audioStream = dst_properties.getAudioProperties()[0]
 
     assert_equals( "pcm_s24le", dst_audioStream.getCodecName() )
-    assert_equals( "PCM signed 24-bit little-endian", dst_audioStream.getCodecLongName() )
     assert_equals( "s32", dst_audioStream.getSampleFormatName() )
     assert_equals( "signed 32 bits", dst_audioStream.getSampleFormatLongName() )
     assert_equals( 48000, dst_audioStream.getSampleRate() )
     assert_equals( 2, dst_audioStream.getNbChannels() )
+
 
 def testTranscodeWave24b48kmono():
     """
@@ -106,11 +106,11 @@ def testTranscodeWave24b48kmono():
     dst_audioStream = dst_properties.getAudioProperties()[0]
 
     assert_equals( "pcm_s24le", dst_audioStream.getCodecName() )
-    assert_equals( "PCM signed 24-bit little-endian", dst_audioStream.getCodecLongName() )
     assert_equals( "s32", dst_audioStream.getSampleFormatName() )
     assert_equals( "signed 32 bits", dst_audioStream.getSampleFormatLongName() )
     assert_equals( 48000, dst_audioStream.getSampleRate() )
     assert_equals( 1, dst_audioStream.getNbChannels() )
+
 
 def testTranscodeWave16b48kmono():
     """
@@ -140,7 +140,43 @@ def testTranscodeWave16b48kmono():
     dst_audioStream = dst_properties.getAudioProperties()[0]
 
     assert_equals( "pcm_s16le", dst_audioStream.getCodecName() )
-    assert_equals( "PCM signed 16-bit little-endian", dst_audioStream.getCodecLongName() )
+    assert_equals( "s16", dst_audioStream.getSampleFormatName() )
+    assert_equals( "signed 16 bits", dst_audioStream.getSampleFormatLongName() )
+    assert_equals( 48000, dst_audioStream.getSampleRate() )
+    assert_equals( 1, dst_audioStream.getNbChannels() )
+
+
+def testTranscodeWave16b48kmonoWithSilence():
+    """
+    Transcode one audio stream (profile wave16b48kmono).
+    Complete with silence.
+    """
+    inputFileName = os.environ['AVTRANSCODER_TEST_AUDIO_WAVE_FILE']
+    outputFileName = "testTranscodeWave16b48kmonoWithSilence.wav"
+    outputDuration = 50
+
+    ouputFile = av.OutputFile( outputFileName )
+    transcoder = av.Transcoder( ouputFile )
+    transcoder.setProcessMethod( av.eProcessMethodBasedOnDuration, 0, outputDuration )
+
+    inputFile = av.InputFile( inputFileName )
+    src_audioStream = inputFile.getProperties().getAudioProperties()[0]
+    audioStreamIndex = src_audioStream.getStreamIndex()
+    transcoder.add( inputFileName, audioStreamIndex, "wave16b48kmono" )
+
+    progress = av.ConsoleProgress()
+    processStat = transcoder.process( progress )
+
+    # check process stat returned
+    audioStat = processStat.getAudioStat(0)
+    assert_almost_equals( audioStat.getDuration(), outputDuration, delta=0.01 )
+
+    # get dst file of transcode
+    dst_inputFile = av.InputFile( outputFileName )
+    dst_properties = dst_inputFile.getProperties()
+    dst_audioStream = dst_properties.getAudioProperties()[0]
+
+    assert_equals( "pcm_s16le", dst_audioStream.getCodecName() )
     assert_equals( "s16", dst_audioStream.getSampleFormatName() )
     assert_equals( "signed 16 bits", dst_audioStream.getSampleFormatLongName() )
     assert_equals( 48000, dst_audioStream.getSampleRate() )

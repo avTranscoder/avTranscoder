@@ -35,16 +35,18 @@ def testTranscodeDnxhd120():
 
     # get dst file of transcode
     dst_inputFile = av.InputFile( outputFileName )
+    dst_inputFile.analyse(progress, av.eAnalyseLevelFirstGop)
     dst_properties = dst_inputFile.getProperties()
     dst_videoStream = dst_properties.getVideoProperties()[0]
 
     assert_equals( "dnxhd", dst_videoStream.getCodecName() )
-    assert_equals( "VC3/DNxHD", dst_videoStream.getCodecLongName() )
     expectedBitRate = 120000000
     deltaBitRate = expectedBitRate * 0.05
     assert_almost_equals( expectedBitRate, dst_videoStream.getBitRate(), delta=deltaBitRate )
     assert_equals( "yuv422p", dst_videoStream.getPixelProperties().getPixelName() )
-    # assert_equals( 1, dst_videoStream.getGopSize() )  # 1 != 12L
+    assert_equals( 1920, dst_videoStream.getWidth() )
+    assert_equals( 1080, dst_videoStream.getHeight() )
+    assert_equals( 1, dst_videoStream.getGopSize() )
 
 def testTranscodeDnxhd185():
     """
@@ -71,16 +73,18 @@ def testTranscodeDnxhd185():
 
     # get dst file of transcode
     dst_inputFile = av.InputFile( outputFileName )
+    dst_inputFile.analyse(progress, av.eAnalyseLevelFirstGop)
     dst_properties = dst_inputFile.getProperties()
     dst_videoStream = dst_properties.getVideoProperties()[0]
 
     assert_equals( "dnxhd", dst_videoStream.getCodecName() )
-    assert_equals( "VC3/DNxHD", dst_videoStream.getCodecLongName() )
     expectedBitRate = 185000000
     deltaBitRate = expectedBitRate * 0.05
     assert_almost_equals( expectedBitRate, dst_videoStream.getBitRate(), delta=deltaBitRate )
     assert_equals( "yuv422p", dst_videoStream.getPixelProperties().getPixelName() )
-    # assert_equals( 1, dst_videoStream.getGopSize() )  # 1 != 12L
+    assert_equals( 1920, dst_videoStream.getWidth() )
+    assert_equals( 1080, dst_videoStream.getHeight() )
+    assert_equals( 1, dst_videoStream.getGopSize() )
 
 def testTranscodeDnxhd185x():
     """
@@ -107,16 +111,18 @@ def testTranscodeDnxhd185x():
 
     # get dst file of transcode
     dst_inputFile = av.InputFile( outputFileName )
+    dst_inputFile.analyse(progress, av.eAnalyseLevelFirstGop)
     dst_properties = dst_inputFile.getProperties()
     dst_videoStream = dst_properties.getVideoProperties()[0]
 
     assert_equals( "dnxhd", dst_videoStream.getCodecName() )
-    assert_equals( "VC3/DNxHD", dst_videoStream.getCodecLongName() )
     expectedBitRate = 185000000
     deltaBitRate = expectedBitRate * 0.05
     assert_almost_equals( expectedBitRate, dst_videoStream.getBitRate(), delta=deltaBitRate )
     assert_equals( "yuv422p10le", dst_videoStream.getPixelProperties().getPixelName() )
-    # assert_equals( 1, dst_videoStream.getGopSize() )  # 1 != 12L
+    assert_equals( 1920, dst_videoStream.getWidth() )
+    assert_equals( 1080, dst_videoStream.getHeight() )
+    assert_equals( 1, dst_videoStream.getGopSize() )
 
 def testTranscodeYUV420():
     """

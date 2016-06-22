@@ -2,6 +2,7 @@
 #define _AV_TRANSCODER_MEDIA_PROPERTY_STREAM_PROPERTIES_HPP
 
 #include <AvTranscoder/common.hpp>
+#include <AvTranscoder/Option.hpp>
 #include <AvTranscoder/properties/util.hpp>
 #include <AvTranscoder/file/FormatContext.hpp>
 
@@ -26,6 +27,17 @@ public:
     std::string getCodecLongName() const;
 
     const PropertyVector& getMetadatas() const { return _metadatas; }
+
+    /**
+     * @return The list of private codec options.
+     * @see getOptionsMap
+     * @see getOption
+     */
+    OptionArray getCodecOptions();
+#ifndef SWIG
+    OptionMap& getCodecOptionsMap() { return _options; } ///< Get options as map
+#endif
+    Option& getCodecOption(const std::string& optionName) { return _options.at(optionName); }
 
 #ifndef SWIG
     const AVFormatContext& getAVFormatContext() const { return *_formatContext; }
@@ -59,6 +71,8 @@ protected:
 
     size_t _streamIndex;
     PropertyVector _metadatas;
+
+    OptionMap _options;
 };
 
 #ifndef SWIG

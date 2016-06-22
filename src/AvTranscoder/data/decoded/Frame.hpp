@@ -18,6 +18,7 @@ class AvExport Frame
 public:
     /**
      * @brief Allocate an empty frame.
+     * @warn This only allocates the AVFrame itself, not the data buffers.
      */
     Frame();
 
@@ -43,8 +44,16 @@ public:
     int* getLineSize() const { return _frame->linesize; }
 
     /**
-    * @brief Copy the data of the given Frame.
-    */
+     * @return Size of the corresponding packet containing the compressed frame (in bytes)
+     * @warning returns a negative value if the size is unknown
+     */
+    int getEncodedSize() const;
+
+    /**
+     * @brief Copy the data of the given Frame.
+     * @note This function does not allocate anything: the current frame must be already initialized and
+     * allocated with the same parameters as the given frame, to be ready for memcpy instructions.
+     */
     void copyData(const Frame& frameToRef);
 
     /**

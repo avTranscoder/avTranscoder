@@ -3,53 +3,67 @@ os:
 
 platform:
   - x86
-#  - x64
+  - x64
 
 environment:
-  FFMPEG_VERSION: 2.4.5
+  global:
+    DEPENDENCY_NAME: ffmpeg
+    DEPENDENCY_VERSION: 2.4.5
+    DEPENDENCY_INSTALL_PATH: C:\ProgramData\install-dependency
+    AVTRANSCODER_INSTALL_PATH: C:\projects\avtranscoder\build\install-avtranscoder
 
-matrix:
-  fast_finish: true
+  matrix:
+    - fast_finish: true
 
 init:
   - call "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" %platform%
 
-before_build:
+install:
+  # Install build dependencies
   - choco install -y swig
   - tools/appveyor/win.install.deps.bat
+
+  # Get the correct python version
+  - ps: if($env:platform -eq 'x86') {
+          $env:PYTHON = "C:\Python27";
+        }
+        else {
+          $env:PYTHON = "C:\Python27-x64";
+        }
+  # Prepend newly installed Python to the PATH of this build
+  - cmd: set PATH=%PYTHON%;%PYTHON%\Scripts;%PATH%
+  - cmd: echo %PATH%
+  # Check that we have the expected version and architecture for Python
+  - "python --version"
+  - "python -c \"import struct; print(struct.calcsize('P') * 8)\""
+  # Upgrade to the latest version of pip to avoid it displaying warnings about it being out of date.
+  - pip install --disable-pip-version-check --user --upgrade pip
+
+  # Install tests dependencies
+  - pip install nose
 
 build_script:
   - tools/appveyor/build.bat
 
-before_test:
-  - set PATH=C:\Python27\scripts;%PATH%
-  - pip install nose
-
 test_script:
-  - cd ..
   - tools/appveyor/python.nosetests.bat
 
 on_failure:
   - type "C:\ProgramData\chocolatey\logs\chocolatey.log"
   - type "C:\projects\avtranscoder\build\CMakeFiles\CMakeOutput.log"
 
-#on_success:
-#  - create archives
+after_test:
+  - 7z a avtranscoder-win%PLATFORM%-%DEPENDENCY_NAME%-%DEPENDENCY_VERSION%.zip %DEPENDENCY_INSTALL_PATH% %AVTRANSCODER_INSTALL_PATH%
+  - ps: Push-AppveyorArtifact avtranscoder-win*.zip
 
-#artifacts:
-#  - path: C:\ProgramData\ffmpeg-2.2.11
-#    name: ffmpeg
-#    type: zip
+artifacts:
+  - path: avtranscoder-win*.zip
+    name: avtranscoder
 
-#  - path: C:\projects\avtranscoder\build
-#    name: avtranscoder
-#    type: zip
-
-#deploy:
-#  - provider: GitHub
-#    artifact: ffmpeg,avtranscoder
-#    auth_token:
-#    secure: <your encrypted token>
-#    on:
-#      branch: master
-#      appveyor_repo_tag: true
+deploy:
+  - provider: GitHub
+    artifact: avtranscoder
+    auth_token:
+      secure: sApasbQe2i7Uu+XNhlkXg+F6zI0VNHUjhq5QfK6/+NSs4lX/9BwhkLvibQc6bmMv
+    on:
+      appveyor_repo_tag: true

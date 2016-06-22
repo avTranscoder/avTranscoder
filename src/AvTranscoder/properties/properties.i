@@ -40,11 +40,14 @@ namespace std {
 %template(PropertyPair)    pair< string, string >;
 %template(PropertyVector)  vector< pair< string, string > >;
 
-%template(GopPair)         pair< char, bool >;
-%template(GopVector)       vector< pair< char, bool > >;
+%template(GopPair)         pair< char, int >;
+%template(GopVector)       vector< pair< char, int > >;
 
 %template(ChannelVector)   vector< avtranscoder::Channel >;
 }
+
+%include <AvTranscoder/file/util.hpp>
+%include <AvTranscoder/file/FormatContext.hpp>
 
 %include <AvTranscoder/properties/util.hpp>
 %include <AvTranscoder/properties/FileProperties.hpp>

@@ -1,6 +1,7 @@
 #include "VideoReader.hpp"
 
 #include <AvTranscoder/decoder/VideoDecoder.hpp>
+#include <AvTranscoder/decoder/VideoGenerator.hpp>
 #include <AvTranscoder/data/decoded/VideoFrame.hpp>
 #include <AvTranscoder/transform/VideoTransform.hpp>
 #include <AvTranscoder/progress/NoDisplayProgress.hpp>
@@ -40,6 +41,10 @@ void VideoReader::init()
     // setup decoder
     _decoder = new VideoDecoder(_inputFile->getStream(_streamIndex));
     _decoder->setupDecoder();
+    _currentDecoder = _decoder;
+
+    // generator
+    _generator = new VideoGenerator(_inputFile->getStream(_streamIndex).getVideoCodec().getVideoFrameDesc());
 
     // create transform
     _transform = new VideoTransform();
@@ -56,6 +61,7 @@ void VideoReader::init()
 VideoReader::~VideoReader()
 {
     delete _decoder;
+    delete _generator;
     delete _srcFrame;
     delete _dstFrame;
     delete _transform;

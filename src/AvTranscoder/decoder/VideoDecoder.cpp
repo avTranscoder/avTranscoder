@@ -85,15 +85,12 @@ bool VideoDecoder::decodeNextFrame(Frame& frameBuffer)
     {
         CodedData data;
 
+        // reading
         const bool nextPacketRead = _inputStream->readNextPacket(data);
-        // if error or end of file
-        if(!nextPacketRead)
-        {
-            data.clear();
-            return false;
-        }
 
         // decoding
+        // @note could be called several times to return the remaining frames (last call with an empty packet)
+        // @see CODEC_CAP_DELAY
         const int ret = avcodec_decode_video2(&_inputStream->getVideoCodec().getAVCodecContext(), &frameBuffer.getAVFrame(),
                                               &got_frame, &data.getAVPacket());
         if(ret < 0)
@@ -106,6 +103,13 @@ bool VideoDecoder::decodeNextFrame(Frame& frameBuffer)
             decodeNextFrame = false;
         else
             decodeNextFrame = true;
+
+        // if no frame read and decompressed
+        if(!nextPacketRead && !decodeNextFrame)
+        {
+            data.clear();
+            return false;
+        }
     }
     return decodeNextFrame;
 }

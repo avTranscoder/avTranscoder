@@ -5,6 +5,10 @@ include(AvTranscoderMacros)
 # AvTranscoder versions
 message(STATUS "AvTranscoder version is ${AVTRANSCODER_VERSION}")
 
+# Create a CMake package definition
+configure_file(${PROJECT_SOURCE_DIR}/cmake/AvTranscoderConfig.cmake.in
+   ${CMAKE_CURRENT_BINARY_DIR}/cmake/AvTranscoderConfig.cmake @ONLY)
+
 # Find package ffmpeg/libav
 find_package(FFmpeg COMPONENTS avcodec avformat avutil swscale avfilter swresample avresample)
 if(swresample_FOUND)
@@ -58,6 +62,13 @@ install(
 	DESTINATION "share"
 	FILES_MATCHING
 	PATTERN "*.prf"
+)
+
+### Install AvTranscoder CMake modules
+install(FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/cmake/AvTranscoderConfig.cmake
+        ${PROJECT_SOURCE_DIR}/cmake/FindAvTranscoder.cmake
+	DESTINATION "share/cmake/AvTranscoder"
 )
 
 ### Bindings with SWIG

@@ -9,7 +9,7 @@ namespace std {
 
 // Create instantiations of a template classes
 %template(OptionArray) vector< avtranscoder::Option >;
-%template(IntPair) pair< size_t, size_t >;
+%template(IntPair) pair< int, int >;
 }
 
 %include <AvTranscoder/Option.hpp>

@@ -18,14 +18,29 @@ env:
      - AVTRANSCODER_BUILD_PATH=${TRAVIS_BUILD_DIR}/build-avtranscoder
      - AVTRANSCODER_INSTALL=install-avtranscoder
      - AVTRANSCODER_INSTALL_PATH=${TRAVIS_BUILD_DIR}/${AVTRANSCODER_INSTALL}
+
      - DEPENDENCY_INSTALL=install-dependency
      - DEPENDENCY_INSTALL_PATH=${TRAVIS_BUILD_DIR}/${DEPENDENCY_INSTALL}
+
+     - DEPENDENCY_LOG_FILE=${TRAVIS_BUILD_DIR}/build-dependencies-log.txt
+
+     - YASM_VERSION=1.3.0
+     - LAME_VERSION=3.99.5
+     - FAAC_VERSION=1.28
+     - XVID_VERSION=1.3.3
+     - FDKAAC_VERSION=0.1.3
+     - OGG_VERSION=1.3.2
+     - VORBIS_VERSION=1.3.4
+     - VPX_VERSION=1.4.0
   matrix:
     - DEPENDENCY_NAME=libav DEPENDENCY_VERSION=11.3 ENABLE_COVERAGE=true
     - DEPENDENCY_NAME=libav DEPENDENCY_VERSION=11.3 ENABLE_COVERAGE=false
     - DEPENDENCY_NAME=ffmpeg DEPENDENCY_VERSION=2.4.2 ENABLE_COVERAGE=true
     - DEPENDENCY_NAME=ffmpeg DEPENDENCY_VERSION=2.4.2 ENABLE_COVERAGE=false
     - DEPENDENCY_NAME=ffmpeg DEPENDENCY_VERSION=2.5.7 ENABLE_COVERAGE=false
+    - DEPENDENCY_NAME=ffmpeg DEPENDENCY_VERSION=2.6.8 ENABLE_COVERAGE=false
+    - DEPENDENCY_NAME=ffmpeg DEPENDENCY_VERSION=2.7.6 ENABLE_COVERAGE=false
+    - DEPENDENCY_NAME=ffmpeg DEPENDENCY_VERSION=2.8.6 ENABLE_COVERAGE=false
 
 matrix:
   exclude:
@@ -39,6 +54,12 @@ matrix:
       env: DEPENDENCY_NAME=libav DEPENDENCY_VERSION=11.3 ENABLE_COVERAGE=true
     - os: osx
       env: DEPENDENCY_NAME=ffmpeg DEPENDENCY_VERSION=2.4.2 ENABLE_COVERAGE=true
+  allow_failures:
+    # build with libav
+    - env: DEPENDENCY_NAME=libav DEPENDENCY_VERSION=11.3 ENABLE_COVERAGE=true
+    - env: DEPENDENCY_NAME=libav DEPENDENCY_VERSION=11.3 ENABLE_COVERAGE=false
+    # build with ffmpeg-2.8.6
+    - env: DEPENDENCY_NAME=ffmpeg DEPENDENCY_VERSION=2.8.6 ENABLE_COVERAGE=false
   fast_finish: true
 
 # This results in a 2×2×2x2 build matrix.
@@ -83,11 +104,15 @@ script:
   - ./tools/travis/build.sh
 
   # launch tests
-  - if [ ${TRAVIS_OS_NAME} = "linux" ] && [ ${DEPENDENCY_NAME} = "ffmpeg" ]; then ./tools/travis/python.nosetests.sh; fi
+  - if [ ${TRAVIS_OS_NAME} = "linux" ]; then ./tools/travis/python.nosetests.sh; fi
 
 after_success:
   # generate coverage for coveralls
   - if [ ${ENABLE_COVERAGE} ]; then ./tools/travis/gcc.generate.coverage.sh; fi
+
+after_failure:
+  - cat ${AVTRANSCODER_BUILD_PATH}/CMakeFiles/CMakeOutput.log
+  - cat ${DEPENDENCY_LOG_FILE}
 
 before_deploy:
   # copy libbz2, external dependency of libavformat
@@ -103,5 +128,6 @@ deploy:
   file: avtranscoder-${TRAVIS_OS_NAME}-${CC}-${DEPENDENCY_NAME}-${DEPENDENCY_VERSION}.tgz
   skip_cleanup: true
   on:
-    branch: master
+    tags: true
+    all_branches: true
     condition: ${ENABLE_COVERAGE} = false

@@ -23,6 +23,9 @@ public:
     /**
      * @brief Decode next frame
      * @param frameBuffer: the frame decoded
+     * @warn the frameBuffer reference belongs to the decoder and is valid only until the
+     * next call to this function or until closing or flushing the
+     * decoder. The caller may not write to it.
      * @return status of decoding
      */
     virtual bool decodeNextFrame(Frame& frameBuffer) = 0;

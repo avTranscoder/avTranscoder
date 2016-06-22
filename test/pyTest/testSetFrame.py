@@ -49,7 +49,6 @@ def testSetVideoFrame():
     dst_videoStream = dst_properties.getVideoProperties()[0]
 
     assert_equals( "mpeg2video", dst_videoStream.getCodecName() )
-    assert_equals( "MPEG-2 video", dst_videoStream.getCodecLongName() )
     assert_equals( 1920, dst_videoStream.getWidth() )
     assert_equals( 1080, dst_videoStream.getHeight() )
     assert_equals( 16, dst_videoStream.getDar().num )
@@ -102,7 +101,6 @@ def testSetAudioFrame():
     dst_audioStream = dst_properties.getAudioProperties()[0]
 
     assert_equals( "pcm_s24le", dst_audioStream.getCodecName() )
-    assert_equals( "PCM signed 24-bit little-endian", dst_audioStream.getCodecLongName() )
     assert_equals( "s32", dst_audioStream.getSampleFormatName() )
     assert_equals( "signed 32 bits", dst_audioStream.getSampleFormatLongName() )
     assert_equals( 48000, dst_audioStream.getSampleRate() )

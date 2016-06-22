@@ -5,6 +5,8 @@
 #include "Option.hpp"
 
 extern "C" {
+#include <libavcodec/avcodec.h>
+#include <libavformat/avformat.h>
 #include <libavutil/pixfmt.h>
 #include <libavutil/samplefmt.h>
 }
@@ -17,26 +19,21 @@ namespace avtranscoder
 {
 
 typedef std::map<std::string, OptionArray> OptionArrayMap;
-typedef std::vector<std::pair<std::string, std::string> > NamesArray; //< short/long names of format/video codec/audio codec
-
-/**
- * @brief Check if a format name corresponds to the format of a given filename
- */
-bool AvExport matchFormat(const std::string& format, const std::string& filename);
+typedef std::map<std::string, std::string> NamesMap; //< short/long names of format/video codec/audio codec
 
 /**
 *  @brief Get pixel format supported by a video codec.
 *  @param videoCodecName: the video codec name (empty if not indicated, and so get all pixel formats supported by all video
 * codecs).
 */
-std::vector<std::string> AvExport getPixelFormats(const std::string& videoCodecName = "");
+std::vector<std::string> AvExport getSupportedPixelFormats(const std::string& videoCodecName = "");
 
 /**
 *  @brief Get sample format supported by an audio codec.
 *  @param audioCodecName: the audio codec name (empty if not indicated, and so get all sample formats supported by all audio
 * codecs).
 */
-std::vector<std::string> AvExport getSampleFormats(const std::string& audioCodecName = "");
+std::vector<std::string> AvExport getSupportedSampleFormats(const std::string& audioCodecName = "");
 
 /**
 * @brief Get the corresponding AVPixelFormat from the pixel format name
@@ -64,34 +61,65 @@ std::string AvExport getSampleFormatName(const AVSampleFormat sampleFormat);
 
 #ifndef SWIG
 /**
- * @brief Get array of short/long names of all format supported by FFmpeg / libav.
+ * @return The list of all formats available in FFmpeg / libav.
  */
-NamesArray AvExport getFormatsNames();
+std::vector<AVOutputFormat*> getAvailableFormats();
+#endif
+/**
+ * @brief Get a map of short/long names of all formats available in FFmpeg / libav.
+ * @note Need to call preloadCodecsAndFormats before using this function.
+ */
+NamesMap AvExport getAvailableFormatsNames();
 
 /**
- * @brief Get array of short/long names of all video codec supported by FFmpeg / libav.
+ * @brief Get a map of short/long names of all formats dedicate for video available in FFmpeg / libav.
+ * @note Need to call preloadCodecsAndFormats before using this function.
  */
-NamesArray AvExport getVideoCodecsNames();
+NamesMap AvExport getAvailableVideoFormatsNames();
 
 /**
- * @brief Get array of short/long names of all audio codec supported by FFmpeg / libav.
+ * @brief Get a map of short/long names of all formats dedicate for video available in FFmpeg / libav.
+ * @note Need to call preloadCodecsAndFormats before using this function.
  */
-NamesArray AvExport getAudioCodecsNames();
+NamesMap AvExport getAvailableAudioFormatsNames();
 
+#ifndef SWIG
+/**
+ * @return The list of all codecs available in FFmpeg / libav.
+ */
+std::vector<AVCodec*> getAvailableCodecs();
+#endif
+
+/**
+ * @brief Get a map of short/long names of all video codecs available in FFmpeg / libav.
+ * @note Need to call preloadCodecsAndFormats before using this function.
+ */
+NamesMap AvExport getAvailableVideoCodecsNames();
+
+/**
+ * @brief Get a map of short/long names of all audio codecs available in FFmpeg / libav.
+ * @note Need to call preloadCodecsAndFormats before using this function.
+ */
+NamesMap AvExport getAvailableAudioCodecsNames();
+
+#ifndef SWIG
 /**
  * @brief Get the list of options for each output format
+ * @note Need to call preloadCodecsAndFormats before using this function.
  */
-OptionArrayMap AvExport getOutputFormatOptions();
+OptionArrayMap AvExport getAvailableOptionsPerOutputFormat();
 
 /**
  * @brief Get the list of options for each video codec
+ * @note Need to call preloadCodecsAndFormats before using this function.
  */
-OptionArrayMap AvExport getVideoCodecOptions();
+OptionArrayMap AvExport getAvailableOptionsPerVideoCodec();
 
 /**
  * @brief Get the list of options for each audio codec
+ * @note Need to call preloadCodecsAndFormats before using this function.
  */
-OptionArrayMap AvExport getAudioCodecOptions();
+OptionArrayMap AvExport getAvailableOptionsPerAudioCodec();
 #endif
 }
 

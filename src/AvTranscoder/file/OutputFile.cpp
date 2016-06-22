@@ -270,7 +270,7 @@ void OutputFile::setupWrapping(const ProfileLoader::Profile& profile)
     }
 
     // check if output format indicated is valid with the filename extension
-    if(!matchFormat(profile.find(constants::avProfileFormat)->second, getFilename()))
+    if(!av_guess_format(profile.find(constants::avProfileFormat)->second.c_str(), getFilename().c_str(), NULL))
     {
         throw std::runtime_error("Invalid format according to the file extension.");
     }

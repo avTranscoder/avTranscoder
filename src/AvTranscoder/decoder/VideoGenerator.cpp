@@ -3,29 +3,16 @@
 #include <AvTranscoder/util.hpp>
 #include <AvTranscoder/transform/VideoTransform.hpp>
 
+#include <sstream>
+
 namespace avtranscoder
 {
 
-VideoGenerator::VideoGenerator()
+VideoGenerator::VideoGenerator(const VideoFrameDesc& frameDesc)
     : _inputFrame(NULL)
     , _blackImage(NULL)
-    , _frameDesc()
+    , _frameDesc(frameDesc)
 {
-}
-
-VideoGenerator::VideoGenerator(const VideoGenerator& videoGenerator)
-    : _inputFrame(NULL)
-    , _blackImage(NULL)
-    , _frameDesc(videoGenerator.getVideoFrameDesc())
-{
-}
-
-VideoGenerator& VideoGenerator::operator=(const VideoGenerator& videoGenerator)
-{
-    _inputFrame = NULL;
-    _blackImage = NULL;
-    _frameDesc = videoGenerator.getVideoFrameDesc();
-    return *this;
 }
 
 VideoGenerator::~VideoGenerator()
@@ -33,24 +20,29 @@ VideoGenerator::~VideoGenerator()
     delete _blackImage;
 }
 
-void VideoGenerator::setVideoFrameDesc(const VideoFrameDesc& frameDesc)
-{
-    _frameDesc = frameDesc;
-}
-
-void VideoGenerator::setNextFrame(Frame& inputFrame)
-{
-    _inputFrame = &inputFrame;
-}
-
 bool VideoGenerator::decodeNextFrame(Frame& frameBuffer)
 {
+    // check the given frame
+    if(!frameBuffer.isVideoFrame())
+    {
+        LOG_WARN("The given frame is not a valid video frame: allocate a new AVPicture to put generated data into it.");
+        frameBuffer.clear();
+        static_cast<VideoFrame&>(frameBuffer).allocateAVPicture(_frameDesc);
+    }
+
     // Generate black image
     if(!_inputFrame)
     {
         // Generate the black image only once
         if(!_blackImage)
         {
+            std::stringstream msg;
+            msg << "Generate a black image with the following features:" << std::endl;
+            msg << "width = " << _frameDesc._width << std::endl;
+            msg << "height = " << _frameDesc._height << std::endl;
+            msg << "pixel format = rgb24" << std::endl;
+            LOG_INFO(msg.str())
+
             VideoFrame& imageBuffer = static_cast<VideoFrame&>(frameBuffer);
 
             // Input of convert
@@ -68,11 +60,13 @@ bool VideoGenerator::decodeNextFrame(Frame& frameBuffer)
             VideoTransform videoTransform;
             videoTransform.convert(intermediateBuffer, *_blackImage);
         }
+        LOG_DEBUG("Copy data of the black image when decode next frame")
         frameBuffer.copyData(*_blackImage);
     }
     // Take image from _inputFrame
     else
     {
+        LOG_DEBUG("Copy data of the image specified when decode next frame")
         frameBuffer.copyData(*_inputFrame);
     }
     return true;

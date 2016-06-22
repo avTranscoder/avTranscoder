@@ -29,12 +29,14 @@ FileProperties::FileProperties(const FormatContext& formatContext)
 
 void FileProperties::extractStreamProperties(IProgress& progress, const EAnalyseLevel level)
 {
-    clearStreamProperties();
-
     // if the analysis level wiil decode some streams parts, seek at the beginning
-    if(level > eAnalyseLevelHeader)
+    if(level > eAnalyseLevelHeader && ! isRawFormat())
         const_cast<FormatContext*>(_formatContext)->seek(0, AVSEEK_FLAG_BACKWARD);
 
+    // clear properties
+    clearStreamProperties();
+
+    // reload properties
     for(size_t streamIndex = 0; streamIndex < _formatContext->getNbStreams(); ++streamIndex)
     {
         switch(_formatContext->getAVStream(streamIndex).codec->codec_type)
@@ -120,7 +122,7 @@ void FileProperties::extractStreamProperties(IProgress& progress, const EAnalyse
     }
 
     // if the analysis level has decoded some streams parts, return at the beginning
-    if(level > eAnalyseLevelHeader)
+    if(level > eAnalyseLevelHeader && ! isRawFormat())
         const_cast<FormatContext*>(_formatContext)->seek(0, AVSEEK_FLAG_BACKWARD);
 }
 
@@ -143,6 +145,27 @@ std::string FileProperties::getFormatLongName() const
     if(!_avFormatContext || !_avFormatContext->iformat || !_avFormatContext->iformat->long_name)
         throw std::runtime_error("unknown format long name");
     return _avFormatContext->iformat->long_name;
+}
+
+bool FileProperties::isRawFormat() const
+{
+    if(getNbStreams() != 1)
+        return false;
+    // the format name should be the same as the codec name
+    if(getFormatName() == getStreamProperties().at(0)->getCodecName())
+        return true;
+    return false;
+}
+
+std::string FileProperties::getFormatMimeType() const
+{
+#if LIBAVFORMAT_VERSION_MAJOR <= 55
+    throw std::runtime_error("cannot get mime type format: libavformat library has a major version <= 55.");
+#else
+    if(_avFormatContext->iformat->mime_type == NULL)
+        throw std::runtime_error("Unknown demuxer format mime type");
+    return std::string(_avFormatContext->iformat->mime_type);
+#endif
 }
 
 size_t FileProperties::getProgramsCount() const
@@ -219,6 +242,7 @@ PropertyVector& FileProperties::fillVector(PropertyVector& data) const
     addProperty(data, "filename", &FileProperties::getFilename);
     addProperty(data, "formatName", &FileProperties::getFormatName);
     addProperty(data, "formatLongName", &FileProperties::getFormatLongName);
+    addProperty(data, "mimeType", &FileProperties::getFormatMimeType);
 
     addProperty(data, "startTime", &FileProperties::getStartTime);
     addProperty(data, "duration", &FileProperties::getDuration);

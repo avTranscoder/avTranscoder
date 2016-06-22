@@ -9,21 +9,24 @@ namespace avtranscoder
 
 class AvExport AudioGenerator : public IDecoder
 {
-public:
-    AudioGenerator();
-    AudioGenerator(const AudioGenerator& audioGenerator);
+private:
     AudioGenerator& operator=(const AudioGenerator& audioGenerator);
+    AudioGenerator(const AudioGenerator& audioGenerator);
+
+public:
+    AudioGenerator(const AudioFrameDesc& frameDesc);
 
     ~AudioGenerator();
 
     bool decodeNextFrame(Frame& frameBuffer);
     bool decodeNextFrame(Frame& frameBuffer, const size_t subStreamIndex);
 
-    void setNextFrame(Frame& inputFrame);
+    void setNextFrame(Frame& inputFrame) { _inputFrame = &inputFrame; }
 
 private:
     Frame* _inputFrame;  ///< Has link (no ownership)
     AudioFrame* _silent; ///< The generated silent (has ownership)
+    const AudioFrameDesc _frameDesc; ///< The description of the silence (sampleRate, channels...)
 };
 }
 
