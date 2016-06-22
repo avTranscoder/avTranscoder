@@ -109,9 +109,7 @@ def testCheckRawVideoProperties():
     A raw stream does not contain header (so the duration, number of frames... needs to be computed).
     """
     inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_RAW_FILE']
-    progress = av.NoDisplayProgress()
     inputFile = av.InputFile(inputFileName)
-    inputFile.analyse(progress, av.eAnalyseLevelFirstGop)
     properties = inputFile.getProperties()
 
     assert_true(properties.isRawFormat())
