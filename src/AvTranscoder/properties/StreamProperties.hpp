@@ -20,10 +20,10 @@ public:
 
     size_t getStreamIndex() const { return _streamIndex; }
     size_t getStreamId() const;
-    size_t getBitRate() const; ///< in bits/s, 0 if unknown
     Rational getTimeBase() const;
-    float getDuration() const; ///< in seconds, 0 if not available
     AVMediaType getStreamType() const;
+
+    virtual float getDuration() const; ///< in seconds, 0 if not available
 
     size_t getCodecId() const;
     std::string getCodecName() const;

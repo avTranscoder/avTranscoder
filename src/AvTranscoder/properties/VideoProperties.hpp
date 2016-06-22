@@ -40,6 +40,7 @@ public:
     Rational getSar() const; // sample/pixel aspect ratio
     Rational getDar() const; // display aspect ratio
 
+    size_t getBitRate() const; ///< in bits/s, 0 if unknown
     size_t getMaxBitRate() const;
     size_t getMinBitRate() const;
     size_t getNbFrames() const; ///< 0 if unknown
@@ -59,6 +60,12 @@ public:
      * tbr = tbr is guessed from the video stream and is the value users want to see when they look for the video frame rate
      */
     float getFps() const;
+
+    /**
+     * @brief Override method.
+     * @return the stream duration in seconds, 0 if not available
+     */
+    float getDuration() const;
 
     bool hasBFrames() const;
     // bool isClosedGop() const;

@@ -19,6 +19,7 @@ public:
     std::string getChannelName() const;
     std::string getChannelDescription() const;
 
+    size_t getBitRate() const; ///< in bits/s, 0 if unknown
     size_t getSampleRate() const;
     size_t getNbChannels() const;
     size_t getNbSamples() const;
