@@ -30,6 +30,10 @@ FileProperties::FileProperties(const FormatContext& formatContext)
 
 void FileProperties::extractStreamProperties(IProgress& progress, const EAnalyseLevel level)
 {
+    // Returns at the beginning of the stream before any deep analysis
+    if(level > eAnalyseLevelHeader && ! isRawFormat())
+        const_cast<FormatContext*>(_formatContext)->seek(0, AVSEEK_FLAG_BACKWARD);
+
     // clear properties
     clearStreamProperties();
 
@@ -117,6 +121,10 @@ void FileProperties::extractStreamProperties(IProgress& progress, const EAnalyse
         const size_t unknownStreamIndex = _unknownStreams.at(streamIndex).getStreamIndex();
         _streams[unknownStreamIndex] = &_unknownStreams.at(streamIndex);
     }
+
+    // Returns at the beginning of the stream after any deep analysis
+    if(level > eAnalyseLevelHeader && ! isRawFormat())
+        const_cast<FormatContext*>(_formatContext)->seek(0, AVSEEK_FLAG_BACKWARD);
 }
 
 std::string FileProperties::getFilename() const
