@@ -42,23 +42,7 @@ IOutputStream& OutputFile::addVideoStream(const VideoCodec& videoDesc)
     stream.codec->level = videoDesc.getAVCodecContext().level;
     stream.codec->field_order = videoDesc.getAVCodecContext().field_order;
 
-    if (_formatContext.getAVOutputFormat().flags & AVFMT_GLOBALHEADER) {
-        stream.codec->flags |= CODEC_FLAG_GLOBAL_HEADER;
-    }
-
-    // if the codec is experimental, allow it
-    if(videoDesc.getAVCodec().capabilities & CODEC_CAP_EXPERIMENTAL) {
-        LOG_WARN("This codec is considered experimental by libav/ffmpeg:" << videoDesc.getCodecName());
-        stream.codec->strict_std_compliance = FF_COMPLIANCE_EXPERIMENTAL;
-    }
-
-    // some codecs need/can use extradata to decode
-    uint8_t* srcExtradata = videoDesc.getAVCodecContext().extradata;
-    const int srcExtradataSize = videoDesc.getAVCodecContext().extradata_size;
-    stream.codec->extradata = (uint8_t*)av_malloc(srcExtradataSize + FF_INPUT_BUFFER_PADDING_SIZE);
-    memcpy(stream.codec->extradata, srcExtradata, srcExtradataSize);
-    memset(((uint8_t*)stream.codec->extradata) + srcExtradataSize, 0, FF_INPUT_BUFFER_PADDING_SIZE);
-    stream.codec->extradata_size = videoDesc.getAVCodecContext().extradata_size;
+    setOutputStream(stream, videoDesc);
 
     // need to set the time_base on the AVCodecContext and the AVStream
     // compensating the frame rate with the ticks_per_frame and keeping
@@ -84,6 +68,8 @@ IOutputStream& OutputFile::addAudioStream(const AudioCodec& audioDesc)
     stream.codec->channel_layout = audioDesc.getAVCodecContext().channel_layout;
     stream.codec->sample_fmt = audioDesc.getAVCodecContext().sample_fmt;
     stream.codec->frame_size = audioDesc.getAVCodecContext().frame_size;
+
+    setOutputStream(stream, audioDesc);
 
     // need to set the time_base on the AVCodecContext of the AVStream
     av_reduce(&stream.codec->time_base.num, &stream.codec->time_base.den, audioDesc.getAVCodecContext().time_base.num,
@@ -329,4 +315,27 @@ void OutputFile::setupRemainingWrappingOptions()
         }
     }
 }
+
+void OutputFile::setOutputStream(AVStream& avStream, const ICodec& codec)
+{
+    // depending on the format, place global headers in extradata instead of every keyframe
+    if (_formatContext.getAVOutputFormat().flags & AVFMT_GLOBALHEADER) {
+        avStream.codec->flags |= CODEC_FLAG_GLOBAL_HEADER;
+    }
+
+    // if the codec is experimental, allow it
+    if(codec.getAVCodec().capabilities & CODEC_CAP_EXPERIMENTAL) {
+        LOG_WARN("This codec is considered experimental by libav/ffmpeg:" << codec.getCodecName());
+        avStream.codec->strict_std_compliance = FF_COMPLIANCE_EXPERIMENTAL;
+    }
+
+    // some codecs need/can use extradata to decode
+    uint8_t* srcExtradata = codec.getAVCodecContext().extradata;
+    const int srcExtradataSize = codec.getAVCodecContext().extradata_size;
+    avStream.codec->extradata = (uint8_t*)av_malloc(srcExtradataSize + FF_INPUT_BUFFER_PADDING_SIZE);
+    memcpy(avStream.codec->extradata, srcExtradata, srcExtradataSize);
+    memset(((uint8_t*)avStream.codec->extradata) + srcExtradataSize, 0, FF_INPUT_BUFFER_PADDING_SIZE);
+    avStream.codec->extradata_size = codec.getAVCodecContext().extradata_size;
+}
+
 }
