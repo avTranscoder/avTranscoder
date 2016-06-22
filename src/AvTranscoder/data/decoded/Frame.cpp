@@ -42,16 +42,26 @@ Frame::~Frame()
 
 int Frame::getEncodedSize() const
 {
+#ifdef AVTRANSCODER_LIBAV_DEPENDENCY
+    LOG_ERROR("This feature is not available in the libav library. Will return 0.")
+    return 0;
+#else
     return av_frame_get_pkt_size(_frame);
+#endif
 }
 
 void Frame::copyData(const Frame& frameToRef)
 {
+#ifdef AVTRANSCODER_LIBAV_DEPENDENCY
+    LOG_ERROR("This feature is not available in the libav library. Will do nothing.")
+    return;
+#else
     const int ret = av_frame_copy(_frame, &frameToRef.getAVFrame());
     if(ret < 0)
     {
         throw std::ios_base::failure("Unable to copy data of other frame: " + getDescriptionFromErrorCode(ret));
     }
+#endif
 }
 
 void Frame::copyProperties(const Frame& otherFrame)
