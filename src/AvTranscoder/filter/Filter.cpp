@@ -27,7 +27,8 @@ Filter::Filter(const std::string& name, const std::string& options, const std::s
 
 Filter::~Filter()
 {
-    avfilter_free(_context);
+    if(_context)
+        avfilter_free(_context);
 }
 
 std::string Filter::getName() const
