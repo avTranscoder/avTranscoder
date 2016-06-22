@@ -523,6 +523,34 @@ bool VideoProperties::hasBFrames() const
 //	return ( _codecContext->flags & CODEC_FLAG_CLOSED_GOP ) == CODEC_FLAG_CLOSED_GOP;
 //}
 
+bool VideoProperties::isInterlaced() const
+{
+    if(_levelAnalysis < eAnalyseLevelFirstGop)
+        throw std::runtime_error("Need a deeper analysis: see eAnalyseLevelFirstGop.");
+    return _isInterlaced;
+}
+
+bool VideoProperties::isTopFieldFirst() const
+{
+    if(_levelAnalysis < eAnalyseLevelFirstGop)
+        throw std::runtime_error("Need a deeper analysis: see eAnalyseLevelFirstGop.");
+    return _isTopFieldFirst;
+}
+
+size_t VideoProperties::getGopSize() const
+{
+    if(_levelAnalysis < eAnalyseLevelFirstGop)
+        throw std::runtime_error("Need a deeper analysis: see eAnalyseLevelFirstGop.");
+    return _gopSize;
+}
+
+std::vector<std::pair<char, int> > VideoProperties::getGopStructure() const
+{
+    if(_levelAnalysis < eAnalyseLevelFirstGop)
+        throw std::runtime_error("Need a deeper analysis: see eAnalyseLevelFirstGop.");
+    return _gopStructure;
+}
+
 void VideoProperties::analyseGopStructure(IProgress& progress)
 {
     if(_formatContext && _codecContext && _codec)
