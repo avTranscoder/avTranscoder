@@ -51,6 +51,7 @@ public:
 
     size_t getSize() const; ///< in bytes
 
+    void setSampleRate(const size_t sampleRate);
     void setNbChannels(const size_t nbChannels);
     void setChannelLayout(const size_t channelLayout);
     void setNbSamplesPerChannel(const size_t nbSamples) { _frame->nb_samples = nbSamples; }

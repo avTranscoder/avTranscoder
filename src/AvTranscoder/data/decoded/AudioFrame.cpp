@@ -79,6 +79,14 @@ size_t AudioFrame::getChannelLayout() const
 #endif
 }
 
+void AudioFrame::setSampleRate(const size_t sampleRate)
+{
+#ifdef AVTRANSCODER_LIBAV_DEPENDENCY
+    _frame->sample_rate = sampleRate;
+#else
+    av_frame_set_sample_rate(_frame, sampleRate);
+#endif
+}
 
 void AudioFrame::setNbChannels(const size_t nbChannels)
 {
@@ -122,9 +130,9 @@ size_t AudioFrame::getSize() const
 void AudioFrame::allocateAVSample(const AudioFrameDesc& desc)
 {
     // Set Frame properties
-    av_frame_set_sample_rate(_frame, desc._sampleRate);
-    av_frame_set_channels(_frame, desc._nbChannels);
-    av_frame_set_channel_layout(_frame, av_get_default_channel_layout(desc._nbChannels));
+    setSampleRate(desc._sampleRate);
+    setNbChannels(desc._nbChannels);
+    setChannelLayout(av_get_default_channel_layout(desc._nbChannels));
     _frame->format = desc._sampleFormat;
     _frame->nb_samples = desc._sampleRate / 25.; // cannot be known before calling avcodec_decode_audio4
 
