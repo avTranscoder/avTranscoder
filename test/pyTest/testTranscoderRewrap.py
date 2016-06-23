@@ -3,12 +3,14 @@ import os
 # Check if environment is setup to run the tests
 if os.environ.get('AVTRANSCODER_TEST_AUDIO_WAVE_FILE') is None or \
     os.environ.get('AVTRANSCODER_TEST_VIDEO_AVI_FILE') is None or \
-    os.environ.get('AVTRANSCODER_TEST_VIDEO_MOV_FILE') is None:
+    os.environ.get('AVTRANSCODER_TEST_VIDEO_MOV_FILE') is None or \
+    os.environ.get('AVTRANSCODER_TEST_VIDEO_RAW_FILE') is None:
     from nose.plugins.skip import SkipTest
     raise SkipTest("Need to define environment variables "
-        "AVTRANSCODER_TEST_VIDEO_AVI_FILE and "
         "AVTRANSCODER_TEST_AUDIO_WAVE_FILE and "
-        "AVTRANSCODER_TEST_VIDEO_MOV_FILE")
+        "AVTRANSCODER_TEST_VIDEO_AVI_FILE and "
+        "AVTRANSCODER_TEST_VIDEO_MOV_FILE and "
+        "AVTRANSCODER_TEST_VIDEO_RAW_FILE")
 
 from nose.tools import *
 
@@ -148,6 +150,40 @@ def testRewrapMOVVideoStream():
 
     # get dst file of wrap
     dst_inputFile = av.InputFile( outputFileName )
+    dst_properties = dst_inputFile.getProperties()
+    dst_videoStream = dst_properties.getVideoProperties()[0]
+
+    # check format
+    checkFormat(src_properties, dst_properties)
+
+    # check video properties
+    checkStream(src_videoStream, dst_videoStream)
+
+
+def testRewrapRawVideoStream():
+    """
+    Rewrap one raw video stream (no format).
+    """
+    # get src file of wrap
+    inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_RAW_FILE']
+    src_inputFile = av.InputFile(inputFileName)
+    src_properties = src_inputFile.getProperties()
+    src_videoStream = src_properties.getVideoProperties()[0]
+
+    formatList = src_properties.getFormatName().split(",")
+    outputFileName = "testRewrapRawVideoStream." + formatList[0]
+    ouputFile = av.OutputFile(outputFileName)
+
+    transcoder = av.Transcoder(ouputFile)
+    transcoder.add(inputFileName, 0)
+    progress = av.NoDisplayProgress()
+    processStat = transcoder.process(progress)
+
+    # check process stat returned
+    checkVideoStat(src_videoStream, processStat.getVideoStat(0))
+
+    # get dst file of wrap
+    dst_inputFile = av.InputFile(outputFileName)
     dst_properties = dst_inputFile.getProperties()
     dst_videoStream = dst_properties.getVideoProperties()[0]
 

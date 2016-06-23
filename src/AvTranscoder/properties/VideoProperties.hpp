@@ -21,7 +21,7 @@ namespace avtranscoder
 class AvExport VideoProperties : public StreamProperties
 {
 public:
-    VideoProperties(const FormatContext& formatContext, const size_t index, IProgress& progress,
+    VideoProperties(const FileProperties& fileProperties, const size_t index, IProgress& progress,
                     const EAnalyseLevel level = eAnalyseLevelFirstGop);
 
     std::string getProfileName() const;
@@ -40,10 +40,10 @@ public:
     Rational getSar() const; // sample/pixel aspect ratio
     Rational getDar() const; // display aspect ratio
 
-    size_t getBitRate() const; ///< in bits/s
+    size_t getBitRate() const; ///< in bits/s, 0 if unknown
     size_t getMaxBitRate() const;
     size_t getMinBitRate() const;
-    size_t getNbFrames() const;
+    size_t getNbFrames() const; ///< 0 if unknown
     size_t getTicksPerFrame() const;
     size_t getWidth() const;
     size_t getHeight() const;
@@ -61,20 +61,26 @@ public:
      */
     float getFps() const;
 
+    /**
+     * @brief Override method.
+     * @return the stream duration in seconds, 0 if not available
+     */
+    float getDuration() const;
+
     bool hasBFrames() const;
     // bool isClosedGop() const;
 
     //@{
-    // Warning: Can acces these data when analyse first gop
+    // Warning: Can access these data only when analyse first gop (else throw a runtime_error)
     // @see EAnalyseLevel
     // @see analyseGopStructure
-    bool isInterlaced() const { return _isInterlaced; }
-    bool isTopFieldFirst() const { return _isTopFieldFirst; }
+    bool isInterlaced() const;
+    bool isTopFieldFirst() const;
     /**
      * @return the distance between two nearest I frame
      */
-    size_t getGopSize() const { return _gopSize; }
-    std::vector<std::pair<char, int> > getGopStructure() const { return _gopStructure; }
+    size_t getGopSize() const;
+    std::vector<std::pair<char, int> > getGopStructure() const;
 //@}
 
 #ifndef SWIG

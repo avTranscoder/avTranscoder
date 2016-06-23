@@ -15,8 +15,8 @@ extern "C" {
 namespace avtranscoder
 {
 
-AudioProperties::AudioProperties(const FormatContext& formatContext, const size_t index)
-    : StreamProperties(formatContext, index)
+AudioProperties::AudioProperties(const FileProperties& fileProperties, const size_t index)
+    : StreamProperties(fileProperties, index)
 {
 }
 
@@ -104,6 +104,22 @@ std::string AudioProperties::getChannelDescription() const
 #endif
 }
 
+size_t AudioProperties::getBitRate() const
+{
+    if(!_codecContext)
+        throw std::runtime_error("unknown codec context");
+
+    // return bit rate of stream if present
+    if(_codecContext->bit_rate)
+        return _codecContext->bit_rate;
+
+    LOG_WARN("The bitrate of the stream '" << _streamIndex << "' of file '" << _formatContext->filename << "' is unknown.")
+    LOG_INFO("Compute the audio bitrate (suppose PCM audio data).")
+
+    const int bitsPerSample = av_get_bits_per_sample(_codecContext->codec_id); // 0 if unknown for the given codec
+    return getSampleRate() * getNbChannels() * bitsPerSample;
+}
+
 size_t AudioProperties::getSampleRate() const
 {
     if(!_codecContext)
@@ -116,20 +132,6 @@ size_t AudioProperties::getNbChannels() const
     if(!_codecContext)
         throw std::runtime_error("unknown codec context");
     return _codecContext->channels;
-}
-
-size_t AudioProperties::getBitRate() const
-{
-    if(!_codecContext)
-        throw std::runtime_error("unknown codec context");
-
-    // return bit rate of stream
-    if(_codecContext->bit_rate)
-        return _codecContext->bit_rate;
-
-    // else get computed bit rate from our computation (warning: way to compute bit rate of PCM audio data)
-    int bitsPerSample = av_get_bits_per_sample(_codecContext->codec_id); // 0 if unknown for the given codec
-    return _codecContext->sample_rate * _codecContext->channels * bitsPerSample;
 }
 
 size_t AudioProperties::getNbSamples() const
@@ -158,8 +160,8 @@ PropertyVector& AudioProperties::fillVector(PropertyVector& data) const
 
     addProperty(data, "sampleFormatName", &AudioProperties::getSampleFormatName);
     addProperty(data, "sampleFormatLongName", &AudioProperties::getSampleFormatLongName);
-    addProperty(data, "sampleRate", &AudioProperties::getSampleRate);
     addProperty(data, "bitRate", &AudioProperties::getBitRate);
+    addProperty(data, "sampleRate", &AudioProperties::getSampleRate);
     addProperty(data, "nbSamples", &AudioProperties::getNbSamples);
     addProperty(data, "nbChannels", &AudioProperties::getNbChannels);
     addProperty(data, "channelLayout", &AudioProperties::getChannelLayout);

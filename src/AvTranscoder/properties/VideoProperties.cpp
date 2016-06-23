@@ -2,6 +2,7 @@
 
 #include <AvTranscoder/data/decoded/Frame.hpp>
 #include <AvTranscoder/properties/util.hpp>
+#include <AvTranscoder/properties/FileProperties.hpp>
 #include <AvTranscoder/progress/NoDisplayProgress.hpp>
 
 extern "C" {
@@ -17,9 +18,9 @@ extern "C" {
 namespace avtranscoder
 {
 
-VideoProperties::VideoProperties(const FormatContext& formatContext, const size_t index, IProgress& progress,
+VideoProperties::VideoProperties(const FileProperties& fileProperties, const size_t index, IProgress& progress,
                                  const EAnalyseLevel level)
-    : StreamProperties(formatContext, index)
+    : StreamProperties(fileProperties, index)
     , _levelAnalysis(level)
     , _pixelProperties()
     , _isInterlaced(false)
@@ -322,22 +323,23 @@ size_t VideoProperties::getBitRate() const
 {
     if(!_codecContext)
         throw std::runtime_error("unknown codec context");
+
     // return bit rate of stream if present or VBR mode
     if(_codecContext->bit_rate || _codecContext->rc_max_rate)
         return _codecContext->bit_rate;
 
-    // else compute bit rate from the first GOP
-    if(!_formatContext || !_codec)
-        throw std::runtime_error("cannot compute bit rate: unknown format or codec context");
+    LOG_WARN("The bitrate of the stream '" << _streamIndex << "' of file '" << _formatContext->filename << "' is unknown.")
+    LOG_INFO("Compute the video bitrate by decoding the first GOP.")
 
     if(!_codecContext->width || !_codecContext->height)
         throw std::runtime_error("cannot compute bit rate: invalid frame size");
 
-    // Needed to get the gop size
-    if(getGopSize() == 0)
-        throw std::runtime_error("cannot compute bit rate: need to get info from the first gop (see eAnalyseLevelFirstGop)");
+    if(!_formatContext || !_codec)
+        throw std::runtime_error("cannot compute bit rate: unknown format or codec");
+    if(!_codecContext->width || !_codecContext->height)
+        throw std::runtime_error("cannot compute bit rate: invalid frame size");
 
-    // discard no frame type when decode
+     // discard no frame type when decode
     _codecContext->skip_frame = AVDISCARD_NONE;
 
     Frame frame;
@@ -346,8 +348,10 @@ size_t VideoProperties::getBitRate() const
     avcodec_open2(_codecContext, _codec, NULL);
 
     int gotFrame = 0;
-    size_t count = 0;
+    size_t nbDecodedFrames = 0;
     int gopFramesSize = 0;
+    int positionOfFirstKeyFrame = -1;
+    int positionOfLastKeyFrame = -1;
 
     while(!av_read_frame(const_cast<AVFormatContext*>(_formatContext), &pkt))
     {
@@ -356,21 +360,44 @@ size_t VideoProperties::getBitRate() const
             avcodec_decode_video2(_codecContext, &frame.getAVFrame(), &gotFrame, &pkt);
             if(gotFrame)
             {
+                // check distance between key frames
+                AVFrame& avFrame = frame.getAVFrame();
+                if(avFrame.pict_type == AV_PICTURE_TYPE_I)
+                {
+                    if(positionOfFirstKeyFrame == -1)
+                        positionOfFirstKeyFrame = nbDecodedFrames;
+                    else
+                        positionOfLastKeyFrame = nbDecodedFrames;
+                }
+                ++nbDecodedFrames;
+
+                // added size of all frames of the same gop
+                if(positionOfLastKeyFrame == -1)
+                {
 #if LIBAVUTIL_VERSION_INT >= AV_VERSION_INT(54, 7, 100)
-                gopFramesSize += frame.getEncodedSize();
+                    gopFramesSize += frame.getEncodedSize();
 #else
-                gopFramesSize += pkt.size;
+                    gopFramesSize += pkt.size;
 #endif
-                ++count;
+                }
             }
         }
         av_free_packet(&pkt);
-        if(getGopSize() == count)
+        if(positionOfFirstKeyFrame != -1 && positionOfLastKeyFrame != -1)
             break;
     }
+    // Close a given AVCodecContext and free all the data associated with it (but not the AVCodecContext itself)
+    avcodec_close(_codecContext);
+    // Returns at the beginning of the stream
+    const_cast<FormatContext*>(&_fileProperties->getFormatContext())->seek(0, AVSEEK_FLAG_BYTE);
 
-    int bitsPerByte = 8;
-    return (gopFramesSize / getGopSize()) * bitsPerByte * getFps();
+    const size_t gopSize = positionOfLastKeyFrame - positionOfFirstKeyFrame;
+    if(gopSize > 0)
+    {
+        const float fps = av_q2d(_formatContext->streams[_streamIndex]->avg_frame_rate);
+        return (gopFramesSize / gopSize) * 8 * fps;
+    }
+    return 0;
 }
 
 size_t VideoProperties::getMaxBitRate() const
@@ -393,7 +420,17 @@ size_t VideoProperties::getNbFrames() const
         throw std::runtime_error("unknown format context");
     size_t nbFrames = _formatContext->streams[_streamIndex]->nb_frames;
     if(nbFrames == 0)
-        nbFrames = getFps() * getDuration();
+    {
+        LOG_WARN("The number of frames in the stream '" << _streamIndex << "' of file '" << _formatContext->filename << "' is unknown.")
+        const float duration = getDuration();
+        if(duration != 0)
+        {
+            LOG_INFO("Try to compute the number of frames from the fps and the duration.")
+            nbFrames = getFps() * duration;
+        }
+        else
+            return 0;
+    }
     return nbFrames;
 }
 
@@ -451,6 +488,25 @@ float VideoProperties::getFps() const
     return av_q2d(_formatContext->streams[_streamIndex]->avg_frame_rate);
 }
 
+float VideoProperties::getDuration() const
+{
+    const float duration = StreamProperties::getDuration();
+    if(duration != 0)
+        return duration;
+
+    if(_fileProperties->isRawFormat())
+    {
+        LOG_INFO("Get the stream bitrate to compute the duration.")
+        const size_t bitRate = getBitRate();
+        if(bitRate)
+        {
+            LOG_INFO("Get the file size to compute the duration.")
+            return _fileProperties->getFileSize() / bitRate * 8;
+        }
+    }
+    return 0;
+}
+
 bool VideoProperties::hasBFrames() const
 {
     if(!_codecContext)
@@ -466,6 +522,34 @@ bool VideoProperties::hasBFrames() const
 //		throw std::runtime_error( "unknown codec context" );
 //	return ( _codecContext->flags & CODEC_FLAG_CLOSED_GOP ) == CODEC_FLAG_CLOSED_GOP;
 //}
+
+bool VideoProperties::isInterlaced() const
+{
+    if(_levelAnalysis < eAnalyseLevelFirstGop)
+        throw std::runtime_error("Need a deeper analysis: see eAnalyseLevelFirstGop.");
+    return _isInterlaced;
+}
+
+bool VideoProperties::isTopFieldFirst() const
+{
+    if(_levelAnalysis < eAnalyseLevelFirstGop)
+        throw std::runtime_error("Need a deeper analysis: see eAnalyseLevelFirstGop.");
+    return _isTopFieldFirst;
+}
+
+size_t VideoProperties::getGopSize() const
+{
+    if(_levelAnalysis < eAnalyseLevelFirstGop)
+        throw std::runtime_error("Need a deeper analysis: see eAnalyseLevelFirstGop.");
+    return _gopSize;
+}
+
+std::vector<std::pair<char, int> > VideoProperties::getGopStructure() const
+{
+    if(_levelAnalysis < eAnalyseLevelFirstGop)
+        throw std::runtime_error("Need a deeper analysis: see eAnalyseLevelFirstGop.");
+    return _gopStructure;
+}
 
 void VideoProperties::analyseGopStructure(IProgress& progress)
 {
@@ -528,6 +612,9 @@ void VideoProperties::analyseGopStructure(IProgress& progress)
 
             // Close a given AVCodecContext and free all the data associated with it (but not the AVCodecContext itself)
             avcodec_close(_codecContext);
+
+            // Returns at the beginning of the stream
+            const_cast<FormatContext*>(&_fileProperties->getFormatContext())->seek(0, AVSEEK_FLAG_BYTE);
         }
     }
 }
@@ -555,7 +642,7 @@ PropertyVector& VideoProperties::fillVector(PropertyVector& data) const
     addProperty(data, "chromaSampleLocation", &VideoProperties::getChromaSampleLocation);
     addProperty(data, "fieldOrder", &VideoProperties::getFieldOrder);
     addProperty(data, "fps", &VideoProperties::getFps);
-    addProperty(data, "nbFrame", &VideoProperties::getNbFrames);
+    addProperty(data, "nbFrames", &VideoProperties::getNbFrames);
     addProperty(data, "ticksPerFrame", &VideoProperties::getTicksPerFrame);
     addProperty(data, "bitRate", &VideoProperties::getBitRate);
     addProperty(data, "maxBitRate", &VideoProperties::getMaxBitRate);

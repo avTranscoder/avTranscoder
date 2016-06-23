@@ -9,18 +9,21 @@
 namespace avtranscoder
 {
 
+class FileProperties;
+
 /// Virtual based class of properties for all types of stream
 class AvExport StreamProperties
 {
 public:
-    StreamProperties(const FormatContext& formatContext, const size_t index);
+    StreamProperties(const FileProperties& fileProperties, const size_t index);
     virtual ~StreamProperties() = 0;
 
     size_t getStreamIndex() const { return _streamIndex; }
     size_t getStreamId() const;
     Rational getTimeBase() const;
-    float getDuration() const; ///< in seconds
     AVMediaType getStreamType() const;
+
+    virtual float getDuration() const; ///< in seconds, 0 if not available
 
     size_t getCodecId() const;
     std::string getCodecName() const;
@@ -65,6 +68,7 @@ private:
 #endif
 
 protected:
+    const FileProperties* _fileProperties; ///< Has link (no ownership)
     const AVFormatContext* _formatContext; ///< Has link (no ownership)
     AVCodecContext* _codecContext;         ///< Has link (no ownership)
     AVCodec* _codec;                       ///< Has link (no ownership)

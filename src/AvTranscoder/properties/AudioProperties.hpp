@@ -11,7 +11,7 @@ namespace avtranscoder
 class AvExport AudioProperties : public StreamProperties
 {
 public:
-    AudioProperties(const FormatContext& formatContext, const size_t index);
+    AudioProperties(const FileProperties& fileProperties, const size_t index);
 
     std::string getSampleFormatName() const;
     std::string getSampleFormatLongName() const;
@@ -19,9 +19,9 @@ public:
     std::string getChannelName() const;
     std::string getChannelDescription() const;
 
+    size_t getBitRate() const; ///< in bits/s, 0 if unknown
     size_t getSampleRate() const;
     size_t getNbChannels() const;
-    size_t getBitRate() const; ///< 0 if unknown
     size_t getNbSamples() const;
 
     size_t getTicksPerFrame() const;

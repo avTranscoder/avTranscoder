@@ -6,6 +6,7 @@
 
 #include <stdexcept>
 #include <sstream>
+#include <fstream>
 
 namespace avtranscoder
 {
@@ -29,7 +30,7 @@ FileProperties::FileProperties(const FormatContext& formatContext)
 
 void FileProperties::extractStreamProperties(IProgress& progress, const EAnalyseLevel level)
 {
-    // if the analysis level wiil decode some streams parts, seek at the beginning
+    // Returns at the beginning of the stream before any deep analysis
     if(level > eAnalyseLevelHeader && ! isRawFormat())
         const_cast<FormatContext*>(_formatContext)->seek(0, AVSEEK_FLAG_BACKWARD);
 
@@ -43,37 +44,37 @@ void FileProperties::extractStreamProperties(IProgress& progress, const EAnalyse
         {
             case AVMEDIA_TYPE_VIDEO:
             {
-                VideoProperties properties(*_formatContext, streamIndex, progress, level);
+                VideoProperties properties(*this, streamIndex, progress, level);
                 _videoStreams.push_back(properties);
                 break;
             }
             case AVMEDIA_TYPE_AUDIO:
             {
-                AudioProperties properties(*_formatContext, streamIndex);
+                AudioProperties properties(*this, streamIndex);
                 _audioStreams.push_back(properties);
                 break;
             }
             case AVMEDIA_TYPE_DATA:
             {
-                DataProperties properties(*_formatContext, streamIndex);
+                DataProperties properties(*this, streamIndex);
                 _dataStreams.push_back(properties);
                 break;
             }
             case AVMEDIA_TYPE_SUBTITLE:
             {
-                SubtitleProperties properties(*_formatContext, streamIndex);
+                SubtitleProperties properties(*this, streamIndex);
                 _subtitleStreams.push_back(properties);
                 break;
             }
             case AVMEDIA_TYPE_ATTACHMENT:
             {
-                AttachementProperties properties(*_formatContext, streamIndex);
+                AttachementProperties properties(*this, streamIndex);
                 _attachementStreams.push_back(properties);
                 break;
             }
             case AVMEDIA_TYPE_UNKNOWN:
             {
-                UnknownProperties properties(*_formatContext, streamIndex);
+                UnknownProperties properties(*this, streamIndex);
                 _unknownStreams.push_back(properties);
                 break;
             }
@@ -121,7 +122,7 @@ void FileProperties::extractStreamProperties(IProgress& progress, const EAnalyse
         _streams[unknownStreamIndex] = &_unknownStreams.at(streamIndex);
     }
 
-    // if the analysis level has decoded some streams parts, return at the beginning
+    // Returns at the beginning of the stream after any deep analysis
     if(level > eAnalyseLevelHeader && ! isRawFormat())
         const_cast<FormatContext*>(_formatContext)->seek(0, AVSEEK_FLAG_BACKWARD);
 }
@@ -186,6 +187,9 @@ float FileProperties::getDuration() const
 {
     if(!_avFormatContext)
         throw std::runtime_error("unknown format context");
+    const size_t duration = _avFormatContext->duration;
+    if(duration == (size_t)AV_NOPTS_VALUE)
+        return 0;
     return 1.0 * _avFormatContext->duration / AV_TIME_BASE;
 }
 
@@ -194,6 +198,12 @@ size_t FileProperties::getBitRate() const
     if(!_avFormatContext)
         throw std::runtime_error("unknown format context");
     return _avFormatContext->bit_rate;
+}
+
+size_t FileProperties::getFileSize() const
+{
+    std::ifstream in(getFilename().c_str(), std::ios::binary | std::ios::ate);
+    return in.tellg(); 
 }
 
 size_t FileProperties::getPacketSize() const
@@ -243,10 +253,13 @@ PropertyVector& FileProperties::fillVector(PropertyVector& data) const
     addProperty(data, "formatName", &FileProperties::getFormatName);
     addProperty(data, "formatLongName", &FileProperties::getFormatLongName);
     addProperty(data, "mimeType", &FileProperties::getFormatMimeType);
+    addProperty(data, "rawFormat", &FileProperties::isRawFormat);
 
     addProperty(data, "startTime", &FileProperties::getStartTime);
     addProperty(data, "duration", &FileProperties::getDuration);
     addProperty(data, "bitrate", &FileProperties::getBitRate);
+    addProperty(data, "fileSize", &FileProperties::getFileSize);
+    addProperty(data, "packetSize", &FileProperties::getPacketSize);
     addProperty(data, "numberOfStreams", &FileProperties::getNbStreams);
     addProperty(data, "numberOfPrograms", &FileProperties::getProgramsCount);
 

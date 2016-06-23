@@ -53,13 +53,6 @@ void InputFile::analyse(IProgress& progress, const EAnalyseLevel level)
     _properties->extractStreamProperties(progress, level);
 }
 
-FileProperties InputFile::analyseFile(const std::string& filename, IProgress& progress, const EAnalyseLevel level)
-{
-    InputFile file(filename);
-    file.analyse(progress, level);
-    return file.getProperties();
-}
-
 bool InputFile::readNextPacket(CodedData& data, const size_t streamIndex)
 {
     bool nextPacketFound = false;

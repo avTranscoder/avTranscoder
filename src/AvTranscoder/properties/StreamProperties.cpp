@@ -2,14 +2,16 @@
 
 #include <AvTranscoder/properties/util.hpp>
 #include <AvTranscoder/properties/JsonWriter.hpp>
+#include <AvTranscoder/properties/FileProperties.hpp>
 
 #include <stdexcept>
 
 namespace avtranscoder
 {
 
-StreamProperties::StreamProperties(const FormatContext& formatContext, const size_t index)
-    : _formatContext(&formatContext.getAVFormatContext())
+StreamProperties::StreamProperties(const FileProperties& fileProperties, const size_t index)
+    : _fileProperties(&fileProperties)
+    , _formatContext(&fileProperties.getAVFormatContext())
     , _codecContext(NULL)
     , _codec(NULL)
     , _streamIndex(index)
@@ -66,7 +68,13 @@ Rational StreamProperties::getTimeBase() const
 float StreamProperties::getDuration() const
 {
     const Rational timeBase = getTimeBase();
-    return av_q2d(timeBase) * _formatContext->streams[_streamIndex]->duration;
+    const size_t duration = _formatContext->streams[_streamIndex]->duration;
+    if(duration == (size_t)AV_NOPTS_VALUE)
+    {
+        LOG_WARN("The duration of the stream '" << _streamIndex << "' of file '" << _formatContext->filename << "' is unknown.")
+        return 0;
+    }
+    return av_q2d(timeBase) * duration;
 }
 
 AVMediaType StreamProperties::getStreamType() const

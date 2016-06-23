@@ -20,19 +20,64 @@ def testCreateInputFileFromUnexistingFilename():
     av.InputFile( inputFileName )
 
 
+@raises(RuntimeError)
+def testInputFileAnalyseHeaderTryToAccessisInterlaced():
+    """
+    Analyse only header of an InputFile, and try to access a properties computed when access the first GOP.
+    """
+    inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_MOV_FILE']
+    inputFile = av.InputFile(inputFileName)
+
+    # The analyse of the first GOP is not done yet
+    videoProperties = inputFile.getProperties().getVideoProperties()[0]
+    videoProperties.isInterlaced()
+
+
+@raises(RuntimeError)
+def testInputFileAnalyseHeaderTryToAccessisTopFieldFirst():
+    """
+    Analyse only header of an InputFile, and try to access a properties computed when access the first GOP.
+    """
+    inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_MOV_FILE']
+    inputFile = av.InputFile(inputFileName)
+
+    # The analyse of the first GOP is not done yet
+    videoProperties = inputFile.getProperties().getVideoProperties()[0]
+    videoProperties.isTopFieldFirst()
+
+
+@raises(RuntimeError)
+def testInputFileAnalyseHeaderTryToAccessisGopSize():
+    """
+    Analyse only header of an InputFile, and try to access a properties computed when access the first GOP.
+    """
+    inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_MOV_FILE']
+    inputFile = av.InputFile(inputFileName)
+
+    # The analyse of the first GOP is not done yet
+    videoProperties = inputFile.getProperties().getVideoProperties()[0]
+    videoProperties.getGopSize()
+
+
+@raises(RuntimeError)
+def testInputFileAnalyseHeaderTryToAccessisGopStructure():
+    """
+    Analyse only header of an InputFile, and try to access a properties computed when access the first GOP.
+    """
+    inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_MOV_FILE']
+    inputFile = av.InputFile(inputFileName)
+
+    # The analyse of the first GOP is not done yet
+    videoProperties = inputFile.getProperties().getVideoProperties()[0]
+    videoProperties.getGopStructure()
+
+
 def testInputFileAnalyseFirstGop():
     """
     Analyse the first gop of an InputFile, and check if the correct attributes are filled.
     """
     inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_MOV_FILE']
     inputFile = av.InputFile( inputFileName )
-
-    # The analyse of the first GOP is not done yet
-    videoProperties = inputFile.getProperties().getVideoProperties()[0]
-    assert_equals(videoProperties.isInterlaced(), False)
-    assert_equals(videoProperties.isTopFieldFirst(), False)
-    assert_equals(videoProperties.getGopSize(), 0)
-    assert_equals(videoProperties.getGopStructure(), ())
 
     # Analyse first GOP
     progress = av.NoDisplayProgress()
