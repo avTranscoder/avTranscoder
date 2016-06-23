@@ -98,6 +98,13 @@ private:
     void setupRemainingWrappingOptions();
     //@}
 
+    /**
+     * @brief Depending on the format/codec, set general parameters of the stream.
+     * @param avStream: the stream to set.
+     * @param codec; the description of the codec used in the stream.
+     */
+    void setOutputStream(AVStream& avStream, const ICodec& codec);
+
 private:
     FormatContext _formatContext;
     std::vector<OutputStream*> _outputStreams; ///< Has ownership
