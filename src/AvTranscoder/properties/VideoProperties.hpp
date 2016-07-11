@@ -40,10 +40,18 @@ public:
     Rational getSar() const; // sample/pixel aspect ratio
     Rational getDar() const; // display aspect ratio
 
-    size_t getBitRate() const; ///< in bits/s, 0 if unknown
+    /**
+     * @return The video bitrate in bits/s.
+     * @warning If there is no such info available in the container, this data is estimate by decoding the first GOP.
+     */
+    size_t getBitRate() const;
     size_t getMaxBitRate() const;
     size_t getMinBitRate() const;
-    size_t getNbFrames() const; ///< 0 if unknown
+    /**
+     * @note 0 if unknown.
+     * @warning In case of a raw format, this data is estimate from the fps and the duration.
+     */
+    size_t getNbFrames() const;
     size_t getTicksPerFrame() const;
     size_t getWidth() const;
     size_t getHeight() const;
@@ -63,7 +71,8 @@ public:
 
     /**
      * @brief Override method.
-     * @return the stream duration in seconds, 0 if not available
+     * @return The stream duration in seconds, 0 if not available.
+     * @warning In case of a raw format, this data is estimate from the file size.
      */
     float getDuration() const;
 
