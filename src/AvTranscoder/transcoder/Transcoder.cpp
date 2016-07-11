@@ -243,6 +243,12 @@ bool Transcoder::processFrame()
         {
             LOG_WARN("Failed to process stream " << streamIndex)
             ++nbStreamProcessStatusFailed;
+
+            // if this is the end of the main stream
+            if(streamIndex == _mainStreamIndex) {
+                LOG_INFO("End of process because the main stream at index " << _mainStreamIndex << " failed to process a new frame.")
+                return false;
+            }
         }
     }
 
@@ -300,14 +306,6 @@ ProcessStat Transcoder::process(IProgress& progress)
                              expectedOutputDuration) == eJobStatusCancel)
         {
             LOG_INFO("End of process because the job was canceled.")
-            break;
-        }
-
-        // check progressDuration
-        if(progressDuration >= expectedOutputDuration)
-        {
-            LOG_INFO("End of process because the output program duration ("
-                     << progressDuration << "s) is equal or upper than " << expectedOutputDuration << "s.")
             break;
         }
     }
@@ -498,32 +496,43 @@ ProfileLoader::Profile Transcoder::getProfileFromFile(InputFile& inputFile, cons
     return profile;
 }
 
-float Transcoder::getStreamDuration(size_t indexStream) const
+float Transcoder::getStreamDuration(const size_t indexStream) const
 {
     return _streamTranscoders.at(indexStream)->getDuration();
 }
 
-float Transcoder::getMinTotalDuration() const
+float Transcoder::getMinTotalDuration()
 {
     float minTotalDuration = std::numeric_limits<float>::max();
-    for(size_t i = 0; i < _streamTranscoders.size(); ++i)
+    for(size_t streamIndex = 0; streamIndex < _streamTranscoders.size(); ++streamIndex)
     {
-        minTotalDuration = std::min(getStreamDuration(i), minTotalDuration);
+        const float streamDuration = getStreamDuration(streamIndex);
+        if(std::min(streamDuration, minTotalDuration) == streamDuration) 
+        {
+            minTotalDuration = streamDuration;
+            _mainStreamIndex = streamIndex;
+        }
+        
     }
     return minTotalDuration;
 }
 
-float Transcoder::getMaxTotalDuration() const
+float Transcoder::getMaxTotalDuration()
 {
     float maxTotalDuration = 0;
-    for(size_t i = 0; i < _streamTranscoders.size(); ++i)
+    for(size_t streamIndex = 0; streamIndex < _streamTranscoders.size(); ++streamIndex)
     {
-        maxTotalDuration = std::max(getStreamDuration(i), maxTotalDuration);
+        const float streamDuration = getStreamDuration(streamIndex);
+        if(std::max(streamDuration, maxTotalDuration) == streamDuration)
+        {
+            maxTotalDuration = streamDuration;
+            _mainStreamIndex = streamIndex;
+        }
     }
     return maxTotalDuration;
 }
 
-float Transcoder::getExpectedOutputDuration() const
+float Transcoder::getExpectedOutputDuration()
 {
     switch(_eProcessMethod)
     {
