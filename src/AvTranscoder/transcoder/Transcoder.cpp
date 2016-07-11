@@ -235,14 +235,12 @@ bool Transcoder::processFrame()
         return false;
 
     // For each stream, process a frame
-    size_t nbStreamProcessStatusFailed = 0;
     for(size_t streamIndex = 0; streamIndex < _streamTranscoders.size(); ++streamIndex)
     {
         LOG_DEBUG("Process stream " << streamIndex << "/" << (_streamTranscoders.size() - 1))
         if(!_streamTranscoders.at(streamIndex)->processFrame())
         {
             LOG_WARN("Failed to process stream " << streamIndex)
-            ++nbStreamProcessStatusFailed;
 
             // if this is the end of the main stream
             if(streamIndex == _mainStreamIndex) {
@@ -250,21 +248,6 @@ bool Transcoder::processFrame()
                 return false;
             }
         }
-    }
-
-    // Get the number of streams without the generators (they always succeed)
-    size_t nbStreamsWithoutGenerator = _streamTranscoders.size();
-    for(size_t streamIndex = 0; streamIndex < _streamTranscoders.size(); ++streamIndex)
-    {
-        if(_streamTranscoders.at(streamIndex)->getProcessCase() == StreamTranscoder::eProcessCaseGenerator)
-            --nbStreamsWithoutGenerator;
-    }
-
-    // If all streams failed to process a new frame
-    if(nbStreamsWithoutGenerator != 0 && nbStreamsWithoutGenerator == nbStreamProcessStatusFailed)
-    {
-        LOG_INFO("End of process because all streams (except generators) failed to process a new frame.")
-        return false;
     }
     return true;
 }
