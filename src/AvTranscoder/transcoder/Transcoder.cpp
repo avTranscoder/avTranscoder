@@ -237,12 +237,12 @@ bool Transcoder::processFrame()
     // For each stream, process a frame
     for(size_t streamIndex = 0; streamIndex < _streamTranscoders.size(); ++streamIndex)
     {
-        LOG_DEBUG("Process stream " << streamIndex << "/" << (_streamTranscoders.size() - 1))
+        LOG_DEBUG("Process stream " << streamIndex + 1 << "/" << _streamTranscoders.size())
 
         // if a stream failed to process
         if(!_streamTranscoders.at(streamIndex)->processFrame())
         {
-            LOG_WARN("Failed to process stream " << streamIndex)
+            LOG_WARN("Failed to process stream at index " << streamIndex)
 
             // if this is the end of the main stream
             if(streamIndex == _mainStreamIndex) {
