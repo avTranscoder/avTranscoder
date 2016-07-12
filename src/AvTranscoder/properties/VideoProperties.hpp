@@ -42,14 +42,14 @@ public:
 
     /**
      * @return The video bitrate in bits/s.
-     * @warning If there is no such info available in the container, this data is estimate by decoding the first GOP.
+     * @warning If there is no such info available in the container, this data is estimated by decoding the first GOP.
      */
     size_t getBitRate() const;
     size_t getMaxBitRate() const;
     size_t getMinBitRate() const;
     /**
      * @note 0 if unknown.
-     * @warning In case of a raw format, this data is estimate from the fps and the duration.
+     * @warning In case of a raw format, this data is estimated from the fps and the duration.
      */
     size_t getNbFrames() const;
     size_t getTicksPerFrame() const;
@@ -72,7 +72,7 @@ public:
     /**
      * @brief Override method.
      * @return The stream duration in seconds, 0 if not available.
-     * @warning In case of a raw format, this data is estimate from the file size.
+     * @warning In case of a raw format, this data is estimated from the file size.
      */
     float getDuration() const;
 

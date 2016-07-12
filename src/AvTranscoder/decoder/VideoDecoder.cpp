@@ -95,7 +95,7 @@ bool VideoDecoder::decodeNextFrame(Frame& frameBuffer)
                                               &got_frame, &data.getAVPacket());
         if(ret < 0)
         {
-            throw std::runtime_error("An error occured during video decoding: " + getDescriptionFromErrorCode(ret));
+            throw std::runtime_error("An error occurred during video decoding: " + getDescriptionFromErrorCode(ret));
         }
 
         // if no frame could be decompressed
