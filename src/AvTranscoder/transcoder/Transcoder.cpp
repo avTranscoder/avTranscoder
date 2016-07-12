@@ -305,7 +305,7 @@ ProcessStat Transcoder::process(IProgress& progress)
 
     _outputFile.endWrap();
 
-    LOG_INFO("End of process: " << frame << " frames processed")
+    LOG_INFO("End of process: " << ++frame << " frames processed")
 
     LOG_INFO("Get process statistics")
     ProcessStat processStat;
