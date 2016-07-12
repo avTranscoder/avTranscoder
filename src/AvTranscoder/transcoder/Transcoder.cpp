@@ -238,6 +238,8 @@ bool Transcoder::processFrame()
     for(size_t streamIndex = 0; streamIndex < _streamTranscoders.size(); ++streamIndex)
     {
         LOG_DEBUG("Process stream " << streamIndex << "/" << (_streamTranscoders.size() - 1))
+
+        // if a stream failed to process
         if(!_streamTranscoders.at(streamIndex)->processFrame())
         {
             LOG_WARN("Failed to process stream " << streamIndex)
@@ -289,6 +291,14 @@ ProcessStat Transcoder::process(IProgress& progress)
                              expectedOutputDuration) == eJobStatusCancel)
         {
             LOG_INFO("End of process because the job was canceled.")
+            break;
+        }
+
+        // check progressDuration
+        if(_eProcessMethod == eProcessMethodBasedOnDuration && progressDuration >= expectedOutputDuration)
+        {
+            LOG_INFO("End of process because the output program duration ("
+                     << progressDuration << "s) is equal or upper than " << expectedOutputDuration << "s.")
             break;
         }
     }
