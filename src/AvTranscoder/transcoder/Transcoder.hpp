@@ -54,13 +54,6 @@ public:
     ~Transcoder();
 
     /**
-     * @brief Add all streams of the file with the given filename.
-     * All the streams will be rewrapped.
-     * @note Currently we rewrap only the video and the audio streams. The streams with an other type are skipped.
-     */
-    void add(const std::string& filename);
-
-    /**
      * @brief Add a stream and set a profile
      * @note If profileName is empty, rewrap.
      * @note offset in seconds

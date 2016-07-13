@@ -35,21 +35,6 @@ Transcoder::~Transcoder()
     }
 }
 
-void Transcoder::add(const std::string& filename)
-{
-    const int streamIndex = -1;
-    const float offset = 0;
-    const InputFile* referenceFile = addInputFile(filename, streamIndex, offset);
-    const std::vector<avtranscoder::StreamProperties*>& inputStreams = referenceFile->getProperties().getStreamProperties();
-    for(size_t index = 0; index < inputStreams.size(); ++index)
-    {
-        const AVMediaType streamType = referenceFile->getProperties().getStreamPropertiesWithIndex(index).getStreamType();
-        // skip the stream if it is not video nor audio
-        if(streamType == AVMEDIA_TYPE_VIDEO || streamType == AVMEDIA_TYPE_AUDIO)
-            addRewrapStream(filename, index, offset);
-    }
-}
-
 void Transcoder::add(const std::string& filename, const size_t streamIndex, const std::string& profileName,
                      const float offset)
 {
