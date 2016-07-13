@@ -226,7 +226,7 @@ StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outpu
     setOffset(offset);
 }
 
-StreamTranscoder::StreamTranscoder(const ICodec& inputCodec, IOutputFile& outputFile, const ProfileLoader::Profile& profile)
+StreamTranscoder::StreamTranscoder(IOutputFile& outputFile, const ProfileLoader::Profile& profile)
     : _inputStream(NULL)
     , _outputStream(NULL)
     , _sourceBuffer(NULL)

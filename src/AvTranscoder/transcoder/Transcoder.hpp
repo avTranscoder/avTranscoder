@@ -63,23 +63,12 @@ public:
      */
     void add(const std::string& filename, const size_t streamIndex, const std::string& profileName = "",
              const float offset = 0);
-    /*
-     * @note If filename is empty, add a generated stream.
-     * @note If filename is empty, profileName can't be empty (no sens to rewrap a generated stream).
-     */
-    void add(const std::string& filename, const size_t streamIndex, const std::string& profileName, ICodec& codec,
-             const float offset = 0);
 
     /**
      * @brief Add a stream and set a custom profile
      * @note Profile will be updated, be sure to pass unique profile name.
      */
     void add(const std::string& filename, const size_t streamIndex, const ProfileLoader::Profile& profile,
-             const float offset = 0);
-    /*
-     * @note If filename is empty, add a generated stream.
-     */
-    void add(const std::string& filename, const size_t streamIndex, const ProfileLoader::Profile& profile, ICodec& codec,
              const float offset = 0);
 
     /**
@@ -89,12 +78,6 @@ public:
      */
     void add(const std::string& filename, const size_t streamIndex, const int subStreamIndex,
              const std::string& profileName = "", const float offset = 0);
-    /**
-     * @note If filename is empty, add a generated stream.
-     * @note If filename is empty, profileName can't be empty (no sens to rewrap a generated stream).
-     */
-    void add(const std::string& filename, const size_t streamIndex, const int subStreamIndex, const std::string& profileName,
-             ICodec& codec, const float offset = 0);
 
     /**
      * @brief Add a stream and set a custom profile
@@ -103,11 +86,12 @@ public:
      */
     void add(const std::string& filename, const size_t streamIndex, const int subStreamIndex,
              const ProfileLoader::Profile& profile, const float offset = 0);
-    /**
-     * @note If filename is empty, add a generated stream.
-     */
-    void add(const std::string& filename, const size_t streamIndex, const int subStreamIndex,
-             const ProfileLoader::Profile& profile, ICodec& codec, const float offset = 0);
+
+    //@{
+    // @brief Add a generated stream.
+    void add(const std::string& profile);
+    void add(const ProfileLoader::Profile& profile);
+    //@}
 
     /**
      * @brief Add the stream
@@ -173,7 +157,7 @@ private:
     void addTranscodeStream(const std::string& filename, const size_t streamIndex, const int subStreamIndex,
                             const ProfileLoader::Profile& profile, const float offset = 0);
 
-    void addDummyStream(const ProfileLoader::Profile& profile, const ICodec& codec);
+    void addDummyStream(const ProfileLoader::Profile& profile);
 
     /**
      * @note If streamIndex is negative, activate all streams of the file.

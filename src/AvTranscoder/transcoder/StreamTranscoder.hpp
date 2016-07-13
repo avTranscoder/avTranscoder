@@ -41,7 +41,7 @@ public:
      * @brief encode from a generated stream
      * @note offset feature has no sense here
      **/
-    StreamTranscoder(const ICodec& inputCodec, IOutputFile& outputFile, const ProfileLoader::Profile& profile);
+    StreamTranscoder(IOutputFile& outputFile, const ProfileLoader::Profile& profile);
 
     ~StreamTranscoder();
 
