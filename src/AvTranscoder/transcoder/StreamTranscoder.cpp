@@ -243,7 +243,11 @@ StreamTranscoder::StreamTranscoder(const ICodec& inputCodec, IOutputFile& output
 {
     if(profile.find(constants::avProfileType)->second == constants::avProfileTypeVideo)
     {
-        const VideoCodec& inputVideoCodec = static_cast<const VideoCodec&>(inputCodec);
+        VideoCodec inputVideoCodec(eCodecTypeEncoder, profile.find(constants::avProfileCodec)->second);
+        VideoFrameDesc inputFrameDesc;
+        inputFrameDesc.setParameters(profile);
+        inputVideoCodec.setImageParameters(inputFrameDesc);
+
         // generator decoder
         _generator = new VideoGenerator(inputVideoCodec.getVideoFrameDesc());
         _currentDecoder = _generator;
@@ -252,7 +256,6 @@ StreamTranscoder::StreamTranscoder(const ICodec& inputCodec, IOutputFile& output
         _filterGraph = new FilterGraph(inputVideoCodec);
 
         // buffers to process
-        VideoFrameDesc inputFrameDesc = inputVideoCodec.getVideoFrameDesc();
         VideoFrameDesc outputFrameDesc = inputFrameDesc;
         outputFrameDesc.setParameters(profile);
         _sourceBuffer = new VideoFrame(inputFrameDesc);
@@ -271,7 +274,11 @@ StreamTranscoder::StreamTranscoder(const ICodec& inputCodec, IOutputFile& output
     }
     else if(profile.find(constants::avProfileType)->second == constants::avProfileTypeAudio)
     {
-        const AudioCodec& inputAudioCodec = static_cast<const AudioCodec&>(inputCodec);
+        AudioCodec inputAudioCodec(eCodecTypeEncoder, profile.find(constants::avProfileCodec)->second);
+        AudioFrameDesc inputFrameDesc;
+        inputFrameDesc.setParameters(profile);
+        inputAudioCodec.setAudioParameters(inputFrameDesc);
+
         // generator decoder
         _generator = new AudioGenerator(inputAudioCodec.getAudioFrameDesc());
         _currentDecoder = _generator;
@@ -280,7 +287,6 @@ StreamTranscoder::StreamTranscoder(const ICodec& inputCodec, IOutputFile& output
         _filterGraph = new FilterGraph(inputAudioCodec);
 
         // buffers to process
-        AudioFrameDesc inputFrameDesc = inputAudioCodec.getAudioFrameDesc();
         AudioFrameDesc outputFrameDesc = inputFrameDesc;
         outputFrameDesc.setParameters(profile);
         _sourceBuffer = new AudioFrame(inputFrameDesc);
