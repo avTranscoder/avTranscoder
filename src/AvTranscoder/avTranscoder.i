@@ -16,17 +16,12 @@
 %include "AvTranscoder/swig/avSeek.i"
 %include "AvTranscoder/swig/avOperator.i"
 
-%{
-#include <AvTranscoder/log.hpp>
-%}
 
 %include "AvTranscoder/progress/progress.i"
 %include "AvTranscoder/properties/properties.i"
 %include "AvTranscoder/profile/profile.i"
 %include "AvTranscoder/data/data.i"
-
-%include <AvTranscoder/log.hpp>
-
+%include "AvTranscoder/log.i"
 %include "AvTranscoder/library.i"
 %include "AvTranscoder/option.i"
 %include "AvTranscoder/util.i"
