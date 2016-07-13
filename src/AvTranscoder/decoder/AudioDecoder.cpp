@@ -97,7 +97,7 @@ bool AudioDecoder::decodeNextFrame(Frame& frameBuffer)
                                         &got_frame, &data.getAVPacket());
         if(ret < 0)
         {
-            throw std::runtime_error("an error occured during audio decoding" + getDescriptionFromErrorCode(ret));
+            throw std::runtime_error("An error occurred during audio decoding: " + getDescriptionFromErrorCode(ret));
         }
 
         // if no frame could be decompressed
