@@ -114,7 +114,7 @@ bool VideoDecoder::decodeNextFrame(Frame& frameBuffer)
     return decodeNextFrame;
 }
 
-bool VideoDecoder::decodeNextFrame(Frame& frameBuffer, const std::vector<size_t> channelsIndex)
+bool VideoDecoder::decodeNextFrame(Frame& frameBuffer, const std::vector<size_t> channelIndexArray)
 {
     return false;
 }

@@ -116,7 +116,7 @@ bool AudioDecoder::decodeNextFrame(Frame& frameBuffer)
     return decodeNextFrame;
 }
 
-bool AudioDecoder::decodeNextFrame(Frame& frameBuffer, const std::vector<size_t> channelsIndex)
+bool AudioDecoder::decodeNextFrame(Frame& frameBuffer, const std::vector<size_t> channelIndexArray)
 {
     AudioFrame& audioBuffer = static_cast<AudioFrame&>(frameBuffer);
 
@@ -137,7 +137,7 @@ bool AudioDecoder::decodeNextFrame(Frame& frameBuffer, const std::vector<size_t>
         return false;
 
     // check if each expected channel exists
-    for(std::vector<size_t>::const_iterator channelIndex = channelsIndex.begin(); channelIndex != channelsIndex.end(); ++channelIndex)
+    for(std::vector<size_t>::const_iterator channelIndex = channelIndexArray.begin(); channelIndex != channelIndexArray.end(); ++channelIndex)
     {
         if((*channelIndex) > srcNbChannels - 1)
         {
@@ -153,8 +153,8 @@ bool AudioDecoder::decodeNextFrame(Frame& frameBuffer, const std::vector<size_t>
 
     // copy frame properties of decoded frame
     audioBuffer.copyProperties(allDataOfNextFrame);
-    av_frame_set_channels(&audioBuffer.getAVFrame(), channelsIndex.size());
-    av_frame_set_channel_layout(&audioBuffer.getAVFrame(), av_get_default_channel_layout(channelsIndex.size()));
+    av_frame_set_channels(&audioBuffer.getAVFrame(), channelIndexArray.size());
+    av_frame_set_channel_layout(&audioBuffer.getAVFrame(), av_get_default_channel_layout(channelIndexArray.size()));
     audioBuffer.setNbSamplesPerChannel(allDataOfNextFrame.getNbSamplesPerChannel());
 
     // @todo manage cases with data of frame not only on data[0] (use _frame.linesize)
@@ -165,20 +165,20 @@ bool AudioDecoder::decodeNextFrame(Frame& frameBuffer, const std::vector<size_t>
     for(size_t sample = 0; sample < allDataOfNextFrame.getNbSamplesPerChannel(); ++sample)
     {
         // offset in source buffer
-        src += channelsIndex.at(0) * bytePerSample;
+        src += channelIndexArray.at(0) * bytePerSample;
 
-        for(size_t i = 0; i < channelsIndex.size(); ++i)
+        for(size_t i = 0; i < channelIndexArray.size(); ++i)
         {
             memcpy(dst, src, bytePerSample);
             dst += bytePerSample;
 
             // shift to the corresponding sample in the next channel of the current layout
-            if(i < channelsIndex.size() - 1)
-                src += (channelsIndex.at(i+1) - channelsIndex.at(i)) * bytePerSample;
+            if(i < channelIndexArray.size() - 1)
+                src += (channelIndexArray.at(i+1) - channelIndexArray.at(i)) * bytePerSample;
             // else shift to the next layout
             else
             {
-                src += (srcNbChannels - channelsIndex.at(i)) * bytePerSample;
+                src += (srcNbChannels - channelIndexArray.at(i)) * bytePerSample;
                 break;
             }
         }

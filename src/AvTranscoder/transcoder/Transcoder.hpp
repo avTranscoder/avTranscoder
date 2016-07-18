@@ -21,35 +21,35 @@ namespace avtranscoder
  */
 struct InputStreamDesc {
 
-    InputStreamDesc(const std::string& filename, const size_t streamIndex, const std::vector<size_t>& channelsIndex)
+    InputStreamDesc(const std::string& filename, const size_t streamIndex, const std::vector<size_t>& channelIndexArray)
         : _filename(filename)
         , _streamIndex(streamIndex)
-        , _channelsIndex(channelsIndex)
+        , _channelIndexArray(channelIndexArray)
     {}
 
     InputStreamDesc(const std::string& filename, const size_t streamIndex, const size_t channelIndex)
         : _filename(filename)
         , _streamIndex(streamIndex)
-        , _channelsIndex()
+        , _channelIndexArray()
     {
-	_channelsIndex.push_back(channelIndex);
+	_channelIndexArray.push_back(channelIndex);
     }
 
     InputStreamDesc(const std::string& filename, const size_t streamIndex)
         : _filename(filename)
         , _streamIndex(streamIndex)
-        , _channelsIndex()
+        , _channelIndexArray()
     {}
 
     /**
      * @return If a demultiplexing step will be done to extract the expected data.
      */
-    bool demultiplexing() const { return ! _channelsIndex.empty(); }
+    bool demultiplexing() const { return ! _channelIndexArray.empty(); }
 
 public:
     std::string _filename; ///< Source file path.
     size_t _streamIndex; ///< Source stream to extract.
-    std::vector<size_t> _channelsIndex; ///< List of source channels to extract from the stream
+    std::vector<size_t> _channelIndexArray; ///< List of source channels to extract from the stream
 };
 
 #ifndef SWIG

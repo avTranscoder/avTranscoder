@@ -225,7 +225,7 @@ void Transcoder::addTranscodeStream(const InputStreamDesc& inputStreamDesc,
     {
         // number of channels
         std::stringstream ss;
-        ss << inputStreamDesc._channelsIndex.size();
+        ss << inputStreamDesc._channelIndexArray.size();
         profile[constants::avProfileChannel] = ss.str();
     }
 
@@ -251,7 +251,7 @@ void Transcoder::addTranscodeStream(const InputStreamDesc& inputStreamDesc,
         case AVMEDIA_TYPE_AUDIO:
         {
             _streamTranscodersAllocated.push_back(
-                new StreamTranscoder(referenceFile->getStream(inputStreamDesc._streamIndex), _outputFile, profile, inputStreamDesc._channelsIndex, offset));
+                new StreamTranscoder(referenceFile->getStream(inputStreamDesc._streamIndex), _outputFile, profile, inputStreamDesc._channelIndexArray, offset));
             _streamTranscoders.push_back(_streamTranscodersAllocated.back());
             break;
         }
@@ -509,9 +509,9 @@ std::ostream& operator<<(std::ostream& flux, const InputStreamDesc& inputStreamD
     if(inputStreamDesc.demultiplexing())
     {
         flux << "- channels index: ";
-        for(size_t c = 0; c < inputStreamDesc._channelsIndex.size(); ++c)
+        for(size_t c = 0; c < inputStreamDesc._channelIndexArray.size(); ++c)
         {
-            flux << inputStreamDesc._channelsIndex.at(c) << ", ";
+            flux << inputStreamDesc._channelIndexArray.at(c) << ", ";
         }
         flux << std::endl;
     }

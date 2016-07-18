@@ -72,7 +72,7 @@ bool VideoGenerator::decodeNextFrame(Frame& frameBuffer)
     return true;
 }
 
-bool VideoGenerator::decodeNextFrame(Frame& frameBuffer, const std::vector<size_t> channelsIndex)
+bool VideoGenerator::decodeNextFrame(Frame& frameBuffer, const std::vector<size_t> channelIndexArray)
 {
     return false;
 }

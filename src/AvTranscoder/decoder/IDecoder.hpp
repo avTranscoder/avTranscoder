@@ -33,10 +33,10 @@ public:
     /**
      * @brief Decode substream of next frame
      * @param frameBuffer: the frame decoded
-     * @param channelIndex: list of channels to extract
+     * @param channelIndexArray: list of channels to extract
      * @return status of decoding
      */
-    virtual bool decodeNextFrame(Frame& frameBuffer, const std::vector<size_t> channelsIndex) = 0;
+    virtual bool decodeNextFrame(Frame& frameBuffer, const std::vector<size_t> channelIndexArray) = 0;
 
     /**
      * @brief Set the next frame of the input stream (which bypass the work of decoding)

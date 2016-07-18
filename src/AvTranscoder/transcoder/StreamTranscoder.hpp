@@ -35,7 +35,7 @@ public:
      * @brief Transcode the given stream.
      **/
     StreamTranscoder(IInputStream& inputStream, IOutputFile& outputFile, const ProfileLoader::Profile& profile,
-                     const std::vector<size_t> channelsIndex, const float offset = 0);
+                     const std::vector<size_t> channelIndexArray, const float offset = 0);
 
     /**
      * @brief encode from a generated stream
@@ -136,7 +136,7 @@ private:
 
     FilterGraph* _filterGraph; ///< Filter graph (has ownership)
 
-    std::vector<size_t> _channelsIndex; ///< List of channels that is processed from the input stream (empty if no demultiplexing).
+    std::vector<size_t> _channelIndexArray; ///< List of channels that is processed from the input stream (empty if no demultiplexing).
 
     float _offset; ///< Offset, in seconds, at the beginning of the StreamTranscoder.
 

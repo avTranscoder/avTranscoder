@@ -19,7 +19,7 @@ public:
     ~AudioGenerator();
 
     bool decodeNextFrame(Frame& frameBuffer);
-    bool decodeNextFrame(Frame& frameBuffer, const std::vector<size_t> channelsIndex);
+    bool decodeNextFrame(Frame& frameBuffer, const std::vector<size_t> channelIndexArray);
 
     void setNextFrame(Frame& inputFrame) { _inputFrame = &inputFrame; }
 

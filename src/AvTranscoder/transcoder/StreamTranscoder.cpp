@@ -31,7 +31,7 @@ StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outpu
     , _outputEncoder(NULL)
     , _transform(NULL)
     , _filterGraph(NULL)
-    , _channelsIndex()
+    , _channelIndexArray()
     , _offset(offset)
     , _needToSwitchToGenerator(false)
 {
@@ -122,7 +122,7 @@ StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outpu
 }
 
 StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outputFile, const ProfileLoader::Profile& profile,
-                                   const std::vector<size_t> channelsIndex, const float offset)
+                                   const std::vector<size_t> channelIndexArray, const float offset)
     : _inputStream(&inputStream)
     , _outputStream(NULL)
     , _sourceBuffer(NULL)
@@ -133,7 +133,7 @@ StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outpu
     , _outputEncoder(NULL)
     , _transform(NULL)
     , _filterGraph(NULL)
-    , _channelsIndex(channelsIndex)
+    , _channelIndexArray(channelIndexArray)
     , _offset(offset)
     , _needToSwitchToGenerator(false)
 {
@@ -191,8 +191,8 @@ StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outpu
 
             AudioFrameDesc outputFrameDesc(_inputStream->getAudioCodec().getAudioFrameDesc());
             outputFrameDesc.setParameters(profile);
-            if(!_channelsIndex.empty())
-                outputFrameDesc._nbChannels = _channelsIndex.size();
+            if(!_channelIndexArray.empty())
+                outputFrameDesc._nbChannels = _channelIndexArray.size();
             outputAudio->setupAudioEncoder(outputFrameDesc, profile);
 
             // output stream
@@ -200,8 +200,8 @@ StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outpu
 
             // buffers to process
             AudioFrameDesc inputFrameDesc(_inputStream->getAudioCodec().getAudioFrameDesc());
-            if(!_channelsIndex.empty())
-                inputFrameDesc._nbChannels = _channelsIndex.size();
+            if(!_channelIndexArray.empty())
+                inputFrameDesc._nbChannels = _channelIndexArray.size();
 
             _sourceBuffer = new AudioFrame(inputFrameDesc);
             _frameBuffer = new AudioFrame(outputAudio->getAudioCodec().getAudioFrameDesc());
@@ -234,7 +234,7 @@ StreamTranscoder::StreamTranscoder(IOutputFile& outputFile, const ProfileLoader:
     , _outputEncoder(NULL)
     , _transform(NULL)
     , _filterGraph(NULL)
-    , _channelsIndex()
+    , _channelIndexArray()
     , _offset(0)
     , _needToSwitchToGenerator(false)
 {
@@ -472,10 +472,10 @@ bool StreamTranscoder::processTranscode()
 
     LOG_DEBUG("Decode next frame")
     bool decodingStatus = false;
-    if(_channelsIndex.empty())
+    if(_channelIndexArray.empty())
         decodingStatus = _currentDecoder->decodeNextFrame(*_sourceBuffer);
     else
-        decodingStatus = _currentDecoder->decodeNextFrame(*_sourceBuffer, _channelsIndex);
+        decodingStatus = _currentDecoder->decodeNextFrame(*_sourceBuffer, _channelIndexArray);
 
     CodedData data;
     if(decodingStatus)

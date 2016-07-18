@@ -71,7 +71,7 @@ bool AudioGenerator::decodeNextFrame(Frame& frameBuffer)
     return true;
 }
 
-bool AudioGenerator::decodeNextFrame(Frame& frameBuffer, const std::vector<size_t> channelsIndex)
+bool AudioGenerator::decodeNextFrame(Frame& frameBuffer, const std::vector<size_t> channelIndexArray)
 {
     return decodeNextFrame(frameBuffer);
 }
