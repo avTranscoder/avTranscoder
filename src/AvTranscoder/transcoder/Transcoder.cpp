@@ -77,7 +77,7 @@ void Transcoder::add(const std::string& profile)
 
 void Transcoder::add(const ProfileLoader::Profile& profile)
 {
-    addDummyStream(profile);
+    addGeneratedStream(profile);
 }
 
 void Transcoder::add(StreamTranscoder& stream)
@@ -255,7 +255,7 @@ void Transcoder::addTranscodeStream(const InputStreamDesc& inputStreamDesc,
     }
 }
 
-void Transcoder::addDummyStream(const ProfileLoader::Profile& profile)
+void Transcoder::addGeneratedStream(const ProfileLoader::Profile& profile)
 {
     // Add profile
     if(!_profileLoader.hasProfile(profile))

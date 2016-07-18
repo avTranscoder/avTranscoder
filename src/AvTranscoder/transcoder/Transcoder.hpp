@@ -163,7 +163,7 @@ private:
     void addTranscodeStream(const InputStreamDesc& inputStreamDesc,
                             const ProfileLoader::Profile& profile, const float offset = 0);
 
-    void addDummyStream(const ProfileLoader::Profile& profile);
+    void addGeneratedStream(const ProfileLoader::Profile& profile);
 
     /**
      * @note If streamIndex is negative, activate all streams of the file.
