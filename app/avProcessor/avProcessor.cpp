@@ -41,7 +41,7 @@ void parseConfigFile(const std::string& configFilename, avtranscoder::Transcoder
                 else
                 {
                     avtranscoder::InputStreamDesc inputDesc(filename, streamIndex, subStreamIndex);
-                    transcoder.add(inputDesc, transcodeProfile);
+                    transcoder.addStream(inputDesc, transcodeProfile);
                 }
             }
         }

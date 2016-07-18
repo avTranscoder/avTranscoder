@@ -76,25 +76,25 @@ public:
     ~Transcoder();
 
     /**
-     * @brief Create an output stream from the given input description to process.
+     * @brief Add a new stream to the output file, created from the given input description to process.
      * @param profileName: the encoding profile (rewrap if empty)
      * @param offset: in seconds
      * If offset is positive, the transcoder will generate black images or silence (depending on the type of stream) before
      * the stream to process.
      * If offset is negative, the transcoder will seek in the stream and start process at this specific time.
      */
-    void add(const InputStreamDesc& inputStreamDesc,
+    void addStream(const InputStreamDesc& inputStreamDesc,
              const std::string& profileName = "", const float offset = 0);
 
     /**
-     * @brief Create an output stream from the given input description to process.
+     * @brief Add a new stream to the output file, created from the given input description to process.
      * @note Profile will be updated, be sure to pass unique profile name.
      */
-    void add(const InputStreamDesc& inputStreamDesc,
+    void addStream(const InputStreamDesc& inputStreamDesc,
              const ProfileLoader::Profile& profile, const float offset = 0);
 
     //@{
-    // @brief Create an output generated stream.
+    // @brief Add a new generated stream to the output file, created from the given encoding profile.
     void addGeneratedStream(const std::string& encodingProfileName);
     void addGeneratedStream(const ProfileLoader::Profile& encodingProfile);
     //@}
@@ -102,7 +102,7 @@ public:
     /**
      * @brief Add the stream
      */
-    void add(StreamTranscoder& streamTranscoder);
+    void addStream(StreamTranscoder& streamTranscoder);
 
     /**
      * @brief Initialize all added streams, processing codec latency.

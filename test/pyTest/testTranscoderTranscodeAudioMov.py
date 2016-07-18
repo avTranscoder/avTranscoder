@@ -32,7 +32,7 @@ def testTranscodeMovVariableNbSamplesPerFrame():
     inputFile = av.InputFile( inputFileName )
     src_audioStream = inputFile.getProperties().getAudioProperties()[0]
     audioStreamIndex = src_audioStream.getStreamIndex()
-    transcoder.add( av.InputStreamDesc(inputFileName, audioStreamIndex), customProfile )
+    transcoder.addStream( av.InputStreamDesc(inputFileName, audioStreamIndex), customProfile )
 
     progress = av.ConsoleProgress()
     processStat = transcoder.process( progress )
@@ -64,8 +64,8 @@ def testTranscodeMovExtractChannels():
     inputFile = av.InputFile( inputFileName )
     src_audioStream = inputFile.getProperties().getAudioProperties()[0]
     audioStreamIndex = src_audioStream.getStreamIndex()
-    transcoder.add( av.InputStreamDesc(inputFileName, audioStreamIndex, 0) )
-    transcoder.add( av.InputStreamDesc(inputFileName, audioStreamIndex, 3) )
+    transcoder.addStream( av.InputStreamDesc(inputFileName, audioStreamIndex, 0) )
+    transcoder.addStream( av.InputStreamDesc(inputFileName, audioStreamIndex, 3) )
 
     progress = av.ConsoleProgress()
     processStat = transcoder.process( progress )

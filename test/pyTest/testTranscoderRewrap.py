@@ -72,7 +72,7 @@ def testRewrapAudioStream():
     ouputFile = av.OutputFile( outputFileName )
 
     transcoder = av.Transcoder( ouputFile )
-    transcoder.add( av.InputStreamDesc(inputFileName, 0) )
+    transcoder.addStream( av.InputStreamDesc(inputFileName, 0) )
     processStat = transcoder.process()
 
     # check process stat returned
@@ -106,7 +106,7 @@ def testRewrapAVIVideoStream():
     ouputFile = av.OutputFile( outputFileName )
 
     transcoder = av.Transcoder( ouputFile )
-    transcoder.add( av.InputStreamDesc(inputFileName, 0) )
+    transcoder.addStream( av.InputStreamDesc(inputFileName, 0) )
     processStat = transcoder.process()
 
     # check process stat returned
@@ -139,7 +139,7 @@ def testRewrapMOVVideoStream():
     ouputFile = av.OutputFile( outputFileName )
 
     transcoder = av.Transcoder( ouputFile )
-    transcoder.add( av.InputStreamDesc(inputFileName, 1) )
+    transcoder.addStream( av.InputStreamDesc(inputFileName, 1) )
     processStat = transcoder.process()
 
     # check process stat returned
@@ -172,7 +172,7 @@ def testRewrapRawVideoStream():
     ouputFile = av.OutputFile(outputFileName)
 
     transcoder = av.Transcoder(ouputFile)
-    transcoder.add( av.InputStreamDesc(inputFileName, 0) )
+    transcoder.addStream( av.InputStreamDesc(inputFileName, 0) )
     processStat = transcoder.process()
 
     # check process stat returned

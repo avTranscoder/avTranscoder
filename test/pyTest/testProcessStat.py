@@ -33,7 +33,7 @@ def testProcessWithStatistics():
     src_properties = src_inputFile.getProperties()
     src_videoStream = src_properties.getVideoProperties()[0]
     videoStreamIndex = src_videoStream.getStreamIndex()
-    transcoder.add( av.InputStreamDesc(inputFileName, videoStreamIndex), customProfile )
+    transcoder.addStream( av.InputStreamDesc(inputFileName, videoStreamIndex), customProfile )
 
     progress = av.ConsoleProgress()
     processStat = transcoder.process( progress )

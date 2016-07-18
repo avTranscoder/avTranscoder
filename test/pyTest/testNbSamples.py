@@ -20,7 +20,7 @@ def testNbSamplesAudioRewrap():
     ouputFile = av.OutputFile( outputFileName )
     transcoder = av.Transcoder( ouputFile )
 
-    transcoder.add( av.InputStreamDesc(inputFileName, 0) )
+    transcoder.addStream( av.InputStreamDesc(inputFileName, 0) )
 
     progress = av.ConsoleProgress()
     transcoder.process( progress )
@@ -54,7 +54,7 @@ def testNbSamplesAudioTranscode():
     customProfile[av.avProfileType] = av.avProfileTypeAudio
     customProfile[av.avProfileCodec] = "pcm_s16le"
 
-    transcoder.add( av.InputStreamDesc(inputFileName, 0), customProfile )
+    transcoder.addStream( av.InputStreamDesc(inputFileName, 0), customProfile )
 
     progress = av.ConsoleProgress()
     transcoder.process( progress )

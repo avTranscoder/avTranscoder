@@ -97,7 +97,7 @@ outputStream = av.StreamTranscoder( inputStream, outputFile, videoProfile )
 
 # create transcoder
 transcoder = av.Transcoder( outputFile )
-transcoder.add( outputStream )
+transcoder.addStream( outputStream )
 
 # launch process
 outputFile.beginWrap()

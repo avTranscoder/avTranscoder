@@ -23,7 +23,7 @@ def testTranscodeWave24b48k5_1():
     inputFile = av.InputFile( inputFileName )
     src_audioStream = inputFile.getProperties().getAudioProperties()[0]
     audioStreamIndex = src_audioStream.getStreamIndex()
-    transcoder.add( av.InputStreamDesc(inputFileName, audioStreamIndex), "wave24b48k5_1" )
+    transcoder.addStream( av.InputStreamDesc(inputFileName, audioStreamIndex), "wave24b48k5_1" )
 
     progress = av.ConsoleProgress()
     processStat = transcoder.process( progress )
@@ -57,7 +57,7 @@ def testTranscodeWave24b48kstereo():
     inputFile = av.InputFile( inputFileName )
     src_audioStream = inputFile.getProperties().getAudioProperties()[0]
     audioStreamIndex = src_audioStream.getStreamIndex()
-    transcoder.add( av.InputStreamDesc(inputFileName, audioStreamIndex), "wave24b48kstereo" )
+    transcoder.addStream( av.InputStreamDesc(inputFileName, audioStreamIndex), "wave24b48kstereo" )
 
     progress = av.ConsoleProgress()
     processStat = transcoder.process( progress )
@@ -91,7 +91,7 @@ def testTranscodeWave24b48kmono():
     inputFile = av.InputFile( inputFileName )
     src_audioStream = inputFile.getProperties().getAudioProperties()[0]
     audioStreamIndex = src_audioStream.getStreamIndex()
-    transcoder.add( av.InputStreamDesc(inputFileName, audioStreamIndex), "wave24b48kmono" )
+    transcoder.addStream( av.InputStreamDesc(inputFileName, audioStreamIndex), "wave24b48kmono" )
 
     progress = av.ConsoleProgress()
     processStat = transcoder.process( progress )
@@ -125,7 +125,7 @@ def testTranscodeWave16b48kmono():
     inputFile = av.InputFile( inputFileName )
     src_audioStream = inputFile.getProperties().getAudioProperties()[0]
     audioStreamIndex = src_audioStream.getStreamIndex()
-    transcoder.add( av.InputStreamDesc(inputFileName, audioStreamIndex), "wave16b48kmono" )
+    transcoder.addStream( av.InputStreamDesc(inputFileName, audioStreamIndex), "wave16b48kmono" )
 
     progress = av.ConsoleProgress()
     processStat = transcoder.process( progress )
@@ -162,7 +162,7 @@ def testTranscodeWave16b48kmonoWithSilence():
     inputFile = av.InputFile( inputFileName )
     src_audioStream = inputFile.getProperties().getAudioProperties()[0]
     audioStreamIndex = src_audioStream.getStreamIndex()
-    transcoder.add( av.InputStreamDesc(inputFileName, audioStreamIndex), "wave16b48kmono" )
+    transcoder.addStream( av.InputStreamDesc(inputFileName, audioStreamIndex), "wave16b48kmono" )
 
     progress = av.ConsoleProgress()
     processStat = transcoder.process( progress )

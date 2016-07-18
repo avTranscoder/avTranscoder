@@ -71,7 +71,7 @@ outputFile.setupWrapping( formatProfile )
 # create transcoder
 transcoder = av.Transcoder( outputFile )
 for streamIndex in range(0, inputFile.getProperties().getNbStreams()):
-    transcoder.add(av.InputStreamDesc(args.inputFileName, streamIndex)) 
+    transcoder.addStream(av.InputStreamDesc(args.inputFileName, streamIndex)) 
 
 # launch process
 progress = av.ConsoleProgress()

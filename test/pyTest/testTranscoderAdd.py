@@ -28,7 +28,7 @@ def testAddStreamTranscoder():
 
     streamTranscoder = av.StreamTranscoder( inputFile.getStream( inputIndex ), ouputFile )
     transcoder = av.Transcoder( ouputFile )
-    transcoder.add( streamTranscoder)
+    transcoder.addStream( streamTranscoder)
 
     # process
     progress = av.NoDisplayProgress()
@@ -48,7 +48,7 @@ def testAddAllStreamsOfFileWhichDoesNotExist():
     ouputFile = av.OutputFile( outputFileName )
 
     transcoder = av.Transcoder( ouputFile )
-    transcoder.add( av.InputStreamDesc(inputFileName, 0) )
+    transcoder.addStream( av.InputStreamDesc(inputFileName, 0) )
 
     # process
     progress = av.ConsoleProgress()

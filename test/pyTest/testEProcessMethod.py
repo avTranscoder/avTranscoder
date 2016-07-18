@@ -27,8 +27,8 @@ def testEProcessMethodShortest():
     transcoder = av.Transcoder( ouputFile )
     transcoder.setProcessMethod( av.eProcessMethodShortest )
 
-    transcoder.add( av.InputStreamDesc(inputFileName_longest, 0) )
-    transcoder.add( av.InputStreamDesc(inputFileName_shortest, 0) )
+    transcoder.addStream( av.InputStreamDesc(inputFileName_longest, 0) )
+    transcoder.addStream( av.InputStreamDesc(inputFileName_shortest, 0) )
 
     progress = av.ConsoleProgress()
     transcoder.process( progress )
@@ -57,8 +57,8 @@ def testEProcessMethodLongest():
     transcoder = av.Transcoder( ouputFile )
     transcoder.setProcessMethod( av.eProcessMethodLongest )
 
-    transcoder.add( av.InputStreamDesc(inputFileName_longest, 0) )
-    transcoder.add( av.InputStreamDesc(inputFileName_shortest, 0) )
+    transcoder.addStream( av.InputStreamDesc(inputFileName_longest, 0) )
+    transcoder.addStream( av.InputStreamDesc(inputFileName_shortest, 0) )
 
     progress = av.ConsoleProgress()
     transcoder.process( progress )
@@ -88,9 +88,9 @@ def testEProcessMethodBasedOnStream():
     transcoder = av.Transcoder( ouputFile )
     transcoder.setProcessMethod( av.eProcessMethodBasedOnStream, 1 )
 
-    transcoder.add( av.InputStreamDesc(inputFileName_first, 0) )
-    transcoder.add( av.InputStreamDesc(inputFileName_second, 0) )
-    transcoder.add( av.InputStreamDesc(inputFileName_third, 0) )
+    transcoder.addStream( av.InputStreamDesc(inputFileName_first, 0) )
+    transcoder.addStream( av.InputStreamDesc(inputFileName_second, 0) )
+    transcoder.addStream( av.InputStreamDesc(inputFileName_third, 0) )
 
     progress = av.ConsoleProgress()
     transcoder.process( progress )
@@ -121,9 +121,9 @@ def testEProcessMethodBasedOnDuration():
     transcoder = av.Transcoder( ouputFile )
     transcoder.setProcessMethod( av.eProcessMethodBasedOnDuration, 0, outputDuration )
 
-    transcoder.add( av.InputStreamDesc(inputFileName_first, 0) )
-    transcoder.add( av.InputStreamDesc(inputFileName_second, 0) )
-    transcoder.add( av.InputStreamDesc(inputFileName_third, 0) )
+    transcoder.addStream( av.InputStreamDesc(inputFileName_first, 0) )
+    transcoder.addStream( av.InputStreamDesc(inputFileName_second, 0) )
+    transcoder.addStream( av.InputStreamDesc(inputFileName_third, 0) )
 
     progress = av.ConsoleProgress()
     transcoder.process( progress )

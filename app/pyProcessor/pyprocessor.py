@@ -20,7 +20,7 @@ def parseConfigFile( inputConfigFile, transcoder ):
             subStreamIndex = -1
 
         inputDesc = av.InputStreamDesc(filename, streamIndex, subStreamIndex)
-        transcoder.add(inputDesc, profileName)
+        transcoder.addStream(inputDesc, profileName)
 
 
 # Create command-line interface

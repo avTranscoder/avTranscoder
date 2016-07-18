@@ -35,7 +35,7 @@ Transcoder::~Transcoder()
     }
 }
 
-void Transcoder::add(const InputStreamDesc& inputStreamDesc,
+void Transcoder::addStream(const InputStreamDesc& inputStreamDesc,
                      const std::string& profileName, const float offset)
 {
     // Check filename
@@ -55,11 +55,11 @@ void Transcoder::add(const InputStreamDesc& inputStreamDesc,
     else
     {
         const ProfileLoader::Profile& encodingProfile = _profileLoader.getProfile(profileName);
-        add(inputStreamDesc, encodingProfile, offset);
+        addStream(inputStreamDesc, encodingProfile, offset);
     }
 }
 
-void Transcoder::add(const InputStreamDesc& inputStreamDesc,
+void Transcoder::addStream(const InputStreamDesc& inputStreamDesc,
                      const ProfileLoader::Profile& profile, const float offset)
 {
     // Check filename
@@ -87,7 +87,7 @@ void Transcoder::addGeneratedStream(const ProfileLoader::Profile& encodingProfil
     _streamTranscoders.push_back(_streamTranscodersAllocated.back());
 }
 
-void Transcoder::add(StreamTranscoder& stream)
+void Transcoder::addStream(StreamTranscoder& stream)
 {
     _streamTranscoders.push_back(&stream);
 }
