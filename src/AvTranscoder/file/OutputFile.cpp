@@ -319,12 +319,14 @@ void OutputFile::setupRemainingWrappingOptions()
 void OutputFile::setOutputStream(AVStream& avStream, const ICodec& codec)
 {
     // depending on the format, place global headers in extradata instead of every keyframe
-    if (_formatContext.getAVOutputFormat().flags & AVFMT_GLOBALHEADER) {
+    if(_formatContext.getAVOutputFormat().flags & AVFMT_GLOBALHEADER)
+    {
         avStream.codec->flags |= CODEC_FLAG_GLOBAL_HEADER;
     }
 
     // if the codec is experimental, allow it
-    if(codec.getAVCodec().capabilities & CODEC_CAP_EXPERIMENTAL) {
+    if(codec.getAVCodec().capabilities & CODEC_CAP_EXPERIMENTAL)
+    {
         LOG_WARN("This codec is considered experimental by libav/ffmpeg:" << codec.getCodecName());
         avStream.codec->strict_std_compliance = FF_COMPLIANCE_EXPERIMENTAL;
     }
@@ -337,5 +339,4 @@ void OutputFile::setOutputStream(AVStream& avStream, const ICodec& codec)
     memset(((uint8_t*)avStream.codec->extradata) + srcExtradataSize, 0, FF_INPUT_BUFFER_PADDING_SIZE);
     avStream.codec->extradata_size = codec.getAVCodecContext().extradata_size;
 }
-
 }

@@ -31,7 +31,7 @@ FileProperties::FileProperties(const FormatContext& formatContext)
 void FileProperties::extractStreamProperties(IProgress& progress, const EAnalyseLevel level)
 {
     // Returns at the beginning of the stream before any deep analysis
-    if(level > eAnalyseLevelHeader && ! isRawFormat())
+    if(level > eAnalyseLevelHeader && !isRawFormat())
         const_cast<FormatContext*>(_formatContext)->seek(0, AVSEEK_FLAG_BACKWARD);
 
     // clear properties
@@ -123,7 +123,7 @@ void FileProperties::extractStreamProperties(IProgress& progress, const EAnalyse
     }
 
     // Returns at the beginning of the stream after any deep analysis
-    if(level > eAnalyseLevelHeader && ! isRawFormat())
+    if(level > eAnalyseLevelHeader && !isRawFormat())
         const_cast<FormatContext*>(_formatContext)->seek(0, AVSEEK_FLAG_BACKWARD);
 }
 
@@ -203,7 +203,7 @@ size_t FileProperties::getBitRate() const
 size_t FileProperties::getFileSize() const
 {
     std::ifstream in(getFilename().c_str(), std::ios::binary | std::ios::ate);
-    return in.tellg(); 
+    return in.tellg();
 }
 
 size_t FileProperties::getPacketSize() const

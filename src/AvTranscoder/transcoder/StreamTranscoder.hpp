@@ -136,7 +136,8 @@ private:
 
     FilterGraph* _filterGraph; ///< Filter graph (has ownership)
 
-    std::vector<size_t> _channelIndexArray; ///< List of channels that is processed from the input stream (empty if no demultiplexing).
+    std::vector<size_t>
+        _channelIndexArray; ///< List of channels that is processed from the input stream (empty if no demultiplexing).
 
     float _offset; ///< Offset, in seconds, at the beginning of the StreamTranscoder.
 

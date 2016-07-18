@@ -144,7 +144,7 @@ AVStream& FormatContext::addAVStream(const AVCodec& avCodec)
 
 bool FormatContext::seek(const uint64_t position, const int flag)
 {
-    LOG_INFO("Seek in '" << _avFormatContext->filename << "' at " << position << " with flag '"<< flag << "'")
+    LOG_INFO("Seek in '" << _avFormatContext->filename << "' at " << position << " with flag '" << flag << "'")
     const int err = av_seek_frame(_avFormatContext, -1, position, flag);
     if(err < 0)
     {

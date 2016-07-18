@@ -71,7 +71,8 @@ float StreamProperties::getDuration() const
     const size_t duration = _formatContext->streams[_streamIndex]->duration;
     if(duration == (size_t)AV_NOPTS_VALUE)
     {
-        LOG_WARN("The duration of the stream '" << _streamIndex << "' of file '" << _formatContext->filename << "' is unknown.")
+        LOG_WARN("The duration of the stream '" << _streamIndex << "' of file '" << _formatContext->filename
+                                                << "' is unknown.")
         return 0;
     }
     return av_q2d(timeBase) * duration;

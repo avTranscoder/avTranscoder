@@ -19,36 +19,39 @@ namespace avtranscoder
 /**
  * @brief Structure to describe the source data to extract.
  */
-struct InputStreamDesc {
+struct InputStreamDesc
+{
 
     InputStreamDesc(const std::string& filename, const size_t streamIndex, const std::vector<size_t>& channelIndexArray)
         : _filename(filename)
         , _streamIndex(streamIndex)
         , _channelIndexArray(channelIndexArray)
-    {}
+    {
+    }
 
     InputStreamDesc(const std::string& filename, const size_t streamIndex, const size_t channelIndex)
         : _filename(filename)
         , _streamIndex(streamIndex)
         , _channelIndexArray()
     {
-	_channelIndexArray.push_back(channelIndex);
+        _channelIndexArray.push_back(channelIndex);
     }
 
     InputStreamDesc(const std::string& filename, const size_t streamIndex)
         : _filename(filename)
         , _streamIndex(streamIndex)
         , _channelIndexArray()
-    {}
+    {
+    }
 
     /**
      * @return If a demultiplexing step will be done to extract the expected data.
      */
-    bool demultiplexing() const { return ! _channelIndexArray.empty(); }
+    bool demultiplexing() const { return !_channelIndexArray.empty(); }
 
 public:
-    std::string _filename; ///< Source file path.
-    size_t _streamIndex; ///< Source stream to extract.
+    std::string _filename;                  ///< Source file path.
+    size_t _streamIndex;                    ///< Source stream to extract.
     std::vector<size_t> _channelIndexArray; ///< List of source channels to extract from the stream
 };
 
@@ -101,15 +104,13 @@ public:
      * the stream to process.
      * If offset is negative, the transcoder will seek in the stream and start process at this specific time.
      */
-    void addStream(const InputStreamDesc& inputStreamDesc,
-             const std::string& profileName = "", const float offset = 0);
+    void addStream(const InputStreamDesc& inputStreamDesc, const std::string& profileName = "", const float offset = 0);
 
     /**
      * @brief Add a new stream to the output file, created from the given input description to process.
      * @note Profile will be updated, be sure to pass unique profile name.
      */
-    void addStream(const InputStreamDesc& inputStreamDesc,
-             const ProfileLoader::Profile& profile, const float offset = 0);
+    void addStream(const InputStreamDesc& inputStreamDesc, const ProfileLoader::Profile& profile, const float offset = 0);
 
     //@{
     // @brief Add a new generated stream to the output file, created from the given encoding profile.
@@ -176,10 +177,9 @@ public:
 private:
     void addRewrapStream(const InputStreamDesc& inputStreamDesc, const float offset);
 
-    void addTranscodeStream(const InputStreamDesc& inputStreamDesc,
-                            const float offset);
-    void addTranscodeStream(const InputStreamDesc& inputStreamDesc,
-                            const ProfileLoader::Profile& profile, const float offset = 0);
+    void addTranscodeStream(const InputStreamDesc& inputStreamDesc, const float offset);
+    void addTranscodeStream(const InputStreamDesc& inputStreamDesc, const ProfileLoader::Profile& profile,
+                            const float offset = 0);
 
     /**
      * @note If streamIndex is negative, activate all streams of the file.

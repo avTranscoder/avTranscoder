@@ -137,7 +137,8 @@ bool AudioDecoder::decodeNextFrame(Frame& frameBuffer, const std::vector<size_t>
         return false;
 
     // check if each expected channel exists
-    for(std::vector<size_t>::const_iterator channelIndex = channelIndexArray.begin(); channelIndex != channelIndexArray.end(); ++channelIndex)
+    for(std::vector<size_t>::const_iterator channelIndex = channelIndexArray.begin();
+        channelIndex != channelIndexArray.end(); ++channelIndex)
     {
         if((*channelIndex) > srcNbChannels - 1)
         {
@@ -174,7 +175,7 @@ bool AudioDecoder::decodeNextFrame(Frame& frameBuffer, const std::vector<size_t>
 
             // shift to the corresponding sample in the next channel of the current layout
             if(i < channelIndexArray.size() - 1)
-                src += (channelIndexArray.at(i+1) - channelIndexArray.at(i)) * bytePerSample;
+                src += (channelIndexArray.at(i + 1) - channelIndexArray.at(i)) * bytePerSample;
             // else shift to the next layout
             else
             {

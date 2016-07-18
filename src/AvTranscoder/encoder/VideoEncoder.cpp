@@ -152,5 +152,4 @@ bool VideoEncoder::encode(const AVFrame* decodedData, AVPacket& encodedData)
     return true;
 #endif
 }
-
 }

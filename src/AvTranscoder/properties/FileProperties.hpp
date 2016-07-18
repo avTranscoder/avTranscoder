@@ -40,14 +40,15 @@ public:
 
     std::string getFilename() const;
     std::string getFormatName() const; ///< A comma separated list of short names for the format, or empty if unknown.
-    std::string getFormatLongName() const; ///< Descriptive name for the format, meant to be more human-readable than name, or empty if unknown.
+    std::string getFormatLongName()
+        const; ///< Descriptive name for the format, meant to be more human-readable than name, or empty if unknown.
     bool isRawFormat() const; ///< Is there a container, or a raw bitstreams without access to timing information.
     std::string getFormatMimeType() const; ///< Comma-separated list of mime types, or empty if unknown.
 
     size_t getProgramsCount() const;
     double getStartTime() const;
-    float getDuration() const; ///< in seconds, 0 if not available
-    size_t getBitRate() const; ///< total stream bitrate in bit/s, 0 if not available (result of a computation by ffmpeg)
+    float getDuration() const;  ///< in seconds, 0 if not available
+    size_t getBitRate() const;  ///< total stream bitrate in bit/s, 0 if not available (result of a computation by ffmpeg)
     size_t getFileSize() const; ///< in bytes
     size_t getPacketSize() const;
 
