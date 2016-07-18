@@ -19,7 +19,8 @@ def parseConfigFile( inputConfigFile, transcoder ):
             streamIndex = int(streamIndexes)
             subStreamIndex = -1
 
-        transcoder.add( filename, streamIndex, subStreamIndex, profileName )
+        inputDesc = av.InputStreamDesc(filename, streamIndex, subStreamIndex)
+        transcoder.add(inputDesc, profileName)
 
 
 # Create command-line interface
@@ -35,7 +36,7 @@ parser.add_argument('outputFileName', help='The output media file.')
 args = parser.parse_args()
 
 # setup avtranscoder
-logger = av.Logger().setLogLevel(av.AV_LOG_QUIET)
+av.Logger().setLogLevel(av.AV_LOG_QUIET)
 av.preloadCodecsAndFormats()
 
 # create Transcoder

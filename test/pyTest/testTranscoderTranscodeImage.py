@@ -26,7 +26,7 @@ def testTranscodePngToMjpeg():
     inputFile = av.InputFile( inputFileName )
     src_videoStream = inputFile.getProperties().getVideoProperties()[0]
     videoStreamIndex = src_videoStream.getStreamIndex()
-    transcoder.add( inputFileName, videoStreamIndex, "mjpeg" )
+    transcoder.add( av.InputStreamDesc(inputFileName, videoStreamIndex), "mjpeg" )
 
     progress = av.ConsoleProgress()
     processStat = transcoder.process( progress )
@@ -57,7 +57,7 @@ def testTranscodeJpgToMjpeg():
     inputFile = av.InputFile( inputFileName )
     src_videoStream = inputFile.getProperties().getVideoProperties()[0]
     videoStreamIndex = src_videoStream.getStreamIndex()
-    transcoder.add( inputFileName, videoStreamIndex, "mjpeg" )
+    transcoder.add( av.InputStreamDesc(inputFileName, videoStreamIndex), "mjpeg" )
 
     progress = av.ConsoleProgress()
     processStat = transcoder.process( progress )

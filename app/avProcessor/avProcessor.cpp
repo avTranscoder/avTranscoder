@@ -39,7 +39,10 @@ void parseConfigFile(const std::string& configFilename, avtranscoder::Transcoder
                 if(!filename.length())
                     transcoder.add(transcodeProfile);
                 else
-                    transcoder.add(filename, streamIndex, subStreamIndex, transcodeProfile);
+                {
+                    avtranscoder::InputStreamDesc inputDesc(filename, streamIndex, subStreamIndex);
+                    transcoder.add(inputDesc, transcodeProfile);
+                }
             }
         }
     }
@@ -105,7 +108,7 @@ int main(int argc, char** argv)
         avtranscoder::OutputFile outputFile(argv[2]);
 
         avtranscoder::Transcoder transcoder(outputFile);
-        transcoder.setProcessMethod(avtranscoder::eProcessMethodBasedOnDuration, 0, 5);
+        transcoder.setProcessMethod(avtranscoder::eProcessMethodBasedOnStream, 0);
 
         parseConfigFile(inputConfigFile, transcoder);
 

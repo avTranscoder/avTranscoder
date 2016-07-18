@@ -18,54 +18,50 @@ def testTranscodeNoStream():
 
 
 @raises(RuntimeError)
-def testRewrapDummy():
+def testGenerateVideoWithIncompleteProfile():
     """
-    Can't rewrap a dummy stream (no sense).
+    Can't generate a video stream without an encoding profile with:
+    - codec name
+    - pixel format
+    - width
+    - height
     """
-    outputFileName = "testRewrapDummy.avi"
+    outputFileName = "testGenerateVideoWithIncompleteProfile.avi"
 
     ouputFile = av.OutputFile( outputFileName )
     transcoder = av.Transcoder( ouputFile )
 
-    transcoder.add( "", 0, "")
-    transcoder.add( "", 0, -1, "")
+    encodingProfile = {
+        av.avProfileIdentificator : "newVideoPreset",
+        av.avProfileIdentificatorHuman : "New video preset",
+        av.avProfileType : av.avProfileTypeVideo,
+    }
+    transcoder.add( encodingProfile )
 
     progress = av.NoDisplayProgress()
     transcoder.process( progress )
 
+
 @raises(RuntimeError)
-def testTranscodeDummyExistingProfileWithNoEssenceDesc():
+def testGenerateAudioWithIncompleteProfile():
     """
-    Can't add a dummy stream with no essence desc (for encoder).
+    Can't generate an audio stream without an encoding profile with:
+    - codec name
+    - sample format
+    - sample rate
+    - number of channels
     """
-    outputFileName = "testTranscodeDummyExistingProfileWithNoEssenceDesc.avi"
+    outputFileName = "testGenerateAudioWithIncompleteProfile.wav"
 
     ouputFile = av.OutputFile( outputFileName )
     transcoder = av.Transcoder( ouputFile )
 
-    transcoder.add( "", 0, "dnxhd120" )
-    transcoder.add( "", 0, -1, "dnxhd120" )
-
-    progress = av.NoDisplayProgress()
-    transcoder.process( progress )
-
-@raises(RuntimeError)
-def testTranscodeDummyNewProfileWithNoEssenceDesc():
-    """
-    Can't add a dummy stream with no essence desc (for encoder).
-    """
-    outputFileName = "testTranscodeDummyNewProfileWithNoEssenceDesc.avi"
-
-    ouputFile = av.OutputFile( outputFileName )
-    transcoder = av.Transcoder( ouputFile )
-
-    newProfile = {
+    encodingProfile = {
         av.avProfileIdentificator : "newAudioPreset",
         av.avProfileIdentificatorHuman : "New audio preset",
         av.avProfileType : av.avProfileTypeAudio,
     }
-    transcoder.add( "", 0, newProfile )
-    transcoder.add( "", 0, -1, newProfile )
+    transcoder.add( encodingProfile )
 
     progress = av.NoDisplayProgress()
     transcoder.process( progress )
@@ -79,11 +75,8 @@ def testTranscodeDummyAudio():
     ouputFile = av.OutputFile( outputFileName )
     transcoder = av.Transcoder( ouputFile )
 
-    # add a dummy video stream
-    audioCodec = av.AudioCodec( av.eCodecTypeEncoder, "pcm_s16le" )
-    audioDesc = av.AudioFrameDesc( 48000, 1, "s16" )
-    audioCodec.setAudioParameters( audioDesc )
-    transcoder.add( "", 0, "wave24b48kmono", audioCodec )
+    # add a dummy audio stream
+    transcoder.add( "wave24b48kmono" )
 
     ouputFile.beginWrap()
     transcoder.processFrame()
@@ -99,11 +92,7 @@ def testTranscodeDummyVideo():
     transcoder = av.Transcoder( ouputFile )
 
     # add a dummy video stream
-    videoCodec = av.VideoCodec( av.eCodecTypeEncoder, "mpeg2video" )
-    imageDesc = av.VideoFrameDesc( 1920, 1080, "yuv422p" )
-    videoCodec.setImageParameters( imageDesc )
-
-    transcoder.add( "", 0, "dnxhd120", videoCodec )
+    transcoder.add( "dnxhd120" )
 
     ouputFile.beginWrap()
     transcoder.processFrame()

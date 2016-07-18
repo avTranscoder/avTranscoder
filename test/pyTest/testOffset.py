@@ -26,7 +26,7 @@ def testTranscodeAudioPositiveOffset():
     ouputFile = av.OutputFile( outputFileName )
     transcoder = av.Transcoder( ouputFile )
 
-    transcoder.add( inputFileName, 0, "wave24b48kmono", offset )
+    transcoder.add( av.InputStreamDesc(inputFileName, 0), "wave24b48kmono", offset )
 
     progress = av.ConsoleProgress()
     transcoder.process( progress )
@@ -56,7 +56,7 @@ def testTranscodeAudioNegativeOffset():
     ouputFile = av.OutputFile( outputFileName )
     transcoder = av.Transcoder( ouputFile )
 
-    transcoder.add( inputFileName, 0, "wave24b48kmono", offset )
+    transcoder.add( av.InputStreamDesc(inputFileName, 0), "wave24b48kmono", offset )
 
     progress = av.ConsoleProgress()
     transcoder.process( progress )
@@ -86,7 +86,7 @@ def testRewrapAudioPositiveOffset():
     ouputFile = av.OutputFile( outputFileName )
     transcoder = av.Transcoder( ouputFile )
 
-    transcoder.add( inputFileName, 0, "", offset )
+    transcoder.add( av.InputStreamDesc(inputFileName, 0), "", offset )
 
     progress = av.ConsoleProgress()
     transcoder.process( progress )
@@ -117,7 +117,7 @@ def testRewrapAudioNegativeOffset():
     ouputFile = av.OutputFile( outputFileName )
     transcoder = av.Transcoder( ouputFile )
 
-    transcoder.add( inputFileName, 0, "", offset )
+    transcoder.add( av.InputStreamDesc(inputFileName, 0), "", offset )
 
     progress = av.ConsoleProgress()
     transcoder.process( progress )
@@ -148,7 +148,7 @@ def testTranscodeVideoPositiveOffset():
     ouputFile = av.OutputFile( outputFileName )
     transcoder = av.Transcoder( ouputFile )
 
-    transcoder.add( inputFileName, 0, "mpeg2", offset )
+    transcoder.add( av.InputStreamDesc(inputFileName, 0), "mpeg2", offset )
 
     progress = av.ConsoleProgress()
     transcoder.process( progress )
@@ -178,7 +178,7 @@ def testTranscodeVideoNegativeOffset():
     ouputFile = av.OutputFile( outputFileName )
     transcoder = av.Transcoder( ouputFile )
 
-    transcoder.add( inputFileName, 0, "mpeg2", offset )
+    transcoder.add( av.InputStreamDesc(inputFileName, 0), "mpeg2", offset )
 
     progress = av.ConsoleProgress()
     transcoder.process( progress )
@@ -208,7 +208,7 @@ def testRewrapVideoPositiveOffset():
     ouputFile = av.OutputFile( outputFileName )
     transcoder = av.Transcoder( ouputFile )
 
-    transcoder.add( inputFileName, 0, "", offset )
+    transcoder.add( av.InputStreamDesc(inputFileName, 0), "", offset )
 
     progress = av.ConsoleProgress()
     transcoder.process( progress )
@@ -239,7 +239,7 @@ def testRewrapVideoNegativeOffset():
     ouputFile = av.OutputFile( outputFileName )
     transcoder = av.Transcoder( ouputFile )
 
-    transcoder.add( inputFileName, 0, "", offset )
+    transcoder.add( av.InputStreamDesc(inputFileName, 0), "", offset )
 
     progress = av.ConsoleProgress()
     transcoder.process( progress )
@@ -273,8 +273,8 @@ def testMultipleOffsetFromSameInputFile():
     ouputFile = av.OutputFile( outputFileName )
     transcoder = av.Transcoder( ouputFile )
 
-    transcoder.add( inputFileName, 0, "", offset_1 )
-    transcoder.add( inputFileName, 1, "", offset_2 )
+    transcoder.add( av.InputStreamDesc(inputFileName, 0), "", offset_1 )
+    transcoder.add( av.InputStreamDesc(inputFileName, 1), "", offset_2 )
 
     progress = av.ConsoleProgress()
     transcoder.process( progress )
@@ -310,8 +310,8 @@ def testMultipleOffsetFromSameStream():
     ouputFile = av.OutputFile( outputFileName )
     transcoder = av.Transcoder( ouputFile )
 
-    transcoder.add( inputFileName, 0, "", offset_1 )
-    transcoder.add( inputFileName, 0, "", offset_2 )
+    transcoder.add( av.InputStreamDesc(inputFileName, 0), "", offset_1 )
+    transcoder.add( av.InputStreamDesc(inputFileName, 0), "", offset_2 )
 
     progress = av.ConsoleProgress()
     transcoder.process( progress )

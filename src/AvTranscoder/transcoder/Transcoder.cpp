@@ -35,82 +35,38 @@ Transcoder::~Transcoder()
     }
 }
 
-void Transcoder::add(const std::string& filename, const size_t streamIndex, const std::string& profileName,
-                     const float offset)
-{
-    // Re-wrap
-    if(profileName.length() == 0)
-    {
-        // Check filename
-        if(filename.length() == 0)
-            throw std::runtime_error("Can't re-wrap a stream without filename indicated");
-
-        addRewrapStream(filename, streamIndex, offset);
-    }
-    // Transcode
-    else
-    {
-        const ProfileLoader::Profile& transcodeProfile = _profileLoader.getProfile(profileName);
-        add(filename, streamIndex, transcodeProfile, offset);
-    }
-}
-
-void Transcoder::add(const std::string& filename, const size_t streamIndex, const ProfileLoader::Profile& profile,
-                     const float offset)
-{
-    // Check filename
-    if(!filename.length())
-        throw std::runtime_error("Can't transcode a stream without filename indicated");
-
-    addTranscodeStream(filename, streamIndex, -1, profile, offset);
-}
-
-void Transcoder::add(const std::string& filename, const size_t streamIndex, const int subStreamIndex,
+void Transcoder::add(const InputStreamDesc& inputStreamDesc,
                      const std::string& profileName, const float offset)
 {
-    // No subStream selected
-    if(subStreamIndex < 0)
-    {
-        add(filename, streamIndex, profileName, offset);
-        return;
-    }
+    // Check filename
+    if(inputStreamDesc._filename.length() == 0)
+        throw std::runtime_error("Can't process a stream without a filename indicated.");
 
     if(profileName.length() == 0)
     {
         // Re-wrap
-        if(subStreamIndex < 0)
-        {
-            addRewrapStream(filename, streamIndex, offset);
-        }
+        if(inputStreamDesc._channelIndex < 0)
+            addRewrapStream(inputStreamDesc, offset);
         // Transcode (transparent for the user)
         else
-        {
-            addTranscodeStream(filename, streamIndex, subStreamIndex, offset);
-        }
+            addTranscodeStream(inputStreamDesc, offset);
     }
     // Transcode
     else
     {
-        const ProfileLoader::Profile& transcodeProfile = _profileLoader.getProfile(profileName);
-        add(filename, streamIndex, subStreamIndex, transcodeProfile, offset);
+        const ProfileLoader::Profile& encodingProfile = _profileLoader.getProfile(profileName);
+        add(inputStreamDesc, encodingProfile, offset);
     }
 }
 
-void Transcoder::add(const std::string& filename, const size_t streamIndex, const int subStreamIndex,
+void Transcoder::add(const InputStreamDesc& inputStreamDesc,
                      const ProfileLoader::Profile& profile, const float offset)
 {
-    // No subStream selected
-    if(subStreamIndex < 0)
-    {
-        add(filename, streamIndex, profile, offset);
-        return;
-    }
-
     // Check filename
-    if(!filename.length())
-        throw std::runtime_error("Can't transcode a stream without filename indicated");
+    if(!inputStreamDesc._filename.length())
+        throw std::runtime_error("Can't transcode a stream without a filename indicated.");
 
-    addTranscodeStream(filename, streamIndex, subStreamIndex, profile, offset);
+    addTranscodeStream(inputStreamDesc, profile, offset);
 }
 
 void Transcoder::add(const std::string& profile)
@@ -240,32 +196,32 @@ void Transcoder::setProcessMethod(const EProcessMethod eProcessMethod, const siz
     _outputDuration = outputDuration;
 }
 
-void Transcoder::addRewrapStream(const std::string& filename, const size_t streamIndex, const float offset)
+void Transcoder::addRewrapStream(const InputStreamDesc& inputStreamDesc, const float offset)
 {
-    LOG_INFO("Add rewrap stream from file '" << filename << "' / index=" << streamIndex << " / offset=" << offset << "s")
+    LOG_INFO("Add rewrap stream from file '" << inputStreamDesc._filename << "' / index=" << inputStreamDesc._streamIndex << " / offset=" << offset << "s")
 
-    InputFile* referenceFile = addInputFile(filename, streamIndex, offset);
+    InputFile* referenceFile = addInputFile(inputStreamDesc._filename, inputStreamDesc._streamIndex, offset);
 
-    _streamTranscodersAllocated.push_back(new StreamTranscoder(referenceFile->getStream(streamIndex), _outputFile, offset));
+    _streamTranscodersAllocated.push_back(new StreamTranscoder(referenceFile->getStream(inputStreamDesc._streamIndex), _outputFile, offset));
     _streamTranscoders.push_back(_streamTranscodersAllocated.back());
 }
 
-void Transcoder::addTranscodeStream(const std::string& filename, const size_t streamIndex, const int subStreamIndex,
+void Transcoder::addTranscodeStream(const InputStreamDesc& inputStreamDesc,
                                     const float offset)
 {
     // Get profile from input file
-    InputFile inputFile(filename);
-    ProfileLoader::Profile profile = getProfileFromFile(inputFile, streamIndex);
+    InputFile inputFile(inputStreamDesc._filename);
+    ProfileLoader::Profile profile = getProfileFromFile(inputFile, inputStreamDesc._streamIndex);
 
     // override channels parameter to manage demultiplexing
     ProfileLoader::Profile::iterator it = profile.find(constants::avProfileChannel);
     if(it != profile.end())
         it->second = "1";
 
-    addTranscodeStream(filename, streamIndex, subStreamIndex, profile, offset);
+    addTranscodeStream(inputStreamDesc, profile, offset);
 }
 
-void Transcoder::addTranscodeStream(const std::string& filename, const size_t streamIndex, const int subStreamIndex,
+void Transcoder::addTranscodeStream(const InputStreamDesc& inputStreamDesc,
                                     const ProfileLoader::Profile& profile, const float offset)
 {
     // Add profile
@@ -273,19 +229,19 @@ void Transcoder::addTranscodeStream(const std::string& filename, const size_t st
         _profileLoader.loadProfile(profile);
 
     LOG_INFO("Add transcode stream from file '"
-             << filename << "' / index=" << streamIndex << " / channel=" << subStreamIndex
+             << inputStreamDesc._filename << "' / index=" << inputStreamDesc._streamIndex << " / channel=" << inputStreamDesc._channelIndex
              << " / encodingProfile=" << profile.at(constants::avProfileIdentificatorHuman) << " / offset=" << offset << "s")
 
     // Add input file
-    InputFile* referenceFile = addInputFile(filename, streamIndex, offset);
+    InputFile* referenceFile = addInputFile(inputStreamDesc._filename, inputStreamDesc._streamIndex, offset);
 
-    switch(referenceFile->getStream(streamIndex).getProperties().getStreamType())
+    switch(referenceFile->getStream(inputStreamDesc._streamIndex).getProperties().getStreamType())
     {
         case AVMEDIA_TYPE_VIDEO:
         case AVMEDIA_TYPE_AUDIO:
         {
             _streamTranscodersAllocated.push_back(
-                new StreamTranscoder(referenceFile->getStream(streamIndex), _outputFile, profile, subStreamIndex, offset));
+                new StreamTranscoder(referenceFile->getStream(inputStreamDesc._streamIndex), _outputFile, profile, inputStreamDesc._channelIndex, offset));
             _streamTranscoders.push_back(_streamTranscodersAllocated.back());
             break;
         }

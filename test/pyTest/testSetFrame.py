@@ -7,19 +7,23 @@ def testSetVideoFrame():
     """
     Generate a video stream, and set its frame during process.
     """
-
     # create output
     outputFileName = "testSetVideoFrame.mov"
     ouputFile = av.OutputFile( outputFileName )
 
-    # create video frame and codec
-    inputVideoCodec = av.VideoCodec( av.eCodecTypeEncoder, "mpeg2video" );
-    imageDesc = av.VideoFrameDesc( 1920, 1080, "rgb24" )
-    inputVideoCodec.setImageParameters( imageDesc )
+    # create custom profile
+    encodingProfile = av.ProfileMap()
+    encodingProfile[av.avProfileIdentificator] = "encodingProfile"
+    encodingProfile[av.avProfileIdentificatorHuman] = "custom profile"
+    encodingProfile[av.avProfileType] = av.avProfileTypeVideo
+    encodingProfile[av.avProfileCodec] = "mpeg2video"
+    encodingProfile[av.avProfilePixelFormat] = "yuv422p"
+    encodingProfile[av.avProfileWidth] = "1920"
+    encodingProfile[av.avProfileHeight] = "1080"
 
     # create transcoder and add a video stream
     transcoder = av.Transcoder( ouputFile )
-    transcoder.add(  "", 0, "mpeg2", inputVideoCodec )
+    transcoder.add( encodingProfile )
     videoDecoder = transcoder.getStreamTranscoder( 0 ).getCurrentDecoder()
 
     # start process
@@ -34,7 +38,7 @@ def testSetVideoFrame():
         p.progress( i, nbFrames )
 
         # set video frame
-        frame = av.VideoFrame( imageDesc )
+        frame = av.VideoFrame( av.VideoFrameDesc(1920, 1080, "yuv422p") )
         frame.assign(i)
         videoDecoder.setNextFrame( frame )
 
@@ -59,19 +63,13 @@ def testSetAudioFrame():
     """
     Generate a audio stream, and set its frame during process.
     """
-
     # create output
     outputFileName = "testSetAudioFrame.wav"
     ouputFile = av.OutputFile( outputFileName )
 
-    # create video frame and codec
-    inputAudioCodec = av.AudioCodec( av.eCodecTypeEncoder, "pcm_s24le" );
-    audioDesc = av.AudioFrameDesc( 48000, 1, "s32" )
-    inputAudioCodec.setAudioParameters( audioDesc );
-
     # create transcoder and add a video stream
     transcoder = av.Transcoder( ouputFile )
-    transcoder.add(  "", 0, "wave24b48kmono", inputAudioCodec )
+    transcoder.add(  "wave24b48kmono" )
     audioDecoder = transcoder.getStreamTranscoder( 0 ).getCurrentDecoder()
 
     # start process
@@ -86,7 +84,7 @@ def testSetAudioFrame():
         p.progress( i, nbFrames )
 
         # set video frame
-        frame = av.AudioFrame( audioDesc )
+        frame = av.AudioFrame( av.AudioFrameDesc(48000, 1, "s32") )
         frame.assign(i)
         audioDecoder.setNextFrame( frame )
 
@@ -105,4 +103,3 @@ def testSetAudioFrame():
     assert_equals( "signed 32 bits", dst_audioStream.getSampleFormatLongName() )
     assert_equals( 48000, dst_audioStream.getSampleRate() )
     assert_equals( 1, dst_audioStream.getNbChannels() )
-

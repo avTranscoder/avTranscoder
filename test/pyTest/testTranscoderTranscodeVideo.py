@@ -23,7 +23,7 @@ def testTranscodeDnxhd120():
     inputFile = av.InputFile( inputFileName )
     src_videoStream = inputFile.getProperties().getVideoProperties()[0]
     videoStreamIndex = src_videoStream.getStreamIndex()
-    transcoder.add( inputFileName, videoStreamIndex, "dnxhd120" )
+    transcoder.add( av.InputStreamDesc(inputFileName, videoStreamIndex), "dnxhd120" )
 
     progress = av.ConsoleProgress()
     processStat = transcoder.process( progress )
@@ -61,7 +61,7 @@ def testTranscodeDnxhd185():
     inputFile = av.InputFile( inputFileName )
     src_videoStream = inputFile.getProperties().getVideoProperties()[0]
     videoStreamIndex = src_videoStream.getStreamIndex()
-    transcoder.add( inputFileName, videoStreamIndex, "dnxhd185" )
+    transcoder.add( av.InputStreamDesc(inputFileName, videoStreamIndex), "dnxhd185" )
 
     progress = av.ConsoleProgress()
     processStat = transcoder.process( progress )
@@ -99,7 +99,7 @@ def testTranscodeDnxhd185x():
     inputFile = av.InputFile( inputFileName )
     src_videoStream = inputFile.getProperties().getVideoProperties()[0]
     videoStreamIndex = src_videoStream.getStreamIndex()
-    transcoder.add( inputFileName, videoStreamIndex, "dnxhd185x" )
+    transcoder.add( av.InputStreamDesc(inputFileName, videoStreamIndex), "dnxhd185x" )
 
     progress = av.ConsoleProgress()
     processStat = transcoder.process( progress )
@@ -145,7 +145,7 @@ def testTranscodeYUV420():
     inputFile = av.InputFile( inputFileName )
     src_videoStream = inputFile.getProperties().getVideoProperties()[0]
     videoStreamIndex = src_videoStream.getStreamIndex()
-    transcoder.add( inputFileName, videoStreamIndex, customProfile )
+    transcoder.add( av.InputStreamDesc(inputFileName, videoStreamIndex), customProfile )
 
     progress = av.ConsoleProgress()
     processStat = transcoder.process( progress )

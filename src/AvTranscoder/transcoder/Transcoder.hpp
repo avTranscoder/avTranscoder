@@ -17,6 +17,28 @@ namespace avtranscoder
 {
 
 /**
+ * @brief Structure to describe the source data to extract.
+ */
+struct InputStreamDesc {
+
+    InputStreamDesc(const std::string& filename, const size_t streamIndex, const int channelIndex)
+        : _filename(filename)
+        , _streamIndex(streamIndex)
+        , _channelIndex(channelIndex)
+    {}
+
+    InputStreamDesc(const std::string& filename, const size_t streamIndex)
+        : _filename(filename)
+        , _streamIndex(streamIndex)
+        , _channelIndex(-1)
+    {}
+
+    std::string _filename; ///< Source file path.
+    size_t _streamIndex; ///< Source stream to extract.
+    int _channelIndex; ///< Source channel to extract from the stream (no demultiplexing if -1)
+};
+
+/**
  * @brief Enum to set a policy of how we manage the process in case of several streams.
  * eProcessMethodShortest: stop the process at the end of the shortest stream.
  * eProcessMethodLongest: stop the process at the end of the longest stream.
@@ -54,41 +76,25 @@ public:
     ~Transcoder();
 
     /**
-     * @brief Add a stream and set a profile
-     * @note If profileName is empty, rewrap.
-     * @note offset in seconds
+     * @brief Create an output stream from the given input description to process.
+     * @param profileName: the encoding profile (rewrap if empty)
+     * @param offset: in seconds
      * If offset is positive, the transcoder will generate black images or silence (depending on the type of stream) before
      * the stream to process.
      * If offset is negative, the transcoder will seek in the stream and start process at this specific time.
      */
-    void add(const std::string& filename, const size_t streamIndex, const std::string& profileName = "",
-             const float offset = 0);
-
-    /**
-     * @brief Add a stream and set a custom profile
-     * @note Profile will be updated, be sure to pass unique profile name.
-     */
-    void add(const std::string& filename, const size_t streamIndex, const ProfileLoader::Profile& profile,
-             const float offset = 0);
-
-    /**
-     * @brief Add a stream and set a profile
-     * @note If profileName is empty, rewrap.
-     * @note If subStreamIndex is negative, no substream is selected it's the stream.
-     */
-    void add(const std::string& filename, const size_t streamIndex, const int subStreamIndex,
+    void add(const InputStreamDesc& inputStreamDesc,
              const std::string& profileName = "", const float offset = 0);
 
     /**
-     * @brief Add a stream and set a custom profile
+     * @brief Create an output stream from the given input description to process.
      * @note Profile will be updated, be sure to pass unique profile name.
-     * @note If subStreamIndex is negative, no substream is selected it's the stream.
      */
-    void add(const std::string& filename, const size_t streamIndex, const int subStreamIndex,
+    void add(const InputStreamDesc& inputStreamDesc,
              const ProfileLoader::Profile& profile, const float offset = 0);
 
     //@{
-    // @brief Add a generated stream.
+    // @brief Create an output generated stream.
     void add(const std::string& profile);
     void add(const ProfileLoader::Profile& profile);
     //@}
@@ -150,11 +156,11 @@ public:
                           const double outputDuration = 0);
 
 private:
-    void addRewrapStream(const std::string& filename, const size_t streamIndex, const float offset);
+    void addRewrapStream(const InputStreamDesc& inputStreamDesc, const float offset);
 
-    void addTranscodeStream(const std::string& filename, const size_t streamIndex, const int subStreamIndex,
+    void addTranscodeStream(const InputStreamDesc& inputStreamDesc,
                             const float offset);
-    void addTranscodeStream(const std::string& filename, const size_t streamIndex, const int subStreamIndex,
+    void addTranscodeStream(const InputStreamDesc& inputStreamDesc,
                             const ProfileLoader::Profile& profile, const float offset = 0);
 
     void addDummyStream(const ProfileLoader::Profile& profile);
