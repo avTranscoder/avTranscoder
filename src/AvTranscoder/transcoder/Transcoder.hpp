@@ -21,22 +21,40 @@ namespace avtranscoder
  */
 struct InputStreamDesc {
 
-    InputStreamDesc(const std::string& filename, const size_t streamIndex, const int channelIndex)
+    InputStreamDesc(const std::string& filename, const size_t streamIndex, const std::vector<size_t>& channelsIndex)
         : _filename(filename)
         , _streamIndex(streamIndex)
-        , _channelIndex(channelIndex)
+        , _channelsIndex(channelsIndex)
     {}
+
+    InputStreamDesc(const std::string& filename, const size_t streamIndex, const size_t channelIndex)
+        : _filename(filename)
+        , _streamIndex(streamIndex)
+        , _channelsIndex()
+    {
+	_channelsIndex.push_back(channelIndex);
+    }
 
     InputStreamDesc(const std::string& filename, const size_t streamIndex)
         : _filename(filename)
         , _streamIndex(streamIndex)
-        , _channelIndex(-1)
+        , _channelsIndex()
     {}
 
+    /**
+     * @return If a demultiplexing step will be done to extract the expected data.
+     */
+    bool demultiplexing() const { return ! _channelsIndex.empty(); }
+
+public:
     std::string _filename; ///< Source file path.
     size_t _streamIndex; ///< Source stream to extract.
-    int _channelIndex; ///< Source channel to extract from the stream (no demultiplexing if -1)
+    std::vector<size_t> _channelsIndex; ///< List of source channels to extract from the stream
 };
+
+#ifndef SWIG
+AvExport std::ostream& operator<<(std::ostream& flux, const InputStreamDesc& inputStreamDesc);
+#endif
 
 /**
  * @brief Enum to set a policy of how we manage the process in case of several streams.

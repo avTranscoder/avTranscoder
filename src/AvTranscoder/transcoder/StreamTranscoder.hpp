@@ -26,16 +26,16 @@ private:
 
 public:
     /**
-     * @brief rewrap stream
+     * @brief Rewrap the given stream.
      * @note offset feature when rewrap a stream is not supported
      **/
     StreamTranscoder(IInputStream& inputStream, IOutputFile& outputFile, const float offset = 0);
 
     /**
-     * @brief transcode stream
+     * @brief Transcode the given stream.
      **/
     StreamTranscoder(IInputStream& inputStream, IOutputFile& outputFile, const ProfileLoader::Profile& profile,
-                     const int subStreamIndex = -1, const float offset = 0);
+                     const std::vector<size_t> channelsIndex, const float offset = 0);
 
     /**
      * @brief encode from a generated stream
@@ -118,7 +118,7 @@ public:
 
 private:
     bool processRewrap();
-    bool processTranscode(const int subStreamIndex = -1); ///< By default transcode all channels
+    bool processTranscode();
 
 private:
     IInputStream* _inputStream;   ///< Input stream to read next packet (has link, no ownership)
@@ -136,7 +136,7 @@ private:
 
     FilterGraph* _filterGraph; ///< Filter graph (has ownership)
 
-    int _subStreamIndex; ///< Index of channel that is processed from the input stream (<0 if no demultiplexing).
+    std::vector<size_t> _channelsIndex; ///< List of channels that is processed from the input stream (empty if no demultiplexing).
 
     float _offset; ///< Offset, in seconds, at the beginning of the StreamTranscoder.
 

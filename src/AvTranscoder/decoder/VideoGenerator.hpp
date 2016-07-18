@@ -19,7 +19,7 @@ public:
     ~VideoGenerator();
 
     bool decodeNextFrame(Frame& frameBuffer);
-    bool decodeNextFrame(Frame& frameBuffer, const size_t channelIndex);
+    bool decodeNextFrame(Frame& frameBuffer, const std::vector<size_t> channelsIndex);
 
     void setNextFrame(Frame& inputFrame) { _inputFrame = &inputFrame; }
 

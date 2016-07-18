@@ -29,18 +29,22 @@ void parseConfigFile(const std::string& configFilename, avtranscoder::Transcoder
                 std::stringstream ss(streamId);
                 size_t streamIndex = 0;
                 char separator;
-                int subStreamIndex = -1;
+                std::vector<size_t> channelIndexArray;
                 ss >> streamIndex;
                 ss >> separator;
                 if(separator == '.')
+                {
+                    int subStreamIndex = -1;
                     ss >> subStreamIndex;
+                    channelIndexArray.push_back(subStreamIndex);
+                }
 
                 // generated stream
                 if(!filename.length())
                     transcoder.addGeneratedStream(transcodeProfile);
                 else
                 {
-                    avtranscoder::InputStreamDesc inputDesc(filename, streamIndex, subStreamIndex);
+                    avtranscoder::InputStreamDesc inputDesc(filename, streamIndex, channelIndexArray);
                     transcoder.addStream(inputDesc, transcodeProfile);
                 }
             }
