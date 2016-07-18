@@ -50,6 +50,13 @@ AudioFrame::AudioFrame(const Frame& otherFrame)
 {
 }
 
+std::string AudioFrame::getChannelLayoutDesc() const
+{
+    char buf[512];
+    av_get_channel_layout_string(buf, sizeof(buf), getNbChannels(), getChannelLayout());
+    return std::string(buf);
+}
+
 size_t AudioFrame::getSize() const
 {
     if(getSampleFormat() == AV_SAMPLE_FMT_NONE)
