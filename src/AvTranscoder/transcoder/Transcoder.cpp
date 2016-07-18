@@ -69,15 +69,22 @@ void Transcoder::add(const InputStreamDesc& inputStreamDesc,
     addTranscodeStream(inputStreamDesc, profile, offset);
 }
 
-void Transcoder::add(const std::string& profile)
+void Transcoder::addGeneratedStream(const std::string& encodingProfileName)
 {
-    const ProfileLoader::Profile& encodingProfile = _profileLoader.getProfile(profile);
-    add(encodingProfile);
+    const ProfileLoader::Profile& encodingProfile = _profileLoader.getProfile(encodingProfileName);
+    addGeneratedStream(encodingProfile);
 }
 
-void Transcoder::add(const ProfileLoader::Profile& profile)
+void Transcoder::addGeneratedStream(const ProfileLoader::Profile& encodingProfile)
 {
-    addGeneratedStream(profile);
+    // Add profile
+    if(!_profileLoader.hasProfile(encodingProfile))
+        _profileLoader.loadProfile(encodingProfile);
+
+    LOG_INFO("Add generated stream with encodingProfile=" << encodingProfile.at(constants::avProfileIdentificatorHuman))
+
+    _streamTranscodersAllocated.push_back(new StreamTranscoder(_outputFile, encodingProfile));
+    _streamTranscoders.push_back(_streamTranscodersAllocated.back());
 }
 
 void Transcoder::add(StreamTranscoder& stream)
@@ -253,18 +260,6 @@ void Transcoder::addTranscodeStream(const InputStreamDesc& inputStreamDesc,
             throw std::runtime_error("unsupported media type in transcode setup");
         }
     }
-}
-
-void Transcoder::addGeneratedStream(const ProfileLoader::Profile& profile)
-{
-    // Add profile
-    if(!_profileLoader.hasProfile(profile))
-        _profileLoader.loadProfile(profile);
-
-    LOG_INFO("Add generated stream with encodingProfile=" << profile.at(constants::avProfileIdentificatorHuman))
-
-    _streamTranscodersAllocated.push_back(new StreamTranscoder(_outputFile, profile));
-    _streamTranscoders.push_back(_streamTranscodersAllocated.back());
 }
 
 InputFile* Transcoder::addInputFile(const std::string& filename, const int streamIndex, const float offset)

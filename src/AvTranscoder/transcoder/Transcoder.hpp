@@ -95,8 +95,8 @@ public:
 
     //@{
     // @brief Create an output generated stream.
-    void add(const std::string& profile);
-    void add(const ProfileLoader::Profile& profile);
+    void addGeneratedStream(const std::string& encodingProfileName);
+    void addGeneratedStream(const ProfileLoader::Profile& encodingProfile);
     //@}
 
     /**
@@ -162,8 +162,6 @@ private:
                             const float offset);
     void addTranscodeStream(const InputStreamDesc& inputStreamDesc,
                             const ProfileLoader::Profile& profile, const float offset = 0);
-
-    void addGeneratedStream(const ProfileLoader::Profile& profile);
 
     /**
      * @note If streamIndex is negative, activate all streams of the file.
