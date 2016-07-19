@@ -196,20 +196,22 @@ private:
     float getStreamDuration(size_t indexStream) const;
 
     /**
-    * @brief Get the duration of the shortest stream, in seconds
-    */
-    float getMinTotalDuration() const;
+     * @brief Get the duration of the shortest stream, in seconds
+     * @note Set the index of the main stream to stop the process at the end of the shortest stream.
+     */
+    float getMinTotalDuration();
 
     /**
      * @brief Get the duration of the longest stream, in seconds
+     * @note Set the index of the main stream to stop the process at the end of the longest stream.
      */
-    float getMaxTotalDuration() const;
+    float getMaxTotalDuration();
 
     /**
      * @brief Get the expected duration of the output program
      * @note Depends on the streams, the process method, and the main stream index.
      */
-    float getExpectedOutputDuration() const;
+    float getExpectedOutputDuration();
 
     /**
      * @brief Get the current duration of the output program
@@ -239,7 +241,7 @@ private:
 
     EProcessMethod _eProcessMethod; ///< Processing policy
     size_t
-        _mainStreamIndex;  ///< Index of stream used to stop the process of transcode in case of eProcessMethodBasedOnStream.
+        _mainStreamIndex;  ///< Index of stream used to stop the process.
     float _outputDuration; ///< Duration of output media used to stop the process of transcode in case of
     /// eProcessMethodBasedOnDuration.
 };

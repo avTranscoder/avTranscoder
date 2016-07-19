@@ -105,30 +105,21 @@ bool Transcoder::processFrame()
         return false;
 
     // For each stream, process a frame
-    size_t nbStreamProcessStatusFailed = 0;
     for(size_t streamIndex = 0; streamIndex < _streamTranscoders.size(); ++streamIndex)
     {
-        LOG_DEBUG("Process stream " << streamIndex << "/" << (_streamTranscoders.size() - 1))
+        LOG_DEBUG("Process stream " << streamIndex + 1 << "/" << _streamTranscoders.size())
+
+        // if a stream failed to process
         if(!_streamTranscoders.at(streamIndex)->processFrame())
         {
-            LOG_WARN("Failed to process stream " << streamIndex)
-            ++nbStreamProcessStatusFailed;
+            LOG_WARN("Failed to process stream at index " << streamIndex)
+
+            // if this is the end of the main stream
+            if(streamIndex == _mainStreamIndex) {
+                LOG_INFO("End of process because the main stream at index " << _mainStreamIndex << " failed to process a new frame.")
+                return false;
+            }
         }
-    }
-
-    // Get the number of streams without the generators (they always succeed)
-    size_t nbStreamsWithoutGenerator = _streamTranscoders.size();
-    for(size_t streamIndex = 0; streamIndex < _streamTranscoders.size(); ++streamIndex)
-    {
-        if(_streamTranscoders.at(streamIndex)->getProcessCase() == StreamTranscoder::eProcessCaseGenerator)
-            --nbStreamsWithoutGenerator;
-    }
-
-    // If all streams failed to process a new frame
-    if(nbStreamsWithoutGenerator != 0 && nbStreamsWithoutGenerator == nbStreamProcessStatusFailed)
-    {
-        LOG_INFO("End of process because all streams (except generators) failed to process a new frame.")
-        return false;
     }
     return true;
 }
@@ -174,7 +165,7 @@ ProcessStat Transcoder::process(IProgress& progress)
         }
 
         // check progressDuration
-        if(progressDuration >= expectedOutputDuration)
+        if(_eProcessMethod == eProcessMethodBasedOnDuration && progressDuration >= expectedOutputDuration)
         {
             LOG_INFO("End of process because the output program duration ("
                      << progressDuration << "s) is equal or upper than " << expectedOutputDuration << "s.")
@@ -184,7 +175,7 @@ ProcessStat Transcoder::process(IProgress& progress)
 
     _outputFile.endWrap();
 
-    LOG_INFO("End of process: " << frame << " frames processed")
+    LOG_INFO("End of process: " << ++frame << " frames processed")
 
     LOG_INFO("Get process statistics")
     ProcessStat processStat;
@@ -360,32 +351,43 @@ ProfileLoader::Profile Transcoder::getProfileFromFile(InputFile& inputFile, cons
     return profile;
 }
 
-float Transcoder::getStreamDuration(size_t indexStream) const
+float Transcoder::getStreamDuration(const size_t indexStream) const
 {
     return _streamTranscoders.at(indexStream)->getDuration();
 }
 
-float Transcoder::getMinTotalDuration() const
+float Transcoder::getMinTotalDuration()
 {
     float minTotalDuration = std::numeric_limits<float>::max();
-    for(size_t i = 0; i < _streamTranscoders.size(); ++i)
+    for(size_t streamIndex = 0; streamIndex < _streamTranscoders.size(); ++streamIndex)
     {
-        minTotalDuration = std::min(getStreamDuration(i), minTotalDuration);
+        const float streamDuration = getStreamDuration(streamIndex);
+        if(std::min(streamDuration, minTotalDuration) == streamDuration) 
+        {
+            minTotalDuration = streamDuration;
+            _mainStreamIndex = streamIndex;
+        }
+        
     }
     return minTotalDuration;
 }
 
-float Transcoder::getMaxTotalDuration() const
+float Transcoder::getMaxTotalDuration()
 {
     float maxTotalDuration = 0;
-    for(size_t i = 0; i < _streamTranscoders.size(); ++i)
+    for(size_t streamIndex = 0; streamIndex < _streamTranscoders.size(); ++streamIndex)
     {
-        maxTotalDuration = std::max(getStreamDuration(i), maxTotalDuration);
+        const float streamDuration = getStreamDuration(streamIndex);
+        if(std::max(streamDuration, maxTotalDuration) == streamDuration)
+        {
+            maxTotalDuration = streamDuration;
+            _mainStreamIndex = streamIndex;
+        }
     }
     return maxTotalDuration;
 }
 
-float Transcoder::getExpectedOutputDuration() const
+float Transcoder::getExpectedOutputDuration()
 {
     switch(_eProcessMethod)
     {

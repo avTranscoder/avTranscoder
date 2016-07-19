@@ -38,11 +38,7 @@ StreamProperties::StreamProperties(const FileProperties& fileProperties, const s
         if(_codec)
         {
             // load specific options of the codec
-            if(avcodec_open2(_codecContext, _codec, NULL) == 0)
-            {
-                loadOptions(_options, _codecContext);
-                avcodec_close(_codecContext);
-            }
+            loadOptions(_options, _codecContext);
         }
     }
 }
