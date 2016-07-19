@@ -28,7 +28,7 @@ def testEProcessMethodShortest():
     transcoder.setProcessMethod( av.eProcessMethodShortest )
 
     transcoder.add( inputFileName_longest, 0 )
-    transcoder.add( inputFileName_shortest, 0 )
+    transcoder.add( inputFileName_shortest, 1 )
 
     progress = av.ConsoleProgress()
     transcoder.process( progress )
