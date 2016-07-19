@@ -36,7 +36,7 @@ def testGenerateVideoWithIncompleteProfile():
         av.avProfileIdentificatorHuman : "New video preset",
         av.avProfileType : av.avProfileTypeVideo,
     }
-    transcoder.addGeneratedStream( encodingProfile )
+    transcoder.addGenerateStream( encodingProfile )
 
     transcoder.process()
 
@@ -60,7 +60,7 @@ def testGenerateAudioWithIncompleteProfile():
         av.avProfileIdentificatorHuman : "New audio preset",
         av.avProfileType : av.avProfileTypeAudio,
     }
-    transcoder.addGeneratedStream( encodingProfile )
+    transcoder.addGenerateStream( encodingProfile )
 
     transcoder.process()
 
@@ -74,7 +74,7 @@ def testTranscodeDummyAudio():
     transcoder = av.Transcoder( ouputFile )
 
     # generate an audio stream
-    transcoder.addGeneratedStream( "wave24b48kmono" )
+    transcoder.addGenerateStream( "wave24b48kmono" )
 
     ouputFile.beginWrap()
     transcoder.processFrame()
@@ -90,7 +90,7 @@ def testTranscodeDummyVideo():
     transcoder = av.Transcoder( ouputFile )
 
     # generate a video stream
-    transcoder.addGeneratedStream( "dnxhd120" )
+    transcoder.addGenerateStream( "dnxhd120" )
 
     ouputFile.beginWrap()
     transcoder.processFrame()
