@@ -118,16 +118,18 @@ bool AudioDecoder::decodeNextFrame(Frame& frameBuffer)
 
 bool AudioDecoder::decodeNextFrame(Frame& frameBuffer, const std::vector<size_t> channelIndexArray)
 {
-    AudioFrame& audioBuffer = static_cast<AudioFrame&>(frameBuffer);
-
-    // decode all data of the next frame
-    AudioFrame allDataOfNextFrame(audioBuffer);
-    if(!decodeNextFrame(allDataOfNextFrame))
-        return false;
-
     AVCodecContext& avCodecContext = _inputStream->getAudioCodec().getAVCodecContext();
     const size_t srcNbChannels = avCodecContext.channels;
     const size_t bytePerSample = av_get_bytes_per_sample((AVSampleFormat)frameBuffer.getAVFrame().format);
+
+    // if all channels of the stream are extracted
+    if(srcNbChannels == channelIndexArray.size())
+        return decodeNextFrame(frameBuffer);
+
+    // else decode all data in an intermediate buffer
+    AudioFrame allDataOfNextFrame(frameBuffer);
+    if(!decodeNextFrame(allDataOfNextFrame))
+        return false;
 
     const int dstNbChannels = 1;
     const int noAlignment = 0;
@@ -153,6 +155,7 @@ bool AudioDecoder::decodeNextFrame(Frame& frameBuffer, const std::vector<size_t>
     }
 
     // copy frame properties of decoded frame
+    AudioFrame& audioBuffer = static_cast<AudioFrame&>(frameBuffer);
     audioBuffer.copyProperties(allDataOfNextFrame);
     av_frame_set_channels(&audioBuffer.getAVFrame(), channelIndexArray.size());
     av_frame_set_channel_layout(&audioBuffer.getAVFrame(), av_get_default_channel_layout(channelIndexArray.size()));
