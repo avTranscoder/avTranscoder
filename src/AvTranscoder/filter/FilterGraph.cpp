@@ -35,7 +35,7 @@ FilterGraph::~FilterGraph()
     avfilter_graph_free(&_graph);
 }
 
-void FilterGraph::process(Frame& frame)
+void FilterGraph::process(const Frame& inputFrame, Frame& outputFrame)
 {
     if(!hasFilters())
     {
@@ -45,10 +45,10 @@ void FilterGraph::process(Frame& frame)
 
     // init filter graph
     if(!_isInit)
-        init(frame);
+        init(inputFrame, outputFrame);
 
     // setup source frame
-    int ret = av_buffersrc_write_frame(_filters.at(0)->getAVFilterContext(), &frame.getAVFrame());
+    int ret = av_buffersrc_write_frame(_filters.at(0)->getAVFilterContext(), &inputFrame.getAVFrame());
     if(ret < 0)
     {
         throw std::runtime_error("Error when adding a frame to the source buffer used to start to process filters: " +
@@ -58,7 +58,7 @@ void FilterGraph::process(Frame& frame)
     // pull filtered data from the filter graph
     for(;;)
     {
-        ret = av_buffersink_get_frame(_filters.at(_filters.size() - 1)->getAVFilterContext(), &frame.getAVFrame());
+        ret = av_buffersink_get_frame(_filters.at(_filters.size() - 1)->getAVFilterContext(), &outputFrame.getAVFrame());
         if(ret == AVERROR_EOF || ret == AVERROR(EAGAIN))
             break;
         if(ret < 0)
@@ -77,15 +77,15 @@ Filter& FilterGraph::addFilter(const std::string& filterName, const std::string&
     return *_filters.back();
 }
 
-void FilterGraph::init(const Frame& frame)
+void FilterGraph::init(const Frame& inputFrame, Frame& outputFrame)
 {
     // push filters to the graph
-    pushInBuffer(frame);
+    pushInBuffer(inputFrame);
     for(size_t i = 1; i < _filters.size(); ++i)
     {
         pushFilter(*_filters.at(i));
     }
-    pushOutBuffer(frame);
+    pushOutBuffer(outputFrame);
 
     // connect filters
     for(size_t index = 0; index < _filters.size() - 1; ++index)

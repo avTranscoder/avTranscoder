@@ -44,10 +44,11 @@ public:
 
     /**
      * @brief Pull filtered data from the filter graph, and put result to the given frame.
-     * @param frame: both input and output data of the method.
+     * @param inputFrame: input data.
+     * @param inputFrame: output data.
      * @note Do nothing if there was no filter added.
      */
-    void process(Frame& frame);
+    void process(const Frame& inputFrame, Frame& outputFrame);
 
 private:
     /**
@@ -61,7 +62,7 @@ private:
      * @see pushInBuffer
      * @see pushOutBuffer
      */
-    void init(const Frame& frame);
+    void init(const Frame& inputFrame, Frame& outputFrame);
 
     /**
      * @brief Push the given Filter to the graph.

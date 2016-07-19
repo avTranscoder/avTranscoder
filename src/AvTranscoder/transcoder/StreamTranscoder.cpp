@@ -491,7 +491,7 @@ bool StreamTranscoder::processTranscode()
     if(decodingStatus)
     {
         LOG_DEBUG("Filtering")
-        _filterGraph->process(*_sourceBuffers.at(0));
+        _filterGraph->process(*_sourceBuffers.at(0), *_sourceBuffers.at(0));
 
         LOG_DEBUG("Convert")
         _transform->convert(*_sourceBuffers.at(0), *_frameBuffers.at(0));
