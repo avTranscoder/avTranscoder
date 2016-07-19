@@ -463,7 +463,7 @@ void Transcoder::fillProcessStat(ProcessStat& processStat)
     for(size_t streamIndex = 0; streamIndex < _streamTranscoders.size(); ++streamIndex)
     {
         IOutputStream& stream = _streamTranscoders.at(streamIndex)->getOutputStream();
-        const IInputStream* inputStream = _streamTranscoders.at(streamIndex)->getInputStream();
+        const IInputStream* inputStream = _streamTranscoders.at(streamIndex)->getCurrentInputStream();
         if(inputStream == NULL)
         {
             LOG_WARN("Cannot process statistics of generated stream.")

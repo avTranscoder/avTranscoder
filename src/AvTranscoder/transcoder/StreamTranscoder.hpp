@@ -83,7 +83,7 @@ public:
     FilterGraph* getFilterGraph() const { return _filterGraph; }
 
     /// Returns a pointer to the stream which unwraps data
-    IInputStream* getInputStream() const { return _inputStream; }
+    IInputStream* getCurrentInputStream() const { return _currentInputStream; }
     /// Returns a reference to the stream which wraps data
     IOutputStream& getOutputStream() const { return *_outputStream; }
 
@@ -122,22 +122,22 @@ private:
     bool processTranscode();
 
 private:
-    IInputStream* _inputStream;   ///< Input stream to read next packet (has link, no ownership)
+    std::vector<InputStreamDesc> _inputStreamDesc; ///< Description of the data to extract from the input stream.
+    std::vector<IInputStream*> _inputStreams;   ///< List of input stream to read next packet (has link, no ownership)
+    IInputStream* _currentInputStream;   ///< Current input stream (has link, no ownership)
     IOutputStream* _outputStream; ///< Output stream to wrap next packet (has link, no ownership)
 
-    Frame* _sourceBuffer; ///< Has ownership
-    Frame* _frameBuffer;  ///< Has ownership
+    std::vector<Frame*> _sourceBuffers; ///< Buffer of decoded data (has ownership).
+    std::vector<Frame*> _frameBuffers;  ///< Buffer if transformed data (has ownership).
 
-    IDecoder* _inputDecoder;   ///< Decoder of packets read from _inputStream (has ownership)
-    IDecoder* _generator;      ///< Generator of audio or video packets (has ownership)
+    std::vector<IDecoder*> _inputDecoders;   ///< Decoders of packets read from _inputStream (has ownership)
+    std::vector<IDecoder*> _generators;      ///< Generators of audio or video packets (has ownership)
     IDecoder* _currentDecoder; ///< Link to _inputDecoder or _generator
     IEncoder* _outputEncoder;  ///< Encoder of packets which will be wrapped by _outputStream (has ownership)
 
     ITransform* _transform; ///< Video or audio transform (has ownership)
 
     FilterGraph* _filterGraph; ///< Filter graph (has ownership)
-
-    const InputStreamDesc _inputStreamDesc; ///< Description of the data to extract from the input stream.
 
     float _offset; ///< Offset, in seconds, at the beginning of the StreamTranscoder.
 
