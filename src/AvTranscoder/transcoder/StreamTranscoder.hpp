@@ -106,7 +106,8 @@ public:
     void setOffset(const float offset);
 
     //@{
-    // Get the current process case.
+    // @brief Get the current process case.
+    // @warning Could vary during the process.
     enum EProcessCase
     {
         eProcessCaseTranscode,
