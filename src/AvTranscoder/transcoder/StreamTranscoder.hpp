@@ -3,6 +3,8 @@
 
 #include <AvTranscoder/common.hpp>
 
+#include <AvTranscoder/transcoder/InputStreamDesc.hpp>
+
 #include <AvTranscoder/stream/IInputStream.hpp>
 #include <AvTranscoder/stream/IOutputStream.hpp>
 
@@ -33,8 +35,8 @@ public:
     /**
      * @brief Transcode the given stream.
      **/
-    StreamTranscoder(IInputStream& inputStream, IOutputFile& outputFile, const ProfileLoader::Profile& profile,
-                     const std::vector<size_t> channelIndexArray, const float offset = 0);
+    StreamTranscoder(const InputStreamDesc& inputStreamDesc, IInputStream& inputStream, IOutputFile& outputFile, 
+                     const ProfileLoader::Profile& profile, const float offset = 0);
 
     /**
      * @brief Encode a generated stream
@@ -135,8 +137,7 @@ private:
 
     FilterGraph* _filterGraph; ///< Filter graph (has ownership)
 
-    std::vector<size_t>
-        _channelIndexArray; ///< List of channels that is processed from the input stream (empty if no demultiplexing).
+    const InputStreamDesc _inputStreamDesc; ///< Description of the data to extract from the input stream.
 
     float _offset; ///< Offset, in seconds, at the beginning of the StreamTranscoder.
 

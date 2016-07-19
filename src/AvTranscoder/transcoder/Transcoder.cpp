@@ -242,7 +242,7 @@ void Transcoder::addTranscodeStream(const InputStreamDesc& inputStreamDesc, cons
         case AVMEDIA_TYPE_AUDIO:
         {
             _streamTranscodersAllocated.push_back(
-                new StreamTranscoder(inputStream, _outputFile, profile, inputStreamDesc._channelIndexArray, offset));
+                new StreamTranscoder(inputStreamDesc, inputStream, _outputFile, profile, offset));
             _streamTranscoders.push_back(_streamTranscodersAllocated.back());
             break;
         }

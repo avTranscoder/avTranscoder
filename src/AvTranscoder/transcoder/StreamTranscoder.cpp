@@ -1,4 +1,3 @@
-
 #include "StreamTranscoder.hpp"
 
 #include <AvTranscoder/stream/InputStream.hpp>
@@ -31,7 +30,7 @@ StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outpu
     , _outputEncoder(NULL)
     , _transform(NULL)
     , _filterGraph(NULL)
-    , _channelIndexArray()
+    , _inputStreamDesc()
     , _offset(offset)
     , _needToSwitchToGenerator(false)
 {
@@ -121,8 +120,8 @@ StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outpu
     setOffset(offset);
 }
 
-StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outputFile, const ProfileLoader::Profile& profile,
-                                   const std::vector<size_t> channelIndexArray, const float offset)
+StreamTranscoder::StreamTranscoder(const InputStreamDesc& inputStreamDesc, IInputStream& inputStream, IOutputFile& outputFile,
+                                   const ProfileLoader::Profile& profile, const float offset)
     : _inputStream(&inputStream)
     , _outputStream(NULL)
     , _sourceBuffer(NULL)
@@ -133,7 +132,7 @@ StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outpu
     , _outputEncoder(NULL)
     , _transform(NULL)
     , _filterGraph(NULL)
-    , _channelIndexArray(channelIndexArray)
+    , _inputStreamDesc(inputStreamDesc)
     , _offset(offset)
     , _needToSwitchToGenerator(false)
 {
@@ -191,8 +190,8 @@ StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outpu
 
             AudioFrameDesc outputFrameDesc(_inputStream->getAudioCodec().getAudioFrameDesc());
             outputFrameDesc.setParameters(profile);
-            if(!_channelIndexArray.empty())
-                outputFrameDesc._nbChannels = _channelIndexArray.size();
+            if(_inputStreamDesc.demultiplexing())
+                outputFrameDesc._nbChannels = _inputStreamDesc._channelIndexArray.size();
             outputAudio->setupAudioEncoder(outputFrameDesc, profile);
 
             // output stream
@@ -200,8 +199,8 @@ StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outpu
 
             // buffers to process
             AudioFrameDesc inputFrameDesc(_inputStream->getAudioCodec().getAudioFrameDesc());
-            if(!_channelIndexArray.empty())
-                inputFrameDesc._nbChannels = _channelIndexArray.size();
+            if(_inputStreamDesc.demultiplexing())
+                inputFrameDesc._nbChannels = _inputStreamDesc._channelIndexArray.size();
 
             _sourceBuffer = new AudioFrame(inputFrameDesc);
             _frameBuffer = new AudioFrame(outputAudio->getAudioCodec().getAudioFrameDesc());
@@ -234,7 +233,7 @@ StreamTranscoder::StreamTranscoder(IOutputFile& outputFile, const ProfileLoader:
     , _outputEncoder(NULL)
     , _transform(NULL)
     , _filterGraph(NULL)
-    , _channelIndexArray()
+    , _inputStreamDesc()
     , _offset(0)
     , _needToSwitchToGenerator(false)
 {
@@ -466,10 +465,10 @@ bool StreamTranscoder::processTranscode()
 
     LOG_DEBUG("Decode next frame")
     bool decodingStatus = false;
-    if(_channelIndexArray.empty())
-        decodingStatus = _currentDecoder->decodeNextFrame(*_sourceBuffer);
+    if(_inputStreamDesc.demultiplexing())
+        decodingStatus = _currentDecoder->decodeNextFrame(*_sourceBuffer, _inputStreamDesc._channelIndexArray);
     else
-        decodingStatus = _currentDecoder->decodeNextFrame(*_sourceBuffer, _channelIndexArray);
+        decodingStatus = _currentDecoder->decodeNextFrame(*_sourceBuffer);
 
     CodedData data;
     if(decodingStatus)
