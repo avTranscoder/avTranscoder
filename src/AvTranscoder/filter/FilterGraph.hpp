@@ -15,8 +15,6 @@ namespace avtranscoder
 
 /**
  * @brief Manager of filters.
- * @warning Currently, the class manages only filters which has one input and one output.
- * @note See 'complex graph' definition in ffmpeg documentation.
  **/
 class AvExport FilterGraph
 {
@@ -44,11 +42,18 @@ public:
 
     /**
      * @brief Pull filtered data from the filter graph, and put result to the given frame.
-     * @param inputFrame: input data.
-     * @param inputFrame: output data.
+     * @param inputs: input data buffers.
+     * @param output: output data buffer.
      * @note Do nothing if there was no filter added.
+     *  If there is one input buffer, the filter graph is a chain of effects: input -> filter 1 -> filter 2 -> output.
+     * If there is several input buffers, the filter graph is like this:
+     *                      input 1 ---|
+     *                                 |
+     *                               filter 1 -> filter 2 -> output
+     *                                 |
+     *                      input 2 ---|
      */
-    void process(const Frame& inputFrame, Frame& outputFrame);
+    void process(const std::vector<Frame*>& inputs, Frame& output);
 
 private:
     /**
@@ -62,7 +67,7 @@ private:
      * @see pushInBuffer
      * @see pushOutBuffer
      */
-    void init(const Frame& inputFrame, Frame& outputFrame);
+    void init(const std::vector<Frame*>& inputs, Frame& output);
 
     /**
      * @brief Push the given Filter to the graph.
@@ -71,8 +76,8 @@ private:
 
     ///@{
     /// @brief Push the input and output buffer at the beginning and the end of the graph.
-    void pushInBuffer(const Frame& frame);
-    void pushOutBuffer(const Frame& frame);
+    void pushInBuffer(const std::vector<Frame*>& inputs);
+    void pushOutBuffer(const Frame& output);
     //@}
 
 private:
