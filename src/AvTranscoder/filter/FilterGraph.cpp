@@ -35,12 +35,12 @@ FilterGraph::~FilterGraph()
     avfilter_graph_free(&_graph);
 }
 
-void FilterGraph::process(const std::vector<Frame*>& inputs, Frame& output)
+void FilterGraph::process(const std::vector<Frame>& inputs, Frame& output)
 {
     if(!hasFilters())
     {
         LOG_DEBUG("No filter to process: reference first input frame to the given output.")
-        output.refFrame(*inputs.at(0));
+        output.refFrame(inputs.at(0));
         return;
     }
 
@@ -51,7 +51,7 @@ void FilterGraph::process(const std::vector<Frame*>& inputs, Frame& output)
     // setup input frames
     for(size_t index = 0; index < inputs.size(); ++index)
     {
-        const int ret = av_buffersrc_write_frame(_filters.at(index)->getAVFilterContext(), &inputs.at(index)->getAVFrame());
+        const int ret = av_buffersrc_write_frame(_filters.at(index)->getAVFilterContext(), &inputs.at(index).getAVFrame());
         if(ret < 0)
         {
             throw std::runtime_error("Error when adding a frame to the source buffer used to start to process filters: " +
@@ -81,7 +81,7 @@ Filter& FilterGraph::addFilter(const std::string& filterName, const std::string&
     return *_filters.back();
 }
 
-void FilterGraph::init(const std::vector<Frame*>& inputs, Frame& output)
+void FilterGraph::init(const std::vector<Frame>& inputs, Frame& output)
 {
     // push filters to the graph
     pushInBuffer(inputs);
@@ -137,30 +137,30 @@ void FilterGraph::pushFilter(Filter& filter)
     }
 }
 
-void FilterGraph::pushInBuffer(const std::vector<Frame*>& inputs)
+void FilterGraph::pushInBuffer(const std::vector<Frame>& inputs)
 {
-    for(std::vector<Frame*>::const_iterator it = inputs.begin(); it != inputs.end(); ++it)
+    for(std::vector<Frame>::const_iterator it = inputs.begin(); it != inputs.end(); ++it)
     {
         std::string filterName;
         std::stringstream filterOptions;
         // audio frame
-        if((*it)->isAudioFrame())
+        if(it->isAudioFrame())
         {
             filterName = "abuffer";
-            const AudioFrame* audioFrame = dynamic_cast<const AudioFrame*>(*it);
+            const AudioFrame& audioFrame = dynamic_cast<const AudioFrame&>(*it);
             filterOptions << "time_base=" << _codec.getAVCodecContext().time_base.num << "/"
                           << _codec.getAVCodecContext().time_base.den << ":";
-            filterOptions << "sample_rate=" << audioFrame->getSampleRate() << ":";
-            filterOptions << "sample_fmt=" << getSampleFormatName(audioFrame->getSampleFormat()) << ":";
-            filterOptions << "channel_layout=0x" << std::hex << audioFrame->getChannelLayout();
+            filterOptions << "sample_rate=" << audioFrame.getSampleRate() << ":";
+            filterOptions << "sample_fmt=" << getSampleFormatName(audioFrame.getSampleFormat()) << ":";
+            filterOptions << "channel_layout=0x" << std::hex << audioFrame.getChannelLayout();
         }
         // video frame
-        else if((*it)->isVideoFrame())
+        else if(it->isVideoFrame())
         {
             filterName = "buffer";
-            const VideoFrame* videoFrame = dynamic_cast<const VideoFrame*>(*it);
-            filterOptions << "video_size=" << videoFrame->getWidth() << "x" << videoFrame->getHeight() << ":";
-            filterOptions << "pix_fmt=" << getPixelFormatName(videoFrame->getPixelFormat()) << ":";
+            const VideoFrame& videoFrame = dynamic_cast<const VideoFrame&>(*it);
+            filterOptions << "video_size=" << videoFrame.getWidth() << "x" << videoFrame.getHeight() << ":";
+            filterOptions << "pix_fmt=" << getPixelFormatName(videoFrame.getPixelFormat()) << ":";
             filterOptions << "time_base=" << _codec.getAVCodecContext().time_base.num << "/"
                           << _codec.getAVCodecContext().time_base.den << ":";
             filterOptions << "pixel_aspect=" << _codec.getAVCodecContext().sample_aspect_ratio.num << "/"

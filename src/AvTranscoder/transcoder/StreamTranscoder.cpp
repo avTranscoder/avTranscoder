@@ -57,9 +57,9 @@ StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outpu
                 _generators.push_back(new VideoGenerator(inputFrameDesc));
 
                 // buffers to process
-                _decodedData.push_back(new VideoFrame(inputFrameDesc));
-                _filteredData.push_back(new VideoFrame(inputFrameDesc));
-                _transformedData.push_back(new VideoFrame(inputFrameDesc));
+                _decodedData.push_back(VideoFrame(inputFrameDesc));
+                _filteredData.push_back(VideoFrame(inputFrameDesc));
+                _transformedData.push_back(VideoFrame(inputFrameDesc));
 
                 // transform
                 _transform = new VideoTransform();
@@ -93,9 +93,9 @@ StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outpu
                 _generators.push_back(new AudioGenerator(inputFrameDesc));
 
                 // buffers to process
-                _decodedData.push_back(new AudioFrame(inputFrameDesc));
-                _filteredData.push_back(new AudioFrame(inputFrameDesc));
-                _transformedData.push_back(new AudioFrame(inputFrameDesc));
+                _decodedData.push_back(AudioFrame(inputFrameDesc));
+                _filteredData.push_back(AudioFrame(inputFrameDesc));
+                _transformedData.push_back(AudioFrame(inputFrameDesc));
 
                 // transform
                 _transform = new AudioTransform();
@@ -173,9 +173,9 @@ StreamTranscoder::StreamTranscoder(const InputStreamDesc& inputStreamDesc, IInpu
             _outputStream = &outputFile.addVideoStream(outputVideo->getVideoCodec());
 
             // buffers to process
-            _decodedData.push_back(new VideoFrame(_currentInputStream->getVideoCodec().getVideoFrameDesc()));
-            _filteredData.push_back(new VideoFrame(_currentInputStream->getVideoCodec().getVideoFrameDesc()));
-            _transformedData.push_back(new VideoFrame(outputVideo->getVideoCodec().getVideoFrameDesc()));
+            _decodedData.push_back(VideoFrame(_currentInputStream->getVideoCodec().getVideoFrameDesc()));
+            _filteredData.push_back(VideoFrame(_currentInputStream->getVideoCodec().getVideoFrameDesc()));
+            _transformedData.push_back(VideoFrame(outputVideo->getVideoCodec().getVideoFrameDesc()));
 
             // transform
             _transform = new VideoTransform();
@@ -214,9 +214,9 @@ StreamTranscoder::StreamTranscoder(const InputStreamDesc& inputStreamDesc, IInpu
             if(inputStreamDesc.demultiplexing())
                 inputFrameDesc._nbChannels = inputStreamDesc._channelIndexArray.size();
 
-            _decodedData.push_back(new AudioFrame(inputFrameDesc));
-            _filteredData.push_back(new AudioFrame(inputFrameDesc));
-            _transformedData.push_back(new AudioFrame(outputAudio->getAudioCodec().getAudioFrameDesc()));
+            _decodedData.push_back(AudioFrame(inputFrameDesc));
+            _filteredData.push_back(AudioFrame(inputFrameDesc));
+            _transformedData.push_back(AudioFrame(outputAudio->getAudioCodec().getAudioFrameDesc()));
 
             // transform
             _transform = new AudioTransform();
@@ -270,9 +270,9 @@ StreamTranscoder::StreamTranscoder(IOutputFile& outputFile, const ProfileLoader:
         // buffers to process
         VideoFrameDesc outputFrameDesc = inputFrameDesc;
         outputFrameDesc.setParameters(profile);
-        _decodedData.push_back(new VideoFrame(inputFrameDesc));
-        _filteredData.push_back(new VideoFrame(inputFrameDesc));
-        _transformedData.push_back(new VideoFrame(outputFrameDesc));
+        _decodedData.push_back(VideoFrame(inputFrameDesc));
+        _filteredData.push_back(VideoFrame(inputFrameDesc));
+        _transformedData.push_back(VideoFrame(outputFrameDesc));
 
         // transform
         _transform = new VideoTransform();
@@ -303,9 +303,9 @@ StreamTranscoder::StreamTranscoder(IOutputFile& outputFile, const ProfileLoader:
         // buffers to process
         AudioFrameDesc outputFrameDesc = inputFrameDesc;
         outputFrameDesc.setParameters(profile);
-        _decodedData.push_back(new AudioFrame(inputFrameDesc));
-        _filteredData.push_back(new AudioFrame(inputFrameDesc));
-        _transformedData.push_back(new AudioFrame(outputFrameDesc));
+        _decodedData.push_back(AudioFrame(inputFrameDesc));
+        _filteredData.push_back(AudioFrame(inputFrameDesc));
+        _transformedData.push_back(AudioFrame(outputFrameDesc));
 
         // transform
         _transform = new AudioTransform();
@@ -326,19 +326,6 @@ StreamTranscoder::StreamTranscoder(IOutputFile& outputFile, const ProfileLoader:
 
 StreamTranscoder::~StreamTranscoder()
 {
-    for(std::vector<Frame*>::iterator it = _decodedData.begin(); it != _decodedData.end(); ++it)
-    {
-        delete(*it);
-    }
-    for(std::vector<Frame*>::iterator it = _filteredData.begin(); it != _filteredData.end(); ++it)
-    {
-        delete(*it);
-    }
-    for(std::vector<Frame*>::iterator it = _transformedData.begin(); it != _transformedData.end(); ++it)
-    {
-        delete(*it);
-    }
-
     for(std::vector<IDecoder*>::iterator it = _inputDecoders.begin(); it != _inputDecoders.end(); ++it)
     {
         delete(*it);
@@ -497,21 +484,21 @@ bool StreamTranscoder::processTranscode()
     LOG_DEBUG("Decode next frame")
     bool decodingStatus = false;
     if(! _inputStreamDesc.empty() && _inputStreamDesc.at(0).demultiplexing())
-        decodingStatus = _currentDecoder->decodeNextFrame(*_decodedData.at(0), _inputStreamDesc.at(0)._channelIndexArray);
+        decodingStatus = _currentDecoder->decodeNextFrame(_decodedData.at(0), _inputStreamDesc.at(0)._channelIndexArray);
     else
-        decodingStatus = _currentDecoder->decodeNextFrame(*_decodedData.at(0));
+        decodingStatus = _currentDecoder->decodeNextFrame(_decodedData.at(0));
 
     CodedData data;
     if(decodingStatus)
     {
         LOG_DEBUG("Filtering")
-        _filterGraph->process(_decodedData, *_filteredData.at(0));
+        _filterGraph->process(_decodedData, _filteredData.at(0));
 
         LOG_DEBUG("Convert")
-        _transform->convert(*_filteredData.at(0), *_transformedData.at(0));
+        _transform->convert(_filteredData.at(0), _transformedData.at(0));
 
         LOG_DEBUG("Encode")
-        _outputEncoder->encodeFrame(*_transformedData.at(0), data);
+        _outputEncoder->encodeFrame(_transformedData.at(0), data);
     }
     else
     {

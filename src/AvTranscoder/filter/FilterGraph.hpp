@@ -53,7 +53,7 @@ public:
      *                                 |
      *                      input 2 ---|
      */
-    void process(const std::vector<Frame*>& inputs, Frame& output);
+    void process(const std::vector<Frame>& inputs, Frame& output);
 
 private:
     /**
@@ -67,7 +67,7 @@ private:
      * @see pushInBuffer
      * @see pushOutBuffer
      */
-    void init(const std::vector<Frame*>& inputs, Frame& output);
+    void init(const std::vector<Frame>& inputs, Frame& output);
 
     /**
      * @brief Push the given Filter to the graph.
@@ -76,7 +76,7 @@ private:
 
     ///@{
     /// @brief Push the input and output buffer at the beginning and the end of the graph.
-    void pushInBuffer(const std::vector<Frame*>& inputs);
+    void pushInBuffer(const std::vector<Frame>& inputs);
     void pushOutBuffer(const Frame& output);
     //@}
 
