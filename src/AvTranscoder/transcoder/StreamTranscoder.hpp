@@ -27,7 +27,6 @@ private:
 public:
     /**
      * @brief Rewrap the given stream.
-     * @note offset feature when rewrap a stream is not supported
      **/
     StreamTranscoder(IInputStream& inputStream, IOutputFile& outputFile, const float offset = 0);
 
