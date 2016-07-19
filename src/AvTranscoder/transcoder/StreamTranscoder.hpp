@@ -38,8 +38,7 @@ public:
                      const std::vector<size_t> channelIndexArray, const float offset = 0);
 
     /**
-     * @brief encode from a generated stream
-     * @note offset feature has no sense here
+     * @brief Encode a generated stream
      **/
     StreamTranscoder(IOutputFile& outputFile, const ProfileLoader::Profile& profile);
 
