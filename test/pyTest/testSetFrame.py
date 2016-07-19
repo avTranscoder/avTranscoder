@@ -23,7 +23,7 @@ def testSetVideoFrame():
 
     # create transcoder and add a video stream
     transcoder = av.Transcoder( ouputFile )
-    transcoder.addStream( encodingProfile )
+    transcoder.addGeneratedStream( encodingProfile )
     videoDecoder = transcoder.getStreamTranscoder( 0 ).getCurrentDecoder()
 
     # start process
@@ -69,7 +69,7 @@ def testSetAudioFrame():
 
     # create transcoder and add a video stream
     transcoder = av.Transcoder( ouputFile )
-    transcoder.addStream(  "wave24b48kmono" )
+    transcoder.addGeneratedStream( "wave24b48kmono" )
     audioDecoder = transcoder.getStreamTranscoder( 0 ).getCurrentDecoder()
 
     # start process
