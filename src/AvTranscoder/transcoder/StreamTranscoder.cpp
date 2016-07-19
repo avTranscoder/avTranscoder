@@ -451,7 +451,7 @@ bool StreamTranscoder::processFrame()
 
 bool StreamTranscoder::processRewrap()
 {
-    assert(_inputStreams.size() != 1);
+    assert(_currentInputStream != NULL);
     assert(_outputStream != NULL);
 
     LOG_DEBUG("StreamTranscoder::processRewrap")
