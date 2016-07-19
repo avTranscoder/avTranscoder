@@ -42,7 +42,7 @@ public:
 
     /**
      * @brief Pull filtered data from the filter graph, and put result to the given frame.
-     * @param inputs: input data buffers.
+     * @param inputs: input data buffers (at least one).
      * @param output: output data buffer.
      * @note Do nothing if there was no filter added.
      *  If there is one input buffer, the filter graph is a chain of effects: input -> filter 1 -> filter 2 -> output.

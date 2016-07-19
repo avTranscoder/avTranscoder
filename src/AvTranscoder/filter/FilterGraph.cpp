@@ -39,7 +39,8 @@ void FilterGraph::process(const std::vector<Frame*>& inputs, Frame& output)
 {
     if(!hasFilters())
     {
-        LOG_DEBUG("No filter to process.")
+        LOG_DEBUG("No filter to process: reference first input frame to the given output.")
+        output.refFrame(*inputs.at(0));
         return;
     }
 

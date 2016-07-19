@@ -128,6 +128,7 @@ private:
     IOutputStream* _outputStream; ///< Output stream to wrap next packet (has link, no ownership)
 
     std::vector<Frame*> _decodedData; ///< Buffer of decoded data (has ownership).
+    std::vector<Frame*> _filteredData;  ///< Buffer of filtered data (has ownership).
     std::vector<Frame*> _transformedData;  ///< Buffer of transformed data (has ownership).
 
     std::vector<IDecoder*> _inputDecoders;   ///< Decoders of packets read from _inputStream (has ownership)
