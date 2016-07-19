@@ -52,7 +52,7 @@ def testTranscodeMovVariableNbSamplesPerFrame():
 def testTranscodeMovExtractChannels():
     """
     Transcode the audio stream of a MOV file which contains a video stream.
-    Extract channel one and third of the audio stream (5.1).
+    Extract channel one and third of the audio stream (5.1), and create two output streams.
     The encoding profile will be found from from input.
     """
     inputFileName = os.environ['AVTRANSCODER_TEST_AUDIO_MOV_FILE']
@@ -78,3 +78,35 @@ def testTranscodeMovExtractChannels():
     dst_inputFile = av.InputFile( outputFileName )
     for dst_audioStream in dst_inputFile.getProperties().getAudioProperties():
         assert_equals( 1, dst_audioStream.getNbChannels() )
+
+
+def testTranscodeMovExtractChannelsToOneOutput():
+    """
+    Transcode the audio stream of a MOV file which contains a video stream.
+    Extract channel one, third and fifth of the audio stream (5.1), and create one output streams.
+    The encoding profile will be found from from input.
+    """
+    inputFileName = os.environ['AVTRANSCODER_TEST_AUDIO_MOV_FILE']
+    outputFileName = "testTranscodeMovExtractChannelsToOneOutput.mov"
+
+    ouputFile = av.OutputFile( outputFileName )
+    transcoder = av.Transcoder( ouputFile )
+
+    inputFile = av.InputFile( inputFileName )
+    src_audioStream = inputFile.getProperties().getAudioProperties()[0]
+    audioStreamIndex = src_audioStream.getStreamIndex()
+    audiochannelIndexArray = (0, 3, 5)
+    transcoder.addStream( av.InputStreamDesc(inputFileName, audioStreamIndex, audiochannelIndexArray) )
+
+    progress = av.ConsoleProgress()
+    processStat = transcoder.process( progress )
+
+    # check process stat returned
+    audioStat = processStat.getAudioStat(0)
+    assert_equals(src_audioStream.getDuration(), audioStat.getDuration())
+
+    # check dst audio streams
+    dst_inputFile = av.InputFile( outputFileName )
+    dst_audioProperties = dst_inputFile.getProperties().getAudioProperties()
+    assert_equals( 1, len(dst_audioProperties) )
+    assert_equals( 3, dst_audioProperties[0].getNbChannels() )
