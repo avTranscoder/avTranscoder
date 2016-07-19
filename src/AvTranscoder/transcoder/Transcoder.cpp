@@ -234,15 +234,15 @@ void Transcoder::addTranscodeStream(const InputStreamDesc& inputStreamDesc, cons
 
     // Add input file
     InputFile* referenceFile = addInputFile(inputStreamDesc._filename, inputStreamDesc._streamIndex, offset);
+    IInputStream& inputStream = referenceFile->getStream(inputStreamDesc._streamIndex);
 
-    switch(referenceFile->getStream(inputStreamDesc._streamIndex).getProperties().getStreamType())
+    switch(inputStream.getProperties().getStreamType())
     {
         case AVMEDIA_TYPE_VIDEO:
         case AVMEDIA_TYPE_AUDIO:
         {
             _streamTranscodersAllocated.push_back(
-                new StreamTranscoder(referenceFile->getStream(inputStreamDesc._streamIndex), _outputFile, profile,
-                                     inputStreamDesc._channelIndexArray, offset));
+                new StreamTranscoder(inputStream, _outputFile, profile, inputStreamDesc._channelIndexArray, offset));
             _streamTranscoders.push_back(_streamTranscodersAllocated.back());
             break;
         }
