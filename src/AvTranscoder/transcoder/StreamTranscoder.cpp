@@ -526,6 +526,9 @@ bool StreamTranscoder::processTranscode()
     bool decodingStatus = true;
     for(size_t index = 0; index < _inputDecoders.size(); ++index)
     {
+        if(getProcessCase() == eProcessCaseTranscode)
+            _currentDecoder = _inputDecoders.at(index);
+
         if(! _inputStreamDesc.empty() && _inputStreamDesc.at(index).demultiplexing())
             decodingStatus = decodingStatus && _currentDecoder->decodeNextFrame(*_decodedData.at(index), _inputStreamDesc.at(index)._channelIndexArray);
         else

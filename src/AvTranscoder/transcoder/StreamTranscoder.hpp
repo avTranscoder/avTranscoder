@@ -60,7 +60,7 @@ public:
     bool processFrame();
 
     //@{
-    /** Switch decoder */
+    // Switch current decoder.
     void switchToGeneratorDecoder();
     void switchToInputDecoder();
     //@}
