@@ -15,6 +15,7 @@
 #include <cassert>
 #include <limits>
 #include <sstream>
+#include <algorithm>
 
 namespace avtranscoder
 {
@@ -633,7 +634,7 @@ void StreamTranscoder::setOffset(const float offset)
 
 StreamTranscoder::EProcessCase StreamTranscoder::getProcessCase() const
 {
-    if(! _inputStreams.empty() && ! _inputDecoders.empty() && _inputDecoders.at(0) == _currentDecoder)
+    if(! _inputStreams.empty() && ! _inputDecoders.empty() && std::find(_inputDecoders.begin(), _inputDecoders.end(), _currentDecoder) != _inputDecoders.end() )
         return eProcessCaseTranscode;
     else if(! _inputStreams.empty() && _inputDecoders.empty() && !_currentDecoder)
         return eProcessCaseRewrap;
