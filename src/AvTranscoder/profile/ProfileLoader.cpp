@@ -12,10 +12,10 @@ namespace avtranscoder
 ProfileLoader::ProfileLoader(const bool autoload)
 {
     if(autoload)
-        loadProfiles();
+        addProfiles();
 }
 
-void ProfileLoader::loadProfile(const std::string& avProfileFileName)
+void ProfileLoader::addProfile(const std::string& avProfileFileName)
 {
     std::ifstream infile;
     infile.open(avProfileFileName.c_str(), std::ifstream::in);
@@ -30,10 +30,10 @@ void ProfileLoader::loadProfile(const std::string& avProfileFileName)
         if(keyValue.size() == 2)
             customProfile[keyValue.at(0)] = keyValue.at(1);
     }
-    loadProfile(customProfile);
+    addProfile(customProfile);
 }
 
-void ProfileLoader::loadProfiles(const std::string& avProfilesPath)
+void ProfileLoader::addProfiles(const std::string& avProfilesPath)
 {
     std::string realAvProfilesPath = avProfilesPath;
     if(realAvProfilesPath.empty())
@@ -59,7 +59,7 @@ void ProfileLoader::loadProfiles(const std::string& avProfilesPath)
             const std::string absPath = (*dirIt) + "/" + (*fileIt);
             try
             {
-                loadProfile(absPath);
+                addProfile(absPath);
             }
             catch(const std::exception& e)
             {
@@ -69,7 +69,7 @@ void ProfileLoader::loadProfiles(const std::string& avProfilesPath)
     }
 }
 
-void ProfileLoader::loadProfile(const Profile& profile)
+void ProfileLoader::addProfile(const Profile& profile)
 {
     // check profile identificator
     if(!profile.count(constants::avProfileIdentificator))

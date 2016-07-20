@@ -45,21 +45,21 @@ public:
     ProfileLoader(const bool autoload = true);
 
     /**
-     * @brief Load profiles from files in avProfilesPath directory
+     * @brief Add profiles from files in avProfilesPath directory
      * @param avProfilesPath: if empty, the path is replaced by value of AVPROFILES environment variable
      */
-    void loadProfiles(const std::string& avProfilesPath = "");
+    void addProfiles(const std::string& avProfilesPath = "");
 
     /**
-     * @brief Load the profile defines in the given file
+     * @brief Add the profile defines in the given file
      */
-    void loadProfile(const std::string& avProfileFileName);
+    void addProfile(const std::string& avProfileFileName);
 
     /**
-     * @brief Load the given profile
+     * @brief Add the given profile
      * @exception throw std::runtime_error if the profile is invalid
      */
-    void loadProfile(const Profile& profile);
+    void addProfile(const Profile& profile);
 
     bool hasProfile(const Profile& profile) const;
 

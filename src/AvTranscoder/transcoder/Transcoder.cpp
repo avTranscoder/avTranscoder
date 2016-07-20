@@ -87,7 +87,7 @@ void Transcoder::addGeneratedStream(const ProfileLoader::Profile& encodingProfil
 {
     // Add profile
     if(!_profileLoader.hasProfile(encodingProfile))
-        _profileLoader.loadProfile(encodingProfile);
+        _profileLoader.addProfile(encodingProfile);
 
     LOG_INFO("Add generated stream with encodingProfile=" << encodingProfile.at(constants::avProfileIdentificatorHuman))
 
@@ -218,7 +218,7 @@ void Transcoder::addTranscodeStream(const std::vector<InputStreamDesc>& inputStr
 {
     // Add profile
     if(!_profileLoader.hasProfile(profile))
-        _profileLoader.loadProfile(profile);
+        _profileLoader.addProfile(profile);
 
     std::stringstream sources;
     for(size_t index = 0; index < inputStreamDescArray.size(); ++index)
