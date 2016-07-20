@@ -45,7 +45,7 @@ public:
      * @param inputs: input data buffers (at least one).
      * @param output: output data buffer.
      * @note Do nothing if there was no filter added.
-     *  If there is one input buffer, the filter graph is a chain of effects: input -> filter 1 -> filter 2 -> output.
+     * If there is one input buffer, the filter graph is a chain of effects: input -> filter 1 -> filter 2 -> output.
      * If there is several input buffers, the filter graph is like this:
      *                      input 1 ---|
      *                                 |
@@ -75,9 +75,9 @@ private:
     void pushFilter(Filter& filter);
 
     ///@{
-    /// @brief Push the input and output buffer at the beginning and the end of the graph.
-    void pushInBuffer(const std::vector<Frame>& inputs);
-    void pushOutBuffer(const Frame& output);
+    /// @brief Add the input and output buffers at the beginning and the end of the list of filters.
+    void addInBuffer(const std::vector<Frame>& inputs);
+    void addOutBuffer(const Frame& output);
     //@}
 
 private:

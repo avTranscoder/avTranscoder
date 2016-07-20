@@ -84,24 +84,28 @@ Filter& FilterGraph::addFilter(const std::string& filterName, const std::string&
 void FilterGraph::init(const std::vector<Frame>& inputs, Frame& output)
 {
     // push filters to the graph
-    pushInBuffer(inputs);
-    for(size_t i = 1; i < _filters.size(); ++i)
+    addInBuffer(inputs);
+    addOutBuffer(output);
+    for(size_t i = 0; i < _filters.size(); ++i)
     {
         pushFilter(*_filters.at(i));
     }
-    pushOutBuffer(output);
 
     // connect filters
     for(size_t index = 0; index < _filters.size() - 1; ++index)
     {
-        size_t indexOfFilterToConnect = index + 1;
+        size_t indexOfOutputFilterToConnect = index + 1;
+        size_t indexOfInputPadOfDestinationFilter = 0;
         // handle cases with several inputs
         if(index < inputs.size())
-            indexOfFilterToConnect = inputs.size();
+        {
+            indexOfOutputFilterToConnect = inputs.size();
+            indexOfInputPadOfDestinationFilter = index;
+        }
 
-        LOG_INFO("Connect filter " << _filters.at(index)->getName() << " to filter " << _filters.at(indexOfFilterToConnect)->getName())
+        LOG_INFO("Connect filter " << _filters.at(index)->getName() << " to filter " << _filters.at(indexOfOutputFilterToConnect)->getName())
         const int err =
-            avfilter_link(_filters.at(index)->getAVFilterContext(), 0, _filters.at(indexOfFilterToConnect)->getAVFilterContext(), 0);
+            avfilter_link(_filters.at(index)->getAVFilterContext(), 0, _filters.at(indexOfOutputFilterToConnect)->getAVFilterContext(), indexOfInputPadOfDestinationFilter);
         if(err < 0)
         {
             throw std::runtime_error("Error when connecting filters.");
@@ -137,9 +141,9 @@ void FilterGraph::pushFilter(Filter& filter)
     }
 }
 
-void FilterGraph::pushInBuffer(const std::vector<Frame>& inputs)
+void FilterGraph::addInBuffer(const std::vector<Frame>& inputs)
 {
-    for(std::vector<Frame>::const_iterator it = inputs.begin(); it != inputs.end(); ++it)
+    for(std::vector<Frame>::const_reverse_iterator it = inputs.rbegin(); it != inputs.rend(); ++it)
     {
         std::string filterName;
         std::stringstream filterOptions;
@@ -174,11 +178,10 @@ void FilterGraph::pushInBuffer(const std::vector<Frame>& inputs)
         Filter* in = new Filter(filterName, filterOptions.str(), "in");
         LOG_INFO("Add filter '" << filterName << "' at the beginning of the graph.")
         _filters.insert(_filters.begin(), in);
-        pushFilter(*in);
     }
 }
 
-void FilterGraph::pushOutBuffer(const Frame& output)
+void FilterGraph::addOutBuffer(const Frame& output)
 {
     std::string filterName;
 
@@ -190,7 +193,6 @@ void FilterGraph::pushOutBuffer(const Frame& output)
         throw std::runtime_error("Cannot create output buffer of filter graph: the given frame is invalid.");
 
     // add out buffer
-    Filter& out = addFilter(filterName, "", "out");
-    pushFilter(out);
+    addFilter(filterName, "", "out");
 }
 }
