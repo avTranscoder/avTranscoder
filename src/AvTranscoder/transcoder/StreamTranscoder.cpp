@@ -448,7 +448,7 @@ bool StreamTranscoder::processFrame()
         {
             LOG_INFO("End of positive offset")
 
-            if(_inputDecoders.at(0))
+            if(! _inputDecoders.empty())
                 switchToInputDecoder();
             else
                 _currentDecoder = NULL;
