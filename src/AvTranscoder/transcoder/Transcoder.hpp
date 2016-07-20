@@ -66,6 +66,12 @@ public:
     //@}
 
     //@{
+    // @brief Add a new stream to the output file, created from the given input description to process.
+    // @param inputStreamDescArray: the type of the described streams should be of the same type.
+    void addStream(const std::vector<InputStreamDesc>& inputStreamDescArray, const ProfileLoader::Profile& profile, const float offset = 0);
+    //@}
+
+    //@{
     // @brief Add a new generated stream to the output file, created from the given encoding profile.
     void addGeneratedStream(const std::string& encodingProfileName);
     void addGeneratedStream(const ProfileLoader::Profile& encodingProfile);
@@ -129,7 +135,7 @@ public:
 
 private:
     void addRewrapStream(const InputStreamDesc& inputStreamDesc, const float offset);
-    void addTranscodeStream(const InputStreamDesc& inputStreamDesc, const ProfileLoader::Profile& profile,
+    void addTranscodeStream(const std::vector<InputStreamDesc>& inputStreamDescArray, const ProfileLoader::Profile& profile,
                             const float offset = 0);
 
     /**

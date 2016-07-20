@@ -33,9 +33,10 @@ public:
     StreamTranscoder(IInputStream& inputStream, IOutputFile& outputFile, const float offset = 0);
 
     /**
-     * @brief Transcode the given stream.
+     * @brief Transcode the given streams.
+     * @note The data are wrapped to one output stream.
      **/
-    StreamTranscoder(const InputStreamDesc& inputStreamDesc, IInputStream& inputStream, IOutputFile& outputFile, 
+    StreamTranscoder(const std::vector<InputStreamDesc>& inputStreamsDesc, std::vector<IInputStream*>& inputStreams, IOutputFile& outputFile, 
                      const ProfileLoader::Profile& profile, const float offset = 0);
 
     /**

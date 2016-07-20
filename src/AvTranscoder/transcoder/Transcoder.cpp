@@ -67,7 +67,14 @@ void Transcoder::addStream(const InputStreamDesc& inputStreamDesc, const Profile
     if(!inputStreamDesc._filename.length())
         throw std::runtime_error("Can't transcode a stream without a filename indicated.");
 
-    addTranscodeStream(inputStreamDesc, profile, offset);
+    std::vector<InputStreamDesc> inputStreamDescArray;
+    inputStreamDescArray.push_back(inputStreamDesc);
+    addStream(inputStreamDescArray, profile, offset);
+}
+
+void Transcoder::addStream(const std::vector<InputStreamDesc>& inputStreamDescArray, const ProfileLoader::Profile& profile, const float offset)
+{
+    addTranscodeStream(inputStreamDescArray, profile, offset);
 }
 
 void Transcoder::addGeneratedStream(const std::string& encodingProfileName)
@@ -206,39 +213,31 @@ void Transcoder::addRewrapStream(const InputStreamDesc& inputStreamDesc, const f
     _streamTranscoders.push_back(_streamTranscodersAllocated.back());
 }
 
-void Transcoder::addTranscodeStream(const InputStreamDesc& inputStreamDesc, const ProfileLoader::Profile& profile,
+void Transcoder::addTranscodeStream(const std::vector<InputStreamDesc>& inputStreamDescArray, const ProfileLoader::Profile& profile,
                                     const float offset)
 {
     // Add profile
     if(!_profileLoader.hasProfile(profile))
         _profileLoader.loadProfile(profile);
 
-    LOG_INFO("Add transcode stream from " << inputStreamDesc << "with encodingProfile="
-                                          << profile.at(constants::avProfileIdentificatorHuman) << std::endl
+    std::stringstream sources;
+    for(size_t index = 0; index < inputStreamDescArray.size(); ++index)
+        sources << inputStreamDescArray.at(index);
+    LOG_INFO("Add transcode stream from the following inputs:" << std::endl << sources.str() 
+                                          << "with encodingProfile=" << profile.at(constants::avProfileIdentificatorHuman) << std::endl
                                           << "and offset=" << offset << "s")
 
     // Add input file
-    InputFile* referenceFile = addInputFile(inputStreamDesc._filename, inputStreamDesc._streamIndex, offset);
-    IInputStream& inputStream = referenceFile->getStream(inputStreamDesc._streamIndex);
-
-    switch(inputStream.getProperties().getStreamType())
+    std::vector<IInputStream*> inputStreams;
+    for(std::vector<InputStreamDesc>::const_iterator it = inputStreamDescArray.begin(); it != inputStreamDescArray.end(); ++it)
     {
-        case AVMEDIA_TYPE_VIDEO:
-        case AVMEDIA_TYPE_AUDIO:
-        {
-            _streamTranscodersAllocated.push_back(
-                new StreamTranscoder(inputStreamDesc, inputStream, _outputFile, profile, offset));
-            _streamTranscoders.push_back(_streamTranscodersAllocated.back());
-            break;
-        }
-        case AVMEDIA_TYPE_DATA:
-        case AVMEDIA_TYPE_SUBTITLE:
-        case AVMEDIA_TYPE_ATTACHMENT:
-        default:
-        {
-            throw std::runtime_error("unsupported media type in transcode setup");
-        }
+        InputFile* referenceFile = addInputFile(it->_filename, it->_streamIndex, offset);
+        inputStreams.push_back(&referenceFile->getStream(it->_streamIndex));
     }
+
+    _streamTranscodersAllocated.push_back(
+                new StreamTranscoder(inputStreamDescArray, inputStreams, _outputFile, profile, offset));
+    _streamTranscoders.push_back(_streamTranscodersAllocated.back());
 }
 
 InputFile* Transcoder::addInputFile(const std::string& filename, const int streamIndex, const float offset)

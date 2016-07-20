@@ -126,10 +126,10 @@ StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outpu
     setOffset(offset);
 }
 
-StreamTranscoder::StreamTranscoder(const InputStreamDesc& inputStreamDesc, IInputStream& inputStream, IOutputFile& outputFile,
+StreamTranscoder::StreamTranscoder(const std::vector<InputStreamDesc>& inputStreamsDesc, std::vector<IInputStream*>& inputStreams, IOutputFile& outputFile, 
                                    const ProfileLoader::Profile& profile, const float offset)
-    : _inputStreamDesc()
-    , _inputStreams()
+    : _inputStreamDesc(inputStreamsDesc)
+    , _inputStreams(inputStreams)
     , _outputStream(NULL)
     , _decodedData()
     , _filteredData(NULL)
@@ -143,10 +143,16 @@ StreamTranscoder::StreamTranscoder(const InputStreamDesc& inputStreamDesc, IInpu
     , _offset(offset)
     , _needToSwitchToGenerator(false)
 {
-    _inputStreamDesc.push_back(inputStreamDesc);
-    _inputStreams.push_back(&inputStream);
+    // add as many decoders as input streams
+    size_t nbOutputChannels = 0;
+    for(size_t index = 0; index < inputStreams.size(); ++index)
+    {
+        addDecoder(_inputStreamDesc.at(index), *_inputStreams.at(index));
+        nbOutputChannels += _inputStreamDesc.at(index)._channelIndexArray.size();
+    }
 
-    addDecoder(inputStreamDesc, inputStream);
+    IInputStream& inputStream = *_inputStreams.at(0);
+    const InputStreamDesc& inputStreamDesc = inputStreamsDesc.at(0);
 
     // create a transcode case
     switch(inputStream.getProperties().getStreamType())
@@ -168,7 +174,7 @@ StreamTranscoder::StreamTranscoder(const InputStreamDesc& inputStreamDesc, IInpu
             _outputStream = &outputFile.addVideoStream(outputVideo->getVideoCodec());
 
             // buffers to process
-            _filteredData = new VideoFrame(inputStream.getVideoCodec().getVideoFrameDesc());
+            _filteredData = new VideoFrame(outputVideo->getVideoCodec().getVideoFrameDesc());
             _transformedData = new VideoFrame(outputVideo->getVideoCodec().getVideoFrameDesc());
 
             // transform
@@ -180,6 +186,9 @@ StreamTranscoder::StreamTranscoder(const InputStreamDesc& inputStreamDesc, IInpu
         {
             // filter
             _filterGraph = new FilterGraph(inputStream.getAudioCodec());
+            // merge two or more audio streams into a single multi-channel stream.
+            if(inputStreams.size() > 1)
+                _filterGraph->addFilter("amerge");
 
             // output encoder
             AudioEncoder* outputAudio = new AudioEncoder(profile.at(constants::avProfileCodec));
@@ -188,7 +197,7 @@ StreamTranscoder::StreamTranscoder(const InputStreamDesc& inputStreamDesc, IInpu
             AudioFrameDesc outputFrameDesc(inputStream.getAudioCodec().getAudioFrameDesc());
             outputFrameDesc.setParameters(profile);
             if(inputStreamDesc.demultiplexing())
-                outputFrameDesc._nbChannels = inputStreamDesc._channelIndexArray.size();
+                outputFrameDesc._nbChannels = nbOutputChannels;
             outputAudio->setupAudioEncoder(outputFrameDesc, profile);
 
             // output stream
@@ -197,7 +206,7 @@ StreamTranscoder::StreamTranscoder(const InputStreamDesc& inputStreamDesc, IInpu
             // buffers to process
             AudioFrameDesc inputFrameDesc(inputStream.getAudioCodec().getAudioFrameDesc());
             if(inputStreamDesc.demultiplexing())
-                inputFrameDesc._nbChannels = inputStreamDesc._channelIndexArray.size();
+                inputFrameDesc._nbChannels = nbOutputChannels;
 
             _filteredData = new AudioFrame(inputFrameDesc);
             _transformedData = new AudioFrame(outputAudio->getAudioCodec().getAudioFrameDesc());
