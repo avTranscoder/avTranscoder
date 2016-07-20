@@ -44,7 +44,7 @@ void VideoReader::init()
     _currentDecoder = _decoder;
 
     // generator
-    _generator = new VideoGenerator(_inputFile->getStream(_streamIndex).getVideoCodec().getVideoFrameDesc());
+    _generator = new VideoGenerator();
 
     // create transform
     _transform = new VideoTransform();

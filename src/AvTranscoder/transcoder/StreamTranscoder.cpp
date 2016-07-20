@@ -53,7 +53,7 @@ StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outpu
                 VideoFrameDesc inputFrameDesc(inputStream.getVideoCodec().getVideoFrameDesc());
 
                 // generator decoder
-                _generators.push_back(new VideoGenerator(inputFrameDesc));
+                _generators.push_back(new VideoGenerator());
 
                 // buffers to process
                 _decodedData.push_back(VideoFrame(inputFrameDesc));
@@ -179,7 +179,7 @@ StreamTranscoder::StreamTranscoder(const InputStreamDesc& inputStreamDesc, IInpu
             _transform = new VideoTransform();
 
             // generator decoder
-            _generators.push_back(new VideoGenerator(outputVideo->getVideoCodec().getVideoFrameDesc()));
+            _generators.push_back(new VideoGenerator());
 
             break;
         }
@@ -257,7 +257,7 @@ StreamTranscoder::StreamTranscoder(IOutputFile& outputFile, const ProfileLoader:
         inputVideoCodec.setImageParameters(inputFrameDesc);
 
         // generator decoder
-        VideoGenerator* generator = new VideoGenerator(inputVideoCodec.getVideoFrameDesc());
+        VideoGenerator* generator = new VideoGenerator();
         _generators.push_back(generator);
         _currentDecoder = generator;
 
