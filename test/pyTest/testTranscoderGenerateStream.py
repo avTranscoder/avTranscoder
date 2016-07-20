@@ -13,8 +13,7 @@ def testTranscodeNoStream():
     ouputFile = av.OutputFile( outputFileName )
     transcoder = av.Transcoder( ouputFile )
 
-    progress = av.NoDisplayProgress()
-    transcoder.process( progress )
+    transcoder.process()
 
 
 @raises(RuntimeError)
