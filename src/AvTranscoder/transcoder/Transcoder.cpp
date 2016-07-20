@@ -112,7 +112,7 @@ bool Transcoder::processFrame()
         // if a stream failed to process
         if(!_streamTranscoders.at(streamIndex)->processFrame())
         {
-            LOG_WARN("Failed to process stream at index " << streamIndex)
+            LOG_WARN("Failed to process the stream transcoder at index " << streamIndex)
 
             // if this is the end of the main stream
             if(streamIndex == _mainStreamIndex) {
