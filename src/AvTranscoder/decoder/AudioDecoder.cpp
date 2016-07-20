@@ -78,6 +78,7 @@ void AudioDecoder::setupDecoder(const ProfileLoader::Profile& profile)
 bool AudioDecoder::decodeNextFrame(Frame& frameBuffer)
 {
     bool decodeNextFrame = false;
+    const size_t channelLayout = frameBuffer.getAVFrame().channel_layout;
 
     if(!_isSetup)
         setupDecoder();
@@ -99,6 +100,9 @@ bool AudioDecoder::decodeNextFrame(Frame& frameBuffer)
         {
             throw std::runtime_error("An error occurred during audio decoding: " + getDescriptionFromErrorCode(ret));
         }
+
+        // fixed channel layout value after decoding
+        frameBuffer.getAVFrame().channel_layout = channelLayout;
 
         // if no frame could be decompressed
         if(!nextPacketRead && ret == 0 && got_frame == 0)
