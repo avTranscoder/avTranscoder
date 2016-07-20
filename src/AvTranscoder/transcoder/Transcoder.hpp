@@ -68,6 +68,7 @@ public:
     //@{
     // @brief Add a new stream to the output file, created from the given input description to process.
     // @param inputStreamDescArray: the type of the described streams should be of the same type.
+    void addStream(const std::vector<InputStreamDesc>& inputStreamDescArray, const std::string& profileName, float offset = 0);
     void addStream(const std::vector<InputStreamDesc>& inputStreamDescArray, const ProfileLoader::Profile& profile, const float offset = 0);
     //@}
 

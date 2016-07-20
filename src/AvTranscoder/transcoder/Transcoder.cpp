@@ -72,6 +72,12 @@ void Transcoder::addStream(const InputStreamDesc& inputStreamDesc, const Profile
     addStream(inputStreamDescArray, profile, offset);
 }
 
+void Transcoder::addStream(const std::vector<InputStreamDesc>& inputStreamDescArray, const std::string& profileName, const float offset)
+{
+    const ProfileLoader::Profile& encodingProfile = _profileLoader.getProfile(profileName);
+    addStream(inputStreamDescArray, encodingProfile, offset);
+}
+
 void Transcoder::addStream(const std::vector<InputStreamDesc>& inputStreamDescArray, const ProfileLoader::Profile& profile, const float offset)
 {
     addTranscodeStream(inputStreamDescArray, profile, offset);
