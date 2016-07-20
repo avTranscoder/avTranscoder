@@ -129,8 +129,6 @@ public:
 
 private:
     void addRewrapStream(const InputStreamDesc& inputStreamDesc, const float offset);
-
-    void addTranscodeStream(const InputStreamDesc& inputStreamDesc, const float offset);
     void addTranscodeStream(const InputStreamDesc& inputStreamDesc, const ProfileLoader::Profile& profile,
                             const float offset = 0);
 
@@ -139,8 +137,10 @@ private:
      */
     InputFile* addInputFile(const std::string& filename, const int streamIndex, const float offset);
 
-    ProfileLoader::Profile getProfileFromFile(InputFile& inputFile,
-                                              const size_t streamIndex); ///< The function analyses the inputFile
+    /**
+     * @return The profile from the given input. 
+     */
+    ProfileLoader::Profile getProfileFromInput(const InputStreamDesc& inputStreamDesc);
 
     /**
      * @brief Get the duration of the stream, in seconds

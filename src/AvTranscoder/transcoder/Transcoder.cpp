@@ -48,7 +48,10 @@ void Transcoder::addStream(const InputStreamDesc& inputStreamDesc, const std::st
             addRewrapStream(inputStreamDesc, offset);
         // Transcode (transparent for the user)
         else
-            addTranscodeStream(inputStreamDesc, offset);
+        {
+            const ProfileLoader::Profile profile = getProfileFromInput(inputStreamDesc);
+            addStream(inputStreamDesc, profile, offset);
+        }
     }
     // Transcode
     else
@@ -203,24 +206,6 @@ void Transcoder::addRewrapStream(const InputStreamDesc& inputStreamDesc, const f
     _streamTranscoders.push_back(_streamTranscodersAllocated.back());
 }
 
-void Transcoder::addTranscodeStream(const InputStreamDesc& inputStreamDesc, const float offset)
-{
-    // Get profile from input file
-    InputFile inputFile(inputStreamDesc._filename);
-    ProfileLoader::Profile profile = getProfileFromFile(inputFile, inputStreamDesc._streamIndex);
-
-    // override number of channels parameters to manage demultiplexing
-    if(inputStreamDesc.demultiplexing())
-    {
-        // number of channels
-        std::stringstream ss;
-        ss << inputStreamDesc._channelIndexArray.size();
-        profile[constants::avProfileChannel] = ss.str();
-    }
-
-    addTranscodeStream(inputStreamDesc, profile, offset);
-}
-
 void Transcoder::addTranscodeStream(const InputStreamDesc& inputStreamDesc, const ProfileLoader::Profile& profile,
                                     const float offset)
 {
@@ -296,12 +281,14 @@ InputFile* Transcoder::addInputFile(const std::string& filename, const int strea
     return referenceFile;
 }
 
-ProfileLoader::Profile Transcoder::getProfileFromFile(InputFile& inputFile, const size_t streamIndex)
-{
-    const StreamProperties* streamProperties = &inputFile.getProperties().getStreamPropertiesWithIndex(streamIndex);
+ProfileLoader::Profile Transcoder::getProfileFromInput(const InputStreamDesc& inputStreamDesc)
+{    
+    InputFile inputFile(inputStreamDesc._filename);
+
+    const StreamProperties* streamProperties = &inputFile.getProperties().getStreamPropertiesWithIndex(inputStreamDesc._streamIndex);
     const VideoProperties* videoProperties = NULL;
     const AudioProperties* audioProperties = NULL;
-    switch(inputFile.getStream(streamIndex).getProperties().getStreamType())
+    switch(inputFile.getStream(inputStreamDesc._streamIndex).getProperties().getStreamType())
     {
         case AVMEDIA_TYPE_VIDEO:
         {
@@ -343,9 +330,18 @@ ProfileLoader::Profile Transcoder::getProfileFromFile(InputFile& inputFile, cons
         std::stringstream ss;
         ss << audioProperties->getSampleRate();
         profile[constants::avProfileSampleRate] = ss.str();
-        ss.str("");
-        ss << audioProperties->getNbChannels();
-        profile[constants::avProfileChannel] = ss.str();
+        ss.str(""); 
+        // override number of channels parameters to manage demultiplexing
+        if(inputStreamDesc.demultiplexing())
+        {
+            ss << inputStreamDesc._channelIndexArray.size();
+            profile[constants::avProfileChannel] = ss.str();
+        }
+        else
+        {
+            ss << audioProperties->getNbChannels();
+            profile[constants::avProfileChannel] = ss.str();
+        }
     }
 
     return profile;
