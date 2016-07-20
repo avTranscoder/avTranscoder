@@ -65,7 +65,7 @@ public:
     //@}
 
     /**
-     * @brief Get the total duration (in seconds), ie. duration of the stream and the offset applies
+     * @brief Get the total duration (in seconds), ie. duration of the shortest input stream and the offset applies
      * @note if it's a generated stream, return limit of double.
      * @note if offset > duration of the stream, return 0
      */
@@ -83,7 +83,7 @@ public:
     FilterGraph* getFilterGraph() const { return _filterGraph; }
 
     /// Returns a pointer to the stream which unwraps data
-    IInputStream* getCurrentInputStream() const { return _currentInputStream; }
+    std::vector<IInputStream*> getInputStreams() const { return _inputStreams; }
     /// Returns a reference to the stream which wraps data
     IOutputStream& getOutputStream() const { return *_outputStream; }
 
@@ -124,7 +124,6 @@ private:
 private:
     std::vector<InputStreamDesc> _inputStreamDesc; ///< Description of the data to extract from the input stream.
     std::vector<IInputStream*> _inputStreams;   ///< List of input stream to read next packet (has link, no ownership)
-    IInputStream* _currentInputStream;   ///< Current input stream (has link, no ownership)
     IOutputStream* _outputStream; ///< Output stream to wrap next packet (has link, no ownership)
 
     std::vector<Frame> _decodedData; ///< List of buffers of decoded data.
