@@ -57,7 +57,7 @@ bool AudioGenerator::decodeNextFrame(Frame& frameBuffer)
             _silent->setNbSamplesPerChannel(frameBuffer.getAVFrame().nb_samples);
         }
         LOG_DEBUG("Copy data of the silence when decode next frame")
-        frameBuffer.copyData(*_silent);
+        frameBuffer.refFrame(*_silent);
     }
     // Take audio frame from _inputFrame
     else
