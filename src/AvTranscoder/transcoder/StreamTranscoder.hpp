@@ -118,6 +118,13 @@ public:
     //@}
 
 private:
+    /**
+     * @brief Create the decoder (and the other related objects needed) which decodes the given input stream.
+     * @param inputStreamDesc
+     * @param inputStream
+     */
+    void addDecoder(const InputStreamDesc& inputStreamDesc, IInputStream& inputStream);
+
     bool processRewrap();
     bool processTranscode();
 

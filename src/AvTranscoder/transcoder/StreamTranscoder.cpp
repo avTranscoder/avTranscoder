@@ -145,6 +145,8 @@ StreamTranscoder::StreamTranscoder(const InputStreamDesc& inputStreamDesc, IInpu
     _inputStreamDesc.push_back(inputStreamDesc);
     _inputStreams.push_back(&inputStream);
 
+    addDecoder(inputStreamDesc, inputStream);
+
     // create a transcode case
     switch(inputStream.getProperties().getStreamType())
     {
@@ -152,12 +154,6 @@ StreamTranscoder::StreamTranscoder(const InputStreamDesc& inputStreamDesc, IInpu
         {
             // filter
             _filterGraph = new FilterGraph(inputStream.getVideoCodec());
-
-            // input decoder
-            VideoDecoder* inputVideo = new VideoDecoder(*static_cast<InputStream*>(&inputStream));
-            inputVideo->setupDecoder();
-            _inputDecoders.push_back(inputVideo);
-            _currentDecoder = inputVideo;
 
             // output encoder
             VideoEncoder* outputVideo = new VideoEncoder(profile.at(constants::avProfileCodec));
@@ -171,15 +167,11 @@ StreamTranscoder::StreamTranscoder(const InputStreamDesc& inputStreamDesc, IInpu
             _outputStream = &outputFile.addVideoStream(outputVideo->getVideoCodec());
 
             // buffers to process
-            _decodedData.push_back(VideoFrame(inputStream.getVideoCodec().getVideoFrameDesc()));
             _filteredData = VideoFrame(inputStream.getVideoCodec().getVideoFrameDesc());
             _transformedData = VideoFrame(outputVideo->getVideoCodec().getVideoFrameDesc());
 
             // transform
             _transform = new VideoTransform();
-
-            // generator decoder
-            _generators.push_back(new VideoGenerator());
 
             break;
         }
@@ -187,12 +179,6 @@ StreamTranscoder::StreamTranscoder(const InputStreamDesc& inputStreamDesc, IInpu
         {
             // filter
             _filterGraph = new FilterGraph(inputStream.getAudioCodec());
-
-            // input decoder
-            AudioDecoder* inputAudio = new AudioDecoder(*static_cast<InputStream*>(&inputStream));
-            inputAudio->setupDecoder();
-            _inputDecoders.push_back(inputAudio);
-            _currentDecoder = inputAudio;
 
             // output encoder
             AudioEncoder* outputAudio = new AudioEncoder(profile.at(constants::avProfileCodec));
@@ -212,15 +198,11 @@ StreamTranscoder::StreamTranscoder(const InputStreamDesc& inputStreamDesc, IInpu
             if(inputStreamDesc.demultiplexing())
                 inputFrameDesc._nbChannels = inputStreamDesc._channelIndexArray.size();
 
-            _decodedData.push_back(AudioFrame(inputFrameDesc));
             _filteredData = AudioFrame(inputFrameDesc);
             _transformedData = AudioFrame(outputAudio->getAudioCodec().getAudioFrameDesc());
 
             // transform
             _transform = new AudioTransform();
-
-            // generator decoder
-            _generators.push_back(new AudioGenerator());
 
             break;
         }
@@ -231,6 +213,55 @@ StreamTranscoder::StreamTranscoder(const InputStreamDesc& inputStreamDesc, IInpu
         }
     }
     setOffset(offset);
+}
+
+void StreamTranscoder::addDecoder(const InputStreamDesc& inputStreamDesc, IInputStream& inputStream)
+{
+    // create a transcode case
+    switch(inputStream.getProperties().getStreamType())
+    {
+        case AVMEDIA_TYPE_VIDEO:
+        {
+            // corresponding input decoder
+            VideoDecoder* inputVideo = new VideoDecoder(static_cast<InputStream&>(inputStream));
+            inputVideo->setupDecoder();
+            _inputDecoders.push_back(inputVideo);
+            _currentDecoder = inputVideo;
+
+            // generator decoder
+            _generators.push_back(new VideoGenerator());
+
+            // buffers to process
+            _decodedData.push_back(VideoFrame(inputStream.getVideoCodec().getVideoFrameDesc()));
+
+            break;
+        }
+        case AVMEDIA_TYPE_AUDIO:
+        {
+            // corresponding input decoder
+            AudioDecoder* inputAudio = new AudioDecoder(static_cast<InputStream&>(inputStream));
+            inputAudio->setupDecoder();
+            _inputDecoders.push_back(inputAudio);
+            _currentDecoder = inputAudio;
+
+            // generator decoder
+            _generators.push_back(new AudioGenerator());
+
+            // buffers to process
+            AudioFrameDesc inputFrameDesc(inputStream.getAudioCodec().getAudioFrameDesc());
+            if(inputStreamDesc.demultiplexing())
+                inputFrameDesc._nbChannels = inputStreamDesc._channelIndexArray.size();
+
+            _decodedData.push_back(AudioFrame(inputFrameDesc));
+
+            break;
+        }
+        default:
+        {
+            throw std::runtime_error("Unupported stream type");
+            break;
+        }
+    }
 }
 
 StreamTranscoder::StreamTranscoder(IOutputFile& outputFile, const ProfileLoader::Profile& profile)
