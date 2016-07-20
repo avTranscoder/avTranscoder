@@ -9,18 +9,6 @@
 #include <sstream>
 #include <cstdlib>
 
-static const size_t dummyWidth = 1920;
-static const size_t dummyHeight = 1080;
-static const std::string dummyPixelFormat = "yuv420p";
-static const std::string dummyVideoCodec = "mpeg2video";
-
-static const size_t dummySampleRate = 48000;
-static const size_t dummyChannels = 1;
-static const std::string dummySampleFormat = "s16";
-static const std::string dummyAudioCodec = "pcm_s16le";
-
-static bool useVideoGenerator = false;
-
 void parseConfigFile(const std::string& configFilename, avtranscoder::Transcoder& transcoder)
 {
     std::ifstream configFile(configFilename.c_str(), std::ifstream::in);
@@ -41,37 +29,23 @@ void parseConfigFile(const std::string& configFilename, avtranscoder::Transcoder
                 std::stringstream ss(streamId);
                 size_t streamIndex = 0;
                 char separator;
-                int subStreamIndex = -1;
+                std::vector<size_t> channelIndexArray;
                 ss >> streamIndex;
                 ss >> separator;
                 if(separator == '.')
-                    ss >> subStreamIndex;
-
-                // dummy stream, need a ICodec (audio or video)
-                if(!filename.length())
                 {
-                    if(useVideoGenerator)
-                    {
-                        // video
-                        avtranscoder::VideoCodec inputCodec(avtranscoder::eCodecTypeEncoder, dummyVideoCodec);
-                        avtranscoder::VideoFrameDesc imageDesc(dummyWidth, dummyHeight, dummyPixelFormat);
-                        inputCodec.setImageParameters(imageDesc);
-
-                        transcoder.add(filename, streamIndex, subStreamIndex, transcodeProfile, inputCodec);
-                    }
-                    else
-                    {
-                        // audio
-                        avtranscoder::AudioCodec inputCodec(avtranscoder::eCodecTypeEncoder, dummyAudioCodec);
-                        avtranscoder::AudioFrameDesc audioDesc(dummySampleRate, dummyChannels, dummySampleFormat);
-                        inputCodec.setAudioParameters(audioDesc);
-
-                        transcoder.add(filename, streamIndex, subStreamIndex, transcodeProfile, inputCodec);
-                    }
+                    int subStreamIndex = -1;
+                    ss >> subStreamIndex;
+                    channelIndexArray.push_back(subStreamIndex);
                 }
+
+                // generated stream
+                if(!filename.length())
+                    transcoder.addGenerateStream(transcodeProfile);
                 else
                 {
-                    transcoder.add(filename, streamIndex, subStreamIndex, transcodeProfile);
+                    avtranscoder::InputStreamDesc inputDesc(filename, streamIndex, channelIndexArray);
+                    transcoder.addStream(inputDesc, transcodeProfile);
                 }
             }
         }
@@ -93,8 +67,6 @@ int main(int argc, char** argv)
     help += "\tNo subStreamId: will process of channels of the stream\n";
     help += "\tNo profileName: will rewrap the stream\n";
     help += "Command line options\n";
-    help += "\t--generate-black: stream which not referred to an input, will generate an output video stream with black "
-            "images (by default generate audio stream with silence)\n";
     help += "\t--verbose: set log level to AV_LOG_DEBUG\n";
     help += "\t--logFile: put log in 'avtranscoder.log' file\n";
     help += "\t--help: display this help\n";
@@ -115,10 +87,6 @@ int main(int argc, char** argv)
         {
             std::cout << help << std::endl;
             return 0;
-        }
-        else if(arguments.at(argument) == "--generate-black")
-        {
-            useVideoGenerator = true;
         }
         else if(arguments.at(argument) == "--verbose")
         {

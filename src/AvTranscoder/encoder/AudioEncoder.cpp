@@ -139,5 +139,4 @@ bool AudioEncoder::encode(const AVFrame* decodedData, AVPacket& encodedData)
     return true;
 #endif
 }
-
 }

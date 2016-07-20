@@ -34,7 +34,8 @@ bool AudioGenerator::decodeNextFrame(Frame& frameBuffer)
     if(frameBuffer.getAVFrame().channel_layout == 0)
     {
         const size_t channelLayout = av_get_default_channel_layout(frameBuffer.getAVFrame().channels);
-        LOG_WARN("Channel layout en the audio frame is not set. Set it to '" << channelLayout << "' to be able to copy silence data.")
+        LOG_WARN("Channel layout en the audio frame is not set. Set it to '" << channelLayout
+                                                                             << "' to be able to copy silence data.")
         av_frame_set_channel_layout(&frameBuffer.getAVFrame(), channelLayout);
     }
 
@@ -71,7 +72,7 @@ bool AudioGenerator::decodeNextFrame(Frame& frameBuffer)
     return true;
 }
 
-bool AudioGenerator::decodeNextFrame(Frame& frameBuffer, const size_t subStreamIndex)
+bool AudioGenerator::decodeNextFrame(Frame& frameBuffer, const std::vector<size_t> channelIndexArray)
 {
     return decodeNextFrame(frameBuffer);
 }

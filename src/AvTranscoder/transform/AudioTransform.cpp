@@ -55,8 +55,8 @@ bool AudioTransform::init(const Frame& srcFrame, const Frame& dstFrame)
     const AudioFrame& src = static_cast<const AudioFrame&>(srcFrame);
     const AudioFrame& dst = static_cast<const AudioFrame&>(dstFrame);
 
-    av_opt_set_int(_audioConvertContext, "in_channel_layout", av_get_default_channel_layout(src.getNbChannels()), 0);
-    av_opt_set_int(_audioConvertContext, "out_channel_layout", av_get_default_channel_layout(dst.getNbChannels()), 0);
+    av_opt_set_int(_audioConvertContext, "in_channel_layout", src.getChannelLayout(), 0);
+    av_opt_set_int(_audioConvertContext, "out_channel_layout", dst.getChannelLayout(), 0);
     av_opt_set_int(_audioConvertContext, "in_sample_rate", src.getSampleRate(), 0);
     av_opt_set_int(_audioConvertContext, "out_sample_rate", dst.getSampleRate(), 0);
     SetSampleFormat(_audioConvertContext, "in_sample_fmt", src.getSampleFormat(), 0);
@@ -67,8 +67,8 @@ bool AudioTransform::init(const Frame& srcFrame, const Frame& dstFrame)
         FreeResampleContext(&_audioConvertContext);
         std::stringstream msg;
         msg << "Unable to open audio convert context:" << std::endl;
-        msg << "in_channel_layout " << av_get_default_channel_layout(src.getNbChannels()) << std::endl;
-        msg << "out_channel_layout " << av_get_default_channel_layout(dst.getNbChannels()) << std::endl;
+        msg << "in_channel_layout " << src.getChannelLayoutDesc() << std::endl;
+        msg << "out_channel_layout " << dst.getChannelLayoutDesc() << std::endl;
         msg << "in_sample_rate " << src.getSampleRate() << std::endl;
         msg << "out_sample_rate " << dst.getSampleRate() << std::endl;
         msg << "in_sample_fmt " << src.getSampleFormat() << std::endl;
@@ -80,8 +80,10 @@ bool AudioTransform::init(const Frame& srcFrame, const Frame& dstFrame)
     msg << "Audio conversion from " << getSampleFormatName(src.getSampleFormat()) << " to "
         << getSampleFormatName(dst.getSampleFormat()) << std::endl;
     msg << "Source, number of channels = " << src.getNbChannels() << std::endl;
+    msg << "Source, channel layout = " << src.getChannelLayoutDesc() << std::endl;
     msg << "Source, sample rate = " << src.getSampleRate() << std::endl;
     msg << "Destination, number of channels = " << dst.getNbChannels() << std::endl;
+    msg << "Destination, channel layout = " << dst.getChannelLayoutDesc() << std::endl;
     msg << "Destination, sample rate = " << dst.getSampleRate() << std::endl;
     LOG_INFO(msg.str())
 

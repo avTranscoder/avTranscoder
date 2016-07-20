@@ -73,7 +73,11 @@ Frame* IReader::readFrameAt(const size_t frame)
     // decode
     bool decodingStatus = false;
     if(_channelIndex != -1)
-        decodingStatus = _currentDecoder->decodeNextFrame(*_srcFrame, _channelIndex);
+    {
+        std::vector<size_t> channelIndexArray;
+        channelIndexArray.push_back(_channelIndex);
+        decodingStatus = _currentDecoder->decodeNextFrame(*_srcFrame, channelIndexArray);
+    }
     else
         decodingStatus = _currentDecoder->decodeNextFrame(*_srcFrame);
     // if decoding failed

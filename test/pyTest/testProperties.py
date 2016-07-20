@@ -21,13 +21,14 @@ def testAddPossibleMetadata():
     """
     Add metadata 'date' to the outputFile.
     """
+    inputFileName = os.environ['AVTRANSCODER_TEST_AUDIO_WAVE_FILE']
     outputFileName = "testAddMetadataDate.wav"
 
     ouputFile = av.OutputFile( outputFileName )
     transcoder = av.Transcoder( ouputFile )
 
     # rewrap a stream
-    transcoder.add( os.environ['AVTRANSCODER_TEST_AUDIO_WAVE_FILE'], 0, "")
+    transcoder.addStream( av.InputStreamDesc(inputFileName, 0) )
 
     # add a set of metadata
     metadata_to_check = av.PropertyVector()
@@ -49,13 +50,14 @@ def testAddImpossibleMetadata():
     """
     Can't add an impossible metadata to the outputFile.
     """
+    inputFileName = os.environ['AVTRANSCODER_TEST_AUDIO_WAVE_FILE']
     outputFileName = "testAddMetadataPlop.wav"
 
     ouputFile = av.OutputFile( outputFileName )
     transcoder = av.Transcoder( ouputFile )
 
     # rewrap a stream
-    transcoder.add( os.environ['AVTRANSCODER_TEST_AUDIO_WAVE_FILE'], 0, "")
+    transcoder.addStream( av.InputStreamDesc(inputFileName, 0) )
 
     # add one metadata
     metadata_to_check = ("undefinedMetadataKey", "undefinedMetadataValue")

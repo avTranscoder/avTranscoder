@@ -137,8 +137,8 @@ private:
     bool _isInterlaced;
     bool _isTopFieldFirst;
     size_t _gopSize;
-    std::vector<std::pair<char, int> > _gopStructure;  ///< picture type, encoded frame size in bytes
-    //@}
+    std::vector<std::pair<char, int> > _gopStructure; ///< picture type, encoded frame size in bytes
+                                                      //@}
 
     /**
      * @brief GOP timecode of the first frame

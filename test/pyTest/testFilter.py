@@ -65,7 +65,7 @@ def testVideoTranscodeWithFilter():
     customProfile[av.avProfileType] = av.avProfileTypeVideo
     customProfile[av.avProfileCodec] = "mpeg2video"
     customProfile[av.avProfilePixelFormat] = "yuv420p"
-    transcoder.add( inputFileName, videoStreamIndex, customProfile )
+    transcoder.addStream( av.InputStreamDesc(inputFileName, videoStreamIndex), customProfile )
 
     # add yadif filter
     streamTranscoder = transcoder.getStreamTranscoder(0)
@@ -104,7 +104,7 @@ def testAudioTranscodeWithFilter():
 
     # transcode the video stream
     audioStreamIndex = src_audioStream.getStreamIndex()
-    transcoder.add( inputFileName, audioStreamIndex, "wave24b48kmono" )
+    transcoder.addStream( av.InputStreamDesc(inputFileName, audioStreamIndex), "wave24b48kmono" )
 
     # add volume filter (here +150% of current volume)
     streamTranscoder = transcoder.getStreamTranscoder(0)

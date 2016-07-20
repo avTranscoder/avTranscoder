@@ -116,18 +116,20 @@ bool AudioDecoder::decodeNextFrame(Frame& frameBuffer)
     return decodeNextFrame;
 }
 
-bool AudioDecoder::decodeNextFrame(Frame& frameBuffer, const size_t channelIndex)
+bool AudioDecoder::decodeNextFrame(Frame& frameBuffer, const std::vector<size_t> channelIndexArray)
 {
-    AudioFrame& audioBuffer = static_cast<AudioFrame&>(frameBuffer);
-
-    // decode all data of the next frame
-    AudioFrame allDataOfNextFrame(audioBuffer);
-    if(!decodeNextFrame(allDataOfNextFrame))
-        return false;
-
     AVCodecContext& avCodecContext = _inputStream->getAudioCodec().getAVCodecContext();
     const size_t srcNbChannels = avCodecContext.channels;
     const size_t bytePerSample = av_get_bytes_per_sample((AVSampleFormat)frameBuffer.getAVFrame().format);
+
+    // if all channels of the stream are extracted
+    if(srcNbChannels == channelIndexArray.size())
+        return decodeNextFrame(frameBuffer);
+
+    // else decode all data in an intermediate buffer
+    AudioFrame allDataOfNextFrame(frameBuffer);
+    if(!decodeNextFrame(allDataOfNextFrame))
+        return false;
 
     const int dstNbChannels = 1;
     const int noAlignment = 0;
@@ -136,37 +138,54 @@ bool AudioDecoder::decodeNextFrame(Frame& frameBuffer, const size_t channelIndex
     if(decodedSize == 0)
         return false;
 
-    // check if the expected channel exists
-    if(channelIndex > srcNbChannels - 1)
+    // check if each expected channel exists
+    for(std::vector<size_t>::const_iterator channelIndex = channelIndexArray.begin();
+        channelIndex != channelIndexArray.end(); ++channelIndex)
     {
-        std::stringstream msg;
-        msg << "The channel at index ";
-        msg << channelIndex;
-        msg << " doesn't exist (srcNbChannels = ";
-        msg << srcNbChannels;
-        msg << ").";
-        throw std::runtime_error(msg.str());
+        if((*channelIndex) > srcNbChannels - 1)
+        {
+            std::stringstream msg;
+            msg << "The channel at index ";
+            msg << (*channelIndex);
+            msg << " doesn't exist (srcNbChannels = ";
+            msg << srcNbChannels;
+            msg << ").";
+            throw std::runtime_error(msg.str());
+        }
     }
 
     // copy frame properties of decoded frame
+    AudioFrame& audioBuffer = static_cast<AudioFrame&>(frameBuffer);
     audioBuffer.copyProperties(allDataOfNextFrame);
-    av_frame_set_channels(&audioBuffer.getAVFrame(), 1);
-    av_frame_set_channel_layout(&audioBuffer.getAVFrame(), AV_CH_LAYOUT_MONO);
+    av_frame_set_channels(&audioBuffer.getAVFrame(), channelIndexArray.size());
+    av_frame_set_channel_layout(&audioBuffer.getAVFrame(), av_get_default_channel_layout(channelIndexArray.size()));
     audioBuffer.setNbSamplesPerChannel(allDataOfNextFrame.getNbSamplesPerChannel());
 
     // @todo manage cases with data of frame not only on data[0] (use _frame.linesize)
     unsigned char* src = allDataOfNextFrame.getData()[0];
     unsigned char* dst = audioBuffer.getData()[0];
 
-    // offset
-    src += channelIndex * bytePerSample;
-
-    // extract one channel
-    for(int sample = 0; sample < allDataOfNextFrame.getAVFrame().nb_samples; ++sample)
+    // extract one or more channels
+    for(size_t sample = 0; sample < allDataOfNextFrame.getNbSamplesPerChannel(); ++sample)
     {
-        memcpy(dst, src, bytePerSample);
-        dst += bytePerSample;
-        src += bytePerSample * srcNbChannels;
+        // offset in source buffer
+        src += channelIndexArray.at(0) * bytePerSample;
+
+        for(size_t i = 0; i < channelIndexArray.size(); ++i)
+        {
+            memcpy(dst, src, bytePerSample);
+            dst += bytePerSample;
+
+            // shift to the corresponding sample in the next channel of the current layout
+            if(i < channelIndexArray.size() - 1)
+                src += (channelIndexArray.at(i + 1) - channelIndexArray.at(i)) * bytePerSample;
+            // else shift to the next layout
+            else
+            {
+                src += (srcNbChannels - channelIndexArray.at(i)) * bytePerSample;
+                break;
+            }
+        }
     }
 
     return true;

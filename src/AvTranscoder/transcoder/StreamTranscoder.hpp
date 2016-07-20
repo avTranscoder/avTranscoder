@@ -3,6 +3,8 @@
 
 #include <AvTranscoder/common.hpp>
 
+#include <AvTranscoder/transcoder/InputStreamDesc.hpp>
+
 #include <AvTranscoder/stream/IInputStream.hpp>
 #include <AvTranscoder/stream/IOutputStream.hpp>
 
@@ -26,22 +28,20 @@ private:
 
 public:
     /**
-     * @brief rewrap stream
-     * @note offset feature when rewrap a stream is not supported
+     * @brief Rewrap the given stream.
      **/
     StreamTranscoder(IInputStream& inputStream, IOutputFile& outputFile, const float offset = 0);
 
     /**
-     * @brief transcode stream
+     * @brief Transcode the given stream.
      **/
-    StreamTranscoder(IInputStream& inputStream, IOutputFile& outputFile, const ProfileLoader::Profile& profile,
-                     const int subStreamIndex = -1, const float offset = 0);
+    StreamTranscoder(const InputStreamDesc& inputStreamDesc, IInputStream& inputStream, IOutputFile& outputFile, 
+                     const ProfileLoader::Profile& profile, const float offset = 0);
 
     /**
-     * @brief encode from a generated stream
-     * @note offset feature has no sense here
+     * @brief Encode a generated stream
      **/
-    StreamTranscoder(const ICodec& inputCodec, IOutputFile& outputFile, const ProfileLoader::Profile& profile);
+    StreamTranscoder(IOutputFile& outputFile, const ProfileLoader::Profile& profile);
 
     ~StreamTranscoder();
 
@@ -119,7 +119,7 @@ public:
 
 private:
     bool processRewrap();
-    bool processTranscode(const int subStreamIndex = -1); ///< By default transcode all channels
+    bool processTranscode();
 
 private:
     IInputStream* _inputStream;   ///< Input stream to read next packet (has link, no ownership)
@@ -137,7 +137,7 @@ private:
 
     FilterGraph* _filterGraph; ///< Filter graph (has ownership)
 
-    int _subStreamIndex; ///< Index of channel that is processed from the input stream (<0 if no demultiplexing).
+    const InputStreamDesc _inputStreamDesc; ///< Description of the data to extract from the input stream.
 
     float _offset; ///< Offset, in seconds, at the beginning of the StreamTranscoder.
 

@@ -339,7 +339,7 @@ size_t VideoProperties::getBitRate() const
     if(!_codecContext->width || !_codecContext->height)
         throw std::runtime_error("cannot compute bit rate: invalid frame size");
 
-     // discard no frame type when decode
+    // discard no frame type when decode
     _codecContext->skip_frame = AVDISCARD_NONE;
 
     Frame frame;
@@ -421,7 +421,8 @@ size_t VideoProperties::getNbFrames() const
     size_t nbFrames = _formatContext->streams[_streamIndex]->nb_frames;
     if(nbFrames == 0)
     {
-        LOG_WARN("The number of frames in the stream '" << _streamIndex << "' of file '" << _formatContext->filename << "' is unknown.")
+        LOG_WARN("The number of frames in the stream '" << _streamIndex << "' of file '" << _formatContext->filename
+                                                        << "' is unknown.")
         const float duration = getDuration();
         if(duration != 0)
         {
@@ -667,7 +668,7 @@ PropertyVector& VideoProperties::fillVector(PropertyVector& data) const
         {
             gop << _gopStructure.at(frameIndex).first;
             gop << "(";
-            gop << _gopStructure.at(frameIndex).second;;
+            gop << _gopStructure.at(frameIndex).second;
             gop << ")";
             gop << " ";
         }

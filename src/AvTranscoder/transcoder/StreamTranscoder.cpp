@@ -1,4 +1,3 @@
-
 #include "StreamTranscoder.hpp"
 
 #include <AvTranscoder/stream/InputStream.hpp>
@@ -31,7 +30,7 @@ StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outpu
     , _outputEncoder(NULL)
     , _transform(NULL)
     , _filterGraph(NULL)
-    , _subStreamIndex(-1)
+    , _inputStreamDesc()
     , _offset(offset)
     , _needToSwitchToGenerator(false)
 {
@@ -121,8 +120,8 @@ StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outpu
     setOffset(offset);
 }
 
-StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outputFile, const ProfileLoader::Profile& profile,
-                                   const int subStreamIndex, const float offset)
+StreamTranscoder::StreamTranscoder(const InputStreamDesc& inputStreamDesc, IInputStream& inputStream, IOutputFile& outputFile,
+                                   const ProfileLoader::Profile& profile, const float offset)
     : _inputStream(&inputStream)
     , _outputStream(NULL)
     , _sourceBuffer(NULL)
@@ -133,7 +132,7 @@ StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outpu
     , _outputEncoder(NULL)
     , _transform(NULL)
     , _filterGraph(NULL)
-    , _subStreamIndex(subStreamIndex)
+    , _inputStreamDesc(inputStreamDesc)
     , _offset(offset)
     , _needToSwitchToGenerator(false)
 {
@@ -191,11 +190,8 @@ StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outpu
 
             AudioFrameDesc outputFrameDesc(_inputStream->getAudioCodec().getAudioFrameDesc());
             outputFrameDesc.setParameters(profile);
-            if(subStreamIndex > -1)
-            {
-                // @todo manage downmix ?
-                outputFrameDesc._nbChannels = 1;
-            }
+            if(_inputStreamDesc.demultiplexing())
+                outputFrameDesc._nbChannels = _inputStreamDesc._channelIndexArray.size();
             outputAudio->setupAudioEncoder(outputFrameDesc, profile);
 
             // output stream
@@ -203,8 +199,8 @@ StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outpu
 
             // buffers to process
             AudioFrameDesc inputFrameDesc(_inputStream->getAudioCodec().getAudioFrameDesc());
-            if(subStreamIndex > -1)
-                inputFrameDesc._nbChannels = 1;
+            if(_inputStreamDesc.demultiplexing())
+                inputFrameDesc._nbChannels = _inputStreamDesc._channelIndexArray.size();
 
             _sourceBuffer = new AudioFrame(inputFrameDesc);
             _frameBuffer = new AudioFrame(outputAudio->getAudioCodec().getAudioFrameDesc());
@@ -226,7 +222,7 @@ StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outpu
     setOffset(offset);
 }
 
-StreamTranscoder::StreamTranscoder(const ICodec& inputCodec, IOutputFile& outputFile, const ProfileLoader::Profile& profile)
+StreamTranscoder::StreamTranscoder(IOutputFile& outputFile, const ProfileLoader::Profile& profile)
     : _inputStream(NULL)
     , _outputStream(NULL)
     , _sourceBuffer(NULL)
@@ -237,13 +233,17 @@ StreamTranscoder::StreamTranscoder(const ICodec& inputCodec, IOutputFile& output
     , _outputEncoder(NULL)
     , _transform(NULL)
     , _filterGraph(NULL)
-    , _subStreamIndex(-1)
+    , _inputStreamDesc()
     , _offset(0)
     , _needToSwitchToGenerator(false)
 {
     if(profile.find(constants::avProfileType)->second == constants::avProfileTypeVideo)
     {
-        const VideoCodec& inputVideoCodec = static_cast<const VideoCodec&>(inputCodec);
+        VideoCodec inputVideoCodec(eCodecTypeEncoder, profile.find(constants::avProfileCodec)->second);
+        VideoFrameDesc inputFrameDesc;
+        inputFrameDesc.setParameters(profile);
+        inputVideoCodec.setImageParameters(inputFrameDesc);
+
         // generator decoder
         _generator = new VideoGenerator(inputVideoCodec.getVideoFrameDesc());
         _currentDecoder = _generator;
@@ -252,7 +252,6 @@ StreamTranscoder::StreamTranscoder(const ICodec& inputCodec, IOutputFile& output
         _filterGraph = new FilterGraph(inputVideoCodec);
 
         // buffers to process
-        VideoFrameDesc inputFrameDesc = inputVideoCodec.getVideoFrameDesc();
         VideoFrameDesc outputFrameDesc = inputFrameDesc;
         outputFrameDesc.setParameters(profile);
         _sourceBuffer = new VideoFrame(inputFrameDesc);
@@ -271,7 +270,11 @@ StreamTranscoder::StreamTranscoder(const ICodec& inputCodec, IOutputFile& output
     }
     else if(profile.find(constants::avProfileType)->second == constants::avProfileTypeAudio)
     {
-        const AudioCodec& inputAudioCodec = static_cast<const AudioCodec&>(inputCodec);
+        AudioCodec inputAudioCodec(eCodecTypeEncoder, profile.find(constants::avProfileCodec)->second);
+        AudioFrameDesc inputFrameDesc;
+        inputFrameDesc.setParameters(profile);
+        inputAudioCodec.setAudioParameters(inputFrameDesc);
+
         // generator decoder
         _generator = new AudioGenerator(inputAudioCodec.getAudioFrameDesc());
         _currentDecoder = _generator;
@@ -280,7 +283,6 @@ StreamTranscoder::StreamTranscoder(const ICodec& inputCodec, IOutputFile& output
         _filterGraph = new FilterGraph(inputAudioCodec);
 
         // buffers to process
-        AudioFrameDesc inputFrameDesc = inputAudioCodec.getAudioFrameDesc();
         AudioFrameDesc outputFrameDesc = inputFrameDesc;
         outputFrameDesc.setParameters(profile);
         _sourceBuffer = new AudioFrame(inputFrameDesc);
@@ -407,7 +409,7 @@ bool StreamTranscoder::processFrame()
 
     if(getProcessCase() == eProcessCaseRewrap)
         return processRewrap();
-    return processTranscode(_subStreamIndex);
+    return processTranscode();
 }
 
 bool StreamTranscoder::processRewrap()
@@ -450,7 +452,7 @@ bool StreamTranscoder::processRewrap()
     return true;
 }
 
-bool StreamTranscoder::processTranscode(const int subStreamIndex)
+bool StreamTranscoder::processTranscode()
 {
     assert(_outputStream != NULL);
     assert(_currentDecoder != NULL);
@@ -463,10 +465,10 @@ bool StreamTranscoder::processTranscode(const int subStreamIndex)
 
     LOG_DEBUG("Decode next frame")
     bool decodingStatus = false;
-    if(subStreamIndex < 0)
-        decodingStatus = _currentDecoder->decodeNextFrame(*_sourceBuffer);
+    if(_inputStreamDesc.demultiplexing())
+        decodingStatus = _currentDecoder->decodeNextFrame(*_sourceBuffer, _inputStreamDesc._channelIndexArray);
     else
-        decodingStatus = _currentDecoder->decodeNextFrame(*_sourceBuffer, subStreamIndex);
+        decodingStatus = _currentDecoder->decodeNextFrame(*_sourceBuffer);
 
     CodedData data;
     if(decodingStatus)
@@ -557,10 +559,9 @@ void StreamTranscoder::needToSwitchToGenerator(const bool needToSwitch)
     if(needToSwitch && !canSwitchToGenerator())
     {
         std::stringstream os;
-        LOG_WARN("The stream " << _inputStream->getStreamIndex() << " has a duration of " << getDuration()
-                               << "s. It needs to switch to a generator during the process, but it cannot. "
-                               << "No generator will be used for this stream.")
-        return;
+        os << "The stream at index " << _inputStream->getStreamIndex() << " has a duration of " << getDuration() << "s.";
+        os << " It needs to switch to a generator during the process, but it cannot. ";
+        throw std::runtime_error(os.str());
     }
     _needToSwitchToGenerator = needToSwitch;
 }
