@@ -22,10 +22,11 @@ public:
      */
     Frame();
 
-    /**
-     * @brief Copy properties and reference data of the other frame
-     */
+    //@{
+    // @brief Copy properties and reference data of the other frame.
     Frame(const Frame& otherFrame);
+    void operator=(const Frame& otherFrame);
+    //@}
 
     virtual ~Frame();
 

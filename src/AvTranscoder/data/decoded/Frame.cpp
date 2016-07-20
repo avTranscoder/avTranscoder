@@ -23,6 +23,15 @@ Frame::Frame(const Frame& otherFrame)
     refFrame(otherFrame);
 }
 
+void Frame::operator=(const Frame& otherFrame)
+{
+    // check if the frame could be a valid video/audio frame
+    if(otherFrame.getAVFrame().format == -1)
+        return;
+    // reference the other frame
+    refFrame(otherFrame);
+}
+
 Frame::~Frame()
 {
     if(_frame != NULL)
