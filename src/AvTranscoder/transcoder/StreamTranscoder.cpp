@@ -528,10 +528,12 @@ bool StreamTranscoder::processTranscode()
 
     LOG_DEBUG("Decode next frame")
     bool decodingStatus = true;
-    for(size_t index = 0; index < _inputDecoders.size(); ++index)
+    for(size_t index = 0; index < _generators.size(); ++index)
     {
         if(getProcessCase() == eProcessCaseTranscode)
             _currentDecoder = _inputDecoders.at(index);
+        else
+            _currentDecoder = _generators.at(index);
 
         if(! _inputStreamDesc.empty() && _inputStreamDesc.at(index).demultiplexing())
             decodingStatus = decodingStatus && _currentDecoder->decodeNextFrame(*_decodedData.at(index), _inputStreamDesc.at(index)._channelIndexArray);
