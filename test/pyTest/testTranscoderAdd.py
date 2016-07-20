@@ -51,3 +51,43 @@ def testAddAllStreamsOfFileWhichDoesNotExist():
 
     # process
     transcoder.process()
+
+
+def testAddSeveralInputsToCreateOneOutput():
+    """
+    Add several audio inputs and create one output stream.
+    """
+    # inputs
+    inputs = av.InputStreamDescVector()
+    inputFileName = os.environ['AVTRANSCODER_TEST_AUDIO_WAVE_FILE']
+    inputFile = av.InputFile(inputFileName)
+    src_audioStream = inputFile.getProperties().getAudioProperties()[0]
+    src_audioStreamIndex = src_audioStream.getStreamIndex()
+    inputs.append(av.InputStreamDesc(inputFileName, src_audioStreamIndex, (0,1)))
+    inputs.append(av.InputStreamDesc(inputFileName, src_audioStreamIndex, (2,3)))
+    inputs.append(av.InputStreamDesc(inputFileName, src_audioStreamIndex, (4,5)))
+
+    # output
+    outputFileName = "testAddSeveralInputsToCreateOneOutput.mov"
+    ouputFile = av.OutputFile(outputFileName)
+
+    transcoder = av.Transcoder(ouputFile)
+    transcoder.addStream(inputs, "wave24b48kstereo")
+
+    # process
+    processStat = transcoder.process()
+
+    # check process stat returned
+    audioStat = processStat.getAudioStat(0)
+    assert_equals(src_audioStream.getDuration(), audioStat.getDuration())
+
+    # get dst file of transcode
+    dst_inputFile = av.InputFile(outputFileName)
+    dst_properties = dst_inputFile.getProperties()
+    dst_audioStream = dst_properties.getAudioProperties()[0]
+
+    assert_equals( "pcm_s24le", dst_audioStream.getCodecName() )
+    assert_equals( "s32", dst_audioStream.getSampleFormatName() )
+    assert_equals( "signed 32 bits", dst_audioStream.getSampleFormatLongName() )
+    assert_equals( 48000, dst_audioStream.getSampleRate() )
+    assert_equals( 2, dst_audioStream.getNbChannels() )
