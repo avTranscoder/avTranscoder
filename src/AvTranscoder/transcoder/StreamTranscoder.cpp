@@ -188,7 +188,11 @@ StreamTranscoder::StreamTranscoder(const std::vector<InputStreamDesc>& inputStre
             _filterGraph = new FilterGraph(inputStream.getAudioCodec());
             // merge two or more audio streams into a single multi-channel stream.
             if(inputStreams.size() > 1)
-                _filterGraph->addFilter("amerge");
+            {
+                std::stringstream mergeOptions;
+                mergeOptions << "inputs=" << inputStreams.size();
+                _filterGraph->addFilter("amerge", mergeOptions.str());
+            }
 
             // output encoder
             AudioEncoder* outputAudio = new AudioEncoder(profile.at(constants::avProfileCodec));
