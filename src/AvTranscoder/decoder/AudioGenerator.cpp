@@ -3,14 +3,14 @@
 #include <AvTranscoder/util.hpp>
 
 #include <sstream>
+#include <stdexcept>
 
 namespace avtranscoder
 {
 
-AudioGenerator::AudioGenerator(const AudioFrameDesc& frameDesc)
+AudioGenerator::AudioGenerator()
     : _inputFrame(NULL)
     , _silent(NULL)
-    , _frameDesc(frameDesc)
 {
 }
 
@@ -22,12 +22,8 @@ AudioGenerator::~AudioGenerator()
 bool AudioGenerator::decodeNextFrame(Frame& frameBuffer)
 {
     // check the given frame
-    if(!frameBuffer.isAudioFrame())
-    {
-        LOG_WARN("The given frame is not a valid audio frame: allocate a new AVSample to put generated data into it.");
-        frameBuffer.clear();
-        static_cast<AudioFrame&>(frameBuffer).allocateAVSample(_frameDesc);
-    }
+    if(! frameBuffer.isAudioFrame())
+        throw std::runtime_error("The given frame is not a valid audio frame: allocate a new AVSample to put generated data into it.");
 
     // Check channel layout of the given frame to be able to copy audio data to it.
     // @see Frame.copyData method

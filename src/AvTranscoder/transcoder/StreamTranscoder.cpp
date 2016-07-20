@@ -89,7 +89,7 @@ StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outpu
                 AudioFrameDesc inputFrameDesc(inputStream.getAudioCodec().getAudioFrameDesc());
 
                 // generator decoder
-                _generators.push_back(new AudioGenerator(inputFrameDesc));
+                _generators.push_back(new AudioGenerator());
 
                 // buffers to process
                 _decodedData.push_back(AudioFrame(inputFrameDesc));
@@ -220,7 +220,7 @@ StreamTranscoder::StreamTranscoder(const InputStreamDesc& inputStreamDesc, IInpu
             _transform = new AudioTransform();
 
             // generator decoder
-            _generators.push_back(new AudioGenerator(outputFrameDesc));
+            _generators.push_back(new AudioGenerator());
 
             break;
         }
@@ -290,7 +290,7 @@ StreamTranscoder::StreamTranscoder(IOutputFile& outputFile, const ProfileLoader:
         inputAudioCodec.setAudioParameters(inputFrameDesc);
 
         // generator decoder
-        AudioGenerator* generator = new AudioGenerator(inputAudioCodec.getAudioFrameDesc());
+        AudioGenerator* generator = new AudioGenerator();
         _generators.push_back(generator);
         _currentDecoder = generator;
 

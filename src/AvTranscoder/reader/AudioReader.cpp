@@ -45,7 +45,7 @@ void AudioReader::init()
     _currentDecoder = _decoder;
 
     // generator
-    _generator = new AudioGenerator(_inputFile->getStream(_streamIndex).getAudioCodec().getAudioFrameDesc());
+    _generator = new AudioGenerator();
 
     // create transform
     _transform = new AudioTransform();
