@@ -133,9 +133,9 @@ private:
     std::vector<IInputStream*> _inputStreams;   ///< List of input stream to read next packet (has link, no ownership)
     IOutputStream* _outputStream; ///< Output stream to wrap next packet (has link, no ownership)
 
-    std::vector<Frame> _decodedData; ///< List of buffers of decoded data.
-    Frame _filteredData;  ///< Buffer of filtered data.
-    Frame _transformedData;  ///< Buffer of transformed data.
+    std::vector<Frame*> _decodedData; ///< List of buffers of decoded data (has ownership).
+    Frame* _filteredData;  ///< Buffer of filtered data (has ownership).
+    Frame* _transformedData;  ///< Buffer of transformed data (has ownership).
 
     std::vector<IDecoder*> _inputDecoders;   ///< Decoders of packets read from _inputStream (has ownership)
     std::vector<IDecoder*> _generators;      ///< Generators of audio or video packets (has ownership)

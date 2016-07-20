@@ -24,8 +24,8 @@ StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outpu
     , _inputStreams()
     , _outputStream(NULL)
     , _decodedData()
-    , _filteredData()
-    , _transformedData()
+    , _filteredData(NULL)
+    , _transformedData(NULL)
     , _inputDecoders()
     , _generators()
     , _currentDecoder(NULL)
@@ -56,9 +56,9 @@ StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outpu
                 _generators.push_back(new VideoGenerator());
 
                 // buffers to process
-                _decodedData.push_back(VideoFrame(inputFrameDesc));
-                _filteredData = VideoFrame(inputFrameDesc);
-                _transformedData = VideoFrame(inputFrameDesc);
+                _decodedData.push_back(new VideoFrame(inputFrameDesc));
+                _filteredData = new VideoFrame(inputFrameDesc);
+                _transformedData = new VideoFrame(inputFrameDesc);
 
                 // transform
                 _transform = new VideoTransform();
@@ -92,9 +92,9 @@ StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outpu
                 _generators.push_back(new AudioGenerator());
 
                 // buffers to process
-                _decodedData.push_back(AudioFrame(inputFrameDesc));
-                _filteredData = AudioFrame(inputFrameDesc);
-                _transformedData = AudioFrame(inputFrameDesc);
+                _decodedData.push_back(new AudioFrame(inputFrameDesc));
+                _filteredData = new AudioFrame(inputFrameDesc);
+                _transformedData = new AudioFrame(inputFrameDesc);
 
                 // transform
                 _transform = new AudioTransform();
@@ -131,8 +131,8 @@ StreamTranscoder::StreamTranscoder(const InputStreamDesc& inputStreamDesc, IInpu
     , _inputStreams()
     , _outputStream(NULL)
     , _decodedData()
-    , _filteredData()
-    , _transformedData()
+    , _filteredData(NULL)
+    , _transformedData(NULL)
     , _inputDecoders()
     , _generators()
     , _currentDecoder(NULL)
@@ -167,8 +167,8 @@ StreamTranscoder::StreamTranscoder(const InputStreamDesc& inputStreamDesc, IInpu
             _outputStream = &outputFile.addVideoStream(outputVideo->getVideoCodec());
 
             // buffers to process
-            _filteredData = VideoFrame(inputStream.getVideoCodec().getVideoFrameDesc());
-            _transformedData = VideoFrame(outputVideo->getVideoCodec().getVideoFrameDesc());
+            _filteredData = new VideoFrame(inputStream.getVideoCodec().getVideoFrameDesc());
+            _transformedData = new VideoFrame(outputVideo->getVideoCodec().getVideoFrameDesc());
 
             // transform
             _transform = new VideoTransform();
@@ -198,8 +198,8 @@ StreamTranscoder::StreamTranscoder(const InputStreamDesc& inputStreamDesc, IInpu
             if(inputStreamDesc.demultiplexing())
                 inputFrameDesc._nbChannels = inputStreamDesc._channelIndexArray.size();
 
-            _filteredData = AudioFrame(inputFrameDesc);
-            _transformedData = AudioFrame(outputAudio->getAudioCodec().getAudioFrameDesc());
+            _filteredData = new AudioFrame(inputFrameDesc);
+            _transformedData = new AudioFrame(outputAudio->getAudioCodec().getAudioFrameDesc());
 
             // transform
             _transform = new AudioTransform();
@@ -232,7 +232,7 @@ void StreamTranscoder::addDecoder(const InputStreamDesc& inputStreamDesc, IInput
             _generators.push_back(new VideoGenerator());
 
             // buffers to process
-            _decodedData.push_back(VideoFrame(inputStream.getVideoCodec().getVideoFrameDesc()));
+            _decodedData.push_back(new VideoFrame(inputStream.getVideoCodec().getVideoFrameDesc()));
 
             break;
         }
@@ -252,7 +252,7 @@ void StreamTranscoder::addDecoder(const InputStreamDesc& inputStreamDesc, IInput
             if(inputStreamDesc.demultiplexing())
                 inputFrameDesc._nbChannels = inputStreamDesc._channelIndexArray.size();
 
-            _decodedData.push_back(AudioFrame(inputFrameDesc));
+            _decodedData.push_back(new AudioFrame(inputFrameDesc));
 
             break;
         }
@@ -269,8 +269,8 @@ StreamTranscoder::StreamTranscoder(IOutputFile& outputFile, const ProfileLoader:
     , _inputStreams()
     , _outputStream(NULL)
     , _decodedData()
-    , _filteredData()
-    , _transformedData()
+    , _filteredData(NULL)
+    , _transformedData(NULL)
     , _inputDecoders()
     , _generators()
     , _currentDecoder(NULL)
@@ -298,9 +298,9 @@ StreamTranscoder::StreamTranscoder(IOutputFile& outputFile, const ProfileLoader:
         // buffers to process
         VideoFrameDesc outputFrameDesc = inputFrameDesc;
         outputFrameDesc.setParameters(profile);
-        _decodedData.push_back(VideoFrame(inputFrameDesc));
-        _filteredData = VideoFrame(inputFrameDesc);
-        _transformedData = VideoFrame(outputFrameDesc);
+        _decodedData.push_back(new VideoFrame(inputFrameDesc));
+        _filteredData = new VideoFrame(inputFrameDesc);
+        _transformedData = new VideoFrame(outputFrameDesc);
 
         // transform
         _transform = new VideoTransform();
@@ -331,9 +331,9 @@ StreamTranscoder::StreamTranscoder(IOutputFile& outputFile, const ProfileLoader:
         // buffers to process
         AudioFrameDesc outputFrameDesc = inputFrameDesc;
         outputFrameDesc.setParameters(profile);
-        _decodedData.push_back(AudioFrame(inputFrameDesc));
-        _filteredData = AudioFrame(inputFrameDesc);
-        _transformedData = AudioFrame(outputFrameDesc);
+        _decodedData.push_back(new AudioFrame(inputFrameDesc));
+        _filteredData = new AudioFrame(inputFrameDesc);
+        _transformedData = new AudioFrame(outputFrameDesc);
 
         // transform
         _transform = new AudioTransform();
@@ -354,6 +354,13 @@ StreamTranscoder::StreamTranscoder(IOutputFile& outputFile, const ProfileLoader:
 
 StreamTranscoder::~StreamTranscoder()
 {
+    for(std::vector<Frame*>::iterator it = _decodedData.begin(); it != _decodedData.end(); ++it)
+    {
+        delete(*it);
+    }
+    delete _filteredData;
+    delete _transformedData;
+
     for(std::vector<IDecoder*>::iterator it = _inputDecoders.begin(); it != _inputDecoders.end(); ++it)
     {
         delete(*it);
@@ -510,22 +517,22 @@ bool StreamTranscoder::processTranscode()
     for(size_t index = 0; index < _inputDecoders.size(); ++index)
     {
         if(! _inputStreamDesc.empty() && _inputStreamDesc.at(index).demultiplexing())
-            decodingStatus = decodingStatus && _currentDecoder->decodeNextFrame(_decodedData.at(index), _inputStreamDesc.at(index)._channelIndexArray);
+            decodingStatus = decodingStatus && _currentDecoder->decodeNextFrame(*_decodedData.at(index), _inputStreamDesc.at(index)._channelIndexArray);
         else
-            decodingStatus = decodingStatus && _currentDecoder->decodeNextFrame(_decodedData.at(index));
+            decodingStatus = decodingStatus && _currentDecoder->decodeNextFrame(*_decodedData.at(index));
     }
 
     CodedData data;
     if(decodingStatus)
     {
         LOG_DEBUG("Filtering")
-        _filterGraph->process(_decodedData, _filteredData);
+        _filterGraph->process(_decodedData, *_filteredData);
 
         LOG_DEBUG("Convert")
-        _transform->convert(_filteredData, _transformedData);
+        _transform->convert(*_filteredData, *_transformedData);
 
         LOG_DEBUG("Encode")
-        _outputEncoder->encodeFrame(_transformedData, data);
+        _outputEncoder->encodeFrame(*_transformedData, data);
     }
     else
     {
