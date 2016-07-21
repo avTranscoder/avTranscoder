@@ -356,8 +356,10 @@ ProfileLoader::Profile Transcoder::getProfileFromInputs(const std::vector<InputS
         std::stringstream ss;
         ss << videoProperties->getFps();
         profile[constants::avProfileFrameRate] = ss.str();
-        profile[constants::avProfileWidth] = videoProperties->getWidth();
-        profile[constants::avProfileHeight] = videoProperties->getHeight();
+        ss.str(""); ss << videoProperties->getWidth();
+        profile[constants::avProfileWidth] = ss.str();
+        ss.str(""); ss << videoProperties->getHeight();
+        profile[constants::avProfileHeight] = ss.str();
     }
     // audio
     else if(audioProperties != NULL)
