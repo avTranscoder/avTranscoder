@@ -53,6 +53,22 @@ def testAddAStreamFromAFileWhichDoesNotExist():
     transcoder.process()
 
 
+@raises(RuntimeError)
+def testEmptyListOfInputs():
+    """
+    Add an empty list of inputs.
+    """
+    # inputs
+    inputs = av.InputStreamDescVector()
+
+    # output
+    outputFileName = "testEmptyListOfInputs.mov"
+    ouputFile = av.OutputFile(outputFileName)
+
+    transcoder = av.Transcoder(ouputFile)
+    transcoder.addStream(inputs)
+
+
 def testAddSeveralInputsToCreateOneOutput():
     """
     Add several audio inputs and create one output stream.
