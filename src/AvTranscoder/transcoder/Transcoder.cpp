@@ -255,12 +255,21 @@ void Transcoder::addTranscodeStream(const std::vector<InputStreamDesc>& inputStr
                                           << "with encodingProfile=" << profile.at(constants::avProfileIdentificatorHuman) << std::endl
                                           << "and offset=" << offset << "s")
 
-    // Add input file
+    // Create all streams from the given inputs
     std::vector<IInputStream*> inputStreams;
+    AVMediaType commonStreamType = AVMEDIA_TYPE_UNKNOWN;
     for(std::vector<InputStreamDesc>::const_iterator it = inputStreamDescArray.begin(); it != inputStreamDescArray.end(); ++it)
     {
         InputFile* referenceFile = addInputFile(it->_filename, it->_streamIndex, offset);
         inputStreams.push_back(&referenceFile->getStream(it->_streamIndex));
+
+        // Check stream type
+        const AVMediaType currentStreamType = referenceFile->getProperties().getStreamPropertiesWithIndex(it->_streamIndex).getStreamType();
+        if(commonStreamType == AVMEDIA_TYPE_UNKNOWN)
+            commonStreamType = currentStreamType;
+        else if(currentStreamType != commonStreamType)
+            throw std::runtime_error("All the given inputs should be of the same type (video, audio...).");
+
     }
 
     _streamTranscodersAllocated.push_back(
@@ -380,8 +389,10 @@ ProfileLoader::Profile Transcoder::getProfileFromInputs(const std::vector<InputS
             else
             {
                 InputFile inputFile(it->_filename);
-                const AudioProperties& audioStream = dynamic_cast<const AudioProperties&>(inputFile.getProperties().getStreamPropertiesWithIndex(inputStreamDesc._streamIndex));
-                nbChannels += audioStream.getNbChannels();
+                const StreamProperties& currentStream = inputFile.getProperties().getStreamPropertiesWithIndex(inputStreamDesc._streamIndex);
+                if(currentStream.getStreamType() != AVMEDIA_TYPE_AUDIO)
+                    throw std::runtime_error("All the given inputs should be audio streams.");
+                nbChannels += dynamic_cast<const AudioProperties&>(currentStream).getNbChannels();
             }
         }
         ss << nbChannels;

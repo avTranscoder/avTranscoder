@@ -69,6 +69,24 @@ def testEmptyListOfInputs():
     transcoder.addStream(inputs)
 
 
+@raises(RuntimeError)
+def testAllSeveralInputsWithDifferentType():
+    """
+    Add one video and one audio to create one output stream.
+    """
+    # inputs
+    inputs = av.InputStreamDescVector()
+    inputs.append(av.InputStreamDesc(os.environ['AVTRANSCODER_TEST_AUDIO_MOV_FILE'], 0))
+    inputs.append(av.InputStreamDesc(os.environ['AVTRANSCODER_TEST_AUDIO_WAVE_FILE'], 0))
+
+    # output
+    outputFileName = "testAllSeveralInputsWithDifferentType.mov"
+    ouputFile = av.OutputFile(outputFileName)
+
+    transcoder = av.Transcoder(ouputFile)
+    transcoder.addStream(inputs)
+
+
 def testAddSeveralInputsToCreateOneOutput():
     """
     Add several audio inputs and create one output stream.
