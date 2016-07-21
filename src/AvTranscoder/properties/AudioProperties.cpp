@@ -73,7 +73,7 @@ std::string AudioProperties::getChannelLayout() const
         throw std::runtime_error("unknown codec context");
 
     char buf1[512];
-    av_get_channel_layout_string(buf1, sizeof(buf1), -1, _codecContext->channel_layout);
+    av_get_channel_layout_string(buf1, sizeof(buf1), getNbChannels(), _codecContext->channel_layout);
     return std::string(buf1);
 }
 
