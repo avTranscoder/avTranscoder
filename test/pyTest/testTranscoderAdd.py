@@ -72,7 +72,7 @@ def testAddSeveralInputsToCreateOneOutput():
     ouputFile = av.OutputFile(outputFileName)
 
     transcoder = av.Transcoder(ouputFile)
-    transcoder.addStream(inputs, "wave24b48kstereo")
+    transcoder.addStream(inputs)
 
     # process
     processStat = transcoder.process()
@@ -86,8 +86,8 @@ def testAddSeveralInputsToCreateOneOutput():
     dst_properties = dst_inputFile.getProperties()
     dst_audioStream = dst_properties.getAudioProperties()[0]
 
-    assert_equals( "pcm_s24le", dst_audioStream.getCodecName() )
-    assert_equals( "s32", dst_audioStream.getSampleFormatName() )
-    assert_equals( "signed 32 bits", dst_audioStream.getSampleFormatLongName() )
-    assert_equals( 48000, dst_audioStream.getSampleRate() )
-    assert_equals( 2, dst_audioStream.getNbChannels() )
+    assert_equals( src_audioStream.getCodecName(), dst_audioStream.getCodecName() )
+    assert_equals( src_audioStream.getSampleFormatName(), dst_audioStream.getSampleFormatName() )
+    assert_equals( src_audioStream.getSampleFormatLongName(), dst_audioStream.getSampleFormatLongName() )
+    assert_equals( src_audioStream.getSampleRate(), dst_audioStream.getSampleRate() )
+    assert_equals( src_audioStream.getNbChannels(), dst_audioStream.getNbChannels() )
