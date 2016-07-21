@@ -38,10 +38,10 @@ Transcoder::~Transcoder()
 void Transcoder::addStream(const InputStreamDesc& inputStreamDesc, const std::string& profileName, const float offset)
 {
     // Check filename
-    if(inputStreamDesc._filename.length() == 0)
+    if(inputStreamDesc._filename.empty())
         throw std::runtime_error("Can't process a stream without a filename indicated.");
 
-    if(profileName.length() == 0)
+    if(profileName.empty())
     {
         // Re-wrap
         if(!inputStreamDesc.demultiplexing())
