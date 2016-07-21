@@ -1,7 +1,7 @@
 #ifndef _AV_TRANSCODER_DESCRIPTION_HPP_
 #define _AV_TRANSCODER_DESCRIPTION_HPP_
 
-#include "common.hpp"
+#include <AvTranscoder/common.hpp>
 
 #include <vector>
 #include <string>

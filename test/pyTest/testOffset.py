@@ -15,22 +15,6 @@ from nose.tools import *
 from pyAvTranscoder import avtranscoder as av
 
 
-@raises(RuntimeError)
-def testRewrapVideoPositiveOffsetWithoutGenerator():
-    """
-    Add a positive offset supposed to have a generator.
-    Depending on the codec and the given parameters, the generator could not be instanciate.
-    """
-    inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_RAW_FILE']
-    outputFileName = "testPositiveOffsetWithoutGenerator.h264"
-    offset = 10
-
-    ouputFile = av.OutputFile( outputFileName )
-    transcoder = av.Transcoder( ouputFile )
-
-    transcoder.addStream( av.InputStreamDesc(inputFileName, 0), "", offset )
-
-
 def testTranscodeAudioPositiveOffset():
     """
     Transcode one audio stream (profile wave24b48kmono) with offset at the beginning of the process.

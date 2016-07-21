@@ -52,7 +52,7 @@ def testTranscodeMovVariableNbSamplesPerFrame():
 def testTranscodeMovExtractChannels():
     """
     Transcode the audio stream of a MOV file which contains a video stream.
-    Extract channel one and third of the audio stream (5.1), and create two output streams.
+    Extract first and fourth channels of the audio stream (5.1), and create two output streams.
     The encoding profile will be found from from input.
     """
     inputFileName = os.environ['AVTRANSCODER_TEST_AUDIO_MOV_FILE']
@@ -83,7 +83,7 @@ def testTranscodeMovExtractChannels():
 def testTranscodeMovExtractChannelsToOneOutput():
     """
     Transcode the audio stream of a MOV file which contains a video stream.
-    Extract channel one, third and fifth of the audio stream (5.1), and create one output streams.
+    Extract first, third and last channels of the audio stream (5.1), and create one output streams.
     The encoding profile will be found from from input.
     """
     inputFileName = os.environ['AVTRANSCODER_TEST_AUDIO_MOV_FILE']

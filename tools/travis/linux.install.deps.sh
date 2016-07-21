@@ -114,6 +114,19 @@ if  [ -z ${TRAVIS_JOB_ID} ] || [ ! -d "${DEPENDENCY_INSTALL_PATH}/lib/" ]; then
                   make install && \
                   rm -rf ${DIR}
 
+    # libtheora
+    echo ""
+    echo "Building libtheora (${THEORA_VERSION})"
+    DIR=$(mktemp -d libtheoraXXX) && cd ${DIR} && \
+                  curl -O http://downloads.xiph.org/releases/theora/libtheora-${THEORA_VERSION}.tar.bz2 && \
+                  tar xvjf libtheora-${THEORA_VERSION}.tar.bz2 && \
+                  cd libtheora-${THEORA_VERSION} && \
+                  ./configure --prefix="${DEPENDENCY_INSTALL_PATH}" && \
+                  make -k > ${DEPENDENCY_LOG_FILE} 2>&1 && \
+                  make install && \
+                  make check && \
+                  rm -rf ${DIR}
+
     # libvpx
     # https://trac.ffmpeg.org/ticket/4956
     echo ""
@@ -144,7 +157,7 @@ if  [ -z ${TRAVIS_JOB_ID} ] || [ ! -d "${DEPENDENCY_INSTALL_PATH}/lib/" ]; then
     export RELEASE_OPTIONS=--disable-debug
     export DEBUG_OPTIONS=--enable-debug=3\ --disable-optimizations\ --disable-sse\ --disable-stripping
     export LICENSING_OPTIONS=--enable-gpl\ --enable-nonfree
-    export THIRD_PARTIES_OPTIONS=--enable-libfaac\ --enable-libmp3lame\ --enable-libx264\ --enable-libxvid\ --enable-avresample\ --enable-libfdk_aac\ --enable-libvorbis\ --enable-libvpx
+    export THIRD_PARTIES_OPTIONS=--enable-libfaac\ --enable-libmp3lame\ --enable-libx264\ --enable-libxvid\ --enable-avresample\ --enable-libfdk_aac\ --enable-libvorbis\ --enable-libtheora\ --enable-libvpx
 
     if [[ ${DEPENDENCY_NAME} == "ffmpeg" ]]; then
 

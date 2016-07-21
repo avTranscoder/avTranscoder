@@ -83,13 +83,13 @@ void Transcoder::addStream(const std::vector<InputStreamDesc>& inputStreamDescAr
     addTranscodeStream(inputStreamDescArray, profile, offset);
 }
 
-void Transcoder::addGeneratedStream(const std::string& encodingProfileName)
+void Transcoder::addGenerateStream(const std::string& encodingProfileName)
 {
     const ProfileLoader::Profile& encodingProfile = _profileLoader.getProfile(encodingProfileName);
-    addGeneratedStream(encodingProfile);
+    addGenerateStream(encodingProfile);
 }
 
-void Transcoder::addGeneratedStream(const ProfileLoader::Profile& encodingProfile)
+void Transcoder::addGenerateStream(const ProfileLoader::Profile& encodingProfile)
 {
     // Add profile
     if(!_profileLoader.hasProfile(encodingProfile))

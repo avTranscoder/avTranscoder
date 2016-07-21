@@ -74,8 +74,8 @@ public:
 
     //@{
     // @brief Add a new generated stream to the output file, created from the given encoding profile.
-    void addGeneratedStream(const std::string& encodingProfileName);
-    void addGeneratedStream(const ProfileLoader::Profile& encodingProfile);
+    void addGenerateStream(const std::string& encodingProfileName);
+    void addGenerateStream(const ProfileLoader::Profile& encodingProfile);
     //@}
 
     /**
