@@ -1,7 +1,6 @@
 #include "VideoGenerator.hpp"
 
 #include <AvTranscoder/util.hpp>
-#include <AvTranscoder/transform/VideoTransform.hpp>
 
 #include <sstream>
 
@@ -12,6 +11,7 @@ VideoGenerator::VideoGenerator(const VideoFrameDesc& frameDesc)
     : _inputFrame(NULL)
     , _blackImage(NULL)
     , _frameDesc(frameDesc)
+    , _videoTransform()
 {
 }
 
@@ -23,9 +23,9 @@ VideoGenerator::~VideoGenerator()
 bool VideoGenerator::decodeNextFrame(Frame& frameBuffer)
 {
     // check the given frame
-    if(!frameBuffer.isVideoFrame())
+    if(! frameBuffer.isVideoFrame())
     {
-        LOG_WARN("The given frame is not a valid video frame: allocate a new AVPicture to put generated data into it.");
+        LOG_WARN("The given frame to put data is not a valid video frame: try to reallocate it.")
         frameBuffer.clear();
         static_cast<VideoFrame&>(frameBuffer).allocateAVPicture(_frameDesc);
     }
@@ -36,32 +36,23 @@ bool VideoGenerator::decodeNextFrame(Frame& frameBuffer)
         // Generate the black image only once
         if(!_blackImage)
         {
+            // Create the black RGB image
+            VideoFrameDesc blackDesc(_frameDesc._width, _frameDesc._height, "rgb24");
+            _blackImage = new VideoFrame(blackDesc);
+            const unsigned char fillChar = 0;
+            _blackImage->assign(fillChar);
+
             std::stringstream msg;
             msg << "Generate a black image with the following features:" << std::endl;
-            msg << "width = " << _frameDesc._width << std::endl;
-            msg << "height = " << _frameDesc._height << std::endl;
-            msg << "pixel format = rgb24" << std::endl;
+            msg << "width = " << _blackImage->getWidth() << std::endl;
+            msg << "height = " << _blackImage->getHeight() << std::endl;
+            msg << "pixel format = " << getPixelFormatName(_blackImage->getPixelFormat()) << std::endl;
             LOG_INFO(msg.str())
 
-            VideoFrame& imageBuffer = static_cast<VideoFrame&>(frameBuffer);
-
-            // Input of convert
-            // @todo support PAL (0 to 255) and NTFS (16 to 235)
-            VideoFrameDesc desc(_frameDesc);
-            desc._pixelFormat = getAVPixelFormat("rgb24");
-            VideoFrame intermediateBuffer(desc);
-            const unsigned char fillChar = 0;
-            intermediateBuffer.assign(fillChar);
-
-            // Output of convert
-            _blackImage = new VideoFrame(imageBuffer.desc());
-
-            // Convert and store the black image
-            VideoTransform videoTransform;
-            videoTransform.convert(intermediateBuffer, *_blackImage);
         }
         LOG_DEBUG("Copy data of the black image when decode next frame")
-        frameBuffer.copyData(*_blackImage);
+        // Convert the black image to the configuration of the given frame
+        _videoTransform.convert(*_blackImage, frameBuffer);
     }
     // Take image from _inputFrame
     else

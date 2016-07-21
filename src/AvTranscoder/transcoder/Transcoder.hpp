@@ -66,6 +66,14 @@ public:
     //@}
 
     //@{
+    // @brief Add a new stream to the output file, created from the given input description to process.
+    // @param inputStreamDescArray: the type of the described streams should be of the same type.
+    // @param profile: if empty, get the profile from the inputs.
+    void addStream(const std::vector<InputStreamDesc>& inputStreamDescArray, const std::string& profileName = "", float offset = 0);
+    void addStream(const std::vector<InputStreamDesc>& inputStreamDescArray, const ProfileLoader::Profile& profile, const float offset = 0);
+    //@}
+
+    //@{
     // @brief Add a new generated stream to the output file, created from the given encoding profile.
     void addGenerateStream(const std::string& encodingProfileName);
     void addGenerateStream(const ProfileLoader::Profile& encodingProfile);
@@ -129,9 +137,7 @@ public:
 
 private:
     void addRewrapStream(const InputStreamDesc& inputStreamDesc, const float offset);
-
-    void addTranscodeStream(const InputStreamDesc& inputStreamDesc, const float offset);
-    void addTranscodeStream(const InputStreamDesc& inputStreamDesc, const ProfileLoader::Profile& profile,
+    void addTranscodeStream(const std::vector<InputStreamDesc>& inputStreamDescArray, const ProfileLoader::Profile& profile,
                             const float offset = 0);
 
     /**
@@ -139,8 +145,11 @@ private:
      */
     InputFile* addInputFile(const std::string& filename, const int streamIndex, const float offset);
 
-    ProfileLoader::Profile getProfileFromFile(InputFile& inputFile,
-                                              const size_t streamIndex); ///< The function analyses the inputFile
+    /**
+     * @return The profile from the given inputs. 
+     */
+    ProfileLoader::Profile getProfileFromInput(const InputStreamDesc& inputStreamDesc);
+    ProfileLoader::Profile getProfileFromInputs(const std::vector<InputStreamDesc>& inputStreamDescArray);
 
     /**
      * @brief Get the duration of the stream, in seconds

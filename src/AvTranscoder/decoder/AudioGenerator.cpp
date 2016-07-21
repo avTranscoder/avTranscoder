@@ -22,21 +22,11 @@ AudioGenerator::~AudioGenerator()
 bool AudioGenerator::decodeNextFrame(Frame& frameBuffer)
 {
     // check the given frame
-    if(!frameBuffer.isAudioFrame())
+    if(! frameBuffer.isAudioFrame())
     {
-        LOG_WARN("The given frame is not a valid audio frame: allocate a new AVSample to put generated data into it.");
+        LOG_WARN("The given frame to put data is not a valid audio frame: try to reallocate it.")
         frameBuffer.clear();
         static_cast<AudioFrame&>(frameBuffer).allocateAVSample(_frameDesc);
-    }
-
-    // Check channel layout of the given frame to be able to copy audio data to it.
-    // @see Frame.copyData method
-    if(frameBuffer.getAVFrame().channel_layout == 0)
-    {
-        const size_t channelLayout = av_get_default_channel_layout(frameBuffer.getAVFrame().channels);
-        LOG_WARN("Channel layout en the audio frame is not set. Set it to '" << channelLayout
-                                                                             << "' to be able to copy silence data.")
-        av_frame_set_channel_layout(&frameBuffer.getAVFrame(), channelLayout);
     }
 
     // Generate silent
@@ -45,8 +35,7 @@ bool AudioGenerator::decodeNextFrame(Frame& frameBuffer)
         // Generate the silent only once
         if(!_silent)
         {
-            AudioFrame& audioBuffer = static_cast<AudioFrame&>(frameBuffer);
-            _silent = new AudioFrame(audioBuffer.desc());
+            _silent = new AudioFrame(_frameDesc);
 
             std::stringstream msg;
             msg << "Generate a silence with the following features:" << std::endl;
@@ -61,7 +50,7 @@ bool AudioGenerator::decodeNextFrame(Frame& frameBuffer)
             _silent->setNbSamplesPerChannel(frameBuffer.getAVFrame().nb_samples);
         }
         LOG_DEBUG("Copy data of the silence when decode next frame")
-        frameBuffer.copyData(*_silent);
+        frameBuffer.refFrame(*_silent);
     }
     // Take audio frame from _inputFrame
     else

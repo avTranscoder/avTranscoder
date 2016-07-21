@@ -33,9 +33,10 @@ public:
     StreamTranscoder(IInputStream& inputStream, IOutputFile& outputFile, const float offset = 0);
 
     /**
-     * @brief Transcode the given stream.
+     * @brief Transcode the given streams.
+     * @note The data are wrapped to one output stream.
      **/
-    StreamTranscoder(const InputStreamDesc& inputStreamDesc, IInputStream& inputStream, IOutputFile& outputFile, 
+    StreamTranscoder(const std::vector<InputStreamDesc>& inputStreamsDesc, std::vector<IInputStream*>& inputStreams, IOutputFile& outputFile, 
                      const ProfileLoader::Profile& profile, const float offset = 0);
 
     /**
@@ -59,13 +60,13 @@ public:
     bool processFrame();
 
     //@{
-    /** Switch decoder */
+    // Switch current decoder.
     void switchToGeneratorDecoder();
     void switchToInputDecoder();
     //@}
 
     /**
-     * @brief Get the total duration (in seconds), ie. duration of the stream and the offset applies
+     * @brief Get the total duration (in seconds), ie. duration of the shortest input stream and the offset applies
      * @note if it's a generated stream, return limit of double.
      * @note if offset > duration of the stream, return 0
      */
@@ -83,7 +84,7 @@ public:
     FilterGraph* getFilterGraph() const { return _filterGraph; }
 
     /// Returns a pointer to the stream which unwraps data
-    IInputStream* getInputStream() const { return _inputStream; }
+    std::vector<IInputStream*> getInputStreams() const { return _inputStreams; }
     /// Returns a reference to the stream which wraps data
     IOutputStream& getOutputStream() const { return *_outputStream; }
 
@@ -118,26 +119,33 @@ public:
     //@}
 
 private:
+    /**
+     * @brief Create the decoder (and the other related objects needed) which decodes the given input stream.
+     * @param inputStreamDesc
+     * @param inputStream
+     */
+    void addDecoder(const InputStreamDesc& inputStreamDesc, IInputStream& inputStream);
+
     bool processRewrap();
     bool processTranscode();
 
 private:
-    IInputStream* _inputStream;   ///< Input stream to read next packet (has link, no ownership)
+    std::vector<InputStreamDesc> _inputStreamDesc; ///< Description of the data to extract from the input stream.
+    std::vector<IInputStream*> _inputStreams;   ///< List of input stream to read next packet (has link, no ownership)
     IOutputStream* _outputStream; ///< Output stream to wrap next packet (has link, no ownership)
 
-    Frame* _sourceBuffer; ///< Has ownership
-    Frame* _frameBuffer;  ///< Has ownership
+    std::vector<Frame*> _decodedData; ///< List of buffers of decoded data (has ownership).
+    Frame* _filteredData;  ///< Buffer of filtered data (has ownership).
+    Frame* _transformedData;  ///< Buffer of transformed data (has ownership).
 
-    IDecoder* _inputDecoder;   ///< Decoder of packets read from _inputStream (has ownership)
-    IDecoder* _generator;      ///< Generator of audio or video packets (has ownership)
+    std::vector<IDecoder*> _inputDecoders;   ///< Decoders of packets read from _inputStream (has ownership)
+    std::vector<IDecoder*> _generators;      ///< Generators of audio or video packets (has ownership)
     IDecoder* _currentDecoder; ///< Link to _inputDecoder or _generator
     IEncoder* _outputEncoder;  ///< Encoder of packets which will be wrapped by _outputStream (has ownership)
 
     ITransform* _transform; ///< Video or audio transform (has ownership)
 
     FilterGraph* _filterGraph; ///< Filter graph (has ownership)
-
-    const InputStreamDesc _inputStreamDesc; ///< Description of the data to extract from the input stream.
 
     float _offset; ///< Offset, in seconds, at the beginning of the StreamTranscoder.
 

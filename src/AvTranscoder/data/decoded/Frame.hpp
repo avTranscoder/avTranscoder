@@ -22,10 +22,11 @@ public:
      */
     Frame();
 
-    /**
-     * @brief Copy properties and reference data of the other frame
-     */
+    //@{
+    // @brief Copy properties and reference data of the other frame.
     Frame(const Frame& otherFrame);
+    void operator=(const Frame& otherFrame);
+    //@}
 
     virtual ~Frame();
 
@@ -63,7 +64,8 @@ public:
 
     /**
      * @brief Copy frame properties and create a new reference to data of the given frame.
-     * @warning This method allocates new data that will be freed only by calling the destructor of the referenced frame.
+     * @warning This method allocates new data that will be freed by calling clear method or the destructor of the referenced frame.
+     * @see clear
      */
     void refFrame(const Frame& otherFrame);
 

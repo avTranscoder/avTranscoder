@@ -4,6 +4,7 @@
 #include <AvTranscoder/progress/NoDisplayProgress.hpp>
 #include <AvTranscoder/stat/VideoStat.hpp>
 
+#include <cassert>
 #include <limits>
 #include <algorithm>
 
@@ -38,17 +39,20 @@ Transcoder::~Transcoder()
 void Transcoder::addStream(const InputStreamDesc& inputStreamDesc, const std::string& profileName, const float offset)
 {
     // Check filename
-    if(inputStreamDesc._filename.length() == 0)
+    if(inputStreamDesc._filename.empty())
         throw std::runtime_error("Can't process a stream without a filename indicated.");
 
-    if(profileName.length() == 0)
+    if(profileName.empty())
     {
         // Re-wrap
         if(!inputStreamDesc.demultiplexing())
             addRewrapStream(inputStreamDesc, offset);
         // Transcode (transparent for the user)
         else
-            addTranscodeStream(inputStreamDesc, offset);
+        {
+            const ProfileLoader::Profile profile = getProfileFromInput(inputStreamDesc);
+            addStream(inputStreamDesc, profile, offset);
+        }
     }
     // Transcode
     else
@@ -64,7 +68,41 @@ void Transcoder::addStream(const InputStreamDesc& inputStreamDesc, const Profile
     if(!inputStreamDesc._filename.length())
         throw std::runtime_error("Can't transcode a stream without a filename indicated.");
 
-    addTranscodeStream(inputStreamDesc, profile, offset);
+    std::vector<InputStreamDesc> inputStreamDescArray;
+    inputStreamDescArray.push_back(inputStreamDesc);
+    addStream(inputStreamDescArray, profile, offset);
+}
+
+void Transcoder::addStream(const std::vector<InputStreamDesc>& inputStreamDescArray, const std::string& profileName, const float offset)
+{
+    // Check number of inputs
+    if(inputStreamDescArray.empty())
+        throw std::runtime_error("Need a description of at least one input stream to start the process.");
+
+    // If there is one input, switch to an easier case
+    if(inputStreamDescArray.size() == 1)
+    {
+        addStream(inputStreamDescArray.at(0), profileName, offset);
+        return;
+    }
+
+    // Get encoding profile
+    ProfileLoader::Profile encodingProfile;
+    if(profileName.empty())
+        encodingProfile = getProfileFromInputs(inputStreamDescArray);
+    else
+        encodingProfile = _profileLoader.getProfile(profileName);
+
+    addStream(inputStreamDescArray, encodingProfile, offset);
+}
+
+void Transcoder::addStream(const std::vector<InputStreamDesc>& inputStreamDescArray, const ProfileLoader::Profile& profile, const float offset)
+{
+    // Check number of inputs
+    if(inputStreamDescArray.empty())
+        throw std::runtime_error("Need a description of at least one input stream to start the process.");
+
+    addTranscodeStream(inputStreamDescArray, profile, offset);
 }
 
 void Transcoder::addGenerateStream(const std::string& encodingProfileName)
@@ -77,7 +115,7 @@ void Transcoder::addGenerateStream(const ProfileLoader::Profile& encodingProfile
 {
     // Add profile
     if(!_profileLoader.hasProfile(encodingProfile))
-        _profileLoader.loadProfile(encodingProfile);
+        _profileLoader.addProfile(encodingProfile);
 
     LOG_INFO("Add generated stream with encodingProfile=" << encodingProfile.at(constants::avProfileIdentificatorHuman))
 
@@ -112,7 +150,7 @@ bool Transcoder::processFrame()
         // if a stream failed to process
         if(!_streamTranscoders.at(streamIndex)->processFrame())
         {
-            LOG_WARN("Failed to process stream at index " << streamIndex)
+            LOG_WARN("Failed to process the stream transcoder at index " << streamIndex)
 
             // if this is the end of the main stream
             if(streamIndex == _mainStreamIndex) {
@@ -203,57 +241,40 @@ void Transcoder::addRewrapStream(const InputStreamDesc& inputStreamDesc, const f
     _streamTranscoders.push_back(_streamTranscodersAllocated.back());
 }
 
-void Transcoder::addTranscodeStream(const InputStreamDesc& inputStreamDesc, const float offset)
-{
-    // Get profile from input file
-    InputFile inputFile(inputStreamDesc._filename);
-    ProfileLoader::Profile profile = getProfileFromFile(inputFile, inputStreamDesc._streamIndex);
-
-    // override number of channels parameters to manage demultiplexing
-    if(inputStreamDesc.demultiplexing())
-    {
-        // number of channels
-        std::stringstream ss;
-        ss << inputStreamDesc._channelIndexArray.size();
-        profile[constants::avProfileChannel] = ss.str();
-    }
-
-    addTranscodeStream(inputStreamDesc, profile, offset);
-}
-
-void Transcoder::addTranscodeStream(const InputStreamDesc& inputStreamDesc, const ProfileLoader::Profile& profile,
+void Transcoder::addTranscodeStream(const std::vector<InputStreamDesc>& inputStreamDescArray, const ProfileLoader::Profile& profile,
                                     const float offset)
 {
     // Add profile
     if(!_profileLoader.hasProfile(profile))
-        _profileLoader.loadProfile(profile);
+        _profileLoader.addProfile(profile);
 
-    LOG_INFO("Add transcode stream from " << inputStreamDesc << "with encodingProfile="
-                                          << profile.at(constants::avProfileIdentificatorHuman) << std::endl
+    std::stringstream sources;
+    for(size_t index = 0; index < inputStreamDescArray.size(); ++index)
+        sources << inputStreamDescArray.at(index);
+    LOG_INFO("Add transcode stream from the following inputs:" << std::endl << sources.str() 
+                                          << "with encodingProfile=" << profile.at(constants::avProfileIdentificatorHuman) << std::endl
                                           << "and offset=" << offset << "s")
 
-    // Add input file
-    InputFile* referenceFile = addInputFile(inputStreamDesc._filename, inputStreamDesc._streamIndex, offset);
-    IInputStream& inputStream = referenceFile->getStream(inputStreamDesc._streamIndex);
-
-    switch(inputStream.getProperties().getStreamType())
+    // Create all streams from the given inputs
+    std::vector<IInputStream*> inputStreams;
+    AVMediaType commonStreamType = AVMEDIA_TYPE_UNKNOWN;
+    for(std::vector<InputStreamDesc>::const_iterator it = inputStreamDescArray.begin(); it != inputStreamDescArray.end(); ++it)
     {
-        case AVMEDIA_TYPE_VIDEO:
-        case AVMEDIA_TYPE_AUDIO:
-        {
-            _streamTranscodersAllocated.push_back(
-                new StreamTranscoder(inputStreamDesc, inputStream, _outputFile, profile, offset));
-            _streamTranscoders.push_back(_streamTranscodersAllocated.back());
-            break;
-        }
-        case AVMEDIA_TYPE_DATA:
-        case AVMEDIA_TYPE_SUBTITLE:
-        case AVMEDIA_TYPE_ATTACHMENT:
-        default:
-        {
-            throw std::runtime_error("unsupported media type in transcode setup");
-        }
+        InputFile* referenceFile = addInputFile(it->_filename, it->_streamIndex, offset);
+        inputStreams.push_back(&referenceFile->getStream(it->_streamIndex));
+
+        // Check stream type
+        const AVMediaType currentStreamType = referenceFile->getProperties().getStreamPropertiesWithIndex(it->_streamIndex).getStreamType();
+        if(commonStreamType == AVMEDIA_TYPE_UNKNOWN)
+            commonStreamType = currentStreamType;
+        else if(currentStreamType != commonStreamType)
+            throw std::runtime_error("All the given inputs should be of the same type (video, audio...).");
+
     }
+
+    _streamTranscodersAllocated.push_back(
+                new StreamTranscoder(inputStreamDescArray, inputStreams, _outputFile, profile, offset));
+    _streamTranscoders.push_back(_streamTranscodersAllocated.back());
 }
 
 InputFile* Transcoder::addInputFile(const std::string& filename, const int streamIndex, const float offset)
@@ -296,12 +317,25 @@ InputFile* Transcoder::addInputFile(const std::string& filename, const int strea
     return referenceFile;
 }
 
-ProfileLoader::Profile Transcoder::getProfileFromFile(InputFile& inputFile, const size_t streamIndex)
+ProfileLoader::Profile Transcoder::getProfileFromInput(const InputStreamDesc& inputStreamDesc)
 {
-    const StreamProperties* streamProperties = &inputFile.getProperties().getStreamPropertiesWithIndex(streamIndex);
+    std::vector<InputStreamDesc> inputStreamDescArray;
+    inputStreamDescArray.push_back(inputStreamDesc);
+    return getProfileFromInputs(inputStreamDescArray);
+}
+
+ProfileLoader::Profile Transcoder::getProfileFromInputs(const std::vector<InputStreamDesc>& inputStreamDescArray)
+{
+    assert(inputStreamDescArray.size() >= 1);
+
+    // Get properties from the first input
+    const InputStreamDesc& inputStreamDesc = inputStreamDescArray.at(0);
+    InputFile inputFile(inputStreamDesc._filename);
+
+    const StreamProperties* streamProperties = &inputFile.getProperties().getStreamPropertiesWithIndex(inputStreamDesc._streamIndex);
     const VideoProperties* videoProperties = NULL;
     const AudioProperties* audioProperties = NULL;
-    switch(inputFile.getStream(streamIndex).getProperties().getStreamType())
+    switch(inputFile.getStream(inputStreamDesc._streamIndex).getProperties().getStreamType())
     {
         case AVMEDIA_TYPE_VIDEO:
         {
@@ -331,8 +365,10 @@ ProfileLoader::Profile Transcoder::getProfileFromFile(InputFile& inputFile, cons
         std::stringstream ss;
         ss << videoProperties->getFps();
         profile[constants::avProfileFrameRate] = ss.str();
-        profile[constants::avProfileWidth] = videoProperties->getWidth();
-        profile[constants::avProfileHeight] = videoProperties->getHeight();
+        ss.str(""); ss << videoProperties->getWidth();
+        profile[constants::avProfileWidth] = ss.str();
+        ss.str(""); ss << videoProperties->getHeight();
+        profile[constants::avProfileHeight] = ss.str();
     }
     // audio
     else if(audioProperties != NULL)
@@ -344,7 +380,22 @@ ProfileLoader::Profile Transcoder::getProfileFromFile(InputFile& inputFile, cons
         ss << audioProperties->getSampleRate();
         profile[constants::avProfileSampleRate] = ss.str();
         ss.str("");
-        ss << audioProperties->getNbChannels();
+        // override number of channels parameters to manage demultiplexing
+        size_t nbChannels = 0;
+        for(std::vector<InputStreamDesc>::const_iterator it = inputStreamDescArray.begin(); it != inputStreamDescArray.end(); ++it)
+        {
+            if(inputStreamDesc.demultiplexing())
+                nbChannels += it->_channelIndexArray.size();
+            else
+            {
+                InputFile inputFile(it->_filename);
+                const StreamProperties& currentStream = inputFile.getProperties().getStreamPropertiesWithIndex(inputStreamDesc._streamIndex);
+                if(currentStream.getStreamType() != AVMEDIA_TYPE_AUDIO)
+                    throw std::runtime_error("All the given inputs should be audio streams.");
+                nbChannels += dynamic_cast<const AudioProperties&>(currentStream).getNbChannels();
+            }
+        }
+        ss << nbChannels;
         profile[constants::avProfileChannel] = ss.str();
     }
 
@@ -463,12 +514,12 @@ void Transcoder::fillProcessStat(ProcessStat& processStat)
     for(size_t streamIndex = 0; streamIndex < _streamTranscoders.size(); ++streamIndex)
     {
         IOutputStream& stream = _streamTranscoders.at(streamIndex)->getOutputStream();
-        const IInputStream* inputStream = _streamTranscoders.at(streamIndex)->getInputStream();
-        if(inputStream == NULL)
+        if(_streamTranscoders.at(streamIndex)->getInputStreams().empty())
         {
             LOG_WARN("Cannot process statistics of generated stream.")
             continue;
         }
+        const IInputStream* inputStream = _streamTranscoders.at(streamIndex)->getInputStreams().at(0);
         const AVMediaType mediaType = inputStream->getProperties().getStreamType();
         switch(mediaType)
         {
