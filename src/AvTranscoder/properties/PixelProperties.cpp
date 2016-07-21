@@ -39,7 +39,7 @@ std::string PixelProperties::getPixelName() const
 
 std::string PixelProperties::getPixelFormatName() const
 {
-    if(!_pixelFormat)
+    if(_pixelFormat == AV_PIX_FMT_NONE)
         throw std::runtime_error("unable to find pixel format.");
 
     const char* formatName = av_get_pix_fmt_name(_pixelFormat);
