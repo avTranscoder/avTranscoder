@@ -54,7 +54,7 @@ StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outpu
                 VideoFrameDesc inputFrameDesc(inputStream.getVideoCodec().getVideoFrameDesc());
 
                 // generator decoder
-                _generators.push_back(new VideoGenerator());
+                _generators.push_back(new VideoGenerator(inputFrameDesc));
 
                 // buffers to process
                 _decodedData.push_back(new VideoFrame(inputFrameDesc));
@@ -90,7 +90,7 @@ StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outpu
                 AudioFrameDesc inputFrameDesc(inputStream.getAudioCodec().getAudioFrameDesc());
 
                 // generator decoder
-                _generators.push_back(new AudioGenerator());
+                _generators.push_back(new AudioGenerator(inputFrameDesc));
 
                 // buffers to process
                 _decodedData.push_back(new AudioFrame(inputFrameDesc));
@@ -242,11 +242,12 @@ void StreamTranscoder::addDecoder(const InputStreamDesc& inputStreamDesc, IInput
             _inputDecoders.push_back(inputVideo);
             _currentDecoder = inputVideo;
 
-            // generator decoder
-            _generators.push_back(new VideoGenerator());
+            // buffers to get the decoded data
+            VideoFrame* inputFrame = new VideoFrame(inputStream.getVideoCodec().getVideoFrameDesc());
+            _decodedData.push_back(inputFrame);
 
-            // buffers to process
-            _decodedData.push_back(new VideoFrame(inputStream.getVideoCodec().getVideoFrameDesc()));
+            // generator decoder
+            _generators.push_back(new VideoGenerator(inputFrame->desc()));
 
             break;
         }
@@ -258,15 +259,14 @@ void StreamTranscoder::addDecoder(const InputStreamDesc& inputStreamDesc, IInput
             _inputDecoders.push_back(inputAudio);
             _currentDecoder = inputAudio;
 
-            // generator decoder
-            _generators.push_back(new AudioGenerator());
-
-            // buffers to process
+            // buffers to get the decoded data
             AudioFrameDesc inputFrameDesc(inputStream.getAudioCodec().getAudioFrameDesc());
             if(inputStreamDesc.demultiplexing())
                 inputFrameDesc._nbChannels = inputStreamDesc._channelIndexArray.size();
-
             _decodedData.push_back(new AudioFrame(inputFrameDesc));
+
+            // generator decoder
+            _generators.push_back(new AudioGenerator(inputFrameDesc));
 
             break;
         }
@@ -302,7 +302,7 @@ StreamTranscoder::StreamTranscoder(IOutputFile& outputFile, const ProfileLoader:
         inputVideoCodec.setImageParameters(inputFrameDesc);
 
         // generator decoder
-        VideoGenerator* generator = new VideoGenerator();
+        VideoGenerator* generator = new VideoGenerator(inputFrameDesc);
         _generators.push_back(generator);
         _currentDecoder = generator;
 
@@ -335,7 +335,7 @@ StreamTranscoder::StreamTranscoder(IOutputFile& outputFile, const ProfileLoader:
         inputAudioCodec.setAudioParameters(inputFrameDesc);
 
         // generator decoder
-        AudioGenerator* generator = new AudioGenerator();
+        AudioGenerator* generator = new AudioGenerator(inputFrameDesc);
         _generators.push_back(generator);
         _currentDecoder = generator;
 

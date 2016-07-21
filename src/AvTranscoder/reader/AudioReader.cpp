@@ -44,12 +44,6 @@ void AudioReader::init()
     _decoder->setupDecoder();
     _currentDecoder = _decoder;
 
-    // generator
-    _generator = new AudioGenerator();
-
-    // create transform
-    _transform = new AudioTransform();
-
     // create src frame
     _srcFrame = new AudioFrame(_inputFile->getStream(_streamIndex).getAudioCodec().getAudioFrameDesc());
     AudioFrame* srcFrame = static_cast<AudioFrame*>(_srcFrame);
@@ -57,6 +51,12 @@ void AudioReader::init()
     _outputSampleRate = srcFrame->getSampleRate();
     _outputNbChannels = (_channelIndex == -1) ? srcFrame->getNbChannels() : 1;
     _dstFrame = new AudioFrame(AudioFrameDesc(_outputSampleRate, _outputNbChannels, _outputSampleFormat));
+
+    // generator
+    _generator = new AudioGenerator(srcFrame->desc());
+
+    // create transform
+    _transform = new AudioTransform();
 }
 
 AudioReader::~AudioReader()

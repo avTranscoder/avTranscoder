@@ -3,14 +3,14 @@
 #include <AvTranscoder/util.hpp>
 
 #include <sstream>
-#include <stdexcept>
 
 namespace avtranscoder
 {
 
-AudioGenerator::AudioGenerator()
+AudioGenerator::AudioGenerator(const AudioFrameDesc& frameDesc)
     : _inputFrame(NULL)
     , _silent(NULL)
+    , _frameDesc(frameDesc)
 {
 }
 
@@ -23,7 +23,11 @@ bool AudioGenerator::decodeNextFrame(Frame& frameBuffer)
 {
     // check the given frame
     if(! frameBuffer.isAudioFrame())
-        throw std::runtime_error("The given frame is not a valid audio frame: allocate a new AVSample to put generated data into it.");
+    {
+        LOG_WARN("The given frame to put data is not a valid audio frame: try to reallocate it.")
+        frameBuffer.clear();
+        static_cast<AudioFrame&>(frameBuffer).allocateAVSample(_frameDesc);
+    }
 
     // Check channel layout of the given frame to be able to copy audio data to it.
     // @see Frame.copyData method
@@ -41,8 +45,7 @@ bool AudioGenerator::decodeNextFrame(Frame& frameBuffer)
         // Generate the silent only once
         if(!_silent)
         {
-            AudioFrame& audioBuffer = static_cast<AudioFrame&>(frameBuffer);
-            _silent = new AudioFrame(audioBuffer.desc());
+            _silent = new AudioFrame(_frameDesc);
 
             std::stringstream msg;
             msg << "Generate a silence with the following features:" << std::endl;

@@ -15,7 +15,7 @@ private:
     VideoGenerator& operator=(const VideoGenerator& videoGenerator);
 
 public:
-    VideoGenerator();
+    VideoGenerator(const VideoFrameDesc& frameDesc);
     ~VideoGenerator();
 
     bool decodeNextFrame(Frame& frameBuffer);
@@ -30,6 +30,7 @@ public:
 private:
     Frame* _inputFrame;              ///< A frame given from outside (has link, no ownership)
     VideoFrame* _blackImage;         ///< The generated RGB black image (has ownership)
+    const VideoFrameDesc _frameDesc; ///< The description of the given frame buffer when decoding.
     VideoTransform _videoTransform;  ///< To transform data of the back image to the given Frame when decoding.
 };
 }

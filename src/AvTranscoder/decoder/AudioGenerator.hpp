@@ -14,7 +14,7 @@ private:
     AudioGenerator(const AudioGenerator& audioGenerator);
 
 public:
-    AudioGenerator();
+    AudioGenerator(const AudioFrameDesc& frameDesc);
 
     ~AudioGenerator();
 
@@ -26,6 +26,7 @@ public:
 private:
     Frame* _inputFrame;              ///< Has link (no ownership)
     AudioFrame* _silent;             ///< The generated silent (has ownership)
+    const AudioFrameDesc _frameDesc; ///< The description of the given frame buffer when decoding.
 };
 }
 
