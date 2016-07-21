@@ -68,7 +68,8 @@ public:
     //@{
     // @brief Add a new stream to the output file, created from the given input description to process.
     // @param inputStreamDescArray: the type of the described streams should be of the same type.
-    void addStream(const std::vector<InputStreamDesc>& inputStreamDescArray, const std::string& profileName, float offset = 0);
+    // @param profile: if empty, get the profile from the inputs.
+    void addStream(const std::vector<InputStreamDesc>& inputStreamDescArray, const std::string& profileName = "", float offset = 0);
     void addStream(const std::vector<InputStreamDesc>& inputStreamDescArray, const ProfileLoader::Profile& profile, const float offset = 0);
     //@}
 
@@ -145,9 +146,10 @@ private:
     InputFile* addInputFile(const std::string& filename, const int streamIndex, const float offset);
 
     /**
-     * @return The profile from the given input. 
+     * @return The profile from the given inputs. 
      */
     ProfileLoader::Profile getProfileFromInput(const InputStreamDesc& inputStreamDesc);
+    ProfileLoader::Profile getProfileFromInputs(const std::vector<InputStreamDesc>& inputStreamDescArray);
 
     /**
      * @brief Get the duration of the stream, in seconds
