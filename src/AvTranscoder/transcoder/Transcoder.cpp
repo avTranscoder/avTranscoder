@@ -79,6 +79,13 @@ void Transcoder::addStream(const std::vector<InputStreamDesc>& inputStreamDescAr
     if(inputStreamDescArray.empty())
         throw std::runtime_error("Need a description of at least one input stream to start the process.");
 
+    // If there is one input, switch to an easier case
+    if(inputStreamDescArray.size() == 1)
+    {
+        addStream(inputStreamDescArray.at(0), profileName, offset);
+        return;
+    }
+
     // Get encoding profile
     ProfileLoader::Profile encodingProfile;
     if(profileName.empty())
