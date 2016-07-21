@@ -35,7 +35,7 @@ def testAddStreamTranscoder():
 
 
 @raises(IOError)
-def testAddAllStreamsOfFileWhichDoesNotExist():
+def testAddAStreamFromAFileWhichDoesNotExist():
     """
     Add all streams from a given file.
     """
@@ -43,7 +43,7 @@ def testAddAllStreamsOfFileWhichDoesNotExist():
     inputFileName = "fileWhichDoesNotExist.mov"
 
     # output
-    outputFileName = "testAddAllStreamsOfFileWhichDoesNotExist.mov"
+    outputFileName = "testAddAStreamFromAFileWhichDoesNotExist.mov"
     ouputFile = av.OutputFile( outputFileName )
 
     transcoder = av.Transcoder( ouputFile )
