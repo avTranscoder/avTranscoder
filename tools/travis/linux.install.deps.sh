@@ -57,7 +57,7 @@ if  [ -z ${TRAVIS_JOB_ID} ] || [ ! -d "${DEPENDENCY_INSTALL_PATH}/lib/" ]; then
                   curl -L -Os http://downloads.sourceforge.net/faac/faac-${FAAC_VERSION}.tar.gz  && \
                   tar xzf faac-${FAAC_VERSION}.tar.gz && \
                   cd faac-${FAAC_VERSION} && \
-                  #sed -i '126d' common/mp4v2/mpeg4ip.h && \
+                  sed -i '126d' common/mp4v2/mpeg4ip.h && \
                   ./bootstrap && \
                   ./configure --prefix="${DEPENDENCY_INSTALL_PATH}" --bindir="${DEPENDENCY_INSTALL_PATH}/bin" --enable-shared --with-mp4v2=no && \
                   make -k > ${DEPENDENCY_LOG_FILE} 2>&1 && \
