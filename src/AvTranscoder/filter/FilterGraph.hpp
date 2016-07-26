@@ -52,6 +52,8 @@ public:
      *                               filter 1 -> filter 2 -> output
      *                                 |
      *                      input 2 ---|
+     * @warning the output frame must be cleared once it has been used
+     * @see the av_buffersink_get_frame function documentation
      */
     void process(const std::vector<Frame*>& inputs, Frame& output);
 
