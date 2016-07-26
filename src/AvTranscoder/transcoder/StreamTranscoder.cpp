@@ -550,9 +550,7 @@ bool StreamTranscoder::processTranscode()
         LOG_DEBUG("Convert")
         _transform->convert(*_filteredData, *_transformedData);
 
-        // free the filtered AVFrame now it has been converted into another one
-        // @see the av_buffersink_get_frame documentation
-        av_frame_unref(&_filteredData->getAVFrame());
+        _filteredData->clear();
 
         LOG_DEBUG("Encode")
         _outputEncoder->encodeFrame(*_transformedData, data);
