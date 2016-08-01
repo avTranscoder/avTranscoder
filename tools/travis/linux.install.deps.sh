@@ -49,20 +49,21 @@ if  [ -z ${TRAVIS_JOB_ID} ] || [ ! -d "${DEPENDENCY_INSTALL_PATH}/lib/" ]; then
 
 
     # faac
+    # Compilation error on OSX
     # http://stackoverflow.com/a/4320377
     # http://sourceforge.net/p/faac/bugs/162/#46a0
-    echo ""
-    echo "Building faac (${FAAC_VERSION})"
-    DIR=$(mktemp -d faacXXX) && cd ${DIR} && \
-                  curl -L -Os http://downloads.sourceforge.net/faac/faac-${FAAC_VERSION}.tar.gz  && \
-                  tar xzf faac-${FAAC_VERSION}.tar.gz && \
-                  cd faac-${FAAC_VERSION} && \
-                  sed -i '126d' common/mp4v2/mpeg4ip.h && \
-                  ./bootstrap && \
-                  ./configure --prefix="${DEPENDENCY_INSTALL_PATH}" --bindir="${DEPENDENCY_INSTALL_PATH}/bin" --enable-shared --with-mp4v2=no && \
-                  make -k > ${DEPENDENCY_LOG_FILE} 2>&1 && \
-                  make install && \
-                  rm -rf ${DIR}
+#    echo ""
+#    echo "Building faac (${FAAC_VERSION})"
+#    DIR=$(mktemp -d faacXXX) && cd ${DIR} && \
+#                  curl -L -Os http://downloads.sourceforge.net/faac/faac-${FAAC_VERSION}.tar.gz  && \
+#                  tar xzf faac-${FAAC_VERSION}.tar.gz && \
+#                  cd faac-${FAAC_VERSION} && \
+#                  sed -i '126d' common/mp4v2/mpeg4ip.h && \
+#                  ./bootstrap && \
+#                  ./configure --prefix="${DEPENDENCY_INSTALL_PATH}" --bindir="${DEPENDENCY_INSTALL_PATH}/bin" --enable-shared --with-mp4v2=no && \
+#                  make -k > ${DEPENDENCY_LOG_FILE} 2>&1 && \
+#                  make install && \
+#                  rm -rf ${DIR}
 
     # xvid
     echo ""
@@ -78,17 +79,18 @@ if  [ -z ${TRAVIS_JOB_ID} ] || [ ! -d "${DEPENDENCY_INSTALL_PATH}/lib/" ]; then
 
 
     # fdk-aac
+    # Compilation error on OSX
     # Warning: need automake + libtool
-    echo ""
-    echo "Building fdk-aac (${FDKAAC_VERSION})"
-    DIR=$(mktemp -d fdk-aacXXX) && cd ${DIR} && \
-                  curl -s https://codeload.github.com/mstorsjo/fdk-aac/tar.gz/v${FDKAAC_VERSION} | tar zxf - && \
-                  cd fdk-aac-${FDKAAC_VERSION} && \
-                  autoreconf -fiv && \
-                  ./configure --prefix="${DEPENDENCY_INSTALL_PATH}" --enable-shared && \
-                  make -k > ${DEPENDENCY_LOG_FILE} 2>&1 && \
-                  make install && \
-                  rm -rf ${DIR}
+#    echo ""
+#    echo "Building fdk-aac (${FDKAAC_VERSION})"
+#    DIR=$(mktemp -d fdk-aacXXX) && cd ${DIR} && \
+#                  curl -s https://codeload.github.com/mstorsjo/fdk-aac/tar.gz/v${FDKAAC_VERSION} | tar zxf - && \
+#                  cd fdk-aac-${FDKAAC_VERSION} && \
+#                  autoreconf -fiv && \
+#                  ./configure --prefix="${DEPENDENCY_INSTALL_PATH}" --enable-shared && \
+#                  make -k > ${DEPENDENCY_LOG_FILE} 2>&1 && \
+#                  make install && \
+#                  rm -rf ${DIR}
 
     # libogg
     echo ""
@@ -158,7 +160,7 @@ if  [ -z ${TRAVIS_JOB_ID} ] || [ ! -d "${DEPENDENCY_INSTALL_PATH}/lib/" ]; then
     export RELEASE_OPTIONS=--disable-debug
     export DEBUG_OPTIONS=--enable-debug=3\ --disable-optimizations\ --disable-sse\ --disable-stripping
     export LICENSING_OPTIONS=--enable-gpl\ --enable-nonfree
-    export THIRD_PARTIES_OPTIONS=--enable-libfaac\ --enable-libmp3lame\ --enable-libx264\ --enable-libxvid\ --enable-avresample\ --enable-libfdk_aac\ --enable-libvorbis\ --enable-libvpx
+    export THIRD_PARTIES_OPTIONS=--enable-libmp3lame\ --enable-libx264\ --enable-libxvid\ --enable-avresample\ --enable-libvorbis\ --enable-libvpx
 
     if [[ ${DEPENDENCY_NAME} == "ffmpeg" ]]; then
 
