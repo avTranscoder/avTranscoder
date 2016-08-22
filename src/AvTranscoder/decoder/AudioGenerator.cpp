@@ -55,8 +55,8 @@ bool AudioGenerator::decodeNextFrame(Frame& frameBuffer)
     // Take audio frame from _inputFrame
     else
     {
-        LOG_DEBUG("Copy data of the audio specified when decode next frame")
-        frameBuffer.copyData(*_inputFrame);
+        LOG_DEBUG("Convert data of the audio specified when decode next frame")
+        _audioTransform.convert(*_inputFrame, frameBuffer);
     }
     return true;
 }

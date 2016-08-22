@@ -3,6 +3,7 @@
 
 #include "IDecoder.hpp"
 #include <AvTranscoder/codec/AudioCodec.hpp>
+#include <AvTranscoder/transform/AudioTransform.hpp>
 
 namespace avtranscoder
 {
@@ -21,12 +22,18 @@ public:
     bool decodeNextFrame(Frame& frameBuffer);
     bool decodeNextFrame(Frame& frameBuffer, const std::vector<size_t> channelIndexArray);
 
+    /**
+     * @brief Force to return this frame when calling the decoding methods.
+     * @param inputFrame: could have other properties than the given frame when decoding (will be converted).
+     * @see decodeNextFrame
+     */
     void setNextFrame(Frame& inputFrame) { _inputFrame = &inputFrame; }
 
 private:
     Frame* _inputFrame;              ///< Has link (no ownership)
     AudioFrame* _silent;             ///< The generated silent (has ownership)
     const AudioFrameDesc _frameDesc; ///< The description of the given frame buffer when decoding.
+    AudioTransform _audioTransform;  ///< To transform the specified data when decoding.
 };
 }
 
