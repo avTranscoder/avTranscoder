@@ -11,7 +11,6 @@ VideoGenerator::VideoGenerator(const VideoFrameDesc& frameDesc)
     : _inputFrame(NULL)
     , _blackImage(NULL)
     , _frameDesc(frameDesc)
-    , _videoTransform()
 {
 }
 
@@ -57,8 +56,8 @@ bool VideoGenerator::decodeNextFrame(Frame& frameBuffer)
     // Take image from _inputFrame
     else
     {
-        LOG_DEBUG("Copy data of the image specified when decode next frame")
-        frameBuffer.copyData(*_inputFrame);
+        LOG_DEBUG("Convert data of the image specified when decode next frame")
+        _videoTransform.convert(*_inputFrame, frameBuffer);
     }
     return true;
 }

@@ -23,7 +23,8 @@ public:
 
     /**
      * @brief Force to return this frame when calling the decoding methods.
-     * @param inputFrame: should have the same properties as the given frames when decoding.
+     * @param inputFrame: could have other properties than the given frame when decoding (will be converted).
+     * @see decodeNextFrame
      */
     void setNextFrame(Frame& inputFrame) { _inputFrame = &inputFrame; }
 
