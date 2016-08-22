@@ -173,9 +173,9 @@ std::string VideoProperties::getColorRange() const
         case AVCOL_RANGE_UNSPECIFIED:
             return "unspecified";
         case AVCOL_RANGE_MPEG:
-            return "Head";
+            return "Limited"; //< legal TV range: 16-235 with 8bits
         case AVCOL_RANGE_JPEG:
-            return "Full";
+            return "Full"; // full range: 0-255 with 8bits
         case AVCOL_RANGE_NB:
             return "Not ABI";
         default:
