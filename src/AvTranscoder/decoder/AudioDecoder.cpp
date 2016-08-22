@@ -56,7 +56,8 @@ void AudioDecoder::setupDecoder(const ProfileLoader::Profile& profile)
     for(ProfileLoader::Profile::const_iterator it = profile.begin(); it != profile.end(); ++it)
     {
         if((*it).first == constants::avProfileIdentificator || (*it).first == constants::avProfileIdentificatorHuman ||
-           (*it).first == constants::avProfileType || (*it).first == constants::avProfileThreads)
+           (*it).first == constants::avProfileType || (*it).first == constants::avProfileCodec ||
+           (*it).first == constants::avProfileThreads)
             continue;
 
         try
