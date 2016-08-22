@@ -42,6 +42,12 @@ IOutputStream& OutputFile::addVideoStream(const VideoCodec& videoDesc)
     stream.codec->level = videoDesc.getAVCodecContext().level;
     stream.codec->field_order = videoDesc.getAVCodecContext().field_order;
 
+    stream.codec->colorspace = videoDesc.getAVCodecContext().colorspace;
+    stream.codec->color_primaries = videoDesc.getAVCodecContext().color_primaries;
+    stream.codec->color_range = videoDesc.getAVCodecContext().color_range;
+    stream.codec->color_trc = videoDesc.getAVCodecContext().color_trc;
+    stream.codec->chroma_sample_location = videoDesc.getAVCodecContext().chroma_sample_location;
+
     setOutputStream(stream, videoDesc);
 
     // need to set the time_base on the AVCodecContext and the AVStream
