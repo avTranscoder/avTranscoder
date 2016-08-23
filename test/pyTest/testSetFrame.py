@@ -38,7 +38,7 @@ def testSetVideoFrame():
         p.progress( i, nbFrames )
 
         # set video frame
-        frame = av.VideoFrame( av.VideoFrameDesc(1920, 1080, "yuv422p") )
+        frame = av.VideoFrame(av.VideoFrameDesc(1920, 1080, "rgb24"))
         frame.assign(i)
         videoDecoder.setNextFrame( frame )
 
@@ -84,7 +84,7 @@ def testSetAudioFrame():
         p.progress( i, nbFrames )
 
         # set video frame
-        frame = av.AudioFrame( av.AudioFrameDesc(48000, 1, "s32") )
+        frame = av.AudioFrame(av.AudioFrameDesc(44100, 1, "s16"))
         frame.assign(i)
         audioDecoder.setNextFrame( frame )
 
