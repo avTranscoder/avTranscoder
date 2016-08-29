@@ -263,23 +263,24 @@ void loadOptions(OptionMap& outOptions, void* av_class, int req_flags)
     }
 
     // iterate on child options
-    for(std::vector<Option>::iterator itOption = childOptions.begin(); itOption != childOptions.end(); ++itOption)
+    for(std::vector<Option>::iterator itChild = childOptions.begin(); itChild != childOptions.end(); ++itChild)
     {
         bool parentFound = false;
-        for(std::multimap<std::string, std::string>::iterator itUnit = optionUnitToParentName.begin();
-            itUnit != optionUnitToParentName.end(); ++itUnit)
+        for(std::multimap<std::string, std::string>::iterator itUnitToParents = optionUnitToParentName.begin();
+            itUnitToParents != optionUnitToParentName.end(); ++itUnitToParents)
         {
-            if(itUnit->first == itOption->getUnit())
+            const std::string parentUnit = itUnitToParents->first;
+            const std::string parentName = itUnitToParents->second;
+            if(parentUnit == itChild->getUnit())
             {
-                std::string nameParentOption = itUnit->second;
-                Option& parentOption = outOptions.at(nameParentOption);
+                Option& parentOption = outOptions.at(parentName);
 
-                parentOption.appendChild(*itOption);
+                parentOption.appendChild(*itChild);
 
                 // child of a Choice
                 if(parentOption.getType() == eOptionBaseTypeChoice)
                 {
-                    if(itOption->getDefaultInt() == parentOption.getDefaultInt())
+                    if(itChild->getDefaultInt() == parentOption.getDefaultInt())
                         parentOption.setDefaultChildIndex(parentOption.getChilds().size() - 1);
                 }
 
@@ -290,7 +291,7 @@ void loadOptions(OptionMap& outOptions, void* av_class, int req_flags)
 
         if(!parentFound)
         {
-            LOG_WARN("Can't find a choice option for " << itOption->getName())
+            LOG_WARN("Can't find a choice option for " << itChild->getName())
         }
     }
 }
