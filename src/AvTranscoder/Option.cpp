@@ -229,6 +229,7 @@ void loadOptions(OptionMap& outOptions, void* av_class, int req_flags)
     if(!av_class)
         return;
 
+    // Use multimap because it is possible to have several parent options with the same unit
     std::multimap<std::string, std::string> optionUnitToParentName;
     std::vector<Option> childOptions;
 
@@ -255,39 +256,49 @@ void loadOptions(OptionMap& outOptions, void* av_class, int req_flags)
         else
         {
             outOptions.insert(std::make_pair(option.getName(), option));
-            optionUnitToParentName.insert(std::make_pair(option.getUnit(), option.getName()));
+            if(! option.getUnit().empty())
+            {
+                optionUnitToParentName.insert(std::make_pair(option.getUnit(), option.getName()));
+            }
         }
     }
 
     // iterate on child options
-    for(std::vector<Option>::iterator itOption = childOptions.begin(); itOption != childOptions.end(); ++itOption)
+    for(std::vector<Option>::iterator itChild = childOptions.begin(); itChild != childOptions.end(); ++itChild)
     {
         bool parentFound = false;
-        for(std::multimap<std::string, std::string>::iterator itUnit = optionUnitToParentName.begin();
-            itUnit != optionUnitToParentName.end(); ++itUnit)
+        for(std::multimap<std::string, std::string>::iterator itUnitToParents = optionUnitToParentName.begin();
+            itUnitToParents != optionUnitToParentName.end(); ++itUnitToParents)
         {
-            if(itUnit->first == itOption->getUnit())
+            const std::string parentUnit = itUnitToParents->first;
+            if(parentUnit == itChild->getUnit())
             {
-                std::string nameParentOption = itUnit->second;
-                Option& parentOption = outOptions.at(nameParentOption);
-
-                parentOption.appendChild(*itOption);
-
-                // child of a Choice
-                if(parentOption.getType() == eOptionBaseTypeChoice)
+                // Get all the parent options with the same unit
+                std::pair<std::multimap<std::string, std::string>::iterator, std::multimap<std::string, std::string>::iterator> parentOptions = optionUnitToParentName.equal_range(parentUnit);
+                for(std::multimap<std::string, std::string>::iterator itParent = parentOptions.first; itParent != parentOptions.second; ++itParent)
                 {
-                    if(itOption->getDefaultInt() == parentOption.getDefaultInt())
-                        parentOption.setDefaultChildIndex(parentOption.getChilds().size() - 1);
+                    const std::string parentName = itParent->second;
+                    Option& parentOption = outOptions.at(parentName);
+                    parentOption.appendChild(*itChild);
+
+                    // child of a Choice
+                    if(parentOption.getType() == eOptionBaseTypeChoice)
+                    {
+                        if(itChild->getDefaultInt() == parentOption.getDefaultInt())
+                            parentOption.setDefaultChildIndex(parentOption.getChilds().size() - 1);
+                    }
+
+                    parentFound = true;
                 }
 
-                parentFound = true;
-                break;
+                if(parentFound)
+                    break;
             }
         }
 
         if(!parentFound)
         {
-            LOG_WARN("Can't find a choice option for " << itOption->getName())
+            LOG_WARN("Can't find a choice option for " << itChild->getName())
         }
     }
 }
