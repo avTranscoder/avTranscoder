@@ -255,7 +255,10 @@ void loadOptions(OptionMap& outOptions, void* av_class, int req_flags)
         else
         {
             outOptions.insert(std::make_pair(option.getName(), option));
-            optionUnitToParentName.insert(std::make_pair(option.getUnit(), option.getName()));
+            if(! option.getUnit().empty())
+            {
+                optionUnitToParentName.insert(std::make_pair(option.getUnit(), option.getName()));
+            }
         }
     }
 
