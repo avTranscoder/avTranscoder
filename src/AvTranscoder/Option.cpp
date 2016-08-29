@@ -229,6 +229,7 @@ void loadOptions(OptionMap& outOptions, void* av_class, int req_flags)
     if(!av_class)
         return;
 
+    // Use multimap because it is possible to have several parent options with the same unit
     std::multimap<std::string, std::string> optionUnitToParentName;
     std::vector<Option> childOptions;
 
@@ -270,22 +271,28 @@ void loadOptions(OptionMap& outOptions, void* av_class, int req_flags)
             itUnitToParents != optionUnitToParentName.end(); ++itUnitToParents)
         {
             const std::string parentUnit = itUnitToParents->first;
-            const std::string parentName = itUnitToParents->second;
             if(parentUnit == itChild->getUnit())
             {
-                Option& parentOption = outOptions.at(parentName);
-
-                parentOption.appendChild(*itChild);
-
-                // child of a Choice
-                if(parentOption.getType() == eOptionBaseTypeChoice)
+                // Get all the parent options with the same unit
+                std::pair<std::multimap<std::string, std::string>::iterator, std::multimap<std::string, std::string>::iterator> parentOptions = optionUnitToParentName.equal_range(parentUnit);
+                for(std::multimap<std::string, std::string>::iterator itParent = parentOptions.first; itParent != parentOptions.second; ++itParent)
                 {
-                    if(itChild->getDefaultInt() == parentOption.getDefaultInt())
-                        parentOption.setDefaultChildIndex(parentOption.getChilds().size() - 1);
+                    const std::string parentName = itParent->second;
+                    Option& parentOption = outOptions.at(parentName);
+                    parentOption.appendChild(*itChild);
+
+                    // child of a Choice
+                    if(parentOption.getType() == eOptionBaseTypeChoice)
+                    {
+                        if(itChild->getDefaultInt() == parentOption.getDefaultInt())
+                            parentOption.setDefaultChildIndex(parentOption.getChilds().size() - 1);
+                    }
+
+                    parentFound = true;
                 }
 
-                parentFound = true;
-                break;
+                if(parentFound)
+                    break;
             }
         }
 
