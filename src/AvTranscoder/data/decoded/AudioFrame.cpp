@@ -57,6 +57,11 @@ std::string AudioFrame::getChannelLayoutDesc() const
     return std::string(buf);
 }
 
+AudioFrame::~AudioFrame()
+{
+    freeAVSample();
+}
+
 size_t AudioFrame::getSize() const
 {
     if(getSampleFormat() == AV_SAMPLE_FMT_NONE)
@@ -102,6 +107,11 @@ void AudioFrame::allocateAVSample(const AudioFrameDesc& desc)
         os << "sample format = " << getSampleFormatName(desc._sampleFormat);
         throw std::runtime_error(os.str());
     }
+}
+
+void AudioFrame::freeAVSample()
+{
+    av_freep(&_frame->data[0]);
 }
 
 void AudioFrame::assign(const unsigned char value)

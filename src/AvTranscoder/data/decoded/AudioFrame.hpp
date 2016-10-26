@@ -41,6 +41,7 @@ public:
      */
     AudioFrame(const AudioFrameDesc& ref);
     AudioFrame(const Frame& otherFrame);
+    ~AudioFrame();
 
     size_t getSampleRate() const { return av_frame_get_sample_rate(_frame); }
     size_t getNbChannels() const { return av_frame_get_channels(_frame); }
@@ -69,8 +70,15 @@ public:
 private:
     /**
      * @brief Allocate the audio buffer of the frame.
+     * @warning The allocated data should be freed by the caller.
+     * @see freeAVSample
      */
     void allocateAVSample(const AudioFrameDesc& ref);
+
+    /**
+     * @brief Free the audio buffer of the frame.
+     */
+    void freeAVSample();
 
     /**
      * @note To allocate new audio buffer if needed.
