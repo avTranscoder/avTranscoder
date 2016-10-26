@@ -101,6 +101,7 @@ public:
 
 private:
     void allocateAVFrame();
+    void freeAVFrame();
 
 protected:
     AVFrame* _frame;

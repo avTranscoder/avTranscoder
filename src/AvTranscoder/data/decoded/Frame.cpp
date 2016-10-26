@@ -34,19 +34,7 @@ void Frame::operator=(const Frame& otherFrame)
 
 Frame::~Frame()
 {
-    if(_frame != NULL)
-    {
-#if LIBAVCODEC_VERSION_MAJOR > 54
-        av_frame_free(&_frame);
-#else
-#if LIBAVCODEC_VERSION_MAJOR > 53
-        avcodec_free_frame(&_frame);
-#else
-        av_free(_frame);
-#endif
-#endif
-        _frame = NULL;
-    }
+    freeAVFrame();
 }
 
 int Frame::getEncodedSize() const
@@ -97,6 +85,23 @@ void Frame::allocateAVFrame()
     if(_frame == NULL)
     {
         throw std::runtime_error("Unable to allocate an empty Frame.");
+    }
+}
+
+void Frame::freeAVFrame()
+{
+    if(_frame != NULL)
+    {
+#if LIBAVCODEC_VERSION_MAJOR > 54
+        av_frame_free(&_frame);
+#else
+#if LIBAVCODEC_VERSION_MAJOR > 53
+        avcodec_free_frame(&_frame);
+#else
+        av_free(_frame);
+#endif
+#endif
+        _frame = NULL;
     }
 }
 
