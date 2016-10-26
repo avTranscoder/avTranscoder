@@ -45,6 +45,7 @@ class AvExport VideoFrame : public Frame
 public:
     VideoFrame(const VideoFrameDesc& ref);
     VideoFrame(const Frame& otherFrame);
+    ~VideoFrame();
 
     size_t getWidth() const { return _frame->width; }
     size_t getHeight() const { return _frame->height; }
@@ -68,8 +69,15 @@ public:
 private:
     /**
      * @brief Allocate the image buffer of the frame.
+     * @warning The allocated data should be freed by the caller.
+     * @see freeAVPicture
      */
     void allocateAVPicture(const VideoFrameDesc& desc);
+
+    /**
+     * @brief Free the image buffer of the frame.
+     */
+    void freeAVPicture();
 
     /**
      * @note To allocate new image buffer if needed.

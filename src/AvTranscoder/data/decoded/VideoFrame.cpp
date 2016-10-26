@@ -56,6 +56,11 @@ VideoFrame::VideoFrame(const Frame& otherFrame)
 {
 }
 
+VideoFrame::~VideoFrame()
+{
+    freeAVPicture();
+}
+
 size_t VideoFrame::getSize() const
 {
     if(getPixelFormat() == AV_PIX_FMT_NONE)
@@ -85,6 +90,11 @@ void VideoFrame::allocateAVPicture(const VideoFrameDesc& desc)
     _frame->width = desc._width;
     _frame->height = desc._height;
     _frame->format = desc._pixelFormat;
+}
+
+void VideoFrame::freeAVPicture()
+{
+    avpicture_free(reinterpret_cast<AVPicture*>(_frame));
 }
 
 void VideoFrame::assign(const unsigned char value)
