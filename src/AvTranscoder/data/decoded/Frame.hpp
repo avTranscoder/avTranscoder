@@ -52,8 +52,10 @@ public:
 
     /**
      * @brief Copy the data of the given Frame.
-     * @note This function does not allocate anything: the current frame must be already initialized and
+     * This function does not allocate anything: the current frame must be already initialized and
      * allocated with the same parameters as the given frame, to be ready for memcpy instructions.
+     * @note It copies the frame data (i.e. the contents of the data / extended data arrays), not any other properties.
+     * @see copyProperties
      */
     void copyData(const Frame& frameToRef);
 
@@ -61,6 +63,11 @@ public:
      * @brief Copy all the fields that do not affect the data layout in the buffers.
      */
     void copyProperties(const Frame& otherFrame);
+
+    /**
+     * @brief If the data buffer of the frame refers to data allocated by an other frame.
+     */
+    bool isRefCounted() const;
 
     /**
      * @brief Copy frame properties and create a new reference to data of the given frame.

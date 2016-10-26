@@ -68,6 +68,11 @@ void Frame::copyProperties(const Frame& otherFrame)
     av_frame_copy_props(_frame, &otherFrame.getAVFrame());
 }
 
+bool Frame::isRefCounted() const
+{
+    return _frame->buf[0];
+}
+
 void Frame::refFrame(const Frame& otherFrame)
 {
     const int ret = av_frame_ref(_frame, &otherFrame.getAVFrame());
