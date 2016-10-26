@@ -25,7 +25,7 @@ bool AudioGenerator::decodeNextFrame(Frame& frameBuffer)
     if(! frameBuffer.isAudioFrame())
     {
         LOG_WARN("The given frame to put data is not a valid audio frame: try to reallocate it.")
-        frameBuffer.clear();
+        frameBuffer.unrefFrame();
         static_cast<AudioFrame&>(frameBuffer).allocateAVSample(_frameDesc);
     }
 

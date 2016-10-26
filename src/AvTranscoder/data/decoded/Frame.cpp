@@ -82,7 +82,7 @@ void Frame::refFrame(const Frame& otherFrame)
     }
 }
 
-void Frame::clear()
+void Frame::unrefFrame()
 {
     av_frame_unref(_frame);
 }
