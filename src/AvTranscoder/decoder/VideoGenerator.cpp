@@ -21,14 +21,6 @@ VideoGenerator::~VideoGenerator()
 
 bool VideoGenerator::decodeNextFrame(Frame& frameBuffer)
 {
-    // check the given frame
-    if(! frameBuffer.isVideoFrame())
-    {
-        LOG_WARN("The given frame to put data is not a valid video frame: try to reallocate it.")
-        static_cast<VideoFrame&>(frameBuffer).freeAVPicture();
-        static_cast<VideoFrame&>(frameBuffer).allocateAVPicture(_frameDesc);
-    }
-
     // Generate black image
     if(!_inputFrame)
     {

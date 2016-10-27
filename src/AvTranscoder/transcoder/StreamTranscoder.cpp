@@ -588,6 +588,9 @@ bool StreamTranscoder::processTranscode()
             if(_needToSwitchToGenerator)
             {
                 switchToGeneratorDecoder();
+                // force reallocation of the buffers since de decoders have cleared them
+                for(std::vector<Frame*>::iterator it = _decodedData.begin(); it != _decodedData.end(); ++it)
+                    (*it)->allocateData();
                 return processTranscode();
             }
             return false;

@@ -70,6 +70,14 @@ public:
      * @see getSize
      */
     void assign(const unsigned char* ptrValue);
+
+private:
+    /**
+     * @brief Description of the frame to allocate.
+     * @warning This description could be different from the current frame (a decoder could have reseted it).
+     * We need to keep this description to allocate again the frame even if it was reseted.
+     */
+    const AudioFrameDesc _desc;
 };
 }
 

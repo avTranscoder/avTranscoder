@@ -47,6 +47,7 @@ void VideoFrameDesc::setParameters(const ProfileLoader::Profile& profile)
 
 VideoFrame::VideoFrame(const VideoFrameDesc& desc)
     : Frame()
+    , _desc(desc)
 {
     _frame->width = desc._width;
     _frame->height = desc._height;
@@ -78,15 +79,20 @@ void VideoFrame::allocateData()
     if(_dataAllocated)
         return;
 
-    const AVPixelFormat format = static_cast<AVPixelFormat>(_frame->format);
-    const int ret = avpicture_alloc(reinterpret_cast<AVPicture*>(_frame), format, _frame->width, _frame->height);
+    // Set Frame properties
+    _frame->width = _desc._width;
+    _frame->height = _desc._height;
+    _frame->format = _desc._pixelFormat;
+
+    // Allocate data
+    const int ret = avpicture_alloc(reinterpret_cast<AVPicture*>(_frame), _desc._pixelFormat, _desc._width, _desc._height);
     if(ret < 0)
     {
         std::stringstream os;
         os << "Unable to allocate an image frame of ";
         os << "width = " << _frame->width << ", ";
         os << "height = " << _frame->height << ", ";
-        os << "pixel format = " << getPixelFormatName(format);
+        os << "pixel format = " << getPixelFormatName(_desc._pixelFormat);
         throw std::runtime_error(os.str());
     }
     _dataAllocated = true;

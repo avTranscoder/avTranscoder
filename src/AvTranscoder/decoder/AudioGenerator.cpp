@@ -21,14 +21,6 @@ AudioGenerator::~AudioGenerator()
 
 bool AudioGenerator::decodeNextFrame(Frame& frameBuffer)
 {
-    // check the given frame
-    if(! frameBuffer.isAudioFrame())
-    {
-        LOG_WARN("The given frame to put data is not a valid audio frame: try to reallocate it.")
-        static_cast<AudioFrame&>(frameBuffer).freeAVSample();
-        static_cast<AudioFrame&>(frameBuffer).allocateAVSample(_frameDesc);
-    }
-
     // Generate silent
     if(!_inputFrame)
     {
