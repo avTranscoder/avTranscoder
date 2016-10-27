@@ -12,7 +12,7 @@ FormatContext::FormatContext(const std::string& filename, int req_flags, AVDicti
     , _options()
     , _isOpen(false)
 {
-    int ret = avformat_open_input(&_avFormatContext, filename.c_str(), NULL, options);
+    const int ret = avformat_open_input(&_avFormatContext, filename.c_str(), NULL, options);
     if(ret < 0)
     {
         std::string msg = "Unable to open file ";
@@ -44,10 +44,14 @@ FormatContext::~FormatContext()
     if(!_avFormatContext)
         return;
 
+    // free the streams added
+    for(unsigned int i = 0; i < _avFormatContext->nb_streams; ++i)
+        avcodec_close(_avFormatContext->streams[i]->codec);
+
+    // free the format context
     if(_isOpen)
         avformat_close_input(&_avFormatContext);
-    else
-        avformat_free_context(_avFormatContext);
+    avformat_free_context(_avFormatContext);
     _avFormatContext = NULL;
 }
 

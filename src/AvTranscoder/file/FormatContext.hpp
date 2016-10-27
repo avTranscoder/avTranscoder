@@ -23,11 +23,13 @@ private:
 public:
     /**
      * @brief Allocate an AVFormatContext by opening an input file
+     * @see InputFile
      */
     FormatContext(const std::string& filename, int req_flags = 0, AVDictionary** options = NULL);
 
     /**
      * @brief Allocate an AVFormatContext with default values
+     * @see OutputFile
      */
     FormatContext(int req_flags = 0);
 
