@@ -320,7 +320,9 @@ StreamTranscoder::StreamTranscoder(IOutputFile& outputFile, const ProfileLoader:
         // buffers to process
         VideoFrameDesc outputFrameDesc = inputFrameDesc;
         outputFrameDesc.setParameters(profile);
-        _decodedData.push_back(new VideoFrame(inputFrameDesc));
+        VideoFrame* decodedData = new VideoFrame(inputFrameDesc);
+        decodedData->allocateData();
+        _decodedData.push_back(decodedData);
         _filteredData = new VideoFrame(inputFrameDesc);
         _filteredData->allocateData();
         _transformedData = new VideoFrame(outputFrameDesc);
@@ -355,7 +357,9 @@ StreamTranscoder::StreamTranscoder(IOutputFile& outputFile, const ProfileLoader:
         // buffers to process
         AudioFrameDesc outputFrameDesc = inputFrameDesc;
         outputFrameDesc.setParameters(profile);
-        _decodedData.push_back(new AudioFrame(inputFrameDesc));
+        AudioFrame* decodedData = new AudioFrame(inputFrameDesc);
+        decodedData->allocateData();
+        _decodedData.push_back(decodedData);
         _filteredData = new AudioFrame(inputFrameDesc);
         _filteredData->allocateData();
         _transformedData = new AudioFrame(outputFrameDesc);
