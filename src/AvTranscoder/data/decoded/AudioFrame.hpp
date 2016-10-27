@@ -53,7 +53,6 @@ public:
     std::string getChannelLayoutDesc() const; ///< Get a description of a channel layout (example: '5.1').
     AVSampleFormat getSampleFormat() const { return static_cast<AVSampleFormat>(_frame->format); }
     size_t getNbSamplesPerChannel() const { return _frame->nb_samples; }
-    AudioFrameDesc desc() const { return AudioFrameDesc(getSampleRate(), getNbChannels(), getSampleFormat()); }
 
     size_t getSize() const;
 

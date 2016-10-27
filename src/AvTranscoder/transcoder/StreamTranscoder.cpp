@@ -247,7 +247,7 @@ void StreamTranscoder::addDecoder(const InputStreamDesc& inputStreamDesc, IInput
             _decodedData.push_back(inputFrame);
 
             // generator decoder
-            _generators.push_back(new VideoGenerator(inputFrame->desc()));
+            _generators.push_back(new VideoGenerator(inputStream.getVideoCodec().getVideoFrameDesc()));
 
             break;
         }

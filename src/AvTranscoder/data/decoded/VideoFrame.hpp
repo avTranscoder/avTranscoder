@@ -57,7 +57,6 @@ public:
     size_t getWidth() const { return _frame->width; }
     size_t getHeight() const { return _frame->height; }
     AVPixelFormat getPixelFormat() const { return static_cast<AVPixelFormat>(_frame->format); }
-    VideoFrameDesc desc() const { return VideoFrameDesc(getWidth(), getHeight(), getPixelFormat()); }
 
     size_t getSize() const;
 

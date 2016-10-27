@@ -44,7 +44,8 @@ void VideoReader::init()
     _currentDecoder = _decoder;
 
     // create src frame
-    _srcFrame = new VideoFrame(_inputFile->getStream(_streamIndex).getVideoCodec().getVideoFrameDesc());
+    const VideoFrameDesc srcFrameDesc = _inputFile->getStream(_streamIndex).getVideoCodec().getVideoFrameDesc();
+    _srcFrame = new VideoFrame(srcFrameDesc);
     VideoFrame* srcFrame = static_cast<VideoFrame*>(_srcFrame);
     // create dst frame
     _outputWidth = srcFrame->getWidth();
@@ -52,7 +53,7 @@ void VideoReader::init()
     _dstFrame = new VideoFrame(VideoFrameDesc(_outputWidth, _outputHeight, getOutputPixelFormat()));
 
     // generator
-    _generator = new VideoGenerator(srcFrame->desc());
+    _generator = new VideoGenerator(srcFrameDesc);
 
     // create transform
     _transform = new VideoTransform();
