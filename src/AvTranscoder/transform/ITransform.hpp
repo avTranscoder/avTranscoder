@@ -15,9 +15,6 @@ public:
     virtual ~ITransform() {}
 
     virtual void convert(const Frame& src, Frame& dst) = 0;
-
-protected:
-    virtual bool init(const Frame& src, const Frame& dst) = 0;
 };
 }
 

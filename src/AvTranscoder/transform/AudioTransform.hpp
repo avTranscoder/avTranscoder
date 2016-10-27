@@ -3,8 +3,7 @@
 
 #include "ITransform.hpp"
 
-#include <AvTranscoder/common.hpp>
-#include <AvTranscoder/data/decoded/Frame.hpp>
+#include <AvTranscoder/data/decoded/AudioFrame.hpp>
 
 #ifdef AVTRANSCODER_LIBAV_DEPENDENCY
 #define ResampleContext AVAudioResampleContext
@@ -30,7 +29,7 @@ public:
     void convert(const Frame& srcFrame, Frame& dstFrame);
 
 private:
-    bool init(const Frame& srcFrame, const Frame& dstFrame);
+    bool init(const AudioFrame& src, const AudioFrame& dst);
 
 private:
     ResampleContext* _audioConvertContext;
