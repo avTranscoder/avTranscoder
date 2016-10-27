@@ -49,7 +49,7 @@ ICodec::~ICodec()
     if(!_isCodecContextAllocated)
         return;
 
-    av_free(_avCodecContext);
+    avcodec_free_context(&_avCodecContext);
     _avCodecContext = NULL;
 }
 
