@@ -57,12 +57,12 @@ public:
      */
     void process(const std::vector<Frame*>& inputs, Frame& output);
 
-private:
     /**
      * @return If at least one filter has been added to the filter graph
      */
     bool hasFilters() const { return !_filters.empty(); }
 
+private:
     /**
      * @brief Initialize the graph of filters to process.
      * @see pushFilterToGraph

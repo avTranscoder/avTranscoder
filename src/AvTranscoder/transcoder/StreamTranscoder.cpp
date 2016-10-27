@@ -526,6 +526,7 @@ bool StreamTranscoder::processTranscode()
 
     LOG_DEBUG("StreamTranscoder::processTranscode")
 
+    // Decode
     LOG_DEBUG("Decode next frame")
     bool decodingStatus = true;
     for(size_t index = 0; index < _generators.size(); ++index)
@@ -541,14 +542,24 @@ bool StreamTranscoder::processTranscode()
             decodingStatus = decodingStatus && _currentDecoder->decodeNextFrame(*_decodedData.at(index));
     }
 
+    // Transform
     CodedData data;
     if(decodingStatus)
     {
-        LOG_DEBUG("Filtering")
-        _filterGraph->process(_decodedData, *_filteredData);
+        Frame* dataToTransform = NULL;
+        if(_filterGraph->hasFilters())
+        {
+            LOG_DEBUG("Filtering")
+            _filterGraph->process(_decodedData, *_filteredData);
+            dataToTransform = _filteredData;
+        }
+        else
+        {
+            dataToTransform = _decodedData.at(0);
+        }
 
         LOG_DEBUG("Convert")
-        _transform->convert(*_filteredData, *_transformedData);
+        _transform->convert(*dataToTransform, *_transformedData);
 
         LOG_DEBUG("Encode")
         _outputEncoder->encodeFrame(*_transformedData, data);
@@ -567,6 +578,7 @@ bool StreamTranscoder::processTranscode()
         }
     }
 
+    // Wrap
     LOG_DEBUG("wrap (" << data.getSize() << " bytes)")
     const IOutputStream::EWrappingStatus wrappingStatus = _outputStream->wrap(data);
     switch(wrappingStatus)
