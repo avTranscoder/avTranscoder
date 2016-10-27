@@ -45,13 +45,16 @@ void VideoFrameDesc::setParameters(const ProfileLoader::Profile& profile)
         _fps = atof(profile.find(constants::avProfileFrameRate)->second.c_str());
 }
 
-VideoFrame::VideoFrame(const VideoFrameDesc& desc)
+VideoFrame::VideoFrame(const VideoFrameDesc& desc, const bool forceDataAllocation)
     : Frame()
     , _desc(desc)
 {
     _frame->width = desc._width;
     _frame->height = desc._height;
     _frame->format = desc._pixelFormat;
+
+    if(forceDataAllocation)
+        allocateData();
 }
 
 VideoFrame::~VideoFrame()
@@ -76,9 +79,6 @@ size_t VideoFrame::getSize() const
 
 void VideoFrame::allocateData()
 {
-    if(_dataAllocated)
-        return;
-
     // Set Frame properties
     _frame->width = _desc._width;
     _frame->height = _desc._height;

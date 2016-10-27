@@ -133,7 +133,7 @@ bool AudioDecoder::decodeNextFrame(Frame& frameBuffer, const std::vector<size_t>
 
     // else decode all data in an intermediate buffer
     AudioFrame& audioBuffer = static_cast<AudioFrame&>(frameBuffer);
-    AudioFrame allDataOfNextFrame(AudioFrameDesc(audioBuffer.getSampleRate(), srcNbChannels, audioBuffer.getSampleFormat()));
+    AudioFrame allDataOfNextFrame(AudioFrameDesc(audioBuffer.getSampleRate(), srcNbChannels, audioBuffer.getSampleFormat()), false);
     if(!decodeNextFrame(allDataOfNextFrame))
         return false;
 

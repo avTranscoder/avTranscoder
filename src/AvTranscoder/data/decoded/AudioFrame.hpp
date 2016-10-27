@@ -36,7 +36,7 @@ public:
 class AvExport AudioFrame : public Frame
 {
 public:
-    AudioFrame(const AudioFrameDesc& desc);
+    AudioFrame(const AudioFrameDesc& desc, const bool forceDataAllocation = true);
     ~AudioFrame();
 
     /**

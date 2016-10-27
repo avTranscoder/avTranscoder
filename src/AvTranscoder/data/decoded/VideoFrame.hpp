@@ -43,7 +43,7 @@ public:
 class AvExport VideoFrame : public Frame
 {
 public:
-    VideoFrame(const VideoFrameDesc& desc);
+    VideoFrame(const VideoFrameDesc& desc, const bool forceDataAllocation = true);
     ~VideoFrame();
 
     /**
