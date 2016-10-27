@@ -25,7 +25,7 @@ bool AudioGenerator::decodeNextFrame(Frame& frameBuffer)
     if(! frameBuffer.isAudioFrame())
     {
         LOG_WARN("The given frame to put data is not a valid audio frame: try to reallocate it.")
-        frameBuffer.unrefFrame();
+        static_cast<AudioFrame&>(frameBuffer).freeAVSample();
         static_cast<AudioFrame&>(frameBuffer).allocateAVSample(_frameDesc);
     }
 
@@ -50,7 +50,7 @@ bool AudioGenerator::decodeNextFrame(Frame& frameBuffer)
             _silent->setNbSamplesPerChannel(frameBuffer.getAVFrame().nb_samples);
         }
         LOG_DEBUG("Copy data of the silence when decode next frame")
-        frameBuffer.refFrame(*_silent);
+        frameBuffer.copyData(*_silent);
     }
     // Take audio frame from _inputFrame
     else

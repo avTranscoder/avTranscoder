@@ -14,22 +14,16 @@ Frame::Frame()
 Frame::Frame(const Frame& otherFrame)
     : _frame(NULL)
 {
-    // allocate frame
     allocateAVFrame();
-    // check if the frame could be a valid video/audio frame
-    if(otherFrame.getAVFrame().format == -1)
-        return;
-    // reference the other frame
-    refFrame(otherFrame);
+    copyProperties(otherFrame);
+    copyData(otherFrame);
 }
 
 void Frame::operator=(const Frame& otherFrame)
 {
-    // check if the frame could be a valid video/audio frame
-    if(otherFrame.getAVFrame().format == -1)
-        return;
-    // reference the other frame
-    refFrame(otherFrame);
+    allocateAVFrame();
+    copyProperties(otherFrame);
+    copyData(otherFrame);
 }
 
 Frame::~Frame()
@@ -54,25 +48,6 @@ void Frame::copyData(const Frame& frameToRef)
 void Frame::copyProperties(const Frame& otherFrame)
 {
     av_frame_copy_props(_frame, &otherFrame.getAVFrame());
-}
-
-bool Frame::isRefCounted() const
-{
-    return _frame->buf[0];
-}
-
-void Frame::refFrame(const Frame& otherFrame)
-{
-    const int ret = av_frame_ref(_frame, &otherFrame.getAVFrame());
-    if(ret < 0)
-    {
-        throw std::ios_base::failure("Unable to reference other frame: " + getDescriptionFromErrorCode(ret));
-    }
-}
-
-void Frame::unrefFrame()
-{
-    av_frame_unref(_frame);
 }
 
 void Frame::allocateAVFrame()

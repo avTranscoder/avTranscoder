@@ -25,7 +25,7 @@ bool VideoGenerator::decodeNextFrame(Frame& frameBuffer)
     if(! frameBuffer.isVideoFrame())
     {
         LOG_WARN("The given frame to put data is not a valid video frame: try to reallocate it.")
-        frameBuffer.unrefFrame();
+        static_cast<VideoFrame&>(frameBuffer).freeAVPicture();
         static_cast<VideoFrame&>(frameBuffer).allocateAVPicture(_frameDesc);
     }
 

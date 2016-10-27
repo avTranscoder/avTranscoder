@@ -23,7 +23,7 @@ public:
     Frame();
 
     //@{
-    // @brief Copy properties and reference data of the other frame.
+    // @brief Allocate a new frame that references the same data as the given frame.
     Frame(const Frame& otherFrame);
     void operator=(const Frame& otherFrame);
     //@}
@@ -63,23 +63,6 @@ public:
      * @brief Copy all the fields that do not affect the data layout in the buffers.
      */
     void copyProperties(const Frame& otherFrame);
-
-    /**
-     * @brief If the data buffer of the frame refers to data allocated by an other frame.
-     */
-    bool isRefCounted() const;
-
-    /**
-     * @brief Copy frame properties and create a new reference to data of the given frame.
-     * @warning This method allocates new data that will be freed by calling clear method or the destructor of the referenced frame.
-     * @see clear
-     */
-    void refFrame(const Frame& otherFrame);
-
-    /**
-     * @brief Unreference all the buffers referenced by frame and reset the frame fields.
-     */
-    void unrefFrame();
 
     /**
      * @return If it corresponds to a valid audio frame.

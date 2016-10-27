@@ -550,8 +550,6 @@ bool StreamTranscoder::processTranscode()
         LOG_DEBUG("Convert")
         _transform->convert(*_filteredData, *_transformedData);
 
-        _filteredData->unrefFrame();
-
         LOG_DEBUG("Encode")
         _outputEncoder->encodeFrame(*_transformedData, data);
     }
