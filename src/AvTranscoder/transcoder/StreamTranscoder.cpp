@@ -59,7 +59,9 @@ StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outpu
                 // buffers to process
                 _decodedData.push_back(new VideoFrame(inputFrameDesc));
                 _filteredData = new VideoFrame(inputFrameDesc);
+                _filteredData->allocateData();
                 _transformedData = new VideoFrame(inputFrameDesc);
+                _transformedData->allocateData();
 
                 // transform
                 _transform = new VideoTransform();
@@ -95,7 +97,9 @@ StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outpu
                 // buffers to process
                 _decodedData.push_back(new AudioFrame(inputFrameDesc));
                 _filteredData = new AudioFrame(inputFrameDesc);
+                _filteredData->allocateData();
                 _transformedData = new AudioFrame(inputFrameDesc);
+                _transformedData->allocateData();
 
                 // transform
                 _transform = new AudioTransform();
@@ -175,7 +179,9 @@ StreamTranscoder::StreamTranscoder(const std::vector<InputStreamDesc>& inputStre
 
             // buffers to process
             _filteredData = new VideoFrame(outputVideo->getVideoCodec().getVideoFrameDesc());
+            _filteredData->allocateData();
             _transformedData = new VideoFrame(outputVideo->getVideoCodec().getVideoFrameDesc());
+            _transformedData->allocateData();
 
             // transform
             _transform = new VideoTransform();
@@ -213,7 +219,9 @@ StreamTranscoder::StreamTranscoder(const std::vector<InputStreamDesc>& inputStre
                 inputFrameDesc._nbChannels = nbOutputChannels;
 
             _filteredData = new AudioFrame(inputFrameDesc);
+            _filteredData->allocateData();
             _transformedData = new AudioFrame(outputAudio->getAudioCodec().getAudioFrameDesc());
+            _transformedData->allocateData();
 
             // transform
             _transform = new AudioTransform();
@@ -314,7 +322,9 @@ StreamTranscoder::StreamTranscoder(IOutputFile& outputFile, const ProfileLoader:
         outputFrameDesc.setParameters(profile);
         _decodedData.push_back(new VideoFrame(inputFrameDesc));
         _filteredData = new VideoFrame(inputFrameDesc);
+        _filteredData->allocateData();
         _transformedData = new VideoFrame(outputFrameDesc);
+        _transformedData->allocateData();
 
         // transform
         _transform = new VideoTransform();
@@ -347,7 +357,9 @@ StreamTranscoder::StreamTranscoder(IOutputFile& outputFile, const ProfileLoader:
         outputFrameDesc.setParameters(profile);
         _decodedData.push_back(new AudioFrame(inputFrameDesc));
         _filteredData = new AudioFrame(inputFrameDesc);
+        _filteredData->allocateData();
         _transformedData = new AudioFrame(outputFrameDesc);
+        _transformedData->allocateData();
 
         // transform
         _transform = new AudioTransform();

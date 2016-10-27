@@ -43,16 +43,23 @@ public:
 class AvExport VideoFrame : public Frame
 {
 public:
-    VideoFrame(const VideoFrameDesc& ref);
-    VideoFrame(const Frame& otherFrame);
+    VideoFrame(const VideoFrameDesc& desc);
     ~VideoFrame();
+
+    /**
+     * @brief Allocate the image buffer of the frame.
+     * @warning The allocated data should be freed by the caller.
+     * @see freeData
+     */
+    void allocateData();
+    void freeData();
 
     size_t getWidth() const { return _frame->width; }
     size_t getHeight() const { return _frame->height; }
     AVPixelFormat getPixelFormat() const { return static_cast<AVPixelFormat>(_frame->format); }
     VideoFrameDesc desc() const { return VideoFrameDesc(getWidth(), getHeight(), getPixelFormat()); }
 
-    size_t getSize() const; ///< in bytes/**
+    size_t getSize() const;
 
     /**
      * @brief Assign the given value to all the data of the picture.
@@ -65,25 +72,6 @@ public:
      * @see getSize
      */
     void assign(const unsigned char* ptrValue);
-
-private:
-    /**
-     * @brief Allocate the image buffer of the frame.
-     * @warning The allocated data should be freed by the caller.
-     * @see freeAVPicture
-     */
-    void allocateAVPicture(const VideoFrameDesc& desc);
-
-    /**
-     * @brief Free the image buffer of the frame.
-     */
-    void freeAVPicture();
-
-    /**
-     * @note To allocate new image buffer if needed.
-     * @see allocateAVPicture
-     */
-    friend class VideoGenerator;
 };
 }
 

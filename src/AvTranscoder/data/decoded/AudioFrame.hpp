@@ -36,12 +36,16 @@ public:
 class AvExport AudioFrame : public Frame
 {
 public:
-    /**
-     * @note Allocated data will be initialized to silence.
-     */
-    AudioFrame(const AudioFrameDesc& ref);
-    AudioFrame(const Frame& otherFrame);
+    AudioFrame(const AudioFrameDesc& desc);
     ~AudioFrame();
+
+    /**
+     * @brief Allocated data will be initialized to silence.
+     * @warning The allocated data should be freed by the caller.
+     * @see freeData
+     */
+    void allocateData();
+    void freeData();
 
     size_t getSampleRate() const { return av_frame_get_sample_rate(_frame); }
     size_t getNbChannels() const { return av_frame_get_channels(_frame); }
@@ -51,7 +55,7 @@ public:
     size_t getNbSamplesPerChannel() const { return _frame->nb_samples; }
     AudioFrameDesc desc() const { return AudioFrameDesc(getSampleRate(), getNbChannels(), getSampleFormat()); }
 
-    size_t getSize() const; ///< in bytes
+    size_t getSize() const;
 
     void setNbSamplesPerChannel(const size_t nbSamples) { _frame->nb_samples = nbSamples; }
 
@@ -66,25 +70,6 @@ public:
      * @see getSize
      */
     void assign(const unsigned char* ptrValue);
-
-private:
-    /**
-     * @brief Allocate the audio buffer of the frame.
-     * @warning The allocated data should be freed by the caller.
-     * @see freeAVSample
-     */
-    void allocateAVSample(const AudioFrameDesc& ref);
-
-    /**
-     * @brief Free the audio buffer of the frame.
-     */
-    void freeAVSample();
-
-    /**
-     * @note To allocate new audio buffer if needed.
-     * @see allocateAVSample
-     */
-    friend class AudioGenerator;
 };
 }
 

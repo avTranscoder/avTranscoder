@@ -39,15 +39,15 @@ void AudioFrameDesc::setParameters(const ProfileLoader::Profile& profile)
         _sampleFormat = getAVSampleFormat(profile.find(constants::avProfileSampleFormat)->second.c_str());
 }
 
-AudioFrame::AudioFrame(const AudioFrameDesc& ref)
+AudioFrame::AudioFrame(const AudioFrameDesc& desc)
     : Frame()
 {
-    allocateAVSample(ref);
-}
-
-AudioFrame::AudioFrame(const Frame& otherFrame)
-    : Frame(otherFrame)
-{
+    // Set Frame properties
+    av_frame_set_sample_rate(_frame, desc._sampleRate);
+    av_frame_set_channels(_frame, desc._nbChannels);
+    av_frame_set_channel_layout(_frame, av_get_default_channel_layout(desc._nbChannels));
+    _frame->format = desc._sampleFormat;
+    _frame->nb_samples = desc._sampleRate / 25.; // cannot be known before calling avcodec_decode_audio4
 }
 
 std::string AudioFrame::getChannelLayoutDesc() const
@@ -59,7 +59,8 @@ std::string AudioFrame::getChannelLayoutDesc() const
 
 AudioFrame::~AudioFrame()
 {
-    freeAVSample();
+    if(_dataAllocated)
+        freeData();
 }
 
 size_t AudioFrame::getSize() const
@@ -83,19 +84,16 @@ size_t AudioFrame::getSize() const
     return size;
 }
 
-void AudioFrame::allocateAVSample(const AudioFrameDesc& desc)
+void AudioFrame::allocateData()
 {
-    // Set Frame properties
-    av_frame_set_sample_rate(_frame, desc._sampleRate);
-    av_frame_set_channels(_frame, desc._nbChannels);
-    av_frame_set_channel_layout(_frame, av_get_default_channel_layout(desc._nbChannels));
-    _frame->format = desc._sampleFormat;
-    _frame->nb_samples = desc._sampleRate / 25.; // cannot be known before calling avcodec_decode_audio4
+    if(_dataAllocated)
+        return;
 
     // Allocate data
     const int align = 0;
+    const AVSampleFormat format = static_cast<AVSampleFormat>(_frame->format);
     const int ret =
-        av_samples_alloc(_frame->data, _frame->linesize, _frame->channels, _frame->nb_samples, desc._sampleFormat, align);
+        av_samples_alloc(_frame->data, _frame->linesize, _frame->channels, _frame->nb_samples, format, align);
     if(ret < 0)
     {
         std::stringstream os;
@@ -104,14 +102,16 @@ void AudioFrame::allocateAVSample(const AudioFrameDesc& desc)
         os << "nb channels = " << _frame->channels << ", ";
         os << "channel layout = " << av_get_channel_name(_frame->channels) << ", ";
         os << "nb samples = " << _frame->nb_samples << ", ";
-        os << "sample format = " << getSampleFormatName(desc._sampleFormat);
+        os << "sample format = " << getSampleFormatName(format);
         throw std::runtime_error(os.str());
     }
+    _dataAllocated = true;
 }
 
-void AudioFrame::freeAVSample()
+void AudioFrame::freeData()
 {
     av_freep(&_frame->data[0]);
+    _dataAllocated = false;
 }
 
 void AudioFrame::assign(const unsigned char value)

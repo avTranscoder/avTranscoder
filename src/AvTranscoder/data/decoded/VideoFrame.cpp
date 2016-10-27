@@ -45,20 +45,18 @@ void VideoFrameDesc::setParameters(const ProfileLoader::Profile& profile)
         _fps = atof(profile.find(constants::avProfileFrameRate)->second.c_str());
 }
 
-VideoFrame::VideoFrame(const VideoFrameDesc& ref)
+VideoFrame::VideoFrame(const VideoFrameDesc& desc)
     : Frame()
 {
-    allocateAVPicture(ref);
-}
-
-VideoFrame::VideoFrame(const Frame& otherFrame)
-    : Frame(otherFrame)
-{
+    _frame->width = desc._width;
+    _frame->height = desc._height;
+    _frame->format = desc._pixelFormat;
 }
 
 VideoFrame::~VideoFrame()
 {
-    freeAVPicture();
+    if(_dataAllocated)
+        freeData();
 }
 
 size_t VideoFrame::getSize() const
@@ -75,26 +73,29 @@ size_t VideoFrame::getSize() const
     return size;
 }
 
-void VideoFrame::allocateAVPicture(const VideoFrameDesc& desc)
+void VideoFrame::allocateData()
 {
-    const int ret = avpicture_alloc(reinterpret_cast<AVPicture*>(_frame), desc._pixelFormat, desc._width, desc._height);
+    if(_dataAllocated)
+        return;
+
+    const AVPixelFormat format = static_cast<AVPixelFormat>(_frame->format);
+    const int ret = avpicture_alloc(reinterpret_cast<AVPicture*>(_frame), format, _frame->width, _frame->height);
     if(ret < 0)
     {
         std::stringstream os;
         os << "Unable to allocate an image frame of ";
-        os << "width = " << desc._width << ", ";
-        os << "height = " << desc._height << ", ";
-        os << "pixel format = " << desc._pixelFormat;
+        os << "width = " << _frame->width << ", ";
+        os << "height = " << _frame->height << ", ";
+        os << "pixel format = " << getPixelFormatName(format);
         throw std::runtime_error(os.str());
     }
-    _frame->width = desc._width;
-    _frame->height = desc._height;
-    _frame->format = desc._pixelFormat;
+    _dataAllocated = true;
 }
 
-void VideoFrame::freeAVPicture()
+void VideoFrame::freeData()
 {
     avpicture_free(reinterpret_cast<AVPicture*>(_frame));
+    _dataAllocated = false;
 }
 
 void VideoFrame::assign(const unsigned char value)

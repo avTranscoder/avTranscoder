@@ -132,7 +132,8 @@ bool AudioDecoder::decodeNextFrame(Frame& frameBuffer, const std::vector<size_t>
         return decodeNextFrame(frameBuffer);
 
     // else decode all data in an intermediate buffer
-    AudioFrame allDataOfNextFrame(frameBuffer);
+    AudioFrame& audioBuffer = static_cast<AudioFrame&>(frameBuffer);
+    AudioFrame allDataOfNextFrame(AudioFrameDesc(audioBuffer.getSampleRate(), srcNbChannels, audioBuffer.getSampleFormat()));
     if(!decodeNextFrame(allDataOfNextFrame))
         return false;
 
@@ -158,9 +159,10 @@ bool AudioDecoder::decodeNextFrame(Frame& frameBuffer, const std::vector<size_t>
             throw std::runtime_error(msg.str());
         }
     }
+    // allocate data to store the subpart of the next frame
+    audioBuffer.allocateData();
 
     // copy frame properties of decoded frame
-    AudioFrame& audioBuffer = static_cast<AudioFrame&>(frameBuffer);
     audioBuffer.copyProperties(allDataOfNextFrame);
     av_frame_set_channels(&audioBuffer.getAVFrame(), channelIndexArray.size());
     av_frame_set_channel_layout(&audioBuffer.getAVFrame(), av_get_default_channel_layout(channelIndexArray.size()));

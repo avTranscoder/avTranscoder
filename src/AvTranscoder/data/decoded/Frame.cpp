@@ -7,33 +7,14 @@ namespace avtranscoder
 
 Frame::Frame()
     : _frame(NULL)
+    , _dataAllocated(false)
 {
     allocateAVFrame();
-}
-
-Frame::Frame(const Frame& otherFrame)
-    : _frame(NULL)
-{
-    allocateAVFrame();
-    copyProperties(otherFrame);
-    copyData(otherFrame);
-}
-
-void Frame::operator=(const Frame& otherFrame)
-{
-    allocateAVFrame();
-    copyProperties(otherFrame);
-    copyData(otherFrame);
 }
 
 Frame::~Frame()
 {
     freeAVFrame();
-}
-
-int Frame::getEncodedSize() const
-{
-    return av_frame_get_pkt_size(_frame);
 }
 
 void Frame::copyData(const Frame& frameToRef)

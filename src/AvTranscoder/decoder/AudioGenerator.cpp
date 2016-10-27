@@ -36,6 +36,7 @@ bool AudioGenerator::decodeNextFrame(Frame& frameBuffer)
         if(!_silent)
         {
             _silent = new AudioFrame(_frameDesc);
+            _silent->allocateData();
 
             std::stringstream msg;
             msg << "Generate a silence with the following features:" << std::endl;

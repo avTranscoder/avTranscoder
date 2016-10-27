@@ -12,23 +12,38 @@ namespace avtranscoder
 
 /**
  * @brief This class describes decoded (raw) audio or video data.
+ * This class is abstract.
+ * @see VideoFrame
+ * @see AudioFrame
  */
 class AvExport Frame
 {
 public:
     /**
      * @brief Allocate an empty frame.
-     * @warn This only allocates the AVFrame itself, not the data buffers.
+     * @warning This only allocates the AVFrame itself, not the data buffers.
+     * Depending on the case, we could manipulate frame with data allocated elsewhere.
+     * For example, an empty frame is given to a decoder, which is responsible to allocate and free the data buffers.
      */
     Frame();
 
-    //@{
-    // @brief Allocate a new frame that references the same data as the given frame.
-    Frame(const Frame& otherFrame);
-    void operator=(const Frame& otherFrame);
-    //@}
-
     virtual ~Frame();
+
+    /**
+     * @brief Allocate the buffer of the frame.
+     */
+    virtual void allocateData() = 0;
+
+    /**
+     * @brief Free the buffer of the frame.
+     */
+    virtual void freeData() = 0;
+
+    /**
+     * @brief Get the size in bytes that a video/audio buffer of the given frame properties would occupy if allocated.
+     * @warning This methods does not guarantee that the buffer is actually allocated.
+     */
+    virtual size_t getSize() const = 0;
 
     /**
      * @brief Get all the data of the frame.
@@ -45,12 +60,6 @@ public:
     int* getLineSize() const { return _frame->linesize; }
 
     /**
-     * @return Size of the corresponding packet containing the compressed frame (in bytes)
-     * @warning returns a negative value if the size is unknown
-     */
-    int getEncodedSize() const;
-
-    /**
      * @brief Copy the data of the given Frame.
      * This function does not allocate anything: the current frame must be already initialized and
      * allocated with the same parameters as the given frame, to be ready for memcpy instructions.
@@ -61,6 +70,7 @@ public:
 
     /**
      * @brief Copy all the fields that do not affect the data layout in the buffers.
+     * @warning The info checked when copying data of an other frame (width/height, channels...) are not copied.
      */
     void copyProperties(const Frame& otherFrame);
 
@@ -88,6 +98,7 @@ private:
 
 protected:
     AVFrame* _frame;
+    bool _dataAllocated;
 };
 }
 
