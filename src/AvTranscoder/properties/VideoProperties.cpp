@@ -1,6 +1,5 @@
 #include "VideoProperties.hpp"
 
-#include <AvTranscoder/data/decoded/Frame.hpp>
 #include <AvTranscoder/properties/util.hpp>
 #include <AvTranscoder/properties/FileProperties.hpp>
 #include <AvTranscoder/progress/NoDisplayProgress.hpp>
@@ -342,7 +341,7 @@ size_t VideoProperties::getBitRate() const
     // discard no frame type when decode
     _codecContext->skip_frame = AVDISCARD_NONE;
 
-    Frame frame;
+    AVFrame avFrame;
     AVPacket pkt;
     av_init_packet(&pkt);
     avcodec_open2(_codecContext, _codec, NULL);
@@ -357,11 +356,10 @@ size_t VideoProperties::getBitRate() const
     {
         if(pkt.stream_index == (int)_streamIndex)
         {
-            avcodec_decode_video2(_codecContext, &frame.getAVFrame(), &gotFrame, &pkt);
+            avcodec_decode_video2(_codecContext, &avFrame, &gotFrame, &pkt);
             if(gotFrame)
             {
                 // check distance between key frames
-                AVFrame& avFrame = frame.getAVFrame();
                 if(avFrame.pict_type == AV_PICTURE_TYPE_I)
                 {
                     if(positionOfFirstKeyFrame == -1)
@@ -375,7 +373,7 @@ size_t VideoProperties::getBitRate() const
                 if(positionOfLastKeyFrame == -1)
                 {
 #if LIBAVUTIL_VERSION_INT >= AV_VERSION_INT(54, 7, 100)
-                    gopFramesSize += frame.getEncodedSize();
+                    gopFramesSize += av_frame_get_pkt_size(&avFrame);
 #else
                     gopFramesSize += pkt.size;
 #endif
@@ -567,7 +565,7 @@ void VideoProperties::analyseGopStructure(IProgress& progress)
             // Initialize the AVCodecContext to use the given AVCodec
             avcodec_open2(_codecContext, _codec, NULL);
 
-            Frame frame;
+            AVFrame avFrame;
             size_t count = 0;
             int gotFrame = 0;
             int positionOfFirstKeyFrame = -1;
@@ -577,13 +575,11 @@ void VideoProperties::analyseGopStructure(IProgress& progress)
             {
                 if(pkt.stream_index == (int)_streamIndex)
                 {
-                    avcodec_decode_video2(_codecContext, &frame.getAVFrame(), &gotFrame, &pkt);
+                    avcodec_decode_video2(_codecContext, &avFrame, &gotFrame, &pkt);
                     if(gotFrame)
                     {
-                        AVFrame& avFrame = frame.getAVFrame();
-
                         _gopStructure.push_back(
-                            std::make_pair(av_get_picture_type_char(avFrame.pict_type), frame.getEncodedSize()));
+                            std::make_pair(av_get_picture_type_char(avFrame.pict_type), av_frame_get_pkt_size(&avFrame)));
                         _isInterlaced = avFrame.interlaced_frame;
                         _isTopFieldFirst = avFrame.top_field_first;
                         if(avFrame.pict_type == AV_PICTURE_TYPE_I)
