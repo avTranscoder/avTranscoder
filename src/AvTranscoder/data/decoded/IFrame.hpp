@@ -46,6 +46,18 @@ public:
     virtual size_t getSize() const = 0;
 
     /**
+     * @brief Assign the given ptr of data to the data of the frame.
+     * @warning the given ptr should have the size of the frame..
+     * @see getSize
+     */
+    virtual void assignBuffer(const unsigned char* ptrValue) = 0;
+
+    /**
+     * @brief Assign the given value to all the data of the frame.
+     */
+    void assignValue(const unsigned char value);
+
+    /**
      * @brief Get all the data of the frame.
      */
     unsigned char** getData() { return _frame->data; }

@@ -122,19 +122,7 @@ void AudioFrame::freeData()
     _dataAllocated = false;
 }
 
-void AudioFrame::assign(const unsigned char value)
-{
-    // Create the audio buffer
-    // The buffer will be freed in destructor of based class
-    const int audioSize = getSize();
-    unsigned char* audioBuffer = new unsigned char[audioSize];
-    memset(audioBuffer, value, audioSize);
-
-    // Fill the picture
-    assign(audioBuffer);
-}
-
-void AudioFrame::assign(const unsigned char* ptrValue)
+void AudioFrame::assignBuffer(const unsigned char* ptrValue)
 {
     const int align = 0;
     const int ret = av_samples_fill_arrays(_frame->data, _frame->linesize, ptrValue, getNbChannels(),

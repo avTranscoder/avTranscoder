@@ -31,7 +31,7 @@ bool VideoGenerator::decodeNextFrame(IFrame& frameBuffer)
             VideoFrameDesc blackDesc(_frameDesc._width, _frameDesc._height, "rgb24");
             _blackImage = new VideoFrame(blackDesc);
             const unsigned char fillChar = 0;
-            _blackImage->assign(fillChar);
+            _blackImage->assignValue(fillChar);
 
             std::stringstream msg;
             msg << "Generate a black image with the following features:" << std::endl;

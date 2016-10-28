@@ -62,6 +62,17 @@ void IFrame::freeAVFrame()
     }
 }
 
+void IFrame::assignValue(const unsigned char value)
+{
+    // Create the buffer
+    const int bufferSize = getSize();
+    unsigned char* dataBuffer = new unsigned char[bufferSize];
+    memset(dataBuffer, value, bufferSize);
+
+    // Fill the frame
+    assignBuffer(dataBuffer);
+}
+
 bool IFrame::isAudioFrame() const
 {
     if(_frame->sample_rate && _frame->channels && _frame->channel_layout && _frame->format != -1)

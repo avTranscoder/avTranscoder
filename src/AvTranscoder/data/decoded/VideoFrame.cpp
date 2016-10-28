@@ -105,19 +105,7 @@ void VideoFrame::freeData()
     _dataAllocated = false;
 }
 
-void VideoFrame::assign(const unsigned char value)
-{
-    // Create the image buffer
-    // The buffer will be freed in destructor of based class
-    const int imageSize = getSize();
-    unsigned char* imageBuffer = new unsigned char[imageSize];
-    memset(imageBuffer, value, imageSize);
-
-    // Fill the picture
-    assign(imageBuffer);
-}
-
-void VideoFrame::assign(const unsigned char* ptrValue)
+void VideoFrame::assignBuffer(const unsigned char* ptrValue)
 {
     const int ret =
         avpicture_fill(reinterpret_cast<AVPicture*>(_frame), ptrValue, getPixelFormat(), getWidth(), getHeight());

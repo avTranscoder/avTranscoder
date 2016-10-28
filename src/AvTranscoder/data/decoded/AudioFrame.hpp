@@ -58,17 +58,7 @@ public:
 
     void setNbSamplesPerChannel(const size_t nbSamples) { _frame->nb_samples = nbSamples; }
 
-    /**
-     * @brief Assign the given value to all the data of the audio frame.
-     */
-    void assign(const unsigned char value);
-
-    /**
-     * @brief Assign the given ptr of data to the data of the audio frame.
-     * @warning the given ptr should have the size of the audio frame..
-     * @see getSize
-     */
-    void assign(const unsigned char* ptrValue);
+    void assignBuffer(const unsigned char* ptrValue);
 
 private:
     /**

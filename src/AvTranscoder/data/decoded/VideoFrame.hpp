@@ -60,17 +60,7 @@ public:
 
     size_t getSize() const;
 
-    /**
-     * @brief Assign the given value to all the data of the picture.
-     */
-    void assign(const unsigned char value);
-
-    /**
-     * @brief Assign the given ptr of data to the data of the picture.
-     * @warning the given ptr should have the size of the picture.
-     * @see getSize
-     */
-    void assign(const unsigned char* ptrValue);
+    void assignBuffer(const unsigned char* ptrValue);
 
 private:
     /**
