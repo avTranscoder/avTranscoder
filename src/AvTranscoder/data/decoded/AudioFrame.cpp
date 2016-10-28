@@ -63,6 +63,8 @@ std::string AudioFrame::getChannelLayoutDesc() const
 
 AudioFrame::~AudioFrame()
 {
+    if(_frame->buf[0])
+        av_frame_unref(_frame);
     if(_dataAllocated)
         freeData();
 }

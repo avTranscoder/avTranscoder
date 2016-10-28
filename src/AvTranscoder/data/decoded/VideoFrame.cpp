@@ -59,6 +59,8 @@ VideoFrame::VideoFrame(const VideoFrameDesc& desc, const bool forceDataAllocatio
 
 VideoFrame::~VideoFrame()
 {
+    if(_frame->buf[0])
+        av_frame_unref(_frame);
     if(_dataAllocated)
         freeData();
 }
