@@ -57,7 +57,7 @@ StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outpu
                 _generators.push_back(new VideoGenerator(inputFrameDesc));
 
                 // buffers to process
-                _decodedData.push_back(new VideoFrame(inputFrameDesc, false));
+                _decodedData.push_back(new VideoFrame(inputFrameDesc));
                 _filteredData = new VideoFrame(inputFrameDesc);
                 _transformedData = new VideoFrame(inputFrameDesc);
 
@@ -93,7 +93,7 @@ StreamTranscoder::StreamTranscoder(IInputStream& inputStream, IOutputFile& outpu
                 _generators.push_back(new AudioGenerator(inputFrameDesc));
 
                 // buffers to process
-                _decodedData.push_back(new AudioFrame(inputFrameDesc, false));
+                _decodedData.push_back(new AudioFrame(inputFrameDesc));
                 _filteredData = new AudioFrame(inputFrameDesc);
                 _transformedData = new AudioFrame(inputFrameDesc);
 
