@@ -1,7 +1,7 @@
 #ifndef _AV_TRANSCODER_FRAME_VIDEO_FRAME_HPP_
 #define _AV_TRANSCODER_FRAME_VIDEO_FRAME_HPP_
 
-#include "Frame.hpp"
+#include "IFrame.hpp"
 #include <AvTranscoder/profile/ProfileLoader.hpp>
 
 extern "C" {
@@ -40,7 +40,7 @@ public:
 /**
  * @brief This class describes decoded video data.
  */
-class AvExport VideoFrame : public Frame
+class AvExport VideoFrame : public IFrame
 {
 public:
     VideoFrame(const VideoFrameDesc& desc, const bool forceDataAllocation = true);

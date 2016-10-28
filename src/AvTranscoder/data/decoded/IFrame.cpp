@@ -1,23 +1,23 @@
-#include "Frame.hpp"
+#include "IFrame.hpp"
 
 #include <stdexcept>
 
 namespace avtranscoder
 {
 
-Frame::Frame()
+IFrame::IFrame()
     : _frame(NULL)
     , _dataAllocated(false)
 {
     allocateAVFrame();
 }
 
-Frame::~Frame()
+IFrame::~IFrame()
 {
     freeAVFrame();
 }
 
-void Frame::copyData(const Frame& frameToRef)
+void IFrame::copyData(const IFrame& frameToRef)
 {
     const int ret = av_frame_copy(_frame, &frameToRef.getAVFrame());
     if(ret < 0)
@@ -26,12 +26,12 @@ void Frame::copyData(const Frame& frameToRef)
     }
 }
 
-void Frame::copyProperties(const Frame& otherFrame)
+void IFrame::copyProperties(const IFrame& otherFrame)
 {
     av_frame_copy_props(_frame, &otherFrame.getAVFrame());
 }
 
-void Frame::allocateAVFrame()
+void IFrame::allocateAVFrame()
 {
 #if LIBAVCODEC_VERSION_MAJOR > 54
     _frame = av_frame_alloc();
@@ -45,7 +45,7 @@ void Frame::allocateAVFrame()
     }
 }
 
-void Frame::freeAVFrame()
+void IFrame::freeAVFrame()
 {
     if(_frame != NULL)
     {
@@ -62,14 +62,14 @@ void Frame::freeAVFrame()
     }
 }
 
-bool Frame::isAudioFrame() const
+bool IFrame::isAudioFrame() const
 {
     if(_frame->sample_rate && _frame->channels && _frame->channel_layout && _frame->format != -1)
         return true;
     return false;
 }
 
-bool Frame::isVideoFrame() const
+bool IFrame::isVideoFrame() const
 {
     if(_frame->width && _frame->height && _frame->format != -1)
         return true;

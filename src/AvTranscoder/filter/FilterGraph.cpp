@@ -35,7 +35,7 @@ FilterGraph::~FilterGraph()
     avfilter_graph_free(&_graph);
 }
 
-void FilterGraph::process(const std::vector<Frame*>& inputs, Frame& output)
+void FilterGraph::process(const std::vector<IFrame*>& inputs, IFrame& output)
 {
     // init filter graph
     if(!_isInit)
@@ -74,7 +74,7 @@ Filter& FilterGraph::addFilter(const std::string& filterName, const std::string&
     return *_filters.back();
 }
 
-void FilterGraph::init(const std::vector<Frame*>& inputs, Frame& output)
+void FilterGraph::init(const std::vector<IFrame*>& inputs, IFrame& output)
 {
     // push filters to the graph
     addInBuffer(inputs);
@@ -134,9 +134,9 @@ void FilterGraph::pushFilter(Filter& filter)
     }
 }
 
-void FilterGraph::addInBuffer(const std::vector<Frame*>& inputs)
+void FilterGraph::addInBuffer(const std::vector<IFrame*>& inputs)
 {
-    for(std::vector<Frame*>::const_reverse_iterator it = inputs.rbegin(); it != inputs.rend(); ++it)
+    for(std::vector<IFrame*>::const_reverse_iterator it = inputs.rbegin(); it != inputs.rend(); ++it)
     {
         std::string filterName;
         std::stringstream filterOptions;
@@ -174,7 +174,7 @@ void FilterGraph::addInBuffer(const std::vector<Frame*>& inputs)
     }
 }
 
-void FilterGraph::addOutBuffer(const Frame& output)
+void FilterGraph::addOutBuffer(const IFrame& output)
 {
     std::string filterName;
 

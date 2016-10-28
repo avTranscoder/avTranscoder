@@ -19,7 +19,7 @@ VideoGenerator::~VideoGenerator()
     delete _blackImage;
 }
 
-bool VideoGenerator::decodeNextFrame(Frame& frameBuffer)
+bool VideoGenerator::decodeNextFrame(IFrame& frameBuffer)
 {
     // Generate black image
     if(!_inputFrame)
@@ -54,7 +54,7 @@ bool VideoGenerator::decodeNextFrame(Frame& frameBuffer)
     return true;
 }
 
-bool VideoGenerator::decodeNextFrame(Frame& frameBuffer, const std::vector<size_t> channelIndexArray)
+bool VideoGenerator::decodeNextFrame(IFrame& frameBuffer, const std::vector<size_t> channelIndexArray)
 {
     return false;
 }

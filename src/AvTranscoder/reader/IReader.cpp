@@ -46,17 +46,17 @@ IReader::~IReader()
         delete _inputFile;
 }
 
-Frame* IReader::readNextFrame()
+IFrame* IReader::readNextFrame()
 {
     return readFrameAt(_currentFrame + 1);
 }
 
-Frame* IReader::readPrevFrame()
+IFrame* IReader::readPrevFrame()
 {
     return readFrameAt(_currentFrame - 1);
 }
 
-Frame* IReader::readFrameAt(const size_t frame)
+IFrame* IReader::readFrameAt(const size_t frame)
 {
     assert(_currentDecoder != NULL);
     assert(_transform != NULL);

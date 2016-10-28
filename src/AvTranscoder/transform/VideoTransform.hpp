@@ -20,7 +20,7 @@ public:
     VideoTransform();
     ~VideoTransform();
 
-    void convert(const Frame& srcFrame, Frame& dstFrame);
+    void convert(const IFrame& srcFrame, IFrame& dstFrame);
 
 private:
     bool init(const VideoFrame& src, const VideoFrame& dst);

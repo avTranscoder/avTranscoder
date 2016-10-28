@@ -368,7 +368,7 @@ StreamTranscoder::StreamTranscoder(IOutputFile& outputFile, const ProfileLoader:
 
 StreamTranscoder::~StreamTranscoder()
 {
-    for(std::vector<Frame*>::iterator it = _decodedData.begin(); it != _decodedData.end(); ++it)
+    for(std::vector<IFrame*>::iterator it = _decodedData.begin(); it != _decodedData.end(); ++it)
     {
         delete(*it);
     }
@@ -546,7 +546,7 @@ bool StreamTranscoder::processTranscode()
     CodedData data;
     if(decodingStatus)
     {
-        Frame* dataToTransform = NULL;
+        IFrame* dataToTransform = NULL;
         if(_filterGraph->hasFilters())
         {
             LOG_DEBUG("Filtering")
@@ -573,7 +573,7 @@ bool StreamTranscoder::processTranscode()
             {
                 switchToGeneratorDecoder();
                 // force reallocation of the buffers since de decoders have cleared them
-                for(std::vector<Frame*>::iterator it = _decodedData.begin(); it != _decodedData.end(); ++it)
+                for(std::vector<IFrame*>::iterator it = _decodedData.begin(); it != _decodedData.end(); ++it)
                     (*it)->allocateData();
                 return processTranscode();
             }

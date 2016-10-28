@@ -40,7 +40,7 @@ void AudioFrameDesc::setParameters(const ProfileLoader::Profile& profile)
 }
 
 AudioFrame::AudioFrame(const AudioFrameDesc& desc, const bool forceDataAllocation)
-    : Frame()
+    : IFrame()
     , _desc(desc)
 {
     // Set Frame properties

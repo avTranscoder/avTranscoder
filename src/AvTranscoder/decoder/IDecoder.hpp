@@ -2,7 +2,7 @@
 #define _AV_TRANSCODER_ESSENCE_STREAM_IDECODER_HPP_
 
 #include <AvTranscoder/common.hpp>
-#include <AvTranscoder/data/decoded/Frame.hpp>
+#include <AvTranscoder/data/decoded/IFrame.hpp>
 #include <AvTranscoder/profile/ProfileLoader.hpp>
 
 namespace avtranscoder
@@ -28,7 +28,7 @@ public:
      * decoder. The caller may not write to it.
      * @return status of decoding
      */
-    virtual bool decodeNextFrame(Frame& frameBuffer) = 0;
+    virtual bool decodeNextFrame(IFrame& frameBuffer) = 0;
 
     /**
      * @brief Decode substream of next frame
@@ -36,14 +36,14 @@ public:
      * @param channelIndexArray: list of channels to extract
      * @return status of decoding
      */
-    virtual bool decodeNextFrame(Frame& frameBuffer, const std::vector<size_t> channelIndexArray) = 0;
+    virtual bool decodeNextFrame(IFrame& frameBuffer, const std::vector<size_t> channelIndexArray) = 0;
 
     /**
      * @brief Set the next frame of the input stream (which bypass the work of decoding)
      * @note Not yet implemented for VideoDecoder and AudioDecoder
      * @param inputFrame: the new next frame
      */
-    virtual void setNextFrame(Frame& inputFrame) {}
+    virtual void setNextFrame(IFrame& inputFrame) {}
 
     /**
      * @brief Reset the internal decoder state / flush internal buffers.

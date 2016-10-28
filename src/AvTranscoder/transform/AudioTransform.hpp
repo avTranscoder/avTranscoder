@@ -26,7 +26,7 @@ public:
     AudioTransform();
     ~AudioTransform();
 
-    void convert(const Frame& srcFrame, Frame& dstFrame);
+    void convert(const IFrame& srcFrame, IFrame& dstFrame);
 
 private:
     bool init(const AudioFrame& src, const AudioFrame& dst);

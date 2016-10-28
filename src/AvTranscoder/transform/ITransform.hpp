@@ -2,7 +2,7 @@
 #define _AV_TRANSCODER_ESSENCE_TRANSFORM_ESSENCE_TRANSFORM_HPP_
 
 #include <AvTranscoder/common.hpp>
-#include <AvTranscoder/data/decoded/Frame.hpp>
+#include <AvTranscoder/data/decoded/IFrame.hpp>
 
 namespace avtranscoder
 {
@@ -14,7 +14,7 @@ public:
 
     virtual ~ITransform() {}
 
-    virtual void convert(const Frame& src, Frame& dst) = 0;
+    virtual void convert(const IFrame& src, IFrame& dst) = 0;
 };
 }
 

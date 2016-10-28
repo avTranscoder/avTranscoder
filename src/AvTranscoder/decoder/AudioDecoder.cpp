@@ -76,7 +76,7 @@ void AudioDecoder::setupDecoder(const ProfileLoader::Profile& profile)
     _isSetup = true;
 }
 
-bool AudioDecoder::decodeNextFrame(Frame& frameBuffer)
+bool AudioDecoder::decodeNextFrame(IFrame& frameBuffer)
 {
     bool decodeNextFrame = false;
     const size_t channelLayout = frameBuffer.getAVFrame().channel_layout;
@@ -121,7 +121,7 @@ bool AudioDecoder::decodeNextFrame(Frame& frameBuffer)
     return decodeNextFrame;
 }
 
-bool AudioDecoder::decodeNextFrame(Frame& frameBuffer, const std::vector<size_t> channelIndexArray)
+bool AudioDecoder::decodeNextFrame(IFrame& frameBuffer, const std::vector<size_t> channelIndexArray)
 {
     AVCodecContext& avCodecContext = _inputStream->getAudioCodec().getAVCodecContext();
     const size_t srcNbChannels = avCodecContext.channels;

@@ -1,7 +1,7 @@
 #ifndef _AV_TRANSCODER_FRAME_AUDIO_FRAME_HPP_
 #define _AV_TRANSCODER_FRAME_AUDIO_FRAME_HPP_
 
-#include "Frame.hpp"
+#include "IFrame.hpp"
 #include <AvTranscoder/profile/ProfileLoader.hpp>
 
 namespace avtranscoder
@@ -33,7 +33,7 @@ public:
 /**
  * @brief This class describes decoded audio data.
  */
-class AvExport AudioFrame : public Frame
+class AvExport AudioFrame : public IFrame
 {
 public:
     AudioFrame(const AudioFrameDesc& desc, const bool forceDataAllocation = true);

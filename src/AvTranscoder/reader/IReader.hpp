@@ -6,7 +6,7 @@
 #include <AvTranscoder/file/InputFile.hpp>
 #include <AvTranscoder/properties/StreamProperties.hpp>
 #include <AvTranscoder/decoder/IDecoder.hpp>
-#include <AvTranscoder/data/decoded/Frame.hpp>
+#include <AvTranscoder/data/decoded/IFrame.hpp>
 #include <AvTranscoder/transform/ITransform.hpp>
 
 namespace avtranscoder
@@ -37,20 +37,20 @@ public:
      * @return Get next frame after decoding
      * @see readFrameAt
      */
-    Frame* readNextFrame();
+    IFrame* readNextFrame();
 
     /**
      * @return Get previous frame after decoding
      * @see readFrameAt
      */
-    Frame* readPrevFrame();
+    IFrame* readPrevFrame();
 
     /**
      * @return Get indicated frame after decoding
      * @warn Returns NULL if there is no more frame to read.
      * @see continueWithGenerator
      */
-    Frame* readFrameAt(const size_t frame);
+    IFrame* readFrameAt(const size_t frame);
 
     /**
      * @brief Get the properties of the source stream read.
@@ -70,8 +70,8 @@ protected:
     IDecoder* _generator;
     IDecoder* _currentDecoder; ///< Link to _inputDecoder or _generator
 
-    Frame* _srcFrame;
-    Frame* _dstFrame;
+    IFrame* _srcFrame;
+    IFrame* _dstFrame;
 
     ITransform* _transform;
 

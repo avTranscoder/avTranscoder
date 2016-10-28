@@ -60,7 +60,7 @@ bool VideoTransform::init(const VideoFrame& src, const VideoFrame& dst)
     return true;
 }
 
-void VideoTransform::convert(const Frame& srcFrame, Frame& dstFrame)
+void VideoTransform::convert(const IFrame& srcFrame, IFrame& dstFrame)
 {
     const VideoFrame& src = static_cast<const VideoFrame&>(srcFrame);
     VideoFrame& dst = static_cast<VideoFrame&>(dstFrame);

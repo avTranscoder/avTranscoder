@@ -16,7 +16,7 @@ namespace avtranscoder
  * @see VideoFrame
  * @see AudioFrame
  */
-class AvExport Frame
+class AvExport IFrame
 {
 public:
     /**
@@ -25,9 +25,9 @@ public:
      * Depending on the case, we could manipulate frame with data allocated elsewhere.
      * For example, an empty frame is given to a decoder, which is responsible to allocate and free the data buffers.
      */
-    Frame();
+    IFrame();
 
-    virtual ~Frame();
+    virtual ~IFrame();
 
     /**
      * @brief Allocate the buffer of the frame.
@@ -66,13 +66,13 @@ public:
      * @note It copies the frame data (i.e. the contents of the data / extended data arrays), not any other properties.
      * @see copyProperties
      */
-    void copyData(const Frame& frameToRef);
+    void copyData(const IFrame& frameToRef);
 
     /**
      * @brief Copy all the fields that do not affect the data layout in the buffers.
      * @warning The info checked when copying data of an other frame (width/height, channels...) are not copied.
      */
-    void copyProperties(const Frame& otherFrame);
+    void copyProperties(const IFrame& otherFrame);
 
     /**
      * @return If it corresponds to a valid audio frame.

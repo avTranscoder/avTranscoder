@@ -46,7 +46,7 @@ void VideoFrameDesc::setParameters(const ProfileLoader::Profile& profile)
 }
 
 VideoFrame::VideoFrame(const VideoFrameDesc& desc, const bool forceDataAllocation)
-    : Frame()
+    : IFrame()
     , _desc(desc)
 {
     _frame->width = desc._width;

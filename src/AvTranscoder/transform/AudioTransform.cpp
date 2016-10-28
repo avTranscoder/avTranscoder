@@ -88,7 +88,7 @@ bool AudioTransform::init(const AudioFrame& src, const AudioFrame& dst)
     return true;
 }
 
-void AudioTransform::convert(const Frame& srcFrame, Frame& dstFrame)
+void AudioTransform::convert(const IFrame& srcFrame, IFrame& dstFrame)
 {
     const AudioFrame& src = static_cast<const AudioFrame&>(srcFrame);
     const AudioFrame& dst = static_cast<const AudioFrame&>(dstFrame);

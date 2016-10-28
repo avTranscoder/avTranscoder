@@ -19,7 +19,7 @@ AudioGenerator::~AudioGenerator()
     delete _silent;
 }
 
-bool AudioGenerator::decodeNextFrame(Frame& frameBuffer)
+bool AudioGenerator::decodeNextFrame(IFrame& frameBuffer)
 {
     // Generate silent
     if(!_inputFrame)
@@ -53,7 +53,7 @@ bool AudioGenerator::decodeNextFrame(Frame& frameBuffer)
     return true;
 }
 
-bool AudioGenerator::decodeNextFrame(Frame& frameBuffer, const std::vector<size_t> channelIndexArray)
+bool AudioGenerator::decodeNextFrame(IFrame& frameBuffer, const std::vector<size_t> channelIndexArray)
 {
     return decodeNextFrame(frameBuffer);
 }
