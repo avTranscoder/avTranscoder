@@ -174,7 +174,7 @@ StreamTranscoder::StreamTranscoder(const std::vector<InputStreamDesc>& inputStre
             _outputStream = &outputFile.addVideoStream(outputVideo->getVideoCodec());
 
             // buffers to process
-            _filteredData = new VideoFrame(outputVideo->getVideoCodec().getVideoFrameDesc());
+            _filteredData = new VideoFrame(inputStream.getVideoCodec().getVideoFrameDesc());
             _transformedData = new VideoFrame(outputVideo->getVideoCodec().getVideoFrameDesc());
 
             // transform
