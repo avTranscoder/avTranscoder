@@ -56,6 +56,10 @@ public:
 
     size_t getSize() const;
 
+    /**
+     * @brief This methods dynamically updates the size that the data buffer would occupy if allocated.
+     * @warning If the data buffer is already allocated, this could lead to memory leaks or seg fault.
+     */
     void setNbSamplesPerChannel(const size_t nbSamples) { _frame->nb_samples = nbSamples; }
 
     void assignBuffer(const unsigned char* ptrValue);
