@@ -261,9 +261,13 @@ void StreamTranscoder::addDecoder(const InputStreamDesc& inputStreamDesc, IInput
 
             // buffers to get the decoded data
             AudioFrameDesc inputFrameDesc(inputStream.getAudioCodec().getAudioFrameDesc());
+            bool allocateDecodedData = false;
             if(inputStreamDesc.demultiplexing())
+            {
                 inputFrameDesc._nbChannels = inputStreamDesc._channelIndexArray.size();
-            _decodedData.push_back(new AudioFrame(inputFrameDesc, false));
+                allocateDecodedData = true;
+            }
+            _decodedData.push_back(new AudioFrame(inputFrameDesc, allocateDecodedData));
 
             // generator decoder
             _generators.push_back(new AudioGenerator(inputFrameDesc));

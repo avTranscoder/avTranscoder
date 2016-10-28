@@ -159,8 +159,6 @@ bool AudioDecoder::decodeNextFrame(IFrame& frameBuffer, const std::vector<size_t
             throw std::runtime_error(msg.str());
         }
     }
-    // allocate data to store the subpart of the next frame
-    audioBuffer.allocateData();
 
     // copy frame properties of decoded frame
     audioBuffer.copyProperties(allDataOfNextFrame);
