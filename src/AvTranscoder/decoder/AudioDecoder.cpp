@@ -162,8 +162,6 @@ bool AudioDecoder::decodeNextFrame(IFrame& frameBuffer, const std::vector<size_t
 
     // copy frame properties of decoded frame
     audioBuffer.copyProperties(allDataOfNextFrame);
-    av_frame_set_channels(&audioBuffer.getAVFrame(), channelIndexArray.size());
-    av_frame_set_channel_layout(&audioBuffer.getAVFrame(), av_get_default_channel_layout(channelIndexArray.size()));
     audioBuffer.setNbSamplesPerChannel(allDataOfNextFrame.getNbSamplesPerChannel());
 
     // @todo manage cases with data of frame not only on data[0] (use _frame.linesize)
