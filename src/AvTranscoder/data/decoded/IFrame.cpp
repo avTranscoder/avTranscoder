@@ -64,13 +64,19 @@ void IFrame::freeAVFrame()
 
 void IFrame::assignValue(const unsigned char value)
 {
+    // Free the existing data
+    freeData();
+
     // Create the buffer
     const int bufferSize = getSize();
-    unsigned char* dataBuffer = new unsigned char[bufferSize];
+    unsigned char* dataBuffer = static_cast<unsigned char*>(malloc(bufferSize * sizeof(unsigned char)));
     memset(dataBuffer, value, bufferSize);
 
     // Fill the frame
     assignBuffer(dataBuffer);
+
+    // Prepare to free the data
+    _dataAllocated = true;
 }
 
 bool IFrame::isAudioFrame() const
