@@ -3,6 +3,7 @@
 #include <AvTranscoder/properties/util.hpp>
 #include <AvTranscoder/properties/FileProperties.hpp>
 #include <AvTranscoder/progress/NoDisplayProgress.hpp>
+#include <AvTranscoder/data/decoded/VideoFrame.hpp>
 
 extern "C" {
 #include <libavutil/avutil.h>
@@ -341,10 +342,13 @@ size_t VideoProperties::getBitRate() const
     // discard no frame type when decode
     _codecContext->skip_frame = AVDISCARD_NONE;
 
-    AVFrame avFrame;
     AVPacket pkt;
     av_init_packet(&pkt);
+
     avcodec_open2(_codecContext, _codec, NULL);
+
+    VideoFrame frame(VideoFrameDesc(getWidth(), getHeight(), getPixelProperties().getAVPixelFormat()), false);
+    AVFrame& avFrame = frame.getAVFrame();
 
     int gotFrame = 0;
     size_t nbDecodedFrames = 0;
@@ -565,7 +569,9 @@ void VideoProperties::analyseGopStructure(IProgress& progress)
             // Initialize the AVCodecContext to use the given AVCodec
             avcodec_open2(_codecContext, _codec, NULL);
 
-            AVFrame avFrame;
+            VideoFrame frame(VideoFrameDesc(getWidth(), getHeight(), getPixelProperties().getAVPixelFormat()), false);
+            AVFrame& avFrame = frame.getAVFrame();
+
             size_t count = 0;
             int gotFrame = 0;
             int positionOfFirstKeyFrame = -1;
