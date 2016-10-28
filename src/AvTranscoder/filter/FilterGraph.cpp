@@ -30,7 +30,7 @@ FilterGraph::~FilterGraph()
 {
     for(std::vector<Filter*>::iterator it = _filters.begin(); it < _filters.end(); ++it)
     {
-        it = _filters.erase(it);
+        delete(*it);
     }
     avfilter_graph_free(&_graph);
 }
@@ -168,9 +168,8 @@ void FilterGraph::addInBuffer(const std::vector<IFrame*>& inputs)
             throw std::runtime_error("Cannot create input buffer of filter graph: the given frame is invalid.");
 
         // add in buffer
-        Filter* in = new Filter(filterName, filterOptions.str(), "in");
         LOG_INFO("Add filter '" << filterName << "' at the beginning of the graph.")
-        _filters.insert(_filters.begin(), in);
+        _filters.insert(_filters.begin(), new Filter(filterName, filterOptions.str(), "in"));
     }
 }
 
