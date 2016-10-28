@@ -452,6 +452,13 @@ bool StreamTranscoder::processFrame()
         {
             LOG_INFO("End of positive offset")
 
+            // free our frame data since some new buffers will be allocated by the decoders in the next step
+            for(std::vector<IFrame*>::iterator it = _decodedData.begin(); it != _decodedData.end(); ++it)
+            {
+                if((*it)->isDataAllocated())
+                    (*it)->freeData();
+            }
+            // switch the decoder
             if(! _inputDecoders.empty())
                 switchToInputDecoder();
             else
@@ -576,7 +583,7 @@ bool StreamTranscoder::processTranscode()
             if(_needToSwitchToGenerator)
             {
                 switchToGeneratorDecoder();
-                // force reallocation of the buffers since de decoders have cleared them
+                LOG_INFO("Force reallocation of the decoded data buffers since the decoders could have cleared them.")
                 for(std::vector<IFrame*>::iterator it = _decodedData.begin(); it != _decodedData.end(); ++it)
                     (*it)->allocateData();
                 return processTranscode();
@@ -666,7 +673,15 @@ void StreamTranscoder::setOffset(const float offset)
 {
     _offset = offset;
     if(_offset > 0)
+    {
         needToSwitchToGenerator();
+        // allocate the frame since the process will start with some generated data
+        for(std::vector<IFrame*>::iterator it = _decodedData.begin(); it != _decodedData.end(); ++it)
+        {
+            if(! (*it)->isDataAllocated())
+                (*it)->allocateData();
+        }
+    }
 }
 
 StreamTranscoder::EProcessCase StreamTranscoder::getProcessCase() const

@@ -98,6 +98,11 @@ public:
      */
     bool isVideoFrame() const;
 
+    /**
+     * @return If the data buffer is allocated and hold by the frame.
+     */
+    bool isDataAllocated() const { return _dataAllocated; }
+
 #ifndef SWIG
     AVFrame& getAVFrame() { return *_frame; }
     const AVFrame& getAVFrame() const { return *_frame; }
