@@ -40,7 +40,8 @@ void Frame::allocateAVFrame()
 #endif
     if(_frame == NULL)
     {
-        throw std::runtime_error("Unable to allocate an empty Frame.");
+        LOG_ERROR("Unable to allocate an empty Frame.")
+        throw std::bad_alloc();
     }
 }
 

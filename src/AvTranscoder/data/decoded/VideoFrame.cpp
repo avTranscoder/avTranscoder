@@ -93,7 +93,8 @@ void VideoFrame::allocateData()
         os << "width = " << _frame->width << ", ";
         os << "height = " << _frame->height << ", ";
         os << "pixel format = " << getPixelFormatName(_desc._pixelFormat);
-        throw std::runtime_error(os.str());
+        LOG_ERROR(os.str())
+        throw std::bad_alloc();
     }
     _dataAllocated = true;
 }

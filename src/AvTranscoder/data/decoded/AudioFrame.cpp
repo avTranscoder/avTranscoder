@@ -110,7 +110,8 @@ void AudioFrame::allocateData()
         os << "channel layout = " << av_get_channel_name(_frame->channels) << ", ";
         os << "nb samples = " << _frame->nb_samples << ", ";
         os << "sample format = " << getSampleFormatName(_desc._sampleFormat);
-        throw std::runtime_error(os.str());
+        LOG_ERROR(os.str())
+        throw std::bad_alloc();
     }
     _dataAllocated = true;
 }
