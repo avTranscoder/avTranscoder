@@ -52,6 +52,7 @@ public:
     size_t getChannelLayout() const { return av_frame_get_channel_layout(_frame); }
     std::string getChannelLayoutDesc() const; ///< Get a description of a channel layout (example: '5.1').
     AVSampleFormat getSampleFormat() const { return static_cast<AVSampleFormat>(_frame->format); }
+    size_t getBytesPerSample() const;  ///< 0 if unknown sample format
     size_t getNbSamplesPerChannel() const { return _frame->nb_samples; }
 
     size_t getSize() const;

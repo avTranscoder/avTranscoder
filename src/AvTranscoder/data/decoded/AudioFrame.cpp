@@ -69,6 +69,11 @@ AudioFrame::~AudioFrame()
         freeData();
 }
 
+size_t AudioFrame::getBytesPerSample() const
+{
+    return av_get_bytes_per_sample(getSampleFormat());
+}
+
 size_t AudioFrame::getSize() const
 {
     if(getSampleFormat() == AV_SAMPLE_FMT_NONE)
@@ -77,14 +82,14 @@ size_t AudioFrame::getSize() const
         return 0;
     }
 
-    const size_t size = getNbSamplesPerChannel() * getNbChannels() * av_get_bytes_per_sample(getSampleFormat());
+    const size_t size = getNbSamplesPerChannel() * getNbChannels() * getBytesPerSample();
     if(size == 0)
     {
         std::stringstream msg;
         msg << "Unable to determine audio buffer size:" << std::endl;
         msg << "nb sample per channel = " << getNbSamplesPerChannel() << std::endl;
         msg << "channels = " << getNbChannels() << std::endl;
-        msg << "bytes per sample = " << av_get_bytes_per_sample(getSampleFormat()) << std::endl;
+        msg << "bytes per sample = " << getBytesPerSample() << std::endl;
         throw std::runtime_error(msg.str());
     }
     return size;
