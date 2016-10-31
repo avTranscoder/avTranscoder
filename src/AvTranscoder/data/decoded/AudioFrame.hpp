@@ -35,6 +35,10 @@ public:
  */
 class AvExport AudioFrame : public IFrame
 {
+private:
+    AudioFrame(const AudioFrame& otherFrame);
+    AudioFrame& operator=(const AudioFrame& otherFrame);
+
 public:
     AudioFrame(const AudioFrameDesc& desc, const bool forceDataAllocation = true);
     ~AudioFrame();

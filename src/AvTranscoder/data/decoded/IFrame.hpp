@@ -18,6 +18,10 @@ namespace avtranscoder
  */
 class AvExport IFrame
 {
+private:
+    IFrame(const IFrame& otherFrame);
+    IFrame& operator=(const IFrame& otherFrame);
+
 public:
     /**
      * @brief Allocate an empty frame.

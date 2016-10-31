@@ -42,6 +42,11 @@ public:
  */
 class AvExport VideoFrame : public IFrame
 {
+private:
+    VideoFrame(const VideoFrame& otherFrame);
+    VideoFrame& operator=(const VideoFrame& otherFrame);
+
+
 public:
     VideoFrame(const VideoFrameDesc& desc, const bool forceDataAllocation = true);
     ~VideoFrame();
