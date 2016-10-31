@@ -57,12 +57,11 @@ public:
      */
     void allocateData();
     void freeData();
+    size_t getSize() const;
 
     size_t getWidth() const { return _frame->width; }
     size_t getHeight() const { return _frame->height; }
     AVPixelFormat getPixelFormat() const { return static_cast<AVPixelFormat>(_frame->format); }
-
-    size_t getSize() const;
 
     void assignBuffer(const unsigned char* ptrValue);
 

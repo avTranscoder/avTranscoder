@@ -49,6 +49,7 @@ public:
      */
     void allocateData();
     void freeData();
+    size_t getSize() const;
 
     size_t getSampleRate() const { return av_frame_get_sample_rate(_frame); }
     size_t getNbChannels() const { return av_frame_get_channels(_frame); }
@@ -57,8 +58,6 @@ public:
     AVSampleFormat getSampleFormat() const { return static_cast<AVSampleFormat>(_frame->format); }
     size_t getBytesPerSample() const;  ///< 0 if unknown sample format
     size_t getNbSamplesPerChannel() const { return _frame->nb_samples; }
-
-    size_t getSize() const;
 
     /**
      * @brief This methods dynamically updates the size that the data buffer would occupy if allocated.
