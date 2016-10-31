@@ -1,5 +1,6 @@
 #include "AudioDecoder.hpp"
 
+#include <AvTranscoder/util.hpp>
 #include <AvTranscoder/codec/ICodec.hpp>
 #include <AvTranscoder/stream/InputStream.hpp>
 #include <AvTranscoder/data/decoded/AudioFrame.hpp>
@@ -133,7 +134,7 @@ bool AudioDecoder::decodeNextFrame(IFrame& frameBuffer, const std::vector<size_t
 
     // else decode all data in an intermediate buffer
     AudioFrame& audioBuffer = static_cast<AudioFrame&>(frameBuffer);
-    AudioFrame allDataOfNextFrame(AudioFrameDesc(audioBuffer.getSampleRate(), srcNbChannels, audioBuffer.getSampleFormat()), false);
+    AudioFrame allDataOfNextFrame(AudioFrameDesc(audioBuffer.getSampleRate(), srcNbChannels, getSampleFormatName(audioBuffer.getSampleFormat())), false);
     if(!decodeNextFrame(allDataOfNextFrame))
         return false;
 

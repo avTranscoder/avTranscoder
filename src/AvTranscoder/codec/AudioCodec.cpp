@@ -1,5 +1,7 @@
 #include "AudioCodec.hpp"
 
+#include <AvTranscoder/util.hpp>
+
 #include <cmath>
 #include <cassert>
 
@@ -24,7 +26,7 @@ AudioCodec::AudioCodec(const ECodecType type, AVCodecContext& avCodecContext)
 AudioFrameDesc AudioCodec::getAudioFrameDesc() const
 {
     assert(_avCodecContext != NULL);
-    return AudioFrameDesc(_avCodecContext->sample_rate, _avCodecContext->channels, _avCodecContext->sample_fmt);
+    return AudioFrameDesc(_avCodecContext->sample_rate, _avCodecContext->channels, getSampleFormatName(_avCodecContext->sample_fmt));
 }
 
 void AudioCodec::setAudioParameters(const AudioFrameDesc& audioFrameDesc)

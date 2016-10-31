@@ -333,8 +333,7 @@ StreamTranscoder::StreamTranscoder(IOutputFile& outputFile, const ProfileLoader:
     else if(profile.find(constants::avProfileType)->second == constants::avProfileTypeAudio)
     {
         AudioCodec inputAudioCodec(eCodecTypeEncoder, profile.find(constants::avProfileCodec)->second);
-        AudioFrameDesc inputFrameDesc;
-        inputFrameDesc.setParameters(profile);
+        AudioFrameDesc inputFrameDesc(profile);
         inputAudioCodec.setAudioParameters(inputFrameDesc);
 
         // generator decoder

@@ -12,18 +12,19 @@ extern "C" {
 namespace avtranscoder
 {
 
-AudioFrameDesc::AudioFrameDesc(const size_t sampleRate, const size_t nbChannels, const AVSampleFormat sampleFormat)
-    : _sampleRate(sampleRate)
-    , _nbChannels(nbChannels)
-    , _sampleFormat(sampleFormat)
-{
-}
-
 AudioFrameDesc::AudioFrameDesc(const size_t sampleRate, const size_t nbChannels, const std::string& sampleFormatName)
     : _sampleRate(sampleRate)
     , _nbChannels(nbChannels)
     , _sampleFormat(getAVSampleFormat(sampleFormatName))
 {
+}
+
+AudioFrameDesc::AudioFrameDesc(const ProfileLoader::Profile& profile)
+    : _sampleRate(0)
+    , _nbChannels(0)
+    , _sampleFormat(AV_SAMPLE_FMT_NONE)
+{
+    setParameters(profile);
 }
 
 void AudioFrameDesc::setParameters(const ProfileLoader::Profile& profile)

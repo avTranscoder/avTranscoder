@@ -54,7 +54,7 @@ void AudioReader::init()
     // create dst frame
     _outputSampleRate = srcFrame->getSampleRate();
     _outputNbChannels = (_channelIndex == -1) ? srcFrame->getNbChannels() : 1;
-    _dstFrame = new AudioFrame(AudioFrameDesc(_outputSampleRate, _outputNbChannels, _outputSampleFormat));
+    _dstFrame = new AudioFrame(AudioFrameDesc(_outputSampleRate, _outputNbChannels, getSampleFormatName(_outputSampleFormat)));
 
     // generator
     _generator = new AudioGenerator(srcFrameDesc);
@@ -79,6 +79,6 @@ void AudioReader::updateOutput(const size_t sampleRate, const size_t nbChannels,
     _outputSampleFormat = getAVSampleFormat(sampleFormat);
     // update dst frame
     delete _dstFrame;
-    _dstFrame = new AudioFrame(AudioFrameDesc(_outputSampleRate, _outputNbChannels, _outputSampleFormat));
+    _dstFrame = new AudioFrame(AudioFrameDesc(_outputSampleRate, _outputNbChannels, getSampleFormatName(_outputSampleFormat)));
 }
 }

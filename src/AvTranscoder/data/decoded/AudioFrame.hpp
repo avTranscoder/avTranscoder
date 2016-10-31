@@ -14,9 +14,8 @@ namespace avtranscoder
 struct AvExport AudioFrameDesc
 {
 public:
-    AudioFrameDesc(const size_t sampleRate = 0, const size_t channels = 0,
-                   const AVSampleFormat sampleFormat = AV_SAMPLE_FMT_NONE);
     AudioFrameDesc(const size_t sampleRate, const size_t channels, const std::string& sampleFormatName);
+    AudioFrameDesc(const ProfileLoader::Profile& profile);
 
     /**
      * @brief Set the attributes from the given profile.
