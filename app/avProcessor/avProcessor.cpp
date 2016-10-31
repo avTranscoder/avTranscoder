@@ -28,7 +28,7 @@ void parseConfigFile(const std::string& configFilename, avtranscoder::Transcoder
 
                 std::stringstream ss(streamId);
                 size_t streamIndex = 0;
-                char separator;
+                char separator = 'x';
                 std::vector<size_t> channelIndexArray;
                 ss >> streamIndex;
                 ss >> separator;
