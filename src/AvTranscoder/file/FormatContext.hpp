@@ -122,6 +122,7 @@ public:
 
 private:
     AVFormatContext* _avFormatContext; ///< Has ownership
+    std::vector<AVStream*> _avStreamAllocated; ///< Has link (no ownership)
     const int _flags;                  ///< Flags with which the options are loaded (see AV_OPT_FLAG_xxx)
     OptionMap _options;
     bool _isOpen; ///< Is the AVFormatContext open (in constructor with a filename)

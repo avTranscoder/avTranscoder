@@ -8,6 +8,7 @@ namespace avtranscoder
 
 FormatContext::FormatContext(const std::string& filename, int req_flags, AVDictionary** options)
     : _avFormatContext(NULL)
+    , _avStreamAllocated()
     , _flags(req_flags)
     , _options()
     , _isOpen(false)
@@ -31,6 +32,7 @@ FormatContext::FormatContext(const std::string& filename, int req_flags, AVDicti
 
 FormatContext::FormatContext(int req_flags)
     : _avFormatContext(NULL)
+    , _avStreamAllocated()
     , _flags(req_flags)
     , _options()
     , _isOpen(false)
@@ -45,8 +47,8 @@ FormatContext::~FormatContext()
         return;
 
     // free the streams added
-    for(unsigned int i = 0; i < _avFormatContext->nb_streams; ++i)
-        avcodec_close(_avFormatContext->streams[i]->codec);
+    for(std::vector<AVStream*>::iterator it = _avStreamAllocated.begin(); it != _avStreamAllocated.end(); ++it)
+        avcodec_close((*it)->codec);
 
     // free the format context
     if(_isOpen)
@@ -143,6 +145,7 @@ AVStream& FormatContext::addAVStream(const AVCodec& avCodec)
     {
         throw std::runtime_error("Unable to add new video stream");
     }
+    _avStreamAllocated.push_back(stream);
     return *stream;
 }
 
