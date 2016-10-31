@@ -46,7 +46,10 @@ void AudioReader::init()
 
     // create src frame
     const AudioFrameDesc srcFrameDesc = _inputFile->getStream(_streamIndex).getAudioCodec().getAudioFrameDesc();
-    _srcFrame = new AudioFrame(srcFrameDesc);
+    bool allocateDecodedData = false;
+    if(_channelIndex != -1)
+        allocateDecodedData = true;
+    _srcFrame = new AudioFrame(srcFrameDesc, allocateDecodedData);
     AudioFrame* srcFrame = static_cast<AudioFrame*>(_srcFrame);
     // create dst frame
     _outputSampleRate = srcFrame->getSampleRate();

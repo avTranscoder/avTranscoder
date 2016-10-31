@@ -45,7 +45,7 @@ void VideoReader::init()
 
     // create src frame
     const VideoFrameDesc srcFrameDesc = _inputFile->getStream(_streamIndex).getVideoCodec().getVideoFrameDesc();
-    _srcFrame = new VideoFrame(srcFrameDesc);
+    _srcFrame = new VideoFrame(srcFrameDesc, false);
     VideoFrame* srcFrame = static_cast<VideoFrame*>(_srcFrame);
     // create dst frame
     _outputWidth = srcFrame->getWidth();

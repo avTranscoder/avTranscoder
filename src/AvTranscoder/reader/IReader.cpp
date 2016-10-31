@@ -86,6 +86,9 @@ IFrame* IReader::readFrameAt(const size_t frame)
         // generate data (ie silence or black)
         if(_continueWithGenerator)
         {
+            // allocate the frame since the process will continue with some generated data
+            if(! _srcFrame->isDataAllocated())
+                _srcFrame->allocateData();
             _currentDecoder = _generator;
             return readFrameAt(frame);
         }
