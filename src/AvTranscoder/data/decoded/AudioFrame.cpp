@@ -110,14 +110,15 @@ void AudioFrame::allocateData()
         av_samples_alloc(_frame->data, _frame->linesize, _frame->channels, _frame->nb_samples, _desc._sampleFormat, align);
     if(ret < 0)
     {
-        std::stringstream os;
-        os << "Unable to allocate an audio frame of ";
-        os << "sample rate = " << _frame->sample_rate << ", ";
-        os << "nb channels = " << _frame->channels << ", ";
-        os << "channel layout = " << av_get_channel_name(_frame->channels) << ", ";
-        os << "nb samples = " << _frame->nb_samples << ", ";
-        os << "sample format = " << getSampleFormatName(_desc._sampleFormat);
-        LOG_ERROR(os.str())
+        const std::string formatName = getSampleFormatName(_desc._sampleFormat);
+        std::stringstream stream;
+        stream << "Unable to allocate an audio frame of ";
+        stream << "sample rate = " << _frame->sample_rate << ", ";
+        stream << "nb channels = " << _frame->channels << ", ";
+        stream << "channel layout = " << av_get_channel_name(_frame->channels) << ", ";
+        stream << "nb samples = " << _frame->nb_samples << ", ";
+        stream << "sample format = " << (formatName.empty() ? "none" : formatName);
+        LOG_ERROR(stream.str())
         throw std::bad_alloc();
     }
     _dataAllocated = true;

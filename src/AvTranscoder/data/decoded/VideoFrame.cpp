@@ -90,12 +90,13 @@ void VideoFrame::allocateData()
     const int ret = avpicture_alloc(reinterpret_cast<AVPicture*>(_frame), _desc._pixelFormat, _desc._width, _desc._height);
     if(ret < 0)
     {
-        std::stringstream os;
-        os << "Unable to allocate an image frame of ";
-        os << "width = " << _frame->width << ", ";
-        os << "height = " << _frame->height << ", ";
-        os << "pixel format = " << getPixelFormatName(_desc._pixelFormat);
-        LOG_ERROR(os.str())
+        const std::string formatName = getPixelFormatName(_desc._pixelFormat);
+        std::stringstream stream;
+        stream << "Unable to allocate an image frame of ";
+        stream << "width = " << _frame->width << ", ";
+        stream << "height = " << _frame->height << ", ";
+        stream << "pixel format = " << (formatName.empty() ? "none" : formatName);
+        LOG_ERROR(stream.str())
         throw std::bad_alloc();
     }
     _dataAllocated = true;
