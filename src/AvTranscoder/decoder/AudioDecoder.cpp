@@ -161,9 +161,11 @@ bool AudioDecoder::decodeNextFrame(IFrame& frameBuffer, const std::vector<size_t
     if(decodedSize == 0)
         return false;
 
-    // copy frame properties of decoded frame
+    // update the output frame
     audioBuffer.copyProperties(allDataOfNextFrame);
     audioBuffer.setNbSamplesPerChannel(allDataOfNextFrame.getNbSamplesPerChannel());
+    if(! audioBuffer.isDataAllocated())
+        audioBuffer.allocateData();
 
     // @todo manage cases with data of frame not only on data[0] (use _frame.linesize)
     unsigned char* src = allDataOfNextFrame.getData()[0];
