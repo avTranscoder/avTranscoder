@@ -128,6 +128,22 @@ bool AudioDecoder::decodeNextFrame(IFrame& frameBuffer, const std::vector<size_t
     const size_t srcNbChannels = avCodecContext.channels;
     const size_t bytePerSample = av_get_bytes_per_sample((AVSampleFormat)frameBuffer.getAVFrame().format);
 
+    // check if each expected channel exists
+    for(std::vector<size_t>::const_iterator channelIndex = channelIndexArray.begin();
+        channelIndex != channelIndexArray.end(); ++channelIndex)
+    {
+        if((*channelIndex) > srcNbChannels - 1)
+        {
+            std::stringstream msg;
+            msg << "The channel at index ";
+            msg << (*channelIndex);
+            msg << " doesn't exist (srcNbChannels = ";
+            msg << srcNbChannels;
+            msg << ").";
+            throw std::runtime_error(msg.str());
+        }
+    }
+
     // if all channels of the stream are extracted
     if(srcNbChannels == channelIndexArray.size())
         return decodeNextFrame(frameBuffer);
@@ -144,22 +160,6 @@ bool AudioDecoder::decodeNextFrame(IFrame& frameBuffer, const std::vector<size_t
                                                           avCodecContext.sample_fmt, noAlignment);
     if(decodedSize == 0)
         return false;
-
-    // check if each expected channel exists
-    for(std::vector<size_t>::const_iterator channelIndex = channelIndexArray.begin();
-        channelIndex != channelIndexArray.end(); ++channelIndex)
-    {
-        if((*channelIndex) > srcNbChannels - 1)
-        {
-            std::stringstream msg;
-            msg << "The channel at index ";
-            msg << (*channelIndex);
-            msg << " doesn't exist (srcNbChannels = ";
-            msg << srcNbChannels;
-            msg << ").";
-            throw std::runtime_error(msg.str());
-        }
-    }
 
     // copy frame properties of decoded frame
     audioBuffer.copyProperties(allDataOfNextFrame);

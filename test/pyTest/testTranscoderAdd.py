@@ -70,6 +70,25 @@ def testEmptyListOfInputs():
 
 
 @raises(RuntimeError)
+def testAddOneChannelWhichDoesNotExist():
+    """
+    Extract one audio channel from an input stream.
+    """
+    inputFileName = os.environ['AVTRANSCODER_TEST_AUDIO_WAVE_FILE']
+    outputFileName = "testAddOneChannelWhichDoesNotExist.wav"
+
+    ouputFile = av.OutputFile(outputFileName)
+    transcoder = av.Transcoder(ouputFile)
+
+    inputFile = av.InputFile(inputFileName)
+    src_audioStream = inputFile.getProperties().getAudioProperties()[0]
+    audioStreamIndex = src_audioStream.getStreamIndex()
+    transcoder.addStream(av.InputStreamDesc(inputFileName, audioStreamIndex, 15))
+
+    transcoder.process()
+
+
+@raises(RuntimeError)
 def testAllSeveralInputsWithDifferentType():
     """
     Add one video and one audio to create one output stream.
