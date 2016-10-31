@@ -10,6 +10,26 @@ from nose.tools import *
 from pyAvTranscoder import avtranscoder as av
 
 
+def testAudioReaderCreateNewInputFile():
+    """
+    Read a audio stream with the AudioReader.
+    The InputFile is created inside the reader.
+    """
+    inputFileName = os.environ['AVTRANSCODER_TEST_AUDIO_WAVE_FILE']
+    reader = av.AudioReader(inputFileName)
+
+    # read all frames and check their size
+    while True:
+        frame = reader.readNextFrame()
+        if not frame:
+            break
+        assert_greater(frame.getSize(), 0)
+
+    # check if there is no next frame
+    frame = reader.readNextFrame()
+    assert_equals( reader.readNextFrame(), None )
+
+
 def testAudioReaderChannelsExtraction():
     """
     Read the same audio stream with several AudioReaders.
