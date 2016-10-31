@@ -77,7 +77,7 @@ size_t VideoFrame::getSize() const
 
     const size_t size = avpicture_get_size(getPixelFormat(), getWidth(), getHeight());
     if(size == 0)
-        throw std::runtime_error("unable to determine image buffer size");
+        throw std::runtime_error("Unable to determine image buffer size: " + getDescriptionFromErrorCode(size));
     return size;
 }
 
