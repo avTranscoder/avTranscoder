@@ -301,8 +301,7 @@ StreamTranscoder::StreamTranscoder(IOutputFile& outputFile, const ProfileLoader:
     if(profile.find(constants::avProfileType)->second == constants::avProfileTypeVideo)
     {
         VideoCodec inputVideoCodec(eCodecTypeEncoder, profile.find(constants::avProfileCodec)->second);
-        VideoFrameDesc inputFrameDesc;
-        inputFrameDesc.setParameters(profile);
+        VideoFrameDesc inputFrameDesc(profile);
         inputVideoCodec.setImageParameters(inputFrameDesc);
 
         // generator decoder

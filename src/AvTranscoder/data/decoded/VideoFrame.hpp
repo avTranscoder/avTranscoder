@@ -21,8 +21,8 @@ namespace avtranscoder
 struct AvExport VideoFrameDesc
 {
 public:
-    VideoFrameDesc(const size_t width = 0, const size_t height = 0, const AVPixelFormat pixelFormat = AV_PIX_FMT_NONE);
     VideoFrameDesc(const size_t width, const size_t height, const std::string& pixelFormatName);
+    VideoFrameDesc(const ProfileLoader::Profile& profile);
 
     /**
      * @brief Set the attributes from the given profile.
@@ -45,7 +45,6 @@ class AvExport VideoFrame : public IFrame
 private:
     VideoFrame(const VideoFrame& otherFrame);
     VideoFrame& operator=(const VideoFrame& otherFrame);
-
 
 public:
     VideoFrame(const VideoFrameDesc& desc, const bool forceDataAllocation = true);

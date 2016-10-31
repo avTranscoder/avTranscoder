@@ -1,5 +1,6 @@
 #include "VideoReader.hpp"
 
+#include <AvTranscoder/util.hpp>
 #include <AvTranscoder/decoder/VideoDecoder.hpp>
 #include <AvTranscoder/decoder/VideoGenerator.hpp>
 #include <AvTranscoder/data/decoded/VideoFrame.hpp>
@@ -50,7 +51,7 @@ void VideoReader::init()
     // create dst frame
     _outputWidth = srcFrame->getWidth();
     _outputHeight = srcFrame->getHeight();
-    _dstFrame = new VideoFrame(VideoFrameDesc(_outputWidth, _outputHeight, getOutputPixelFormat()));
+    _dstFrame = new VideoFrame(VideoFrameDesc(_outputWidth, _outputHeight, getPixelFormatName(getOutputPixelFormat())));
 
     // generator
     _generator = new VideoGenerator(srcFrameDesc);
@@ -75,6 +76,6 @@ void VideoReader::updateOutput(const size_t width, const size_t height, const st
     _outputPixelProperties = PixelProperties(pixelFormat);
     // update dst frame
     delete _dstFrame;
-    _dstFrame = new VideoFrame(VideoFrameDesc(_outputWidth, _outputHeight, getOutputPixelFormat()));
+    _dstFrame = new VideoFrame(VideoFrameDesc(_outputWidth, _outputHeight, getPixelFormatName(getOutputPixelFormat())));
 }
 }

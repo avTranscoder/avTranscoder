@@ -347,7 +347,7 @@ size_t VideoProperties::getBitRate() const
 
     avcodec_open2(_codecContext, _codec, NULL);
 
-    VideoFrame frame(VideoFrameDesc(getWidth(), getHeight(), getPixelProperties().getAVPixelFormat()), false);
+    VideoFrame frame(VideoFrameDesc(getWidth(), getHeight(), getPixelProperties().getPixelFormatName()), false);
     AVFrame& avFrame = frame.getAVFrame();
 
     int gotFrame = 0;
@@ -569,7 +569,7 @@ void VideoProperties::analyseGopStructure(IProgress& progress)
             // Initialize the AVCodecContext to use the given AVCodec
             avcodec_open2(_codecContext, _codec, NULL);
 
-            VideoFrame frame(VideoFrameDesc(getWidth(), getHeight(), getPixelProperties().getAVPixelFormat()), false);
+            VideoFrame frame(VideoFrameDesc(getWidth(), getHeight(), getPixelProperties().getPixelFormatName()), false);
             AVFrame& avFrame = frame.getAVFrame();
 
             size_t count = 0;

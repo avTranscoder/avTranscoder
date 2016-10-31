@@ -13,14 +13,6 @@ extern "C" {
 namespace avtranscoder
 {
 
-VideoFrameDesc::VideoFrameDesc(const size_t width, const size_t height, const AVPixelFormat pixelFormat)
-    : _width(width)
-    , _height(height)
-    , _pixelFormat(pixelFormat)
-    , _fps(1.0)
-{
-}
-
 VideoFrameDesc::VideoFrameDesc(const size_t width, const size_t height, const std::string& pixelFormatName)
     : _width(width)
     , _height(height)
@@ -28,6 +20,16 @@ VideoFrameDesc::VideoFrameDesc(const size_t width, const size_t height, const st
     , _fps(1.0)
 {
 }
+
+VideoFrameDesc::VideoFrameDesc(const ProfileLoader::Profile& profile)
+    : _width(0)
+    , _height(0)
+    , _pixelFormat(AV_PIX_FMT_NONE)
+    , _fps(1.0)
+{
+    setParameters(profile);
+}
+
 
 void VideoFrameDesc::setParameters(const ProfileLoader::Profile& profile)
 {
