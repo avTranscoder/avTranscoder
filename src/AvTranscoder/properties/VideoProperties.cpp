@@ -28,6 +28,7 @@ VideoProperties::VideoProperties(const FileProperties& fileProperties, const siz
     , _isTopFieldFirst(false)
     , _gopSize(0)
     , _gopStructure()
+    , _nbFrames(0)
     , _firstGopTimeCode(-1)
 {
     if(_codecContext)
@@ -38,6 +39,8 @@ VideoProperties::VideoProperties(const FileProperties& fileProperties, const siz
 
     if(_levelAnalysis == eAnalyseLevelFirstGop)
         analyseGopStructure(progress);
+    else if(_levelAnalysis == eAnalyseLevelFull)
+        analyseFull(progress);
 }
 
 std::string VideoProperties::getProfileName() const
@@ -365,6 +368,9 @@ size_t VideoProperties::getNbFrames() const
     size_t nbFrames = _formatContext->streams[_streamIndex]->nb_frames;
     if(nbFrames == 0)
     {
+        if(_levelAnalysis == eAnalyseLevelFull)
+            return _nbFrames;
+
         LOG_WARN("The number of frames in the stream '" << _streamIndex << "' of file '" << _formatContext->filename
                                                         << "' is unknown.")
         const float duration = getDuration();
@@ -551,6 +557,38 @@ void VideoProperties::analyseGopStructure(IProgress& progress)
     if(_gopSize <= 0)
     {
         throw std::runtime_error("Invalid GOP size when decoding the first data.");
+    }
+}
+
+void VideoProperties::analyseFull(IProgress& progress)
+{
+    analyseGopStructure(progress);
+
+    if(! _formatContext || ! _codecContext || ! _codec)
+        return;
+    if(! _codecContext->width || ! _codecContext->height)
+        return;
+
+    InputFile& file = const_cast<InputFile&>(_fileProperties->getInputFile());
+    // Get the stream
+    IInputStream& stream = file.getStream(_streamIndex);
+    stream.activate();
+    // Create a decoder
+    VideoDecoder decoder(static_cast<InputStream&>(stream));
+
+    VideoFrame frame(VideoFrameDesc(getWidth(), getHeight(), getPixelProperties().getAVPixelFormat()));
+    while(decoder.decodeNextFrame(frame))
+    {
+        ++_nbFrames;
+    }
+
+    // Returns at the beginning of the stream
+    file.seekAtFrame(0, AVSEEK_FLAG_BYTE);
+
+    // Check GOP size
+    if(_nbFrames <= 0)
+    {
+        throw std::runtime_error("Invalid number of frames when decoding the video stream.");
     }
 }
 

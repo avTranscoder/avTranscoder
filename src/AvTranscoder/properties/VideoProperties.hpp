@@ -101,10 +101,14 @@ public:
 
 private:
     /**
-     *  @brief frame type / is key frame
-     *  @param progress: callback to get analysis progression
+     * @param progress: callback to get analysis progression
      */
     void analyseGopStructure(IProgress& progress);
+
+    /**
+     * @param progress: callback to get analysis progression
+     */
+    void analyseFull(IProgress& progress);
 
 #ifndef SWIG
     template <typename T>
@@ -133,12 +137,19 @@ private:
     PixelProperties _pixelProperties;
 
     //@{
-    // Can acces these data when analyse first gop
+    // @brief Can access these data when analysing the first GOP.
+    // @see eAnalyseLevelFirstGOP
     bool _isInterlaced;
     bool _isTopFieldFirst;
     size_t _gopSize;
     std::vector<std::pair<char, int> > _gopStructure; ///< picture type, encoded frame size in bytes
                                                       //@}
+
+    //@{
+    // @brief Can access these data when analysing all the stream.
+    // @see eAnalyseLevelFull
+    size_t _nbFrames;
+    //}
 
     /**
      * @brief GOP timecode of the first frame
