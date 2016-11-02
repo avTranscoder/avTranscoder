@@ -553,14 +553,14 @@ bool StreamTranscoder::processTranscode()
         const int nbInputSamplesPerChannel = _decodedData.at(0)->getAVFrame().nb_samples;
         if(nbInputSamplesPerChannel > _filteredData->getAVFrame().nb_samples)
         {
-            LOG_WARN("The buffer of filtered data is too small: reallocate it.")
+            LOG_WARN("The buffer of filtered data corresponds to a frame of " << _filteredData->getAVFrame().nb_samples << " samples. The decoded buffer contains " << nbInputSamplesPerChannel << " samples. Reallocate it.")
             _filteredData->freeData();
             _filteredData->getAVFrame().nb_samples = nbInputSamplesPerChannel;
             _filteredData->allocateData();
         }
         if(nbInputSamplesPerChannel > _transformedData->getAVFrame().nb_samples)
         {
-            LOG_WARN("The buffer of transformed data is too small: reallocate it.")
+            LOG_WARN("The buffer of transformed data corresponds to a frame of " << _transformedData->getAVFrame().nb_samples << " samples. The decoded buffer contains " << nbInputSamplesPerChannel << " samples. Reallocate it.")
             _transformedData->freeData();
             _transformedData->getAVFrame().nb_samples = nbInputSamplesPerChannel;
             _transformedData->allocateData();
