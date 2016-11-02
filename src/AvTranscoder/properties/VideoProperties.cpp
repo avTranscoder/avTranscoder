@@ -328,7 +328,12 @@ size_t VideoProperties::getBitRate() const
     if(_codecContext->bit_rate || _codecContext->rc_max_rate)
         return _codecContext->bit_rate;
 
-    LOG_WARN("The bitrate of the stream '" << _streamIndex << "' of file '" << _formatContext->filename << "' is unknown.")
+    if(_levelAnalysis == eAnalyseLevelHeader)
+    {
+        LOG_WARN("The bitrate of the stream '" << _streamIndex << "' of file '" << _formatContext->filename << "' is unknown.")
+        return 0;
+    }
+
     LOG_INFO("Compute the video bitrate by decoding the first GOP.")
 
     if(!_codecContext->width || !_codecContext->height)
