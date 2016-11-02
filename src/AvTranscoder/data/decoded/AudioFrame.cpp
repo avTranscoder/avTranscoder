@@ -103,7 +103,8 @@ void AudioFrame::allocateData()
     av_frame_set_channels(_frame, _desc._nbChannels);
     av_frame_set_channel_layout(_frame, av_get_default_channel_layout(_desc._nbChannels));
     _frame->format = _desc._sampleFormat;
-    _frame->nb_samples = getDefaultNbSamples();
+    if(_frame->nb_samples == 0)
+        _frame->nb_samples = getDefaultNbSamples();
 
     // Allocate data
     const int align = 0;

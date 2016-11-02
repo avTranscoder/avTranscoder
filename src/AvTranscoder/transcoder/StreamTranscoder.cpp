@@ -547,6 +547,26 @@ bool StreamTranscoder::processTranscode()
             decodingStatus = decodingStatus && _currentDecoder->decodeNextFrame(*_decodedData.at(index));
     }
 
+    // check the next data buffers in case of audio frames
+    if(_decodedData.at(0)->isAudioFrame())
+    {
+        const int nbInputSamplesPerChannel = _decodedData.at(0)->getAVFrame().nb_samples;
+        if(nbInputSamplesPerChannel > _filteredData->getAVFrame().nb_samples)
+        {
+            LOG_WARN("The buffer of filtered data is too small: reallocate it.")
+            _filteredData->freeData();
+            _filteredData->getAVFrame().nb_samples = nbInputSamplesPerChannel;
+            _filteredData->allocateData();
+        }
+        if(nbInputSamplesPerChannel > _transformedData->getAVFrame().nb_samples)
+        {
+            LOG_WARN("The buffer of transformed data is too small: reallocate it.")
+            _transformedData->freeData();
+            _transformedData->getAVFrame().nb_samples = nbInputSamplesPerChannel;
+            _transformedData->allocateData();
+        }
+    }
+
     // Transform
     CodedData data;
     if(decodingStatus)
