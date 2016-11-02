@@ -497,75 +497,74 @@ std::vector<std::pair<char, int> > VideoProperties::getGopStructure() const
 
 void VideoProperties::analyseGopStructure(IProgress& progress)
 {
-    if(_formatContext && _codecContext && _codec)
+    if(! _formatContext || ! _codecContext || ! _codec)
+        return;
+    if(! _codecContext->width || ! _codecContext->height)
+        return;
+
+    // Discard no frame type when decode
+    _codecContext->skip_frame = AVDISCARD_NONE;
+
+    AVPacket pkt;
+    av_init_packet(&pkt);
+
+    // Initialize the AVCodecContext to use the given AVCodec
+    avcodec_open2(_codecContext, _codec, NULL);
+
+    Frame frame;
+    size_t count = 0;
+    int gotFrame = 0;
+    int positionOfFirstKeyFrame = -1;
+    int positionOfLastKeyFrame = -1;
+
+    while(!av_read_frame(const_cast<AVFormatContext*>(_formatContext), &pkt))
     {
-        if(_codecContext->width && _codecContext->height)
+        if(pkt.stream_index == (int)_streamIndex)
         {
-            // Discard no frame type when decode
-            _codecContext->skip_frame = AVDISCARD_NONE;
-
-            AVPacket pkt;
-            av_init_packet(&pkt);
-
-            // Initialize the AVCodecContext to use the given AVCodec
-            avcodec_open2(_codecContext, _codec, NULL);
-
-            Frame frame;
-            size_t count = 0;
-            int gotFrame = 0;
-            int positionOfFirstKeyFrame = -1;
-            int positionOfLastKeyFrame = -1;
-
-            while(!av_read_frame(const_cast<AVFormatContext*>(_formatContext), &pkt))
+            avcodec_decode_video2(_codecContext, &frame.getAVFrame(), &gotFrame, &pkt);
+            if(gotFrame)
             {
-                if(pkt.stream_index == (int)_streamIndex)
+                AVFrame& avFrame = frame.getAVFrame();
+
+                _gopStructure.push_back(
+                    std::make_pair(av_get_picture_type_char(avFrame.pict_type), frame.getEncodedSize()));
+                _isInterlaced = avFrame.interlaced_frame;
+                _isTopFieldFirst = avFrame.top_field_first;
+                if(avFrame.pict_type == AV_PICTURE_TYPE_I)
                 {
-                    avcodec_decode_video2(_codecContext, &frame.getAVFrame(), &gotFrame, &pkt);
-                    if(gotFrame)
-                    {
-                        AVFrame& avFrame = frame.getAVFrame();
-
-                        _gopStructure.push_back(
-                            std::make_pair(av_get_picture_type_char(avFrame.pict_type), frame.getEncodedSize()));
-                        _isInterlaced = avFrame.interlaced_frame;
-                        _isTopFieldFirst = avFrame.top_field_first;
-                        if(avFrame.pict_type == AV_PICTURE_TYPE_I)
-                        {
-                            if(positionOfFirstKeyFrame == -1)
-                                positionOfFirstKeyFrame = count;
-                            else
-                                positionOfLastKeyFrame = count;
-                        }
-
-                        _gopSize = ++count;
-                    }
+                    if(positionOfFirstKeyFrame == -1)
+                        positionOfFirstKeyFrame = count;
+                    else
+                        positionOfLastKeyFrame = count;
                 }
-                av_free_packet(&pkt);
 
-                // If the first 2 key frames are found
-                if(positionOfFirstKeyFrame != -1 && positionOfLastKeyFrame != -1)
-                {
-                    // Set gop size as distance between these 2 key frames
-                    _gopSize = positionOfLastKeyFrame - positionOfFirstKeyFrame;
-                    // Update gop structure to keep only one gop
-                    while(_gopStructure.size() > _gopSize)
-                        _gopStructure.pop_back();
-                    break;
-                }
-            }
-
-            // Close a given AVCodecContext and free all the data associated with it (but not the AVCodecContext itself)
-            avcodec_close(_codecContext);
-
-            // Returns at the beginning of the stream
-            const_cast<FormatContext*>(&_fileProperties->getFormatContext())->seek(0, AVSEEK_FLAG_BYTE);
-
-            // Check GOP size
-            if(_gopSize <= 0)
-            {
-                throw std::runtime_error("Invalid GOP size when decoding the first data.");
+                _gopSize = ++count;
             }
         }
+        av_free_packet(&pkt);
+
+        // If the first 2 key frames are found
+        if(positionOfFirstKeyFrame != -1 && positionOfLastKeyFrame != -1)
+        {
+            // Set gop size as distance between these 2 key frames
+            _gopSize = positionOfLastKeyFrame - positionOfFirstKeyFrame;
+            // Update gop structure to keep only one gop
+            while(_gopStructure.size() > _gopSize)
+                _gopStructure.pop_back();
+            break;
+        }
+    }
+
+    // Close a given AVCodecContext and free all the data associated with it (but not the AVCodecContext itself)
+    avcodec_close(_codecContext);
+
+    // Returns at the beginning of the stream
+    const_cast<FormatContext*>(&_fileProperties->getFormatContext())->seek(0, AVSEEK_FLAG_BYTE);
+
+    // Check GOP size
+    if(_gopSize <= 0)
+    {
+        throw std::runtime_error("Invalid GOP size when decoding the first data.");
     }
 }
 
