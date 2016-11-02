@@ -507,10 +507,8 @@ void VideoProperties::analyseGopStructure(IProgress& progress)
     // Get the stream
     IInputStream& stream = file.getStream(_streamIndex);
     stream.activate();
-    // Setup a decoder
+    // Create a decoder
     VideoDecoder decoder(static_cast<InputStream&>(stream));
-    // Discard no frame type when decode
-    _codecContext->skip_frame = AVDISCARD_NONE;
 
     size_t count = 0;
     int positionOfFirstKeyFrame = -1;
