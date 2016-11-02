@@ -334,9 +334,6 @@ size_t VideoProperties::getBitRate() const
         return 0;
     }
 
-    if(getGopSize() <= 0)
-        return 0;
-
     LOG_INFO("Estimate the video bitrate from the first GOP.")
     size_t gopFramesSize = 0;
     for(size_t picture = 0; picture < _gopStructure.size(); ++picture)
@@ -562,6 +559,12 @@ void VideoProperties::analyseGopStructure(IProgress& progress)
 
             // Returns at the beginning of the stream
             const_cast<FormatContext*>(&_fileProperties->getFormatContext())->seek(0, AVSEEK_FLAG_BYTE);
+
+            // Check GOP size
+            if(_gopSize <= 0)
+            {
+                throw std::runtime_error("Invalid GOP size when decoding the first data.");
+            }
         }
     }
 }
