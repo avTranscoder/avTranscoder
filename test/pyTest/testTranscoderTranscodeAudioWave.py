@@ -1,13 +1,49 @@
 import os
 
 # Check if environment is setup to run the tests
-if os.environ.get('AVTRANSCODER_TEST_AUDIO_WAVE_FILE') is None:
+if os.environ.get('AVTRANSCODER_TEST_AUDIO_WAVE_FILE') is None or \
+    os.environ.get('AVTRANSCODER_TEST_AUDIO_WAVE_MONO_FILE') is None:
     from nose.plugins.skip import SkipTest
-    raise SkipTest("Need to define environment variable AVTRANSCODER_TEST_AUDIO_WAVE_FILE")
+    raise SkipTest("Need to define environment variables "
+        "AVTRANSCODER_TEST_AUDIO_WAVE_FILE and"
+        "AVTRANSCODER_TEST_AUDIO_WAVE_MONO_FILE")
 
 from nose.tools import *
 
 from pyAvTranscoder import avtranscoder as av
+
+
+def testTranscodeExtractOneChannelFromMono():
+    """
+    Extract one audio channel from a stream of one channel.
+    """
+    inputFileName = os.environ['AVTRANSCODER_TEST_AUDIO_WAVE_MONO_FILE']
+    outputFileName = "testTranscodeExtractOneChannelFromMono.wav"
+
+    ouputFile = av.OutputFile(outputFileName)
+    transcoder = av.Transcoder(ouputFile)
+
+    inputFile = av.InputFile(inputFileName)
+    src_audioStream = inputFile.getProperties().getAudioProperties()[0]
+    audioStreamIndex = src_audioStream.getStreamIndex()
+    transcoder.addStream(av.InputStreamDesc(inputFileName, audioStreamIndex, 0))
+
+    processStat = transcoder.process()
+
+    # check process stat returned
+    audioStat = processStat.getAudioStat(0)
+    assert_equals(src_audioStream.getDuration(), audioStat.getDuration())
+
+    # get dst file of transcode
+    dst_inputFile = av.InputFile(outputFileName)
+    dst_properties = dst_inputFile.getProperties()
+    dst_audioStream = dst_properties.getAudioProperties()[0]
+
+    assert_equals(dst_audioStream.getCodecName(), src_audioStream.getCodecName())
+    assert_equals(dst_audioStream.getSampleFormatName(), src_audioStream.getSampleFormatName())
+    assert_equals(dst_audioStream.getSampleFormatLongName(), src_audioStream.getSampleFormatLongName())
+    assert_equals(dst_audioStream.getSampleRate(), src_audioStream.getSampleRate())
+    assert_equals(dst_audioStream.getNbChannels(), 1)
 
 
 def testTranscodeWave24b48k5_1():
