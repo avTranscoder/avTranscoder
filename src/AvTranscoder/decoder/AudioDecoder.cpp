@@ -153,8 +153,8 @@ bool AudioDecoder::decodeNextFrame(IFrame& frameBuffer, const std::vector<size_t
     if(!decodeNextFrame(allDataOfNextFrame))
         return false;
 
-    const int dstNbChannels = 1;
     const size_t bytePerSample = audioBuffer.getBytesPerSample();
+    const int dstNbChannels = channelIndexArray.size();
     const int noAlignment = 0;
     const size_t decodedSize = av_samples_get_buffer_size(NULL, dstNbChannels, frameBuffer.getAVFrame().nb_samples,
                                                           avCodecContext.sample_fmt, noAlignment);
