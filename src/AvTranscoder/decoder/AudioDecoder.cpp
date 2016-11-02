@@ -126,7 +126,6 @@ bool AudioDecoder::decodeNextFrame(IFrame& frameBuffer, const std::vector<size_t
 {
     AVCodecContext& avCodecContext = _inputStream->getAudioCodec().getAVCodecContext();
     const size_t srcNbChannels = avCodecContext.channels;
-    const size_t bytePerSample = av_get_bytes_per_sample((AVSampleFormat)frameBuffer.getAVFrame().format);
 
     // check if each expected channel exists
     for(std::vector<size_t>::const_iterator channelIndex = channelIndexArray.begin();
@@ -155,6 +154,7 @@ bool AudioDecoder::decodeNextFrame(IFrame& frameBuffer, const std::vector<size_t
         return false;
 
     const int dstNbChannels = 1;
+    const size_t bytePerSample = audioBuffer.getBytesPerSample();
     const int noAlignment = 0;
     const size_t decodedSize = av_samples_get_buffer_size(NULL, dstNbChannels, frameBuffer.getAVFrame().nb_samples,
                                                           avCodecContext.sample_fmt, noAlignment);
