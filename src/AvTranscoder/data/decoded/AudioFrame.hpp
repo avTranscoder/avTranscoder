@@ -69,6 +69,17 @@ public:
 
 private:
     /**
+     * @brief The number of samples of a frame cannot be known before calling avcodec_decode_audio4,
+     * and can be variable in a same stream. Because we need to allocate some frames without knowing this parameter,
+     * we access here a default number of samples.
+     * @note This value depends on the sample rate (excample: 1920 samples at 48kHz).
+     * @return the number of samples of our default AudioFrame.
+     * @see setNbSamplesPerChannel
+     */
+    size_t getDefaultNbSamples() const;
+
+private:
+    /**
      * @brief Description of the frame to allocate.
      * @warning This description could be different from the current frame (a decoder could have reseted it).
      * We need to keep this description to allocate again the frame even if it was reseted.

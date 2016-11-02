@@ -49,7 +49,7 @@ AudioFrame::AudioFrame(const AudioFrameDesc& desc, const bool forceDataAllocatio
     av_frame_set_channels(_frame, desc._nbChannels);
     av_frame_set_channel_layout(_frame, av_get_default_channel_layout(desc._nbChannels));
     _frame->format = desc._sampleFormat;
-    _frame->nb_samples = desc._sampleRate / 25.; // cannot be known before calling avcodec_decode_audio4
+    _frame->nb_samples = getDefaultNbSamples();
 
     if(forceDataAllocation)
         allocateData();
@@ -103,7 +103,7 @@ void AudioFrame::allocateData()
     av_frame_set_channels(_frame, _desc._nbChannels);
     av_frame_set_channel_layout(_frame, av_get_default_channel_layout(_desc._nbChannels));
     _frame->format = _desc._sampleFormat;
-    _frame->nb_samples = _desc._sampleRate / 25.; // cannot be known before calling avcodec_decode_audio4
+    _frame->nb_samples = getDefaultNbSamples();
 
     // Allocate data
     const int align = 0;
@@ -143,4 +143,10 @@ void AudioFrame::assignBuffer(const unsigned char* ptrValue)
         throw std::runtime_error(os.str());
     }
 }
+
+size_t AudioFrame::getDefaultNbSamples() const
+{
+    return _desc._sampleRate / 25.;
+}
+
 }
