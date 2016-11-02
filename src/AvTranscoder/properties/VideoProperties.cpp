@@ -395,7 +395,7 @@ size_t VideoProperties::getBitRate() const
     if(gopSize > 0)
     {
         const float fps = av_q2d(_formatContext->streams[_streamIndex]->avg_frame_rate);
-        return (gopFramesSize / gopSize) * 8 * fps;
+        return (gopFramesSize / gopSize) * _pixelProperties.getMaxNbBitsInChannels() * fps;
     }
     return 0;
 }
