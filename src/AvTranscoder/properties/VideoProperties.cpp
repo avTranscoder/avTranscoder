@@ -1,6 +1,7 @@
 #include "VideoProperties.hpp"
 
-#include <AvTranscoder/data/decoded/Frame.hpp>
+#include <AvTranscoder/decoder/VideoDecoder.hpp>
+#include <AvTranscoder/data/decoded/VideoFrame.hpp>
 #include <AvTranscoder/properties/util.hpp>
 #include <AvTranscoder/properties/FileProperties.hpp>
 #include <AvTranscoder/progress/NoDisplayProgress.hpp>
@@ -502,46 +503,36 @@ void VideoProperties::analyseGopStructure(IProgress& progress)
     if(! _codecContext->width || ! _codecContext->height)
         return;
 
+    InputFile& file = const_cast<InputFile&>(_fileProperties->getInputFile());
+    // Get the stream
+    IInputStream& stream = file.getStream(_streamIndex);
+    stream.activate();
+    // Setup a decoder
+    VideoDecoder decoder(static_cast<InputStream&>(stream));
     // Discard no frame type when decode
     _codecContext->skip_frame = AVDISCARD_NONE;
 
-    AVPacket pkt;
-    av_init_packet(&pkt);
-
-    // Initialize the AVCodecContext to use the given AVCodec
-    avcodec_open2(_codecContext, _codec, NULL);
-
-    Frame frame;
     size_t count = 0;
-    int gotFrame = 0;
     int positionOfFirstKeyFrame = -1;
     int positionOfLastKeyFrame = -1;
-
-    while(!av_read_frame(const_cast<AVFormatContext*>(_formatContext), &pkt))
+    VideoFrame frame(VideoFrameDesc(getWidth(), getHeight(), getPixelProperties().getAVPixelFormat()));
+    while(decoder.decodeNextFrame(frame))
     {
-        if(pkt.stream_index == (int)_streamIndex)
+        AVFrame& avFrame = frame.getAVFrame();
+
+        _gopStructure.push_back(
+            std::make_pair(av_get_picture_type_char(avFrame.pict_type), frame.getEncodedSize()));
+        _isInterlaced = avFrame.interlaced_frame;
+        _isTopFieldFirst = avFrame.top_field_first;
+        if(avFrame.pict_type == AV_PICTURE_TYPE_I)
         {
-            avcodec_decode_video2(_codecContext, &frame.getAVFrame(), &gotFrame, &pkt);
-            if(gotFrame)
-            {
-                AVFrame& avFrame = frame.getAVFrame();
-
-                _gopStructure.push_back(
-                    std::make_pair(av_get_picture_type_char(avFrame.pict_type), frame.getEncodedSize()));
-                _isInterlaced = avFrame.interlaced_frame;
-                _isTopFieldFirst = avFrame.top_field_first;
-                if(avFrame.pict_type == AV_PICTURE_TYPE_I)
-                {
-                    if(positionOfFirstKeyFrame == -1)
-                        positionOfFirstKeyFrame = count;
-                    else
-                        positionOfLastKeyFrame = count;
-                }
-
-                _gopSize = ++count;
-            }
+            if(positionOfFirstKeyFrame == -1)
+                positionOfFirstKeyFrame = count;
+            else
+                positionOfLastKeyFrame = count;
         }
-        av_free_packet(&pkt);
+
+        _gopSize = ++count;
 
         // If the first 2 key frames are found
         if(positionOfFirstKeyFrame != -1 && positionOfLastKeyFrame != -1)
@@ -555,11 +546,8 @@ void VideoProperties::analyseGopStructure(IProgress& progress)
         }
     }
 
-    // Close a given AVCodecContext and free all the data associated with it (but not the AVCodecContext itself)
-    avcodec_close(_codecContext);
-
     // Returns at the beginning of the stream
-    const_cast<InputFile&>(_fileProperties->getInputFile()).seekAtFrame(0, AVSEEK_FLAG_BYTE);
+    file.seekAtFrame(0, AVSEEK_FLAG_BYTE);
 
     // Check GOP size
     if(_gopSize <= 0)
