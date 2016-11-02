@@ -599,7 +599,10 @@ bool StreamTranscoder::processTranscode()
                 switchToGeneratorDecoder();
                 LOG_INFO("Force reallocation of the decoded data buffers since the decoders could have cleared them.")
                 for(std::vector<IFrame*>::iterator it = _decodedData.begin(); it != _decodedData.end(); ++it)
-                    (*it)->allocateData();
+                {
+                    if(! (*it)->isDataAllocated())
+                        (*it)->allocateData();
+                }
                 return processTranscode();
             }
             return false;
