@@ -79,7 +79,7 @@ public:
 
     std::string getFilename() const { return _filename; }
 
-    FormatContext& getFormatContext() { return _formatContext; }
+    const FormatContext& getFormatContext() const { return _formatContext; }
 
     /**
      * @brief Set the format of the input file

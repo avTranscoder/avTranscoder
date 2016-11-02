@@ -559,7 +559,7 @@ void VideoProperties::analyseGopStructure(IProgress& progress)
     avcodec_close(_codecContext);
 
     // Returns at the beginning of the stream
-    const_cast<FormatContext*>(&_fileProperties->getFormatContext())->seek(0, AVSEEK_FLAG_BYTE);
+    const_cast<InputFile&>(_fileProperties->getInputFile()).seekAtFrame(0, AVSEEK_FLAG_BYTE);
 
     // Check GOP size
     if(_gopSize <= 0)

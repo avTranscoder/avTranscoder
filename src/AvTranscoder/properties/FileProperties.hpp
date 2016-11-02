@@ -3,7 +3,7 @@
 
 #include <AvTranscoder/common.hpp>
 #include <AvTranscoder/properties/util.hpp>
-#include <AvTranscoder/file/FormatContext.hpp>
+#include <AvTranscoder/file/InputFile.hpp>
 #include <AvTranscoder/progress/IProgress.hpp>
 
 #include <AvTranscoder/properties/StreamProperties.hpp>
@@ -29,7 +29,7 @@ public:
      * @note The default streams analyse level is eAnalyseLevelHeader
      * @see FormatContext
      */
-    FileProperties(const FormatContext& formatContext);
+    FileProperties(const InputFile& file);
 
     /**
      * @brief Relaunch streams analysis with a specific level.
@@ -62,7 +62,7 @@ public:
     size_t getNbAttachementStreams() const { return _attachementStreams.size(); }
     size_t getNbUnknownStreams() const { return _unknownStreams.size(); }
 
-    const FormatContext& getFormatContext() const { return *_formatContext; }
+    const InputFile& getInputFile() const { return _file; }
 
     //@{
     // @brief Get the properties at the indicated stream index
@@ -110,6 +110,7 @@ private:
     void clearStreamProperties(); ///< Clear all array of stream properties
 
 private:
+    const InputFile& _file; ///< Has link (no ownership)
     const FormatContext* _formatContext;     ///< Has link (no ownership)
     const AVFormatContext* _avFormatContext; ///< Has link (no ownership)
 

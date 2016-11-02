@@ -30,7 +30,7 @@ InputFile::InputFile(const std::string& filename)
     _formatContext.findStreamInfo();
 
     // Get the stream information as properties
-    _properties = new FileProperties(_formatContext);
+    _properties = new FileProperties(*this);
 
     // Create streams
     for(size_t streamIndex = 0; streamIndex < _formatContext.getNbStreams(); ++streamIndex)
