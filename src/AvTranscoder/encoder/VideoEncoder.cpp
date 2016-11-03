@@ -104,7 +104,7 @@ void VideoEncoder::setupEncoder(const ProfileLoader::Profile& profile)
     }
 }
 
-bool VideoEncoder::encodeFrame(const Frame& sourceFrame, CodedData& codedFrame)
+bool VideoEncoder::encodeFrame(const IFrame& sourceFrame, CodedData& codedFrame)
 {
     AVCodecContext& avCodecContext = _codec.getAVCodecContext();
 

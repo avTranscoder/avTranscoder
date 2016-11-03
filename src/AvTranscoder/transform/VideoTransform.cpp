@@ -1,7 +1,5 @@
 #include "VideoTransform.hpp"
 
-#include <AvTranscoder/data/decoded/VideoFrame.hpp>
-
 extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libswscale/swscale.h>
@@ -31,12 +29,8 @@ VideoTransform::~VideoTransform()
     sws_freeContext(_imageConvertContext);
 }
 
-bool VideoTransform::init(const Frame& srcFrame, const Frame& dstFrame)
+bool VideoTransform::init(const VideoFrame& src, const VideoFrame& dst)
 {
-    // Set convert context
-    const VideoFrame& src = static_cast<const VideoFrame&>(srcFrame);
-    const VideoFrame& dst = static_cast<const VideoFrame&>(dstFrame);
-
     const AVPixelFormat srcPixelFormat = src.getPixelFormat();
     const AVPixelFormat dstPixelFormat = dst.getPixelFormat();
 
@@ -66,17 +60,18 @@ bool VideoTransform::init(const Frame& srcFrame, const Frame& dstFrame)
     return true;
 }
 
-void VideoTransform::convert(const Frame& srcFrame, Frame& dstFrame)
+void VideoTransform::convert(const IFrame& srcFrame, IFrame& dstFrame)
 {
     const VideoFrame& src = static_cast<const VideoFrame&>(srcFrame);
     VideoFrame& dst = static_cast<VideoFrame&>(dstFrame);
 
-    assert(src.getWidth() != 0);
-    assert(src.getHeight() != 0);
+    assert(src.getWidth() > 0);
+    assert(src.getHeight() > 0);
     assert(src.getPixelFormat() != AV_PIX_FMT_NONE);
+    assert(dst.getDataSize() > 0);
 
     if(!_isInit)
-        _isInit = init(srcFrame, dstFrame);
+        _isInit = init(src, dst);
 
     if(!_imageConvertContext)
     {

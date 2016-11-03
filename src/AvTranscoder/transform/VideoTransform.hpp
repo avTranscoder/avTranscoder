@@ -1,11 +1,9 @@
 #ifndef _AV_TRANSCODER_ESSENCE_TRANSFORM_VIDEO_ESSENCE_TRANSFORM_HPP
 #define _AV_TRANSCODER_ESSENCE_TRANSFORM_VIDEO_ESSENCE_TRANSFORM_HPP
 
-#include <vector>
-
 #include "ITransform.hpp"
 
-#include <AvTranscoder/data/decoded/Frame.hpp>
+#include <AvTranscoder/data/decoded/VideoFrame.hpp>
 
 class SwsContext;
 
@@ -22,10 +20,10 @@ public:
     VideoTransform();
     ~VideoTransform();
 
-    void convert(const Frame& srcFrame, Frame& dstFrame);
+    void convert(const IFrame& srcFrame, IFrame& dstFrame);
 
 private:
-    bool init(const Frame& srcFrame, const Frame& dstFrame);
+    bool init(const VideoFrame& src, const VideoFrame& dst);
 
     SwsContext* _imageConvertContext;
     bool _isInit;

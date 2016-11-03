@@ -13,14 +13,6 @@ extern "C" {
 namespace avtranscoder
 {
 
-VideoFrameDesc::VideoFrameDesc(const size_t width, const size_t height, const AVPixelFormat pixelFormat)
-    : _width(width)
-    , _height(height)
-    , _pixelFormat(pixelFormat)
-    , _fps(1.0)
-{
-}
-
 VideoFrameDesc::VideoFrameDesc(const size_t width, const size_t height, const std::string& pixelFormatName)
     : _width(width)
     , _height(height)
@@ -28,6 +20,16 @@ VideoFrameDesc::VideoFrameDesc(const size_t width, const size_t height, const st
     , _fps(1.0)
 {
 }
+
+VideoFrameDesc::VideoFrameDesc(const ProfileLoader::Profile& profile)
+    : _width(0)
+    , _height(0)
+    , _pixelFormat(AV_PIX_FMT_NONE)
+    , _fps(1.0)
+{
+    setParameters(profile);
+}
+
 
 void VideoFrameDesc::setParameters(const ProfileLoader::Profile& profile)
 {
@@ -45,18 +47,27 @@ void VideoFrameDesc::setParameters(const ProfileLoader::Profile& profile)
         _fps = atof(profile.find(constants::avProfileFrameRate)->second.c_str());
 }
 
-VideoFrame::VideoFrame(const VideoFrameDesc& ref)
-    : Frame()
+VideoFrame::VideoFrame(const VideoFrameDesc& desc, const bool forceDataAllocation)
+    : IFrame()
+    , _desc(desc)
 {
-    allocateAVPicture(ref);
+    _frame->width = desc._width;
+    _frame->height = desc._height;
+    _frame->format = desc._pixelFormat;
+
+    if(forceDataAllocation)
+        allocateData();
 }
 
-VideoFrame::VideoFrame(const Frame& otherFrame)
-    : Frame(otherFrame)
+VideoFrame::~VideoFrame()
 {
+    if(_frame->buf[0])
+        av_frame_unref(_frame);
+    if(_dataAllocated)
+        freeData();
 }
 
-size_t VideoFrame::getSize() const
+size_t VideoFrame::getDataSize() const
 {
     if(getPixelFormat() == AV_PIX_FMT_NONE)
     {
@@ -66,48 +77,51 @@ size_t VideoFrame::getSize() const
 
     const size_t size = avpicture_get_size(getPixelFormat(), getWidth(), getHeight());
     if(size == 0)
-        throw std::runtime_error("unable to determine image buffer size");
+        throw std::runtime_error("Unable to determine image buffer size: " + getDescriptionFromErrorCode(size));
     return size;
 }
 
-void VideoFrame::allocateAVPicture(const VideoFrameDesc& desc)
+void VideoFrame::allocateData()
 {
-    const int ret = avpicture_alloc(reinterpret_cast<AVPicture*>(_frame), desc._pixelFormat, desc._width, desc._height);
+    if(_dataAllocated)
+        LOG_WARN("The VideoFrame seems to already have allocated data. This could lead to memory leaks.")
+
+    // Set Frame properties
+    _frame->width = _desc._width;
+    _frame->height = _desc._height;
+    _frame->format = _desc._pixelFormat;
+
+    // Allocate data
+    const int ret = avpicture_alloc(reinterpret_cast<AVPicture*>(_frame), _desc._pixelFormat, _desc._width, _desc._height);
     if(ret < 0)
     {
-        std::stringstream os;
-        os << "Unable to allocate an image frame of ";
-        os << "width = " << desc._width << ", ";
-        os << "height = " << desc._height << ", ";
-        os << "pixel format = " << desc._pixelFormat;
-        throw std::runtime_error(os.str());
+        const std::string formatName = getPixelFormatName(_desc._pixelFormat);
+        std::stringstream msg;
+        msg << "Unable to allocate an image frame of ";
+        msg << "width = " << _frame->width << ", ";
+        msg << "height = " << _frame->height << ", ";
+        msg << "pixel format = " << (formatName.empty() ? "none" : formatName);
+        LOG_ERROR(msg.str())
+        throw std::bad_alloc();
     }
-    _frame->width = desc._width;
-    _frame->height = desc._height;
-    _frame->format = desc._pixelFormat;
+    _dataAllocated = true;
 }
 
-void VideoFrame::assign(const unsigned char value)
+void VideoFrame::freeData()
 {
-    // Create the image buffer
-    // The buffer will be freed in destructor of based class
-    const int imageSize = getSize();
-    unsigned char* imageBuffer = new unsigned char[imageSize];
-    memset(imageBuffer, value, imageSize);
-
-    // Fill the picture
-    assign(imageBuffer);
+    avpicture_free(reinterpret_cast<AVPicture*>(_frame));
+    _dataAllocated = false;
 }
 
-void VideoFrame::assign(const unsigned char* ptrValue)
+void VideoFrame::assignBuffer(const unsigned char* ptrValue)
 {
     const int ret =
         avpicture_fill(reinterpret_cast<AVPicture*>(_frame), ptrValue, getPixelFormat(), getWidth(), getHeight());
     if(ret < 0)
     {
-        std::stringstream os;
-        os << "Unable to assign an image buffer of " << getSize() << " bytes: " << getDescriptionFromErrorCode(ret);
-        throw std::runtime_error(os.str());
+        std::stringstream msg;
+        msg << "Unable to assign an image buffer of " << getDataSize() << " bytes: " << getDescriptionFromErrorCode(ret);
+        throw std::runtime_error(msg.str());
     }
 }
 }

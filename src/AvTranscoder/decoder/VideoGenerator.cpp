@@ -19,16 +19,8 @@ VideoGenerator::~VideoGenerator()
     delete _blackImage;
 }
 
-bool VideoGenerator::decodeNextFrame(Frame& frameBuffer)
+bool VideoGenerator::decodeNextFrame(IFrame& frameBuffer)
 {
-    // check the given frame
-    if(! frameBuffer.isVideoFrame())
-    {
-        LOG_WARN("The given frame to put data is not a valid video frame: try to reallocate it.")
-        frameBuffer.clear();
-        static_cast<VideoFrame&>(frameBuffer).allocateAVPicture(_frameDesc);
-    }
-
     // Generate black image
     if(!_inputFrame)
     {
@@ -39,7 +31,7 @@ bool VideoGenerator::decodeNextFrame(Frame& frameBuffer)
             VideoFrameDesc blackDesc(_frameDesc._width, _frameDesc._height, "rgb24");
             _blackImage = new VideoFrame(blackDesc);
             const unsigned char fillChar = 0;
-            _blackImage->assign(fillChar);
+            _blackImage->assignValue(fillChar);
 
             std::stringstream msg;
             msg << "Generate a black image with the following features:" << std::endl;
@@ -62,7 +54,7 @@ bool VideoGenerator::decodeNextFrame(Frame& frameBuffer)
     return true;
 }
 
-bool VideoGenerator::decodeNextFrame(Frame& frameBuffer, const std::vector<size_t> channelIndexArray)
+bool VideoGenerator::decodeNextFrame(IFrame& frameBuffer, const std::vector<size_t> channelIndexArray)
 {
     return false;
 }

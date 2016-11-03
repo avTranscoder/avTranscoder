@@ -4,7 +4,7 @@
 #include <AvTranscoder/common.hpp>
 #include <AvTranscoder/filter/Filter.hpp>
 #include <AvTranscoder/codec/ICodec.hpp>
-#include <AvTranscoder/data/decoded/Frame.hpp>
+#include <AvTranscoder/data/decoded/IFrame.hpp>
 
 #include <vector>
 
@@ -55,21 +55,21 @@ public:
      * @warning the output frame must be cleared once it has been used
      * @see the av_buffersink_get_frame function documentation
      */
-    void process(const std::vector<Frame*>& inputs, Frame& output);
+    void process(const std::vector<IFrame*>& inputs, IFrame& output);
 
-private:
     /**
      * @return If at least one filter has been added to the filter graph
      */
     bool hasFilters() const { return !_filters.empty(); }
 
+private:
     /**
      * @brief Initialize the graph of filters to process.
      * @see pushFilterToGraph
      * @see pushInBuffer
      * @see pushOutBuffer
      */
-    void init(const std::vector<Frame*>& inputs, Frame& output);
+    void init(const std::vector<IFrame*>& inputs, IFrame& output);
 
     /**
      * @brief Push the given Filter to the graph.
@@ -78,8 +78,8 @@ private:
 
     ///@{
     /// @brief Add the input and output buffers at the beginning and the end of the list of filters.
-    void addInBuffer(const std::vector<Frame*>& inputs);
-    void addOutBuffer(const Frame& output);
+    void addInBuffer(const std::vector<IFrame*>& inputs);
+    void addOutBuffer(const IFrame& output);
     //@}
 
 private:

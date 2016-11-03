@@ -19,16 +19,8 @@ AudioGenerator::~AudioGenerator()
     delete _silent;
 }
 
-bool AudioGenerator::decodeNextFrame(Frame& frameBuffer)
+bool AudioGenerator::decodeNextFrame(IFrame& frameBuffer)
 {
-    // check the given frame
-    if(! frameBuffer.isAudioFrame())
-    {
-        LOG_WARN("The given frame to put data is not a valid audio frame: try to reallocate it.")
-        frameBuffer.clear();
-        static_cast<AudioFrame&>(frameBuffer).allocateAVSample(_frameDesc);
-    }
-
     // Generate silent
     if(!_inputFrame)
     {
@@ -50,7 +42,7 @@ bool AudioGenerator::decodeNextFrame(Frame& frameBuffer)
             _silent->setNbSamplesPerChannel(frameBuffer.getAVFrame().nb_samples);
         }
         LOG_DEBUG("Copy data of the silence when decode next frame")
-        frameBuffer.refFrame(*_silent);
+        frameBuffer.copyData(*_silent);
     }
     // Take audio frame from _inputFrame
     else
@@ -61,7 +53,7 @@ bool AudioGenerator::decodeNextFrame(Frame& frameBuffer)
     return true;
 }
 
-bool AudioGenerator::decodeNextFrame(Frame& frameBuffer, const std::vector<size_t> channelIndexArray)
+bool AudioGenerator::decodeNextFrame(IFrame& frameBuffer, const std::vector<size_t> channelIndexArray)
 {
     return decodeNextFrame(frameBuffer);
 }

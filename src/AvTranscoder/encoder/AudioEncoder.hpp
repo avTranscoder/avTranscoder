@@ -18,7 +18,7 @@ public:
                            const ProfileLoader::Profile& profile = ProfileLoader::Profile());
     void setupEncoder(const ProfileLoader::Profile& profile = ProfileLoader::Profile());
 
-    bool encodeFrame(const Frame& sourceFrame, CodedData& codedFrame);
+    bool encodeFrame(const IFrame& sourceFrame, CodedData& codedFrame);
     bool encodeFrame(CodedData& codedFrame);
 
     ICodec& getCodec() { return _codec; }
