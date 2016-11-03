@@ -515,7 +515,7 @@ void VideoProperties::analyseGopStructure(IProgress& progress)
     size_t count = 0;
     int positionOfFirstKeyFrame = -1;
     int positionOfLastKeyFrame = -1;
-    VideoFrame frame(VideoFrameDesc(getWidth(), getHeight(), getPixelFormatName(getPixelProperties().getAVPixelFormat())));
+    VideoFrame frame(VideoFrameDesc(getWidth(), getHeight(), getPixelFormatName(getPixelProperties().getAVPixelFormat())), false);
     while(decoder.decodeNextFrame(frame))
     {
         AVFrame& avFrame = frame.getAVFrame();
