@@ -24,7 +24,7 @@ def testInvalidAudioFrameManualAllocated():
     frame = av.AudioFrame(desc, False)
 
     assert_equals(frame.isDataAllocated(), False)
-    assert_equals(frame.getSize(), 0)
+    assert_equals(frame.getDataSize(), 0)
     assert_equals(frame.getSampleRate(), sampleRate)
     assert_equals(frame.getNbChannels(), nbChannels)
     assert_equals(frame.getChannelLayoutDesc(), "mono")
@@ -46,7 +46,7 @@ def testAudioFrame():
 
     assert_equals(frame.isDataAllocated(), True)
     assert_equals(frame.isAudioFrame(), True)
-    assert_equals(frame.getSize(), frame.getNbSamplesPerChannel() * frame.getBytesPerSample() * nbChannels)
+    assert_equals(frame.getDataSize(), frame.getNbSamplesPerChannel() * frame.getBytesPerSample() * nbChannels)
 
     frame.freeData()
     assert_equals(frame.isDataAllocated(), False)

@@ -22,7 +22,7 @@ def testVideoReaderCreateNewInputFile():
     for i in xrange(0, reader.getSourceVideoProperties().getNbFrames()):
         frame = reader.readNextFrame()
         bytesPerPixel = reader.getOutputBitDepth() / 8
-        assert_equals( frame.getSize(), reader.getOutputWidth() * reader.getOutputHeight() * bytesPerPixel )
+        assert_equals( frame.getDataSize(), reader.getOutputWidth() * reader.getOutputHeight() * bytesPerPixel )
 
     # check if there is no next frame
     frame = reader.readNextFrame()
@@ -42,7 +42,7 @@ def testVideoReaderReferenceInputFile():
     for i in xrange(0, reader.getSourceVideoProperties().getNbFrames()):
         frame = reader.readNextFrame()
         bytesPerPixel = reader.getOutputBitDepth() / 8
-        assert_equals( frame.getSize(), reader.getOutputWidth() * reader.getOutputHeight() * bytesPerPixel )
+        assert_equals( frame.getDataSize(), reader.getOutputWidth() * reader.getOutputHeight() * bytesPerPixel )
 
     # check if there is no next frame
     assert_equals( reader.readNextFrame(), None )
@@ -60,7 +60,7 @@ def testVideoReaderWithGenerator():
     for i in xrange(0, reader.getSourceVideoProperties().getNbFrames()):
         frame = reader.readNextFrame()
         bytesPerPixel = reader.getOutputBitDepth() / 8
-        assert_equals( frame.getSize(), reader.getOutputWidth() * reader.getOutputHeight() * bytesPerPixel )
+        assert_equals( frame.getDataSize(), reader.getOutputWidth() * reader.getOutputHeight() * bytesPerPixel )
 
     # check if there is no next frame
     assert_equals( reader.readNextFrame(), None )
@@ -70,4 +70,4 @@ def testVideoReaderWithGenerator():
     for i in xrange(0, 9):
         frame = reader.readNextFrame()
         bytesPerPixel = reader.getOutputBitDepth() / 8
-        assert_equals( frame.getSize(), reader.getOutputWidth() * reader.getOutputHeight() * bytesPerPixel )
+        assert_equals( frame.getDataSize(), reader.getOutputWidth() * reader.getOutputHeight() * bytesPerPixel )

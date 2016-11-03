@@ -24,7 +24,7 @@ def testInvalidVideoFrameManualAllocated():
     frame = av.VideoFrame(desc, False)
 
     assert_equals(frame.isDataAllocated(), False)
-    assert_equals(frame.getSize(), 0)
+    assert_equals(frame.getDataSize(), 0)
     assert_equals(frame.getWidth(), width)
     assert_equals(frame.getHeight(), height)
     assert_equals(av.getPixelFormatName(frame.getPixelFormat()), "")
@@ -43,7 +43,7 @@ def testVideoFrame():
 
     assert_equals(frame.isDataAllocated(), True)
     assert_equals(frame.isVideoFrame(), True)
-    assert_equals(frame.getSize(), width * height * 1.5)
+    assert_equals(frame.getDataSize(), width * height * 1.5)
 
     frame.freeData()
     assert_equals(frame.isDataAllocated(), False)

@@ -97,7 +97,7 @@ void AudioTransform::convert(const IFrame& srcFrame, IFrame& dstFrame)
     assert(src.getNbChannels() > 0);
     assert(src.getNbSamplesPerChannel() > 0);
     assert(src.getSampleFormat() != AV_SAMPLE_FMT_NONE);
-    assert(dst.getSize() > 0);
+    assert(dst.getDataSize() > 0);
 
     if(!_isInit)
         _isInit = init(src, dst);

@@ -75,7 +75,7 @@ size_t AudioFrame::getBytesPerSample() const
     return av_get_bytes_per_sample(getSampleFormat());
 }
 
-size_t AudioFrame::getSize() const
+size_t AudioFrame::getDataSize() const
 {
     if(getSampleFormat() == AV_SAMPLE_FMT_NONE)
     {

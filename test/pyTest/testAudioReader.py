@@ -23,7 +23,7 @@ def testAudioReaderCreateNewInputFile():
         frame = reader.readNextFrame()
         if not frame:
             break
-        assert_greater(frame.getSize(), 0)
+        assert_greater(frame.getDataSize(), 0)
 
     # check if there is no next frame
     frame = reader.readNextFrame()
@@ -45,13 +45,13 @@ def testAudioReaderChannelsExtraction():
     nbChannels = readerOfAllChannels.getOutputNbChannels()
     # read first frame
     frame = readerOfAllChannels.readNextFrame()
-    sizeOfFrameWithAllChannels = frame.getSize()
+    sizeOfFrameWithAllChannels = frame.getDataSize()
 
     # create reader to read one channel of the audio stream
     readerOfOneChannel = av.AudioReader(inputFile, streamIndex, channelIndex)
     # read first frame
     frame = readerOfOneChannel.readNextFrame()
-    sizeOfFrameWithOneChannels = frame.getSize()
+    sizeOfFrameWithOneChannels = frame.getDataSize()
 
     assert_equals( sizeOfFrameWithAllChannels / nbChannels, sizeOfFrameWithOneChannels )
 
@@ -70,7 +70,7 @@ def testAudioReaderWithGenerator():
         frame = reader.readNextFrame()
         if not frame:
             break
-        assert_greater(frame.getSize(), 0)
+        assert_greater(frame.getDataSize(), 0)
 
     # check if there is no next frame
     assert_equals( reader.readNextFrame(), None )
@@ -82,4 +82,4 @@ def testAudioReaderWithGenerator():
         # assuming we generate data of 1920 samples of 2 bytes
         nbSamplesPerChannel = 1920
         bytesPerSample = 2
-        assert_equals(frame.getSize(), reader.getOutputNbChannels() * nbSamplesPerChannel * bytesPerSample )
+        assert_equals(frame.getDataSize(), reader.getOutputNbChannels() * nbSamplesPerChannel * bytesPerSample )

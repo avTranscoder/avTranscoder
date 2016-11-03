@@ -49,7 +49,7 @@ public:
      */
     void allocateData();
     void freeData();
-    size_t getSize() const;
+    size_t getDataSize() const;
 
     size_t getSampleRate() const { return av_frame_get_sample_rate(_frame); }
     size_t getNbChannels() const { return av_frame_get_channels(_frame); }

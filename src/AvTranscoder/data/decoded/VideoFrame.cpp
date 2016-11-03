@@ -67,7 +67,7 @@ VideoFrame::~VideoFrame()
         freeData();
 }
 
-size_t VideoFrame::getSize() const
+size_t VideoFrame::getDataSize() const
 {
     if(getPixelFormat() == AV_PIX_FMT_NONE)
     {
@@ -117,7 +117,7 @@ void VideoFrame::assignBuffer(const unsigned char* ptrValue)
     if(ret < 0)
     {
         std::stringstream msg;
-        msg << "Unable to assign an image buffer of " << getSize() << " bytes: " << getDescriptionFromErrorCode(ret);
+        msg << "Unable to assign an image buffer of " << getDataSize() << " bytes: " << getDescriptionFromErrorCode(ret);
         throw std::runtime_error(msg.str());
     }
 }

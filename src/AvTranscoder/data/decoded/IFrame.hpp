@@ -47,7 +47,7 @@ public:
      * @brief Get the size in bytes that a video/audio buffer of the given frame properties would occupy if allocated.
      * @warning This methods does not guarantee that the buffer is actually allocated.
      */
-    virtual size_t getSize() const = 0;
+    virtual size_t getDataSize() const = 0;
 
     /**
      * @brief Assign the given ptr of data to the data of the frame.

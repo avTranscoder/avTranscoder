@@ -57,7 +57,7 @@ public:
      */
     void allocateData();
     void freeData();
-    size_t getSize() const;
+    size_t getDataSize() const;
 
     size_t getWidth() const { return _frame->width; }
     size_t getHeight() const { return _frame->height; }

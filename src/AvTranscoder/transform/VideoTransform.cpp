@@ -68,7 +68,7 @@ void VideoTransform::convert(const IFrame& srcFrame, IFrame& dstFrame)
     assert(src.getWidth() > 0);
     assert(src.getHeight() > 0);
     assert(src.getPixelFormat() != AV_PIX_FMT_NONE);
-    assert(dst.getSize() > 0);
+    assert(dst.getDataSize() > 0);
 
     if(!_isInit)
         _isInit = init(src, dst);
