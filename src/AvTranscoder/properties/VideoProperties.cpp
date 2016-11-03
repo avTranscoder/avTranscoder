@@ -1,5 +1,6 @@
 #include "VideoProperties.hpp"
 
+#include <AvTranscoder/util.hpp>
 #include <AvTranscoder/decoder/VideoDecoder.hpp>
 #include <AvTranscoder/data/decoded/VideoFrame.hpp>
 #include <AvTranscoder/properties/util.hpp>
@@ -514,13 +515,13 @@ void VideoProperties::analyseGopStructure(IProgress& progress)
     size_t count = 0;
     int positionOfFirstKeyFrame = -1;
     int positionOfLastKeyFrame = -1;
-    VideoFrame frame(VideoFrameDesc(getWidth(), getHeight(), getPixelProperties().getAVPixelFormat()));
+    VideoFrame frame(VideoFrameDesc(getWidth(), getHeight(), getPixelFormatName(getPixelProperties().getAVPixelFormat())));
     while(decoder.decodeNextFrame(frame))
     {
         AVFrame& avFrame = frame.getAVFrame();
 
         _gopStructure.push_back(
-            std::make_pair(av_get_picture_type_char(avFrame.pict_type), frame.getEncodedSize()));
+            std::make_pair(av_get_picture_type_char(avFrame.pict_type), av_frame_get_pkt_size(&avFrame)));
         _isInterlaced = avFrame.interlaced_frame;
         _isTopFieldFirst = avFrame.top_field_first;
         if(avFrame.pict_type == AV_PICTURE_TYPE_I)

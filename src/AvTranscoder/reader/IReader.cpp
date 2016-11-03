@@ -46,17 +46,17 @@ IReader::~IReader()
         delete _inputFile;
 }
 
-Frame* IReader::readNextFrame()
+IFrame* IReader::readNextFrame()
 {
     return readFrameAt(_currentFrame + 1);
 }
 
-Frame* IReader::readPrevFrame()
+IFrame* IReader::readPrevFrame()
 {
     return readFrameAt(_currentFrame - 1);
 }
 
-Frame* IReader::readFrameAt(const size_t frame)
+IFrame* IReader::readFrameAt(const size_t frame)
 {
     assert(_currentDecoder != NULL);
     assert(_transform != NULL);
@@ -86,6 +86,9 @@ Frame* IReader::readFrameAt(const size_t frame)
         // generate data (ie silence or black)
         if(_continueWithGenerator)
         {
+            // allocate the frame since the process will continue with some generated data
+            if(! _srcFrame->isDataAllocated())
+                _srcFrame->allocateData();
             _currentDecoder = _generator;
             return readFrameAt(frame);
         }

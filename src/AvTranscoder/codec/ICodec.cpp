@@ -49,7 +49,7 @@ ICodec::~ICodec()
     if(!_isCodecContextAllocated)
         return;
 
-    av_free(_avCodecContext);
+    avcodec_free_context(&_avCodecContext);
     _avCodecContext = NULL;
 }
 
@@ -148,7 +148,8 @@ void ICodec::allocateContext()
     _avCodecContext = avcodec_alloc_context3(_avCodec);
     if(!_avCodecContext)
     {
-        throw std::runtime_error("Unable to allocate the codecContext and set its fields to default values");
+        LOG_ERROR("Unable to allocate the codecContext and set its fields to default values.")
+        throw std::bad_alloc();
     }
     _avCodecContext->codec = _avCodec;
 }

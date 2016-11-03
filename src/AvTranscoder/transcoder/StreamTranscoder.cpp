@@ -174,7 +174,7 @@ StreamTranscoder::StreamTranscoder(const std::vector<InputStreamDesc>& inputStre
             _outputStream = &outputFile.addVideoStream(outputVideo->getVideoCodec());
 
             // buffers to process
-            _filteredData = new VideoFrame(outputVideo->getVideoCodec().getVideoFrameDesc());
+            _filteredData = new VideoFrame(inputStream.getVideoCodec().getVideoFrameDesc());
             _transformedData = new VideoFrame(outputVideo->getVideoCodec().getVideoFrameDesc());
 
             // transform
@@ -243,11 +243,11 @@ void StreamTranscoder::addDecoder(const InputStreamDesc& inputStreamDesc, IInput
             _currentDecoder = inputVideo;
 
             // buffers to get the decoded data
-            VideoFrame* inputFrame = new VideoFrame(inputStream.getVideoCodec().getVideoFrameDesc());
+            VideoFrame* inputFrame = new VideoFrame(inputStream.getVideoCodec().getVideoFrameDesc(), false);
             _decodedData.push_back(inputFrame);
 
             // generator decoder
-            _generators.push_back(new VideoGenerator(inputFrame->desc()));
+            _generators.push_back(new VideoGenerator(inputStream.getVideoCodec().getVideoFrameDesc()));
 
             break;
         }
@@ -263,7 +263,7 @@ void StreamTranscoder::addDecoder(const InputStreamDesc& inputStreamDesc, IInput
             AudioFrameDesc inputFrameDesc(inputStream.getAudioCodec().getAudioFrameDesc());
             if(inputStreamDesc.demultiplexing())
                 inputFrameDesc._nbChannels = inputStreamDesc._channelIndexArray.size();
-            _decodedData.push_back(new AudioFrame(inputFrameDesc));
+            _decodedData.push_back(new AudioFrame(inputFrameDesc, false));
 
             // generator decoder
             _generators.push_back(new AudioGenerator(inputFrameDesc));
@@ -297,8 +297,7 @@ StreamTranscoder::StreamTranscoder(IOutputFile& outputFile, const ProfileLoader:
     if(profile.find(constants::avProfileType)->second == constants::avProfileTypeVideo)
     {
         VideoCodec inputVideoCodec(eCodecTypeEncoder, profile.find(constants::avProfileCodec)->second);
-        VideoFrameDesc inputFrameDesc;
-        inputFrameDesc.setParameters(profile);
+        VideoFrameDesc inputFrameDesc(profile);
         inputVideoCodec.setImageParameters(inputFrameDesc);
 
         // generator decoder
@@ -330,8 +329,7 @@ StreamTranscoder::StreamTranscoder(IOutputFile& outputFile, const ProfileLoader:
     else if(profile.find(constants::avProfileType)->second == constants::avProfileTypeAudio)
     {
         AudioCodec inputAudioCodec(eCodecTypeEncoder, profile.find(constants::avProfileCodec)->second);
-        AudioFrameDesc inputFrameDesc;
-        inputFrameDesc.setParameters(profile);
+        AudioFrameDesc inputFrameDesc(profile);
         inputAudioCodec.setAudioParameters(inputFrameDesc);
 
         // generator decoder
@@ -368,7 +366,7 @@ StreamTranscoder::StreamTranscoder(IOutputFile& outputFile, const ProfileLoader:
 
 StreamTranscoder::~StreamTranscoder()
 {
-    for(std::vector<Frame*>::iterator it = _decodedData.begin(); it != _decodedData.end(); ++it)
+    for(std::vector<IFrame*>::iterator it = _decodedData.begin(); it != _decodedData.end(); ++it)
     {
         delete(*it);
     }
@@ -448,6 +446,13 @@ bool StreamTranscoder::processFrame()
         {
             LOG_INFO("End of positive offset")
 
+            // free our frame data since some new buffers will be allocated by the decoders in the next step
+            for(std::vector<IFrame*>::iterator it = _decodedData.begin(); it != _decodedData.end(); ++it)
+            {
+                if((*it)->isDataAllocated())
+                    (*it)->freeData();
+            }
+            // switch the decoder
             if(! _inputDecoders.empty())
                 switchToInputDecoder();
             else
@@ -526,6 +531,7 @@ bool StreamTranscoder::processTranscode()
 
     LOG_DEBUG("StreamTranscoder::processTranscode")
 
+    // Decode
     LOG_DEBUG("Decode next frame")
     bool decodingStatus = true;
     for(size_t index = 0; index < _generators.size(); ++index)
@@ -541,16 +547,44 @@ bool StreamTranscoder::processTranscode()
             decodingStatus = decodingStatus && _currentDecoder->decodeNextFrame(*_decodedData.at(index));
     }
 
+    // check the next data buffers in case of audio frames
+    if(_decodedData.at(0)->isAudioFrame())
+    {
+        const int nbInputSamplesPerChannel = _decodedData.at(0)->getAVFrame().nb_samples;
+        if(nbInputSamplesPerChannel > _filteredData->getAVFrame().nb_samples)
+        {
+            LOG_WARN("The buffer of filtered data corresponds to a frame of " << _filteredData->getAVFrame().nb_samples << " samples. The decoded buffer contains " << nbInputSamplesPerChannel << " samples. Reallocate it.")
+            _filteredData->freeData();
+            _filteredData->getAVFrame().nb_samples = nbInputSamplesPerChannel;
+            _filteredData->allocateData();
+        }
+        if(nbInputSamplesPerChannel > _transformedData->getAVFrame().nb_samples)
+        {
+            LOG_WARN("The buffer of transformed data corresponds to a frame of " << _transformedData->getAVFrame().nb_samples << " samples. The decoded buffer contains " << nbInputSamplesPerChannel << " samples. Reallocate it.")
+            _transformedData->freeData();
+            _transformedData->getAVFrame().nb_samples = nbInputSamplesPerChannel;
+            _transformedData->allocateData();
+        }
+    }
+
+    // Transform
     CodedData data;
     if(decodingStatus)
     {
-        LOG_DEBUG("Filtering")
-        _filterGraph->process(_decodedData, *_filteredData);
+        IFrame* dataToTransform = NULL;
+        if(_filterGraph->hasFilters())
+        {
+            LOG_DEBUG("Filtering")
+            _filterGraph->process(_decodedData, *_filteredData);
+            dataToTransform = _filteredData;
+        }
+        else
+        {
+            dataToTransform = _decodedData.at(0);
+        }
 
         LOG_DEBUG("Convert")
-        _transform->convert(*_filteredData, *_transformedData);
-
-        _filteredData->clear();
+        _transform->convert(*dataToTransform, *_transformedData);
 
         LOG_DEBUG("Encode")
         _outputEncoder->encodeFrame(*_transformedData, data);
@@ -563,12 +597,19 @@ bool StreamTranscoder::processTranscode()
             if(_needToSwitchToGenerator)
             {
                 switchToGeneratorDecoder();
+                LOG_INFO("Force reallocation of the decoded data buffers since the decoders could have cleared them.")
+                for(std::vector<IFrame*>::iterator it = _decodedData.begin(); it != _decodedData.end(); ++it)
+                {
+                    if(! (*it)->isDataAllocated())
+                        (*it)->allocateData();
+                }
                 return processTranscode();
             }
             return false;
         }
     }
 
+    // Wrap
     LOG_DEBUG("wrap (" << data.getSize() << " bytes)")
     const IOutputStream::EWrappingStatus wrappingStatus = _outputStream->wrap(data);
     switch(wrappingStatus)
@@ -649,7 +690,15 @@ void StreamTranscoder::setOffset(const float offset)
 {
     _offset = offset;
     if(_offset > 0)
+    {
         needToSwitchToGenerator();
+        // allocate the frame since the process will start with some generated data
+        for(std::vector<IFrame*>::iterator it = _decodedData.begin(); it != _decodedData.end(); ++it)
+        {
+            if(! (*it)->isDataAllocated())
+                (*it)->allocateData();
+        }
+    }
 }
 
 StreamTranscoder::EProcessCase StreamTranscoder::getProcessCase() const
