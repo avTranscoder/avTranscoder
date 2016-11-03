@@ -164,6 +164,7 @@ def testRewrapRawVideoStream():
     # get src file of wrap
     inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_RAW_FILE']
     src_inputFile = av.InputFile(inputFileName)
+    src_inputFile.analyse(av.NoDisplayProgress(), av.eAnalyseLevelFirstGop)
     src_properties = src_inputFile.getProperties()
     src_videoStream = src_properties.getVideoProperties()[0]
 
@@ -180,6 +181,7 @@ def testRewrapRawVideoStream():
 
     # get dst file of wrap
     dst_inputFile = av.InputFile(outputFileName)
+    dst_inputFile.analyse(av.NoDisplayProgress(), av.eAnalyseLevelFirstGop)
     dst_properties = dst_inputFile.getProperties()
     dst_videoStream = dst_properties.getVideoProperties()[0]
 

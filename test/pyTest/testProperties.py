@@ -114,25 +114,26 @@ def testCheckRawVideoProperties():
     inputFile = av.InputFile(inputFileName)
     properties = inputFile.getProperties()
 
+    # Check format
     assert_true(properties.isRawFormat())
     assert_equals(properties.getNbStreams(), 1)
     assert_equals(properties.getNbVideoStreams(), 1)
     assert_equals(properties.getDuration(), 0) # file duration is unknown
     assert_equals(properties.getBitRate(), 0) # file bitrate is unknown
+    assert_equals(properties.getFileSize(), 256293L)
 
-    expectedFileSize = 256293L
-    assert_equals(properties.getFileSize(), expectedFileSize)
-
-    expectedBitRate = 177200L
-    expectedNbFrames = 200
-    expectedDuration = 8
-    expectedFps = 25
-
+    # Check video stream when analyse the header
     videoStream = properties.getVideoProperties()[0]
-    assert_equals(videoStream.getNbFrames(), expectedNbFrames)
-    assert_equals(videoStream.getDuration(), expectedDuration)
-    assert_equals(videoStream.getBitRate(), expectedBitRate)
-    assert_equals(videoStream.getFps(), expectedFps)
+    assert_equals(videoStream.getFps(), 25)
+    assert_equals(videoStream.getNbFrames(), 0) # stream nbFrames is unknown
+    assert_equals(videoStream.getDuration(), 0) # stream duration is unknown
+    assert_equals(videoStream.getBitRate(), 0) # stream bitrate is unknown
+    # Check video stream when analyse the first GOP
+    inputFile.analyse(av.NoDisplayProgress(), av.eAnalyseLevelFirstGop)
+    videoStream = properties.getVideoProperties()[0]
+    assert_equals(videoStream.getNbFrames(), 200)
+    assert_equals(videoStream.getDuration(), 8)
+    assert_equals(videoStream.getBitRate(), 177200L)
 
 
 def testCheckAudioProperties():
