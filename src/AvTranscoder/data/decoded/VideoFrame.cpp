@@ -83,6 +83,9 @@ size_t VideoFrame::getDataSize() const
 
 void VideoFrame::allocateData()
 {
+    if(_dataAllocated)
+        LOG_WARN("The VideoFrame seems to already have allocated data. This could lead to memory leaks.")
+
     // Set Frame properties
     _frame->width = _desc._width;
     _frame->height = _desc._height;

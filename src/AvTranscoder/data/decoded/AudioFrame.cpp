@@ -98,6 +98,9 @@ size_t AudioFrame::getDataSize() const
 
 void AudioFrame::allocateData()
 {
+    if(_dataAllocated)
+        LOG_WARN("The AudioFrame seems to already have allocated data. This could lead to memory leaks.")
+
     // Set Frame properties
     av_frame_set_sample_rate(_frame, _desc._sampleRate);
     av_frame_set_channels(_frame, _desc._nbChannels);
