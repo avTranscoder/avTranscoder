@@ -331,7 +331,8 @@ size_t VideoProperties::getBitRate() const
 
     if(_levelAnalysis == eAnalyseLevelHeader)
     {
-        LOG_WARN("The bitrate of the stream '" << _streamIndex << "' of file '" << _formatContext->filename << "' is unknown.")
+        LOG_WARN("The bitrate of the stream '" << _streamIndex << "' of file '" << _formatContext->filename << "' is unknown. "
+                "Need a deeper analysis: see eAnalyseLevelFirstGop.")
         return 0;
     }
 

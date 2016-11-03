@@ -42,7 +42,9 @@ public:
 
     /**
      * @return The video bitrate in bits/s.
-     * @warning If there is no such info available in the container, this data is estimated by decoding the first GOP.
+     * @note 0 if unknown.
+     * @warning If there is no such info available in the container, this data is estimated using the information of the first GOP.
+     * @see eAnalyseLevelFirstGop
      */
     size_t getBitRate() const;
     size_t getMaxBitRate() const;
