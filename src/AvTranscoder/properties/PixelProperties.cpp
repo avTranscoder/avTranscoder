@@ -101,7 +101,7 @@ EComponentType PixelProperties::getColorComponents() const
     {
         return eComponentGray;
     }
-    else if(_pixelDesc->flags & PIX_FMT_PAL || _pixelDesc->flags & PIX_FMT_RGB)
+    else if(_pixelDesc->flags & AV_PIX_FMT_FLAG_PAL || _pixelDesc->flags & AV_PIX_FMT_FLAG_RGB)
     {
         return eComponentRgb;
     }
@@ -154,7 +154,7 @@ bool PixelProperties::isBigEndian() const
 {
     if(!_pixelDesc)
         throw std::runtime_error("unable to find pixel description.");
-    return (_pixelDesc->flags & PIX_FMT_BE) == PIX_FMT_BE;
+    return (_pixelDesc->flags & AV_PIX_FMT_FLAG_BE) == AV_PIX_FMT_FLAG_BE;
 }
 
 bool PixelProperties::hasAlpha() const
@@ -163,7 +163,7 @@ bool PixelProperties::hasAlpha() const
         throw std::runtime_error("unable to find pixel description.");
 
 #if LIBAVCODEC_VERSION_MAJOR > 53
-    return (_pixelDesc->flags & PIX_FMT_ALPHA) == PIX_FMT_ALPHA;
+    return (_pixelDesc->flags & AV_PIX_FMT_FLAG_ALPHA) == AV_PIX_FMT_FLAG_ALPHA;
 #else
     return false;
 #endif
@@ -173,35 +173,35 @@ bool PixelProperties::isPlanar() const
 {
     if(!_pixelDesc)
         throw std::runtime_error("unable to find pixel description.");
-    return (_pixelDesc->flags & PIX_FMT_PLANAR) == PIX_FMT_PLANAR;
+    return (_pixelDesc->flags & AV_PIX_FMT_FLAG_PLANAR) == AV_PIX_FMT_FLAG_PLANAR;
 }
 
 bool PixelProperties::isIndexedColors() const
 {
     if(!_pixelDesc)
         throw std::runtime_error("unable to find pixel description.");
-    return (_pixelDesc->flags & PIX_FMT_PAL) == PIX_FMT_PAL;
+    return (_pixelDesc->flags & AV_PIX_FMT_FLAG_PAL) == AV_PIX_FMT_FLAG_PAL;
 }
 
 bool PixelProperties::isBitWisePacked() const
 {
     if(!_pixelDesc)
         throw std::runtime_error("unable to find pixel description.");
-    return (_pixelDesc->flags & PIX_FMT_BITSTREAM) == PIX_FMT_BITSTREAM;
+    return (_pixelDesc->flags & AV_PIX_FMT_FLAG_BITSTREAM) == AV_PIX_FMT_FLAG_BITSTREAM;
 }
 
 bool PixelProperties::isHardwareAccelerated() const
 {
     if(!_pixelDesc)
         throw std::runtime_error("unable to find pixel description.");
-    return (_pixelDesc->flags & PIX_FMT_HWACCEL) == PIX_FMT_HWACCEL;
+    return (_pixelDesc->flags & AV_PIX_FMT_FLAG_HWACCEL) == AV_PIX_FMT_FLAG_HWACCEL;
 }
 
 bool PixelProperties::isRgbPixelData() const
 {
     if(!_pixelDesc)
         throw std::runtime_error("unable to find pixel description.");
-    return (_pixelDesc->flags & PIX_FMT_RGB) == PIX_FMT_RGB;
+    return (_pixelDesc->flags & AV_PIX_FMT_FLAG_RGB) == AV_PIX_FMT_FLAG_RGB;
 }
 
 bool PixelProperties::isPseudoPaletted() const
@@ -210,7 +210,7 @@ bool PixelProperties::isPseudoPaletted() const
         throw std::runtime_error("unable to find pixel description.");
 
 #if LIBAVCODEC_VERSION_MAJOR > 53
-    return (_pixelDesc->flags & PIX_FMT_PSEUDOPAL) == PIX_FMT_PSEUDOPAL;
+    return (_pixelDesc->flags & AV_PIX_FMT_FLAG_PSEUDOPAL) == AV_PIX_FMT_FLAG_PSEUDOPAL;
 #else
     return false;
 #endif
