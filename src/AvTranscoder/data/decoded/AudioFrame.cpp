@@ -113,14 +113,14 @@ void AudioFrame::allocateData()
     if(ret < 0)
     {
         const std::string formatName = getSampleFormatName(_desc._sampleFormat);
-        std::stringstream stream;
-        stream << "Unable to allocate an audio frame of ";
-        stream << "sample rate = " << _frame->sample_rate << ", ";
-        stream << "nb channels = " << _frame->channels << ", ";
-        stream << "channel layout = " << av_get_channel_name(_frame->channels) << ", ";
-        stream << "nb samples = " << _frame->nb_samples << ", ";
-        stream << "sample format = " << (formatName.empty() ? "none" : formatName);
-        LOG_ERROR(stream.str())
+        std::stringstream msg;
+        msg << "Unable to allocate an audio frame of ";
+        msg << "sample rate = " << _frame->sample_rate << ", ";
+        msg << "nb channels = " << _frame->channels << ", ";
+        msg << "channel layout = " << av_get_channel_name(_frame->channels) << ", ";
+        msg << "nb samples = " << _frame->nb_samples << ", ";
+        msg << "sample format = " << (formatName.empty() ? "none" : formatName);
+        LOG_ERROR(msg.str())
         throw std::bad_alloc();
     }
     _dataAllocated = true;
@@ -139,9 +139,9 @@ void AudioFrame::assignBuffer(const unsigned char* ptrValue)
                                            getNbSamplesPerChannel(), getSampleFormat(), align);
     if(ret < 0)
     {
-        std::stringstream os;
-        os << "Unable to assign an audio buffer: " << getDescriptionFromErrorCode(ret);
-        throw std::runtime_error(os.str());
+        std::stringstream msg;
+        msg << "Unable to assign an audio buffer: " << getDescriptionFromErrorCode(ret);
+        throw std::runtime_error(msg.str());
     }
 }
 

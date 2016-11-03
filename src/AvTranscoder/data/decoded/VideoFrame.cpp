@@ -93,12 +93,12 @@ void VideoFrame::allocateData()
     if(ret < 0)
     {
         const std::string formatName = getPixelFormatName(_desc._pixelFormat);
-        std::stringstream stream;
-        stream << "Unable to allocate an image frame of ";
-        stream << "width = " << _frame->width << ", ";
-        stream << "height = " << _frame->height << ", ";
-        stream << "pixel format = " << (formatName.empty() ? "none" : formatName);
-        LOG_ERROR(stream.str())
+        std::stringstream msg;
+        msg << "Unable to allocate an image frame of ";
+        msg << "width = " << _frame->width << ", ";
+        msg << "height = " << _frame->height << ", ";
+        msg << "pixel format = " << (formatName.empty() ? "none" : formatName);
+        LOG_ERROR(msg.str())
         throw std::bad_alloc();
     }
     _dataAllocated = true;
@@ -116,9 +116,9 @@ void VideoFrame::assignBuffer(const unsigned char* ptrValue)
         avpicture_fill(reinterpret_cast<AVPicture*>(_frame), ptrValue, getPixelFormat(), getWidth(), getHeight());
     if(ret < 0)
     {
-        std::stringstream os;
-        os << "Unable to assign an image buffer of " << getSize() << " bytes: " << getDescriptionFromErrorCode(ret);
-        throw std::runtime_error(os.str());
+        std::stringstream msg;
+        msg << "Unable to assign an image buffer of " << getSize() << " bytes: " << getDescriptionFromErrorCode(ret);
+        throw std::runtime_error(msg.str());
     }
 }
 }
