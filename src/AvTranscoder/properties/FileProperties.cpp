@@ -11,9 +11,10 @@
 namespace avtranscoder
 {
 
-FileProperties::FileProperties(const FormatContext& formatContext)
-    : _formatContext(&formatContext)
-    , _avFormatContext(&formatContext.getAVFormatContext())
+FileProperties::FileProperties(const InputFile& file)
+    : _file(file)
+    , _formatContext(&file.getFormatContext())
+    , _avFormatContext(&file.getFormatContext().getAVFormatContext())
     , _videoStreams()
     , _audioStreams()
     , _dataStreams()
@@ -31,8 +32,8 @@ FileProperties::FileProperties(const FormatContext& formatContext)
 void FileProperties::extractStreamProperties(IProgress& progress, const EAnalyseLevel level)
 {
     // Returns at the beginning of the stream before any deep analysis
-    if(level > eAnalyseLevelHeader && !isRawFormat())
-        const_cast<FormatContext*>(_formatContext)->seek(0, AVSEEK_FLAG_BACKWARD);
+    if(level > eAnalyseLevelHeader && ! isRawFormat())
+        const_cast<InputFile&>(_file).seekAtFrame(0, AVSEEK_FLAG_BACKWARD);
 
     // clear properties
     clearStreamProperties();
@@ -123,8 +124,8 @@ void FileProperties::extractStreamProperties(IProgress& progress, const EAnalyse
     }
 
     // Returns at the beginning of the stream after any deep analysis
-    if(level > eAnalyseLevelHeader && !isRawFormat())
-        const_cast<FormatContext*>(_formatContext)->seek(0, AVSEEK_FLAG_BACKWARD);
+    if(level > eAnalyseLevelHeader && ! isRawFormat())
+        const_cast<InputFile&>(_file).seekAtFrame(0, AVSEEK_FLAG_BACKWARD);
 }
 
 std::string FileProperties::getFilename() const

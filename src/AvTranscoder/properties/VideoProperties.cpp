@@ -1,9 +1,11 @@
 #include "VideoProperties.hpp"
 
+#include <AvTranscoder/util.hpp>
+#include <AvTranscoder/decoder/VideoDecoder.hpp>
+#include <AvTranscoder/data/decoded/VideoFrame.hpp>
 #include <AvTranscoder/properties/util.hpp>
 #include <AvTranscoder/properties/FileProperties.hpp>
 #include <AvTranscoder/progress/NoDisplayProgress.hpp>
-#include <AvTranscoder/data/decoded/VideoFrame.hpp>
 
 extern "C" {
 #include <libavutil/avutil.h>
@@ -328,78 +330,20 @@ size_t VideoProperties::getBitRate() const
     if(_codecContext->bit_rate || _codecContext->rc_max_rate)
         return _codecContext->bit_rate;
 
-    LOG_WARN("The bitrate of the stream '" << _streamIndex << "' of file '" << _formatContext->filename << "' is unknown.")
-    LOG_INFO("Compute the video bitrate by decoding the first GOP.")
-
-    if(!_codecContext->width || !_codecContext->height)
-        throw std::runtime_error("cannot compute bit rate: invalid frame size");
-
-    if(!_formatContext || !_codec)
-        throw std::runtime_error("cannot compute bit rate: unknown format or codec");
-    if(!_codecContext->width || !_codecContext->height)
-        throw std::runtime_error("cannot compute bit rate: invalid frame size");
-
-    // discard no frame type when decode
-    _codecContext->skip_frame = AVDISCARD_NONE;
-
-    AVPacket pkt;
-    av_init_packet(&pkt);
-
-    avcodec_open2(_codecContext, _codec, NULL);
-
-    VideoFrame frame(VideoFrameDesc(getWidth(), getHeight(), getPixelProperties().getPixelFormatName()), false);
-    AVFrame& avFrame = frame.getAVFrame();
-
-    int gotFrame = 0;
-    size_t nbDecodedFrames = 0;
-    int gopFramesSize = 0;
-    int positionOfFirstKeyFrame = -1;
-    int positionOfLastKeyFrame = -1;
-
-    while(!av_read_frame(const_cast<AVFormatContext*>(_formatContext), &pkt))
+    if(_levelAnalysis == eAnalyseLevelHeader)
     {
-        if(pkt.stream_index == (int)_streamIndex)
-        {
-            avcodec_decode_video2(_codecContext, &avFrame, &gotFrame, &pkt);
-            if(gotFrame)
-            {
-                // check distance between key frames
-                if(avFrame.pict_type == AV_PICTURE_TYPE_I)
-                {
-                    if(positionOfFirstKeyFrame == -1)
-                        positionOfFirstKeyFrame = nbDecodedFrames;
-                    else
-                        positionOfLastKeyFrame = nbDecodedFrames;
-                }
-                ++nbDecodedFrames;
-
-                // added size of all frames of the same gop
-                if(positionOfLastKeyFrame == -1)
-                {
-#if LIBAVUTIL_VERSION_INT >= AV_VERSION_INT(54, 7, 100)
-                    gopFramesSize += av_frame_get_pkt_size(&avFrame);
-#else
-                    gopFramesSize += pkt.size;
-#endif
-                }
-            }
-        }
-        av_free_packet(&pkt);
-        if(positionOfFirstKeyFrame != -1 && positionOfLastKeyFrame != -1)
-            break;
+        LOG_WARN("The bitrate of the stream '" << _streamIndex << "' of file '" << _formatContext->filename << "' is unknown. "
+                "Need a deeper analysis: see eAnalyseLevelFirstGop.")
+        return 0;
     }
-    // Close a given AVCodecContext and free all the data associated with it (but not the AVCodecContext itself)
-    avcodec_close(_codecContext);
-    // Returns at the beginning of the stream
-    const_cast<FormatContext*>(&_fileProperties->getFormatContext())->seek(0, AVSEEK_FLAG_BYTE);
 
-    const size_t gopSize = positionOfLastKeyFrame - positionOfFirstKeyFrame;
-    if(gopSize > 0)
+    LOG_INFO("Estimate the video bitrate from the first GOP.")
+    size_t gopFramesSize = 0;
+    for(size_t picture = 0; picture < _gopStructure.size(); ++picture)
     {
-        const float fps = av_q2d(_formatContext->streams[_streamIndex]->avg_frame_rate);
-        return (gopFramesSize / gopSize) * 8 * fps;
+        gopFramesSize += _gopStructure.at(picture).second;
     }
-    return 0;
+    return (gopFramesSize / getGopSize()) * 8 * getFps();
 }
 
 size_t VideoProperties::getMaxBitRate() const
@@ -556,69 +500,59 @@ std::vector<std::pair<char, int> > VideoProperties::getGopStructure() const
 
 void VideoProperties::analyseGopStructure(IProgress& progress)
 {
-    if(_formatContext && _codecContext && _codec)
+    if(! _formatContext || ! _codecContext || ! _codec)
+        return;
+    if(! _codecContext->width || ! _codecContext->height)
+        return;
+
+    InputFile& file = const_cast<InputFile&>(_fileProperties->getInputFile());
+    // Get the stream
+    IInputStream& stream = file.getStream(_streamIndex);
+    stream.activate();
+    // Create a decoder
+    VideoDecoder decoder(static_cast<InputStream&>(stream));
+
+    size_t count = 0;
+    int positionOfFirstKeyFrame = -1;
+    int positionOfLastKeyFrame = -1;
+    VideoFrame frame(VideoFrameDesc(getWidth(), getHeight(), getPixelFormatName(getPixelProperties().getAVPixelFormat())), false);
+    while(decoder.decodeNextFrame(frame))
     {
-        if(_codecContext->width && _codecContext->height)
+        AVFrame& avFrame = frame.getAVFrame();
+
+        _gopStructure.push_back(
+            std::make_pair(av_get_picture_type_char(avFrame.pict_type), av_frame_get_pkt_size(&avFrame)));
+        _isInterlaced = avFrame.interlaced_frame;
+        _isTopFieldFirst = avFrame.top_field_first;
+        if(avFrame.pict_type == AV_PICTURE_TYPE_I)
         {
-            // Discard no frame type when decode
-            _codecContext->skip_frame = AVDISCARD_NONE;
-
-            AVPacket pkt;
-            av_init_packet(&pkt);
-
-            // Initialize the AVCodecContext to use the given AVCodec
-            avcodec_open2(_codecContext, _codec, NULL);
-
-            VideoFrame frame(VideoFrameDesc(getWidth(), getHeight(), getPixelProperties().getPixelFormatName()), false);
-            AVFrame& avFrame = frame.getAVFrame();
-
-            size_t count = 0;
-            int gotFrame = 0;
-            int positionOfFirstKeyFrame = -1;
-            int positionOfLastKeyFrame = -1;
-
-            while(!av_read_frame(const_cast<AVFormatContext*>(_formatContext), &pkt))
-            {
-                if(pkt.stream_index == (int)_streamIndex)
-                {
-                    avcodec_decode_video2(_codecContext, &avFrame, &gotFrame, &pkt);
-                    if(gotFrame)
-                    {
-                        _gopStructure.push_back(
-                            std::make_pair(av_get_picture_type_char(avFrame.pict_type), av_frame_get_pkt_size(&avFrame)));
-                        _isInterlaced = avFrame.interlaced_frame;
-                        _isTopFieldFirst = avFrame.top_field_first;
-                        if(avFrame.pict_type == AV_PICTURE_TYPE_I)
-                        {
-                            if(positionOfFirstKeyFrame == -1)
-                                positionOfFirstKeyFrame = count;
-                            else
-                                positionOfLastKeyFrame = count;
-                        }
-
-                        _gopSize = ++count;
-                    }
-                }
-                av_free_packet(&pkt);
-
-                // If the first 2 key frames are found
-                if(positionOfFirstKeyFrame != -1 && positionOfLastKeyFrame != -1)
-                {
-                    // Set gop size as distance between these 2 key frames
-                    _gopSize = positionOfLastKeyFrame - positionOfFirstKeyFrame;
-                    // Update gop structure to keep only one gop
-                    while(_gopStructure.size() > _gopSize)
-                        _gopStructure.pop_back();
-                    break;
-                }
-            }
-
-            // Close a given AVCodecContext and free all the data associated with it (but not the AVCodecContext itself)
-            avcodec_close(_codecContext);
-
-            // Returns at the beginning of the stream
-            const_cast<FormatContext*>(&_fileProperties->getFormatContext())->seek(0, AVSEEK_FLAG_BYTE);
+            if(positionOfFirstKeyFrame == -1)
+                positionOfFirstKeyFrame = count;
+            else
+                positionOfLastKeyFrame = count;
         }
+
+        _gopSize = ++count;
+
+        // If the first 2 key frames are found
+        if(positionOfFirstKeyFrame != -1 && positionOfLastKeyFrame != -1)
+        {
+            // Set gop size as distance between these 2 key frames
+            _gopSize = positionOfLastKeyFrame - positionOfFirstKeyFrame;
+            // Update gop structure to keep only one gop
+            while(_gopStructure.size() > _gopSize)
+                _gopStructure.pop_back();
+            break;
+        }
+    }
+
+    // Returns at the beginning of the stream
+    file.seekAtFrame(0, AVSEEK_FLAG_BYTE);
+
+    // Check GOP size
+    if(_gopSize <= 0)
+    {
+        throw std::runtime_error("Invalid GOP size when decoding the first data.");
     }
 }
 
