@@ -117,7 +117,7 @@ after_failure:
 
 before_deploy:
   # copy libbz2, external dependency of libavformat
-  - if [ ${TRAVIS_OS_NAME} = "linux" ]; then cp /lib/x86_64-linux-gnu/{libbz2.so,libbz2.so.1,libbz2.so.1.0,libbz2.so.1.0.4} ${DEPENDENCY_INSTALL_PATH}/lib; fi
+  - if [ ${TRAVIS_OS_NAME} = "linux" ]; then cp /lib/x86_64-linux-gnu/{libbz2.so.1,libbz2.so.1.0,libbz2.so.1.0.4} ${DEPENDENCY_INSTALL_PATH}/lib; fi
   # create archive
   - cd ${TRAVIS_BUILD_DIR}
   - tar -cvzf avtranscoder-${TRAVIS_OS_NAME}-${CC}-${DEPENDENCY_NAME}-${DEPENDENCY_VERSION}.tgz ${DEPENDENCY_INSTALL} ${AVTRANSCODER_INSTALL}
