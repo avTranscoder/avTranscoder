@@ -79,7 +79,7 @@ public:
     void setRatio(const int num, const int den);
 
     // array of childs
-    bool hasChild() const { return _childOptions.size(); }
+    bool hasChild() const { return ! _childOptions.empty(); }
     const std::vector<Option>& getChilds() const { return _childOptions; }
     const Option& getChildAtIndex(const size_t index) const { return _childOptions.at(index); }
     int getDefaultChildIndex() const { return _defaultChildIndex; }
