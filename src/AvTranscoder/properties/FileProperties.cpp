@@ -228,10 +228,10 @@ const avtranscoder::StreamProperties& FileProperties::getStreamPropertiesWithInd
     avtranscoder::StreamProperties* properties = _streamsProperties.find(streamIndex)->second;
     if(properties)
         return *properties;
-    std::stringstream os;
-    os << "No stream properties correspond to stream at index ";
-    os << streamIndex;
-    throw std::runtime_error(os.str());
+    std::stringstream msg;
+    msg << "No stream properties correspond to stream at index ";
+    msg << streamIndex;
+    throw std::runtime_error(msg.str());
 }
 
 const std::vector<avtranscoder::StreamProperties*> FileProperties::getStreamProperties() const
