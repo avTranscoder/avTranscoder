@@ -113,7 +113,7 @@ private:
     const AVFormatContext* _avFormatContext; ///< Has link (no ownership)
 
     std::map<size_t, StreamProperties*>
-        _streams; ///< Map of properties per stream index (of all types) - only references to the following properties
+        _streamsProperties; ///< Map of properties per stream index (of all types) - only references to the following properties
 
     std::vector<VideoProperties> _videoStreams;             ///< Array of properties per video stream
     std::vector<AudioProperties> _audioStreams;             ///< Array of properties per audio stream

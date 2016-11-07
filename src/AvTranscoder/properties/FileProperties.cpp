@@ -15,6 +15,7 @@ FileProperties::FileProperties(const InputFile& file)
     : _file(file)
     , _formatContext(&file.getFormatContext())
     , _avFormatContext(&file.getFormatContext().getAVFormatContext())
+    , _streamsProperties()
     , _videoStreams()
     , _audioStreams()
     , _dataStreams()
@@ -92,43 +93,43 @@ void FileProperties::extractStreamProperties(IProgress& progress, const EAnalyse
     }
 
     // clear streams
-    _streams.clear();
+    _streamsProperties.clear();
 
     // once the streams vectors are filled, add their references the base streams vector
     for(size_t streamIndex = 0; streamIndex < _videoStreams.size(); ++streamIndex)
     {
         const size_t videoStreamIndex = _videoStreams.at(streamIndex).getStreamIndex();
-        _streams[videoStreamIndex] = &_videoStreams.at(streamIndex);
+        _streamsProperties[videoStreamIndex] = &_videoStreams.at(streamIndex);
     }
 
     for(size_t streamIndex = 0; streamIndex < _audioStreams.size(); ++streamIndex)
     {
         const size_t audioStreamIndex = _audioStreams.at(streamIndex).getStreamIndex();
-        _streams[audioStreamIndex] = &_audioStreams.at(streamIndex);
+        _streamsProperties[audioStreamIndex] = &_audioStreams.at(streamIndex);
     }
 
     for(size_t streamIndex = 0; streamIndex < _dataStreams.size(); ++streamIndex)
     {
         const size_t dataStreamIndex = _dataStreams.at(streamIndex).getStreamIndex();
-        _streams[dataStreamIndex] = &_dataStreams.at(streamIndex);
+        _streamsProperties[dataStreamIndex] = &_dataStreams.at(streamIndex);
     }
 
     for(size_t streamIndex = 0; streamIndex < _subtitleStreams.size(); ++streamIndex)
     {
         const size_t subtitleStreamIndex = _subtitleStreams.at(streamIndex).getStreamIndex();
-        _streams[subtitleStreamIndex] = &_subtitleStreams.at(streamIndex);
+        _streamsProperties[subtitleStreamIndex] = &_subtitleStreams.at(streamIndex);
     }
 
     for(size_t streamIndex = 0; streamIndex < _attachementStreams.size(); ++streamIndex)
     {
         const size_t attachementStreamIndex = _attachementStreams.at(streamIndex).getStreamIndex();
-        _streams[attachementStreamIndex] = &_attachementStreams.at(streamIndex);
+        _streamsProperties[attachementStreamIndex] = &_attachementStreams.at(streamIndex);
     }
 
     for(size_t streamIndex = 0; streamIndex < _unknownStreams.size(); ++streamIndex)
     {
         const size_t unknownStreamIndex = _unknownStreams.at(streamIndex).getStreamIndex();
-        _streams[unknownStreamIndex] = &_unknownStreams.at(streamIndex);
+        _streamsProperties[unknownStreamIndex] = &_unknownStreams.at(streamIndex);
     }
 
     // Returns at the beginning of the stream after any deep analysis
@@ -224,7 +225,7 @@ size_t FileProperties::getPacketSize() const
 
 const avtranscoder::StreamProperties& FileProperties::getStreamPropertiesWithIndex(const size_t streamIndex) const
 {
-    avtranscoder::StreamProperties* properties = _streams.find(streamIndex)->second;
+    avtranscoder::StreamProperties* properties = _streamsProperties.find(streamIndex)->second;
     if(properties)
         return *properties;
     std::stringstream os;
@@ -236,7 +237,7 @@ const avtranscoder::StreamProperties& FileProperties::getStreamPropertiesWithInd
 const std::vector<avtranscoder::StreamProperties*> FileProperties::getStreamProperties() const
 {
     std::vector<avtranscoder::StreamProperties*> streams;
-    for(std::map<size_t, StreamProperties*>::const_iterator it = _streams.begin(); it != _streams.end(); ++it)
+    for(std::map<size_t, StreamProperties*>::const_iterator it = _streamsProperties.begin(); it != _streamsProperties.end(); ++it)
     {
         streams.push_back(it->second);
     }
