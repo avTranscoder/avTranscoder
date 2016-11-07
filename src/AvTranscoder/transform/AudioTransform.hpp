@@ -11,7 +11,7 @@
 #define ResampleContext SwrContext
 #endif
 
-class ResampleContext;
+struct ResampleContext;
 
 namespace avtranscoder
 {

@@ -5,7 +5,7 @@
 
 #include <AvTranscoder/data/decoded/VideoFrame.hpp>
 
-class SwsContext;
+struct SwsContext;
 
 namespace avtranscoder
 {
