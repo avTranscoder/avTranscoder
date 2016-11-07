@@ -36,7 +36,12 @@ void FileProperties::extractStreamProperties(IProgress& progress, const EAnalyse
         const_cast<InputFile&>(_file).seekAtFrame(0, AVSEEK_FLAG_BACKWARD);
 
     // clear properties
-    clearStreamProperties();
+    _videoStreams.clear();
+    _audioStreams.clear();
+    _dataStreams.clear();
+    _subtitleStreams.clear();
+    _attachementStreams.clear();
+    _unknownStreams.clear();
 
     // reload properties
     for(size_t streamIndex = 0; streamIndex < _formatContext->getNbStreams(); ++streamIndex)
@@ -85,6 +90,9 @@ void FileProperties::extractStreamProperties(IProgress& progress, const EAnalyse
             }
         }
     }
+
+    // clear streams
+    _streams.clear();
 
     // once the streams vectors are filled, add their references the base streams vector
     for(size_t streamIndex = 0; streamIndex < _videoStreams.size(); ++streamIndex)
@@ -371,18 +379,6 @@ std::string FileProperties::allPropertiesAsJson() const
         writer << std::make_pair("unknown", unknown.build());
     }
     return writer.build();
-}
-
-void FileProperties::clearStreamProperties()
-{
-    _streams.clear();
-
-    _videoStreams.clear();
-    _audioStreams.clear();
-    _dataStreams.clear();
-    _subtitleStreams.clear();
-    _attachementStreams.clear();
-    _unknownStreams.clear();
 }
 
 std::ostream& operator<<(std::ostream& flux, const FileProperties& fileProperties)

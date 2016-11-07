@@ -107,8 +107,6 @@ private:
     }
 #endif
 
-    void clearStreamProperties(); ///< Clear all array of stream properties
-
 private:
     const InputFile& _file; ///< Has link (no ownership)
     const FormatContext* _formatContext;     ///< Has link (no ownership)
