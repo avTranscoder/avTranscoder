@@ -64,6 +64,7 @@ public:
 
     /**
      * @brief Corresponds to the 'fps' returned by ffprobe.
+     * @note If the average framerate is not defined in the format, return the tbn.
      * fps = the average framerate that has come from the AVStream
      * tbn = the time base in AVStream that has come from the AVStream
      * tbc = the time base in AVCodecContext for the codec used for a particular stream
