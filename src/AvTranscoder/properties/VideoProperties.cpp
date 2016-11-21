@@ -609,8 +609,7 @@ size_t VideoProperties::analyseFull(IProgress& progress)
     _nbFrames = nbDecodedFrames;
     while(decoder.decodeNextFrame(frame))
     {
-        progress.progress(_nbFrames, estimateNbFrames);
-        ++_nbFrames;
+        progress.progress(++_nbFrames, estimateNbFrames);
     }
 
     // Check GOP size
