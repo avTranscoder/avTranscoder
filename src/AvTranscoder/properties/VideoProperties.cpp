@@ -509,12 +509,12 @@ std::vector<std::pair<char, int> > VideoProperties::getGopStructure() const
     return _gopStructure;
 }
 
-void VideoProperties::analyseGopStructure(IProgress& progress)
+size_t VideoProperties::analyseGopStructure(IProgress& progress)
 {
     if(! _formatContext || ! _codecContext || ! _codec)
-        return;
+        return 0;
     if(! _codecContext->width || ! _codecContext->height)
-        return;
+        return 0;
 
     InputFile& file = const_cast<InputFile&>(_fileProperties->getInputFile());
     // Get the stream
@@ -522,11 +522,11 @@ void VideoProperties::analyseGopStructure(IProgress& progress)
     stream.activate();
     // Create a decoder
     VideoDecoder decoder(static_cast<InputStream&>(stream));
+    VideoFrame frame(VideoFrameDesc(getWidth(), getHeight(), getPixelFormatName(getPixelProperties().getAVPixelFormat())), false);
 
-    size_t count = 0;
+    size_t nbDecodedFrames = 0;
     int positionOfFirstKeyFrame = -1;
     int positionOfLastKeyFrame = -1;
-    VideoFrame frame(VideoFrameDesc(getWidth(), getHeight(), getPixelFormatName(getPixelProperties().getAVPixelFormat())), false);
     while(decoder.decodeNextFrame(frame))
     {
         AVFrame& avFrame = frame.getAVFrame();
@@ -538,12 +538,12 @@ void VideoProperties::analyseGopStructure(IProgress& progress)
         if(avFrame.pict_type == AV_PICTURE_TYPE_I)
         {
             if(positionOfFirstKeyFrame == -1)
-                positionOfFirstKeyFrame = count;
+                positionOfFirstKeyFrame = nbDecodedFrames;
             else
-                positionOfLastKeyFrame = count;
+                positionOfLastKeyFrame = nbDecodedFrames;
         }
 
-        _gopSize = ++count;
+        _gopSize = ++nbDecodedFrames;
 
         // If the first 2 key frames are found
         if(positionOfFirstKeyFrame != -1 && positionOfLastKeyFrame != -1)
@@ -565,6 +565,7 @@ void VideoProperties::analyseGopStructure(IProgress& progress)
     {
         throw std::runtime_error("Invalid GOP size when decoding the first data.");
     }
+    return nbDecodedFrames;
 }
 
 void VideoProperties::analyseFull(IProgress& progress)

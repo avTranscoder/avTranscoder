@@ -105,8 +105,9 @@ public:
 private:
     /**
      * @param progress: callback to get analysis progression
+     * @return the number of decoded frames to compute the GOP structure.
      */
-    void analyseGopStructure(IProgress& progress);
+    size_t analyseGopStructure(IProgress& progress);
 
     /**
      * @param progress: callback to get analysis progression
