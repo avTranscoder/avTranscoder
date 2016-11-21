@@ -376,7 +376,7 @@ size_t VideoProperties::getNbFrames() const
     size_t nbFrames = _formatContext->streams[_streamIndex]->nb_frames;
     if(nbFrames == 0)
     {
-        if(_levelAnalysis == eAnalyseLevelFull)
+        if(_levelAnalysis == eAnalyseLevelFull && _nbFrames)
             return _nbFrames;
 
         LOG_WARN("The number of frames in the stream '" << _streamIndex << "' of file '" << _formatContext->filename
@@ -591,9 +591,11 @@ size_t VideoProperties::analyseFull(IProgress& progress)
     VideoDecoder decoder(static_cast<InputStream&>(stream));
     VideoFrame frame(VideoFrameDesc(getWidth(), getHeight(), getPixelFormatName(getPixelProperties().getAVPixelFormat())), false);
 
+    const size_t estimateNbFrames = getNbFrames();
     _nbFrames = nbDecodedFrames;
     while(decoder.decodeNextFrame(frame))
     {
+        progress.progress(_nbFrames, estimateNbFrames);
         ++_nbFrames;
     }
 
