@@ -38,10 +38,16 @@ VideoProperties::VideoProperties(const FileProperties& fileProperties, const siz
         _firstGopTimeCode = _codecContext->timecode_frame_start;
     }
 
-    if(_levelAnalysis == eAnalyseLevelFirstGop)
-        analyseGopStructure(progress);
-    else if(_levelAnalysis == eAnalyseLevelFull)
-        analyseFull(progress);
+    if(_levelAnalysis > eAnalyseLevelHeader)
+    {
+        if(_levelAnalysis == eAnalyseLevelFirstGop)
+            analyseGopStructure(progress);
+        else if(_levelAnalysis == eAnalyseLevelFull)
+            analyseFull(progress);
+
+        // Returns at the beginning of the stream
+        const_cast<InputFile&>(_fileProperties->getInputFile()).seekAtFrame(0, AVSEEK_FLAG_BYTE);
+    }
 }
 
 std::string VideoProperties::getProfileName() const
@@ -557,9 +563,6 @@ size_t VideoProperties::analyseGopStructure(IProgress& progress)
         }
     }
 
-    // Returns at the beginning of the stream
-    file.seekAtFrame(0, AVSEEK_FLAG_BYTE);
-
     // Check GOP size
     if(_gopSize <= 0)
     {
@@ -593,9 +596,6 @@ size_t VideoProperties::analyseFull(IProgress& progress)
     {
         ++_nbFrames;
     }
-
-    // Returns at the beginning of the stream
-    file.seekAtFrame(0, AVSEEK_FLAG_BYTE);
 
     // Check GOP size
     if(_nbFrames <= 0)
