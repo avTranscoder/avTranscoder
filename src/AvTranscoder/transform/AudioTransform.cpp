@@ -26,8 +26,9 @@ extern "C" {
 #endif
 }
 
-#include <stdexcept>
 #include <sstream>
+#include <cassert>
+#include <stdexcept>
 
 namespace avtranscoder
 {
@@ -43,7 +44,7 @@ AudioTransform::~AudioTransform()
     FreeResampleContext(&_audioConvertContext);
 }
 
-bool AudioTransform::init(const Frame& srcFrame, const Frame& dstFrame)
+bool AudioTransform::init(const AudioFrame& src, const AudioFrame& dst)
 {
     // Set convert context
     _audioConvertContext = AllocResampleContext();
@@ -51,9 +52,6 @@ bool AudioTransform::init(const Frame& srcFrame, const Frame& dstFrame)
     {
         throw std::runtime_error("unable to create audio convert context");
     }
-
-    const AudioFrame& src = static_cast<const AudioFrame&>(srcFrame);
-    const AudioFrame& dst = static_cast<const AudioFrame&>(dstFrame);
 
     av_opt_set_int(_audioConvertContext, "in_channel_layout", src.getChannelLayout(), 0);
     av_opt_set_int(_audioConvertContext, "out_channel_layout", dst.getChannelLayout(), 0);
@@ -90,10 +88,19 @@ bool AudioTransform::init(const Frame& srcFrame, const Frame& dstFrame)
     return true;
 }
 
-void AudioTransform::convert(const Frame& srcFrame, Frame& dstFrame)
+void AudioTransform::convert(const IFrame& srcFrame, IFrame& dstFrame)
 {
+    const AudioFrame& src = static_cast<const AudioFrame&>(srcFrame);
+    const AudioFrame& dst = static_cast<const AudioFrame&>(dstFrame);
+
+    assert(src.getSampleRate() > 0);
+    assert(src.getNbChannels() > 0);
+    assert(src.getNbSamplesPerChannel() > 0);
+    assert(src.getSampleFormat() != AV_SAMPLE_FMT_NONE);
+    assert(dst.getDataSize() > 0);
+
     if(!_isInit)
-        _isInit = init(srcFrame, dstFrame);
+        _isInit = init(src, dst);
 
     // if number of samples change from previous frame
     const size_t nbInputSamplesPerChannel = srcFrame.getAVFrame().nb_samples;
@@ -110,13 +117,9 @@ void AudioTransform::convert(const Frame& srcFrame, Frame& dstFrame)
         swr_convert(_audioConvertContext, dstData, nbInputSamplesPerChannel, srcData, nbInputSamplesPerChannel);
 #endif
 
+    // update the number of samples of the output frame
     if(nbOutputSamplesPerChannel < 0)
-    {
-        throw std::runtime_error("unable to convert audio samples");
-    }
-    else
-    {
-        dstFrame.getAVFrame().nb_samples = nbOutputSamplesPerChannel;
-    }
+        throw std::runtime_error("Unable to convert audio samples");
+    dstFrame.getAVFrame().nb_samples = nbOutputSamplesPerChannel;
 }
 }

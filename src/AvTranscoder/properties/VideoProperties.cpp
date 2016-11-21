@@ -1,5 +1,6 @@
 #include "VideoProperties.hpp"
 
+#include <AvTranscoder/util.hpp>
 #include <AvTranscoder/decoder/VideoDecoder.hpp>
 #include <AvTranscoder/data/decoded/VideoFrame.hpp>
 #include <AvTranscoder/properties/util.hpp>
@@ -334,7 +335,8 @@ size_t VideoProperties::getBitRate() const
 
     if(_levelAnalysis == eAnalyseLevelHeader)
     {
-        LOG_WARN("The bitrate of the stream '" << _streamIndex << "' of file '" << _formatContext->filename << "' is unknown.")
+        LOG_WARN("The bitrate of the stream '" << _streamIndex << "' of file '" << _formatContext->filename << "' is unknown. "
+                "Need a deeper analysis: see eAnalyseLevelFirstGop.")
         return 0;
     }
 
@@ -436,7 +438,12 @@ int VideoProperties::getLevel() const
 
 float VideoProperties::getFps() const
 {
-    return av_q2d(_formatContext->streams[_streamIndex]->avg_frame_rate);
+    if(! _formatContext)
+        throw std::runtime_error("unknown format context");
+
+    if(_formatContext->streams[_streamIndex]->avg_frame_rate.den)
+        return av_q2d(_formatContext->streams[_streamIndex]->avg_frame_rate);
+    return av_q2d(av_inv_q(getTimeBase()));
 }
 
 float VideoProperties::getDuration() const
@@ -519,13 +526,13 @@ void VideoProperties::analyseGopStructure(IProgress& progress)
     size_t count = 0;
     int positionOfFirstKeyFrame = -1;
     int positionOfLastKeyFrame = -1;
-    VideoFrame frame(VideoFrameDesc(getWidth(), getHeight(), getPixelProperties().getAVPixelFormat()));
+    VideoFrame frame(VideoFrameDesc(getWidth(), getHeight(), getPixelFormatName(getPixelProperties().getAVPixelFormat())), false);
     while(decoder.decodeNextFrame(frame))
     {
         AVFrame& avFrame = frame.getAVFrame();
 
         _gopStructure.push_back(
-            std::make_pair(av_get_picture_type_char(avFrame.pict_type), frame.getEncodedSize()));
+            std::make_pair(av_get_picture_type_char(avFrame.pict_type), av_frame_get_pkt_size(&avFrame)));
         _isInterlaced = avFrame.interlaced_frame;
         _isTopFieldFirst = avFrame.top_field_first;
         if(avFrame.pict_type == AV_PICTURE_TYPE_I)

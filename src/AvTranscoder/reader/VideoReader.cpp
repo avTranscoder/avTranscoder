@@ -1,5 +1,6 @@
 #include "VideoReader.hpp"
 
+#include <AvTranscoder/util.hpp>
 #include <AvTranscoder/decoder/VideoDecoder.hpp>
 #include <AvTranscoder/decoder/VideoGenerator.hpp>
 #include <AvTranscoder/data/decoded/VideoFrame.hpp>
@@ -44,15 +45,16 @@ void VideoReader::init()
     _currentDecoder = _decoder;
 
     // create src frame
-    _srcFrame = new VideoFrame(_inputFile->getStream(_streamIndex).getVideoCodec().getVideoFrameDesc());
+    const VideoFrameDesc srcFrameDesc = _inputFile->getStream(_streamIndex).getVideoCodec().getVideoFrameDesc();
+    _srcFrame = new VideoFrame(srcFrameDesc, false);
     VideoFrame* srcFrame = static_cast<VideoFrame*>(_srcFrame);
     // create dst frame
     _outputWidth = srcFrame->getWidth();
     _outputHeight = srcFrame->getHeight();
-    _dstFrame = new VideoFrame(VideoFrameDesc(_outputWidth, _outputHeight, getOutputPixelFormat()));
+    _dstFrame = new VideoFrame(VideoFrameDesc(_outputWidth, _outputHeight, getPixelFormatName(getOutputPixelFormat())));
 
     // generator
-    _generator = new VideoGenerator(srcFrame->desc());
+    _generator = new VideoGenerator(srcFrameDesc);
 
     // create transform
     _transform = new VideoTransform();
@@ -74,6 +76,6 @@ void VideoReader::updateOutput(const size_t width, const size_t height, const st
     _outputPixelProperties = PixelProperties(pixelFormat);
     // update dst frame
     delete _dstFrame;
-    _dstFrame = new VideoFrame(VideoFrameDesc(_outputWidth, _outputHeight, getOutputPixelFormat()));
+    _dstFrame = new VideoFrame(VideoFrameDesc(_outputWidth, _outputHeight, getPixelFormatName(getOutputPixelFormat())));
 }
 }

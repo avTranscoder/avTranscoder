@@ -1,7 +1,7 @@
 #ifndef _AV_TRANSCODER_ESSENCE_STREAM_IENCODER_HPP_
 #define _AV_TRANSCODER_ESSENCE_STREAM_IENCODER_HPP_
 
-#include <AvTranscoder/data/decoded/Frame.hpp>
+#include <AvTranscoder/data/decoded/IFrame.hpp>
 #include <AvTranscoder/data/coded/CodedData.hpp>
 #include <AvTranscoder/codec/ICodec.hpp>
 #include <AvTranscoder/profile/ProfileLoader.hpp>
@@ -28,7 +28,7 @@ public:
      * @return status of encoding
      * @throw runtime_error if the encoded process failed.
      */
-    virtual bool encodeFrame(const Frame& sourceFrame, CodedData& codedFrame) = 0;
+    virtual bool encodeFrame(const IFrame& sourceFrame, CodedData& codedFrame) = 0;
 
     /**
      * @brief Get the frames remaining into the encoder

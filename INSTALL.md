@@ -57,14 +57,14 @@ http://brew.sh/
 ###### Install avTranscoder
 Last stable version:
 ```
-brew tap cbenhagen/video
+brew tap avTranscoder/official
 brew install avtranscoder
 ```
 
 From develop branch:
 ```
-brew tap cbenhagen/video
-brew install avtranscoder --devel
+brew tap avTranscoder/official
+brew install --devel avtranscoder
 ```
 
 ###### Use homebrew to install only dependencies

@@ -1,5 +1,7 @@
 #include "VideoCodec.hpp"
 
+#include <AvTranscoder/util.hpp>
+
 #include <cmath>
 #include <cassert>
 
@@ -24,7 +26,7 @@ VideoCodec::VideoCodec(const ECodecType type, AVCodecContext& avCodecContext)
 VideoFrameDesc VideoCodec::getVideoFrameDesc() const
 {
     assert(_avCodecContext != NULL);
-    VideoFrameDesc videoFrameDesc(_avCodecContext->width, _avCodecContext->height, _avCodecContext->pix_fmt);
+    VideoFrameDesc videoFrameDesc(_avCodecContext->width, _avCodecContext->height, getPixelFormatName(_avCodecContext->pix_fmt));
     double fps = 1.0 * _avCodecContext->time_base.den / (_avCodecContext->time_base.num * _avCodecContext->ticks_per_frame);
     if(!std::isinf(fps))
         videoFrameDesc._fps = fps;

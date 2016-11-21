@@ -1,5 +1,6 @@
 #include "AudioDecoder.hpp"
 
+#include <AvTranscoder/util.hpp>
 #include <AvTranscoder/codec/ICodec.hpp>
 #include <AvTranscoder/stream/InputStream.hpp>
 #include <AvTranscoder/data/decoded/AudioFrame.hpp>
@@ -76,7 +77,7 @@ void AudioDecoder::setupDecoder(const ProfileLoader::Profile& profile)
     _isSetup = true;
 }
 
-bool AudioDecoder::decodeNextFrame(Frame& frameBuffer)
+bool AudioDecoder::decodeNextFrame(IFrame& frameBuffer)
 {
     bool decodeNextFrame = false;
     const size_t channelLayout = frameBuffer.getAVFrame().channel_layout;
@@ -121,27 +122,10 @@ bool AudioDecoder::decodeNextFrame(Frame& frameBuffer)
     return decodeNextFrame;
 }
 
-bool AudioDecoder::decodeNextFrame(Frame& frameBuffer, const std::vector<size_t> channelIndexArray)
+bool AudioDecoder::decodeNextFrame(IFrame& frameBuffer, const std::vector<size_t> channelIndexArray)
 {
     AVCodecContext& avCodecContext = _inputStream->getAudioCodec().getAVCodecContext();
     const size_t srcNbChannels = avCodecContext.channels;
-    const size_t bytePerSample = av_get_bytes_per_sample((AVSampleFormat)frameBuffer.getAVFrame().format);
-
-    // if all channels of the stream are extracted
-    if(srcNbChannels == channelIndexArray.size())
-        return decodeNextFrame(frameBuffer);
-
-    // else decode all data in an intermediate buffer
-    AudioFrame allDataOfNextFrame(frameBuffer);
-    if(!decodeNextFrame(allDataOfNextFrame))
-        return false;
-
-    const int dstNbChannels = 1;
-    const int noAlignment = 0;
-    const size_t decodedSize = av_samples_get_buffer_size(NULL, dstNbChannels, frameBuffer.getAVFrame().nb_samples,
-                                                          avCodecContext.sample_fmt, noAlignment);
-    if(decodedSize == 0)
-        return false;
 
     // check if each expected channel exists
     for(std::vector<size_t>::const_iterator channelIndex = channelIndexArray.begin();
@@ -159,12 +143,29 @@ bool AudioDecoder::decodeNextFrame(Frame& frameBuffer, const std::vector<size_t>
         }
     }
 
-    // copy frame properties of decoded frame
+    // if all channels of the stream are extracted
+    if(srcNbChannels == channelIndexArray.size())
+        return decodeNextFrame(frameBuffer);
+
+    // else decode all data in an intermediate buffer
     AudioFrame& audioBuffer = static_cast<AudioFrame&>(frameBuffer);
+    AudioFrame allDataOfNextFrame(AudioFrameDesc(audioBuffer.getSampleRate(), srcNbChannels, getSampleFormatName(audioBuffer.getSampleFormat())), false);
+    if(!decodeNextFrame(allDataOfNextFrame))
+        return false;
+
+    const size_t bytePerSample = audioBuffer.getBytesPerSample();
+    const int dstNbChannels = channelIndexArray.size();
+    const int noAlignment = 0;
+    const size_t decodedSize = av_samples_get_buffer_size(NULL, dstNbChannels, frameBuffer.getAVFrame().nb_samples,
+                                                          avCodecContext.sample_fmt, noAlignment);
+    if(decodedSize == 0)
+        return false;
+
+    // update the output frame
     audioBuffer.copyProperties(allDataOfNextFrame);
-    av_frame_set_channels(&audioBuffer.getAVFrame(), channelIndexArray.size());
-    av_frame_set_channel_layout(&audioBuffer.getAVFrame(), av_get_default_channel_layout(channelIndexArray.size()));
     audioBuffer.setNbSamplesPerChannel(allDataOfNextFrame.getNbSamplesPerChannel());
+    if(! audioBuffer.isDataAllocated())
+        audioBuffer.allocateData();
 
     // @todo manage cases with data of frame not only on data[0] (use _frame.linesize)
     unsigned char* src = allDataOfNextFrame.getData()[0];

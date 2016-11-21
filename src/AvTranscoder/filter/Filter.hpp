@@ -30,8 +30,8 @@ public:
 #endif
 
 private:
-    AVFilter* _filter;
-    AVFilterContext* _context;
+    AVFilter* _filter;  ///< Has ownership
+    AVFilterContext* _context;  ///< Has link (no ownership)
     std::string _options;
     std::string _instanceName;
 };

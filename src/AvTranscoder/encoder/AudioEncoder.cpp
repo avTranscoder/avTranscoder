@@ -91,7 +91,7 @@ void AudioEncoder::setupEncoder(const ProfileLoader::Profile& profile)
     }
 }
 
-bool AudioEncoder::encodeFrame(const Frame& sourceFrame, CodedData& codedFrame)
+bool AudioEncoder::encodeFrame(const IFrame& sourceFrame, CodedData& codedFrame)
 {
     AVCodecContext& avCodecContext = _codec.getAVCodecContext();
 

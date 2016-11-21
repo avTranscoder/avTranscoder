@@ -16,8 +16,8 @@ public:
 
     void setupDecoder(const ProfileLoader::Profile& profile = ProfileLoader::Profile());
 
-    bool decodeNextFrame(Frame& frameBuffer);
-    bool decodeNextFrame(Frame& frameBuffer, const std::vector<size_t> channelIndexArray);
+    bool decodeNextFrame(IFrame& frameBuffer);
+    bool decodeNextFrame(IFrame& frameBuffer, const std::vector<size_t> channelIndexArray);
 
     void flushDecoder();
 

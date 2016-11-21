@@ -30,21 +30,13 @@ FilterGraph::~FilterGraph()
 {
     for(std::vector<Filter*>::iterator it = _filters.begin(); it < _filters.end(); ++it)
     {
-        it = _filters.erase(it);
+        delete(*it);
     }
     avfilter_graph_free(&_graph);
 }
 
-void FilterGraph::process(const std::vector<Frame*>& inputs, Frame& output)
+void FilterGraph::process(const std::vector<IFrame*>& inputs, IFrame& output)
 {
-    if(!hasFilters())
-    {
-        LOG_DEBUG("No filter to process: reference first input frame to the given output.")
-        output.clear();
-        output.refFrame(*inputs.at(0));
-        return;
-    }
-
     // init filter graph
     if(!_isInit)
         init(inputs, output);
@@ -82,7 +74,7 @@ Filter& FilterGraph::addFilter(const std::string& filterName, const std::string&
     return *_filters.back();
 }
 
-void FilterGraph::init(const std::vector<Frame*>& inputs, Frame& output)
+void FilterGraph::init(const std::vector<IFrame*>& inputs, IFrame& output)
 {
     // push filters to the graph
     addInBuffer(inputs);
@@ -142,9 +134,9 @@ void FilterGraph::pushFilter(Filter& filter)
     }
 }
 
-void FilterGraph::addInBuffer(const std::vector<Frame*>& inputs)
+void FilterGraph::addInBuffer(const std::vector<IFrame*>& inputs)
 {
-    for(std::vector<Frame*>::const_reverse_iterator it = inputs.rbegin(); it != inputs.rend(); ++it)
+    for(std::vector<IFrame*>::const_reverse_iterator it = inputs.rbegin(); it != inputs.rend(); ++it)
     {
         std::string filterName;
         std::stringstream filterOptions;
@@ -176,13 +168,12 @@ void FilterGraph::addInBuffer(const std::vector<Frame*>& inputs)
             throw std::runtime_error("Cannot create input buffer of filter graph: the given frame is invalid.");
 
         // add in buffer
-        Filter* in = new Filter(filterName, filterOptions.str(), "in");
         LOG_INFO("Add filter '" << filterName << "' at the beginning of the graph.")
-        _filters.insert(_filters.begin(), in);
+        _filters.insert(_filters.begin(), new Filter(filterName, filterOptions.str(), "in"));
     }
 }
 
-void FilterGraph::addOutBuffer(const Frame& output)
+void FilterGraph::addOutBuffer(const IFrame& output)
 {
     std::string filterName;
 

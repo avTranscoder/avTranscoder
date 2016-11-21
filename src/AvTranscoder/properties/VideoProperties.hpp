@@ -42,7 +42,9 @@ public:
 
     /**
      * @return The video bitrate in bits/s.
-     * @warning If there is no such info available in the container, this data is estimated by decoding the first GOP.
+     * @note 0 if unknown.
+     * @warning If there is no such info available in the container, this data is estimated using the information of the first GOP.
+     * @see eAnalyseLevelFirstGop
      */
     size_t getBitRate() const;
     size_t getMaxBitRate() const;
@@ -62,6 +64,7 @@ public:
 
     /**
      * @brief Corresponds to the 'fps' returned by ffprobe.
+     * @note If the average framerate is not defined in the format, return the tbn.
      * fps = the average framerate that has come from the AVStream
      * tbn = the time base in AVStream that has come from the AVStream
      * tbc = the time base in AVCodecContext for the codec used for a particular stream

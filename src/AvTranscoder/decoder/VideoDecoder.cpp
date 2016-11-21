@@ -74,7 +74,7 @@ void VideoDecoder::setupDecoder(const ProfileLoader::Profile& profile)
     _isSetup = true;
 }
 
-bool VideoDecoder::decodeNextFrame(Frame& frameBuffer)
+bool VideoDecoder::decodeNextFrame(IFrame& frameBuffer)
 {
     bool decodeNextFrame = false;
 
@@ -115,7 +115,7 @@ bool VideoDecoder::decodeNextFrame(Frame& frameBuffer)
     return decodeNextFrame;
 }
 
-bool VideoDecoder::decodeNextFrame(Frame& frameBuffer, const std::vector<size_t> channelIndexArray)
+bool VideoDecoder::decodeNextFrame(IFrame& frameBuffer, const std::vector<size_t> channelIndexArray)
 {
     return false;
 }

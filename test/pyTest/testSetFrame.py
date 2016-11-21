@@ -39,7 +39,7 @@ def testSetVideoFrame():
 
         # set video frame
         frame = av.VideoFrame(av.VideoFrameDesc(1920, 1080, "rgb24"))
-        frame.assign(i)
+        frame.assignValue(i)
         videoDecoder.setNextFrame( frame )
 
     # end process
@@ -85,7 +85,7 @@ def testSetAudioFrame():
 
         # set video frame
         frame = av.AudioFrame(av.AudioFrameDesc(44100, 1, "s16"))
-        frame.assign(i)
+        frame.assignValue(i)
         audioDecoder.setNextFrame( frame )
 
     # end process

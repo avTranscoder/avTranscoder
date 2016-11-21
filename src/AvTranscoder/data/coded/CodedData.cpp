@@ -14,7 +14,12 @@ CodedData::CodedData()
 CodedData::CodedData(const size_t dataSize)
     : _avStream(NULL)
 {
-    av_new_packet(&_packet, dataSize);
+    const int err = av_new_packet(&_packet, dataSize);
+    if(err != 0)
+    {
+        LOG_ERROR("Unable to allocate the payload of a packet and initialize its fields with default values: " << getDescriptionFromErrorCode(err))
+        throw std::bad_alloc();
+    }
 }
 
 CodedData::CodedData(const AVPacket& avPacket)
