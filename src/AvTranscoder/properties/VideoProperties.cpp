@@ -373,24 +373,28 @@ size_t VideoProperties::getNbFrames() const
 {
     if(!_formatContext)
         throw std::runtime_error("unknown format context");
-    size_t nbFrames = _formatContext->streams[_streamIndex]->nb_frames;
-    if(nbFrames == 0)
-    {
-        if(_levelAnalysis == eAnalyseLevelFull && _nbFrames)
-            return _nbFrames;
 
-        LOG_WARN("The number of frames in the stream '" << _streamIndex << "' of file '" << _formatContext->filename
-                                                        << "' is unknown.")
-        const float duration = getDuration();
-        if(duration != 0)
-        {
-            LOG_INFO("Try to compute the number of frames from the fps and the duration.")
-            nbFrames = getFps() * duration;
-        }
-        else
-            return 0;
+    size_t nbFrames = _formatContext->streams[_streamIndex]->nb_frames;
+    if(nbFrames)
+        return nbFrames;
+    LOG_WARN("The number of frames of the stream '" << _streamIndex << "' of file '" << _formatContext->filename
+                                                    << "' is unknown.")
+
+    if(_levelAnalysis == eAnalyseLevelHeader)
+    {
+        LOG_INFO("Need a deeper analysis: see eAnalyseLevelFirstGop.")
+        return 0;
     }
-    return nbFrames;
+    else
+    {
+        if(! _nbFrames)
+        {
+            LOG_INFO("Estimate the number of frames from the fps and the duration.")
+            return getFps() * getDuration();
+        }
+        LOG_INFO("Get the exact number of frames.")
+        return _nbFrames;
+    }
 }
 
 size_t VideoProperties::getTicksPerFrame() const
