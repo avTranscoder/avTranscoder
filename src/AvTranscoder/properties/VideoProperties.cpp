@@ -583,7 +583,7 @@ void VideoProperties::analyseFull(IProgress& progress)
     // Create a decoder
     VideoDecoder decoder(static_cast<InputStream&>(stream));
 
-    VideoFrame frame(VideoFrameDesc(getWidth(), getHeight(), getPixelProperties().getAVPixelFormat()));
+    VideoFrame frame(VideoFrameDesc(getWidth(), getHeight(), getPixelFormatName(getPixelProperties().getAVPixelFormat())), false);
     while(decoder.decodeNextFrame(frame))
     {
         ++_nbFrames;
