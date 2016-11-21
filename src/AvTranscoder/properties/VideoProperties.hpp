@@ -111,8 +111,9 @@ private:
 
     /**
      * @param progress: callback to get analysis progression
+     * @return the number of decoded frames to parse all the file.
      */
-    void analyseFull(IProgress& progress);
+    size_t analyseFull(IProgress& progress);
 
 #ifndef SWIG
     template <typename T>

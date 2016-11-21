@@ -568,14 +568,17 @@ size_t VideoProperties::analyseGopStructure(IProgress& progress)
     return nbDecodedFrames;
 }
 
-void VideoProperties::analyseFull(IProgress& progress)
+size_t VideoProperties::analyseFull(IProgress& progress)
 {
-    analyseGopStructure(progress);
+    const size_t nbDecodedFrames = analyseGopStructure(progress);
+
+    if(! _fileProperties->isRawFormat())
+        return nbDecodedFrames;
 
     if(! _formatContext || ! _codecContext || ! _codec)
-        return;
+        return 0;
     if(! _codecContext->width || ! _codecContext->height)
-        return;
+        return 0;
 
     InputFile& file = const_cast<InputFile&>(_fileProperties->getInputFile());
     // Get the stream
@@ -583,8 +586,9 @@ void VideoProperties::analyseFull(IProgress& progress)
     stream.activate();
     // Create a decoder
     VideoDecoder decoder(static_cast<InputStream&>(stream));
-
     VideoFrame frame(VideoFrameDesc(getWidth(), getHeight(), getPixelFormatName(getPixelProperties().getAVPixelFormat())), false);
+
+    _nbFrames = nbDecodedFrames;
     while(decoder.decodeNextFrame(frame))
     {
         ++_nbFrames;
@@ -598,6 +602,7 @@ void VideoProperties::analyseFull(IProgress& progress)
     {
         throw std::runtime_error("Invalid number of frames when decoding the video stream.");
     }
+    return _nbFrames;
 }
 
 PropertyVector& VideoProperties::fillVector(PropertyVector& data) const
