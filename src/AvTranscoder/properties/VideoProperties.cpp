@@ -338,11 +338,11 @@ size_t VideoProperties::getBitRate() const
     // return bit rate of stream if present or VBR mode
     if(_codecContext->bit_rate || _codecContext->rc_max_rate)
         return _codecContext->bit_rate;
+    LOG_WARN("The bitrate of the stream '" << _streamIndex << "' of file '" << _formatContext->filename << "' is unknown.")
 
     if(_levelAnalysis == eAnalyseLevelHeader)
     {
-        LOG_WARN("The bitrate of the stream '" << _streamIndex << "' of file '" << _formatContext->filename << "' is unknown. "
-                "Need a deeper analysis: see eAnalyseLevelFirstGop.")
+        LOG_INFO("Need a deeper analysis: see eAnalyseLevelFirstGop.")
         return 0;
     }
 
@@ -457,16 +457,14 @@ float VideoProperties::getDuration() const
     const float duration = StreamProperties::getDuration();
     if(duration != 0)
         return duration;
+    LOG_WARN("The duration of the stream '" << _streamIndex << "' of file '" << _formatContext->filename << "' is unknown.")
 
     if(_fileProperties->isRawFormat())
     {
-        LOG_INFO("Get the stream bitrate to compute the duration.")
+        LOG_INFO("Estimate the duration from the file size and the bitrate.")
         const size_t bitRate = getBitRate();
         if(bitRate)
-        {
-            LOG_INFO("Get the file size to compute the duration.")
             return _fileProperties->getFileSize() / bitRate * 8;
-        }
     }
     return 0;
 }
