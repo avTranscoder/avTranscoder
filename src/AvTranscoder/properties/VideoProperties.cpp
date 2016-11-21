@@ -587,7 +587,10 @@ size_t VideoProperties::analyseFull(IProgress& progress)
     const size_t nbDecodedFrames = analyseGopStructure(progress);
 
     if(! _fileProperties->isRawFormat())
+    {
+        LOG_INFO("No need to decode all the stream to get more information.")
         return nbDecodedFrames;
+    }
 
     if(! _formatContext || ! _codecContext || ! _codec)
         return 0;
