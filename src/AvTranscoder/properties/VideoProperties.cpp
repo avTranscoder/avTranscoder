@@ -475,18 +475,16 @@ float VideoProperties::getDuration() const
         LOG_INFO("Need a deeper analysis: see eAnalyseLevelFirstGop.")
         return 0;
     }
-    else
+
+    if(! _nbFrames)
     {
-        if(! _nbFrames)
-        {
-            LOG_INFO("Estimate the duration from the file size and the bitrate.")
-            const size_t bitRate = getBitRate();
-            if(bitRate)
-                return _fileProperties->getFileSize() / bitRate * 8;
-        }
-        LOG_INFO("Get the exact duration from the number of frames and the fps.")
-        return _nbFrames / getFps();
+        LOG_INFO("Estimate the duration from the file size and the bitrate.")
+        const size_t bitRate = getBitRate();
+        if(bitRate)
+            return _fileProperties->getFileSize() / bitRate * 8;
     }
+    LOG_INFO("Get the exact duration from the number of frames and the fps.")
+    return _nbFrames / getFps();
 }
 
 bool VideoProperties::hasBFrames() const
