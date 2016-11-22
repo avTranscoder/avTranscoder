@@ -432,7 +432,12 @@ int VideoProperties::getLevel() const
 
 float VideoProperties::getFps() const
 {
-    return av_q2d(_formatContext->streams[_streamIndex]->avg_frame_rate);
+    if(! _formatContext)
+        throw std::runtime_error("unknown format context");
+
+    if(_formatContext->streams[_streamIndex]->avg_frame_rate.den)
+        return av_q2d(_formatContext->streams[_streamIndex]->avg_frame_rate);
+    return av_q2d(av_inv_q(getTimeBase()));
 }
 
 float VideoProperties::getDuration() const
