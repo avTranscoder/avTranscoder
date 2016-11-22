@@ -374,7 +374,7 @@ size_t VideoProperties::getNbFrames() const
     if(!_formatContext)
         throw std::runtime_error("unknown format context");
 
-    size_t nbFrames = _formatContext->streams[_streamIndex]->nb_frames;
+    const size_t nbFrames = _formatContext->streams[_streamIndex]->nb_frames;
     if(nbFrames)
         return nbFrames;
     LOG_WARN("The number of frames of the stream '" << _streamIndex << "' of file '" << _formatContext->filename
