@@ -38,13 +38,20 @@ VideoProperties::VideoProperties(const FileProperties& fileProperties, const siz
         _firstGopTimeCode = _codecContext->timecode_frame_start;
     }
 
+    switch(_levelAnalysis)
+    {
+        case eAnalyseLevelFirstGop:
+            analyseGopStructure(progress);
+            break;
+        case eAnalyseLevelFull:
+            analyseFull(progress);
+            break;
+        default:
+            break;
+    }
+
     if(_levelAnalysis > eAnalyseLevelHeader)
     {
-        if(_levelAnalysis == eAnalyseLevelFirstGop)
-            analyseGopStructure(progress);
-        else if(_levelAnalysis == eAnalyseLevelFull)
-            analyseFull(progress);
-
         // Returns at the beginning of the stream
         const_cast<InputFile&>(_fileProperties->getInputFile()).seekAtFrame(0, AVSEEK_FLAG_BYTE);
     }
