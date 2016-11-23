@@ -92,3 +92,31 @@ def testInputFileAnalyseFirstGop():
         encodedPictureSize = image[1]
         assert_in(pictureType, ['I', 'P', 'B'])
         assert_greater(encodedPictureSize, 0)
+    assert_not_equals(videoProperties.getDuration(), 0)
+    assert_not_equals(videoProperties.getBitRate(), 0)
+    assert_not_equals(videoProperties.getNbFrames(), 0)
+
+
+def testInputFileAnalyseFull():
+    """
+    Analyse the full video stream of an InputFile, and check if the correct attributes are filled.
+    """
+    inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_RAW_FILE']
+    inputFile = av.InputFile( inputFileName )
+
+    # Analyse full stream
+    progress = av.ConsoleProgress()
+    inputFile.analyse(progress, av.eAnalyseLevelFull)
+
+    # Check properties after full analysis
+    videoProperties = inputFile.getProperties().getVideoProperties()[0]
+    assert_greater(videoProperties.getGopSize(), 0)
+    assert_not_equals(videoProperties.getGopStructure(), ())
+    for image in videoProperties.getGopStructure():
+        pictureType = image[0]
+        encodedPictureSize = image[1]
+        assert_in(pictureType, ['I', 'P', 'B'])
+        assert_greater(encodedPictureSize, 0)
+    assert_not_equals(videoProperties.getDuration(), 0)
+    assert_not_equals(videoProperties.getBitRate(), 0)
+    assert_not_equals(videoProperties.getNbFrames(), 0)
