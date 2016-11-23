@@ -29,6 +29,7 @@ VideoProperties::VideoProperties(const FileProperties& fileProperties, const siz
     , _isTopFieldFirst(false)
     , _gopSize(0)
     , _gopStructure()
+    , _nbFrames(0)
     , _firstGopTimeCode(-1)
 {
     if(_codecContext)
@@ -37,8 +38,23 @@ VideoProperties::VideoProperties(const FileProperties& fileProperties, const siz
         _firstGopTimeCode = _codecContext->timecode_frame_start;
     }
 
-    if(_levelAnalysis == eAnalyseLevelFirstGop)
-        analyseGopStructure(progress);
+    switch(_levelAnalysis)
+    {
+        case eAnalyseLevelFirstGop:
+            analyseGopStructure(progress);
+            break;
+        case eAnalyseLevelFull:
+            analyseFull(progress);
+            break;
+        default:
+            break;
+    }
+
+    if(_levelAnalysis > eAnalyseLevelHeader)
+    {
+        // Returns at the beginning of the stream
+        const_cast<InputFile&>(_fileProperties->getInputFile()).seekAtFrame(0, AVSEEK_FLAG_BYTE);
+    }
 }
 
 std::string VideoProperties::getProfileName() const
@@ -329,11 +345,11 @@ size_t VideoProperties::getBitRate() const
     // return bit rate of stream if present or VBR mode
     if(_codecContext->bit_rate || _codecContext->rc_max_rate)
         return _codecContext->bit_rate;
+    LOG_WARN("The bitrate of the stream '" << _streamIndex << "' of file '" << _formatContext->filename << "' is unknown.")
 
     if(_levelAnalysis == eAnalyseLevelHeader)
     {
-        LOG_WARN("The bitrate of the stream '" << _streamIndex << "' of file '" << _formatContext->filename << "' is unknown. "
-                "Need a deeper analysis: see eAnalyseLevelFirstGop.")
+        LOG_INFO("Need a deeper analysis: see eAnalyseLevelFirstGop.")
         return 0;
     }
 
@@ -364,21 +380,26 @@ size_t VideoProperties::getNbFrames() const
 {
     if(!_formatContext)
         throw std::runtime_error("unknown format context");
-    size_t nbFrames = _formatContext->streams[_streamIndex]->nb_frames;
-    if(nbFrames == 0)
+
+    const size_t nbFrames = _formatContext->streams[_streamIndex]->nb_frames;
+    if(nbFrames)
+        return nbFrames;
+    LOG_WARN("The number of frames of the stream '" << _streamIndex << "' of file '" << _formatContext->filename
+                                                    << "' is unknown.")
+
+    if(_levelAnalysis == eAnalyseLevelHeader)
     {
-        LOG_WARN("The number of frames in the stream '" << _streamIndex << "' of file '" << _formatContext->filename
-                                                        << "' is unknown.")
-        const float duration = getDuration();
-        if(duration != 0)
-        {
-            LOG_INFO("Try to compute the number of frames from the fps and the duration.")
-            nbFrames = getFps() * duration;
-        }
-        else
-            return 0;
+        LOG_INFO("Need a deeper analysis: see eAnalyseLevelFirstGop.")
+        return 0;
     }
-    return nbFrames;
+
+    if(! _nbFrames)
+    {
+        LOG_INFO("Estimate the number of frames from the fps and the duration.")
+        return getFps() * getDuration();
+    }
+    LOG_INFO("Get the exact number of frames.")
+    return _nbFrames;
 }
 
 size_t VideoProperties::getTicksPerFrame() const
@@ -445,18 +466,23 @@ float VideoProperties::getDuration() const
     const float duration = StreamProperties::getDuration();
     if(duration != 0)
         return duration;
+    LOG_WARN("The duration of the stream '" << _streamIndex << "' of file '" << _formatContext->filename << "' is unknown.")
 
-    if(_fileProperties->isRawFormat())
+    if(_levelAnalysis == eAnalyseLevelHeader)
     {
-        LOG_INFO("Get the stream bitrate to compute the duration.")
+        LOG_INFO("Need a deeper analysis: see eAnalyseLevelFirstGop.")
+        return 0;
+    }
+
+    if(! _nbFrames)
+    {
+        LOG_INFO("Estimate the duration from the file size and the bitrate.")
         const size_t bitRate = getBitRate();
         if(bitRate)
-        {
-            LOG_INFO("Get the file size to compute the duration.")
             return _fileProperties->getFileSize() / bitRate * 8;
-        }
     }
-    return 0;
+    LOG_INFO("Get the exact duration from the number of frames and the fps.")
+    return _nbFrames / getFps();
 }
 
 bool VideoProperties::hasBFrames() const
@@ -503,12 +529,12 @@ std::vector<std::pair<char, int> > VideoProperties::getGopStructure() const
     return _gopStructure;
 }
 
-void VideoProperties::analyseGopStructure(IProgress& progress)
+size_t VideoProperties::analyseGopStructure(IProgress& progress)
 {
     if(! _formatContext || ! _codecContext || ! _codec)
-        return;
+        return 0;
     if(! _codecContext->width || ! _codecContext->height)
-        return;
+        return 0;
 
     InputFile& file = const_cast<InputFile&>(_fileProperties->getInputFile());
     // Get the stream
@@ -516,11 +542,11 @@ void VideoProperties::analyseGopStructure(IProgress& progress)
     stream.activate();
     // Create a decoder
     VideoDecoder decoder(static_cast<InputStream&>(stream));
+    VideoFrame frame(VideoFrameDesc(getWidth(), getHeight(), getPixelFormatName(getPixelProperties().getAVPixelFormat())), false);
 
-    size_t count = 0;
+    size_t nbDecodedFrames = 0;
     int positionOfFirstKeyFrame = -1;
     int positionOfLastKeyFrame = -1;
-    VideoFrame frame(VideoFrameDesc(getWidth(), getHeight(), getPixelFormatName(getPixelProperties().getAVPixelFormat())), false);
     while(decoder.decodeNextFrame(frame))
     {
         AVFrame& avFrame = frame.getAVFrame();
@@ -532,12 +558,12 @@ void VideoProperties::analyseGopStructure(IProgress& progress)
         if(avFrame.pict_type == AV_PICTURE_TYPE_I)
         {
             if(positionOfFirstKeyFrame == -1)
-                positionOfFirstKeyFrame = count;
+                positionOfFirstKeyFrame = nbDecodedFrames;
             else
-                positionOfLastKeyFrame = count;
+                positionOfLastKeyFrame = nbDecodedFrames;
         }
 
-        _gopSize = ++count;
+        _gopSize = ++nbDecodedFrames;
 
         // If the first 2 key frames are found
         if(positionOfFirstKeyFrame != -1 && positionOfLastKeyFrame != -1)
@@ -551,14 +577,50 @@ void VideoProperties::analyseGopStructure(IProgress& progress)
         }
     }
 
-    // Returns at the beginning of the stream
-    file.seekAtFrame(0, AVSEEK_FLAG_BYTE);
-
     // Check GOP size
     if(_gopSize <= 0)
     {
         throw std::runtime_error("Invalid GOP size when decoding the first data.");
     }
+    return nbDecodedFrames;
+}
+
+size_t VideoProperties::analyseFull(IProgress& progress)
+{
+    const size_t nbDecodedFrames = analyseGopStructure(progress);
+
+    if(! _fileProperties->isRawFormat())
+    {
+        LOG_INFO("No need to decode all the stream to get more information.")
+        return nbDecodedFrames;
+    }
+
+    if(! _formatContext || ! _codecContext || ! _codec)
+        return 0;
+    if(! _codecContext->width || ! _codecContext->height)
+        return 0;
+
+    InputFile& file = const_cast<InputFile&>(_fileProperties->getInputFile());
+    // Get the stream
+    IInputStream& stream = file.getStream(_streamIndex);
+    stream.activate();
+    // Create a decoder
+    VideoDecoder decoder(static_cast<InputStream&>(stream));
+    VideoFrame frame(VideoFrameDesc(getWidth(), getHeight(), getPixelFormatName(getPixelProperties().getAVPixelFormat())), false);
+
+    const size_t estimateNbFrames = getNbFrames();
+    _nbFrames = nbDecodedFrames;
+    while(decoder.decodeNextFrame(frame))
+    {
+        progress.progress(++_nbFrames, estimateNbFrames);
+    }
+
+    // Check GOP size
+    if(_nbFrames <= 0)
+    {
+        throw std::runtime_error("Invalid number of frames when decoding the video stream.");
+    }
+    return _nbFrames;
 }
 
 PropertyVector& VideoProperties::fillVector(PropertyVector& data) const

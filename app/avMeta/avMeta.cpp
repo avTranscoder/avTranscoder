@@ -1,5 +1,5 @@
 #include <AvTranscoder/file/InputFile.hpp>
-#include <AvTranscoder/progress/NoDisplayProgress.hpp>
+#include <AvTranscoder/progress/ConsoleProgress.hpp>
 
 #include <iostream>
 
@@ -43,8 +43,8 @@ int main(int argc, char** argv)
 
     // analyse inputFile
     avtranscoder::InputFile input(argv[1]);
-    avtranscoder::NoDisplayProgress p;
-    input.analyse(p, avtranscoder::eAnalyseLevelFirstGop);
+    avtranscoder::ConsoleProgress p;
+    input.analyse(p, avtranscoder::eAnalyseLevelFull);
 
     // display file properties
     if(toJson)

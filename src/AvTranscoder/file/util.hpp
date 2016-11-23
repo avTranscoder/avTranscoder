@@ -11,7 +11,7 @@ enum EAnalyseLevel
 {
     eAnalyseLevelHeader = 0,
     eAnalyseLevelFirstGop = 1,
-    // eAnalyseLevelFull = 2,
+    eAnalyseLevelFull = 2
 };
 }
 
