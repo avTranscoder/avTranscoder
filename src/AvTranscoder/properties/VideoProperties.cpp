@@ -392,16 +392,14 @@ size_t VideoProperties::getNbFrames() const
         LOG_INFO("Need a deeper analysis: see eAnalyseLevelFirstGop.")
         return 0;
     }
-    else
+
+    if(! _nbFrames)
     {
-        if(! _nbFrames)
-        {
-            LOG_INFO("Estimate the number of frames from the fps and the duration.")
-            return getFps() * getDuration();
-        }
-        LOG_INFO("Get the exact number of frames.")
-        return _nbFrames;
+        LOG_INFO("Estimate the number of frames from the fps and the duration.")
+        return getFps() * getDuration();
     }
+    LOG_INFO("Get the exact number of frames.")
+    return _nbFrames;
 }
 
 size_t VideoProperties::getTicksPerFrame() const
