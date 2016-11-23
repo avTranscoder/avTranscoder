@@ -158,16 +158,16 @@ PropertyVector& AudioProperties::fillVector(PropertyVector& data) const
     StreamProperties::fillVector(basedProperty);
     data.insert(data.begin(), basedProperty.begin(), basedProperty.end());
 
-    addProperty(data, "sampleFormatName", &AudioProperties::getSampleFormatName);
-    addProperty(data, "sampleFormatLongName", &AudioProperties::getSampleFormatLongName);
-    addProperty(data, "bitRate", &AudioProperties::getBitRate);
-    addProperty(data, "sampleRate", &AudioProperties::getSampleRate);
-    addProperty(data, "nbSamples", &AudioProperties::getNbSamples);
-    addProperty(data, "nbChannels", &AudioProperties::getNbChannels);
-    addProperty(data, "channelLayout", &AudioProperties::getChannelLayout);
-    addProperty(data, "channelName", &AudioProperties::getChannelName);
-    addProperty(data, "channelDescription", &AudioProperties::getChannelDescription);
-    addProperty(data, "ticksPerFrame", &AudioProperties::getTicksPerFrame);
+    detail::addProperty(data, "sampleFormatName", this, &AudioProperties::getSampleFormatName);
+    detail::addProperty(data, "sampleFormatLongName", this, &AudioProperties::getSampleFormatLongName);
+    detail::addProperty(data, "bitRate", this, &AudioProperties::getBitRate);
+    detail::addProperty(data, "sampleRate", this, &AudioProperties::getSampleRate);
+    detail::addProperty(data, "nbSamples", this, &AudioProperties::getNbSamples);
+    detail::addProperty(data, "nbChannels", this, &AudioProperties::getNbChannels);
+    detail::addProperty(data, "channelLayout", this, &AudioProperties::getChannelLayout);
+    detail::addProperty(data, "channelName", this, &AudioProperties::getChannelName);
+    detail::addProperty(data, "channelDescription", this, &AudioProperties::getChannelDescription);
+    detail::addProperty(data, "ticksPerFrame", this, &AudioProperties::getTicksPerFrame);
 
     return data;
 }

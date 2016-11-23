@@ -51,22 +51,6 @@ public:
     PropertyVector asVector() const; ///< Same data with a specific order
     virtual PropertyVector& fillVector(PropertyVector& data) const; ///< To avoid copy of the vector
 
-private:
-#ifndef SWIG
-    template <typename T>
-    void addProperty(PropertyVector& dataVector, const std::string& key, T (StreamProperties::*getter)(void) const) const
-    {
-        try
-        {
-            detail::add(dataVector, key, (this->*getter)());
-        }
-        catch(const std::exception& e)
-        {
-            detail::add(dataVector, key, detail::propertyValueIfError);
-        }
-    }
-#endif
-
 protected:
     const FileProperties* _fileProperties; ///< Has link (no ownership)
     const AVFormatContext* _formatContext; ///< Has link (no ownership)

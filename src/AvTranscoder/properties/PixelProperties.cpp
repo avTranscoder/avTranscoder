@@ -241,13 +241,13 @@ PropertyVector PixelProperties::asVector() const
 
 PropertyVector& PixelProperties::fillVector(PropertyVector& data) const
 {
-    addProperty(data, "pixelName", &PixelProperties::getPixelName);
-    addProperty(data, "pixelFormatName", &PixelProperties::getPixelFormatName);
-    addProperty(data, "bitDepth", &PixelProperties::getBitsPerPixel);
-    addProperty(data, "maxNbBitsInChannels", &PixelProperties::getMaxNbBitsInChannels);
-    addProperty(data, "nbComponents", &PixelProperties::getNbComponents);
-    addProperty(data, "chromaWidth", &PixelProperties::getChromaWidth);
-    addProperty(data, "chromaHeight", &PixelProperties::getChromaHeight);
+    detail::addProperty(data, "pixelName", this, &PixelProperties::getPixelName);
+    detail::addProperty(data, "pixelFormatName", this, &PixelProperties::getPixelFormatName);
+    detail::addProperty(data, "bitDepth", this, &PixelProperties::getBitsPerPixel);
+    detail::addProperty(data, "maxNbBitsInChannels", this, &PixelProperties::getMaxNbBitsInChannels);
+    detail::addProperty(data, "nbComponents", this, &PixelProperties::getNbComponents);
+    detail::addProperty(data, "chromaWidth", this, &PixelProperties::getChromaWidth);
+    detail::addProperty(data, "chromaHeight", this, &PixelProperties::getChromaHeight);
 
     try
     {
@@ -308,14 +308,14 @@ PropertyVector& PixelProperties::fillVector(PropertyVector& data) const
         detail::add(data, "subsampling", detail::propertyValueIfError);
     }
 
-    addProperty(data, "isBigEndian", &PixelProperties::isBigEndian);
-    addProperty(data, "hasAlpha", &PixelProperties::hasAlpha);
-    addProperty(data, "isPlanar", &PixelProperties::isPlanar);
-    addProperty(data, "isIndexedColors", &PixelProperties::isIndexedColors);
-    addProperty(data, "bitWiseAcked", &PixelProperties::isBitWisePacked);
-    addProperty(data, "isHardwareAccelerated", &PixelProperties::isHardwareAccelerated);
-    addProperty(data, "rgbPixel", &PixelProperties::isRgbPixelData);
-    addProperty(data, "isPseudoPaletted", &PixelProperties::isPseudoPaletted);
+    detail::addProperty(data, "isBigEndian", this, &PixelProperties::isBigEndian);
+    detail::addProperty(data, "hasAlpha", this, &PixelProperties::hasAlpha);
+    detail::addProperty(data, "isPlanar", this, &PixelProperties::isPlanar);
+    detail::addProperty(data, "isIndexedColors", this, &PixelProperties::isIndexedColors);
+    detail::addProperty(data, "bitWiseAcked", this, &PixelProperties::isBitWisePacked);
+    detail::addProperty(data, "isHardwareAccelerated", this, &PixelProperties::isHardwareAccelerated);
+    detail::addProperty(data, "rgbPixel", this, &PixelProperties::isRgbPixelData);
+    detail::addProperty(data, "isPseudoPaletted", this, &PixelProperties::isPseudoPaletted);
 
     try
     {

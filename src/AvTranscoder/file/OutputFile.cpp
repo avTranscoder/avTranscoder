@@ -242,7 +242,7 @@ void OutputFile::addMetadata(const PropertyVector& data)
 {
     for(PropertyVector::const_iterator it = data.begin(); it != data.end(); ++it)
     {
-        addMetadata(it->first, it->second);
+        addMetadata(it->first, it->second.asString());
     }
 }
 

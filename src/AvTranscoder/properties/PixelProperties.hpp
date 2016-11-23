@@ -86,21 +86,6 @@ public:
 private:
     void init(const AVPixelFormat avPixelFormat);
 
-#ifndef SWIG
-    template <typename T>
-    void addProperty(PropertyVector& data, const std::string& key, T (PixelProperties::*getter)(void) const) const
-    {
-        try
-        {
-            detail::add(data, key, (this->*getter)());
-        }
-        catch(const std::exception& e)
-        {
-            detail::add(data, key, detail::propertyValueIfError);
-        }
-    }
-#endif
-
 private:
     AVPixelFormat _pixelFormat;
     const AVPixFmtDescriptor* _pixelDesc; ///< Has link (no ownership)

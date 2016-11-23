@@ -568,29 +568,29 @@ PropertyVector& VideoProperties::fillVector(PropertyVector& data) const
     StreamProperties::fillVector(basedProperty);
     data.insert(data.begin(), basedProperty.begin(), basedProperty.end());
 
-    addProperty(data, "profile", &VideoProperties::getProfile);
-    addProperty(data, "profileName", &VideoProperties::getProfileName);
-    addProperty(data, "level", &VideoProperties::getLevel);
-    addProperty(data, "startTimecode", &VideoProperties::getStartTimecodeString);
-    addProperty(data, "width", &VideoProperties::getWidth);
-    addProperty(data, "height", &VideoProperties::getHeight);
-    addProperty(data, "pixelAspectRatio", &VideoProperties::getSar);
-    addProperty(data, "displayAspectRatio", &VideoProperties::getDar);
-    addProperty(data, "dtgActiveFormat", &VideoProperties::getDtgActiveFormat);
-    addProperty(data, "colorTransfert", &VideoProperties::getColorTransfert);
-    addProperty(data, "colorspace", &VideoProperties::getColorspace);
-    addProperty(data, "colorRange", &VideoProperties::getColorRange);
-    addProperty(data, "colorPrimaries", &VideoProperties::getColorPrimaries);
-    addProperty(data, "chromaSampleLocation", &VideoProperties::getChromaSampleLocation);
-    addProperty(data, "fieldOrder", &VideoProperties::getFieldOrder);
-    addProperty(data, "fps", &VideoProperties::getFps);
-    addProperty(data, "nbFrames", &VideoProperties::getNbFrames);
-    addProperty(data, "ticksPerFrame", &VideoProperties::getTicksPerFrame);
-    addProperty(data, "bitRate", &VideoProperties::getBitRate);
-    addProperty(data, "maxBitRate", &VideoProperties::getMaxBitRate);
-    addProperty(data, "minBitRate", &VideoProperties::getMinBitRate);
-    addProperty(data, "hasBFrames", &VideoProperties::hasBFrames);
-    addProperty(data, "referencesFrames", &VideoProperties::getReferencesFrames);
+    detail::addProperty(data, "profile", this, &VideoProperties::getProfile);
+    detail::addProperty(data, "profileName", this, &VideoProperties::getProfileName);
+    detail::addProperty(data, "level", this, &VideoProperties::getLevel);
+    detail::addProperty(data, "startTimecode", this, &VideoProperties::getStartTimecodeString);
+    detail::addProperty(data, "width", this, &VideoProperties::getWidth);
+    detail::addProperty(data, "height", this, &VideoProperties::getHeight);
+    detail::addProperty(data, "pixelAspectRatio", this, &VideoProperties::getSar);
+    detail::addProperty(data, "displayAspectRatio", this, &VideoProperties::getDar);
+    detail::addProperty(data, "dtgActiveFormat", this, &VideoProperties::getDtgActiveFormat);
+    detail::addProperty(data, "colorTransfert", this, &VideoProperties::getColorTransfert);
+    detail::addProperty(data, "colorspace", this, &VideoProperties::getColorspace);
+    detail::addProperty(data, "colorRange", this, &VideoProperties::getColorRange);
+    detail::addProperty(data, "colorPrimaries", this, &VideoProperties::getColorPrimaries);
+    detail::addProperty(data, "chromaSampleLocation", this, &VideoProperties::getChromaSampleLocation);
+    detail::addProperty(data, "fieldOrder", this, &VideoProperties::getFieldOrder);
+    detail::addProperty(data, "fps", this, &VideoProperties::getFps);
+    detail::addProperty(data, "nbFrames", this, &VideoProperties::getNbFrames);
+    detail::addProperty(data, "ticksPerFrame", this, &VideoProperties::getTicksPerFrame);
+    detail::addProperty(data, "bitRate", this, &VideoProperties::getBitRate);
+    detail::addProperty(data, "maxBitRate", this, &VideoProperties::getMaxBitRate);
+    detail::addProperty(data, "minBitRate", this, &VideoProperties::getMinBitRate);
+    detail::addProperty(data, "hasBFrames", this, &VideoProperties::hasBFrames);
+    detail::addProperty(data, "referencesFrames", this, &VideoProperties::getReferencesFrames);
 
     // Add properties available when decode first gop
     if(_levelAnalysis < eAnalyseLevelFirstGop)
@@ -602,7 +602,7 @@ PropertyVector& VideoProperties::fillVector(PropertyVector& data) const
     }
     else
     {
-        addProperty(data, "gopSize", &VideoProperties::getGopSize);
+        detail::addProperty(data, "gopSize", this, &VideoProperties::getGopSize);
 
         std::stringstream gop;
         for(size_t frameIndex = 0; frameIndex < _gopStructure.size(); ++frameIndex)
@@ -616,8 +616,8 @@ PropertyVector& VideoProperties::fillVector(PropertyVector& data) const
         detail::add(data, "gop", gop.str());
         // detail::add( data, "isClosedGop", isClosedGop() );
 
-        addProperty(data, "interlaced ", &VideoProperties::isInterlaced);
-        addProperty(data, "topFieldFirst", &VideoProperties::isTopFieldFirst);
+        detail::addProperty(data, "interlaced ", this, &VideoProperties::isInterlaced);
+        detail::addProperty(data, "topFieldFirst", this, &VideoProperties::isTopFieldFirst);
     }
 
     // Add properties of the pixel

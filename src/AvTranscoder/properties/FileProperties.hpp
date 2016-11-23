@@ -92,22 +92,6 @@ public:
     PropertyVector& fillVector(PropertyVector& data) const; ///< To avoid copy of the vector
 
 private:
-#ifndef SWIG
-    template <typename T>
-    void addProperty(PropertyVector& data, const std::string& key, T (FileProperties::*getter)(void) const) const
-    {
-        try
-        {
-            detail::add(data, key, (this->*getter)());
-        }
-        catch(const std::exception& e)
-        {
-            detail::add(data, key, detail::propertyValueIfError);
-        }
-    }
-#endif
-
-private:
     const InputFile& _file; ///< Has link (no ownership)
     const FormatContext* _formatContext;     ///< Has link (no ownership)
     const AVFormatContext* _avFormatContext; ///< Has link (no ownership)

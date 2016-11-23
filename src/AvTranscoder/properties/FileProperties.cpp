@@ -2,11 +2,13 @@
 
 #include <AvTranscoder/properties/util.hpp>
 #include <AvTranscoder/properties/JsonWriter.hpp>
+#include <AvTranscoder/properties/jsonWriterHelper.hpp>
 #include <AvTranscoder/progress/NoDisplayProgress.hpp>
 
 #include <stdexcept>
 #include <sstream>
 #include <fstream>
+#include <iostream>
 
 namespace avtranscoder
 {
@@ -259,19 +261,19 @@ PropertyVector FileProperties::asVector() const
 
 PropertyVector& FileProperties::fillVector(PropertyVector& data) const
 {
-    addProperty(data, "filename", &FileProperties::getFilename);
-    addProperty(data, "formatName", &FileProperties::getFormatName);
-    addProperty(data, "formatLongName", &FileProperties::getFormatLongName);
-    addProperty(data, "mimeType", &FileProperties::getFormatMimeType);
-    addProperty(data, "rawFormat", &FileProperties::isRawFormat);
+    detail::addProperty(data, "filename", this, &FileProperties::getFilename);
+    detail::addProperty(data, "formatName", this, &FileProperties::getFormatName);
+    detail::addProperty(data, "formatLongName", this, &FileProperties::getFormatLongName);
+    detail::addProperty(data, "mimeType", this, &FileProperties::getFormatMimeType);
+    detail::addProperty(data, "rawFormat", this, &FileProperties::isRawFormat);
 
-    addProperty(data, "startTime", &FileProperties::getStartTime);
-    addProperty(data, "duration", &FileProperties::getDuration);
-    addProperty(data, "bitrate", &FileProperties::getBitRate);
-    addProperty(data, "fileSize", &FileProperties::getFileSize);
-    addProperty(data, "packetSize", &FileProperties::getPacketSize);
-    addProperty(data, "numberOfStreams", &FileProperties::getNbStreams);
-    addProperty(data, "numberOfPrograms", &FileProperties::getProgramsCount);
+    detail::addProperty(data, "startTime", this, &FileProperties::getStartTime);
+    detail::addProperty(data, "duration", this, &FileProperties::getDuration);
+    detail::addProperty(data, "bitrate", this, &FileProperties::getBitRate);
+    detail::addProperty(data, "fileSize", this, &FileProperties::getFileSize);
+    detail::addProperty(data, "packetSize", this, &FileProperties::getPacketSize);
+    detail::addProperty(data, "numberOfStreams", this, &FileProperties::getNbStreams);
+    detail::addProperty(data, "numberOfPrograms", this, &FileProperties::getProgramsCount);
 
     detail::add(data, "numberOfVideoStreams", getNbVideoStreams());
     detail::add(data, "numberOfAudioStreams", getNbAudioStreams());
@@ -303,11 +305,8 @@ PropertyMap FileProperties::asMap() const
 
 std::string FileProperties::asJson() const
 {
-    json::JsonObjectStreamWriter writer;
     PropertyMap properties = asMap();
-    for(PropertyMap::iterator it = properties.begin(); it != properties.end(); ++it)
-        writer << std::make_pair(it->first.c_str(), it->second.c_str());
-    return writer.build();
+    return json::build(properties);
 }
 
 std::string FileProperties::allPropertiesAsJson() const

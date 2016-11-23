@@ -5,6 +5,7 @@ extern "C" {
 }
 
 #include <sstream>
+#include <iostream>
 
 namespace avtranscoder
 {
@@ -15,41 +16,43 @@ namespace detail
 template <>
 void add(PropertyVector& propertyVector, const std::string& key, const size_t& value)
 {
-    std::stringstream ss;
-    if(value == (size_t)AV_NOPTS_VALUE)
-        ss << "N/A";
-    else
-        ss << value;
-    add(propertyVector, key, ss.str());
+    addWithKind(propertyVector, key, EPropertyValueKind::EPropertyValueKindUInt, value);
+}
+
+template <>
+void add(PropertyVector& propertyVector, const std::string& key, const int& value)
+{
+    addWithKind(propertyVector, key, EPropertyValueKind::EPropertyValueKindInt, value);
 }
 
 template <>
 void add(PropertyVector& propertyVector, const std::string& key, const float& value)
 {
-    std::stringstream ss;
-    if(value <= AV_NOPTS_VALUE || value >= -(float)AV_NOPTS_VALUE)
-        ss << "N/A";
-    else
-        ss << value;
-    add(propertyVector, key, ss.str());
+    addWithKind(propertyVector, key, EPropertyValueKind::EPropertyValueKindFloat, value);
+}
+
+template <>
+void add(PropertyVector& propertyVector, const std::string& key, const double& value)
+{
+    addWithKind(propertyVector, key, EPropertyValueKind::EPropertyValueKindDouble, value);
 }
 
 template <>
 void add(PropertyVector& propertyVector, const std::string& key, const std::string& value)
 {
-    propertyVector.push_back(std::make_pair(key, value));
+    addWithKind(propertyVector, key, EPropertyValueKind::EPropertyValueKindString, value);
 }
 
 template <>
 void add(PropertyVector& propertyVector, const std::string& key, const bool& value)
 {
-    add(propertyVector, key, value ? "True" : "False");
+    addWithKind(propertyVector, key, EPropertyValueKind::EPropertyValueKindBoolean, value);
 }
 
 template <>
 void add(PropertyVector& propertyVector, const std::string& key, const Rational& value)
 {
-    add(propertyVector, key, value.num / (double)value.den);
+    addWithKind(propertyVector, key, EPropertyValueKind::EPropertyValueKindRational, value);
 }
 
 void fillMetadataDictionnary(AVDictionary* avdictionnary, PropertyVector& metadata)
@@ -57,7 +60,7 @@ void fillMetadataDictionnary(AVDictionary* avdictionnary, PropertyVector& metada
     AVDictionaryEntry* tag = NULL;
     while((tag = av_dict_get(avdictionnary, "", tag, AV_DICT_IGNORE_SUFFIX)))
     {
-        metadata.push_back(std::make_pair(tag->key, tag->value));
+        addWithKind(metadata, tag->key, EPropertyValueKind::EPropertyValueKindString, std::string(tag->value));
     }
 }
 }

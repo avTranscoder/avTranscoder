@@ -109,21 +109,6 @@ private:
      */
     void analyseGopStructure(IProgress& progress);
 
-#ifndef SWIG
-    template <typename T>
-    void addProperty(PropertyVector& dataVector, const std::string& key, T (VideoProperties::*getter)(void) const) const
-    {
-        try
-        {
-            detail::add(dataVector, key, (this->*getter)());
-        }
-        catch(const std::exception& e)
-        {
-            detail::add(dataVector, key, detail::propertyValueIfError);
-        }
-    }
-#endif
-
 private:
     /**
      * @brief Level of analysis asked.

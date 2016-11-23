@@ -1,7 +1,7 @@
 #include "StreamProperties.hpp"
 
 #include <AvTranscoder/properties/util.hpp>
-#include <AvTranscoder/properties/JsonWriter.hpp>
+#include <AvTranscoder/properties/jsonWriterHelper.hpp>
 #include <AvTranscoder/properties/FileProperties.hpp>
 
 #include <stdexcept>
@@ -134,17 +134,17 @@ PropertyVector StreamProperties::asVector() const
 
 PropertyVector& StreamProperties::fillVector(PropertyVector& data) const
 {
-    addProperty(data, "streamId", &StreamProperties::getStreamId);
-    addProperty(data, "streamIndex", &StreamProperties::getStreamIndex);
-    addProperty(data, "timeBase", &StreamProperties::getTimeBase);
-    addProperty(data, "duration", &StreamProperties::getDuration);
-    addProperty(data, "codecId", &StreamProperties::getCodecId);
-    addProperty(data, "codecName", &StreamProperties::getCodecName);
-    addProperty(data, "codecLongName", &StreamProperties::getCodecLongName);
+    detail::addProperty(data, "streamId", this, &StreamProperties::getStreamId);
+    detail::addProperty(data, "streamIndex", this, &StreamProperties::getStreamIndex);
+    detail::addProperty(data, "timeBase", this, &StreamProperties::getTimeBase);
+    detail::addProperty(data, "duration", this, &StreamProperties::getDuration);
+    detail::addProperty(data, "codecId", this, &StreamProperties::getCodecId);
+    detail::addProperty(data, "codecName", this, &StreamProperties::getCodecName);
+    detail::addProperty(data, "codecLongName", this, &StreamProperties::getCodecLongName);
 
     for(size_t metadataIndex = 0; metadataIndex < _metadatas.size(); ++metadataIndex)
     {
-        detail::add(data, _metadatas.at(metadataIndex).first, _metadatas.at(metadataIndex).second);
+        // detail::add(data, _metadatas.at(metadataIndex).first, _metadatas.at(metadataIndex).second);
     }
 
     return data;
@@ -165,11 +165,8 @@ PropertyMap StreamProperties::asMap() const
 
 std::string StreamProperties::asJson() const
 {
-    json::JsonObjectStreamWriter writer;
     PropertyMap properties = asMap();
-    for(PropertyMap::iterator it = properties.begin(); it != properties.end(); ++it)
-        writer << std::make_pair(it->first.c_str(), it->second.c_str());
-    return writer.build();
+    return json::build(properties);
 }
 
 std::ostream& operator<<(std::ostream& flux, const StreamProperties& streamProperties)
