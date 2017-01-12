@@ -577,6 +577,9 @@ size_t VideoProperties::analyseGopStructure(IProgress& progress)
         }
     }
 
+    // disable the stream
+    stream.activate(false);
+
     // Check GOP size
     if(_gopSize <= 0)
     {
@@ -614,6 +617,9 @@ size_t VideoProperties::analyseFull(IProgress& progress)
     {
         progress.progress(++_nbFrames, estimateNbFrames);
     }
+
+    // disable the stream
+    stream.activate(false);
 
     // Check GOP size
     if(_nbFrames <= 0)
