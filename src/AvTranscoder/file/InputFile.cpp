@@ -62,8 +62,15 @@ bool InputFile::readNextPacket(CodedData& data, const size_t streamIndex)
         if(ret < 0) // error or end of file
         {
             LOG_INFO("Stop reading the next frame of file '" << _filename << "', stream " << streamIndex << " ("
-                                                             << getDescriptionFromErrorCode(ret) << ")")
-            return false;
+                                                             << getDescriptionFromErrorCode(ret) << ")");
+            if(ret == AVERROR_EOF)
+            {
+                LOG_INFO("There is no more data to read.");
+                return false;
+            }
+
+            LOG_ERROR("Error while reading this stream.");
+            throw std::runtime_error("Error while reading this stream.");
         }
 
         // Add Stream info to the packet

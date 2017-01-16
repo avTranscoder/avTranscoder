@@ -43,7 +43,8 @@ public:
     /**
      * @brief Read the next packet of the specified stream
      * @param data: data of next packet read
-     * @return if next packet was read succefully
+     * @return if next packet was read successfully
+     * @exception runtime_error launched if there is an error (other than End Of File) while reading the next packet
      **/
     bool readNextPacket(CodedData& data, const size_t streamIndex);
 
