@@ -117,6 +117,7 @@ bool VideoDecoder::decodeNextFrame(IFrame& frameBuffer)
 
 bool VideoDecoder::decodeNextFrame(IFrame& frameBuffer, const std::vector<size_t> channelIndexArray)
 {
+    LOG_WARN("Decoding of a specific video channel is not supported.");
     return false;
 }
 
