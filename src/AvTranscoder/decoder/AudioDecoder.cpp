@@ -27,6 +27,8 @@ AudioDecoder::AudioDecoder(InputStream& inputStream)
 
 AudioDecoder::~AudioDecoder()
 {
+    if(_isSetup)
+        _inputStream->getAudioCodec().closeCodec();
 }
 
 void AudioDecoder::setupDecoder(const ProfileLoader::Profile& profile)
@@ -73,7 +75,7 @@ void AudioDecoder::setupDecoder(const ProfileLoader::Profile& profile)
     }
 
     // open decoder
-    _inputStream->getAudioCodec().openCodec();
+    codec.openCodec();
     _isSetup = true;
 }
 

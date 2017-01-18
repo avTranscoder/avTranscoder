@@ -44,8 +44,6 @@ ICodec::ICodec(const ECodecType type, AVCodecContext& avCodecContext)
 
 ICodec::~ICodec()
 {
-    closeCodec();
-
     if(!_isCodecContextAllocated)
         return;
 

@@ -24,6 +24,8 @@ VideoDecoder::VideoDecoder(InputStream& inputStream)
 
 VideoDecoder::~VideoDecoder()
 {
+    if(_isSetup)
+        _inputStream->getVideoCodec().closeCodec();
 }
 
 void VideoDecoder::setupDecoder(const ProfileLoader::Profile& profile)
@@ -70,7 +72,7 @@ void VideoDecoder::setupDecoder(const ProfileLoader::Profile& profile)
     }
 
     // open decoder
-    _inputStream->getVideoCodec().openCodec();
+    codec.openCodec();
     _isSetup = true;
 }
 
