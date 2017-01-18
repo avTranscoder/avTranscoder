@@ -44,7 +44,7 @@ ICodec::ICodec(const ECodecType type, AVCodecContext& avCodecContext)
 
 ICodec::~ICodec()
 {
-    avcodec_close(_avCodecContext);
+    closeCodec();
 
     if(!_isCodecContextAllocated)
         return;
@@ -73,12 +73,19 @@ void ICodec::openCodec()
             msg += ") ";
         }
 
-        avcodec_close(_avCodecContext);
+        closeCodec();
 
         msg += getDescriptionFromErrorCode(ret);
 
         throw std::runtime_error(msg);
     }
+}
+
+void ICodec::closeCodec()
+{
+    if(!_avCodecContext)
+        throw std::runtime_error("Unable to close a codec without codec context");
+    avcodec_close(_avCodecContext);
 }
 
 std::string ICodec::getCodecName() const

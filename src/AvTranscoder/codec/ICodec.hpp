@@ -37,6 +37,8 @@ public:
 
     /// Initialize the codec context.
     void openCodec();
+    /// Reset the codec context.
+    void closeCodec();
 
     std::string getCodecName() const;
     AVCodecID getCodecId() const;
