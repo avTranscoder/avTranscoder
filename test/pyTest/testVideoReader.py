@@ -25,7 +25,6 @@ def testVideoReaderCreateNewInputFile():
         assert_equals( frame.getDataSize(), reader.getOutputWidth() * reader.getOutputHeight() * bytesPerPixel )
 
     # check if there is no next frame
-    frame = reader.readNextFrame()
     assert_equals( reader.readNextFrame(), None )
 
 
@@ -46,6 +45,9 @@ def testVideoReaderReferenceInputFile():
 
     # check if there is no next frame
     assert_equals( reader.readNextFrame(), None )
+
+    # Force to call the reader destructor before the inputFile destructor (which cannot happen in C++)
+    reader = None
 
 
 def testVideoReaderWithGenerator():
