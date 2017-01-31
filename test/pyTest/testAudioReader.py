@@ -55,6 +55,10 @@ def testAudioReaderChannelsExtraction():
 
     assert_equals( sizeOfFrameWithAllChannels / nbChannels, sizeOfFrameWithOneChannels )
 
+    # Force to call the readers destructor before the inputFile destructor (which cannot happen in C++)
+    readerOfAllChannels = None
+    readerOfOneChannel = None
+
 
 def testAudioReaderWithGenerator():
     """
@@ -62,8 +66,7 @@ def testAudioReaderWithGenerator():
     When there is no more data to decode, switch to a generator and process some frames.
     """
     inputFileName = os.environ['AVTRANSCODER_TEST_AUDIO_WAVE_FILE']
-    inputFile = av.InputFile(inputFileName)
-    reader = av.AudioReader(inputFile)
+    reader = av.AudioReader(inputFileName)
 
     # read all frames and check their size
     while True:

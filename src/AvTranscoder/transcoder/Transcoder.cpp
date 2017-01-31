@@ -25,12 +25,12 @@ Transcoder::Transcoder(IOutputFile& outputFile)
 
 Transcoder::~Transcoder()
 {
-    for(std::vector<InputFile*>::iterator it = _inputFiles.begin(); it != _inputFiles.end(); ++it)
+    for(std::vector<StreamTranscoder*>::iterator it = _streamTranscodersAllocated.begin();
+        it != _streamTranscodersAllocated.end(); ++it)
     {
         delete(*it);
     }
-    for(std::vector<StreamTranscoder*>::iterator it = _streamTranscodersAllocated.begin();
-        it != _streamTranscodersAllocated.end(); ++it)
+    for(std::vector<InputFile*>::iterator it = _inputFiles.begin(); it != _inputFiles.end(); ++it)
     {
         delete(*it);
     }
