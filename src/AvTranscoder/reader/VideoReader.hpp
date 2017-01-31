@@ -16,8 +16,7 @@ public:
     //@{
     // @note Transform the input stream to rgb24 pixel format (to display).
     // @see updateOutput
-    VideoReader(const std::string& filename, const size_t videoStreamIndex = 0);
-    VideoReader(InputFile& inputFile, const size_t videoStreamIndex = 0);
+    VideoReader(const InputStreamDesc& inputDesc);
     //@}
 
     ~VideoReader();

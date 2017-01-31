@@ -28,7 +28,7 @@ def testAddPossibleMetadata():
     transcoder = av.Transcoder( ouputFile )
 
     # rewrap a stream
-    transcoder.addStream( av.InputStreamDesc(inputFileName, 0) )
+    transcoder.addStream( av.InputStreamDesc(inputFileName) )
 
     # add a set of metadata
     metadata_to_check = av.PropertyVector()
@@ -57,7 +57,7 @@ def testAddImpossibleMetadata():
     transcoder = av.Transcoder( ouputFile )
 
     # rewrap a stream
-    transcoder.addStream( av.InputStreamDesc(inputFileName, 0) )
+    transcoder.addStream( av.InputStreamDesc(inputFileName) )
 
     # add one metadata
     metadata_to_check = ("undefinedMetadataKey", "undefinedMetadataValue")

@@ -15,8 +15,7 @@ public:
     //@{
     // @note Transform the input stream to s16 sample format (to listen).
     // @see updateOutput
-    AudioReader(const std::string& filename, const size_t streamIndex = 0, const int channelIndex = -1);
-    AudioReader(InputFile& inputFile, const size_t streamIndex = 0, const int channelIndex = -1);
+    AudioReader(const InputStreamDesc& inputDesc);
     //@}
 
     ~AudioReader();

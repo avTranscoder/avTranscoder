@@ -10,13 +10,13 @@ from nose.tools import *
 from pyAvTranscoder import avtranscoder as av
 
 
-def testVideoReaderCreateNewInputFile():
+def testVideoReader():
     """
     Read a video stream with the VideoReader.
     The InputFile is created inside the reader.
     """
     inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_AVI_FILE']
-    reader = av.VideoReader(inputFileName)
+    reader = av.VideoReader(av.InputStreamDesc(inputFileName))
 
     # read all frames and check their size
     for i in xrange(0, reader.getSourceVideoProperties().getNbFrames()):
@@ -26,28 +26,6 @@ def testVideoReaderCreateNewInputFile():
 
     # check if there is no next frame
     assert_equals( reader.readNextFrame(), None )
-
-
-def testVideoReaderReferenceInputFile():
-    """
-    Read a video stream with the VideoReader.
-    The InputFile is a reference for the reader.
-    """
-    inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_AVI_FILE']
-    inputFile = av.InputFile(inputFileName)
-    reader = av.VideoReader(inputFile)
-
-    # read all frames and check their size
-    for i in xrange(0, reader.getSourceVideoProperties().getNbFrames()):
-        frame = reader.readNextFrame()
-        bytesPerPixel = reader.getOutputBitDepth() / 8
-        assert_equals( frame.getDataSize(), reader.getOutputWidth() * reader.getOutputHeight() * bytesPerPixel )
-
-    # check if there is no next frame
-    assert_equals( reader.readNextFrame(), None )
-
-    # Force to call the reader destructor before the inputFile destructor (which cannot happen in C++)
-    reader = None
 
 
 def testVideoReaderWithGenerator():
@@ -56,7 +34,7 @@ def testVideoReaderWithGenerator():
     When there is no more data to decode, switch to a generator and process some frames.
     """
     inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_AVI_FILE']
-    reader = av.VideoReader(inputFileName)
+    reader = av.VideoReader(av.InputStreamDesc(inputFileName))
 
     # read all frames and check their size
     for i in xrange(0, reader.getSourceVideoProperties().getNbFrames()):

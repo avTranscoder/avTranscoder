@@ -5,8 +5,9 @@
 namespace avtranscoder
 {
 
-IReader::IReader(const std::string& filename, const size_t streamIndex, const int channelIndex)
-    : _inputFile(NULL)
+IReader::IReader(const InputStreamDesc& inputDesc)
+    : _inputDesc(inputDesc)
+    , _inputFile(NULL)
     , _streamProperties(NULL)
     , _decoder(NULL)
     , _generator(NULL)
@@ -14,36 +15,15 @@ IReader::IReader(const std::string& filename, const size_t streamIndex, const in
     , _srcFrame(NULL)
     , _dstFrame(NULL)
     , _transform(NULL)
-    , _streamIndex(streamIndex)
-    , _channelIndex(channelIndex)
     , _currentFrame(-1)
-    , _inputFileAllocated(true)
     , _continueWithGenerator(false)
 {
-    _inputFile = new InputFile(filename);
-}
-
-IReader::IReader(InputFile& inputFile, const size_t streamIndex, const int channelIndex)
-    : _inputFile(&inputFile)
-    , _streamProperties(NULL)
-    , _decoder(NULL)
-    , _generator(NULL)
-    , _currentDecoder(NULL)
-    , _srcFrame(NULL)
-    , _dstFrame(NULL)
-    , _transform(NULL)
-    , _streamIndex(streamIndex)
-    , _channelIndex(channelIndex)
-    , _currentFrame(-1)
-    , _inputFileAllocated(false)
-    , _continueWithGenerator(false)
-{
+    _inputFile = new InputFile(_inputDesc._filename);
 }
 
 IReader::~IReader()
 {
-    if(_inputFileAllocated)
-        delete _inputFile;
+    delete _inputFile;
 }
 
 IFrame* IReader::readNextFrame()
@@ -72,11 +52,9 @@ IFrame* IReader::readFrameAt(const size_t frame)
     _currentFrame = frame;
     // decode
     bool decodingStatus = false;
-    if(_channelIndex != -1)
+    if(! _inputDesc._channelIndexArray.empty())
     {
-        std::vector<size_t> channelIndexArray;
-        channelIndexArray.push_back(_channelIndex);
-        decodingStatus = _currentDecoder->decodeNextFrame(*_srcFrame, channelIndexArray);
+        decodingStatus = _currentDecoder->decodeNextFrame(*_srcFrame, _inputDesc._channelIndexArray);
     }
     else
         decodingStatus = _currentDecoder->decodeNextFrame(*_srcFrame);

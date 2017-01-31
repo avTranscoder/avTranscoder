@@ -37,9 +37,22 @@ struct InputStreamDesc
         _channelIndexArray.push_back(channelIndex);
     }
 
+    /**
+     * @brief Read all the channels of the indicated stream.
+     */
     InputStreamDesc(const std::string& filename, const size_t streamIndex)
         : _filename(filename)
         , _streamIndex(streamIndex)
+        , _channelIndexArray()
+    {
+    }
+
+    /**
+     * @brief Read all the channels of the stream at index 0.
+     */
+    InputStreamDesc(const std::string& filename)
+        : _filename(filename)
+        , _streamIndex(0)
         , _channelIndexArray()
     {
     }
