@@ -16,7 +16,7 @@ def testVideoReader():
     The InputFile is created inside the reader.
     """
     inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_AVI_FILE']
-    reader = av.VideoReader(av.InputStreamDesc(inputFileName, 0))
+    reader = av.VideoReader(av.InputStreamDesc(inputFileName))
 
     # read all frames and check their size
     for i in xrange(0, reader.getSourceVideoProperties().getNbFrames()):
@@ -34,7 +34,7 @@ def testVideoReaderWithGenerator():
     When there is no more data to decode, switch to a generator and process some frames.
     """
     inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_AVI_FILE']
-    reader = av.VideoReader(av.InputStreamDesc(inputFileName, 0))
+    reader = av.VideoReader(av.InputStreamDesc(inputFileName))
 
     # read all frames and check their size
     for i in xrange(0, reader.getSourceVideoProperties().getNbFrames()):

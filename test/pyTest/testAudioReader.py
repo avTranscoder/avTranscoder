@@ -16,7 +16,7 @@ def testAudioReader():
     The InputFile is created inside the reader.
     """
     inputFileName = os.environ['AVTRANSCODER_TEST_AUDIO_WAVE_FILE']
-    reader = av.AudioReader(av.InputStreamDesc(inputFileName, 0))
+    reader = av.AudioReader(av.InputStreamDesc(inputFileName))
 
     # read all frames and check their size
     while True:
@@ -62,7 +62,7 @@ def testAudioReaderWithGenerator():
     When there is no more data to decode, switch to a generator and process some frames.
     """
     inputFileName = os.environ['AVTRANSCODER_TEST_AUDIO_WAVE_FILE']
-    reader = av.AudioReader(av.InputStreamDesc(inputFileName, 0))
+    reader = av.AudioReader(av.InputStreamDesc(inputFileName))
 
     # read all frames and check their size
     while True:

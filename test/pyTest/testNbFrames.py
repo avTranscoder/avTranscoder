@@ -20,7 +20,7 @@ def testNbFramesVideoRewrap():
     ouputFile = av.OutputFile( outputFileName )
     transcoder = av.Transcoder( ouputFile )
 
-    transcoder.addStream( av.InputStreamDesc(inputFileName, 0) )
+    transcoder.addStream( av.InputStreamDesc(inputFileName) )
 
     progress = av.ConsoleProgress()
     transcoder.process( progress )
@@ -47,7 +47,7 @@ def testNbFramesVideoTranscode():
     ouputFile = av.OutputFile( outputFileName )
     transcoder = av.Transcoder( ouputFile )
 
-    transcoder.addStream( av.InputStreamDesc(inputFileName, 0), "mpeg2" )
+    transcoder.addStream( av.InputStreamDesc(inputFileName), "mpeg2" )
 
     progress = av.ConsoleProgress()
     transcoder.process( progress )
