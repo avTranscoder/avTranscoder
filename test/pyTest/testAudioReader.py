@@ -10,13 +10,13 @@ from nose.tools import *
 from pyAvTranscoder import avtranscoder as av
 
 
-def testAudioReaderCreateNewInputFile():
+def testAudioReader():
     """
     Read a audio stream with the AudioReader.
     The InputFile is created inside the reader.
     """
     inputFileName = os.environ['AVTRANSCODER_TEST_AUDIO_WAVE_FILE']
-    reader = av.AudioReader(inputFileName)
+    reader = av.AudioReader(av.InputStreamDesc(inputFileName, 0))
 
     # read all frames and check their size
     while True:
@@ -41,23 +41,19 @@ def testAudioReaderChannelsExtraction():
     channelIndex = 0
 
     # create reader to read all channels of the audio stream
-    readerOfAllChannels = av.AudioReader(inputFile, streamIndex)
+    readerOfAllChannels = av.AudioReader(av.InputStreamDesc(inputFileName, streamIndex))
     nbChannels = readerOfAllChannels.getOutputNbChannels()
     # read first frame
     frame = readerOfAllChannels.readNextFrame()
     sizeOfFrameWithAllChannels = frame.getDataSize()
 
     # create reader to read one channel of the audio stream
-    readerOfOneChannel = av.AudioReader(inputFile, streamIndex, channelIndex)
+    readerOfOneChannel = av.AudioReader(av.InputStreamDesc(inputFileName, streamIndex, channelIndex))
     # read first frame
     frame = readerOfOneChannel.readNextFrame()
     sizeOfFrameWithOneChannels = frame.getDataSize()
 
     assert_equals( sizeOfFrameWithAllChannels / nbChannels, sizeOfFrameWithOneChannels )
-
-    # Force to call the readers destructor before the inputFile destructor (which cannot happen in C++)
-    readerOfAllChannels = None
-    readerOfOneChannel = None
 
 
 def testAudioReaderWithGenerator():
@@ -66,7 +62,7 @@ def testAudioReaderWithGenerator():
     When there is no more data to decode, switch to a generator and process some frames.
     """
     inputFileName = os.environ['AVTRANSCODER_TEST_AUDIO_WAVE_FILE']
-    reader = av.AudioReader(inputFileName)
+    reader = av.AudioReader(av.InputStreamDesc(inputFileName, 0))
 
     # read all frames and check their size
     while True:

@@ -81,7 +81,7 @@ int main(int argc, char** argv)
     avtranscoder::preloadCodecsAndFormats();
     avtranscoder::Logger::setLogLevel(AV_LOG_QUIET);
 
-    avtranscoder::VideoReader reader(filename, streamIndex);
+    avtranscoder::VideoReader reader(avtranscoder::InputStreamDesc(filename, streamIndex));
     if(width == 0)
         width = reader.getOutputWidth();
     if(height == 0)

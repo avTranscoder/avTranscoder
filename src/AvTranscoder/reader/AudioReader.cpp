@@ -10,18 +10,8 @@
 namespace avtranscoder
 {
 
-AudioReader::AudioReader(const std::string& filename, const size_t streamIndex, const int channelIndex)
-    : IReader(filename, streamIndex, channelIndex)
-    , _audioStreamProperties(NULL)
-    , _outputSampleRate(0)
-    , _outputNbChannels(0)
-    , _outputSampleFormat(AV_SAMPLE_FMT_S16)
-{
-    init();
-}
-
-AudioReader::AudioReader(InputFile& inputFile, const size_t streamIndex, const int channelIndex)
-    : IReader(inputFile, streamIndex, channelIndex)
+AudioReader::AudioReader(const InputStreamDesc& inputDesc)
+    : IReader(inputDesc)
     , _audioStreamProperties(NULL)
     , _outputSampleRate(0)
     , _outputNbChannels(0)
@@ -35,19 +25,19 @@ void AudioReader::init()
     // analyse InputFile
     avtranscoder::NoDisplayProgress p;
     _inputFile->analyse(p);
-    _streamProperties = &_inputFile->getProperties().getStreamPropertiesWithIndex(_streamIndex);
+    _streamProperties = &_inputFile->getProperties().getStreamPropertiesWithIndex(_inputDesc._streamIndex);
     _audioStreamProperties = static_cast<const AudioProperties*>(_streamProperties);
-    _inputFile->activateStream(_streamIndex);
+    _inputFile->activateStream(_inputDesc._streamIndex);
 
     // setup decoder
-    _decoder = new AudioDecoder(_inputFile->getStream(_streamIndex));
+    _decoder = new AudioDecoder(_inputFile->getStream(_inputDesc._streamIndex));
     _decoder->setupDecoder();
     _currentDecoder = _decoder;
 
     // create src frame
-    AudioFrameDesc srcFrameDesc = _inputFile->getStream(_streamIndex).getAudioCodec().getAudioFrameDesc();
-    if(_channelIndex != -1)
-        srcFrameDesc._nbChannels = 1;
+    AudioFrameDesc srcFrameDesc = _inputFile->getStream(_inputDesc._streamIndex).getAudioCodec().getAudioFrameDesc();
+    if(! _inputDesc._channelIndexArray.empty())
+        srcFrameDesc._nbChannels = _inputDesc._channelIndexArray.size();
     _srcFrame = new AudioFrame(srcFrameDesc, false);
     AudioFrame* srcFrame = static_cast<AudioFrame*>(_srcFrame);
     // create dst frame
