@@ -100,6 +100,9 @@ before_script:
   - if [ ${TRAVIS_OS_NAME} = "linux" ]; then ./tools/travis/linux.install.deps.sh; fi
   - if [ ${TRAVIS_OS_NAME} = "osx" ]; then ./tools/travis/osx.install.deps.sh; fi
 
+install:
+  - sudo pip install gitpython
+
 script:
   # build
   - ./tools/travis/build.sh
