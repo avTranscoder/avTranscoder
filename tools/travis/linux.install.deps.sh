@@ -96,7 +96,7 @@ if  [ -z ${TRAVIS_JOB_ID} ] || [ ! -d "${DEPENDENCY_INSTALL_PATH}/lib/" ]; then
     echo ""
     echo "Building libogg (${OGG_VERSION})"
     DIR=$(mktemp -d liboggXXX) && cd ${DIR} && \
-                  curl -O http://downloads.xiph.org/releases/ogg/libogg-${OGG_VERSION}.tar.gz && \
+                  wget http://downloads.xiph.org/releases/ogg/libogg-${OGG_VERSION}.tar.gz && \
                   tar xzf libogg-${OGG_VERSION}.tar.gz && \
                   cd libogg-${OGG_VERSION} && \
                   ./configure --prefix="${DEPENDENCY_INSTALL_PATH}" --disable-shared --with-pic && \
@@ -108,7 +108,7 @@ if  [ -z ${TRAVIS_JOB_ID} ] || [ ! -d "${DEPENDENCY_INSTALL_PATH}/lib/" ]; then
     echo ""
     echo "Building libvorbis (${VORBIS_VERSION})"
     DIR=$(mktemp -d libvorbisXXX) && cd ${DIR} && \
-                  curl -O http://downloads.xiph.org/releases/vorbis/libvorbis-${VORBIS_VERSION}.tar.gz && \
+                  wget http://downloads.xiph.org/releases/vorbis/libvorbis-${VORBIS_VERSION}.tar.gz && \
                   tar xzf libvorbis-${VORBIS_VERSION}.tar.gz && \
                   cd libvorbis-${VORBIS_VERSION} && \
                   ./configure --prefix="${DEPENDENCY_INSTALL_PATH}" --with-ogg="${DEPENDENCY_INSTALL_PATH}" --disable-shared --with-pic && \
