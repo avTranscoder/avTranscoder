@@ -16,7 +16,7 @@ OutputFile::OutputFile(const std::string& filename, const std::string& formatNam
     , _outputStreams()
     , _frameCount()
     , _previousProcessedStreamDuration(0.0)
-    , _profile()
+    , _profileOptions(NULL)
 {
     _formatContext.setFilename(filename);
     _formatContext.setOutputFormat(filename, formatName, mimeType);
@@ -28,6 +28,7 @@ OutputFile::~OutputFile()
     {
         delete(*it);
     }
+    av_dict_free(&_profileOptions);
 }
 
 IOutputStream& OutputFile::addVideoStream(const VideoCodec& videoDesc)
@@ -154,7 +155,7 @@ bool OutputFile::beginWrap()
     LOG_DEBUG("Begin wrap of OutputFile")
 
     _formatContext.openRessource(getFilename(), AVIO_FLAG_WRITE);
-    _formatContext.writeHeader();
+    _formatContext.writeHeader(&_profileOptions);
 
     // set specific wrapping options
     setupRemainingWrappingOptions();
@@ -296,28 +297,32 @@ void OutputFile::setupWrappingOptions(const ProfileLoader::Profile& profile)
         catch(std::exception& e)
         {
             LOG_INFO("OutputFile - option " << (*it).first << " will be saved to be called when beginWrap")
-            _profile[(*it).first] = (*it).second;
+            av_dict_set(&_profileOptions, (*it).first.c_str(), (*it).second.c_str(), 0);
         }
     }
 }
 
 void OutputFile::setupRemainingWrappingOptions()
 {
-    // set format options
-    for(ProfileLoader::Profile::const_iterator it = _profile.begin(); it != _profile.end(); ++it)
+    // set specific format options
+    AVDictionaryEntry* optionEntry = NULL;
+    while((optionEntry = av_dict_get(_profileOptions, "", optionEntry, AV_DICT_IGNORE_SUFFIX)))
     {
-        if((*it).first == constants::avProfileIdentificator || (*it).first == constants::avProfileIdentificatorHuman ||
-           (*it).first == constants::avProfileType || (*it).first == constants::avProfileFormat)
+        const std::string optionKey(optionEntry->key);
+        const std::string optionValue(optionEntry->value);
+
+        if(optionKey == constants::avProfileIdentificator || optionKey == constants::avProfileIdentificatorHuman ||
+           optionKey == constants::avProfileType || optionKey == constants::avProfileFormat)
             continue;
 
         try
         {
-            Option& formatOption = _formatContext.getOption((*it).first);
-            formatOption.setString((*it).second);
+            Option& formatOption = _formatContext.getOption(optionKey);
+            formatOption.setString(optionValue);
         }
         catch(std::exception& e)
         {
-            LOG_WARN("OutputFile - can't set option " << (*it).first << " to " << (*it).second << ": " << e.what())
+            LOG_WARN("OutputFile - can't set option " << optionKey << " to " << optionValue << ": " << e.what())
         }
     }
 }

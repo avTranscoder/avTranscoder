@@ -117,7 +117,7 @@ private:
      * @see setupWrapping
      * @see beginWrap
      */
-    ProfileLoader::Profile _profile;
+    AVDictionary* _profileOptions;
 };
 }
 
