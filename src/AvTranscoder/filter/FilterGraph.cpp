@@ -44,7 +44,7 @@ void FilterGraph::process(const std::vector<IFrame*>& inputs, IFrame& output)
     // setup input frames
     for(size_t index = 0; index < inputs.size(); ++index)
     {
-        const int ret = av_buffersrc_write_frame(_filters.at(index)->getAVFilterContext(), &inputs.at(index)->getAVFrame());
+        const int ret = av_buffersrc_add_frame_flags(_filters.at(index)->getAVFilterContext(), &inputs.at(index)->getAVFrame(), AV_BUFFERSRC_FLAG_PUSH);
         if(ret < 0)
         {
             throw std::runtime_error("Error when adding a frame to the source buffer used to start to process filters: " +
