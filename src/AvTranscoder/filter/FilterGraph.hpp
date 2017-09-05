@@ -128,6 +128,8 @@ private:
     //@}
 
     size_t getMinInputFrameSize(const std::vector<IFrame*>& inputs);
+    bool areInputFrameSizeEqual(const std::vector<IFrame*>& inputs);
+    bool areFrameBuffersEmpty();
 
 private:
     AVFilterGraph* _graph;         ///< The graph which holds the filters.

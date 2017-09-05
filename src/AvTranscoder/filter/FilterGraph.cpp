@@ -147,28 +147,64 @@ size_t FilterGraph::getMinInputFrameSize(const std::vector<IFrame*>& inputs)
     return minFrameSize;
 }
 
+bool FilterGraph::areInputFrameSizeEqual(const std::vector<IFrame*>& inputs)
+{
+    if(!inputs.size() || inputs.size() == 1)
+        return true;
+
+    const int frameSize = inputs.at(0)->getDataSize();
+    for(size_t index = 1; index < inputs.size(); ++index)
+    {
+        if(frameSize != inputs.at(index)->getDataSize())
+            return false;
+    }
+    return true;
+}
+
+bool FilterGraph::areFrameBuffersEmpty()
+{
+    if(!_inputFramesBuffer.size())
+        return true;
+
+    for(std::vector<FrameBuffer>::iterator it = _inputFramesBuffer.begin(); it != _inputFramesBuffer.end(); ++it)
+    {
+        if(!it->isEmpty())
+            return false;
+    }
+    return true;
+}
+
 void FilterGraph::process(const std::vector<IFrame*>& inputs, IFrame& output)
 {
-    // init filter graph
+    // Init the filter graph
     if(!_isInit)
         init(inputs, output);
 
-    // setup input frames
+    // Check whether we can bypass the input buffers
+    const bool bypassBuffers = areInputFrameSizeEqual(inputs) && areFrameBuffersEmpty();
+    size_t minInputFrameSize = 0;
 
-    // Fill the frame buffer with inputs
-    for(size_t index = 0; index < inputs.size(); ++index)
+    if(!bypassBuffers)
     {
-        _inputFramesBuffer.at(index).addFrame(inputs.at(index));
+        // Fill the frame buffer with inputs
+        for(size_t index = 0; index < inputs.size(); ++index)
+            _inputFramesBuffer.at(index).addFrame(inputs.at(index));
+
+        // Get the minimum input frames size
+        minInputFrameSize = getMinInputFrameSize(inputs);
     }
 
-    // Get the minimum input frames size
-    const size_t minInputFrameSize = getMinInputFrameSize(inputs);
 
     // Setup input frames into the filter graph
     for(size_t index = 0; index < inputs.size(); ++index)
     {
-        IFrame* inputBufferedFrame = _inputFramesBuffer.at(index).getFrame(minInputFrameSize);
-        const int ret = av_buffersrc_add_frame_flags(_filters.at(index)->getAVFilterContext(), &inputBufferedFrame->getAVFrame(), AV_BUFFERSRC_FLAG_PUSH);
+        IFrame* inputFrame = NULL;
+        if(bypassBuffers)
+            inputFrame = inputs.at(index);
+        else
+            inputFrame = _inputFramesBuffer.at(index).getFrame(minInputFrameSize);
+
+        const int ret = av_buffersrc_add_frame_flags(_filters.at(index)->getAVFilterContext(), &inputFrame->getAVFrame(), AV_BUFFERSRC_FLAG_PUSH);
 
         if(ret < 0)
         {
