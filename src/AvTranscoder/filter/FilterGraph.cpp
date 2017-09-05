@@ -140,7 +140,8 @@ size_t FilterGraph::getMinInputFrameSize(const std::vector<IFrame*>& inputs)
     int minFrameSize = inputs.at(0)->getDataSize();
     for(size_t index = 1; index < inputs.size(); ++index)
     {
-        if(minFrameSize > inputs.at(index)->getDataSize())
+        // if the input frame is shorter, and if there is no data enough into the corresponding frame buffer
+        if(minFrameSize > inputs.at(index)->getDataSize() && minFrameSize > _inputFramesBuffer.at(index).getDataSize())
             minFrameSize = inputs.at(index)->getDataSize();
     }
     return minFrameSize;
