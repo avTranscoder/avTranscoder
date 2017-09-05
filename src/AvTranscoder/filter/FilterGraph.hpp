@@ -5,13 +5,58 @@
 #include <AvTranscoder/filter/Filter.hpp>
 #include <AvTranscoder/codec/ICodec.hpp>
 #include <AvTranscoder/data/decoded/IFrame.hpp>
+#include <AvTranscoder/data/decoded/AudioFrame.hpp>
 
 #include <vector>
+#include <queue>
 
 struct AVFilterGraph;
 
 namespace avtranscoder
 {
+
+/**
+ * @brief Filter graph input frame buffer.
+ * This FIFO buffer contains IFrame pointers and can deliver specific size frames.
+ *
+ * @todo Only for audio frame, for the moment. Make it usable with video frames.
+ **/
+class FrameBuffer
+{
+public:
+    FrameBuffer(const AudioFrameDesc& audioFrameDesc);
+    ~FrameBuffer();
+
+    /**
+     * @brief Return whether the buffer is empty or not.
+     */
+    bool isEmpty() { return _frameQueue.empty() && _totalDataSize == 0; }
+    /**
+     * @brief Return the total amount of data contained in the frames of the buffer.
+     */
+    size_t getDataSize() { return _totalDataSize; }
+
+    /**
+     * @brief Push a frame at the end of the buffer.
+     */
+    void addFrame(IFrame* frame);
+
+    /**
+     * @brief Retrieve a IFrame pointer of the specified size, from the beginning of the buffer.
+     * If no size is specified, the whole first IFrame pointer is returned.
+     */
+    IFrame* getFrame(const size_t size = 0);
+
+private:
+    void popFrame();
+
+    const AudioFrameDesc _audioFrameDesc;
+
+    std::queue<IFrame*> _frameQueue;
+    size_t _totalDataSize;
+    size_t _positionInFrontFrame;
+
+};
 
 /**
  * @brief Manager of filters.

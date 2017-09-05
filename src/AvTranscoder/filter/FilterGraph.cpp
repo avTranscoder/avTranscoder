@@ -1,7 +1,6 @@
 #include "FilterGraph.hpp"
 
 #include <AvTranscoder/util.hpp>
-#include <AvTranscoder/data/decoded/AudioFrame.hpp>
 #include <AvTranscoder/data/decoded/VideoFrame.hpp>
 
 extern "C" {
@@ -15,6 +14,103 @@ extern "C" {
 
 namespace avtranscoder
 {
+
+
+/******************
+
+    FrameBuffer
+
+ ******************/
+
+FrameBuffer::FrameBuffer(const AudioFrameDesc& audioFrameDesc)
+    : _audioFrameDesc(audioFrameDesc)
+    , _frameQueue()
+    , _totalDataSize(0)
+    , _positionInFrontFrame(0)
+{
+}
+
+FrameBuffer::~FrameBuffer()
+{
+    for (int i = 0; i < _frameQueue.size(); ++i)
+        popFrame();
+}
+
+void FrameBuffer::addFrame(IFrame* frame)
+{
+    AudioFrame* newAudioFrame = new AudioFrame(_audioFrameDesc, false);
+    const size_t expectedNbSamples = frame->getDataSize() / (newAudioFrame->getNbChannels() * newAudioFrame->getBytesPerSample());
+    newAudioFrame->setNbSamplesPerChannel(expectedNbSamples);
+    newAudioFrame->allocateData();
+    newAudioFrame->copyData(*frame);
+
+    _totalDataSize += newAudioFrame->getDataSize();
+    _frameQueue.push(newAudioFrame);
+}
+
+void FrameBuffer::popFrame()
+{
+    _frameQueue.pop();
+}
+
+IFrame* FrameBuffer::getFrame(const size_t size)
+{
+    IFrame* next = _frameQueue.front();
+    const size_t nextFrameSize = next->getDataSize();
+
+    // If no expected size, or if the expected size equals the front frame of the queue (with no offset)
+    if(size == 0 || (size == nextFrameSize && _positionInFrontFrame == 0))
+    {
+        _totalDataSize -= nextFrameSize;
+        popFrame();
+        return next;
+    }
+
+    // Create a new frame
+    AudioFrame* newAudioFrame = new AudioFrame(_audioFrameDesc, false);
+    const size_t expectedNbSamples = size / (newAudioFrame->getNbChannels() * newAudioFrame->getBytesPerSample());
+    newAudioFrame->setNbSamplesPerChannel(expectedNbSamples);
+    newAudioFrame->allocateData();
+
+    // Concatenate frames data
+    size_t extractedDataSize = 0;
+    unsigned char* outputData = new unsigned char[size];
+    while(extractedDataSize != size && _frameQueue.size() != 0)
+    {
+        next = _frameQueue.front();
+        size_t dataToGet = size - extractedDataSize;
+        size_t remainingDataInNextFrame = next->getDataSize() - _positionInFrontFrame;
+
+        if(dataToGet > remainingDataInNextFrame)
+            dataToGet = remainingDataInNextFrame;
+
+        for(size_t i = 0; i < dataToGet; i++)
+            outputData[extractedDataSize++] = next->getData()[0][_positionInFrontFrame + i];
+
+        if(dataToGet < remainingDataInNextFrame)
+        {
+            _positionInFrontFrame += dataToGet;
+        }
+        else
+        {
+            popFrame();
+            _positionInFrontFrame = 0;
+        }
+    }
+
+    _totalDataSize -= extractedDataSize;
+    newAudioFrame->assignBuffer(outputData);
+
+    return newAudioFrame;
+}
+
+
+
+/******************
+
+    FilterGraph
+
+ ******************/
 
 FilterGraph::FilterGraph(const ICodec& codec)
     : _graph(avfilter_graph_alloc())
