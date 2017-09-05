@@ -127,10 +127,14 @@ private:
     void addOutBuffer(const IFrame& output);
     //@}
 
+    size_t getMinInputFrameSize(const std::vector<IFrame*>& inputs);
+
 private:
     AVFilterGraph* _graph;         ///< The graph which holds the filters.
     std::vector<Filter*> _filters; ///< List of filters to process.
     const ICodec& _codec;          ///< Codec of the stream on which the filters will be applied.
+
+    std::vector<FrameBuffer> _inputFramesBuffer;
 
     /**
      * @brief Is the FilterGraph initialized.

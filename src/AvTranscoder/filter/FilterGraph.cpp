@@ -124,11 +124,26 @@ FilterGraph::FilterGraph(const ICodec& codec)
 
 FilterGraph::~FilterGraph()
 {
+    _inputFramesBuffer.clear();
     for(std::vector<Filter*>::iterator it = _filters.begin(); it < _filters.end(); ++it)
     {
         delete(*it);
     }
     avfilter_graph_free(&_graph);
+}
+
+size_t FilterGraph::getMinInputFrameSize(const std::vector<IFrame*>& inputs)
+{
+    if(!inputs.size())
+        return 0;
+
+    int minFrameSize = inputs.at(0)->getDataSize();
+    for(size_t index = 1; index < inputs.size(); ++index)
+    {
+        if(minFrameSize > inputs.at(index)->getDataSize())
+            minFrameSize = inputs.at(index)->getDataSize();
+    }
+    return minFrameSize;
 }
 
 void FilterGraph::process(const std::vector<IFrame*>& inputs, IFrame& output)
@@ -138,9 +153,22 @@ void FilterGraph::process(const std::vector<IFrame*>& inputs, IFrame& output)
         init(inputs, output);
 
     // setup input frames
+
+    // Fill the frame buffer with inputs
     for(size_t index = 0; index < inputs.size(); ++index)
     {
-        const int ret = av_buffersrc_add_frame_flags(_filters.at(index)->getAVFilterContext(), &inputs.at(index)->getAVFrame(), AV_BUFFERSRC_FLAG_PUSH);
+        _inputFramesBuffer.at(index).addFrame(inputs.at(index));
+    }
+
+    // Get the minimum input frames size
+    const size_t minInputFrameSize = getMinInputFrameSize(inputs);
+
+    // Setup input frames into the filter graph
+    for(size_t index = 0; index < inputs.size(); ++index)
+    {
+        IFrame* inputBufferedFrame = _inputFramesBuffer.at(index).getFrame(minInputFrameSize);
+        const int ret = av_buffersrc_add_frame_flags(_filters.at(index)->getAVFilterContext(), &inputBufferedFrame->getAVFrame(), AV_BUFFERSRC_FLAG_PUSH);
+
         if(ret < 0)
         {
             throw std::runtime_error("Error when adding a frame to the source buffer used to start to process filters: " +
@@ -148,7 +176,7 @@ void FilterGraph::process(const std::vector<IFrame*>& inputs, IFrame& output)
         }
     }
 
-    // pull filtered data from the filter graph
+    // Pull filtered data from the filter graph
     for(;;)
     {
         const int ret = av_buffersink_get_frame(_filters.at(_filters.size() - 1)->getAVFilterContext(), &output.getAVFrame());
@@ -246,6 +274,11 @@ void FilterGraph::addInBuffer(const std::vector<IFrame*>& inputs)
             filterOptions << "sample_rate=" << audioFrame->getSampleRate() << ":";
             filterOptions << "sample_fmt=" << getSampleFormatName(audioFrame->getSampleFormat()) << ":";
             filterOptions << "channel_layout=0x" << std::hex << audioFrame->getChannelLayout();
+
+            const AudioFrameDesc audioFrameDesc(audioFrame->getSampleRate(),
+                                                audioFrame->getNbChannels(),
+                                                getSampleFormatName(audioFrame->getSampleFormat()));
+            _inputFramesBuffer.push_back(FrameBuffer(audioFrameDesc));
         }
         // video frame
         else if((*it)->isVideoFrame())
