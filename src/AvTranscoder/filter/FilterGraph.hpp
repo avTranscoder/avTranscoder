@@ -30,11 +30,11 @@ public:
     /**
      * @brief Return whether the buffer is empty or not.
      */
-    bool isEmpty() { return _frameQueue.empty() && _totalDataSize == 0; }
+    bool isEmpty() const { return _frameQueue.empty() && _totalDataSize == 0; }
     /**
      * @brief Return the total amount of data contained in the frames of the buffer.
      */
-    size_t getDataSize() { return _totalDataSize; }
+    size_t getDataSize() const { return _totalDataSize; }
 
     /**
      * @brief Push a frame at the end of the buffer.
@@ -50,7 +50,7 @@ public:
 private:
     void popFrame();
 
-    const AudioFrameDesc _audioFrameDesc;
+    AudioFrameDesc _audioFrameDesc;
 
     std::queue<IFrame*> _frameQueue;
     size_t _totalDataSize;
