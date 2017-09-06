@@ -132,17 +132,25 @@ FilterGraph::~FilterGraph()
     avfilter_graph_free(&_graph);
 }
 
+size_t FilterGraph::getAvailableFrameSize(const std::vector<IFrame*>& inputs, const size_t& index)
+{
+    size_t frameSize = inputs.at(index)->getDataSize();
+    if(frameSize == 0)
+        frameSize = _inputFramesBuffer.at(index).getDataSize();
+    return frameSize;
+}
+
 size_t FilterGraph::getMinInputFrameSize(const std::vector<IFrame*>& inputs)
 {
     if(!inputs.size())
         return 0;
 
-    int minFrameSize = inputs.at(0)->getDataSize();
+    size_t minFrameSize = getAvailableFrameSize(inputs, 0);
     for(size_t index = 1; index < inputs.size(); ++index)
     {
-        // if the input frame is shorter, and if there is no data enough into the corresponding frame buffer
-        if(minFrameSize > inputs.at(index)->getDataSize() && minFrameSize > _inputFramesBuffer.at(index).getDataSize())
-            minFrameSize = inputs.at(index)->getDataSize();
+        const size_t availableFrameSize = getAvailableFrameSize(inputs, index);
+        if(minFrameSize > availableFrameSize)
+            minFrameSize = availableFrameSize;
     }
     return minFrameSize;
 }

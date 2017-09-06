@@ -127,7 +127,15 @@ private:
     void addOutBuffer(const IFrame& output);
     //@}
 
+    /**
+     * @brief Return the input frame size if not null, or the available size into the corresponding frame buffer
+     */
+    size_t getAvailableFrameSize(const std::vector<IFrame*>& inputs, const size_t& index);
+    /**
+     * @brief Get the minimum size between input frames, or available frame buffers
+     */
     size_t getMinInputFrameSize(const std::vector<IFrame*>& inputs);
+
     bool areInputFrameSizeEqual(const std::vector<IFrame*>& inputs);
     bool areFrameBuffersEmpty();
 
