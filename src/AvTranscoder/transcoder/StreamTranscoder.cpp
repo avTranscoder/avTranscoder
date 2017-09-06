@@ -582,6 +582,11 @@ bool StreamTranscoder::processTranscode()
                 continue;
             }
             LOG_DEBUG("Some frames remain into filter graph buffer " << index);
+
+            // Reset the non-decoded data as an empty frame
+            _decodedData.at(index)->freeData();
+            _decodedData.at(index)->getAVFrame().format = -1;
+            _decodedData.at(index)->getAVFrame().nb_samples = 0;
         }
     }
 

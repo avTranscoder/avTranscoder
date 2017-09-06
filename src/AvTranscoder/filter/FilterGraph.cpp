@@ -38,7 +38,7 @@ FrameBuffer::~FrameBuffer()
 
 void FrameBuffer::addFrame(IFrame* frame)
 {
-    LOG_DEBUG("Add a new frame to frame buffer. New buffer size: " << _frameQueue.size() + 1);
+    LOG_DEBUG("Add a new " << frame->getDataSize() << " bytes frame to frame buffer. New buffer size: " << _frameQueue.size() + 1);
     // Copy the input frame to store it into the queue
     AudioFrame* newAudioFrame = new AudioFrame(_audioFrameDesc, false);
     const size_t expectedNbSamples = frame->getDataSize() / (newAudioFrame->getNbChannels() * newAudioFrame->getBytesPerSample());

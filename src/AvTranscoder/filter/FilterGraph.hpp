@@ -32,7 +32,7 @@ public:
      */
     bool isEmpty() const { return _frameQueue.empty() && _totalDataSize == 0; }
     /**
-     * @brief Return the total amount of data contained in the frames of the buffer.
+     * @brief Return the total amount of available data contained in the frames of the buffer.
      */
     size_t getDataSize() const { return _totalDataSize; }
     /**
