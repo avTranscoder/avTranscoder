@@ -35,6 +35,10 @@ public:
      * @brief Return the total amount of data contained in the frames of the buffer.
      */
     size_t getDataSize() const { return _totalDataSize; }
+    /**
+     * @brief Return the number of frames contained in the buffer.
+     */
+    size_t getBufferSize() const { return _frameQueue.size(); }
 
     /**
      * @brief Push a frame at the end of the buffer.
@@ -106,6 +110,9 @@ public:
      * @return If at least one filter has been added to the filter graph
      */
     bool hasFilters() const { return !_filters.empty(); }
+
+    bool hasBufferedFrames();
+    bool hasBufferedFrames(const size_t index);
 
 private:
     /**

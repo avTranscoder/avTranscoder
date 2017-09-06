@@ -38,6 +38,8 @@ FrameBuffer::~FrameBuffer()
 
 void FrameBuffer::addFrame(IFrame* frame)
 {
+    LOG_DEBUG("Add a new frame to frame buffer. New buffer size: " << _frameQueue.size() + 1);
+    // Copy the input frame to store it into the queue
     AudioFrame* newAudioFrame = new AudioFrame(_audioFrameDesc, false);
     const size_t expectedNbSamples = frame->getDataSize() / (newAudioFrame->getNbChannels() * newAudioFrame->getBytesPerSample());
     newAudioFrame->setNbSamplesPerChannel(expectedNbSamples);
@@ -51,16 +53,19 @@ void FrameBuffer::addFrame(IFrame* frame)
 void FrameBuffer::popFrame()
 {
     _frameQueue.pop();
+    LOG_DEBUG("Pop frame from buffer. Remaining frames in buffer: " << _frameQueue.size());
 }
 
 IFrame* FrameBuffer::getFrame(const size_t size)
 {
+    LOG_DEBUG("Get a " << size << " bytes frame from a " << _totalDataSize << " bytes frame buffer");
     IFrame* next = _frameQueue.front();
     const size_t nextFrameSize = next->getDataSize();
 
     // If no expected size, or if the expected size equals the front frame of the queue (with no offset)
     if(size == 0 || (size == nextFrameSize && _positionInFrontFrame == 0))
     {
+        // Directly return the front frame of the queue
         _totalDataSize -= nextFrameSize;
         popFrame();
         return next;
@@ -77,22 +82,27 @@ IFrame* FrameBuffer::getFrame(const size_t size)
     unsigned char* outputData = new unsigned char[size];
     while(extractedDataSize != size && _frameQueue.size() != 0)
     {
+        // Get the front frame from queue
         next = _frameQueue.front();
+        size_t remainingDataInFrontFrame = next->getDataSize() - _positionInFrontFrame;
+
+        // Compute the data size to get from the frame
         size_t dataToGet = size - extractedDataSize;
-        size_t remainingDataInNextFrame = next->getDataSize() - _positionInFrontFrame;
+        if(dataToGet > remainingDataInFrontFrame)
+            dataToGet = remainingDataInFrontFrame;
 
-        if(dataToGet > remainingDataInNextFrame)
-            dataToGet = remainingDataInNextFrame;
-
+        // Copy the data from the frame to temporal buffer
         for(size_t i = 0; i < dataToGet; i++)
             outputData[extractedDataSize++] = next->getData()[0][_positionInFrontFrame + i];
 
-        if(dataToGet < remainingDataInNextFrame)
+        if(dataToGet < remainingDataInFrontFrame)
         {
+            // Set new position into front frame
             _positionInFrontFrame += dataToGet;
         }
         else
         {
+            // The whole front frame has been read, so pop it from queue
             popFrame();
             _positionInFrontFrame = 0;
         }
@@ -100,7 +110,6 @@ IFrame* FrameBuffer::getFrame(const size_t size)
 
     _totalDataSize -= extractedDataSize;
     newAudioFrame->assignBuffer(outputData);
-
     return newAudioFrame;
 }
 
@@ -155,6 +164,27 @@ size_t FilterGraph::getMinInputFrameSize(const std::vector<IFrame*>& inputs)
     return minFrameSize;
 }
 
+bool FilterGraph::hasBufferedFrames()
+{
+    if(!_inputFramesBuffer.size())
+        return false;
+
+    for(std::vector<FrameBuffer>::iterator it = _inputFramesBuffer.begin(); it != _inputFramesBuffer.end(); ++it)
+    {
+        if(it->isEmpty())
+            return false;
+    }
+    return true;
+}
+
+bool FilterGraph::hasBufferedFrames(const size_t index)
+{
+    if(index >= _inputFramesBuffer.size())
+        return false;
+
+    return !_inputFramesBuffer.at(index).isEmpty();
+}
+
 bool FilterGraph::areInputFrameSizeEqual(const std::vector<IFrame*>& inputs)
 {
     if(!inputs.size() || inputs.size() == 1)
@@ -196,7 +226,14 @@ void FilterGraph::process(const std::vector<IFrame*>& inputs, IFrame& output)
     {
         // Fill the frame buffer with inputs
         for(size_t index = 0; index < inputs.size(); ++index)
+        {
+            if(!inputs.at(index)->getDataSize())
+            {
+                LOG_DEBUG("Empty frame from filter graph input " << index << ". Remaining frames in buffer: " << _inputFramesBuffer.at(index).getBufferSize());
+                continue;
+            }
             _inputFramesBuffer.at(index).addFrame(inputs.at(index));
+        }
 
         // Get the minimum input frames size
         minInputFrameSize = getMinInputFrameSize(inputs);
@@ -206,12 +243,8 @@ void FilterGraph::process(const std::vector<IFrame*>& inputs, IFrame& output)
     // Setup input frames into the filter graph
     for(size_t index = 0; index < inputs.size(); ++index)
     {
-        IFrame* inputFrame = NULL;
-        if(bypassBuffers)
-            inputFrame = inputs.at(index);
-        else
-            inputFrame = _inputFramesBuffer.at(index).getFrame(minInputFrameSize);
-
+        // Retrieve frame from buffer or directly from input
+        IFrame* inputFrame = (bypassBuffers)? inputs.at(index) : _inputFramesBuffer.at(index).getFrame(minInputFrameSize);
         const int ret = av_buffersrc_add_frame_flags(_filters.at(index)->getAVFilterContext(), &inputFrame->getAVFrame(), AV_BUFFERSRC_FLAG_PUSH);
 
         if(ret < 0)
