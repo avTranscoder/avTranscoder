@@ -16,16 +16,16 @@ namespace avtranscoder
 {
 
 /**
- * @brief Filter graph input frame buffer.
- * This FIFO buffer contains IFrame pointers and can deliver specific size frames.
- *
- * @todo Only for audio frame, for the moment. Make it usable with video frames.
+ * @brief Filter graph input audio frame buffer.
+ * This FIFO buffer contains IFrame pointers and can deliver specific size audio frames.
+ * It makes no sense to use such buffers for video, since video frames are spatially consistent,
+ * so can not be divided nor concatenated.
  **/
-class FrameBuffer
+class AudioFramebuffer
 {
 public:
-    FrameBuffer(const AudioFrameDesc& audioFrameDesc);
-    ~FrameBuffer();
+    AudioFramebuffer(const AudioFrameDesc& audioFrameDesc);
+    ~AudioFramebuffer();
 
     /**
      * @brief Return whether the buffer is empty or not.
@@ -143,7 +143,8 @@ private:
      */
     size_t getMinInputFrameSize(const std::vector<IFrame*>& inputs);
 
-    bool areInputFrameSizeEqual(const std::vector<IFrame*>& inputs);
+    bool areInputAudioFrames(const std::vector<IFrame*>& inputs);
+    bool areInputFrameSizesEqual(const std::vector<IFrame*>& inputs);
     bool areFrameBuffersEmpty();
 
 private:
@@ -151,7 +152,7 @@ private:
     std::vector<Filter*> _filters; ///< List of filters to process.
     const ICodec& _codec;          ///< Codec of the stream on which the filters will be applied.
 
-    std::vector<FrameBuffer> _inputFramesBuffer;
+    std::vector<AudioFramebuffer> _inputAudioFramesBuffer;
 
     /**
      * @brief Is the FilterGraph initialized.
