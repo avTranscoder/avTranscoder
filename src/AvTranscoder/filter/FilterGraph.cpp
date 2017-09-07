@@ -133,7 +133,7 @@ FilterGraph::FilterGraph(const ICodec& codec)
 
 FilterGraph::~FilterGraph()
 {
-    _inputAudioFramesBuffer.clear();
+    _inputAudioFrameBuffers.clear();
     for(std::vector<Filter*>::iterator it = _filters.begin(); it < _filters.end(); ++it)
     {
         delete(*it);
@@ -145,7 +145,7 @@ size_t FilterGraph::getAvailableFrameSize(const std::vector<IFrame*>& inputs, co
 {
     size_t frameSize = inputs.at(index)->getDataSize();
     if(frameSize == 0)
-        frameSize = _inputAudioFramesBuffer.at(index).getDataSize();
+        frameSize = _inputAudioFrameBuffers.at(index).getDataSize();
     return frameSize;
 }
 
@@ -166,10 +166,10 @@ size_t FilterGraph::getMinInputFrameSize(const std::vector<IFrame*>& inputs)
 
 bool FilterGraph::hasBufferedFrames()
 {
-    if(!_inputAudioFramesBuffer.size())
+    if(!_inputAudioFrameBuffers.size())
         return false;
 
-    for(std::vector<AudioFramebuffer>::iterator it = _inputAudioFramesBuffer.begin(); it != _inputAudioFramesBuffer.end(); ++it)
+    for(std::vector<AudioFramebuffer>::iterator it = _inputAudioFrameBuffers.begin(); it != _inputAudioFrameBuffers.end(); ++it)
     {
         if(it->isEmpty())
             return false;
@@ -179,17 +179,10 @@ bool FilterGraph::hasBufferedFrames()
 
 bool FilterGraph::hasBufferedFrames(const size_t index)
 {
-    if(index >= _inputAudioFramesBuffer.size())
+    if(index >= _inputAudioFrameBuffers.size())
         return false;
 
-    return !_inputAudioFramesBuffer.at(index).isEmpty();
-}
-
-bool FilterGraph::areInputAudioFrames(const std::vector<IFrame*>& inputs)
-{
-    if(!inputs.size())
-        return false;
-    return typeid(*(inputs.at(0))) == typeid(AudioFrame);
+    return !_inputAudioFrameBuffers.at(index).isEmpty();
 }
 
 bool FilterGraph::areInputFrameSizesEqual(const std::vector<IFrame*>& inputs)
@@ -208,10 +201,10 @@ bool FilterGraph::areInputFrameSizesEqual(const std::vector<IFrame*>& inputs)
 
 bool FilterGraph::areFrameBuffersEmpty()
 {
-    if(!_inputAudioFramesBuffer.size())
+    if(!_inputAudioFrameBuffers.size())
         return true;
 
-    for(std::vector<AudioFramebuffer>::iterator it = _inputAudioFramesBuffer.begin(); it != _inputAudioFramesBuffer.end(); ++it)
+    for(std::vector<AudioFramebuffer>::iterator it = _inputAudioFrameBuffers.begin(); it != _inputAudioFrameBuffers.end(); ++it)
     {
         if(!it->isEmpty())
             return false;
@@ -226,7 +219,7 @@ void FilterGraph::process(const std::vector<IFrame*>& inputs, IFrame& output)
         init(inputs, output);
 
     // Check whether we can bypass the input audio buffers
-    const bool bypassBuffers = !areInputAudioFrames(inputs) || (areInputFrameSizesEqual(inputs) && areFrameBuffersEmpty());
+    const bool bypassBuffers = _inputAudioFrameBuffers.empty() || (areInputFrameSizesEqual(inputs) && areFrameBuffersEmpty());
     size_t minInputFrameSize = 0;
 
     if(!bypassBuffers)
@@ -236,10 +229,10 @@ void FilterGraph::process(const std::vector<IFrame*>& inputs, IFrame& output)
         {
             if(!inputs.at(index)->getDataSize())
             {
-                LOG_DEBUG("Empty frame from filter graph input " << index << ". Remaining audio frames in buffer: " << _inputAudioFramesBuffer.at(index).getBufferSize());
+                LOG_DEBUG("Empty frame from filter graph input " << index << ". Remaining audio frames in buffer: " << _inputAudioFrameBuffers.at(index).getBufferSize());
                 continue;
             }
-            _inputAudioFramesBuffer.at(index).addFrame(inputs.at(index));
+            _inputAudioFrameBuffers.at(index).addFrame(inputs.at(index));
         }
 
         // Get the minimum input frames size
@@ -251,7 +244,7 @@ void FilterGraph::process(const std::vector<IFrame*>& inputs, IFrame& output)
     for(size_t index = 0; index < inputs.size(); ++index)
     {
         // Retrieve frame from buffer or directly from input
-        IFrame* inputFrame = (bypassBuffers)? inputs.at(index) : _inputAudioFramesBuffer.at(index).getFrame(minInputFrameSize);
+        IFrame* inputFrame = (bypassBuffers)? inputs.at(index) : _inputAudioFrameBuffers.at(index).getFrame(minInputFrameSize);
         const int ret = av_buffersrc_add_frame_flags(_filters.at(index)->getAVFilterContext(), &inputFrame->getAVFrame(), AV_BUFFERSRC_FLAG_PUSH);
 
         if(ret < 0)
@@ -363,7 +356,7 @@ void FilterGraph::addInBuffer(const std::vector<IFrame*>& inputs)
             const AudioFrameDesc audioFrameDesc(audioFrame->getSampleRate(),
                                                 audioFrame->getNbChannels(),
                                                 getSampleFormatName(audioFrame->getSampleFormat()));
-            _inputAudioFramesBuffer.push_back(AudioFramebuffer(audioFrameDesc));
+            _inputAudioFrameBuffers.push_back(AudioFramebuffer(audioFrameDesc));
         }
         // video frame
         else if((*it)->isVideoFrame())

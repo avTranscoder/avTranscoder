@@ -143,7 +143,6 @@ private:
      */
     size_t getMinInputFrameSize(const std::vector<IFrame*>& inputs);
 
-    bool areInputAudioFrames(const std::vector<IFrame*>& inputs);
     bool areInputFrameSizesEqual(const std::vector<IFrame*>& inputs);
     bool areFrameBuffersEmpty();
 
@@ -152,7 +151,7 @@ private:
     std::vector<Filter*> _filters; ///< List of filters to process.
     const ICodec& _codec;          ///< Codec of the stream on which the filters will be applied.
 
-    std::vector<AudioFramebuffer> _inputAudioFramesBuffer;
+    std::vector<AudioFramebuffer> _inputAudioFrameBuffers;
 
     /**
      * @brief Is the FilterGraph initialized.
