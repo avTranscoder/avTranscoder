@@ -36,6 +36,11 @@ AudioFrameBuffer::~AudioFrameBuffer()
         popFrame();
 }
 
+size_t AudioFrameBuffer::getBytesPerSample()
+{
+    return av_get_bytes_per_sample(_audioFrameDesc._sampleFormat);
+}
+
 void AudioFrameBuffer::addFrame(IFrame* frame)
 {
     LOG_DEBUG("Add a new " << frame->getDataSize() << " bytes frame to frame buffer. New buffer size: " << _frameQueue.size() + 1);
@@ -113,6 +118,12 @@ IFrame* AudioFrameBuffer::getFrame(const size_t size)
     return newAudioFrame;
 }
 
+IFrame* AudioFrameBuffer::getFrameSampleNb(const size_t sampleNb)
+{
+    const size_t expectedSize = sampleNb * getBytesPerSample();
+    return getFrame(expectedSize);
+}
+
 
 
 /******************
@@ -149,19 +160,29 @@ size_t FilterGraph::getAvailableFrameSize(const std::vector<IFrame*>& inputs, co
     return frameSize;
 }
 
-size_t FilterGraph::getMinInputFrameSize(const std::vector<IFrame*>& inputs)
+size_t FilterGraph::getAvailableFrameSamplesNb(const std::vector<IFrame*>& inputs, const size_t& index)
+{
+    if(_inputAudioFrameBuffers.empty())
+        throw std::runtime_error("Cannot compute filter graph input samples number for non-audio frames.");
+
+    const size_t bytesPerSample = _inputAudioFrameBuffers.at(index).getBytesPerSample();
+    const size_t availableSamplesNb = getAvailableFrameSize(inputs, index) / bytesPerSample;
+    return availableSamplesNb;
+}
+
+size_t FilterGraph::getMinInputFrameSamplesNb(const std::vector<IFrame*>& inputs)
 {
     if(!inputs.size())
         return 0;
 
-    size_t minFrameSize = getAvailableFrameSize(inputs, 0);
+    size_t minFrameSamplesNb = getAvailableFrameSamplesNb(inputs, 0);
     for(size_t index = 1; index < inputs.size(); ++index)
     {
-        const size_t availableFrameSize = getAvailableFrameSize(inputs, index);
-        if(minFrameSize > availableFrameSize)
-            minFrameSize = availableFrameSize;
+        const size_t availableFrameSampleNb = getAvailableFrameSamplesNb(inputs, index);
+        if(minFrameSamplesNb > availableFrameSampleNb)
+            minFrameSamplesNb = availableFrameSampleNb;
     }
-    return minFrameSize;
+    return minFrameSamplesNb;
 }
 
 bool FilterGraph::hasBufferedFrames()
@@ -194,7 +215,16 @@ bool FilterGraph::areInputFrameSizesEqual(const std::vector<IFrame*>& inputs)
     for(size_t index = 1; index < inputs.size(); ++index)
     {
         if(frameSize != inputs.at(index)->getDataSize())
-            return false;
+        {
+            if(_inputAudioFrameBuffers.empty())
+                return false;
+            else
+            {
+                const size_t refSampleNb = frameSize / _inputAudioFrameBuffers.at(0).getBytesPerSample();
+                const size_t sampleNb = inputs.at(index)->getDataSize() / _inputAudioFrameBuffers.at(index).getBytesPerSample();
+                return (refSampleNb == sampleNb);
+            }
+        }
     }
     return true;
 }
@@ -220,7 +250,7 @@ void FilterGraph::process(const std::vector<IFrame*>& inputs, IFrame& output)
 
     // Check whether we can bypass the input audio buffers
     const bool bypassBuffers = _inputAudioFrameBuffers.empty() || (areInputFrameSizesEqual(inputs) && areFrameBuffersEmpty());
-    size_t minInputFrameSize = 0;
+    size_t minInputFrameSamplesNb = 0;
 
     if(!bypassBuffers)
     {
@@ -236,7 +266,7 @@ void FilterGraph::process(const std::vector<IFrame*>& inputs, IFrame& output)
         }
 
         // Get the minimum input frames size
-        minInputFrameSize = getMinInputFrameSize(inputs);
+        minInputFrameSamplesNb = getMinInputFrameSamplesNb(inputs);
     }
 
 
@@ -244,7 +274,7 @@ void FilterGraph::process(const std::vector<IFrame*>& inputs, IFrame& output)
     for(size_t index = 0; index < inputs.size(); ++index)
     {
         // Retrieve frame from buffer or directly from input
-        IFrame* inputFrame = (bypassBuffers)? inputs.at(index) : _inputAudioFrameBuffers.at(index).getFrame(minInputFrameSize);
+        IFrame* inputFrame = (bypassBuffers)? inputs.at(index) : _inputAudioFrameBuffers.at(index).getFrameSampleNb(minInputFrameSamplesNb);
         const int ret = av_buffersrc_add_frame_flags(_filters.at(index)->getAVFilterContext(), &inputFrame->getAVFrame(), AV_BUFFERSRC_FLAG_PUSH);
 
         if(ret < 0)

@@ -39,6 +39,10 @@ public:
      * @brief Return the number of frames contained in the buffer.
      */
     size_t getBufferSize() const { return _frameQueue.size(); }
+    /**
+     * @brief Return the number of bytes by sample from the internal AudioFrameDesc.
+     */
+    size_t getBytesPerSample();
 
     /**
      * @brief Push a frame at the end of the buffer.
@@ -50,6 +54,7 @@ public:
      * If no size is specified, the whole first IFrame pointer is returned.
      */
     IFrame* getFrame(const size_t size = 0);
+    IFrame* getFrameSampleNb(const size_t sampleNb);
 
 private:
     void popFrame();
@@ -138,10 +143,11 @@ private:
      * @brief Return the input frame size if not null, or the available size into the corresponding frame buffer
      */
     size_t getAvailableFrameSize(const std::vector<IFrame*>& inputs, const size_t& index);
+    size_t getAvailableFrameSamplesNb(const std::vector<IFrame*>& inputs, const size_t& index);
     /**
-     * @brief Get the minimum size between input frames, or available frame buffers
+     * @brief Get the minimum samples number between input frames, or available frame buffers
      */
-    size_t getMinInputFrameSize(const std::vector<IFrame*>& inputs);
+    size_t getMinInputFrameSamplesNb(const std::vector<IFrame*>& inputs);
 
     bool areInputFrameSizesEqual(const std::vector<IFrame*>& inputs);
     bool areFrameBuffersEmpty();
