@@ -356,7 +356,7 @@ void FilterGraph::addInBuffer(const std::vector<IFrame*>& inputs)
             const AudioFrameDesc audioFrameDesc(audioFrame->getSampleRate(),
                                                 audioFrame->getNbChannels(),
                                                 getSampleFormatName(audioFrame->getSampleFormat()));
-            _inputAudioFrameBuffers.push_back(AudioFrameBuffer(audioFrameDesc));
+            _inputAudioFrameBuffers.insert(_inputAudioFrameBuffers.begin(), AudioFrameBuffer(audioFrameDesc));
         }
         // video frame
         else if((*it)->isVideoFrame())
