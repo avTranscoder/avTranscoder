@@ -18,11 +18,11 @@ namespace avtranscoder
 
 /******************
 
-    AudioFramebuffer
+    AudioFrameBuffer
 
  ******************/
 
-AudioFramebuffer::AudioFramebuffer(const AudioFrameDesc& audioFrameDesc)
+AudioFrameBuffer::AudioFrameBuffer(const AudioFrameDesc& audioFrameDesc)
     : _audioFrameDesc(audioFrameDesc)
     , _frameQueue()
     , _totalDataSize(0)
@@ -30,13 +30,13 @@ AudioFramebuffer::AudioFramebuffer(const AudioFrameDesc& audioFrameDesc)
 {
 }
 
-AudioFramebuffer::~AudioFramebuffer()
+AudioFrameBuffer::~AudioFrameBuffer()
 {
     for(size_t i = 0; i < _frameQueue.size(); ++i)
         popFrame();
 }
 
-void AudioFramebuffer::addFrame(IFrame* frame)
+void AudioFrameBuffer::addFrame(IFrame* frame)
 {
     LOG_DEBUG("Add a new " << frame->getDataSize() << " bytes frame to frame buffer. New buffer size: " << _frameQueue.size() + 1);
     // Copy the input frame to store it into the queue
@@ -50,13 +50,13 @@ void AudioFramebuffer::addFrame(IFrame* frame)
     _frameQueue.push(newAudioFrame);
 }
 
-void AudioFramebuffer::popFrame()
+void AudioFrameBuffer::popFrame()
 {
     _frameQueue.pop();
     LOG_DEBUG("Pop frame from buffer. Remaining frames in buffer: " << _frameQueue.size());
 }
 
-IFrame* AudioFramebuffer::getFrame(const size_t size)
+IFrame* AudioFrameBuffer::getFrame(const size_t size)
 {
     LOG_DEBUG("Get a " << size << " bytes frame from a " << _totalDataSize << " bytes frame buffer");
     IFrame* next = _frameQueue.front();
@@ -169,7 +169,7 @@ bool FilterGraph::hasBufferedFrames()
     if(!_inputAudioFrameBuffers.size())
         return false;
 
-    for(std::vector<AudioFramebuffer>::iterator it = _inputAudioFrameBuffers.begin(); it != _inputAudioFrameBuffers.end(); ++it)
+    for(std::vector<AudioFrameBuffer>::iterator it = _inputAudioFrameBuffers.begin(); it != _inputAudioFrameBuffers.end(); ++it)
     {
         if(it->isEmpty())
             return false;
@@ -204,7 +204,7 @@ bool FilterGraph::areFrameBuffersEmpty()
     if(!_inputAudioFrameBuffers.size())
         return true;
 
-    for(std::vector<AudioFramebuffer>::iterator it = _inputAudioFrameBuffers.begin(); it != _inputAudioFrameBuffers.end(); ++it)
+    for(std::vector<AudioFrameBuffer>::iterator it = _inputAudioFrameBuffers.begin(); it != _inputAudioFrameBuffers.end(); ++it)
     {
         if(!it->isEmpty())
             return false;
@@ -356,7 +356,7 @@ void FilterGraph::addInBuffer(const std::vector<IFrame*>& inputs)
             const AudioFrameDesc audioFrameDesc(audioFrame->getSampleRate(),
                                                 audioFrame->getNbChannels(),
                                                 getSampleFormatName(audioFrame->getSampleFormat()));
-            _inputAudioFrameBuffers.push_back(AudioFramebuffer(audioFrameDesc));
+            _inputAudioFrameBuffers.push_back(AudioFrameBuffer(audioFrameDesc));
         }
         // video frame
         else if((*it)->isVideoFrame())

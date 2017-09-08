@@ -21,11 +21,11 @@ namespace avtranscoder
  * It makes no sense to use such buffers for video, since video frames are spatially consistent,
  * so can not be divided nor concatenated.
  **/
-class AudioFramebuffer
+class AudioFrameBuffer
 {
 public:
-    AudioFramebuffer(const AudioFrameDesc& audioFrameDesc);
-    ~AudioFramebuffer();
+    AudioFrameBuffer(const AudioFrameDesc& audioFrameDesc);
+    ~AudioFrameBuffer();
 
     /**
      * @brief Return whether the buffer is empty or not.
@@ -151,7 +151,7 @@ private:
     std::vector<Filter*> _filters; ///< List of filters to process.
     const ICodec& _codec;          ///< Codec of the stream on which the filters will be applied.
 
-    std::vector<AudioFramebuffer> _inputAudioFrameBuffers;
+    std::vector<AudioFrameBuffer> _inputAudioFrameBuffers;
 
     /**
      * @brief Is the FilterGraph initialized.
