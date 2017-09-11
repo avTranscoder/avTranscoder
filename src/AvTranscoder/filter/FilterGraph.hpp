@@ -21,7 +21,7 @@ namespace avtranscoder
  * It makes no sense to use such buffers for video, since video frames are spatially consistent,
  * so can not be divided nor concatenated.
  **/
-class AudioFrameBuffer
+class AvExport AudioFrameBuffer
 {
 public:
     AudioFrameBuffer(const AudioFrameDesc& audioFrameDesc);
