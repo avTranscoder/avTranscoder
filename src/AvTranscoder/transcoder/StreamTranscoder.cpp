@@ -579,7 +579,7 @@ bool StreamTranscoder::processTranscode()
             if(!_filterGraph->hasFilters() || !_filterGraph->hasBufferedFrames(index))
             {
                 continueProcess = false;
-                continue;
+                break;
             }
             LOG_DEBUG("Some frames remain into filter graph buffer " << index);
 
