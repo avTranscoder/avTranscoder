@@ -48,9 +48,13 @@ def testMuxAudioChannelsFromDifferentFormatInputs_20():
 
     assert_equals(min_src_duration, audioStat.getDuration())
 
-    # check dst audio streams
+    # check dst file properties
     dst_inputFile = av.InputFile(outputFileName)
-    dst_audioProperties = dst_inputFile.getProperties().getAudioProperties()
+    dst_fileProperties = dst_inputFile.getProperties()
+    assert_equals(min_src_duration, dst_fileProperties.getDuration())
+
+    # check dst audio streams
+    dst_audioProperties = dst_fileProperties.getAudioProperties()
     assert_equals(1, len(dst_audioProperties))
     assert_equals(2, dst_audioProperties[0].getNbChannels())
 
@@ -94,8 +98,12 @@ def testMuxAudioChannelsFromDifferentFormatInputs_51():
 
     assert_equals(min_src_duration, audioStat.getDuration())
 
-    # check dst audio streams
+    # check dst file properties
     dst_inputFile = av.InputFile(outputFileName)
+    dst_fileProperties = dst_inputFile.getProperties()
+    assert_equals(min_src_duration, dst_fileProperties.getDuration())
+
+    # check dst audio streams
     dst_audioProperties = dst_inputFile.getProperties().getAudioProperties()
     assert_equals(1, len(dst_audioProperties))
     assert_equals(6, dst_audioProperties[0].getNbChannels())
