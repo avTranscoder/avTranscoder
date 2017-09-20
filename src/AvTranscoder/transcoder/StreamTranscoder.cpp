@@ -147,12 +147,22 @@ StreamTranscoder::StreamTranscoder(const std::vector<InputStreamDesc>& inputStre
     size_t nbOutputChannels = 0;
     for(size_t index = 0; index < inputStreams.size(); ++index)
     {
-        addDecoder(_inputStreamDesc.at(index), *_inputStreams.at(index));
-        nbOutputChannels += _inputStreamDesc.at(index)._channelIndexArray.size();
+        if(_inputStreams.at(index) != NULL)
+        {
+            LOG_INFO("add decoder for input stream " << index);
+            addDecoder(_inputStreamDesc.at(index), *_inputStreams.at(index));
+            nbOutputChannels += _inputStreamDesc.at(index)._channelIndexArray.size();
+        }
+        else
+        {
+            LOG_INFO("add generator for empty input " << index);
+            addGenerator(_inputStreamDesc.at(index), profile);
+        }
     }
 
-    IInputStream& inputStream = *_inputStreams.at(0);
-    const InputStreamDesc& inputStreamDesc = inputStreamsDesc.at(0);
+    const size_t firstInputStreamIndex = getFirstInputStreamIndex();
+    IInputStream& inputStream = *_inputStreams.at(firstInputStreamIndex);
+    const InputStreamDesc& inputStreamDesc = inputStreamsDesc.at(firstInputStreamIndex);
 
     // create a transcode case
     switch(inputStream.getProperties().getStreamType())
@@ -229,6 +239,16 @@ StreamTranscoder::StreamTranscoder(const std::vector<InputStreamDesc>& inputStre
     setOffset(offset);
 }
 
+size_t StreamTranscoder::getFirstInputStreamIndex()
+{
+    for(size_t index = 0; index < _inputStreams.size(); ++index)
+    {
+        if(_inputStreams.at(index) != NULL)
+            return index;
+    }
+    throw std::runtime_error("Cannot handle only null input streams");
+}
+
 void StreamTranscoder::addDecoder(const InputStreamDesc& inputStreamDesc, IInputStream& inputStream)
 {
     // create a transcode case
@@ -275,6 +295,53 @@ void StreamTranscoder::addDecoder(const InputStreamDesc& inputStreamDesc, IInput
             throw std::runtime_error("Unupported stream type");
             break;
         }
+    }
+}
+
+void StreamTranscoder::addGenerator(const InputStreamDesc& inputStreamDesc, const ProfileLoader::Profile& profile)
+{
+    // create a transcode case
+    if(profile.find(constants::avProfileType)->second == constants::avProfileTypeVideo)
+    {
+        VideoCodec inputVideoCodec(eCodecTypeEncoder, profile.find(constants::avProfileCodec)->second);
+        VideoFrameDesc inputFrameDesc(profile);
+        inputVideoCodec.setImageParameters(inputFrameDesc);
+
+        // generator decoder
+        VideoGenerator* generator = new VideoGenerator(inputFrameDesc);
+        _generators.push_back(generator);
+        _currentDecoder = generator;
+
+        // buffers to process
+        VideoFrameDesc outputFrameDesc = inputFrameDesc;
+        outputFrameDesc.setParameters(profile);
+        _decodedData.push_back(new VideoFrame(inputFrameDesc));
+
+        // no decoder for this input
+        _inputDecoders.push_back(NULL);
+
+    }
+    else if(profile.find(constants::avProfileType)->second == constants::avProfileTypeAudio)
+    {
+        // corresponding input codec
+        AudioCodec inputAudioCodec(eCodecTypeEncoder, profile.find(constants::avProfileCodec)->second);
+        AudioFrameDesc inputFrameDesc(profile);
+        inputFrameDesc._nbChannels = 1;
+        inputAudioCodec.setAudioParameters(inputFrameDesc);
+
+        // generator decoder
+        AudioGenerator* generator = new AudioGenerator(inputFrameDesc);
+        _generators.push_back(generator);
+        _currentDecoder = generator;
+        // buffers to get the decoded data
+        _decodedData.push_back(new AudioFrame(inputFrameDesc));
+
+        // no decoder for this input
+        _inputDecoders.push_back(NULL);
+    }
+    else
+    {
+        throw std::runtime_error("unupported stream type");
     }
 }
 
@@ -375,7 +442,8 @@ StreamTranscoder::~StreamTranscoder()
 
     for(std::vector<IDecoder*>::iterator it = _inputDecoders.begin(); it != _inputDecoders.end(); ++it)
     {
-        delete(*it);
+        if(*it != NULL)
+            delete(*it);
     }
     for(std::vector<IDecoder*>::iterator it = _generators.begin(); it != _generators.end(); ++it)
     {
@@ -548,9 +616,10 @@ bool StreamTranscoder::processTranscode()
     }
 
     // check the next data buffers in case of audio frames
-    if(_decodedData.at(0)->isAudioFrame())
+    const size_t firstInputStreamIndex = getFirstInputStreamIndex();
+    if(_decodedData.at(firstInputStreamIndex)->isAudioFrame())
     {
-        const int nbInputSamplesPerChannel = _decodedData.at(0)->getAVFrame().nb_samples;
+        const int nbInputSamplesPerChannel = _decodedData.at(firstInputStreamIndex)->getAVFrame().nb_samples;
 
         // Reallocate output frame
         if(nbInputSamplesPerChannel > _filteredData->getAVFrame().nb_samples)
@@ -670,7 +739,11 @@ float StreamTranscoder::getDuration() const
         float minStreamDuration = -1;
         for(size_t index = 0; index < _inputStreams.size(); ++index)
         {
-            const StreamProperties& streamProperties = _inputStreams.at(index)->getProperties();
+            IInputStream* inputStream = _inputStreams.at(index);
+            if(inputStream == NULL)
+                continue;
+
+            const StreamProperties& streamProperties = inputStream->getProperties();
             if(minStreamDuration == -1 || streamProperties.getDuration() < minStreamDuration)
                 minStreamDuration = streamProperties.getDuration();
         }
