@@ -115,7 +115,7 @@ public:
         eProcessCaseRewrap,
         eProcessCaseGenerator
     };
-    EProcessCase getProcessCase() const;
+    EProcessCase getProcessCase(const size_t decoderIndex = 0) const;
     //@}
 
 private:

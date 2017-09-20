@@ -604,7 +604,8 @@ bool StreamTranscoder::processTranscode()
     std::vector<bool> decodingStatus(_generators.size(), true);
     for(size_t index = 0; index < _generators.size(); ++index)
     {
-        if(getProcessCase() == eProcessCaseTranscode)
+        EProcessCase processCase = getProcessCase(index);
+        if(processCase == eProcessCaseTranscode)
             _currentDecoder = _inputDecoders.at(index);
         else
             _currentDecoder = _generators.at(index);
@@ -795,13 +796,30 @@ void StreamTranscoder::setOffset(const float offset)
     }
 }
 
-StreamTranscoder::EProcessCase StreamTranscoder::getProcessCase() const
+StreamTranscoder::EProcessCase StreamTranscoder::getProcessCase(const size_t decoderIndex) const
 {
-    if(! _inputStreams.empty() && ! _inputDecoders.empty() && std::find(_inputDecoders.begin(), _inputDecoders.end(), _currentDecoder) != _inputDecoders.end() )
-        return eProcessCaseTranscode;
-    else if(! _inputStreams.empty() && _inputDecoders.empty() && !_currentDecoder)
-        return eProcessCaseRewrap;
+    if(_inputStreamDesc.size() <= 1)
+    {
+        if(! _inputStreams.empty() && ! _inputDecoders.empty() && std::find(_inputDecoders.begin(), _inputDecoders.end(), _currentDecoder) != _inputDecoders.end() )
+            return eProcessCaseTranscode;
+        else if(! _inputStreams.empty() && _inputDecoders.empty() && !_currentDecoder)
+            return eProcessCaseRewrap;
+        else
+            return eProcessCaseGenerator;
+    }
     else
+    {
+        if(! _inputStreams.empty() && _currentDecoder != NULL)
+        {
+            if( _inputStreams.at(decoderIndex) != NULL)
+                return eProcessCaseTranscode;
+            return eProcessCaseGenerator;
+        }
+        else if(! _inputStreams.empty() && _inputDecoders.empty() && !_currentDecoder)
+        {
+            return eProcessCaseRewrap;
+        }
         return eProcessCaseGenerator;
+    }
 }
 }
