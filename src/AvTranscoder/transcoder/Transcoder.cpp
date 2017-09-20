@@ -335,7 +335,7 @@ ProfileLoader::Profile Transcoder::getProfileFromInputs(const std::vector<InputS
     assert(inputStreamDescArray.size() >= 1);
 
     // Get properties from the first input
-    size_t nonEmptyFileName = 0;
+    size_t nonEmptyFileName = -1;
     for(size_t i = 0; i < inputStreamDescArray.size(); ++i)
     {
         if(!inputStreamDescArray.at(i)._filename.empty())
@@ -344,6 +344,9 @@ ProfileLoader::Profile Transcoder::getProfileFromInputs(const std::vector<InputS
             break;
         }
     }
+    if(nonEmptyFileName == -1)
+        throw std::runtime_error("Cannot handle only empty streams as input");
+
     const InputStreamDesc& inputStreamDesc = inputStreamDescArray.at(nonEmptyFileName);
     InputFile inputFile(inputStreamDesc._filename);
 
