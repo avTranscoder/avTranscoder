@@ -130,8 +130,6 @@ private:
     bool processRewrap();
     bool processTranscode();
 
-    size_t getFirstInputStreamIndex();
-
 private:
     std::vector<InputStreamDesc> _inputStreamDesc; ///< Description of the data to extract from the input stream.
     std::vector<IInputStream*> _inputStreams;   ///< List of input stream to read next packet (has link, no ownership)
@@ -149,6 +147,8 @@ private:
     ITransform* _transform; ///< Video or audio transform (has ownership)
 
     FilterGraph* _filterGraph; ///< Filter graph (has ownership)
+
+    size_t _firstInputStreamIndex; ///< Index of the first non-null input stream.
 
     float _offset; ///< Offset, in seconds, at the beginning of the StreamTranscoder.
 
