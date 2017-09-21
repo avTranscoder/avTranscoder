@@ -533,7 +533,7 @@ bool StreamTranscoder::processTranscode()
 
     // Decode
     LOG_DEBUG("Decode next frame")
-    bool decodingStatus = true;
+    std::vector<bool> decodingStatus(_generators.size(), true);
     for(size_t index = 0; index < _generators.size(); ++index)
     {
         if(getProcessCase() == eProcessCaseTranscode)
@@ -542,15 +542,17 @@ bool StreamTranscoder::processTranscode()
             _currentDecoder = _generators.at(index);
 
         if(! _inputStreamDesc.empty() && _inputStreamDesc.at(index).demultiplexing())
-            decodingStatus = decodingStatus && _currentDecoder->decodeNextFrame(*_decodedData.at(index), _inputStreamDesc.at(index)._channelIndexArray);
+            decodingStatus.at(index) = decodingStatus.at(index) && _currentDecoder->decodeNextFrame(*_decodedData.at(index), _inputStreamDesc.at(index)._channelIndexArray);
         else
-            decodingStatus = decodingStatus && _currentDecoder->decodeNextFrame(*_decodedData.at(index));
+            decodingStatus.at(index) = decodingStatus.at(index) && _currentDecoder->decodeNextFrame(*_decodedData.at(index));
     }
 
     // check the next data buffers in case of audio frames
     if(_decodedData.at(0)->isAudioFrame())
     {
         const int nbInputSamplesPerChannel = _decodedData.at(0)->getAVFrame().nb_samples;
+
+        // Reallocate output frame
         if(nbInputSamplesPerChannel > _filteredData->getAVFrame().nb_samples)
         {
             LOG_WARN("The buffer of filtered data corresponds to a frame of " << _filteredData->getAVFrame().nb_samples << " samples. The decoded buffer contains " << nbInputSamplesPerChannel << " samples. Reallocate it.")
@@ -569,7 +571,26 @@ bool StreamTranscoder::processTranscode()
 
     // Transform
     CodedData data;
-    if(decodingStatus)
+    bool continueProcess = true;
+    for(size_t index = 0; index < decodingStatus.size(); ++index)
+    {
+        if(!decodingStatus.at(index))
+        {
+            if(!_filterGraph->hasFilters() || !_filterGraph->hasBufferedFrames(index))
+            {
+                continueProcess = false;
+                break;
+            }
+            LOG_DEBUG("Some frames remain into filter graph buffer " << index);
+
+            // Reset the non-decoded data as an empty frame
+            _decodedData.at(index)->freeData();
+            _decodedData.at(index)->getAVFrame().format = -1;
+            _decodedData.at(index)->getAVFrame().nb_samples = 0;
+        }
+    }
+
+    if(continueProcess)
     {
         IFrame* dataToTransform = NULL;
         if(_filterGraph->hasFilters())

@@ -5,13 +5,67 @@
 #include <AvTranscoder/filter/Filter.hpp>
 #include <AvTranscoder/codec/ICodec.hpp>
 #include <AvTranscoder/data/decoded/IFrame.hpp>
+#include <AvTranscoder/data/decoded/AudioFrame.hpp>
 
 #include <vector>
+#include <queue>
 
 struct AVFilterGraph;
 
 namespace avtranscoder
 {
+
+/**
+ * @brief Filter graph input audio frame buffer.
+ * This FIFO buffer contains IFrame pointers and can deliver specific size audio frames.
+ * It makes no sense to use such buffers for video, since video frames are spatially consistent,
+ * so can not be divided nor concatenated.
+ **/
+class AvExport AudioFrameBuffer
+{
+public:
+    AudioFrameBuffer(const AudioFrameDesc& audioFrameDesc);
+    ~AudioFrameBuffer();
+
+    /**
+     * @brief Return whether the buffer is empty or not.
+     */
+    bool isEmpty() const { return _frameQueue.empty() && _totalDataSize == 0; }
+    /**
+     * @brief Return the total amount of available data contained in the frames of the buffer.
+     */
+    size_t getDataSize() const { return _totalDataSize; }
+    /**
+     * @brief Return the number of frames contained in the buffer.
+     */
+    size_t getBufferSize() const { return _frameQueue.size(); }
+    /**
+     * @brief Return the number of bytes by sample from the internal AudioFrameDesc.
+     */
+    size_t getBytesPerSample();
+
+    /**
+     * @brief Push a frame at the end of the buffer.
+     */
+    void addFrame(IFrame* frame);
+
+    /**
+     * @brief Retrieve a IFrame pointer of the specified size, from the beginning of the buffer.
+     * If no size is specified, the whole first IFrame pointer is returned.
+     */
+    IFrame* getFrame(const size_t size = 0);
+    IFrame* getFrameSampleNb(const size_t sampleNb);
+
+private:
+    void popFrame();
+
+    AudioFrameDesc _audioFrameDesc;
+
+    std::queue<IFrame*> _frameQueue;
+    size_t _totalDataSize;
+    size_t _positionInFrontFrame;
+
+};
 
 /**
  * @brief Manager of filters.
@@ -62,6 +116,9 @@ public:
      */
     bool hasFilters() const { return !_filters.empty(); }
 
+    bool hasBufferedFrames();
+    bool hasBufferedFrames(const size_t index);
+
 private:
     /**
      * @brief Initialize the graph of filters to process.
@@ -82,10 +139,25 @@ private:
     void addOutBuffer(const IFrame& output);
     //@}
 
+    /**
+     * @brief Return the input frame size if not null, or the available size into the corresponding frame buffer
+     */
+    size_t getAvailableFrameSize(const std::vector<IFrame*>& inputs, const size_t& index);
+    size_t getAvailableFrameSamplesNb(const std::vector<IFrame*>& inputs, const size_t& index);
+    /**
+     * @brief Get the minimum samples number between input frames, or available frame buffers
+     */
+    size_t getMinInputFrameSamplesNb(const std::vector<IFrame*>& inputs);
+
+    bool areInputFrameSizesEqual(const std::vector<IFrame*>& inputs);
+    bool areFrameBuffersEmpty();
+
 private:
     AVFilterGraph* _graph;         ///< The graph which holds the filters.
     std::vector<Filter*> _filters; ///< List of filters to process.
     const ICodec& _codec;          ///< Codec of the stream on which the filters will be applied.
+
+    std::vector<AudioFrameBuffer> _inputAudioFrameBuffers;
 
     /**
      * @brief Is the FilterGraph initialized.
