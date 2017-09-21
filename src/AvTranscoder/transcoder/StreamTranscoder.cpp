@@ -165,6 +165,9 @@ StreamTranscoder::StreamTranscoder(const std::vector<InputStreamDesc>& inputStre
         }
     }
 
+    if(_firstInputStreamIndex == std::numeric_limits<size_t>::max())
+        throw std::runtime_error("Cannot handle empty only input streams");
+
     IInputStream& inputStream = *_inputStreams.at(_firstInputStreamIndex);
     const InputStreamDesc& inputStreamDesc = inputStreamsDesc.at(_firstInputStreamIndex);
 
