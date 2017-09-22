@@ -63,7 +63,7 @@ struct InputStreamDesc
     bool demultiplexing() const { return !_channelIndexArray.empty(); }
 
 public:
-    std::string _filename;                  ///< Source file path.
+    std::string _filename;                  ///< Source file path. If empty, a generator is used as source.
     size_t _streamIndex;                    ///< Source stream to extract.
     std::vector<size_t> _channelIndexArray; ///< List of source channels to extract from the stream
 };
