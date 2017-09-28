@@ -115,7 +115,7 @@ public:
         eProcessCaseRewrap,
         eProcessCaseGenerator
     };
-    EProcessCase getProcessCase() const;
+    EProcessCase getProcessCase(const size_t decoderIndex = 0) const;
     //@}
 
 private:
@@ -125,6 +125,7 @@ private:
      * @param inputStream
      */
     void addDecoder(const InputStreamDesc& inputStreamDesc, IInputStream& inputStream);
+    void addGenerator(const InputStreamDesc& inputStreamDesc, const ProfileLoader::Profile& profile);
 
     bool processRewrap();
     bool processTranscode();
@@ -146,6 +147,8 @@ private:
     ITransform* _transform; ///< Video or audio transform (has ownership)
 
     FilterGraph* _filterGraph; ///< Filter graph (has ownership)
+
+    size_t _firstInputStreamIndex; ///< Index of the first non-null input stream.
 
     float _offset; ///< Offset, in seconds, at the beginning of the StreamTranscoder.
 

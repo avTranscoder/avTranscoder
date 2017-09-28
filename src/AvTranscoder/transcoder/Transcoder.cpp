@@ -260,6 +260,12 @@ void Transcoder::addTranscodeStream(const std::vector<InputStreamDesc>& inputStr
     AVMediaType commonStreamType = AVMEDIA_TYPE_UNKNOWN;
     for(std::vector<InputStreamDesc>::const_iterator it = inputStreamDescArray.begin(); it != inputStreamDescArray.end(); ++it)
     {
+        if(it->_filename.empty())
+        {
+            inputStreams.push_back(NULL);
+            continue;
+        }
+
         InputFile* referenceFile = addInputFile(it->_filename, it->_streamIndex, offset);
         inputStreams.push_back(&referenceFile->getStream(it->_streamIndex));
 
@@ -329,7 +335,19 @@ ProfileLoader::Profile Transcoder::getProfileFromInputs(const std::vector<InputS
     assert(inputStreamDescArray.size() >= 1);
 
     // Get properties from the first input
-    const InputStreamDesc& inputStreamDesc = inputStreamDescArray.at(0);
+    size_t nonEmptyFileName = std::numeric_limits<size_t>::max();
+    for(size_t i = 0; i < inputStreamDescArray.size(); ++i)
+    {
+        if(!inputStreamDescArray.at(i)._filename.empty())
+        {
+            nonEmptyFileName = i;
+            break;
+        }
+    }
+    if(nonEmptyFileName == std::numeric_limits<size_t>::max())
+        throw std::runtime_error("Cannot get profile from empty input streams");
+
+    const InputStreamDesc& inputStreamDesc = inputStreamDescArray.at(nonEmptyFileName);
     InputFile inputFile(inputStreamDesc._filename);
 
     const StreamProperties* streamProperties = &inputFile.getProperties().getStreamPropertiesWithIndex(inputStreamDesc._streamIndex);
@@ -519,7 +537,19 @@ void Transcoder::fillProcessStat(ProcessStat& processStat)
             LOG_WARN("Cannot process statistics of generated stream.")
             continue;
         }
-        const IInputStream* inputStream = _streamTranscoders.at(streamIndex)->getInputStreams().at(0);
+
+        size_t nonNullInputStreamIndex = 0;
+        std::vector<IInputStream*> inputStreams = _streamTranscoders.at(streamIndex)->getInputStreams();
+        for(size_t i = 0; i < inputStreams.size(); ++i)
+        {
+            if(inputStreams.at(i) != NULL)
+            {
+                nonNullInputStreamIndex = i;
+                break;
+            }
+        }
+
+        const IInputStream* inputStream = inputStreams.at(nonNullInputStreamIndex);
         const AVMediaType mediaType = inputStream->getProperties().getStreamType();
         switch(mediaType)
         {
