@@ -435,7 +435,10 @@ StreamTranscoder::~StreamTranscoder()
     {
         delete(*it);
     }
-    delete _filteredData;
+
+    if(_filteredData != NULL && _filteredData->isDataAllocated())
+        delete _filteredData;
+
     delete _transformedData;
 
     for(std::vector<IDecoder*>::iterator it = _inputDecoders.begin(); it != _inputDecoders.end(); ++it)
@@ -620,13 +623,17 @@ bool StreamTranscoder::processTranscode()
         const int nbInputSamplesPerChannel = _decodedData.at(_firstInputStreamIndex)->getAVFrame().nb_samples;
 
         // Reallocate output frame
-        if(nbInputSamplesPerChannel > _filteredData->getAVFrame().nb_samples)
+        if(_filterGraph->hasFilters())
         {
-            LOG_WARN("The buffer of filtered data corresponds to a frame of " << _filteredData->getAVFrame().nb_samples << " samples. The decoded buffer contains " << nbInputSamplesPerChannel << " samples. Reallocate it.")
             _filteredData->freeData();
-            _filteredData->getAVFrame().nb_samples = nbInputSamplesPerChannel;
-            _filteredData->allocateData();
+            if(nbInputSamplesPerChannel > _filteredData->getAVFrame().nb_samples)
+            {
+                LOG_WARN("The buffer of filtered data corresponds to a frame of " << _filteredData->getAVFrame().nb_samples << " samples. The decoded buffer contains " << nbInputSamplesPerChannel << " samples. Reallocate it.")
+                _filteredData->getAVFrame().nb_samples = nbInputSamplesPerChannel;
+                _filteredData->allocateData();
+            }
         }
+
         if(nbInputSamplesPerChannel > _transformedData->getAVFrame().nb_samples)
         {
             LOG_WARN("The buffer of transformed data corresponds to a frame of " << _transformedData->getAVFrame().nb_samples << " samples. The decoded buffer contains " << nbInputSamplesPerChannel << " samples. Reallocate it.")
