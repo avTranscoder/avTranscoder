@@ -210,7 +210,7 @@ size_t FileProperties::getBitRate() const
     return _avFormatContext->bit_rate;
 }
 
-size_t FileProperties::getFileSize() const
+unsigned __int64 FileProperties::getFileSize() const
 {
     std::ifstream in(getFilename().c_str(), std::ios::binary | std::ios::ate);
     return in.tellg();
