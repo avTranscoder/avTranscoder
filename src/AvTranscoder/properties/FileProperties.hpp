@@ -49,6 +49,9 @@ public:
     double getStartTime() const;
     float getDuration() const;  ///< in seconds, 0 if not available
     size_t getBitRate() const;  ///< total stream bitrate in bit/s, 0 if not available (result of a computation by ffmpeg)
+    /**
+     * @note Use uint64_t instead of size_t to ensure 64 bits size on 32-bits OS so we can manage Files > 4Go
+     */
     uint64_t getFileSize() const; ///< in bytes
     size_t getPacketSize() const;
 
