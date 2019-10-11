@@ -96,11 +96,12 @@ before_script:
   # install coverage tools
   - if [ ${ENABLE_COVERAGE} ]; then ./tools/travis/gcc.install.coverage.sh; fi
 
+
+script:
   # install avtranscoder dependencies
   - if [ ${TRAVIS_OS_NAME} = "linux" ]; then ./tools/travis/linux.install.deps.sh; fi
   - if [ ${TRAVIS_OS_NAME} = "osx" ]; then ./tools/travis/osx.install.deps.sh; fi
 
-script:
   # build
   - ./tools/travis/build.sh
 

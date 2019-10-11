@@ -12,6 +12,7 @@ if  [ -z ${TRAVIS_JOB_ID} ] || [ ! -d "${DEPENDENCY_INSTALL_PATH}/lib/" ]; then
     export LD_LIBRARY_PATH=${DEPENDENCY_INSTALL_PATH}/lib:${DEPENDENCY_INSTALL_PATH}/lib64
     export PKG_CONFIG_PATH=${DEPENDENCY_INSTALL_PATH}/lib/pkgconfig:${DEPENDENCY_INSTALL_PATH}/lib64/pkgconfig
     export PATH=$PATH:${DEPENDENCY_INSTALL_PATH}/bin
+    echo "Build log file: ${DEPENDENCY_LOG_FILE}"
 
     # yasm
     echo "Building YASM (${YASM_VERSION})"
@@ -21,6 +22,7 @@ if  [ -z ${TRAVIS_JOB_ID} ] || [ ! -d "${DEPENDENCY_INSTALL_PATH}/lib/" ]; then
                   cd yasm-${YASM_VERSION} && \
                   ./configure --prefix="$DEPENDENCY_INSTALL_PATH" --bindir="${DEPENDENCY_INSTALL_PATH}/bin" && \
                   make -k > ${DEPENDENCY_LOG_FILE} 2>&1 && \
+                  if [ $? != 0 ]; then cat ${DEPENDENCY_LOG_FILE} && exit 1; fi
                   make install && \
                   rm -rf ${DIR}
 
@@ -32,6 +34,7 @@ if  [ -z ${TRAVIS_JOB_ID} ] || [ ! -d "${DEPENDENCY_INSTALL_PATH}/lib/" ]; then
                   cd x264 && \
                   ./configure --prefix="$DEPENDENCY_INSTALL_PATH" --bindir="${DEPENDENCY_INSTALL_PATH}/bin" --enable-shared --disable-asm && \
                   make -k > ${DEPENDENCY_LOG_FILE} 2>&1 && \
+                  if [ $? != 0 ]; then cat ${DEPENDENCY_LOG_FILE} && exit 1; fi
                   make install && \
                   rm -rf ${DIR}
 
@@ -44,6 +47,7 @@ if  [ -z ${TRAVIS_JOB_ID} ] || [ ! -d "${DEPENDENCY_INSTALL_PATH}/lib/" ]; then
                   cd lame-${LAME_VERSION} && \
                   ./configure --prefix="${DEPENDENCY_INSTALL_PATH}" --bindir="${DEPENDENCY_INSTALL_PATH}/bin" --enable-nasm && \
                   make -k > ${DEPENDENCY_LOG_FILE} 2>&1 && \
+                  if [ $? != 0 ]; then cat ${DEPENDENCY_LOG_FILE} && exit 1; fi
                   make install && \
                   rm -rf ${DIR}
 
@@ -74,6 +78,7 @@ if  [ -z ${TRAVIS_JOB_ID} ] || [ ! -d "${DEPENDENCY_INSTALL_PATH}/lib/" ]; then
                   cd xvidcore/build/generic && \
                   ./configure --prefix="${DEPENDENCY_INSTALL_PATH}" --bindir="${DEPENDENCY_INSTALL_PATH}/bin" && \
                   make -k > ${DEPENDENCY_LOG_FILE} 2>&1 && \
+                  if [ $? != 0 ]; then cat ${DEPENDENCY_LOG_FILE} && exit 1; fi
                   make install && \
                   rm -rf ${DIR}
 
@@ -101,6 +106,7 @@ if  [ -z ${TRAVIS_JOB_ID} ] || [ ! -d "${DEPENDENCY_INSTALL_PATH}/lib/" ]; then
                   cd libogg-${OGG_VERSION} && \
                   ./configure --prefix="${DEPENDENCY_INSTALL_PATH}" --disable-shared --with-pic && \
                   make -k > ${DEPENDENCY_LOG_FILE} 2>&1 && \
+                  if [ $? != 0 ]; then cat ${DEPENDENCY_LOG_FILE} && exit 1; fi
                   make install && \
                   rm -rf ${DIR}
 
@@ -113,6 +119,7 @@ if  [ -z ${TRAVIS_JOB_ID} ] || [ ! -d "${DEPENDENCY_INSTALL_PATH}/lib/" ]; then
                   cd libvorbis-${VORBIS_VERSION} && \
                   ./configure --prefix="${DEPENDENCY_INSTALL_PATH}" --with-ogg="${DEPENDENCY_INSTALL_PATH}" --disable-shared --with-pic && \
                   make -k > ${DEPENDENCY_LOG_FILE} 2>&1 && \
+                  if [ $? != 0 ]; then cat ${DEPENDENCY_LOG_FILE} && exit 1; fi
                   make install && \
                   rm -rf ${DIR}
 
@@ -140,6 +147,7 @@ if  [ -z ${TRAVIS_JOB_ID} ] || [ ! -d "${DEPENDENCY_INSTALL_PATH}/lib/" ]; then
                   git checkout v${VPX_VERSION} && \
                   ./configure --prefix="${DEPENDENCY_INSTALL_PATH}" --disable-examples --enable-pic && \
                   make -k > ${DEPENDENCY_LOG_FILE} 2>&1 && \
+                  if [ $? != 0 ]; then cat ${DEPENDENCY_LOG_FILE} && exit 1; fi
                   make install && \
                   rm -rf ${DIR}
 
@@ -177,6 +185,7 @@ if  [ -z ${TRAVIS_JOB_ID} ] || [ ! -d "${DEPENDENCY_INSTALL_PATH}/lib/" ]; then
                       $LICENSING_OPTIONS \
                       $THIRD_PARTIES_OPTIONS --enable-postproc && \
                       make -k > ${DEPENDENCY_LOG_FILE} 2>&1 && \
+                      if [ $? != 0 ]; then cat ${DEPENDENCY_LOG_FILE} && exit 1; fi
                       make install && \
                       rm -rf ${DIR}
 
