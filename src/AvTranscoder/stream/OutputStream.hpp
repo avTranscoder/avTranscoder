@@ -18,7 +18,7 @@ public:
     size_t getStreamIndex() const { return _streamIndex; }
     float getStreamDuration() const;
     size_t getNbFrames() const; ///< If audio stream, returns number of packets
-    int getStreamPTS() const;   ///< Get current AVStream PTS
+    // int getStreamPTS() const;   ///< Get current AVStream PTS
 
     bool isPTSGenerated() const { return _isPTSGenerated; }
     IOutputStream::EWrappingStatus wrap(const CodedData& data);

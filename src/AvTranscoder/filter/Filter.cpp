@@ -15,7 +15,7 @@ Filter::Filter(const std::string& name, const std::string& options, const std::s
     , _options(options)
     , _instanceName(instanceName.empty() ? name : instanceName)
 {
-    _filter = avfilter_get_by_name(name.c_str());
+    _filter = (AVFilter*)avfilter_get_by_name(name.c_str());
     if(!_filter)
     {
         std::string msg("Cannot find filter ");
