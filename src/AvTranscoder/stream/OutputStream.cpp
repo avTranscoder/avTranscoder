@@ -20,11 +20,10 @@ OutputStream::OutputStream(OutputFile& outputFile, const size_t streamIndex)
 
 float OutputStream::getStreamDuration() const
 {
-    const AVFrac& outputPTS = _outputAVStream.pts;
     const AVRational& outputTimeBase = _outputAVStream.time_base;
 
     // check floating point exception
-    if(outputTimeBase.den == 0 || outputPTS.den == 0)
+    if(outputTimeBase.den == 0)
     {
         LOG_WARN("Cannot compute stream duration of output stream at index " << _streamIndex)
         return 0.f;
@@ -36,7 +35,7 @@ float OutputStream::getStreamDuration() const
     // returns the pts of the last muxed packet, converted from timebase to seconds
     return av_q2d(outputTimeBase) * av_stream_get_end_pts(&_outputAVStream);
 #else
-    return av_q2d(outputTimeBase) * (outputPTS.val + (outputPTS.num / outputPTS.den));
+    return av_q2d(outputTimeBase) * _outputAVStream.pts;
 #endif
 }
 
@@ -45,11 +44,12 @@ size_t OutputStream::getNbFrames() const
     return _outputAVStream.nb_frames;
 }
 
-int OutputStream::getStreamPTS() const
-{
-    const AVFrac& outputPTS = _outputAVStream.pts;
-    return (outputPTS.val + (outputPTS.num / outputPTS.den));
-}
+// int OutputStream::getStreamPTS() const
+// {
+//     // const AVFrac& outputPTS = _outputAVStream.pts;
+//     // return (outputPTS.val + (outputPTS.num / outputPTS.den));
+//     return _outputAVStream.pts;
+// }
 
 IOutputStream::EWrappingStatus OutputStream::wrap(const CodedData& data)
 {

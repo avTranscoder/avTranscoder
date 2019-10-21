@@ -2,6 +2,15 @@ cmake_minimum_required(VERSION 2.8.11)
 
 project(AvTranscoder)
 
+# All libraries will be put in INSTALL_PREFIX/lib
+# RPATH of host points INSTALL_PREFIX/lib
+# see: http://www.cmake.org/Wiki/CMake_RPATH_handling
+set(CMAKE_MACOSX_RPATH 1)
+set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+
+
 # Define AvTranscoder default path to profiles
 add_definitions(-DAVTRANSCODER_DEFAULT_AVPROFILES="${CMAKE_INSTALL_PREFIX}/share/avprofiles")
 

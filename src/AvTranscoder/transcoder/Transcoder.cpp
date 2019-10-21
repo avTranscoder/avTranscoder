@@ -560,7 +560,12 @@ void Transcoder::fillProcessStat(ProcessStat& processStat)
                 if(encoder)
                 {
                     const AVCodecContext& encoderContext = encoder->getCodec().getAVCodecContext();
+
+#ifdef AV_CODEC_FLAG_PSNR
+                    if(encoderContext.coded_frame && (encoderContext.flags & AV_CODEC_FLAG_PSNR))
+#else
                     if(encoderContext.coded_frame && (encoderContext.flags & CODEC_FLAG_PSNR))
+#endif
                     {
                         videoStat.setQuality(encoderContext.coded_frame->quality);
                         videoStat.setPSNR(encoderContext.coded_frame->error[0] /
