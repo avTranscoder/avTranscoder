@@ -200,12 +200,12 @@ IOutputStream::EWrappingStatus OutputFile::wrap(const CodedData& data, const siz
             packet.dts = av_rescale_q(data.getAVPacket().dts, srcTimeBase, dstTimeBase);
         }
         // add stream PTS if already incremented
-        const int currentStreamPTS = _outputStreams.at(streamIndex)->getStreamPTS();
-        if(packet.pts != AV_NOPTS_VALUE && packet.pts < currentStreamPTS)
-        {
-            packet.pts += currentStreamPTS;
-            packet.dts += currentStreamPTS;
-        }
+        // const int currentStreamPTS = _outputStreams.at(streamIndex)->getStreamPTS();
+        // if(packet.pts != AV_NOPTS_VALUE && packet.pts < currentStreamPTS)
+        // {
+        //     packet.pts += currentStreamPTS;
+        //     packet.dts += currentStreamPTS;
+        // }
     }
 
     // copy duration of packet wrapped
@@ -332,11 +332,19 @@ void OutputFile::setOutputStream(AVStream& avStream, const ICodec& codec)
     // depending on the format, place global headers in extradata instead of every keyframe
     if(_formatContext.getAVOutputFormat().flags & AVFMT_GLOBALHEADER)
     {
+#ifdef AV_CODEC_FLAG_GLOBAL_HEADER
+        avStream.codec->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
+#else
         avStream.codec->flags |= CODEC_FLAG_GLOBAL_HEADER;
+#endif
     }
 
     // if the codec is experimental, allow it
+#ifdef AV_CODEC_CAP_EXPERIMENTAL
+    if(codec.getAVCodec().capabilities & AV_CODEC_CAP_EXPERIMENTAL)
+#else
     if(codec.getAVCodec().capabilities & CODEC_CAP_EXPERIMENTAL)
+#endif
     {
         LOG_WARN("This codec is considered experimental by libav/ffmpeg:" << codec.getCodecName());
         avStream.codec->strict_std_compliance = FF_COMPLIANCE_EXPERIMENTAL;

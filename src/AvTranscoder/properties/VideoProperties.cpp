@@ -62,8 +62,13 @@ std::string VideoProperties::getProfileName() const
     if(!_codecContext || !_codec)
         throw std::runtime_error("unknown codec");
 
+#ifdef AV_CODEC_CAP_TRUNCATED
+    if(_codec->capabilities & AV_CODEC_CAP_TRUNCATED)
+        _codecContext->flags |= AV_CODEC_FLAG_TRUNCATED;
+#else
     if(_codec->capabilities & CODEC_CAP_TRUNCATED)
         _codecContext->flags |= CODEC_FLAG_TRUNCATED;
+#endif
 
     const char* profile = NULL;
     if((profile = av_get_profile_name(_codec, getProfile())) == NULL)
@@ -427,7 +432,8 @@ size_t VideoProperties::getDtgActiveFormat() const
 {
     if(!_codecContext)
         throw std::runtime_error("unknown codec context");
-    return _codecContext->dtg_active_format;
+    // return _codecContext->dtg_active_format;
+    return 0;
 }
 
 size_t VideoProperties::getReferencesFrames() const
