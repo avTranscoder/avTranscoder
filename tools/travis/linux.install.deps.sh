@@ -45,7 +45,7 @@ if  [ -z ${TRAVIS_JOB_ID} ] || [ ! -d "${DEPENDENCY_INSTALL_PATH}/lib/" ]; then
     echo ""
     echo "Building libmp3lame (${LAME_VERSION})"
     DIR=$(mktemp -d libmp3lameXXX) && cd ${DIR} && \
-                  curl -L -Os http://downloads.sourceforge.net/project/lame/lame/${LAME_VERSION%.*}/lame-${LAME_VERSION}.tar.gz  && \
+                  curl -L -Os http://downloads.sourceforge.net/project/lame/lame/${LAME_VERSION}/lame-${LAME_VERSION}.tar.gz && \
                   tar xzf lame-${LAME_VERSION}.tar.gz && \
                   cd lame-${LAME_VERSION} && \
                   ./configure --prefix="${DEPENDENCY_INSTALL_PATH}" --bindir="${DEPENDENCY_INSTALL_PATH}/bin" --enable-nasm && \
