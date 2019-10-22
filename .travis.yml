@@ -30,7 +30,7 @@ env:
      - XVID_VERSION=1.3.3
      # - FDKAAC_VERSION=0.1.3
      - OGG_VERSION=1.3.2
-     - VORBIS_VERSION=1.3.4
+     - VORBIS_VERSION=1.3.6
      # - THEORA_VERSION=1.1.1
      - VPX_VERSION=1.4.0
   matrix:
