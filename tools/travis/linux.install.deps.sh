@@ -167,7 +167,7 @@ if  [ -z ${TRAVIS_JOB_ID} ] || [ ! -d "${DEPENDENCY_INSTALL_PATH}/lib/" ]; then
     export RELEASE_OPTIONS=--disable-debug
     export DEBUG_OPTIONS=--enable-debug=3\ --disable-optimizations\ --disable-sse\ --disable-stripping
     export LICENSING_OPTIONS=--enable-gpl\ --enable-nonfree
-    export THIRD_PARTIES_OPTIONS=--enable-libmp3lame\ --enable-libx264\ --enable-libxvid\ --enable-avresample\ --enable-libvorbis\ --enable-libvpx
+    export THIRD_PARTIES_OPTIONS=--enable-libmp3lame\ --enable-libx264\ --enable-libxvid\ --enable-avresample\ --enable-libvpx
     export PKG_CONFIG_PATH="${DEPENDENCY_INSTALL_PATH}/lib/pkgconfig"
 
     if [[ ${DEPENDENCY_NAME} == "ffmpeg" ]]; then
