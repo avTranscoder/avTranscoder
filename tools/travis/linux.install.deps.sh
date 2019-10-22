@@ -207,6 +207,7 @@ if  [ -z ${TRAVIS_JOB_ID} ] || [ ! -d "${DEPENDENCY_INSTALL_PATH}/lib/" ]; then
                       $LICENSING_OPTIONS \
                       $THIRD_PARTIES_OPTIONS && \
                       make -k > ${DEPENDENCY_LOG_FILE} 2>&1 && \
+                      if [ $? != 0 ]; then cat ${DEPENDENCY_LOG_FILE} && exit 1; fi
                       make install && \
                       rm -rf ${DIR}
 
