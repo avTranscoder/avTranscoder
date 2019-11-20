@@ -25,10 +25,10 @@ enum ECodecType
 class AvExport ICodec
 {
 private:
-    ICodec(const ICodec& iCodec);
     ICodec& operator=(const ICodec& iCodec);
 
 public:
+    ICodec(const ICodec& iCodec);
     ICodec(const ECodecType type, const std::string& codecName);
     ICodec(const ECodecType type, const AVCodecID codecId);
     ICodec(const ECodecType type, AVCodecContext& avCodecContext);

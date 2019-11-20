@@ -246,6 +246,85 @@ StreamTranscoder::StreamTranscoder(const std::vector<InputStreamDesc>& inputStre
     setOffset(offset);
 }
 
+StreamTranscoder::StreamTranscoder(const std::vector<InputStreamDesc>& inputStreamsDesc, std::vector<IInputStream*>& inputStreams, IOutputFile& outputFile, 
+                 IEncoder* encoder, const float offset)
+    : _inputStreamDesc(inputStreamsDesc)
+    , _inputStreams(inputStreams)
+    , _outputStream(NULL)
+    , _decodedData()
+    , _filteredData(NULL)
+    , _transformedData(NULL)
+    , _inputDecoders()
+    , _generators()
+    , _currentDecoder(NULL)
+    , _outputEncoder(encoder)
+    , _transform(NULL)
+    , _filterGraph(NULL)
+    , _firstInputStreamIndex(std::numeric_limits<size_t>::max())
+    , _offset(offset)
+    , _needToSwitchToGenerator(false)
+{
+    // add as many decoders as input streams
+    size_t nbOutputChannels = 0;
+    for(size_t index = 0; index < inputStreams.size(); ++index)
+    {
+        if(_inputStreams.at(index) != NULL)
+        {
+            LOG_INFO("add decoder for input stream " << index);
+            addDecoder(_inputStreamDesc.at(index), *_inputStreams.at(index));
+            nbOutputChannels += _inputStreamDesc.at(index)._channelIndexArray.size();
+            if(_firstInputStreamIndex == std::numeric_limits<size_t>::max())
+                _firstInputStreamIndex = index;
+        }
+    }
+
+    IInputStream& inputStream = *_inputStreams.at(_firstInputStreamIndex);
+    const InputStreamDesc& inputStreamDesc = inputStreamsDesc.at(_firstInputStreamIndex);
+
+    // create a transcode case
+    switch(inputStream.getProperties().getStreamType())
+    {
+        case AVMEDIA_TYPE_AUDIO:
+        {
+
+            // filter
+            _filterGraph = new FilterGraph(inputStream.getAudioCodec());
+            // merge two or more audio streams into a single multi-channel stream.
+            if(inputStreams.size() > 1)
+            {
+                std::stringstream mergeOptions;
+                mergeOptions << "inputs=" << inputStreams.size();
+                _filterGraph->addFilter("amerge", mergeOptions.str());
+            }
+
+            AudioCodec audioCodec = AudioCodec(_outputEncoder->getCodec().getCodecType(), _outputEncoder->getCodec().getCodecId());
+            AudioFrameDesc audioFrameDesc = AudioFrameDesc(48000, 1, "s32");
+            audioCodec.setAudioParameters(audioFrameDesc);
+
+            // output stream
+            _outputStream = &outputFile.addAudioStream(audioCodec);
+
+            // buffers to process
+            AudioFrameDesc inputFrameDesc(inputStream.getAudioCodec().getAudioFrameDesc());
+            if(inputStreamDesc.demultiplexing())
+                inputFrameDesc._nbChannels = nbOutputChannels;
+
+            _filteredData = new AudioFrame(inputFrameDesc);
+            _transformedData = new AudioFrame(audioFrameDesc);
+
+            // transform
+            _transform = new AudioTransform();
+            break;
+        }
+        default:
+        {
+            throw std::runtime_error("unupported stream type");
+            break;
+        }
+    }
+    setOffset(offset);
+}
+
 void StreamTranscoder::addDecoder(const InputStreamDesc& inputStreamDesc, IInputStream& inputStream)
 {
     // create a transcode case
@@ -429,11 +508,31 @@ StreamTranscoder::StreamTranscoder(IOutputFile& outputFile, const ProfileLoader:
     }
 }
 
+StreamTranscoder::StreamTranscoder(IOutputFile& outputFile, IEncoder* encoder)
+    : _inputStreamDesc()
+    , _inputStreams()
+    , _outputStream(NULL)
+    , _decodedData()
+    , _filteredData(NULL)
+    , _transformedData(NULL)
+    , _inputDecoders()
+    , _generators()
+    , _currentDecoder(NULL)
+    , _outputEncoder(encoder)
+    , _transform(NULL)
+    , _filterGraph(NULL)
+    , _firstInputStreamIndex(0)
+    , _offset(0)
+    , _needToSwitchToGenerator(false)
+{
+    _outputStream = &outputFile.addCustomStream(encoder->getCodec());
+}
+
 StreamTranscoder::~StreamTranscoder()
 {
     for(std::vector<IFrame*>::iterator it = _decodedData.begin(); it != _decodedData.end(); ++it)
     {
-        delete(*it);
+       delete(*it);
     }
 
     if(_filteredData != NULL && _filteredData->isDataAllocated())

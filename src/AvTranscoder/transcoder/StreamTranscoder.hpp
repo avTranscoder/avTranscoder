@@ -40,9 +40,21 @@ public:
                      const ProfileLoader::Profile& profile, const float offset = 0);
 
     /**
-     * @brief Encode a generated stream
+     * @brief Transcode the given streams.
+     * @note The data are wrapped to one output stream.
+     **/
+    StreamTranscoder(const std::vector<InputStreamDesc>& inputStreamsDesc, std::vector<IInputStream*>& inputStreams, IOutputFile& outputFile, 
+                     IEncoder* encoder, const float offset = 0);
+
+    /**
+     * @brief Create a stream transcoder based on a profile.
      **/
     StreamTranscoder(IOutputFile& outputFile, const ProfileLoader::Profile& profile);
+
+    /**
+     * @brief Create a stream transcoder with a custom Encoder.
+     **/
+    StreamTranscoder(IOutputFile& outputFile, IEncoder* encoder);
 
     ~StreamTranscoder();
 
