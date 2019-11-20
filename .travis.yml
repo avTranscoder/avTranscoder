@@ -81,7 +81,7 @@ addons:
     - cmake
     - swig
     - python-dev
-    - python-nose
+    - python-nose2
     - freeglut3-dev
 
 cache:
