@@ -30,6 +30,7 @@ Transcoder::~Transcoder()
     {
         delete(*it);
     }
+
     for(std::vector<InputFile*>::iterator it = _inputFiles.begin(); it != _inputFiles.end(); ++it)
     {
         delete(*it);
@@ -73,6 +74,17 @@ void Transcoder::addStream(const InputStreamDesc& inputStreamDesc, const Profile
     addStream(inputStreamDescArray, profile, offset);
 }
 
+void Transcoder::addStream(const InputStreamDesc& inputStreamDesc, IEncoder* encoder)
+{
+    // Check filename
+    if(!inputStreamDesc._filename.length())
+        throw std::runtime_error("Can't transcode a stream without a filename indicated.");
+
+    std::vector<InputStreamDesc> inputStreamDescArray;
+    inputStreamDescArray.push_back(inputStreamDesc);
+    addStream(inputStreamDescArray, encoder);
+}
+
 void Transcoder::addStream(const std::vector<InputStreamDesc>& inputStreamDescArray, const std::string& profileName, const float offset)
 {
     // Check number of inputs
@@ -103,6 +115,15 @@ void Transcoder::addStream(const std::vector<InputStreamDesc>& inputStreamDescAr
         throw std::runtime_error("Need a description of at least one input stream to start the process.");
 
     addTranscodeStream(inputStreamDescArray, profile, offset);
+}
+
+void Transcoder::addStream(const std::vector<InputStreamDesc>& inputStreamDescArray, IEncoder* encoder)
+{
+    // Check number of inputs
+    if(inputStreamDescArray.empty())
+        throw std::runtime_error("Need a description of at least one input stream to start the process.");
+
+    addTranscodeStream(inputStreamDescArray, encoder);
 }
 
 void Transcoder::addGenerateStream(const std::string& encodingProfileName)
@@ -280,6 +301,42 @@ void Transcoder::addTranscodeStream(const std::vector<InputStreamDesc>& inputStr
 
     _streamTranscodersAllocated.push_back(
                 new StreamTranscoder(inputStreamDescArray, inputStreams, _outputFile, profile, offset));
+    _streamTranscoders.push_back(_streamTranscodersAllocated.back());
+}
+
+void Transcoder::addTranscodeStream(const std::vector<InputStreamDesc>& inputStreamDescArray, IEncoder* encoder, const float offset)
+{
+    std::stringstream sources;
+    for(size_t index = 0; index < inputStreamDescArray.size(); ++index)
+        sources << inputStreamDescArray.at(index);
+    LOG_INFO("Add transcode stream from the following inputs:" << std::endl << sources.str() 
+                                          << "with encoder=" << encoder->getCodec().getCodecName() << std::endl)
+
+    // Create all streams from the given inputs
+    std::vector<IInputStream*> inputStreams;
+    AVMediaType commonStreamType = AVMEDIA_TYPE_UNKNOWN;
+    for(std::vector<InputStreamDesc>::const_iterator it = inputStreamDescArray.begin(); it != inputStreamDescArray.end(); ++it)
+    {
+        if(it->_filename.empty())
+        {
+            inputStreams.push_back(NULL);
+            continue;
+        }
+
+        InputFile* referenceFile = addInputFile(it->_filename, it->_streamIndex, offset);
+        inputStreams.push_back(&referenceFile->getStream(it->_streamIndex));
+
+        // Check stream type
+        const AVMediaType currentStreamType = referenceFile->getProperties().getStreamPropertiesWithIndex(it->_streamIndex).getStreamType();
+        if(commonStreamType == AVMEDIA_TYPE_UNKNOWN)
+            commonStreamType = currentStreamType;
+        else if(currentStreamType != commonStreamType)
+            throw std::runtime_error("All the given inputs should be of the same type (video, audio...).");
+
+    }
+
+    _streamTranscodersAllocated.push_back(
+                new StreamTranscoder(inputStreamDescArray, inputStreams, _outputFile, encoder, offset));
     _streamTranscoders.push_back(_streamTranscodersAllocated.back());
 }
 
