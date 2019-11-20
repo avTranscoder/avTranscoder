@@ -138,96 +138,96 @@ def testRewrapAudioNegativeOffset():
 
 
 # The output video stream has not the correct duration.
-@nottest
-def testTranscodeVideoPositiveOffset():
-    """
-    Transcode one video stream (profile mpeg2) with offset at the beginning of the process.
-    """
-    inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_AVI_FILE']
-    outputFileName = "testTranscodeVideoPositiveOffset.mov"
-    offset = 10
+# @nottest
+# def testTranscodeVideoPositiveOffset():
+#     """
+#     Transcode one video stream (profile mpeg2) with offset at the beginning of the process.
+#     """
+#     inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_AVI_FILE']
+#     outputFileName = "testTranscodeVideoPositiveOffset.mov"
+#     offset = 10
 
-    ouputFile = av.OutputFile( outputFileName )
-    transcoder = av.Transcoder( ouputFile )
+#     ouputFile = av.OutputFile( outputFileName )
+#     transcoder = av.Transcoder( ouputFile )
 
-    transcoder.addStream( av.InputStreamDesc(inputFileName), "mpeg2", offset )
+#     transcoder.addStream( av.InputStreamDesc(inputFileName), "mpeg2", offset )
 
-    progress = av.ConsoleProgress()
-    transcoder.process( progress )
+#     progress = av.ConsoleProgress()
+#     transcoder.process( progress )
 
-    # get src file
-    src_inputFile = av.InputFile( inputFileName )
-    src_properties = src_inputFile.getProperties()
-    src_videoStream = src_properties.getVideoProperties()[0]
+#     # get src file
+#     src_inputFile = av.InputFile( inputFileName )
+#     src_properties = src_inputFile.getProperties()
+#     src_videoStream = src_properties.getVideoProperties()[0]
 
-    # get dst file
-    dst_inputFile = av.InputFile( outputFileName )
-    dst_properties = dst_inputFile.getProperties()
-    dst_videoStream = dst_properties.getVideoProperties()[0]
+#     # get dst file
+#     dst_inputFile = av.InputFile( outputFileName )
+#     dst_properties = dst_inputFile.getProperties()
+#     dst_videoStream = dst_properties.getVideoProperties()[0]
 
-     # check output duration
-    assert_equals( src_videoStream.getDuration() + offset, dst_videoStream.getDuration() )
-
-
-def testTranscodeVideoNegativeOffset():
-    """
-    Transcode one video stream (profile mpeg2) with a negative offset at the beginning of the process.
-    """
-    inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_AVI_FILE']
-    outputFileName = "testTranscodeVideoNegativeOffset.mov"
-    offset = -5.5
-
-    ouputFile = av.OutputFile( outputFileName )
-    transcoder = av.Transcoder( ouputFile )
-
-    transcoder.addStream( av.InputStreamDesc(inputFileName), "mpeg2", offset )
-
-    progress = av.ConsoleProgress()
-    transcoder.process( progress )
-
-    # get src file
-    src_inputFile = av.InputFile( inputFileName )
-    src_properties = src_inputFile.getProperties()
-    src_videoStream = src_properties.getVideoProperties()[0]
-
-    # get dst file
-    dst_inputFile = av.InputFile( outputFileName )
-    dst_properties = dst_inputFile.getProperties()
-    dst_videoStream = dst_properties.getVideoProperties()[0]
-
-    # check output duration
-    assert_equals( src_videoStream.getDuration() + offset, dst_videoStream.getDuration() )
+#      # check output duration
+#     assert_equals( src_videoStream.getDuration() + offset, dst_videoStream.getDuration() )
 
 
-def testRewrapVideoPositiveOffset():
-    """
-    Rewrap one video stream with offset at the beginning of the process.
-    """
-    inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_AVI_FILE']
-    outputFileName = "testRewrapVideoPositiveOffset.mov"
-    offset = 10
+# def testTranscodeVideoNegativeOffset():
+#     """
+#     Transcode one video stream (profile mpeg2) with a negative offset at the beginning of the process.
+#     """
+#     inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_AVI_FILE']
+#     outputFileName = "testTranscodeVideoNegativeOffset.mov"
+#     offset = -5.5
 
-    ouputFile = av.OutputFile( outputFileName )
-    transcoder = av.Transcoder( ouputFile )
+#     ouputFile = av.OutputFile( outputFileName )
+#     transcoder = av.Transcoder( ouputFile )
 
-    transcoder.addStream( av.InputStreamDesc(inputFileName), "", offset )
+#     transcoder.addStream( av.InputStreamDesc(inputFileName), "mpeg2", offset )
 
-    progress = av.ConsoleProgress()
-    transcoder.process( progress )
+#     progress = av.ConsoleProgress()
+#     transcoder.process( progress )
 
-    # get src file
-    src_inputFile = av.InputFile( inputFileName )
-    src_properties = src_inputFile.getProperties()
-    src_videoStream = src_properties.getVideoProperties()[0]
+#     # get src file
+#     src_inputFile = av.InputFile( inputFileName )
+#     src_properties = src_inputFile.getProperties()
+#     src_videoStream = src_properties.getVideoProperties()[0]
 
-    # get dst file
-    dst_inputFile = av.InputFile( outputFileName )
-    dst_properties = dst_inputFile.getProperties()
-    dst_videoStream = dst_properties.getVideoProperties()[0]
+#     # get dst file
+#     dst_inputFile = av.InputFile( outputFileName )
+#     dst_properties = dst_inputFile.getProperties()
+#     dst_videoStream = dst_properties.getVideoProperties()[0]
 
-    # check output duration
-    assert_equals( src_videoStream.getDuration() + offset, dst_videoStream.getDuration() )
-    assert_equals( src_videoStream.getNbFrames() + ( offset * dst_videoStream.getFps() ), dst_videoStream.getNbFrames() )
+#     # check output duration
+#     assert_equals( src_videoStream.getDuration() + offset, dst_videoStream.getDuration() )
+
+
+# def testRewrapVideoPositiveOffset():
+#     """
+#     Rewrap one video stream with offset at the beginning of the process.
+#     """
+#     inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_AVI_FILE']
+#     outputFileName = "testRewrapVideoPositiveOffset.mov"
+#     offset = 10
+
+#     ouputFile = av.OutputFile( outputFileName )
+#     transcoder = av.Transcoder( ouputFile )
+
+#     transcoder.addStream( av.InputStreamDesc(inputFileName), "", offset )
+
+#     progress = av.ConsoleProgress()
+#     transcoder.process( progress )
+
+#     # get src file
+#     src_inputFile = av.InputFile( inputFileName )
+#     src_properties = src_inputFile.getProperties()
+#     src_videoStream = src_properties.getVideoProperties()[0]
+
+#     # get dst file
+#     dst_inputFile = av.InputFile( outputFileName )
+#     dst_properties = dst_inputFile.getProperties()
+#     dst_videoStream = dst_properties.getVideoProperties()[0]
+
+#     # check output duration
+#     assert_equals( src_videoStream.getDuration() + offset, dst_videoStream.getDuration() )
+#     assert_equals( src_videoStream.getNbFrames() + ( offset * dst_videoStream.getFps() ), dst_videoStream.getNbFrames() )
 
 
 def testRewrapVideoNegativeOffset():
@@ -262,75 +262,75 @@ def testRewrapVideoNegativeOffset():
 
 
 # The output audio stream has not the correct number of samples.
-@nottest
-def testMultipleOffsetFromSameInputFile():
-    """
-    Process multiple streams with different offset at the beginning of the process.
-    """
-    inputFileName = os.environ['AVTRANSCODER_TEST_AUDIO_MOV_FILE']
-    outputFileName = "testMultipleOffsetFromSameInputFile.mov"
-    offset_1 = 10
-    offset_2 = 3
+# @nottest
+# def testMultipleOffsetFromSameInputFile():
+#     """
+#     Process multiple streams with different offset at the beginning of the process.
+#     """
+#     inputFileName = os.environ['AVTRANSCODER_TEST_AUDIO_MOV_FILE']
+#     outputFileName = "testMultipleOffsetFromSameInputFile.mov"
+#     offset_1 = 10
+#     offset_2 = 3
 
-    ouputFile = av.OutputFile( outputFileName )
-    transcoder = av.Transcoder( ouputFile )
+#     ouputFile = av.OutputFile( outputFileName )
+#     transcoder = av.Transcoder( ouputFile )
 
-    transcoder.addStream( av.InputStreamDesc(inputFileName), "", offset_1 )
-    transcoder.addStream( av.InputStreamDesc(inputFileName, 1), "", offset_2 )
+#     transcoder.addStream( av.InputStreamDesc(inputFileName), "", offset_1 )
+#     transcoder.addStream( av.InputStreamDesc(inputFileName, 1), "", offset_2 )
 
-    progress = av.ConsoleProgress()
-    transcoder.process( progress )
+#     progress = av.ConsoleProgress()
+#     transcoder.process( progress )
 
-    # get src file
-    src_inputFile = av.InputFile( inputFileName )
-    src_properties = src_inputFile.getProperties()
-    src_videoStream = src_properties.getVideoProperties()[0]
-    src_audioStream = src_properties.getAudioProperties()[0]
+#     # get src file
+#     src_inputFile = av.InputFile( inputFileName )
+#     src_properties = src_inputFile.getProperties()
+#     src_videoStream = src_properties.getVideoProperties()[0]
+#     src_audioStream = src_properties.getAudioProperties()[0]
 
-    # get dst file
-    dst_inputFile = av.InputFile( outputFileName )
-    dst_properties = dst_inputFile.getProperties()
-    dst_videoStream = dst_properties.getVideoProperties()[0]
-    dst_audioStream = dst_properties.getAudioProperties()[0]
+#     # get dst file
+#     dst_inputFile = av.InputFile( outputFileName )
+#     dst_properties = dst_inputFile.getProperties()
+#     dst_videoStream = dst_properties.getVideoProperties()[0]
+#     dst_audioStream = dst_properties.getAudioProperties()[0]
 
-    # check output duration
-    assert_equals( src_videoStream.getDuration() + offset_1, dst_videoStream.getDuration() )
-    assert_equals( src_videoStream.getNbFrames() + ( offset_1 * dst_videoStream.getFps() ), dst_videoStream.getNbFrames() )
-    assert_equals( src_audioStream.getDuration() + offset_1, dst_audioStream.getDuration() )
-    assert_equals( src_audioStream.getNbSamples() + ( offset_1 * dst_audioStream.getSampleRate() * dst_audioStream.getNbChannels() ), dst_audioStream.getNbSamples() )
+#     # check output duration
+#     assert_equals( src_videoStream.getDuration() + offset_1, dst_videoStream.getDuration() )
+#     assert_equals( src_videoStream.getNbFrames() + ( offset_1 * dst_videoStream.getFps() ), dst_videoStream.getNbFrames() )
+#     assert_equals( src_audioStream.getDuration() + offset_1, dst_audioStream.getDuration() )
+#     assert_equals( src_audioStream.getNbSamples() + ( offset_1 * dst_audioStream.getSampleRate() * dst_audioStream.getNbChannels() ), dst_audioStream.getNbSamples() )
 
 
-def testMultipleOffsetFromSameStream():
-    """
-    Process same stream several times with different offset at the beginning of the process.
-    """
-    inputFileName = os.environ['AVTRANSCODER_TEST_AUDIO_MOV_FILE']
-    outputFileName = "testMultipleOffsetFromSameStream.mov"
-    offset_1 = 2
-    offset_2 = -2
+# def testMultipleOffsetFromSameStream():
+#     """
+#     Process same stream several times with different offset at the beginning of the process.
+#     """
+#     inputFileName = os.environ['AVTRANSCODER_TEST_AUDIO_MOV_FILE']
+#     outputFileName = "testMultipleOffsetFromSameStream.mov"
+#     offset_1 = 2
+#     offset_2 = -2
 
-    ouputFile = av.OutputFile( outputFileName )
-    transcoder = av.Transcoder( ouputFile )
+#     ouputFile = av.OutputFile( outputFileName )
+#     transcoder = av.Transcoder( ouputFile )
 
-    transcoder.addStream( av.InputStreamDesc(inputFileName), "", offset_1 )
-    transcoder.addStream( av.InputStreamDesc(inputFileName), "", offset_2 )
+#     transcoder.addStream( av.InputStreamDesc(inputFileName), "", offset_1 )
+#     transcoder.addStream( av.InputStreamDesc(inputFileName), "", offset_2 )
 
-    progress = av.ConsoleProgress()
-    transcoder.process( progress )
+#     progress = av.ConsoleProgress()
+#     transcoder.process( progress )
 
-    # get src file
-    src_inputFile = av.InputFile( inputFileName )
-    src_properties = src_inputFile.getProperties()
-    src_videoStream = src_properties.getVideoProperties()[0]
+#     # get src file
+#     src_inputFile = av.InputFile( inputFileName )
+#     src_properties = src_inputFile.getProperties()
+#     src_videoStream = src_properties.getVideoProperties()[0]
 
-    # get dst file
-    dst_inputFile = av.InputFile( outputFileName )
-    dst_properties = dst_inputFile.getProperties()
-    dst_videoStream_1 = dst_properties.getVideoProperties()[0]
-    dst_videoStream_2 = dst_properties.getVideoProperties()[1]
+#     # get dst file
+#     dst_inputFile = av.InputFile( outputFileName )
+#     dst_properties = dst_inputFile.getProperties()
+#     dst_videoStream_1 = dst_properties.getVideoProperties()[0]
+#     dst_videoStream_2 = dst_properties.getVideoProperties()[1]
 
-    # check output duration
-    assert_equals( src_videoStream.getDuration() + offset_1, dst_videoStream_1.getDuration() )
-    assert_equals( src_videoStream.getDuration() + offset_1, dst_videoStream_2.getDuration() )
-    assert_equals( src_videoStream.getNbFrames() + ( offset_1 * dst_videoStream_1.getFps() ), dst_videoStream_1.getNbFrames() )
-    assert_equals( src_videoStream.getNbFrames() + ( offset_1 * dst_videoStream_2.getFps() ), dst_videoStream_2.getNbFrames() )
+#     # check output duration
+#     assert_equals( src_videoStream.getDuration() + offset_1, dst_videoStream_1.getDuration() )
+#     assert_equals( src_videoStream.getDuration() + offset_1, dst_videoStream_2.getDuration() )
+#     assert_equals( src_videoStream.getNbFrames() + ( offset_1 * dst_videoStream_1.getFps() ), dst_videoStream_1.getNbFrames() )
+#     assert_equals( src_videoStream.getNbFrames() + ( offset_1 * dst_videoStream_2.getFps() ), dst_videoStream_2.getNbFrames() )

@@ -80,8 +80,9 @@ addons:
     packages:
     - cmake
     - swig
-    - python-dev
-    - python-nose2
+    - python3-dev
+    - python3-nose2
+    - python3
     - freeglut3-dev
 
 cache:

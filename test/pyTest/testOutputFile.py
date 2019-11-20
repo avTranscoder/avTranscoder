@@ -61,11 +61,12 @@ def testCreateOutputFileWithoutExtensionWithMimeType():
     Create an OutputFile with a filename without extension.
     Indicate the Mime Type.
     """
-    mimeType = "application/mp4"
+    mimeType = "video/mp4"
     outputFileName = "testCreateOutputFileWithoutExtensionWithMimeType"
     ouputFile = av.OutputFile( outputFileName, "", mimeType )
 
     assert_equals( ouputFile.getFilename(), outputFileName )
+    print(ouputFile.getFormatMimeType())
     assert_equals( ouputFile.getFormatMimeType(), mimeType )
 
 
