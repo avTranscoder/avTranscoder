@@ -297,8 +297,8 @@ StreamTranscoder::StreamTranscoder(const std::vector<InputStreamDesc>& inputStre
                 _filterGraph->addFilter("amerge", mergeOptions.str());
             }
 
-            AudioCodec audioCodec = AudioCodec(_outputEncoder->getCodec().getCodecType(), _outputEncoder->getCodec().getCodecId());
-            AudioFrameDesc audioFrameDesc = AudioFrameDesc(48000, 1, "s32");
+            AudioCodec audioCodec(_outputEncoder->getCodec().getCodecType(), _outputEncoder->getCodec().getCodecId());
+            AudioFrameDesc audioFrameDesc(48000, 1, "s32");
             audioCodec.setAudioParameters(audioFrameDesc);
 
             // output stream
