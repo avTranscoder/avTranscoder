@@ -85,7 +85,7 @@ class AvExport CustomEncoder
 {
 public:
     CustomEncoder()
-        : _codec(CustomCodec())
+        : _codec()
     {}
     /**
      * @brief Setup the encoder
