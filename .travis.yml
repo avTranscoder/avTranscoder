@@ -82,6 +82,9 @@ addons:
 cache:
   # Caching Ubuntu packages
   apt: true
+  # Caching other directories
+  directories:
+  - ${DEPENDENCY_INSTALL_PATH}
 
 before_script:
   - env | sort
