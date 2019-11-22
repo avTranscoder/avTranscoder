@@ -29,9 +29,12 @@ if  [ -z ${TRAVIS_JOB_ID} ] || [ ! -d "${DEPENDENCY_INSTALL_PATH}/lib/" ]; then
     # x264
     echo ""
     echo "Building x264 (last version)"
+    # or before commit https://code.videolan.org/videolan/x264/commit/e9a5903edf8ca59ef20e6f4894c196f135af735e
+    # => see https://trac.ffmpeg.org/ticket/6932
     DIR=$(mktemp -d x264XXX) && cd ${DIR} && \
-                  git clone --depth 1 git://git.videolan.org/x264 && \
+                  git clone https://code.videolan.org/videolan/x264.git && \
                   cd x264 && \
+                  if [[ ${DEPENDENCY_VERSION} == 2.*.* ]]; then git checkout ba24899b0bf23345921da022f7a51e0c57dbe73d; fi
                   ./configure --prefix="$DEPENDENCY_INSTALL_PATH" --bindir="${DEPENDENCY_INSTALL_PATH}/bin" --enable-shared --disable-asm && \
                   make -k > ${DEPENDENCY_LOG_FILE} 2>&1 && \
                   if [ $? != 0 ]; then cat ${DEPENDENCY_LOG_FILE} && exit 1; fi
