@@ -6,6 +6,7 @@
 %include "std_vector.i"
 %include "std_pair.i"
 %include "std_map.i"
+%include "stdint.i"
 
 %include "AvTranscoder/swig/avException.i"
 %include "AvTranscoder/swig/avExport.i"
