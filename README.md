@@ -8,9 +8,9 @@ Based on FFmpeg/Libav libraries to support various video and audio formats, avTr
 [![Build status](https://ci.appveyor.com/api/projects/status/6urf0otyhtj8xuny?svg=true)](https://ci.appveyor.com/project/cchampet/avtranscoder)
 [![Coverage Status](https://coveralls.io/repos/avTranscoder/avTranscoder/badge.svg)](https://coveralls.io/r/avTranscoder/avTranscoder)
 <a href="https://scan.coverity.com/projects/2626"><img alt="Coverity Scan Build Status" src="https://scan.coverity.com/projects/2626/badge.svg"/></a>
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/avTranscoder/avtranscoder/trend.png)](https://bitdeli.com/free "Bitdeli Badge")  
+<!-- [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/avTranscoder/avtranscoder/trend.png)](https://bitdeli.com/free "Bitdeli Badge")   -->
 
-[![Stories in Progress](https://badge.waffle.io/avTranscoder/avTranscoder.svg?label=2 - Working&title=In Progress)](http://waffle.io/avTranscoder/avTranscoder)   
+<!-- [![Stories in Progress](https://badge.waffle.io/avTranscoder/avTranscoder.svg?label=2 - Working&title=In Progress)](http://waffle.io/avTranscoder/avTranscoder)    -->
 Click on the badge above to have a big picture view of what's in progress and how you can help.  
 
 :warning: The latest avTranscoder API does not fit with libav.
