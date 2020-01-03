@@ -297,20 +297,28 @@ StreamTranscoder::StreamTranscoder(const std::vector<InputStreamDesc>& inputStre
                 _filterGraph->addFilter("amerge", mergeOptions.str());
             }
 
-            AudioCodec audioCodec(_outputEncoder->getCodec().getCodecType(), _outputEncoder->getCodec().getCodecId());
-            AudioFrameDesc audioFrameDesc(48000, 1, "s32");
-            audioCodec.setAudioParameters(audioFrameDesc);
+            AudioFrameDesc inputFrameDesc(inputStream.getAudioCodec().getAudioFrameDesc());
 
             // output stream
-            _outputStream = &outputFile.addAudioStream(audioCodec);
+            AudioCodec outputAudioCodec(_outputEncoder->getCodec().getCodecType(), _outputEncoder->getCodec().getCodecId());
+            AudioFrameDesc outputAudioFrameDesc = outputAudioCodec.getAudioFrameDesc();
+            if(outputAudioFrameDesc._sampleRate == 0) {
+                outputAudioFrameDesc._sampleRate = inputFrameDesc._sampleRate;
+            }
+            if(outputAudioFrameDesc._sampleFormat == AV_SAMPLE_FMT_NONE) {
+                outputAudioFrameDesc._sampleFormat = inputFrameDesc._sampleFormat;
+            }
+            outputAudioFrameDesc._nbChannels = nbOutputChannels;
+            outputAudioCodec.setAudioParameters(outputAudioFrameDesc);
+
+            _outputStream = &outputFile.addAudioStream(outputAudioCodec);
 
             // buffers to process
-            AudioFrameDesc inputFrameDesc(inputStream.getAudioCodec().getAudioFrameDesc());
             if(inputStreamDesc.demultiplexing())
                 inputFrameDesc._nbChannels = nbOutputChannels;
 
             _filteredData = new AudioFrame(inputFrameDesc);
-            _transformedData = new AudioFrame(audioFrameDesc);
+            _transformedData = new AudioFrame(outputAudioFrameDesc);
 
             // transform
             _transform = new AudioTransform();
