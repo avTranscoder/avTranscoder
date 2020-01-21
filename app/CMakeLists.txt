@@ -1,4 +1,5 @@
 # C++ apps
+add_subdirectory(avAudioPhaseMeter)
 add_subdirectory(avInfo)
 add_subdirectory(avMeta)
 add_subdirectory(avPlayer)
