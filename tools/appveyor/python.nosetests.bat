@@ -3,7 +3,7 @@
 set PWD=C:\projects\avtranscoder
 
 :: Get avtranscoder library
-set PYTHONPATH=%AVTRANSCODER_INSTALL_PATH%\lib\python2.7\site-packages;%PYTHONPATH%
+set PYTHONPATH=%AVTRANSCODER_INSTALL_PATH%\lib\python3.5\site-packages;%PYTHONPATH%
 set PATH=%DEPENDENCY_INSTALL_PATH%\bin;%AVTRANSCODER_INSTALL_PATH%\lib;%PATH%
 
 :: Get avtranscoder profiles
@@ -22,7 +22,7 @@ set AVTRANSCODER_TEST_IMAGE_JPG_FILE=%PWD%\avTranscoder-data\image\BigBuckBunny\
 
 :: Launch tests
 cd test\pyTest
-nosetests
+python3 -m nose
 cd ..\..
 
 @echo off

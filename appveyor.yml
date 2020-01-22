@@ -8,7 +8,7 @@ platform:
 environment:
   global:
     DEPENDENCY_NAME: ffmpeg
-    DEPENDENCY_VERSION: 2.4.5
+    DEPENDENCY_VERSION: 4.2.1
     DEPENDENCY_INSTALL_PATH: C:\ProgramData\install-dependency
     AVTRANSCODER_INSTALL_PATH: C:\projects\avtranscoder\build\install-avtranscoder
 
@@ -20,27 +20,29 @@ init:
 
 install:
   # Install build dependencies
+  - choco install python --version=3.5.4
   - choco install -y swig
   - tools/appveyor/win.install.deps.bat
 
   # Get the correct python version
+  - cmd: dir "C:\"
   - ps: if($env:platform -eq 'x86') {
-          $env:PYTHON = "C:\Python27";
+          $env:PYTHON = "C:\Python35";
         }
         else {
-          $env:PYTHON = "C:\Python27-x64";
+          $env:PYTHON = "C:\Python35-x64";
         }
   # Prepend newly installed Python to the PATH of this build
   - cmd: set PATH=%PYTHON%;%PYTHON%\Scripts;%PATH%
   - cmd: echo %PATH%
   # Check that we have the expected version and architecture for Python
-  - "python --version"
-  - "python -c \"import struct; print(struct.calcsize('P') * 8)\""
+  - "python3 --version"
+  - "python3 -c \"import struct; print(struct.calcsize('P') * 8)\""
   # Upgrade to the latest version of pip to avoid it displaying warnings about it being out of date.
-  - pip install --disable-pip-version-check --user --upgrade pip
+  - pip3 install --disable-pip-version-check --user --upgrade pip
 
   # Install tests dependencies
-  - pip install nose
+  - pip3 install nose
 
 build_script:
   - tools/appveyor/build.bat
