@@ -21,6 +21,5 @@ brew install freeglut
 
 # Main dependency
 
-ls -l ${DEPENDENCY_INSTALL_PATH}/lib/
-ls -l ${DEPENDENCY_INSTALL_PATH}/bin/
+rm -Rf ${DEPENDENCY_INSTALL_PATH}/*
 ./tools/travis/linux.install.deps.sh
