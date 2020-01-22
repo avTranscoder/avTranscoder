@@ -9,8 +9,10 @@ brew update
 brew install gcc cmake swig doxygen
 
 # To launch nosetests
+export CFLAGS="-I$(brew --prefix openssl)/include"
+export LDFLAGS="-L$(brew --prefix openssl)/lib"
 brew install pyenv
-pyenv install 3.5.0
+pyenv install -v 3.5.0
 pyenv local 3.5.0
 pip3 install nose
 
@@ -20,4 +22,5 @@ brew install freeglut
 # Main dependency
 
 ls -l ${DEPENDENCY_INSTALL_PATH}/lib/
+ls -l ${DEPENDENCY_INSTALL_PATH}/bin/
 ./tools/travis/linux.install.deps.sh
