@@ -21,7 +21,7 @@ init:
 install:
   # Install build dependencies
   - choco install -y swig
-  - cmd: dir "C:\"
+  - cmd: dir "C:\Python35"
   - tools/appveyor/win.install.deps.bat
 
   # Get the correct python version
@@ -35,8 +35,8 @@ install:
   - cmd: set PATH=%PYTHON%;%PYTHON%\Scripts;%PATH%
   - cmd: echo %PATH%
   # Check that we have the expected version and architecture for Python
-  - "python3 --version"
-  - "python3 -c \"import struct; print(struct.calcsize('P') * 8)\""
+  - "python --version"
+  - "python -c \"import struct; print(struct.calcsize('P') * 8)\""
   # Upgrade to the latest version of pip to avoid it displaying warnings about it being out of date.
   - pip3 install --disable-pip-version-check --user --upgrade pip
 
