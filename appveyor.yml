@@ -21,10 +21,10 @@ init:
 install:
   # Install build dependencies
   - choco install -y swig
+  - cmd: dir "C:\"
   - tools/appveyor/win.install.deps.bat
 
   # Get the correct python version
-  - cmd: dir "C:\"
   - ps: if($env:platform -eq 'x86') {
           $env:PYTHON = "C:\Python35";
         }
