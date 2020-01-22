@@ -22,7 +22,7 @@ set AVTRANSCODER_TEST_IMAGE_JPG_FILE=%PWD%\avTranscoder-data\image\BigBuckBunny\
 
 :: Launch tests
 cd test\pyTest
-python3 -m nose
+python -m nose
 cd ..\..
 
 @echo off
