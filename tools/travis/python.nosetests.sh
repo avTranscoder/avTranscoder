@@ -20,4 +20,9 @@ export AVTRANSCODER_TEST_IMAGE_PNG_FILE=`pwd`/avTranscoder-data/image/BigBuckBun
 export AVTRANSCODER_TEST_IMAGE_JPG_FILE=`pwd`/avTranscoder-data/image/BigBuckBunny/title_anouncement.thumbnail.jpg
 
 # Launch tests
-nosetests3 -w ${TRAVIS_BUILD_DIR}/test/pyTest --with-coverage --nocapture > progress.txt
+nosetests3 -w ${TRAVIS_BUILD_DIR}/test/pyTest --with-coverage --nocapture --verbose > progress.txt
+
+TEST_EXIT_CODE=$?
+if [ $TEST_EXIT_CODE != 0 ]; then cat progress.txt; fi
+
+exit($TEST_EXIT_CODE)
