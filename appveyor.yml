@@ -20,7 +20,6 @@ init:
 
 install:
   # Install build dependencies
-  - choco install python --version=3.5.4
   - choco install -y swig
   - tools/appveyor/win.install.deps.bat
 
