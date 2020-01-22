@@ -257,6 +257,9 @@ def testRewrapVideoNegativeOffset():
     dst_videoStream = dst_properties.getVideoProperties()[0]
 
     # check output duration
+    print("offset: " + str(offset))
+    print("Source duration: " + str(src_videoStream.getDuration()))
+    print("Destination duration: " + str(dst_videoStream.getDuration()))
     assert_equals( src_videoStream.getDuration() + offset, dst_videoStream.getDuration() )
     assert_equals( src_videoStream.getNbFrames() + ( offset * dst_videoStream.getFps() ), dst_videoStream.getNbFrames() )
 
