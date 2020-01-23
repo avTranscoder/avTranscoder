@@ -8,7 +8,7 @@ platform:
 environment:
   global:
     DEPENDENCY_NAME: ffmpeg
-    DEPENDENCY_VERSION: 2.4.5
+    DEPENDENCY_VERSION: 4.2.1
     DEPENDENCY_INSTALL_PATH: C:\ProgramData\install-dependency
     AVTRANSCODER_INSTALL_PATH: C:\projects\avtranscoder\build\install-avtranscoder
 
@@ -25,10 +25,10 @@ install:
 
   # Get the correct python version
   - ps: if($env:platform -eq 'x86') {
-          $env:PYTHON = "C:\Python27";
+          $env:PYTHON = "C:\Python35";
         }
         else {
-          $env:PYTHON = "C:\Python27-x64";
+          $env:PYTHON = "C:\Python35-x64";
         }
   # Prepend newly installed Python to the PATH of this build
   - cmd: set PATH=%PYTHON%;%PYTHON%\Scripts;%PATH%
@@ -37,7 +37,7 @@ install:
   - "python --version"
   - "python -c \"import struct; print(struct.calcsize('P') * 8)\""
   # Upgrade to the latest version of pip to avoid it displaying warnings about it being out of date.
-  - pip install --disable-pip-version-check --user --upgrade pip
+  - "python -m pip install --disable-pip-version-check --user --upgrade pip"
 
   # Install tests dependencies
   - pip install nose
