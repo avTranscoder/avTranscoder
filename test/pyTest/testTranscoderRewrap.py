@@ -190,3 +190,46 @@ def testRewrapRawVideoStream():
 
     # check video properties
     checkStream(src_videoStream, dst_videoStream)
+
+def testRewrapAudioStreamWithUnwrappingProfile():
+    """
+    Rewrap one audio stream with unwrapping profile.
+    """
+    # get src file of wrap
+    inputFileName = os.environ['AVTRANSCODER_TEST_AUDIO_WAVE_FILE']
+
+    unwrappingProfile = av.ProfileMap()
+    unwrappingProfile["avProfileName"] = "wave"
+    unwrappingProfile["avProfileLongName"] = "Wave"
+    unwrappingProfile["avProfileType"] = "avProfileTypeAudio"
+    unwrappingProfile["format"] = "wav"
+
+    src_inputFile = av.InputFile( inputFileName )
+    src_inputFile.setupUnwrapping(unwrappingProfile)
+
+    src_properties = src_inputFile.getProperties()
+    src_audioStream = src_properties.getAudioProperties()[0]
+
+    formatList = src_properties.getFormatName().split(",")
+    outputFileName = "testRewrapAudioStreamWithUnwrappingProfile." + formatList[0]
+    ouputFile = av.OutputFile( outputFileName )
+
+    transcoder = av.Transcoder( ouputFile )
+    transcoder.addStream( av.InputStreamDesc(inputFileName) )
+    processStat = transcoder.process()
+
+    # check process stat returned
+    audioStat = processStat.getAudioStat(0)
+    assert_equals(src_audioStream.getDuration(), audioStat.getDuration())
+
+    # get dst file of wrap
+    dst_inputFile = av.InputFile( outputFileName )
+    dst_properties = dst_inputFile.getProperties()
+    dst_audioStream = dst_properties.getAudioProperties()[0]
+
+    # check format
+    checkFormat(src_properties, dst_properties)
+
+    # check audio properties
+    checkStream(src_audioStream, dst_audioStream)
+

@@ -71,6 +71,17 @@ def testInputFileAnalyseHeaderTryToAccessisGopStructure():
     videoProperties = inputFile.getProperties().getVideoProperties()[0]
     videoProperties.getGopStructure()
 
+@raises(RuntimeError)
+def testInputFileSetupInvalidUnwrappingProfile():
+    """
+    Analyse only header of an InputFile, and try to access a properties computed when access the first GOP.
+    """
+    inputFileName = os.environ['AVTRANSCODER_TEST_VIDEO_MOV_FILE']
+
+    emptyUnwrappingProfile = av.ProfileMap()
+    inputFile = av.InputFile(inputFileName)
+    inputFile.setupUnwrapping(emptyUnwrappingProfile);
+
 
 def testInputFileAnalyseFirstGop():
     """
