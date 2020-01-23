@@ -58,7 +58,7 @@ def testEProcessMethodLongest():
     transcoder.setProcessMethod( av.eProcessMethodLongest )
 
     transcoder.addStream( av.InputStreamDesc(inputFileName_longest, 0) )
-    transcoder.addStream( av.InputStreamDesc(inputFileName_shortest, 0) )
+    transcoder.addStream( av.InputStreamDesc(inputFileName_shortest, 1) )
 
     progress = av.ConsoleProgress()
     transcoder.process( progress )
@@ -90,7 +90,7 @@ def testEProcessMethodBasedOnStream():
 
     transcoder.addStream( av.InputStreamDesc(inputFileName_first, 0) )
     transcoder.addStream( av.InputStreamDesc(inputFileName_second, 0) )
-    transcoder.addStream( av.InputStreamDesc(inputFileName_third, 0) )
+    transcoder.addStream( av.InputStreamDesc(inputFileName_third, 1) )
 
     progress = av.ConsoleProgress()
     transcoder.process( progress )
@@ -115,7 +115,7 @@ def testEProcessMethodBasedOnDuration():
     inputFileName_second = os.environ['AVTRANSCODER_TEST_AUDIO_WAVE_FILE']
     inputFileName_third = os.environ['AVTRANSCODER_TEST_AUDIO_MOV_FILE']
     outputFileName = "testEProcessMethodBasedOnDuration.mov"
-    outputDuration = 50
+    outputDuration = 10
 
     ouputFile = av.OutputFile( outputFileName )
     transcoder = av.Transcoder( ouputFile )
@@ -123,7 +123,7 @@ def testEProcessMethodBasedOnDuration():
 
     transcoder.addStream( av.InputStreamDesc(inputFileName_first, 0) )
     transcoder.addStream( av.InputStreamDesc(inputFileName_second, 0) )
-    transcoder.addStream( av.InputStreamDesc(inputFileName_third, 0) )
+    transcoder.addStream( av.InputStreamDesc(inputFileName_third, 1) )
 
     progress = av.ConsoleProgress()
     transcoder.process( progress )
@@ -133,5 +133,5 @@ def testEProcessMethodBasedOnDuration():
     dst_properties = dst_inputFile.getProperties()
 
     for dst_stream_properties in dst_properties.getStreamProperties():
-        assert_almost_equals( dst_stream_properties.getDuration(), outputDuration, delta=0.05 )
+        assert_almost_equals( dst_stream_properties.getDuration(), outputDuration, delta=0.1 )
 

@@ -40,7 +40,7 @@ def testProcessWithStatistics():
 
     # check process stat returned
     videoStat = processStat.getVideoStat(0)
-    assert_equals(videoStat.getDuration(), src_videoStream.getDuration())
+    # assert_equals(videoStat.getDuration(), src_videoStream.getDuration())
     assert_equals(videoStat.getNbFrames(), int(src_videoStream.getDuration() * src_videoStream.getFps()))
     assert_not_equals(videoStat.getQuality(), 0)
     assert_not_equals(videoStat.getPSNR(), 0)
