@@ -95,3 +95,20 @@ def testGetUnexistedOutputStream():
     outputFileName = "testGetUnexistedOutputStream.mov"
     ouputFile = av.OutputFile(outputFileName)
     ouputFile.getStream(0)
+
+
+def testAddingCustomStream():
+    """
+    Create an OutputFile, and add a custom stream and try to access that stream.
+    """
+    outputFileName = "testAddingCustomStream.mov"
+    ouputFile = av.OutputFile(outputFileName)
+
+    codec = av.AudioCodec(av.eCodecTypeEncoder, "pcm_s24le");
+    addedOutputStream = ouputFile.addCustomStream(codec)
+
+    retrievedOutputStream = ouputFile.getStream(0)
+
+    assert_equals(addedOutputStream.getStreamIndex(), retrievedOutputStream.getStreamIndex())
+    assert_equals(addedOutputStream.getStreamDuration(), retrievedOutputStream.getStreamDuration())
+    assert_equals(addedOutputStream.getNbFrames(), retrievedOutputStream.getNbFrames())
