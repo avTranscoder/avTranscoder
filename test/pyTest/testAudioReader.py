@@ -76,7 +76,7 @@ def testAudioReaderWithGenerator():
 
     # generate 10 frames of silence
     reader.continueWithGenerator()
-    for i in xrange(0, 9):
+    for i in range(0, 9):
         frame = reader.readNextFrame()
         # assuming we generate data of 1920 samples of 2 bytes
         nbSamplesPerChannel = 1920

@@ -5,7 +5,7 @@ set -x
 
 # Get avtranscoder library
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${DEPENDENCY_INSTALL_PATH}/lib
-export PYTHONPATH=${AVTRANSCODER_INSTALL_PATH}/lib/python2.7/site-packages/:$PYTHONPATH
+export PYTHONPATH=${AVTRANSCODER_INSTALL_PATH}/lib/python3.5/site-packages/:$PYTHONPATH
 
 # Get assets
 git clone https://github.com/avTranscoder/avTranscoder-data.git
@@ -20,5 +20,4 @@ export AVTRANSCODER_TEST_IMAGE_PNG_FILE=`pwd`/avTranscoder-data/image/BigBuckBun
 export AVTRANSCODER_TEST_IMAGE_JPG_FILE=`pwd`/avTranscoder-data/image/BigBuckBunny/title_anouncement.thumbnail.jpg
 
 # Launch tests
-nosetests ${TRAVIS_BUILD_DIR}/test/pyTest --with-coverage > progress.txt
-
+nosetests3 -w ${TRAVIS_BUILD_DIR}/test/pyTest --with-coverage --nocapture --verbose > progress.txt

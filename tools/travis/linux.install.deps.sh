@@ -45,7 +45,7 @@ if  [ -z ${TRAVIS_JOB_ID} ] || [ ! -d "${DEPENDENCY_INSTALL_PATH}/lib/" ]; then
     echo ""
     echo "Building libmp3lame (${LAME_VERSION})"
     DIR=$(mktemp -d libmp3lameXXX) && cd ${DIR} && \
-                  curl -L -Os http://downloads.sourceforge.net/project/lame/lame/${LAME_VERSION%.*}/lame-${LAME_VERSION}.tar.gz  && \
+                  curl -L -Os http://downloads.sourceforge.net/project/lame/lame/${LAME_VERSION}/lame-${LAME_VERSION}.tar.gz && \
                   tar xzf lame-${LAME_VERSION}.tar.gz && \
                   cd lame-${LAME_VERSION} && \
                   ./configure --prefix="${DEPENDENCY_INSTALL_PATH}" --bindir="${DEPENDENCY_INSTALL_PATH}/bin" --enable-nasm && \
@@ -171,7 +171,8 @@ if  [ -z ${TRAVIS_JOB_ID} ] || [ ! -d "${DEPENDENCY_INSTALL_PATH}/lib/" ]; then
     export RELEASE_OPTIONS=--disable-debug
     export DEBUG_OPTIONS=--enable-debug=3\ --disable-optimizations\ --disable-sse\ --disable-stripping
     export LICENSING_OPTIONS=--enable-gpl\ --enable-nonfree
-    export THIRD_PARTIES_OPTIONS=--enable-libmp3lame\ --enable-libx264\ --enable-libxvid\ --enable-avresample\ --enable-libvorbis\ --enable-libvpx
+    export THIRD_PARTIES_OPTIONS=--enable-libmp3lame\ --enable-libx264\ --enable-libxvid\ --enable-avresample\ --enable-libvpx
+    export PKG_CONFIG_PATH="${DEPENDENCY_INSTALL_PATH}/lib/pkgconfig"
 
     if [[ ${DEPENDENCY_NAME} == "ffmpeg" ]]; then
 
@@ -207,6 +208,7 @@ if  [ -z ${TRAVIS_JOB_ID} ] || [ ! -d "${DEPENDENCY_INSTALL_PATH}/lib/" ]; then
                       $LICENSING_OPTIONS \
                       $THIRD_PARTIES_OPTIONS && \
                       make -k > ${DEPENDENCY_LOG_FILE} 2>&1 && \
+                      if [ $? != 0 ]; then cat ${DEPENDENCY_LOG_FILE} && exit 1; fi
                       make install && \
                       rm -rf ${DIR}
 

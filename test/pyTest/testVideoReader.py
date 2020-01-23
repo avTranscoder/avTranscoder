@@ -19,7 +19,7 @@ def testVideoReader():
     reader = av.VideoReader(av.InputStreamDesc(inputFileName))
 
     # read all frames and check their size
-    for i in xrange(0, reader.getSourceVideoProperties().getNbFrames()):
+    for i in range(0, reader.getSourceVideoProperties().getNbFrames()):
         frame = reader.readNextFrame()
         bytesPerPixel = reader.getOutputBitDepth() / 8
         assert_equals( frame.getDataSize(), reader.getOutputWidth() * reader.getOutputHeight() * bytesPerPixel )
@@ -37,7 +37,7 @@ def testVideoReaderWithGenerator():
     reader = av.VideoReader(av.InputStreamDesc(inputFileName))
 
     # read all frames and check their size
-    for i in xrange(0, reader.getSourceVideoProperties().getNbFrames()):
+    for i in range(0, reader.getSourceVideoProperties().getNbFrames()):
         frame = reader.readNextFrame()
         bytesPerPixel = reader.getOutputBitDepth() / 8
         assert_equals( frame.getDataSize(), reader.getOutputWidth() * reader.getOutputHeight() * bytesPerPixel )
@@ -47,7 +47,7 @@ def testVideoReaderWithGenerator():
 
     # generate 10 frames of black
     reader.continueWithGenerator()
-    for i in xrange(0, 9):
+    for i in range(0, 9):
         frame = reader.readNextFrame()
         bytesPerPixel = reader.getOutputBitDepth() / 8
         assert_equals( frame.getDataSize(), reader.getOutputWidth() * reader.getOutputHeight() * bytesPerPixel )

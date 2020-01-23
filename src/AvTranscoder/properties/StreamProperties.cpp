@@ -93,8 +93,13 @@ std::string StreamProperties::getCodecName() const
     if(!_codecContext || !_codec)
         throw std::runtime_error("unknown codec");
 
+#ifdef AV_CODEC_CAP_TRUNCATED
+    if(_codec->capabilities & AV_CODEC_CAP_TRUNCATED)
+        _codecContext->flags |= AV_CODEC_FLAG_TRUNCATED;
+#else
     if(_codec->capabilities & CODEC_CAP_TRUNCATED)
         _codecContext->flags |= CODEC_FLAG_TRUNCATED;
+#endif
 
     if(!_codec->name)
         throw std::runtime_error("unknown codec name");
@@ -107,9 +112,13 @@ std::string StreamProperties::getCodecLongName() const
     if(!_codecContext || !_codec)
         throw std::runtime_error("unknown codec");
 
+#ifdef AV_CODEC_CAP_TRUNCATED
+    if(_codec->capabilities & AV_CODEC_CAP_TRUNCATED)
+        _codecContext->flags |= AV_CODEC_FLAG_TRUNCATED;
+#else
     if(_codec->capabilities & CODEC_CAP_TRUNCATED)
         _codecContext->flags |= CODEC_FLAG_TRUNCATED;
-
+#endif
     if(!_codec->long_name)
         throw std::runtime_error("unknown codec long name");
 

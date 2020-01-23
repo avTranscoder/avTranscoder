@@ -120,7 +120,7 @@ def testCheckRawVideoProperties():
     assert_equals(properties.getNbVideoStreams(), 1)
     assert_equals(properties.getDuration(), 0) # file duration is unknown
     assert_equals(properties.getBitRate(), 0) # file bitrate is unknown
-    assert_equals(properties.getFileSize(), 256293L)
+    assert_equals(properties.getFileSize(), 256293)
 
     # Check video stream when analyse the header
     videoStream = properties.getVideoProperties()[0]
@@ -133,7 +133,7 @@ def testCheckRawVideoProperties():
     videoStream = properties.getVideoProperties()[0]
     assert_equals(videoStream.getNbFrames(), 200)
     assert_equals(videoStream.getDuration(), 8)
-    assert_equals(videoStream.getBitRate(), 177200L)
+    assert_equals(videoStream.getBitRate(), 177200)
 
 
 def testCheckAudioProperties():
