@@ -20,7 +20,9 @@ std::vector<avtranscoder::InputStreamDesc> parseConfigFile(const std::string& co
     while(std::getline(configFile, line))
     {
         if(++countLines > 2)
+        {
             throw std::runtime_error("Audio phase analysis can only be done on a stereo pair, i.e. two channels (see usage).");
+        }
 
         std::istringstream is_line(line);
         std::string filename;
@@ -36,7 +38,9 @@ std::vector<avtranscoder::InputStreamDesc> parseConfigFile(const std::string& co
             ss >> streamIndex;
             ss >> separator;
             if(separator == '.')
+            {
                 ss >> channelIndex;
+            }
 
             bool newInputDescAdded = false;
             // if we already have an input description with the same filename/streamIndex, add only the new channelIndex
@@ -49,8 +53,10 @@ std::vector<avtranscoder::InputStreamDesc> parseConfigFile(const std::string& co
                     break;
                 }
             }
-            if(! newInputDescAdded)
+            if(!newInputDescAdded)
+            {
                 result.push_back(avtranscoder::InputStreamDesc(filename, streamIndex, channelIndex));
+            }
         }
     }
 
@@ -83,7 +89,8 @@ int main(int argc, char** argv)
     avtranscoder::preloadCodecsAndFormats();
     avtranscoder::Logger::setLogLevel(AV_LOG_QUIET);
 
-    if(argc < 3) {
+    if(argc < 3)
+    {
         displayUsage(argv[0]);
     }
 
