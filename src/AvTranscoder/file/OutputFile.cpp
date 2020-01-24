@@ -88,6 +88,25 @@ IOutputStream& OutputFile::addAudioStream(const AudioCodec& audioDesc)
     return *outputStream;
 }
 
+IOutputStream& OutputFile::addCustomStream(const ICodec& iCodecDesc)
+{
+    AVStream& stream = _formatContext.addAVStream(iCodecDesc.getAVCodec());
+
+    stream.codec->sample_rate = 48000;
+    stream.codec->channels = 1;
+    stream.codec->channel_layout = AV_CH_LAYOUT_MONO;
+    stream.codec->sample_fmt = AV_SAMPLE_FMT_S32;
+    stream.codec->frame_size = 1920;
+
+    // need to set the time_base on the AVCodecContext of the AVStream
+    av_reduce(&stream.codec->time_base.num, &stream.codec->time_base.den, 1, 1, INT_MAX);
+
+    OutputStream* outputStream = new OutputStream(*this, _formatContext.getNbStreams() - 1);
+    _outputStreams.push_back(outputStream);
+
+    return *outputStream;
+}
+
 IOutputStream& OutputFile::addDataStream(const DataCodec& dataDesc)
 {
     _formatContext.addAVStream(dataDesc.getAVCodec());

@@ -63,6 +63,7 @@ public:
     // If offset is negative, the transcoder will seek in the stream and start process at this specific time.
     void addStream(const InputStreamDesc& inputStreamDesc, const std::string& profileName = "", const float offset = 0);
     void addStream(const InputStreamDesc& inputStreamDesc, const ProfileLoader::Profile& profile, const float offset = 0);
+    void addStream(const InputStreamDesc& inputStreamDesc, IEncoder* encoder);
     //@}
 
     //@{
@@ -71,6 +72,7 @@ public:
     // @param profile: if empty, get the profile from the inputs.
     void addStream(const std::vector<InputStreamDesc>& inputStreamDescArray, const std::string& profileName = "", float offset = 0);
     void addStream(const std::vector<InputStreamDesc>& inputStreamDescArray, const ProfileLoader::Profile& profile, const float offset = 0);
+    void addStream(const std::vector<InputStreamDesc>& inputStreamDescArray, IEncoder* encoder);
     //@}
 
     //@{
@@ -139,6 +141,7 @@ private:
     void addRewrapStream(const InputStreamDesc& inputStreamDesc, const float offset);
     void addTranscodeStream(const std::vector<InputStreamDesc>& inputStreamDescArray, const ProfileLoader::Profile& profile,
                             const float offset = 0);
+    void addTranscodeStream(const std::vector<InputStreamDesc>& inputStreamDescArray, IEncoder* encoder, const float offset = 0);
 
     /**
      * @note If streamIndex is negative, activate all streams of the file.

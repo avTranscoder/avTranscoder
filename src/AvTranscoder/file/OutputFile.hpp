@@ -37,6 +37,7 @@ public:
     IOutputStream& addVideoStream(const VideoCodec& videoDesc);
     IOutputStream& addAudioStream(const AudioCodec& audioDesc);
     IOutputStream& addDataStream(const DataCodec& dataDesc);
+    IOutputStream& addCustomStream(const ICodec& iCodecDesc);
 
     /**
      * @brief Open ressource, write header, and setup specific wrapping options given when call setupWrapping.

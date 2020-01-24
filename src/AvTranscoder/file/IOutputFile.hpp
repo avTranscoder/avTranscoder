@@ -52,6 +52,15 @@ public:
     }
 
     /**
+     * @brief Add a custom output stream
+     * @param iCodecDesc description of output codec
+    **/
+    virtual IOutputStream& addCustomStream(const ICodec& iCodecDesc)
+    {
+        throw std::logic_error("function is not implemented");
+    }
+
+    /**
      * @brief Write the header of file (if necessary)
     **/
     virtual bool beginWrap() = 0;
