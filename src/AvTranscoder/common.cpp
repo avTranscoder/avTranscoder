@@ -15,8 +15,10 @@ namespace avtranscoder
 
 void preloadCodecsAndFormats()
 {
+#if LIBAVFILTER_VERSION_MAJOR < 7
     av_register_all();
     avfilter_register_all();
+#endif
 }
 
 std::string getDescriptionFromErrorCode(const int code)

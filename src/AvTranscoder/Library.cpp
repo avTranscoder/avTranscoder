@@ -105,9 +105,10 @@ Libraries getLibraries()
 std::vector<std::string> getInputExtensions()
 {
     std::vector<std::string> extensions;
-    AVInputFormat* iFormat = NULL;
+    const AVInputFormat* iFormat = NULL;
+    void *iFormatOpaque = NULL;
 
-    while((iFormat = av_iformat_next(iFormat)))
+    while((iFormat = av_demuxer_iterate(&iFormatOpaque)))
     {
         if(iFormat->extensions != NULL)
         {
@@ -143,9 +144,10 @@ std::vector<std::string> getInputExtensions()
 std::vector<std::string> getOutputExtensions()
 {
     std::vector<std::string> extensions;
-    AVOutputFormat* oFormat = NULL;
+    const AVOutputFormat* oFormat = NULL;
+    void *oFormatOpaque = NULL;
 
-    while((oFormat = av_oformat_next(oFormat)))
+    while((oFormat = av_muxer_iterate(&oFormatOpaque)))
     {
         if(oFormat->extensions != NULL)
         {

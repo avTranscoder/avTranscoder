@@ -63,7 +63,7 @@ std::string AvExport getSampleFormatName(const AVSampleFormat sampleFormat);
 /**
  * @return The list of all formats available in FFmpeg / libav.
  */
-std::vector<AVOutputFormat*> getAvailableFormats();
+std::vector<const AVOutputFormat*> getAvailableFormats();
 #endif
 /**
  * @brief Get a map of short/long names of all formats available in FFmpeg / libav.
@@ -87,7 +87,7 @@ NamesMap AvExport getAvailableAudioFormatsNames();
 /**
  * @return The list of all codecs available in FFmpeg / libav.
  */
-std::vector<AVCodec*> getAvailableCodecs();
+std::vector<const AVCodec*> getAvailableCodecs();
 #endif
 
 /**
