@@ -69,7 +69,7 @@ void IFrame::assignValue(const unsigned char value)
 
     // Create the buffer
     const int bufferSize = getDataSize();
-    unsigned char* dataBuffer = static_cast<unsigned char*>(malloc(bufferSize * sizeof(unsigned char)));
+    unsigned char* dataBuffer = static_cast<unsigned char*>(av_malloc(bufferSize * sizeof(unsigned char)));
     memset(dataBuffer, value, bufferSize);
 
     // Fill the frame

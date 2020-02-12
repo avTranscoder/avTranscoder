@@ -5,6 +5,7 @@
 extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavutil/pixdesc.h>
+#include <libavutil/imgutils.h>
 }
 
 #include <stdexcept>
@@ -75,7 +76,7 @@ size_t VideoFrame::getDataSize() const
         return 0;
     }
 
-    const size_t size = avpicture_get_size(getPixelFormat(), getWidth(), getHeight());
+    const size_t size = av_image_get_buffer_size(getPixelFormat(), getWidth(), getHeight(), 1);
     if(size == 0)
         throw std::runtime_error("Unable to determine image buffer size: " + getDescriptionFromErrorCode(size));
     return size;
@@ -92,7 +93,7 @@ void VideoFrame::allocateData()
     _frame->format = _desc._pixelFormat;
 
     // Allocate data
-    const int ret = avpicture_alloc(reinterpret_cast<AVPicture*>(_frame), _desc._pixelFormat, _desc._width, _desc._height);
+    const int ret = av_image_alloc(_frame->data, _frame->linesize, _desc._width, _desc._height, _desc._pixelFormat, 1);
     if(ret < 0)
     {
         const std::string formatName = getPixelFormatName(_desc._pixelFormat);
@@ -109,14 +110,13 @@ void VideoFrame::allocateData()
 
 void VideoFrame::freeData()
 {
-    avpicture_free(reinterpret_cast<AVPicture*>(_frame));
+    av_freep(&_frame->data[0]);
     _dataAllocated = false;
 }
 
 void VideoFrame::assignBuffer(const unsigned char* ptrValue)
 {
-    const int ret =
-        avpicture_fill(reinterpret_cast<AVPicture*>(_frame), ptrValue, getPixelFormat(), getWidth(), getHeight());
+    const int ret = av_image_fill_arrays(_frame->data, _frame->linesize, ptrValue, getPixelFormat(), getWidth(), getHeight(), 1);
     if(ret < 0)
     {
         std::stringstream msg;
