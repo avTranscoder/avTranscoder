@@ -540,7 +540,7 @@ StreamTranscoder::~StreamTranscoder()
 {
     for(std::vector<IFrame*>::iterator it = _decodedData.begin(); it != _decodedData.end(); ++it)
     {
-       delete(*it);
+        delete(*it);
     }
 
     if(_filteredData != NULL && _filteredData->isDataAllocated())
