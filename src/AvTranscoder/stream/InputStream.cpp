@@ -122,9 +122,10 @@ void InputStream::addPacket(const AVPacket& packet)
         return;
     }
 
-    LOG_DEBUG("Add a packet data for the stream " << _streamIndex << " to the cache")
-    _streamCache.push(CodedData());
-    _streamCache.back().copyData(packet.data, packet.size);
+    LOG_DEBUG("Add a packet data for the stream " << _streamIndex << " to the cache");
+    CodedData codedData;
+    codedData.copyData(packet.data, packet.size);
+    _streamCache.push(codedData);
 }
 
 void InputStream::clearBuffering()
