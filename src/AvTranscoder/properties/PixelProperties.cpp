@@ -64,7 +64,7 @@ size_t PixelProperties::getMaxNbBitsInChannels() const
     size_t maxNbBitsInChannels = 0;
     for(unsigned int channelIndex = 0; channelIndex < _pixelDesc->nb_components; ++channelIndex)
     {
-        const size_t nbBits = _pixelDesc->comp[channelIndex].depth_minus1 + 1;
+        const size_t nbBits = _pixelDesc->comp[channelIndex].depth;
         if(nbBits > maxNbBitsInChannels)
             maxNbBitsInChannels = nbBits;
     }
@@ -227,7 +227,7 @@ std::vector<Channel> PixelProperties::getChannels() const
         Channel c;
         c.id = channel;
         c.chromaHeight = (size_t)_pixelDesc->comp[channel].plane;
-        c.bitStep = (size_t)_pixelDesc->comp[channel].step_minus1;
+        c.bitStep = (size_t)_pixelDesc->comp[channel].step - 1;
         channels.push_back(c);
     }
     return channels;

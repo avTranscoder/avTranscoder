@@ -73,7 +73,7 @@ void DataProperties::detectAncillaryData()
             detection = true;
         }
 
-        av_free_packet(&pkt);
+        av_packet_unref(&pkt);
 
         if(detection)
             break;

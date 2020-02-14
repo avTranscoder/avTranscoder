@@ -51,9 +51,9 @@ public:
     void freeData();
     size_t getDataSize() const;
 
-    size_t getSampleRate() const { return av_frame_get_sample_rate(_frame); }
-    size_t getNbChannels() const { return av_frame_get_channels(_frame); }
-    size_t getChannelLayout() const { return av_frame_get_channel_layout(_frame); }
+    size_t getSampleRate() const { return _frame->sample_rate; }
+    size_t getNbChannels() const { return _frame->channels; }
+    size_t getChannelLayout() const { return _frame->channel_layout; }
     std::string getChannelLayoutDesc() const; ///< Get a description of a channel layout (example: '5.1').
     AVSampleFormat getSampleFormat() const { return static_cast<AVSampleFormat>(_frame->format); }
     size_t getBytesPerSample() const;  ///< 0 if unknown sample format

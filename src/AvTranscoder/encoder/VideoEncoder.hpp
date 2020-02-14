@@ -1,7 +1,7 @@
 #ifndef _AV_TRANSCODER_ENCODER_VIDEO_ENCODER_HPP_
 #define _AV_TRANSCODER_ENCODER_VIDEO_ENCODER_HPP_
 
-#include "IEncoder.hpp"
+#include <AvTranscoder/encoder/IEncoder.hpp>
 #include <AvTranscoder/codec/VideoCodec.hpp>
 #include <AvTranscoder/profile/ProfileLoader.hpp>
 

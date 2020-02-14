@@ -45,9 +45,9 @@ AudioFrame::AudioFrame(const AudioFrameDesc& desc, const bool forceDataAllocatio
     , _desc(desc)
 {
     // Set Frame properties
-    av_frame_set_sample_rate(_frame, desc._sampleRate);
-    av_frame_set_channels(_frame, desc._nbChannels);
-    av_frame_set_channel_layout(_frame, av_get_default_channel_layout(desc._nbChannels));
+    _frame->sample_rate = desc._sampleRate;
+    _frame->channels = desc._nbChannels;
+    _frame->channel_layout = av_get_default_channel_layout(desc._nbChannels);
     _frame->format = desc._sampleFormat;
     _frame->nb_samples = getDefaultNbSamples();
 
@@ -102,9 +102,9 @@ void AudioFrame::allocateData()
         LOG_WARN("The AudioFrame seems to already have allocated data. This could lead to memory leaks.")
 
     // Set Frame properties
-    av_frame_set_sample_rate(_frame, _desc._sampleRate);
-    av_frame_set_channels(_frame, _desc._nbChannels);
-    av_frame_set_channel_layout(_frame, av_get_default_channel_layout(_desc._nbChannels));
+    _frame->sample_rate = _desc._sampleRate;
+    _frame->channels = _desc._nbChannels;
+    _frame->channel_layout = av_get_default_channel_layout(_desc._nbChannels);
     _frame->format = _desc._sampleFormat;
     if(_frame->nb_samples == 0)
         _frame->nb_samples = getDefaultNbSamples();

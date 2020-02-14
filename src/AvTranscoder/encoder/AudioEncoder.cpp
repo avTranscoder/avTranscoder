@@ -96,17 +96,18 @@ bool AudioEncoder::encodeFrame(const IFrame& sourceFrame, CodedData& codedFrame)
     AVCodecContext& avCodecContext = _codec.getAVCodecContext();
 
     AVPacket& packet = codedFrame.getAVPacket();
-    if((avCodecContext.coded_frame) && (avCodecContext.coded_frame->pts != (int)AV_NOPTS_VALUE))
+    const AVFrame& srcAvFrame = sourceFrame.getAVFrame();
+    if(srcAvFrame.pts != (int)AV_NOPTS_VALUE)
     {
-        packet.pts = avCodecContext.coded_frame->pts;
+        packet.pts = srcAvFrame.pts;
     }
 
-    if(avCodecContext.coded_frame && avCodecContext.coded_frame->key_frame)
+    if(srcAvFrame.key_frame)
     {
         packet.flags |= AV_PKT_FLAG_KEY;
     }
 
-    return encode(&sourceFrame.getAVFrame(), packet);
+    return encode(&srcAvFrame, packet);
 }
 
 bool AudioEncoder::encodeFrame(CodedData& codedFrame)

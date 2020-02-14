@@ -558,7 +558,7 @@ size_t VideoProperties::analyseGopStructure(IProgress& progress)
         AVFrame& avFrame = frame.getAVFrame();
 
         _gopStructure.push_back(
-            std::make_pair(av_get_picture_type_char(avFrame.pict_type), av_frame_get_pkt_size(&avFrame)));
+            std::make_pair(av_get_picture_type_char(avFrame.pict_type), avFrame.pkt_size));
         _isInterlaced = avFrame.interlaced_frame;
         _isTopFieldFirst = avFrame.top_field_first;
         if(avFrame.pict_type == AV_PICTURE_TYPE_I)

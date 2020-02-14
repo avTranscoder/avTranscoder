@@ -43,7 +43,7 @@ CodedData& CodedData::operator=(const CodedData& other)
 
 CodedData::~CodedData()
 {
-    av_free_packet(&_packet);
+    av_packet_unref(&_packet);
 }
 
 void CodedData::resize(const size_t newSize)
@@ -75,7 +75,7 @@ void CodedData::refData(CodedData& frame)
 
 void CodedData::clear()
 {
-    av_free_packet(&_packet);
+    av_packet_unref(&_packet);
     initAVPacket();
 }
 
@@ -94,7 +94,9 @@ void CodedData::initAVPacket()
 
 void CodedData::copyAVPacket(const AVPacket& avPacket)
 {
-#if AVTRANSCODER_FFMPEG_DEPENDENCY && LIBAVCODEC_VERSION_INT > AV_VERSION_INT(54, 56, 0)
+#if AVTRANSCODER_FFMPEG_DEPENDENCY && LIBAVCODEC_VERSION_MAJOR > 57
+    av_packet_ref(&_packet, &avPacket);
+#elif AVTRANSCODER_FFMPEG_DEPENDENCY && LIBAVCODEC_VERSION_INT > AV_VERSION_INT(54, 56, 0)
     // Need const_cast<AVCodec*> for libav versions from 54.56. to 55.56.
     av_copy_packet(&_packet, const_cast<AVPacket*>(&avPacket));
 #else
