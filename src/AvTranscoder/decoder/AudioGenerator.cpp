@@ -41,6 +41,14 @@ bool AudioGenerator::decodeNextFrame(IFrame& frameBuffer)
             // (which was allocated to expect this number of samples).
             _silent->setNbSamplesPerChannel(frameBuffer.getAVFrame().nb_samples);
         }
+
+        if(_silent->getNbSamplesPerChannel() != (size_t)frameBuffer.getAVFrame().nb_samples) {
+            LOG_DEBUG("Reset next audio frame nb samples and reallocate.")
+            frameBuffer.getAVFrame().nb_samples = _silent->getNbSamplesPerChannel();
+            frameBuffer.freeData();
+            frameBuffer.allocateData();
+        }
+
         LOG_DEBUG("Copy data of the silence when decode next frame")
         frameBuffer.copyData(*_silent);
     }
