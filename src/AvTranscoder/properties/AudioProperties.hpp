@@ -22,7 +22,7 @@ public:
     size_t getBitRate() const; ///< in bits/s, 0 if unknown
     size_t getSampleRate() const;
     size_t getNbChannels() const;
-    size_t getNbSamples() const; ///< All the channels are included.
+    size_t getNbSamples() const; ///< For one channel.
 
     size_t getTicksPerFrame() const;
 

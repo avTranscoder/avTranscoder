@@ -150,11 +150,11 @@ def testCheckAudioProperties():
     expectedAudioBitRate = 4608000
 
     expectedCodecName = 'pcm_s16le'
-    expectedSamples = 5760000
     expectedDuration = 20
     expectedChannels = 6
     expectedChannelLayout = '5.1'
     expectedSampleRate = 48000
+    expectedSamples = expectedSampleRate * expectedDuration;
 
     assert_equals( properties.getBitRate(), expectedTotalBitRate )
     assert_equals( audioStream.getBitRate(), expectedAudioBitRate )
@@ -177,4 +177,5 @@ def testCheckFilePropertiesAsJson():
 
     import json
     # json.loads method throws a ValueError if it is not a valid JSON.
-    json.loads(inputFile.getProperties().allPropertiesAsJson())
+    jsonProps = json.loads(inputFile.getProperties().allPropertiesAsJson())
+    print(jsonProps)

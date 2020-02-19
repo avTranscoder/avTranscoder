@@ -140,7 +140,7 @@ size_t AudioProperties::getNbSamples() const
         throw std::runtime_error("unknown format context");
     size_t nbSamples = _formatContext->streams[_streamIndex]->nb_frames;
     if(nbSamples == 0)
-        nbSamples = getSampleRate() * getNbChannels() * getDuration();
+        nbSamples = getSampleRate() * getDuration();
     return nbSamples;
 }
 
