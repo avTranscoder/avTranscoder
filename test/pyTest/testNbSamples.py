@@ -10,12 +10,12 @@ from nose.tools import *
 from pyAvTranscoder import avtranscoder as av
 
 
-def testNbSamplesAudioRewrap():
+def testNbSamplesAudioRewrapFromWav():
     """
-    Rewrap one audio stream, check nb samples.
+    Rewrap one audio stream from WAV file, check nb samples.
     """
     inputFileName = os.environ['AVTRANSCODER_TEST_AUDIO_WAVE_FILE']
-    outputFileName = "testNbSamplesAudioRewrap.wav"
+    outputFileName = "testNbSamplesAudioRewrapFromWav.wav"
 
     ouputFile = av.OutputFile( outputFileName )
     transcoder = av.Transcoder( ouputFile )
@@ -36,6 +36,35 @@ def testNbSamplesAudioRewrap():
     dst_audioStream = dst_properties.getAudioProperties()[0]
 
     assert_equals( src_audioStream.getNbSamples(), dst_audioStream.getNbSamples() )
+    assert_equals( src_audioStream.getNbSamples(), src_audioStream.getSampleRate() * src_audioStream.getDuration() )
+
+def testNbSamplesAudioRewrapFromMov():
+    """
+    Rewrap one audio stream from MOV file, check nb samples.
+    """
+    inputFileName = os.environ['AVTRANSCODER_TEST_AUDIO_MOV_FILE']
+    outputFileName = "testNbSamplesAudioRewrapFromMov.wav"
+
+    ouputFile = av.OutputFile( outputFileName )
+    transcoder = av.Transcoder( ouputFile )
+
+    transcoder.addStream( av.InputStreamDesc(inputFileName, 1) )
+
+    progress = av.ConsoleProgress()
+    transcoder.process( progress )
+
+    # get src file of rewrap
+    src_inputFile = av.InputFile( inputFileName )
+    src_properties = src_inputFile.getProperties()
+    src_audioStream = src_properties.getAudioProperties()[0]
+
+    # get dst file of rewrap
+    dst_inputFile = av.InputFile( outputFileName )
+    dst_properties = dst_inputFile.getProperties()
+    dst_audioStream = dst_properties.getAudioProperties()[0]
+
+    assert_equals( src_audioStream.getNbSamples(), dst_audioStream.getNbSamples() )
+    assert_equals( src_audioStream.getNbSamples(), src_audioStream.getSampleRate() * src_audioStream.getDuration() )
 
 def testNbSamplesAudioTranscode():
     """
@@ -70,3 +99,4 @@ def testNbSamplesAudioTranscode():
     dst_audioStream = dst_properties.getAudioProperties()[0]
 
     assert_equals( src_audioStream.getNbSamples(), dst_audioStream.getNbSamples() )
+    assert_equals( src_audioStream.getNbSamples(), src_audioStream.getSampleRate() * src_audioStream.getDuration() )

@@ -103,7 +103,7 @@ def testRewrapAudioPositiveOffset():
 
     # check output duration
     assert_equals( src_audioStream.getDuration() + offset, dst_audioStream.getDuration() )
-    assert_equals( src_audioStream.getNbSamples() + ( offset * dst_audioStream.getSampleRate() * dst_audioStream.getNbChannels() ), dst_audioStream.getNbSamples() )
+    assert_equals( src_audioStream.getNbSamples() + ( offset * dst_audioStream.getSampleRate() ), dst_audioStream.getNbSamples() )
 
 
 def testRewrapAudioNegativeOffset():
@@ -134,7 +134,7 @@ def testRewrapAudioNegativeOffset():
 
     # check output duration
     assert_equals( src_audioStream.getDuration() + offset, dst_audioStream.getDuration() )
-    assert_equals( src_audioStream.getNbSamples() + ( offset * dst_audioStream.getSampleRate() * dst_audioStream.getNbChannels() ), dst_audioStream.getNbSamples() )
+    assert_equals( src_audioStream.getNbSamples() + ( offset * dst_audioStream.getSampleRate() ), dst_audioStream.getNbSamples() )
 
 
 # # The output video stream has not the correct duration.
