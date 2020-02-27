@@ -790,6 +790,13 @@ bool StreamTranscoder::processTranscode()
 
         LOG_DEBUG("Encode")
         _outputEncoder->encodeFrame(*_transformedData, data);
+
+        if(_filterGraph->hasFilters())
+        {
+            LOG_DEBUG("Free filtered data") // filled from filter graph sink
+            av_frame_unref(&_filteredData->getAVFrame());
+            _filteredData->freeData();
+        }
     }
     else
     {
