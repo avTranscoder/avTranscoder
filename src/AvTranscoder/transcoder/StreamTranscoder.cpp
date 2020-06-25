@@ -588,6 +588,15 @@ void StreamTranscoder::preProcessCodecLatency()
         wasARewrapCase = true;
     }
 
+    if(_offset > 0) {
+        const double fps = 1.0 * _outputEncoder->getCodec().getAVCodecContext().time_base.den /
+            (_outputEncoder->getCodec().getAVCodecContext().time_base.num * _outputEncoder->getCodec().getAVCodecContext().ticks_per_frame);
+        const double frame_duration = 1.0 / fps;
+        const double output_latency_duration = frame_duration * (latency - 1);
+        LOG_WARN("Compensate for offset with codec latency by " << output_latency_duration << " seconds (fps=" << fps << ", latency=" << latency << ")");
+        _offset -= output_latency_duration;
+    }
+
     while((latency--) > 0)
     {
         processFrame();
