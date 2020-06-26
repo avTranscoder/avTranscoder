@@ -10,7 +10,16 @@ namespace avtranscoder
 
 class AvExport IDecoder
 {
+protected:
+    IDecoder::IDecoder()
+        : _decoded_frames_counter(0)
+    {
+    }
+
 public:
+
+
+
     virtual ~IDecoder(){};
 
     /**
@@ -51,6 +60,16 @@ public:
      * @note Not sense for generators.
      */
     virtual void flushDecoder() {}
+
+    size_t getNbDecodedFrames() { return _decoded_frames_counter; }
+
+protected:
+    void incrementNbDecodedFrames(const size_t& nb_frames = 1) {
+        _decoded_frames_counter += nb_frames;
+    }
+
+private:
+    size_t _decoded_frames_counter;
 };
 }
 
