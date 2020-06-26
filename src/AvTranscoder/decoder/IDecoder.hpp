@@ -11,7 +11,7 @@ namespace avtranscoder
 class AvExport IDecoder
 {
 protected:
-    IDecoder::IDecoder()
+    IDecoder()
         : _decoded_frames_counter(0)
     {
     }
