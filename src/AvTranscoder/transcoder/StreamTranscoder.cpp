@@ -717,6 +717,7 @@ bool StreamTranscoder::processTranscode()
     assert(_outputEncoder != NULL);
     assert(! _decodedData.empty());
     assert(_transform != NULL);
+    assert(_generators.size() == _inputDecoders.size());
 
     LOG_DEBUG("StreamTranscoder::processTranscode")
 
