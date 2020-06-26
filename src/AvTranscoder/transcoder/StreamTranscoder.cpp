@@ -763,8 +763,7 @@ bool StreamTranscoder::processTranscode()
         }
     }
 
-    // Transform
-    CodedData data;
+    // Check decoding status
     bool continueProcess = true;
     for(size_t index = 0; index < decodingStatus.size(); ++index)
     {
@@ -773,6 +772,17 @@ bool StreamTranscoder::processTranscode()
             if(!_filterGraph->hasFilters() || !_filterGraph->hasBufferedFrames(index))
             {
                 continueProcess = false;
+                if(_needToSwitchToGenerator)
+                {
+                    switchToGeneratorDecoder();
+                    LOG_INFO("Force reallocation of the decoded data buffers since the decoders could have cleared them.")
+                    for(std::vector<IFrame*>::iterator it = _decodedData.begin(); it != _decodedData.end(); ++it)
+                    {
+                        if(! (*it)->isDataAllocated())
+                            (*it)->allocateData();
+                    }
+                    return processTranscode();
+                }
                 break;
             }
             LOG_DEBUG("Some frames remain into filter graph buffer " << index);
@@ -784,8 +794,10 @@ bool StreamTranscoder::processTranscode()
         }
     }
 
+    CodedData data;
     if(continueProcess)
     {
+        // Transform
         IFrame* dataToTransform = NULL;
         if(_filterGraph->hasFilters())
         {
