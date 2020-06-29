@@ -17,9 +17,6 @@ protected:
     }
 
 public:
-
-
-
     virtual ~IDecoder(){};
 
     /**
