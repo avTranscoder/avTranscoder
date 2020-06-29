@@ -51,6 +51,8 @@ bool VideoGenerator::decodeNextFrame(IFrame& frameBuffer)
         LOG_DEBUG("Convert data of the image specified when decode next frame")
         _videoTransform.convert(*_inputFrame, frameBuffer);
     }
+
+    incrementNbDecodedFrames();
     return true;
 }
 

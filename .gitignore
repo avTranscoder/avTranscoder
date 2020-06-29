@@ -12,8 +12,10 @@
 *.la
 *.a
 
-build
+build*
 dist
+install*
+test/**/test*[.wav|.avi|.mov|.h264|.mxf]
 
 # CMake
 CMakeCache.txt

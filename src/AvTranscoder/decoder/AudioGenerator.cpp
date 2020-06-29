@@ -58,6 +58,8 @@ bool AudioGenerator::decodeNextFrame(IFrame& frameBuffer)
         LOG_DEBUG("Convert data of the audio specified when decode next frame")
         _audioTransform.convert(*_inputFrame, frameBuffer);
     }
+
+    incrementNbDecodedFrames(_silent->getNbSamplesPerChannel());
     return true;
 }
 

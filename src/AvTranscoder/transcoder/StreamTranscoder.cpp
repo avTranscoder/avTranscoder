@@ -617,7 +617,20 @@ bool StreamTranscoder::processFrame()
     // Manage offset
     if(_offset > 0)
     {
-        const bool endOfOffset = _outputStream->getStreamDuration() >= _offset;
+        bool endOfOffset = false;
+        if(_currentDecoder == _generators.at(0))
+        {
+            const double fps = 1.0 * _outputEncoder->getCodec().getAVCodecContext().time_base.den /
+                (_outputEncoder->getCodec().getAVCodecContext().time_base.num * _outputEncoder->getCodec().getAVCodecContext().ticks_per_frame);
+            const double frame_duration = 1.0 / fps;
+            const double generated_duration = _currentDecoder->getNbDecodedFrames() * frame_duration;
+            endOfOffset = generated_duration >= _offset;
+        }
+        else
+        {
+            endOfOffset = _outputStream->getStreamDuration() >= _offset;
+        }
+
         if(endOfOffset)
         {
             LOG_INFO("End of positive offset")
@@ -704,6 +717,7 @@ bool StreamTranscoder::processTranscode()
     assert(_outputEncoder != NULL);
     assert(! _decodedData.empty());
     assert(_transform != NULL);
+    assert(_generators.size() == _inputDecoders.size());
 
     LOG_DEBUG("StreamTranscoder::processTranscode")
 
@@ -750,8 +764,7 @@ bool StreamTranscoder::processTranscode()
         }
     }
 
-    // Transform
-    CodedData data;
+    // Check decoding status
     bool continueProcess = true;
     for(size_t index = 0; index < decodingStatus.size(); ++index)
     {
@@ -760,6 +773,17 @@ bool StreamTranscoder::processTranscode()
             if(!_filterGraph->hasFilters() || !_filterGraph->hasBufferedFrames(index))
             {
                 continueProcess = false;
+                if(_needToSwitchToGenerator)
+                {
+                    switchToGeneratorDecoder();
+                    LOG_INFO("Force reallocation of the decoded data buffers since the decoders could have cleared them.")
+                    for(std::vector<IFrame*>::iterator it = _decodedData.begin(); it != _decodedData.end(); ++it)
+                    {
+                        if(! (*it)->isDataAllocated())
+                            (*it)->allocateData();
+                    }
+                    return processTranscode();
+                }
                 break;
             }
             LOG_DEBUG("Some frames remain into filter graph buffer " << index);
@@ -771,8 +795,10 @@ bool StreamTranscoder::processTranscode()
         }
     }
 
+    CodedData data;
     if(continueProcess)
     {
+        // Transform
         IFrame* dataToTransform = NULL;
         if(_filterGraph->hasFilters())
         {

@@ -114,6 +114,10 @@ bool VideoDecoder::decodeNextFrame(IFrame& frameBuffer)
             return false;
         }
     }
+
+    if(decodeNextFrame)
+        incrementNbDecodedFrames();
+
     return decodeNextFrame;
 }
 

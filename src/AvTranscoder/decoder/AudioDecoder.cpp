@@ -121,6 +121,10 @@ bool AudioDecoder::decodeNextFrame(IFrame& frameBuffer)
             return false;
         }
     }
+
+    if(decodeNextFrame)
+        incrementNbDecodedFrames(frameBuffer.getAVFrame().nb_samples);
+
     return decodeNextFrame;
 }
 
