@@ -18,7 +18,7 @@ Click on the badge above to have a big picture view of what's in progress and ho
 #### The basics
 * avTranscoder is a C++ library.
 * avTranscoder uses [SWIG](http://www.swig.org/) to generate __Java__ and __Python__ bindings.
-* avTranscoder is multiplateform (Linux, MAC, Windows).
+* avTranscoder is multiplatform (Linux, MAC, Windows).
 * avTranscoder could be based on [Libav](https://libav.org/), [FFmpeg](https://ffmpeg.org/), or your custom fork of one of these librairies.
 
 #### License
