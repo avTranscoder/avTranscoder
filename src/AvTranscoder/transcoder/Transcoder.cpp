@@ -19,6 +19,7 @@ Transcoder::Transcoder(IOutputFile& outputFile)
     , _profileLoader(true)
     , _eProcessMethod(eProcessMethodLongest)
     , _mainStreamIndex(0)
+    , _processedFrames(0)
     , _outputDuration(0)
 {
 }
@@ -160,26 +161,85 @@ void Transcoder::preProcessCodecLatency()
 
 bool Transcoder::processFrame()
 {
+    NoDisplayProgress progress;
+    return processFrame(progress);
+}
+
+bool Transcoder::processFrame(IProgress& progress)
+{
     if(_streamTranscoders.size() == 0)
         return false;
 
     // For each stream, process a frame
+    bool result = true;
     for(size_t streamIndex = 0; streamIndex < _streamTranscoders.size(); ++streamIndex)
     {
-        LOG_DEBUG("Process stream " << streamIndex + 1 << "/" << _streamTranscoders.size())
+        if(!processFrame(progress, streamIndex))
+            result = false;
+    }
+    return result;
+}
 
-        // if a stream failed to process
-        if(!_streamTranscoders.at(streamIndex)->processFrame())
-        {
+bool Transcoder::processFrame(IProgress& progress, const size_t& streamIndex)
+{
+    LOG_DEBUG("Process stream " << streamIndex + 1 << "/" << _streamTranscoders.size())
+
+    IOutputStream::EWrappingStatus status = _streamTranscoders.at(streamIndex)->processFrame();
+    switch(status)
+    {
+        case IOutputStream::eWrappingSuccess:
+            if(streamIndex == 0)
+                _processedFrames++;
+
+            if(!continueProcess(progress))
+                return false;
+            return true;
+
+        case IOutputStream::eWrappingWaitingForData:
+            // the wrapper needs more data to write the current packet
+            if(streamIndex == 0)
+                _processedFrames++;
+
+            if(!continueProcess(progress))
+                return false;
+
+            return processFrame(progress, streamIndex);
+
+        case IOutputStream::eWrappingSkip:
+            return true;
+
+        case IOutputStream::eWrappingError:
+            // if a stream failed to process
             LOG_WARN("Failed to process the stream transcoder at index " << streamIndex)
 
             // if this is the end of the main stream
-            if(streamIndex == _mainStreamIndex) {
+            if(streamIndex == _mainStreamIndex)
                 LOG_INFO("End of process because the main stream at index " << _mainStreamIndex << " failed to process a new frame.")
-                return false;
-            }
-        }
+
+            return false;
     }
+}
+
+bool Transcoder::continueProcess(IProgress& progress) {
+    const float expectedOutputDuration = getExpectedOutputDuration();
+    const float progressDuration = getCurrentOutputDuration();
+
+    // check if JobStatusCancel
+    if(progress.progress((progressDuration > expectedOutputDuration) ? expectedOutputDuration : progressDuration,
+                         expectedOutputDuration) == eJobStatusCancel)
+    {
+        LOG_INFO("End of process because the job was canceled.")
+        return false;
+    }
+
+    // check progressDuration
+    if(_eProcessMethod == eProcessMethodBasedOnDuration && progressDuration >= expectedOutputDuration)
+    {
+        LOG_INFO("End of process because the output program duration ("
+                 << progressDuration << "s) is equal or upper than " << expectedOutputDuration << "s.")
+        return false;
+    }
+
     return true;
 }
 
@@ -205,36 +265,15 @@ ProcessStat Transcoder::process(IProgress& progress)
     const float expectedOutputDuration = getExpectedOutputDuration();
     LOG_INFO("The expected output duration of the program will be " << expectedOutputDuration << "s.")
 
-    size_t frame = 0;
     bool frameProcessed = true;
     while(frameProcessed)
     {
-        LOG_DEBUG("Process frame " << frame)
-        frameProcessed = processFrame();
-        ++frame;
-
-        const float progressDuration = getCurrentOutputDuration();
-
-        // check if JobStatusCancel
-        if(progress.progress((progressDuration > expectedOutputDuration) ? expectedOutputDuration : progressDuration,
-                             expectedOutputDuration) == eJobStatusCancel)
-        {
-            LOG_INFO("End of process because the job was canceled.")
-            break;
-        }
-
-        // check progressDuration
-        if(_eProcessMethod == eProcessMethodBasedOnDuration && progressDuration >= expectedOutputDuration)
-        {
-            LOG_INFO("End of process because the output program duration ("
-                     << progressDuration << "s) is equal or upper than " << expectedOutputDuration << "s.")
-            break;
-        }
+        LOG_INFO("Process frame " << _processedFrames);
+        frameProcessed = processFrame(progress);
     }
 
     _outputFile.endWrap();
-
-    LOG_INFO("End of process: " << ++frame << " frames processed")
+    LOG_INFO("End of process: " << ++_processedFrames << " frames processed")
 
     LOG_INFO("Get process statistics")
     ProcessStat processStat;

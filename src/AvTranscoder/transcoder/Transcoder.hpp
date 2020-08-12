@@ -95,9 +95,11 @@ public:
 
     /**
      * @brief Process the next frame of all streams.
+     * @param progress: choose a progress, or create your own in C++ or in bindings by inherit IProgress class.
      * @return if a frame was processed or not.
      */
-    bool processFrame();
+    bool processFrame(IProgress& progress);
+    bool processFrame(); ///< Call processFrame with no display of progression
 
     /**
      * @brief Process all the streams, and ended the process depending on the transcode politic.
@@ -191,6 +193,19 @@ private:
     void manageSwitchToGenerator();
 
     /**
+     * @brief Process the next frame of the specified stream.
+     * @return whether a frame was processed or not.
+     */
+    bool processFrame(IProgress& progress, const size_t& streamIndex);
+
+    /**
+     * @brief Check whether the process is canceled or not, and whether the process reached the ending condition.
+     * @note The progress is updated in this function.
+     * @return whether the process must continue or stop.
+     */
+    bool continueProcess(IProgress& progress);
+
+    /**
      * @brief Fill the given ProcessStat to summarize the process.
      */
     void fillProcessStat(ProcessStat& processStat);
@@ -205,10 +220,11 @@ private:
     ProfileLoader _profileLoader; ///< Objet to get existing profiles, and add new ones for the Transcoder.
 
     EProcessMethod _eProcessMethod; ///< Processing policy
-    size_t
-        _mainStreamIndex;  ///< Index of stream used to stop the process.
-    float _outputDuration; ///< Duration of output media used to stop the process of transcode in case of
-    /// eProcessMethodBasedOnDuration.
+
+    size_t _mainStreamIndex;  ///< Index of stream used to stop the process.
+    size_t _processedFrames;  ///< Counter for the number of processed frames.
+
+    float _outputDuration; ///< Duration of output media used to stop the process of transcode in case of eProcessMethodBasedOnDuration.
 };
 }
 
