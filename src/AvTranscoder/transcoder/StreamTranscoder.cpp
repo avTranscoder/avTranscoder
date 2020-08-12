@@ -597,7 +597,7 @@ void StreamTranscoder::preProcessCodecLatency()
         _currentDecoder = NULL;
 }
 
-bool StreamTranscoder::processFrame()
+IOutputStream::EWrappingStatus StreamTranscoder::processFrame()
 {
     std::string msg = "Current process case of the stream is a ";
     switch(getProcessCase())
@@ -677,7 +677,7 @@ bool StreamTranscoder::processFrame()
     return processTranscode();
 }
 
-bool StreamTranscoder::processRewrap()
+IOutputStream::EWrappingStatus StreamTranscoder::processRewrap()
 {
     assert(_inputStreams.size() == 1);
     assert(_outputStream != NULL);
@@ -692,25 +692,13 @@ bool StreamTranscoder::processRewrap()
             switchToGeneratorDecoder();
             return processTranscode();
         }
-        return false;
+        return IOutputStream::eWrappingError;
     }
 
-    const IOutputStream::EWrappingStatus wrappingStatus = _outputStream->wrap(data);
-    switch(wrappingStatus)
-    {
-        case IOutputStream::eWrappingSuccess:
-            return true;
-        case IOutputStream::eWrappingWaitingForData:
-            // the wrapper needs more data to write the current packet
-            return processFrame();
-        case IOutputStream::eWrappingError:
-            return false;
-    }
-
-    return true;
+    return _outputStream->wrap(data);
 }
 
-bool StreamTranscoder::processTranscode()
+IOutputStream::EWrappingStatus StreamTranscoder::processTranscode()
 {
     assert(_outputStream != NULL);
     assert(_currentDecoder != NULL);
@@ -840,25 +828,13 @@ bool StreamTranscoder::processTranscode()
                 }
                 return processTranscode();
             }
-            return false;
+            return IOutputStream::eWrappingError;
         }
     }
 
     // Wrap
     LOG_DEBUG("wrap (" << data.getSize() << " bytes)")
-    const IOutputStream::EWrappingStatus wrappingStatus = _outputStream->wrap(data);
-    switch(wrappingStatus)
-    {
-        case IOutputStream::eWrappingSuccess:
-            return true;
-        case IOutputStream::eWrappingWaitingForData:
-            // the wrapper needs more data to write the current packet
-            return processFrame();
-        case IOutputStream::eWrappingError:
-            return false;
-    }
-
-    return true;
+    return _outputStream->wrap(data);
 }
 
 void StreamTranscoder::switchToGeneratorDecoder()

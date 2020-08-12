@@ -69,7 +69,7 @@ public:
      * @brief process a single frame for the current stream
      * @return the process status result
      */
-    bool processFrame();
+    IOutputStream::EWrappingStatus processFrame();
 
     //@{
     // Switch current decoder.
@@ -139,8 +139,8 @@ private:
     void addDecoder(const InputStreamDesc& inputStreamDesc, IInputStream& inputStream);
     void addGenerator(const InputStreamDesc& inputStreamDesc, const ProfileLoader::Profile& profile);
 
-    bool processRewrap();
-    bool processTranscode();
+    IOutputStream::EWrappingStatus processRewrap();
+    IOutputStream::EWrappingStatus processTranscode();
 
 private:
     std::vector<InputStreamDesc> _inputStreamDesc; ///< Description of the data to extract from the input stream.

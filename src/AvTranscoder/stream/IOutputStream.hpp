@@ -16,9 +16,10 @@ public:
      **/
     enum EWrappingStatus
     {
-        eWrappingSuccess = 0,
-        eWrappingWaitingForData,
-        eWrappingError,
+        eWrappingSuccess = 0,    ///< The wrapping succeeded
+        eWrappingWaitingForData, ///< The wrapper expects more data to complete the writing process
+        eWrappingSkip,           ///< The wrapper receives empty data, so nothing is written
+        eWrappingError,          ///< An error occurred during the wrapping process
     };
 
     virtual ~IOutputStream(){};
