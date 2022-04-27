@@ -751,12 +751,6 @@ IOutputStream::EWrappingStatus StreamTranscoder::processTranscode()
             _transformedData->allocateData();
         }
     }
-    else if(_filterGraph->hasFilters())
-    {
-        LOG_DEBUG("Free filtered data") // filled from filter graph sink
-        av_frame_unref(&_filteredData->getAVFrame());
-        _filteredData->freeData();
-    }
 
     // Check decoding status
     bool continueProcess = true;
@@ -811,6 +805,15 @@ IOutputStream::EWrappingStatus StreamTranscoder::processTranscode()
         LOG_DEBUG("Encode")
         _outputEncoder->encodeFrame(*_transformedData, data);
 
+        if(_filterGraph->hasFilters())
+        {
+            LOG_DEBUG("Free filtered data") // filled from filter graph sink
+            if (_filteredData->isVideoFrame()) {
+                // Do not unref filter audio frame, to avoid reallocating it each time
+                av_frame_unref(&_filteredData->getAVFrame());
+            }
+            _filteredData->freeData();
+        }
     }
     else
     {
