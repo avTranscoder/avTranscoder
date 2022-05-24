@@ -47,7 +47,7 @@ void FileProperties::extractStreamProperties(IProgress& progress, const EAnalyse
     // reload properties
     for(size_t streamIndex = 0; streamIndex < _formatContext->getNbStreams(); ++streamIndex)
     {
-        switch(_formatContext->getAVStream(streamIndex).codec->codec_type)
+        switch(_formatContext->getAVStream(streamIndex).codecpar->codec_type)
         {
             case AVMEDIA_TYPE_VIDEO:
             {
@@ -139,9 +139,9 @@ void FileProperties::extractStreamProperties(IProgress& progress, const EAnalyse
 
 std::string FileProperties::getFilename() const
 {
-    if(!_avFormatContext || !_avFormatContext->filename)
+    if(!_avFormatContext || !_avFormatContext->url)
         throw std::runtime_error("unknown file name");
-    return _avFormatContext->filename;
+    return _avFormatContext->url;
 }
 
 std::string FileProperties::getFormatName() const

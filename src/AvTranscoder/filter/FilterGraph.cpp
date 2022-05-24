@@ -211,7 +211,7 @@ bool FilterGraph::areInputFrameSizesEqual(const std::vector<IFrame*>& inputs)
     if(!inputs.size() || inputs.size() == 1)
         return true;
 
-    const int frameSize = inputs.at(0)->getDataSize();
+    size_t frameSize = inputs.at(0)->getDataSize();
     for(size_t index = 1; index < inputs.size(); ++index)
     {
         if(frameSize != inputs.at(index)->getDataSize())

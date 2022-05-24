@@ -27,19 +27,18 @@ StreamProperties::StreamProperties(const FileProperties& fileProperties, const s
             ss << "Stream at index " << _streamIndex << " does not exist.";
             throw std::runtime_error(ss.str());
         }
-        _codecContext = _formatContext->streams[_streamIndex]->codec;
+
+        _codec = avcodec_find_decoder(_formatContext->streams[_streamIndex]->codecpar->codec_id);
+        _codecContext = avcodec_alloc_context3(_codec);
+
+        avcodec_parameters_to_context(_codecContext, _formatContext->streams[_streamIndex]->codecpar);
     }
 
     // find the decoder
-    if(_formatContext && _codecContext)
+    if(_formatContext && _codecContext && _codec)
     {
-        _codec = avcodec_find_decoder(_codecContext->codec_id);
-
-        if(_codec)
-        {
-            // load specific options of the codec
-            loadOptions(_options, _codecContext);
-        }
+        // load specific options of the codec
+        loadOptions(_options, _codecContext);
     }
 }
 
@@ -67,7 +66,7 @@ float StreamProperties::getDuration() const
     const size_t duration = _formatContext->streams[_streamIndex]->duration;
     if(duration == (size_t)AV_NOPTS_VALUE)
     {
-        LOG_WARN("The duration of the stream '" << _streamIndex << "' of file '" << _formatContext->filename
+        LOG_WARN("The duration of the stream '" << _streamIndex << "' of file '" << _formatContext->url
                                                 << "' is unknown.")
         return 0;
     }
@@ -78,7 +77,7 @@ AVMediaType StreamProperties::getStreamType() const
 {
     if(!_formatContext)
         throw std::runtime_error("unknown format context");
-    return _formatContext->streams[_streamIndex]->codec->codec_type;
+    return _formatContext->streams[_streamIndex]->codecpar->codec_type;
 }
 
 size_t StreamProperties::getCodecId() const

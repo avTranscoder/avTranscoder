@@ -54,7 +54,6 @@ public:
 #ifndef SWIG
     AVCodecContext& getAVCodecContext() { return *_avCodecContext; }
     const AVCodecContext& getAVCodecContext() const { return *_avCodecContext; }
-    AVCodec& getAVCodec() { return *_avCodec; }
     const AVCodec& getAVCodec() const { return *_avCodec; }
 #endif
 
@@ -66,7 +65,7 @@ private:
 
 protected:
     AVCodecContext* _avCodecContext;     ///< Full codec instance description (has ownership)
-    AVCodec* _avCodec;                   ///< Codec abstract description
+    const AVCodec* _avCodec;             ///< Codec abstract description
     const bool _isCodecContextAllocated; ///< Is the AVCodecContext allocated by the class
 
     ECodecType _type;

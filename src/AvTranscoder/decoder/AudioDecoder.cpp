@@ -87,7 +87,7 @@ bool AudioDecoder::decodeNextFrame(IFrame& frameBuffer)
     if(!_isSetup)
         setupDecoder();
 
-    int got_frame = 0;
+    bool got_frame = false;
     while(!got_frame)
     {
         CodedData data;
@@ -98,18 +98,27 @@ bool AudioDecoder::decodeNextFrame(IFrame& frameBuffer)
         // decoding
         // @note could be called several times to return the remaining frames (last call with an empty packet)
         // @see CODEC_CAP_DELAY
-        int ret = avcodec_decode_audio4(&_inputStream->getAudioCodec().getAVCodecContext(), &frameBuffer.getAVFrame(),
-                                        &got_frame, &data.getAVPacket());
+        int ret = avcodec_send_packet(&_inputStream->getAudioCodec().getAVCodecContext(), &data.getAVPacket());
+
         if(ret < 0)
         {
-            throw std::runtime_error("An error occurred during audio decoding: " + getDescriptionFromErrorCode(ret));
+            throw std::runtime_error("An error occurred sending audio packet to decoder: " + getDescriptionFromErrorCode(ret));
         }
+
+        ret = avcodec_receive_frame(&_inputStream->getAudioCodec().getAVCodecContext(), &frameBuffer.getAVFrame());
+
+        if (ret == 0)
+            got_frame = true;
+        else if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
+            got_frame = false;
+        else
+            throw std::runtime_error("An error occurred receiving audio packet from decoder: " + getDescriptionFromErrorCode(ret));
 
         // fixed channel layout value after decoding
         frameBuffer.getAVFrame().channel_layout = channelLayout;
 
         // if no frame could be decompressed
-        if(!nextPacketRead && ret == 0 && got_frame == 0)
+        if(!nextPacketRead && got_frame == 0)
             decodeNextFrame = false;
         else
             decodeNextFrame = true;

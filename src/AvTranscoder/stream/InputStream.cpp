@@ -21,7 +21,8 @@ InputStream::InputStream(InputFile& inputFile, const size_t streamIndex)
     , _streamIndex(streamIndex)
     , _isActivated(false)
 {
-    AVCodecContext* context = _inputFile->getFormatContext().getAVStream(_streamIndex).codec;
+    const AVCodec* codec = avcodec_find_encoder(_inputFile->getFormatContext().getAVStream(_streamIndex).codecpar->codec_id);
+    AVCodecContext* context = avcodec_alloc_context3(codec);
 
     switch(context->codec_type)
     {

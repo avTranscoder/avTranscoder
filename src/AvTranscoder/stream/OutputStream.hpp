@@ -26,6 +26,7 @@ public:
 private:
     OutputFile& _outputFile;         ///< Has link (no ownership)
     const AVStream& _outputAVStream; ///< Has link (no ownership)
+    AVCodecContext* _codecContext;
 
     size_t _streamIndex; ///<  Index of the stream in the output file
 

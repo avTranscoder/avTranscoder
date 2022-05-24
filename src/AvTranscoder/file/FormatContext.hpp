@@ -113,8 +113,8 @@ public:
 
 #ifndef SWIG
     AVFormatContext& getAVFormatContext() const { return *_avFormatContext; }
-    AVOutputFormat& getAVOutputFormat() const { return *_avFormatContext->oformat; }
-    AVInputFormat& getAVInputFormat() const { return *_avFormatContext->iformat; }
+    const AVOutputFormat& getAVOutputFormat() const { return *_avFormatContext->oformat; }
+    const AVInputFormat& getAVInputFormat() const { return *_avFormatContext->iformat; }
     AVIOContext& getAVIOContext() const { return *_avFormatContext->pb; }
     AVDictionary& getAVMetaData() const { return *_avFormatContext->metadata; }
     AVStream& getAVStream(size_t index) const;

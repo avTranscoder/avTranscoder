@@ -13,8 +13,7 @@ namespace avtranscoder
 
 void DataProperties::detectAncillaryData()
 {
-    AVPacket pkt;
-    av_init_packet(&pkt);
+    AVPacket pkt = *av_packet_alloc();
 
     bool detection = false;
 

@@ -7,6 +7,7 @@ extern "C" {
 }
 
 #include <stdexcept>
+#include <libavcodec/avcodec.h>
 
 namespace avtranscoder
 {
@@ -93,8 +94,6 @@ void AudioEncoder::setupEncoder(const ProfileLoader::Profile& profile)
 
 bool AudioEncoder::encodeFrame(const IFrame& sourceFrame, CodedData& codedFrame)
 {
-    AVCodecContext& avCodecContext = _codec.getAVCodecContext();
-
     AVPacket& packet = codedFrame.getAVPacket();
     const AVFrame& srcAvFrame = sourceFrame.getAVFrame();
     if(srcAvFrame.pts != (int)AV_NOPTS_VALUE)
@@ -121,7 +120,24 @@ bool AudioEncoder::encode(const AVFrame* decodedData, AVPacket& encodedData)
     encodedData.data = NULL;
 
     AVCodecContext& avCodecContext = _codec.getAVCodecContext();
-#if LIBAVCODEC_VERSION_MAJOR > 53
+#if LIBAVCODEC_VERSION_MAJOR > 58
+    int ret = avcodec_send_frame(&avCodecContext, decodedData);
+    if(ret != 0)
+    {
+        throw std::runtime_error("Error sending audio frame to encoder: " + getDescriptionFromErrorCode(ret));
+    }
+
+    ret = avcodec_receive_packet(&avCodecContext, &encodedData);
+
+    if (ret == 0)
+        return true;
+
+    if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
+        return false;
+
+    throw std::runtime_error("Error receiving audio frame from encoder: " + getDescriptionFromErrorCode(ret));
+
+#elif LIBAVCODEC_VERSION_MAJOR > 53
     int gotPacket = 0;
     const int ret = avcodec_encode_audio2(&avCodecContext, &encodedData, decodedData, &gotPacket);
     if(ret != 0)
