@@ -21,8 +21,13 @@ InputStream::InputStream(InputFile& inputFile, const size_t streamIndex)
     , _streamIndex(streamIndex)
     , _isActivated(false)
 {
-    const AVCodec* codec = avcodec_find_encoder(_inputFile->getFormatContext().getAVStream(_streamIndex).codecpar->codec_id);
+    AVCodecParameters* codecParameters = _inputFile->getFormatContext().getAVStream(_streamIndex).codecpar;
+    const AVCodec* codec = avcodec_find_decoder(codecParameters->codec_id);
     AVCodecContext* context = avcodec_alloc_context3(codec);
+    int ret = avcodec_parameters_to_context(context, codecParameters);
+
+    if (ret < 0)
+        throw std::runtime_error("Failed to copy decoder parameters to input stream context");
 
     switch(context->codec_type)
     {

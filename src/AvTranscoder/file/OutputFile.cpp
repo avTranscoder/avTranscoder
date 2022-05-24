@@ -36,6 +36,10 @@ IOutputStream& OutputFile::addVideoStream(const VideoCodec& videoDesc)
 {
     AVStream& stream = _formatContext.addAVStream(videoDesc.getAVCodec());
 
+    stream.codecpar->codec_type = videoDesc.getAVCodecContext().codec_type;
+    stream.codecpar->codec_id = videoDesc.getAVCodecContext().codec_id;
+    stream.codecpar->codec_tag = videoDesc.getAVCodecContext().codec_tag;
+
     stream.codecpar->width = videoDesc.getAVCodecContext().width;
     stream.codecpar->height = videoDesc.getAVCodecContext().height;
     stream.codecpar->bit_rate = videoDesc.getAVCodecContext().bit_rate;
@@ -69,6 +73,10 @@ IOutputStream& OutputFile::addAudioStream(const AudioCodec& audioDesc)
 {
     AVStream& stream = _formatContext.addAVStream(audioDesc.getAVCodec());
 
+    stream.codecpar->codec_type = audioDesc.getAVCodecContext().codec_type;
+    stream.codecpar->codec_id = audioDesc.getAVCodecContext().codec_id;
+    stream.codecpar->codec_tag = audioDesc.getAVCodecContext().codec_tag;
+
     stream.codecpar->sample_rate = audioDesc.getAVCodecContext().sample_rate;
     stream.codecpar->channels = audioDesc.getAVCodecContext().channels;
     stream.codecpar->channel_layout = audioDesc.getAVCodecContext().channel_layout;
@@ -90,6 +98,10 @@ IOutputStream& OutputFile::addAudioStream(const AudioCodec& audioDesc)
 IOutputStream& OutputFile::addCustomStream(const ICodec& iCodecDesc)
 {
     AVStream& stream = _formatContext.addAVStream(iCodecDesc.getAVCodec());
+
+    stream.codecpar->codec_type = iCodecDesc.getAVCodecContext().codec_type;
+    stream.codecpar->codec_id = iCodecDesc.getAVCodecContext().codec_id;
+    stream.codecpar->codec_tag = iCodecDesc.getAVCodecContext().codec_tag;
 
     stream.codecpar->sample_rate = 48000;
     stream.codecpar->channels = 1;

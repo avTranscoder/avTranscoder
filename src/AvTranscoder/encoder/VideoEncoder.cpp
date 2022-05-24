@@ -138,25 +138,19 @@ bool VideoEncoder::encode(const AVFrame* decodedData, AVPacket& encodedData)
     AVCodecContext& avCodecContext = _codec.getAVCodecContext();
 #if LIBAVCODEC_VERSION_MAJOR > 58
     int ret = avcodec_send_frame(&avCodecContext, decodedData);
-    if(ret != 0)
-    {
+
+    if (ret != 0 && ret != AVERROR_EOF)
         throw std::runtime_error("Error sending video frame to encoder: " + getDescriptionFromErrorCode(ret));
-    }
 
     ret = avcodec_receive_packet(&avCodecContext, &encodedData);
 
     if (ret == 0)
-    {
         return true;
-    }
-    else if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
-    {
+
+    if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
         return false;
-    }
-    else
-    {
-        throw std::runtime_error("Error receiving video frame from encoder: " + getDescriptionFromErrorCode(ret));
-    }
+
+    throw std::runtime_error("Error receiving video frame from encoder: " + getDescriptionFromErrorCode(ret));
 
 #elif LIBAVCODEC_VERSION_MAJOR > 53
     int gotPacket = 0;

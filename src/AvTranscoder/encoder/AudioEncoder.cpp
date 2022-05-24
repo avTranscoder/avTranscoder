@@ -122,10 +122,9 @@ bool AudioEncoder::encode(const AVFrame* decodedData, AVPacket& encodedData)
     AVCodecContext& avCodecContext = _codec.getAVCodecContext();
 #if LIBAVCODEC_VERSION_MAJOR > 58
     int ret = avcodec_send_frame(&avCodecContext, decodedData);
+
     if(ret != 0)
-    {
         throw std::runtime_error("Error sending audio frame to encoder: " + getDescriptionFromErrorCode(ret));
-    }
 
     ret = avcodec_receive_packet(&avCodecContext, &encodedData);
 

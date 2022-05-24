@@ -17,10 +17,12 @@ OutputStream::OutputStream(OutputFile& outputFile, const size_t streamIndex)
     , _lastWrappedPacketDuration(0)
     , _isPTSGenerated(false)
 {
-    const AVCodec* codec = avcodec_find_decoder(_outputAVStream.codecpar->codec_id);
+    const AVCodec* codec = avcodec_find_encoder(_outputAVStream.codecpar->codec_id);
     _codecContext = avcodec_alloc_context3(codec);
 
-    avcodec_parameters_to_context(_codecContext, _outputAVStream.codecpar);
+    int ret = avcodec_parameters_to_context(_codecContext, _outputAVStream.codecpar);
+    if (ret < 0)
+        throw std::runtime_error("Failed to copy encoder parameters to output stream context");
 
 #if LIBAVCODEC_VERSION_MAJOR > 58
     // depending on the format, place global headers in extradata instead of every keyframe

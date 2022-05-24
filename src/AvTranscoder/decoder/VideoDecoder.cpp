@@ -96,12 +96,10 @@ bool VideoDecoder::decodeNextFrame(IFrame& frameBuffer)
         // @see CODEC_CAP_DELAY
         int ret = avcodec_send_packet(&_inputStream->getVideoCodec().getAVCodecContext(), &data.getAVPacket());
 
-        if(ret < 0)
-        {
+        if (ret < 0 && (nextPacketRead || ret != AVERROR_EOF))
             throw std::runtime_error("An error occurred sending video packet to decoder: " + getDescriptionFromErrorCode(ret));
-        }
 
-        ret = avcodec_receive_frame(&_inputStream->getAudioCodec().getAVCodecContext(), &frameBuffer.getAVFrame());
+        ret = avcodec_receive_frame(&_inputStream->getVideoCodec().getAVCodecContext(), &frameBuffer.getAVFrame());
 
         if (ret == 0)
             got_frame = true;
@@ -111,7 +109,7 @@ bool VideoDecoder::decodeNextFrame(IFrame& frameBuffer)
             throw std::runtime_error("An error occurred receiving video packet from decoder: " + getDescriptionFromErrorCode(ret));
 
         // if no frame could be decompressed
-        if(!nextPacketRead && ret == 0 && got_frame == 0)
+        if ((!nextPacketRead && ret == 0) || !got_frame)
             decodeNextFrame = false;
         else
             decodeNextFrame = true;
