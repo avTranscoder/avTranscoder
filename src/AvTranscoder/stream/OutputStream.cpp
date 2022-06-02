@@ -11,11 +11,37 @@ OutputStream::OutputStream(OutputFile& outputFile, const size_t streamIndex)
     : IOutputStream()
     , _outputFile(outputFile)
     , _outputAVStream(outputFile.getFormatContext().getAVStream(streamIndex))
+    , _codecContext()
     , _streamIndex(streamIndex)
     , _wrappedPacketsDuration(0)
     , _lastWrappedPacketDuration(0)
     , _isPTSGenerated(false)
 {
+    const AVCodec* codec = avcodec_find_encoder(_outputAVStream.codecpar->codec_id);
+    _codecContext = avcodec_alloc_context3(codec);
+
+    int ret = avcodec_parameters_to_context(_codecContext, _outputAVStream.codecpar);
+    if (ret < 0)
+        throw std::runtime_error("Failed to copy encoder parameters to output stream context");
+
+#if LIBAVCODEC_VERSION_MAJOR > 58
+    // depending on the format, place global headers in extradata instead of every keyframe
+#ifdef AV_CODEC_FLAG_GLOBAL_HEADER
+    if(_outputFile.getFormatContext().getAVOutputFormat().flags & AVFMT_GLOBALHEADER)
+    {
+        _codecContext->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
+    }
+#endif
+
+    // if the codec is experimental, allow it
+#ifdef AV_CODEC_CAP_EXPERIMENTAL
+    if(codec->capabilities & AV_CODEC_CAP_EXPERIMENTAL)
+    {
+        LOG_WARN("This codec is considered experimental by libav/ffmpeg:" << codec->name);
+        _codecContext->strict_std_compliance = FF_COMPLIANCE_EXPERIMENTAL;
+    }
+#endif
+#endif
 }
 
 float OutputStream::getStreamDuration() const
@@ -73,7 +99,7 @@ IOutputStream::EWrappingStatus OutputStream::wrap(const CodedData& data)
         _wrappedPacketsDuration += data.getAVPacket().duration;
     else
     {
-        switch(_outputAVStream.codec->codec_type)
+        switch(_outputAVStream.codecpar->codec_type)
         {
             case AVMEDIA_TYPE_VIDEO:
             {
@@ -85,14 +111,13 @@ IOutputStream::EWrappingStatus OutputStream::wrap(const CodedData& data)
                 Rational audioPacketDuration;
                 audioPacketDuration.num = 0;
                 audioPacketDuration.den = 0;
-                const int frame_size = av_get_audio_frame_duration(_outputAVStream.codec, data.getSize());
-                if(frame_size <= 0 || _outputAVStream.codec->sample_rate <= 0)
+                const int frame_size = av_get_audio_frame_duration(_codecContext, data.getSize());
+                if (frame_size <= 0 || _outputAVStream.codecpar->sample_rate <= 0)
                     break;
                 audioPacketDuration.num = frame_size;
-                audioPacketDuration.den = _outputAVStream.codec->sample_rate;
-                _wrappedPacketsDuration += av_rescale(1, audioPacketDuration.num * (int64_t)_outputAVStream.time_base.den *
-                                                             _outputAVStream.codec->ticks_per_frame,
-                                                      audioPacketDuration.den * (int64_t)_outputAVStream.time_base.num);
+                audioPacketDuration.den = _outputAVStream.codecpar->sample_rate;
+                _wrappedPacketsDuration += av_rescale(1, audioPacketDuration.num * (int64_t) _outputAVStream.time_base.den * _codecContext->ticks_per_frame,
+                                                      audioPacketDuration.den * (int64_t) _outputAVStream.time_base.num);
                 break;
             }
             default:

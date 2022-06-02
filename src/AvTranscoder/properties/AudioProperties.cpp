@@ -47,6 +47,8 @@ std::string AudioProperties::getSampleFormatLongName() const
             return "signed 16 bits";
         case AV_SAMPLE_FMT_S32:
             return "signed 32 bits";
+        case AV_SAMPLE_FMT_S64:
+            return "signed 64 bits";
         case AV_SAMPLE_FMT_FLT:
             return "float";
         case AV_SAMPLE_FMT_DBL:
@@ -57,6 +59,8 @@ std::string AudioProperties::getSampleFormatLongName() const
             return "signed 16 bits, planar";
         case AV_SAMPLE_FMT_S32P:
             return "signed 32 bits, planar";
+        case AV_SAMPLE_FMT_S64P:
+            return "signed 64 bits, planar";
         case AV_SAMPLE_FMT_FLTP:
             return "float, planar";
         case AV_SAMPLE_FMT_DBLP:
@@ -113,7 +117,7 @@ size_t AudioProperties::getBitRate() const
     if(_codecContext->bit_rate)
         return _codecContext->bit_rate;
 
-    LOG_WARN("The bitrate of the stream '" << _streamIndex << "' of file '" << _formatContext->filename << "' is unknown.")
+    LOG_WARN("The bitrate of the stream '" << _streamIndex << "' of file '" << _formatContext->url << "' is unknown.")
     LOG_INFO("Compute the audio bitrate (suppose PCM audio data).")
 
     const int bitsPerSample = av_get_bits_per_sample(_codecContext->codec_id); // 0 if unknown for the given codec

@@ -35,7 +35,7 @@ VideoProperties::VideoProperties(const FileProperties& fileProperties, const siz
     if(_codecContext)
     {
         _pixelProperties = PixelProperties(_codecContext->pix_fmt);
-        _firstGopTimeCode = _codecContext->timecode_frame_start;
+        _firstGopTimeCode = _formatContext->start_time;
     }
 
     switch(_levelAnalysis)
@@ -350,7 +350,7 @@ size_t VideoProperties::getBitRate() const
     // return bit rate of stream if present or VBR mode
     if(_codecContext->bit_rate || _codecContext->rc_max_rate)
         return _codecContext->bit_rate;
-    LOG_WARN("The bitrate of the stream '" << _streamIndex << "' of file '" << _formatContext->filename << "' is unknown.")
+    LOG_WARN("The bitrate of the stream '" << _streamIndex << "' of file '" << _formatContext->url << "' is unknown.")
 
     if(_levelAnalysis == eAnalyseLevelHeader)
     {
@@ -389,7 +389,7 @@ size_t VideoProperties::getNbFrames() const
     const size_t nbFrames = _formatContext->streams[_streamIndex]->nb_frames;
     if(nbFrames)
         return nbFrames;
-    LOG_WARN("The number of frames of the stream '" << _streamIndex << "' of file '" << _formatContext->filename
+    LOG_WARN("The number of frames of the stream '" << _streamIndex << "' of file '" << _formatContext->url
                                                     << "' is unknown.")
 
     if(_levelAnalysis == eAnalyseLevelHeader)
@@ -472,7 +472,7 @@ float VideoProperties::getDuration() const
     const float duration = StreamProperties::getDuration();
     if(duration != 0)
         return duration;
-    LOG_WARN("The duration of the stream '" << _streamIndex << "' of file '" << _formatContext->filename << "' is unknown.")
+    LOG_WARN("The duration of the stream '" << _streamIndex << "' of file '" << _formatContext->url << "' is unknown.")
 
     if(_levelAnalysis == eAnalyseLevelHeader)
     {

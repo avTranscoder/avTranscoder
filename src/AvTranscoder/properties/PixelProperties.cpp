@@ -204,12 +204,17 @@ bool PixelProperties::isRgbPixelData() const
     return (_pixelDesc->flags & AV_PIX_FMT_FLAG_RGB) == AV_PIX_FMT_FLAG_RGB;
 }
 
-bool PixelProperties::isPseudoPaletted() const
-{
-    if(!_pixelDesc)
+#if LIBAVCODEC_VERSION_MAJOR > 58
+bool PixelProperties::isPaletted() const {
+    if (!_pixelDesc)
         throw std::runtime_error("unable to find pixel description.");
 
-#if LIBAVCODEC_VERSION_MAJOR > 53
+    return (_pixelDesc->flags & AV_PIX_FMT_FLAG_PAL) == AV_PIX_FMT_FLAG_PAL;
+#elif LIBAVCODEC_VERSION_MAJOR > 53
+bool PixelProperties::isPseudoPaletted() const {
+    if (!_pixelDesc)
+        throw std::runtime_error("unable to find pixel description.");
+
     return (_pixelDesc->flags & AV_PIX_FMT_FLAG_PSEUDOPAL) == AV_PIX_FMT_FLAG_PSEUDOPAL;
 #else
     return false;
@@ -315,7 +320,11 @@ PropertyVector& PixelProperties::fillVector(PropertyVector& data) const
     addProperty(data, "bitWiseAcked", &PixelProperties::isBitWisePacked);
     addProperty(data, "isHardwareAccelerated", &PixelProperties::isHardwareAccelerated);
     addProperty(data, "rgbPixel", &PixelProperties::isRgbPixelData);
+#if LIBAVCODEC_VERSION_MAJOR > 58
+    addProperty(data, "isPaletted", &PixelProperties::isPaletted);
+#else
     addProperty(data, "isPseudoPaletted", &PixelProperties::isPseudoPaletted);
+#endif
 
     try
     {

@@ -217,6 +217,8 @@ bool Transcoder::processFrame(IProgress& progress, const size_t& streamIndex)
                 LOG_INFO("End of process because the main stream at index " << _mainStreamIndex << " failed to process a new frame.")
 
             return false;
+        default:
+            throw std::runtime_error("Unsupported wrapping status");
     }
 }
 
@@ -658,13 +660,35 @@ void Transcoder::fillProcessStat(ProcessStat& processStat)
                     const AVCodecContext& encoderContext = encoder->getCodec().getAVCodecContext();
 
 #ifdef AV_CODEC_FLAG_PSNR
-                    if(encoderContext.coded_frame && (encoderContext.flags & AV_CODEC_FLAG_PSNR))
+                    if(encoderContext.coded_side_data && encoderContext.coded_side_data->type == AV_PKT_DATA_QUALITY_FACTOR && (encoderContext.flags & AV_CODEC_FLAG_PSNR))
 #else
                     if(encoderContext.coded_frame && (encoderContext.flags & CODEC_FLAG_PSNR))
 #endif
                     {
-                        videoStat.setQuality(encoderContext.coded_frame->quality);
-                        videoStat.setPSNR(encoderContext.coded_frame->error[0] /
+                        uint8_t* coded_frame = encoderContext.coded_side_data->data;
+                        uint32_t quality = (uint32_t) coded_frame[3] << 24 |
+                                           (uint32_t) coded_frame[2] << 16 |
+                                           (uint32_t) coded_frame[1] << 8 |
+                                           (uint32_t) coded_frame[0];
+                        // uint8_t picture_type = coded_frame[4];
+                        uint8_t error_count = coded_frame[5];
+
+                        uint64_t errors[error_count];
+                        for (int i = 0; i < error_count; ++i)
+                        {
+                            int index = 6 + i;
+                            errors[i] = (uint64_t) coded_frame[index + 7] << 56 |
+                                        (uint64_t) coded_frame[index + 6] << 48 |
+                                        (uint64_t) coded_frame[index + 5] << 40 |
+                                        (uint64_t) coded_frame[index + 4] << 32 |
+                                        (uint64_t) coded_frame[index + 3] << 24 |
+                                        (uint64_t) coded_frame[2] << 16 |
+                                        (uint64_t) coded_frame[1] << 8 |
+                                        (uint64_t) coded_frame[0];
+                        }
+
+                        videoStat.setQuality(quality);
+                        videoStat.setPSNR((double) errors[0] /
                                           (encoderContext.width * encoderContext.height * 255.0 * 255.0));
                     }
                 }

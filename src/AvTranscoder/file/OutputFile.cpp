@@ -3,6 +3,7 @@
 #include <AvTranscoder/util.hpp>
 
 #include <stdexcept>
+#include <libavutil/channel_layout.h>
 
 #ifndef FF_INPUT_BUFFER_PADDING_SIZE
 #define FF_INPUT_BUFFER_PADDING_SIZE 16
@@ -35,30 +36,32 @@ IOutputStream& OutputFile::addVideoStream(const VideoCodec& videoDesc)
 {
     AVStream& stream = _formatContext.addAVStream(videoDesc.getAVCodec());
 
-    stream.codec->width = videoDesc.getAVCodecContext().width;
-    stream.codec->height = videoDesc.getAVCodecContext().height;
-    stream.codec->bit_rate = videoDesc.getAVCodecContext().bit_rate;
-    stream.codec->pix_fmt = videoDesc.getAVCodecContext().pix_fmt;
-    stream.codec->profile = videoDesc.getAVCodecContext().profile;
-    stream.codec->level = videoDesc.getAVCodecContext().level;
-    stream.codec->field_order = videoDesc.getAVCodecContext().field_order;
+    stream.codecpar->codec_type = videoDesc.getAVCodecContext().codec_type;
+    stream.codecpar->codec_id = videoDesc.getAVCodecContext().codec_id;
+    stream.codecpar->codec_tag = videoDesc.getAVCodecContext().codec_tag;
 
-    stream.codec->colorspace = videoDesc.getAVCodecContext().colorspace;
-    stream.codec->color_primaries = videoDesc.getAVCodecContext().color_primaries;
-    stream.codec->color_range = videoDesc.getAVCodecContext().color_range;
-    stream.codec->color_trc = videoDesc.getAVCodecContext().color_trc;
-    stream.codec->chroma_sample_location = videoDesc.getAVCodecContext().chroma_sample_location;
+    stream.codecpar->width = videoDesc.getAVCodecContext().width;
+    stream.codecpar->height = videoDesc.getAVCodecContext().height;
+    stream.codecpar->bit_rate = videoDesc.getAVCodecContext().bit_rate;
+    stream.codecpar->format = videoDesc.getAVCodecContext().pix_fmt;
+    stream.codecpar->profile = videoDesc.getAVCodecContext().profile;
+    stream.codecpar->level = videoDesc.getAVCodecContext().level;
+    stream.codecpar->field_order = videoDesc.getAVCodecContext().field_order;
+
+    stream.codecpar->color_space = videoDesc.getAVCodecContext().colorspace;
+    stream.codecpar->color_primaries = videoDesc.getAVCodecContext().color_primaries;
+    stream.codecpar->color_range = videoDesc.getAVCodecContext().color_range;
+    stream.codecpar->color_trc = videoDesc.getAVCodecContext().color_trc;
+    stream.codecpar->chroma_location = videoDesc.getAVCodecContext().chroma_sample_location;
 
     setOutputStream(stream, videoDesc);
 
     // need to set the time_base on the AVCodecContext and the AVStream
     // compensating the frame rate with the ticks_per_frame and keeping
     // a coherent reading speed.
-    av_reduce(&stream.codec->time_base.num, &stream.codec->time_base.den,
+    av_reduce(&stream.time_base.num, &stream.time_base.den,
               videoDesc.getAVCodecContext().time_base.num * videoDesc.getAVCodecContext().ticks_per_frame,
               videoDesc.getAVCodecContext().time_base.den, INT_MAX);
-
-    stream.time_base = stream.codec->time_base;
 
     OutputStream* outputStream = new OutputStream(*this, _formatContext.getNbStreams() - 1);
     _outputStreams.push_back(outputStream);
@@ -70,16 +73,20 @@ IOutputStream& OutputFile::addAudioStream(const AudioCodec& audioDesc)
 {
     AVStream& stream = _formatContext.addAVStream(audioDesc.getAVCodec());
 
-    stream.codec->sample_rate = audioDesc.getAVCodecContext().sample_rate;
-    stream.codec->channels = audioDesc.getAVCodecContext().channels;
-    stream.codec->channel_layout = audioDesc.getAVCodecContext().channel_layout;
-    stream.codec->sample_fmt = audioDesc.getAVCodecContext().sample_fmt;
-    stream.codec->frame_size = audioDesc.getAVCodecContext().frame_size;
+    stream.codecpar->codec_type = audioDesc.getAVCodecContext().codec_type;
+    stream.codecpar->codec_id = audioDesc.getAVCodecContext().codec_id;
+    stream.codecpar->codec_tag = audioDesc.getAVCodecContext().codec_tag;
+
+    stream.codecpar->sample_rate = audioDesc.getAVCodecContext().sample_rate;
+    stream.codecpar->channels = audioDesc.getAVCodecContext().channels;
+    stream.codecpar->channel_layout = audioDesc.getAVCodecContext().channel_layout;
+    stream.codecpar->format = audioDesc.getAVCodecContext().sample_fmt;
+    stream.codecpar->frame_size = audioDesc.getAVCodecContext().frame_size;
 
     setOutputStream(stream, audioDesc);
 
     // need to set the time_base on the AVCodecContext of the AVStream
-    av_reduce(&stream.codec->time_base.num, &stream.codec->time_base.den, audioDesc.getAVCodecContext().time_base.num,
+    av_reduce(&stream.time_base.num, &stream.time_base.den, audioDesc.getAVCodecContext().time_base.num,
               audioDesc.getAVCodecContext().time_base.den, INT_MAX);
 
     OutputStream* outputStream = new OutputStream(*this, _formatContext.getNbStreams() - 1);
@@ -92,14 +99,18 @@ IOutputStream& OutputFile::addCustomStream(const ICodec& iCodecDesc)
 {
     AVStream& stream = _formatContext.addAVStream(iCodecDesc.getAVCodec());
 
-    stream.codec->sample_rate = 48000;
-    stream.codec->channels = 1;
-    stream.codec->channel_layout = AV_CH_LAYOUT_MONO;
-    stream.codec->sample_fmt = AV_SAMPLE_FMT_S32;
-    stream.codec->frame_size = 1920;
+    stream.codecpar->codec_type = iCodecDesc.getAVCodecContext().codec_type;
+    stream.codecpar->codec_id = iCodecDesc.getAVCodecContext().codec_id;
+    stream.codecpar->codec_tag = iCodecDesc.getAVCodecContext().codec_tag;
+
+    stream.codecpar->sample_rate = 48000;
+    stream.codecpar->channels = 1;
+    stream.codecpar->channel_layout = AV_CH_LAYOUT_MONO;
+    stream.codecpar->format = AV_SAMPLE_FMT_S32;
+    stream.codecpar->frame_size = 1920;
 
     // need to set the time_base on the AVCodecContext of the AVStream
-    av_reduce(&stream.codec->time_base.num, &stream.codec->time_base.den, 1, 1, INT_MAX);
+    av_reduce(&stream.time_base.num, &stream.time_base.den, 1, 1, INT_MAX);
 
     OutputStream* outputStream = new OutputStream(*this, _formatContext.getNbStreams() - 1);
     _outputStreams.push_back(outputStream);
@@ -136,7 +147,7 @@ IOutputStream& OutputFile::getStream(const size_t streamIndex)
 
 std::string OutputFile::getFilename() const
 {
-    return std::string(_formatContext.getAVFormatContext().filename);
+    return std::string(_formatContext.getAVFormatContext().url);
 }
 
 std::string OutputFile::getFormatName() const
@@ -194,8 +205,7 @@ IOutputStream::EWrappingStatus OutputFile::wrap(const CodedData& data, const siz
                                 << _frameCount.at(streamIndex) << ")")
 
     // Packet to wrap
-    AVPacket packet;
-    av_init_packet(&packet);
+    AVPacket packet = *av_packet_alloc();
     packet.stream_index = streamIndex;
     packet.data = (uint8_t*)data.getData();
     packet.size = data.getSize();
@@ -348,6 +358,7 @@ void OutputFile::setupRemainingWrappingOptions()
 
 void OutputFile::setOutputStream(AVStream& avStream, const ICodec& codec)
 {
+#if LIBAVCODEC_VERSION_MAJOR < 59
     // depending on the format, place global headers in extradata instead of every keyframe
     if(_formatContext.getAVOutputFormat().flags & AVFMT_GLOBALHEADER)
     {
@@ -368,13 +379,14 @@ void OutputFile::setOutputStream(AVStream& avStream, const ICodec& codec)
         LOG_WARN("This codec is considered experimental by libav/ffmpeg:" << codec.getCodecName());
         avStream.codec->strict_std_compliance = FF_COMPLIANCE_EXPERIMENTAL;
     }
+#endif
 
     // some codecs need/can use extradata to decode
     uint8_t* srcExtradata = codec.getAVCodecContext().extradata;
     const int srcExtradataSize = codec.getAVCodecContext().extradata_size;
-    avStream.codec->extradata = (uint8_t*)av_malloc(srcExtradataSize + FF_INPUT_BUFFER_PADDING_SIZE);
-    memcpy(avStream.codec->extradata, srcExtradata, srcExtradataSize);
-    memset(((uint8_t*)avStream.codec->extradata) + srcExtradataSize, 0, FF_INPUT_BUFFER_PADDING_SIZE);
-    avStream.codec->extradata_size = codec.getAVCodecContext().extradata_size;
+    avStream.codecpar->extradata = (uint8_t*)av_malloc(srcExtradataSize + FF_INPUT_BUFFER_PADDING_SIZE);
+    memcpy(avStream.codecpar->extradata, srcExtradata, srcExtradataSize);
+    memset(((uint8_t*)avStream.codecpar->extradata) + srcExtradataSize, 0, FF_INPUT_BUFFER_PADDING_SIZE);
+    avStream.codecpar->extradata_size = codec.getAVCodecContext().extradata_size;
 }
 }

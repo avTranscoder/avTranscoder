@@ -87,7 +87,7 @@ void CodedData::assign(const size_t size, const int value)
 
 void CodedData::initAVPacket()
 {
-    av_init_packet(&_packet);
+    _packet = *av_packet_alloc();
     _packet.data = NULL;
     _packet.size = 0;
 }

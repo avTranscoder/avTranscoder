@@ -56,7 +56,7 @@ void Logger::log(const int level, const std::string& msg)
     logMessage += "\n";
 
     // send message
-    av_log(NULL, level, logMessage.c_str());
+    av_log(NULL, level, "%s", logMessage.c_str());
 }
 
 void Logger::logInFile()

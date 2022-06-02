@@ -11,6 +11,7 @@ extern "C" {
 #else
 #include <libswresample/version.h>
 #endif
+#include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
 #include <libavfilter/avfilter.h>
 }

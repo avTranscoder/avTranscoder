@@ -46,10 +46,6 @@ FormatContext::~FormatContext()
     if(!_avFormatContext)
         return;
 
-    // free the streams added
-    for(std::vector<AVStream*>::iterator it = _avStreamAllocated.begin(); it != _avStreamAllocated.end(); ++it)
-        avcodec_close((*it)->codec);
-
     // free the format context
     if(_isOpen)
         avformat_close_input(&_avFormatContext);
@@ -151,7 +147,7 @@ AVStream& FormatContext::addAVStream(const AVCodec& avCodec)
 
 bool FormatContext::seek(const uint64_t position, const int flag)
 {
-    LOG_INFO("Seek in '" << _avFormatContext->filename << "' at " << position << " with flag '" << flag << "'")
+    LOG_INFO("Seek in '" << _avFormatContext->url << "' at " << position << " with flag '" << flag << "'")
     const int err = av_seek_frame(_avFormatContext, -1, position, flag);
     if(err < 0)
     {
@@ -186,12 +182,13 @@ AVStream& FormatContext::getAVStream(size_t index) const
 
 void FormatContext::setFilename(const std::string& filename)
 {
-    strcpy(&_avFormatContext->filename[0], filename.c_str());
+    _avFormatContext->url = (char*)av_malloc(filename.size());
+    strcpy(_avFormatContext->url, filename.c_str());
 }
 
 void FormatContext::setOutputFormat(const std::string& filename, const std::string& shortName, const std::string& mimeType)
 {
-    AVOutputFormat* oformat = av_guess_format(shortName.c_str(), filename.c_str(), mimeType.c_str());
+    const AVOutputFormat* oformat = av_guess_format(shortName.c_str(), filename.c_str(), mimeType.c_str());
     if(!oformat)
     {
         std::string msg("Unable to find format for ");
