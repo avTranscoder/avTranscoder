@@ -204,21 +204,11 @@ bool PixelProperties::isRgbPixelData() const
     return (_pixelDesc->flags & AV_PIX_FMT_FLAG_RGB) == AV_PIX_FMT_FLAG_RGB;
 }
 
-#if LIBAVCODEC_VERSION_MAJOR > 58
 bool PixelProperties::isPaletted() const {
     if (!_pixelDesc)
         throw std::runtime_error("unable to find pixel description.");
 
     return (_pixelDesc->flags & AV_PIX_FMT_FLAG_PAL) == AV_PIX_FMT_FLAG_PAL;
-#elif LIBAVCODEC_VERSION_MAJOR > 53
-bool PixelProperties::isPseudoPaletted() const {
-    if (!_pixelDesc)
-        throw std::runtime_error("unable to find pixel description.");
-
-    return (_pixelDesc->flags & AV_PIX_FMT_FLAG_PSEUDOPAL) == AV_PIX_FMT_FLAG_PSEUDOPAL;
-#else
-    return false;
-#endif
 }
 
 std::vector<Channel> PixelProperties::getChannels() const

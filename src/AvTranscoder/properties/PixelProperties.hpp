@@ -71,11 +71,7 @@ public:
     bool isBitWisePacked() const;
     bool isHardwareAccelerated() const;
     bool isRgbPixelData() const;
-#if LIBAVCODEC_VERSION_MAJOR > 58
     bool isPaletted() const;
-#else
-    bool isPseudoPaletted() const;
-#endif
 
     std::vector<Channel> getChannels() const;
 
