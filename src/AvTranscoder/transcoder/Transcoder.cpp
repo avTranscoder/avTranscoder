@@ -673,22 +673,24 @@ void Transcoder::fillProcessStat(ProcessStat& processStat)
                         // uint8_t picture_type = coded_frame[4];
                         uint8_t error_count = coded_frame[5];
 
-                        uint64_t errors[error_count];
+                        std::vector<uint64_t> errors;
                         for (int i = 0; i < error_count; ++i)
                         {
                             int index = 6 + i;
-                            errors[i] = (uint64_t) coded_frame[index + 7] << 56 |
-                                        (uint64_t) coded_frame[index + 6] << 48 |
-                                        (uint64_t) coded_frame[index + 5] << 40 |
-                                        (uint64_t) coded_frame[index + 4] << 32 |
-                                        (uint64_t) coded_frame[index + 3] << 24 |
-                                        (uint64_t) coded_frame[2] << 16 |
-                                        (uint64_t) coded_frame[1] << 8 |
-                                        (uint64_t) coded_frame[0];
+                            errors.push_back(
+                                (uint64_t) coded_frame[index + 7] << 56 |
+                                (uint64_t) coded_frame[index + 6] << 48 |
+                                (uint64_t) coded_frame[index + 5] << 40 |
+                                (uint64_t) coded_frame[index + 4] << 32 |
+                                (uint64_t) coded_frame[index + 3] << 24 |
+                                (uint64_t) coded_frame[2] << 16 |
+                                (uint64_t) coded_frame[1] << 8 |
+                                (uint64_t) coded_frame[0]
+                            );
                         }
 
                         videoStat.setQuality(quality);
-                        videoStat.setPSNR((double) errors[0] /
+                        videoStat.setPSNR((double) errors.at(0) /
                                           (encoderContext.width * encoderContext.height * 255.0 * 255.0));
                     }
                 }
