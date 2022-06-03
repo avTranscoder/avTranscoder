@@ -44,7 +44,6 @@ StreamProperties::StreamProperties(const FileProperties& fileProperties, const s
 
 StreamProperties::~StreamProperties()
 {
-    avcodec_free_context(&_codecContext);
 }
 
 size_t StreamProperties::getStreamId() const
