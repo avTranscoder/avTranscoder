@@ -11,6 +11,7 @@ target_link_libraries(avinfo avtranscoder-shared)
 
 # Install app
 if(WIN32)
+	set_target_properties(avinfo PROPERTIES OUTPUT_NAME "avinfo-${AVTRANSCODER_VERSION}")
 	set(BINARY_FILES "${CMAKE_CURRENT_BINARY_DIR}/avinfo.exe" "${CMAKE_CURRENT_BINARY_DIR}/avinfo-${AVTRANSCODER_VERSION}.exe")
 else()
 	set(BINARY_FILES "${CMAKE_CURRENT_BINARY_DIR}/avinfo" "${CMAKE_CURRENT_BINARY_DIR}/avinfo-${AVTRANSCODER_VERSION}")

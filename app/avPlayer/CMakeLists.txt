@@ -33,6 +33,7 @@ target_link_libraries(avplayer avtranscoder-shared ${OPENGL_LIBRARIES} ${GLUT_LI
 
 # Install app
 if(WIN32)
+	set_target_properties(avplayer PROPERTIES OUTPUT_NAME "avplayer-${AVTRANSCODER_VERSION}")
 	set(BINARY_FILES "${CMAKE_CURRENT_BINARY_DIR}/avplayer.exe" "${CMAKE_CURRENT_BINARY_DIR}/avplayer-${AVTRANSCODER_VERSION}.exe")
 else()
 	set(BINARY_FILES "${CMAKE_CURRENT_BINARY_DIR}/avplayer" "${CMAKE_CURRENT_BINARY_DIR}/avplayer-${AVTRANSCODER_VERSION}")
