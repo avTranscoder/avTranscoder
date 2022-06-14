@@ -11,7 +11,7 @@ target_link_libraries(avmeta avtranscoder-shared)
 
 # Install app
 if(WIN32)
-	set(BINARY_FILES "${CMAKE_CURRENT_BINARY_DIR}/avmeta.exe")
+	set(BINARY_FILES "${CMAKE_CURRENT_BINARY_DIR}/avmeta.exe" "${CMAKE_CURRENT_BINARY_DIR}/avmeta-${AVTRANSCODER_VERSION}.exe")
 else()
 	set(BINARY_FILES "${CMAKE_CURRENT_BINARY_DIR}/avmeta" "${CMAKE_CURRENT_BINARY_DIR}/avmeta-${AVTRANSCODER_VERSION}")
 endif()

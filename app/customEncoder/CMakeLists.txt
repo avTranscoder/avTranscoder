@@ -11,7 +11,7 @@ target_link_libraries(custom-encoder avtranscoder-shared)
 
 # Install app
 if(WIN32)
-	set(BINARY_FILES "${CMAKE_CURRENT_BINARY_DIR}/custom-encoder.exe")
+	set(BINARY_FILES "${CMAKE_CURRENT_BINARY_DIR}/custom-encoder.exe" "${CMAKE_CURRENT_BINARY_DIR}/custom-encoder-${AVTRANSCODER_VERSION}.exe")
 else()
 	set(BINARY_FILES "${CMAKE_CURRENT_BINARY_DIR}/custom-encoder" "${CMAKE_CURRENT_BINARY_DIR}/custom-encoder-${AVTRANSCODER_VERSION}")
 endif()

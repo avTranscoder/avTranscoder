@@ -11,7 +11,7 @@ target_link_libraries(avaudiophasemeter avtranscoder-shared)
 
 # Install app
 if(WIN32)
-	set(BINARY_FILES "${CMAKE_CURRENT_BINARY_DIR}/avaudiophasemeter.exe")
+	set(BINARY_FILES "${CMAKE_CURRENT_BINARY_DIR}/avaudiophasemeter.exe" "${CMAKE_CURRENT_BINARY_DIR}/avaudiophasemeter-${AVTRANSCODER_VERSION}.exe")
 else()
 	set(BINARY_FILES "${CMAKE_CURRENT_BINARY_DIR}/avaudiophasemeter" "${CMAKE_CURRENT_BINARY_DIR}/avaudiophasemeter-${AVTRANSCODER_VERSION}")
 endif()

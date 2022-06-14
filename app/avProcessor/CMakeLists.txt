@@ -11,7 +11,7 @@ target_link_libraries(avprocessor avtranscoder-shared)
 
 # Install app
 if(WIN32)
-	set(BINARY_FILES "${CMAKE_CURRENT_BINARY_DIR}/avprocessor.exe")
+	set(BINARY_FILES "${CMAKE_CURRENT_BINARY_DIR}/avprocessor.exe" "${CMAKE_CURRENT_BINARY_DIR}/avprocessor-${AVTRANSCODER_VERSION}.exe")
 else()
 	set(BINARY_FILES "${CMAKE_CURRENT_BINARY_DIR}/avprocessor" "${CMAKE_CURRENT_BINARY_DIR}/avprocessor-${AVTRANSCODER_VERSION}")
 endif()
