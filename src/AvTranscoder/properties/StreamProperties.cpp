@@ -28,10 +28,13 @@ StreamProperties::StreamProperties(const FileProperties& fileProperties, const s
             throw std::runtime_error(ss.str());
         }
 
-        _codec = avcodec_find_decoder(_formatContext->streams[_streamIndex]->codecpar->codec_id);
+        AVStream* stream = _formatContext->streams[_streamIndex];
+        _codec = avcodec_find_decoder(stream->codecpar->codec_id);
         _codecContext = avcodec_alloc_context3(_codec);
 
-        avcodec_parameters_to_context(_codecContext, _formatContext->streams[_streamIndex]->codecpar);
+        avcodec_parameters_to_context(_codecContext, stream->codecpar);
+        _codecContext->time_base = stream->time_base;
+        _codecContext->coded_side_data = stream->side_data;
     }
 
     // find the decoder

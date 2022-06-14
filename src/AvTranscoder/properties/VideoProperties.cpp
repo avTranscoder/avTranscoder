@@ -371,6 +371,14 @@ size_t VideoProperties::getMaxBitRate() const
 {
     if(!_codecContext)
         throw std::runtime_error("unknown codec context");
+
+    if (_codecContext->rc_max_rate == 0
+        && _codecContext->coded_side_data
+        && _codecContext->coded_side_data->type == AV_PKT_DATA_CPB_PROPERTIES) {
+        const AVCPBProperties* prop = (AVCPBProperties*) _codecContext->coded_side_data->data;
+        return prop->max_bitrate;
+    }
+
     return _codecContext->rc_max_rate;
 }
 
@@ -378,6 +386,14 @@ size_t VideoProperties::getMinBitRate() const
 {
     if(!_codecContext)
         throw std::runtime_error("unknown codec context");
+
+    if (_codecContext->rc_max_rate == 0
+        && _codecContext->coded_side_data
+        && _codecContext->coded_side_data->type == AV_PKT_DATA_CPB_PROPERTIES) {
+        const AVCPBProperties* prop = (AVCPBProperties*) _codecContext->coded_side_data->data;
+        return prop->min_bitrate;
+    }
+
     return _codecContext->rc_min_rate;
 }
 
