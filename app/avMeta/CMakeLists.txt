@@ -11,7 +11,7 @@ target_link_libraries(avmeta avtranscoder-shared)
 
 # Install app
 if(WIN32)
-	set_target_properties(avinfo PROPERTIES OUTPUT_NAME "avinfo-${AVTRANSCODER_VERSION}")
+	set_target_properties(avmeta PROPERTIES OUTPUT_NAME "avmeta-${AVTRANSCODER_VERSION}")
 	set(BINARY_FILES "${CMAKE_CURRENT_BINARY_DIR}/avmeta.exe" "${CMAKE_CURRENT_BINARY_DIR}/avmeta-${AVTRANSCODER_VERSION}.exe")
 else()
 	set(BINARY_FILES "${CMAKE_CURRENT_BINARY_DIR}/avmeta" "${CMAKE_CURRENT_BINARY_DIR}/avmeta-${AVTRANSCODER_VERSION}")
