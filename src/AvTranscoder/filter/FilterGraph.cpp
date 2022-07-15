@@ -275,7 +275,7 @@ void FilterGraph::process(const std::vector<IFrame*>& inputs, IFrame& output)
     {
         // Retrieve frame from buffer or directly from input
         IFrame* inputFrame = (bypassBuffers)? inputs.at(index) : _inputAudioFrameBuffers.at(index).getFrameSampleNb(minInputFrameSamplesNb);
-        const int ret = av_buffersrc_add_frame_flags(_filters.at(index)->getAVFilterContext(), &inputFrame->getAVFrame(), AV_BUFFERSRC_FLAG_PUSH & AV_BUFFERSRC_FLAG_KEEP_REF);
+        const int ret = av_buffersrc_add_frame_flags(_filters.at(index)->getAVFilterContext(), &inputFrame->getAVFrame(), AV_BUFFERSRC_FLAG_KEEP_REF);
 
         if(ret < 0)
         {
