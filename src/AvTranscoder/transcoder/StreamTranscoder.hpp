@@ -100,6 +100,23 @@ public:
     /// Returns a reference to the stream which wraps data
     IOutputStream& getOutputStream() const { return *_outputStream; }
 
+    /// Returns the total number of generated frames for this processed stream
+    size_t getNumberOfGeneratedFrames() const {
+        size_t generatedFrames = 0;
+        for (IDecoder* generator : _generators) {
+            generatedFrames += generator->getNbDecodedFrames();
+        }
+        return generatedFrames;
+    }
+    /// Returns the total number of decoded frames for this processed stream
+    size_t getNumberOfDecodedFrames() const {
+        size_t decodedFrames = 0;
+        for (IDecoder* inputDecoder : _inputDecoders) {
+            decodedFrames += inputDecoder->getNbDecodedFrames();
+        }
+        return decodedFrames;
+    }
+
     /**
      * @brief Returns if the stream has the ability to switch to a generator.
      */
