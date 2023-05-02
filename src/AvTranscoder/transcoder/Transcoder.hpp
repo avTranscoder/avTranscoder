@@ -139,6 +139,24 @@ public:
     void setProcessMethod(const EProcessMethod eProcessMethod, const size_t indexBasedStream = 0,
                           const double outputDuration = 0);
 
+    /**
+     * @brief Returns the total number of generated frames for a specific stream
+     * @param streamIndex: the index of the stream
+     * @return The total number of generated frames
+     */
+    size_t getNumberOfGeneratedFrames(const size_t streamIndex) const {
+        return _streamTranscoders.at(streamIndex)->getNumberOfGeneratedFrames();
+    }
+
+    /**
+     * @brief Returns the total number of decoded frames for a specific stream
+     * @param streamIndex: the index of the stream
+     * @return The total number of decoded frames
+     */
+    size_t getNumberOfDecodedFrames(const size_t streamIndex) const {
+        return _streamTranscoders.at(streamIndex)->getNumberOfDecodedFrames();
+    }
+
 private:
     void addRewrapStream(const InputStreamDesc& inputStreamDesc, const float offset);
     void addTranscodeStream(const std::vector<InputStreamDesc>& inputStreamDescArray, const ProfileLoader::Profile& profile,
