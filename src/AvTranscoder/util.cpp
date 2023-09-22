@@ -15,7 +15,7 @@ std::vector<std::string> getSupportedPixelFormats(const std::string& videoCodecN
     std::vector<std::string> pixelFormats;
 
     // all video codec concerned
-    if(videoCodecName == "")
+    if(videoCodecName.empty())
     {
         const AVPixFmtDescriptor* pixFmtDesc = NULL;
 
